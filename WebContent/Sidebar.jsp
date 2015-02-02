@@ -10,7 +10,7 @@
             <div class="pull-left info">
                 <p>Hello, Jane</p>
 
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <h6>Engineer</h6>
             </div>
         </div>
         <!-- search form -->
@@ -33,17 +33,7 @@
             <li>
                 <a href="Projects/ProjectsList.jsp">
                     <i class="fa fa-folder"></i> <span>Projects</span>
-                    <i class="fa fa-angle-left pull-right"></i>
                 </a>
-<!--                 <ul class="treeview-menu"> -->
-<!--                     <li><a href="pages/examples/invoice.html"><i class="fa fa-angle-double-right"></i> Invoice</a></li> -->
-<!--                     <li><a href="pages/examples/login.html"><i class="fa fa-angle-double-right"></i> Login</a></li> -->
-<!--                     <li><a href="pages/examples/register.html"><i class="fa fa-angle-double-right"></i> Register</a></li> -->
-<!--                     <li><a href="pages/examples/lockscreen.html"><i class="fa fa-angle-double-right"></i> Lockscreen</a></li> -->
-<!--                     <li><a href="pages/examples/404.html"><i class="fa fa-angle-double-right"></i> 404 Error</a></li> -->
-<!--                     <li><a href="pages/examples/500.html"><i class="fa fa-angle-double-right"></i> 500 Error</a></li> -->
-<!--                     <li><a href="pages/examples/blank.html"><i class="fa fa-angle-double-right"></i> Blank Page</a></li> -->
-<!--                 </ul> -->
             </li>
             <li>
                 <a href="pages/calendar.html">
@@ -53,19 +43,13 @@
             </li>
             <li>
                 <a href="pages/widgets.html">
-                    <i class="fa fa-th"></i> <span>Teams</span> <small class="badge pull-right bg-green">new</small>
+                    <i class="fa fa-users"></i> <span>Teams</span> <small class="badge pull-right bg-green">new</small>
                 </a>
             </li>
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-edit"></i> <span>Employees</span>
-                    <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-user"></i> <span>Employees</span>
                 </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/forms/general.html"><i class="fa fa-angle-double-right"></i> General Elements</a></li>
-                    <li><a href="pages/forms/advanced.html"><i class="fa fa-angle-double-right"></i> Advanced Elements</a></li>
-                    <li><a href="pages/forms/editors.html"><i class="fa fa-angle-double-right"></i> Editors</a></li>
-                </ul>
             </li>
 <!--             <li class="treeview"> -->
 <!--                 <a href="#"> -->
@@ -81,33 +65,32 @@
 <!--             </li> -->
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-laptop"></i>
+                    <i class="fa fa-wrench"></i>
                     <span>Settings</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Update Profile</a></li>
                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Change Password</a></li>
-                    <li><a href="pages/UI/buttons.html"><i class="fa fa-angle-double-right"></i> Logout</a></li>
                 </ul>
             </li>
-           
-<!--             <li class="treeview"> -->
-<!--                 <a href="#"> -->
-<!--                     <i class="fa fa-table"></i> <span>Tables</span> -->
-<!--                     <i class="fa fa-angle-left pull-right"></i> -->
-<!--                 </a> -->
-<!--                 <ul class="treeview-menu"> -->
-<!--                     <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Simple tables</a></li> -->
-<!--                     <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Data tables</a></li> -->
-<!--                 </ul> -->
-<!--             </li> -->
-<!--             <li> -->
-<!--                 <a href="pages/mailbox.html"> -->
-<!--                     <i class="fa fa-envelope"></i> <span>Mailbox</span> -->
-<!--                     <small class="badge pull-right bg-yellow">12</small> -->
-<!--                 </a> -->
-<!--             </li> -->
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>Super User</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Companies</a></li>
+                    <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Licenses</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="pages/mailbox.html">
+                    <i class="fa fa-sign-out"></i> <span>Logout</span>
+                    <small class="badge pull-right bg-yellow">12</small>
+                </a>
+            </li>
         </ul>
     </section>
     <!-- /.sidebar -->

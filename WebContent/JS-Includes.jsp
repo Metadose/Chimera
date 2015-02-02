@@ -31,3 +31,6 @@
 
 <script src="<%=ABSOLUTE_PATH %>/js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
 <script src="<%=ABSOLUTE_PATH %>/js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.2/fullcalendar.min.js" type="text/javascript"></script>
