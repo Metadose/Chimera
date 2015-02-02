@@ -51,18 +51,17 @@
                     <i class="fa fa-user"></i> <span>Employees</span>
                 </a>
             </li>
-<!--             <li class="treeview"> -->
-<!--                 <a href="#"> -->
-<!--                     <i class="fa fa-bar-chart-o"></i> -->
-<!--                     <span>Charts</span> -->
-<!--                     <i class="fa fa-angle-left pull-right"></i> -->
-<!--                 </a> -->
-<!--                 <ul class="treeview-menu"> -->
-<!--                     <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Morris</a></li> -->
-<!--                     <li><a href="pages/charts/flot.html"><i class="fa fa-angle-double-right"></i> Flot</a></li> -->
-<!--                     <li><a href="pages/charts/inline.html"><i class="fa fa-angle-double-right"></i> Inline charts</a></li> -->
-<!--                 </ul> -->
-<!--             </li> -->
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-edit"></i>
+                    <span>Fields</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Fields List</a></li>
+                    <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Assign Fields</a></li>
+                </ul>
+            </li>
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-wrench"></i>

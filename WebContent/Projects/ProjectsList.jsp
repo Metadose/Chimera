@@ -33,6 +33,7 @@
                                     <h3 class="box-title">Data Table With Full Features</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
+                                	<button class="btn btn-success btn-sm">Create</button><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
