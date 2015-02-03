@@ -1,5 +1,6 @@
 package com.cebedo.person.model;
 
+<<<<<<< HEAD
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+=======
+>>>>>>> 8d5d1f4b34a785215a2ae228efc39bb26ee8e229
 /**
  * Entity bean with JPA annotations Hibernate provides JPA implementation
  * 
