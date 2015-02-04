@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-validateFragments=false
+validateFragments=true
 validation.actions-missing-required-attribute=1
 validation.actions-non-empty-inline-tag=2
 validation.actions-unexpected-rtexprvalue=2
