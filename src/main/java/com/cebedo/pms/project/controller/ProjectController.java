@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("project")
 public class ProjectController {
 
+	@RequestMapping(value = { "/list" })
+	public String getProjectList() {
+		return "index";
+	}
+
 	@RequestMapping(value = { "/index", "wow" })
 	public String index() {
 		return "index";
