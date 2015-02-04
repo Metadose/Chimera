@@ -5,14 +5,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Dashboard</title>
-	<%@ include file ="Global-Constants.jsp" %>
-	<%@ include file ="CSS-Includes.jsp" %>
+	<%@ include file ="global-constants.jsp" %>
+	<%@ include file ="css-includes.jsp" %>
 </head>
 <body class="skin-blue">
-	<%@ include file ="Header.jsp" %>
+	<%@ include file ="header.jsp" %>
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<%@ include file ="Sidebar.jsp" %>
+		<%@ include file ="sidebar.jsp" %>
 	</div>	
-	<%@ include file ="JS-Includes.jsp" %>
+	<%@ include file ="js-includes.jsp" %>
 </body>
 </html>

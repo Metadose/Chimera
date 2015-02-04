@@ -1,4 +1,4 @@
-package com.cebedo.pms.project.controller;
+package com.cebedo.pms.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
