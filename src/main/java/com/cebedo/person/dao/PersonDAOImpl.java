@@ -2,6 +2,10 @@ package com.cebedo.person.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 import com.cebedo.person.model.Person;
 
 public class PersonDAOImpl implements PersonDAO {
@@ -12,7 +16,6 @@ public class PersonDAOImpl implements PersonDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
 	public void save(Person p) {
 		Session session = this.sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
@@ -22,7 +25,6 @@ public class PersonDAOImpl implements PersonDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<Person> list() {
 		Session session = this.sessionFactory.openSession();
 		List<Person> personList = session.createQuery("from Person").list();
