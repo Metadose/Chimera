@@ -1,3 +1,4 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!-- header logo: style can be found in header.less -->
 <header class="header">
     <a href="index.html" class="logo">
@@ -29,7 +30,7 @@
                                 <li><!-- start message -->
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="img/avatar3.png" class="img-circle" alt="User Image"/>
+                                            <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="User Image"/>
                                         </div>
                                         <h4>
                                             Support Team
@@ -41,7 +42,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="img/avatar2.png" class="img-circle" alt="user image"/>
+                                            <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="user image"/>
                                         </div>
                                         <h4>
                                             AdminLTE Design Team
@@ -53,7 +54,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="img/avatar.png" class="img-circle" alt="user image"/>
+                                        	<img src="<c:url value="/resources/img/avatar.png" />" class="img-circle" alt="user image"/>
                                         </div>
                                         <h4>
                                             Developers
@@ -65,7 +66,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="img/avatar2.png" class="img-circle" alt="user image"/>
+                                            <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="user image"/>
                                         </div>
                                         <h4>
                                             Sales Department
@@ -77,7 +78,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="img/avatar.png" class="img-circle" alt="user image"/>
+                                            <img src="<c:url value="/resources/img/avatar.png" />" class="img-circle" alt="user image"/>
                                         </div>
                                         <h4>
                                             Reviewers
@@ -212,7 +213,7 @@
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header bg-light-blue">
-                            <img src="img/avatar3.png" class="img-circle" alt="User Image" />
+                            <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="User Image" />
                             <p>
                                 Jane Doe - Web Developer
                                 <small>Member since Nov. 2012</small>

@@ -1,3 +1,5 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -5,7 +7,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="img/avatar3.png" class="img-circle" alt="User Image" />
+                <img src="${contextPath}/resources/img/avatar2.png" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
                 <p>Hello, Jane</p>
@@ -31,7 +33,7 @@
                 </a>
             </li>
             <li>
-                <a href="Projects/ProjectsList.jsp">
+                <a href="${contextPath}/project/list/">
                     <i class="fa fa-folder"></i> <span>Projects</span>
                 </a>
             </li>
