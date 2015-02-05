@@ -1,17 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Projects List</title>
-	<%@ include file ="../Global-Constants.jsp" %>
-	<%@ include file ="../CSS-Includes.jsp" %>
+	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
-	<%@ include file ="../Header.jsp" %>
+	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<%@ include file ="../Sidebar.jsp" %>
+		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
@@ -110,7 +108,7 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	<%@ include file ="../JS-Includes.jsp" %>
+	<c:import url="/resources/js-includes.jsp" />
 	<script>
 		$(document).ready(function() {
 			$("#example-1").dataTable();

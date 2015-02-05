@@ -1,12 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Project Edit</title>
-	<%@ include file ="../Global-Constants.jsp" %>
-	<%@ include file ="../CSS-Includes.jsp" %>
+	<c:import url="/resources/css-includes.jsp" />
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -22,9 +20,9 @@
 	</style>
 </head>
 <body class="skin-blue">
-	<%@ include file ="../Header.jsp" %>
+	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<%@ include file ="../Sidebar.jsp" %>
+		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
@@ -346,22 +344,22 @@
                                     	 <br/>
 									     <ul class="row">
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1.jpg"/>
+									          	<img src="<c:url value="/temp/1.jpg"/> "/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1 (1).jpg"/>
+									          	<img src="<c:url value="/temp/1 (1).jpg"/> "/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1 (2).jpg"/>
+									          	<img src="<c:url value="/temp/1 (2).jpg"/> "/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1 (3).jpg"/>
+									          	<img src="<c:url value="/temp/1 (3).jpg"/> "/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1 (4).jpg"/>
+									          	<img src="<c:url value="/temp/1 (4).jpg"/> "/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<%=ABSOLUTE_PATH %>/temp/1 (5).jpg"/>
+									          	<img src="<c:url value="/temp/1 (5).jpg"/> "/>
 									          </li>
 									     </ul>
 									</div>
@@ -478,7 +476,7 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	<%@ include file ="../JS-Includes.jsp" %>
+	<c:import url="/resources/js-includes.jsp" />
 	<script>
 		$(document).on('click', 'a.controls', function(){
 	        var index = $(this).attr('href');

@@ -11,4 +11,9 @@ public class ProjectController {
 	public String getProjectList() {
 		return "projectsList";
 	}
+
+	@RequestMapping(value = "edit")
+	public String editProject() {
+		return "projectEdit";
+	}
 }
