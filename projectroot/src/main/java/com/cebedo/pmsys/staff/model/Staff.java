@@ -15,11 +15,11 @@ import javax.persistence.Table;
 import com.cebedo.pmsys.project.model.Project;
 
 @Entity
-@Table(name = Staff.tableName)
+@Table(name = Staff.TABLE_NAME)
 public class Staff implements Serializable {
 
-	public static final String tableName = "staff";
-	public static final String primaryKey = "id";
+	public static final String TABLE_NAME = "staff";
+	public static final String COLUMN_PRIMARY_KEY = "id";
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,7 @@ public class Staff implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = primaryKey, unique = true, nullable = false)
+	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
 	public long getId() {
 		return id;
 	}
@@ -82,7 +82,7 @@ public class Staff implements Serializable {
 		this.suffix = suffix;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = tableName)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
 	public Set<Project> getProjects() {
 		return projects;
 	}

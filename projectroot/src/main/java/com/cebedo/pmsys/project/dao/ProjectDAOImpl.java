@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 
 import com.cebedo.pmsys.project.model.Project;
 
-
 public class ProjectDAOImpl implements ProjectDAO {
 
 	private SessionFactory sessionFactory;
@@ -28,9 +27,10 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> list() {
 		Session session = this.sessionFactory.openSession();
-		List<Project> ProjectList = session.createQuery("from Project").list();
+		List<Project> projectList = session.createQuery(
+				"from " + Project.TABLE_NAME).list();
 		session.close();
-		return ProjectList;
+		return projectList;
 	}
 
 }

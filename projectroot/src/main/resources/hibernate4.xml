@@ -34,7 +34,7 @@
     </bean>
  
      
-    <bean id="personDAO" class="com.cebedo.pmsys.project.dao.ProjectDAOImpl">
+    <bean id="projectDAO" class="com.cebedo.pmsys.project.dao.ProjectDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
 </beans>

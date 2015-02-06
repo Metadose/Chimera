@@ -23,11 +23,11 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignments;
 
 @Entity
-@Table(name = Project.tableName)
+@Table(name = Project.TABLE_NAME)
 public class Project implements Serializable {
 
-	public static final String tableName = "projects";
-	public static final String primaryKey = "id";
+	public static final String TABLE_NAME = "projects";
+	public static final String COLUMN_PRIMARY_KEY = "id";
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class Project implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = primaryKey, unique = true, nullable = false)
+	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
 	public long getId() {
 		return id;
 	}
@@ -56,6 +56,7 @@ public class Project implements Serializable {
 		this.id = id;
 	}
 
+	@Column(name = "name", nullable = false, length = 32)
 	public String getName() {
 		return name;
 	}
@@ -64,6 +65,7 @@ public class Project implements Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "type", nullable = false, length = 3)
 	public int getType() {
 		return type;
 	}
@@ -72,6 +74,7 @@ public class Project implements Serializable {
 		this.type = type;
 	}
 
+	@Column(name = "type", nullable = false, length = 3)
 	public int getStatus() {
 		return status;
 	}
@@ -81,7 +84,7 @@ public class Project implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Staff.primaryKey, nullable = false)
+	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false)
 	public Staff getManager() {
 		return this.manager;
 	}
@@ -91,7 +94,7 @@ public class Project implements Serializable {
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = TeamAssignments.tableName, joinColumns = { @JoinColumn(name = primaryKey, nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = Team.primaryKey, nullable = false, updatable = false) })
+	@JoinTable(name = TeamAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY, nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;
 	}
@@ -100,7 +103,7 @@ public class Project implements Serializable {
 		this.assignedTeams = teams;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = tableName, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = TABLE_NAME, cascade = CascadeType.ALL)
 	public Set<FieldAssignments> getFieldAssignments() {
 		return fieldAssignments;
 	}

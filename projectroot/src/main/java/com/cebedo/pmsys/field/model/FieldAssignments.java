@@ -15,11 +15,11 @@ import javax.persistence.Table;
 import com.cebedo.pmsys.project.model.Project;
 
 @Entity
-@Table(name = FieldAssignments.tableName)
+@Table(name = FieldAssignments.TABLE_NAME)
 public class FieldAssignments implements Serializable {
 
-	public static final String tableName = "field_assignments";
-	public static final String primaryKey = "id";
+	public static final String TABLE_NAME = "field_assignments";
+	public static final String COLUMN_PRIMARY_KEY = "id";
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class FieldAssignments implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = primaryKey, unique = true, nullable = true)
+	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = true)
 	public int getId() {
 		return id;
 	}
