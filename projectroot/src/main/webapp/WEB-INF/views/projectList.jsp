@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -47,7 +48,7 @@
                                             <tr>
                                             	<td>
                                             		<center>
-													<a href="ProjectEdit.jsp"><button class="btn btn-primary btn-sm">View</button></a>
+													<a href="${contextPath}/project/edit/"><button class="btn btn-primary btn-sm">View</button></a>
 													<button class="btn btn-warning btn-sm">Edit</button>
 													<button class="btn btn-danger btn-sm">Delete</button>
 													</center>

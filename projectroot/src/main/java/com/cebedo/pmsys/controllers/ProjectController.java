@@ -12,7 +12,7 @@ public class ProjectController {
 	@RequestMapping(value = { "/", "/list" }, method = RequestMethod.GET)
 	public String getProjectList(ModelMap model) {
 		model.addAttribute("message", "Spring 3 MVC Hello World");
-		return "projectsList";
+		return "projectList";
 	}
 
 	@RequestMapping(value = "edit")

@@ -1,6 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!-- Left side column. contains the logo and sidebar -->
-<c:set var="contextPath" value="${pageContext.request.contextPath}" scope="session"/>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -33,8 +33,8 @@
                 </a>
             </li>
             <li>
-                <a href="<c:out value="${contextPath}"/>">
-                    <i class="fa fa-folder"></i> <span>${message} Projects <c:out value="${pageContext.servletContext.contextPath}" /> <c:out value="${contextPath}"/></span>
+                <a href="${contextPath}/project/list/">
+                    <i class="fa fa-folder"></i> <span>Projects</span>
                 </a>
             </li>
             <li>
