@@ -9,10 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.cebedo.pmsys.project.model.Project;
 
 @Entity
 @Table(name = Staff.TABLE_NAME)
@@ -24,13 +22,14 @@ public class Staff implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private long id;
+	private String thumbnailURL;
 	private String prefix;
 	private String firstName;
 	private String middleName;
 	private String lastName;
 	private String suffix;
 	private String companyPosition;
-	private Set<Project> projects;
+	private Set<ManagerAssignment> assignedManagers;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +40,15 @@ public class Staff implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	@Column(name = "thumbnail_url", length = 255)
+	public String getThumbnailURL() {
+		return thumbnailURL;
+	}
+
+	public void setThumbnailURL(String thumbnailURL) {
+		this.thumbnailURL = thumbnailURL;
 	}
 
 	@Column(name = "name_prefix", length = 8)
@@ -97,12 +105,13 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedManagers")
-	public Set<Project> getProjects() {
-		return projects;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
+			+ ".manager")
+	public Set<ManagerAssignment> getAssignedManagers() {
+		return assignedManagers;
 	}
 
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
+	public void setAssignedManagers(Set<ManagerAssignment> managers) {
+		this.assignedManagers = managers;
 	}
 }

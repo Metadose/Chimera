@@ -37,68 +37,50 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
+                                                <th>Project</th>
+                                                <th>Manager(s)</th>
+                                                <th>Location</th>
+                                                <th>Notes</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                            	<td>
-                                            		<center>
-													<a href="${contextPath}/project/edit/"><button class="btn btn-primary btn-sm">View</button></a>
-													<button class="btn btn-warning btn-sm">Edit</button>
-													<button class="btn btn-danger btn-sm">Delete</button>
-													</center>
-												</td>
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                    Explorer 4.0</td>
-                                                <td>Win 95+</td>
-                                                <td> 4</td>
-                                                <td>X</td>
-                                            </tr>
-                                            <tr>
-                                            	<td>
-                                            		<center>
-													<button class="btn btn-primary btn-sm">View</button>
-													<button class="btn btn-warning btn-sm">Edit</button>
-													<button class="btn btn-danger btn-sm">Delete</button>
-													</center>
-												</td>
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                    Explorer 5.0</td>
-                                                <td>Win 95+</td>
-                                                <td>5</td>
-                                                <td>C</td>
-                                            </tr>
-                                            <tr>
-                                            	<td>
-                                            		<center>
-													<button class="btn btn-primary btn-sm">View</button>
-													<button class="btn btn-warning btn-sm">Edit</button>
-													<button class="btn btn-danger btn-sm">Delete</button>
-													</center>
-												</td>
-                                                <td>Trident</td>
-                                                <td>Internet
-                                                    Explorer 5.5</td>
-                                                <td>Win 95+</td>
-                                                <td>5.5</td>
-                                                <td>A</td>
-                                            </tr>
+                                        	<c:if test="${!empty projectList}">
+                                        		<c:forEach items="${projectList}" var="project">
+		                                            <tr>
+		                                            	<td>
+		                                            		<center>
+																<a href="${contextPath}/project/edit/"><button class="btn btn-primary btn-sm">View</button></a>
+																<button class="btn btn-warning btn-sm">Edit</button>
+																<button class="btn btn-danger btn-sm">Delete</button>
+															</center>
+														</td>
+		                                                <td>
+		                                                	${project.thumbnailURL}<br/>
+		                                                	${project.status}<br/>
+		                                                	${project.name}<br/>
+		                                                </td>
+		                                                <td>
+		                                                	<c:forEach items="${project.managerAssignments}" var="managerAssignment">
+		                                                		<c:set var="man" value="${managerAssignment.manager}"/>
+			                                                	${man.thumbnailURL}<br/>
+			                                                	${managerAssignment.projectPosition}<br/>
+			                                                	${man.prefix} ${man.firstName} ${man.middleName} ${man.lastName} ${man.suffix}<br/>
+			                                                	${man.companyPosition}<br/>
+		                                                	</c:forEach>
+														</td>
+		                                                <td>${project.location}</td>
+		                                                <td>${project.notes}</td>
+		                                            </tr>
+	                                            </c:forEach>
+                                            </c:if>
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
+                                                <th>Project</th>
+                                                <th>Manager(s)</th>
+                                                <th>Location</th>
+                                                <th>Notes</th>
                                             </tr>
                                         </tfoot>
                                     </table>

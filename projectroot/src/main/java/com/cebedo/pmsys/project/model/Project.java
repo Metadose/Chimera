@@ -13,19 +13,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.field.model.Field;
-import com.cebedo.pmsys.field.model.FieldAssignments;
-import com.cebedo.pmsys.staff.model.ManagerAssignments;
-import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.team.model.Team;
-import com.cebedo.pmsys.team.model.TeamAssignments;
+import com.cebedo.pmsys.team.model.TeamAssignment;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
 public class Project implements Serializable {
 
+	public static final String CLASS_NAME = "Project";
 	public static final String OBJECT_NAME = "project";
 	public static final String TABLE_NAME = "projects";
 	public static final String COLUMN_PRIMARY_KEY = "project_id";
@@ -36,9 +37,12 @@ public class Project implements Serializable {
 	private String name;
 	private int type;
 	private int status;
-	private Set<Staff> assignedManagers;
+	private Set<ManagerAssignment> managerAssignments;
 	private Set<Team> assignedTeams;
-	private Set<Field> assignedFields;
+	private Set<Field> fieldAssignments;
+	private String thumbnailURL;
+	private String location;
+	private String notes;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,18 +82,18 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = ManagerAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<Staff> getAssignedManagers() {
-		return this.assignedManagers;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
+			+ ".project", cascade = CascadeType.ALL)
+	public Set<ManagerAssignment> getManagerAssignments() {
+		return this.managerAssignments;
 	}
 
-	public void setAssignedManagers(Set<Staff> man) {
-		this.assignedManagers = man;
+	public void setManagerAssignments(Set<ManagerAssignment> man) {
+		this.managerAssignments = man;
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = TeamAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	@JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;
 	}
@@ -99,13 +103,40 @@ public class Project implements Serializable {
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = FieldAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<Field> getAssignedFields() {
-		return assignedFields;
+	@JoinTable(name = FieldAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Field> getFieldAssignments() {
+		return fieldAssignments;
 	}
 
-	public void setAssignedFields(Set<Field> fields) {
-		this.assignedFields = fields;
+	public void setFieldAssignments(Set<Field> fields) {
+		this.fieldAssignments = fields;
+	}
+
+	@Column(name = "thumbnail_url", length = 255)
+	public String getThumbnailURL() {
+		return thumbnailURL;
+	}
+
+	public void setThumbnailURL(String thumbnailURL) {
+		this.thumbnailURL = thumbnailURL;
+	}
+
+	@Column(name = "location", length = 108)
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	@Column(name = "notes")
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	@Override

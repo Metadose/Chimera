@@ -43,6 +43,7 @@
                 <beans:value>com.cebedo.pmsys.project.model.Project</beans:value>
                 <beans:value>com.cebedo.pmsys.field.model.Field</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
             </beans:list>
         </beans:property>

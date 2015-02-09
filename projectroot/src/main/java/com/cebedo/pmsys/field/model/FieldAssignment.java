@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = FieldAssignments.TABLE_NAME)
-public class FieldAssignments implements Serializable {
+@Table(name = FieldAssignment.TABLE_NAME)
+public class FieldAssignment implements Serializable {
 
 	public static final String TABLE_NAME = "assignments_field";
 
