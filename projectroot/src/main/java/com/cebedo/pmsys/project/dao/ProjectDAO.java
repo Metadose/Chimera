@@ -8,11 +8,11 @@ public interface ProjectDAO {
 
 	public void create(Project project);
 
-	public Project getByID(int id);
+	public Project getByID(long id);
 
 	public void update(Project project);
 
-	public void delete(int id);
+	public void delete(long id);
 
 	public List<Project> list();
 

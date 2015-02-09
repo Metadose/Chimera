@@ -16,7 +16,6 @@ import com.cebedo.pmsys.project.service.ProjectService;
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
-	public static final String ATTR_PROJECT = Project.OBJECT_NAME;
 	public static final String ATTR_LIST = "projectList";
 
 	public static final String REQUEST_ROOT = "/";
@@ -53,13 +52,13 @@ public class ProjectController {
 		} else {
 			this.projectService.update(project);
 		}
-		return "redirect:/" + REQUEST_LIST;
+		return "redirect:/" + Project.OBJECT_NAME + "/" + REQUEST_LIST;
 	}
 
 	@RequestMapping("/delete/{" + Project.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id) {
 		this.projectService.delete(id);
-		return "redirect:/" + REQUEST_LIST;
+		return "redirect:/" + Project.OBJECT_NAME + "/" + REQUEST_LIST;
 	}
 
 	@RequestMapping("/edit/{" + Project.COLUMN_PRIMARY_KEY + "}")

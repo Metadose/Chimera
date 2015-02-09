@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -65,17 +66,19 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                    <form role="form">
-                                        <!-- text input -->
+                                    <form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
                                         <div class="form-group">
+                                        	<input type="hidden" name="id" value="${project.id}"/>
                                             <label>Name</label>
-                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-                                            <label>Description</label>
-                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-                                            <label>More Details</label>
-                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
+                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
+                                            <label>Status</label>
+                                            <input type="text" class="form-control" name="status" value="${project.status}"/><br/>
+                                            <label>Location</label>
+                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
+                                            <label>Notes</label>
+                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
                                         </div>
-										<button class="btn btn-warning btn-sm">Update</button>
+										<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 										<button class="btn btn-danger btn-sm">Delete</button>
                                     </form>
                                 </div><!-- /.tab-pane -->
@@ -478,6 +481,10 @@
 	</div>
 	<c:import url="/resources/js-includes.jsp" />
 	<script>
+		function submitForm(id) {
+			$(id).submit();
+		}
+	
 		$(document).on('click', 'a.controls', function(){
 	        var index = $(this).attr('href');
 	        var src = $('ul.row li:nth-child('+ index +') img').attr('src');             

@@ -49,7 +49,7 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/project/edit/"><button class="btn btn-primary btn-sm">View</button></a>
+																<a href="${contextPath}/project/edit/${project.id}"><button class="btn btn-primary btn-sm">View</button></a>
 																<button class="btn btn-warning btn-sm">Edit</button>
 																<button class="btn btn-danger btn-sm">Delete</button>
 															</center>

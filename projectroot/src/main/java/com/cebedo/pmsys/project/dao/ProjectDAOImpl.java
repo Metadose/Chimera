@@ -39,10 +39,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	public Project getByID(int id) {
+	public Project getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session
-				.load(Project.class, new Integer(id));
+		Project project = (Project) session.load(Project.class, new Long(id));
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
@@ -55,10 +54,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session
-				.load(Project.class, new Integer(id));
+		Project project = (Project) session.load(Project.class, new Long(id));
 		if (project != null) {
 			session.delete(project);
 		}
