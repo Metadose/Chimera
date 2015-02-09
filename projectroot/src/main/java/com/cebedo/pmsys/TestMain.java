@@ -20,7 +20,7 @@ public class TestMain {
 		person.setName("test");
 		person.setStatus(1);
 
-		projectDAO.save(person);
+		projectDAO.create(person);
 
 		System.out.println("Person::" + person);
 

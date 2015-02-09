@@ -9,7 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.project.model.Project;
@@ -29,6 +29,7 @@ public class Staff implements Serializable {
 	private String middleName;
 	private String lastName;
 	private String suffix;
+	private String companyPosition;
 	private Set<Project> projects;
 
 	@Id
@@ -42,6 +43,7 @@ public class Staff implements Serializable {
 		this.id = id;
 	}
 
+	@Column(name = "name_prefix", length = 8)
 	public String getPrefix() {
 		return prefix;
 	}
@@ -50,6 +52,7 @@ public class Staff implements Serializable {
 		this.prefix = prefix;
 	}
 
+	@Column(name = "name_first", nullable = false, length = 32)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -58,6 +61,7 @@ public class Staff implements Serializable {
 		this.firstName = firstName;
 	}
 
+	@Column(name = "name_middle", length = 16)
 	public String getMiddleName() {
 		return middleName;
 	}
@@ -66,6 +70,7 @@ public class Staff implements Serializable {
 		this.middleName = middleName;
 	}
 
+	@Column(name = "name_last", nullable = false, length = 16)
 	public String getLastName() {
 		return lastName;
 	}
@@ -74,6 +79,7 @@ public class Staff implements Serializable {
 		this.lastName = lastName;
 	}
 
+	@Column(name = "name_suffix", length = 8)
 	public String getSuffix() {
 		return suffix;
 	}
@@ -82,7 +88,16 @@ public class Staff implements Serializable {
 		this.suffix = suffix;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
+	@Column(name = "position", length = 16)
+	public String getCompanyPosition() {
+		return companyPosition;
+	}
+
+	public void setCompanyPosition(String companyPosition) {
+		this.companyPosition = companyPosition;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
 	public Set<Project> getProjects() {
 		return projects;
 	}

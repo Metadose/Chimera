@@ -13,11 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignments;
+import com.cebedo.pmsys.staff.model.ManagerAssignments;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignments;
@@ -26,24 +26,19 @@ import com.cebedo.pmsys.team.model.TeamAssignments;
 @Table(name = Project.TABLE_NAME)
 public class Project implements Serializable {
 
+	public static final String OBJECT_NAME = "project";
 	public static final String TABLE_NAME = "projects";
 	public static final String COLUMN_PRIMARY_KEY = "id";
 
 	private static final long serialVersionUID = 1L;
 
 	private long id;
-
 	private String name;
-
 	private int type;
-
 	private int status;
-
-	private Staff manager;
-
+	private Set<Staff> assignedManagers;
 	private Set<Team> assignedTeams;
-
-	private Set<FieldAssignments> fieldAssignments;
+	private Set<Field> assignedFields;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +60,7 @@ public class Project implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "type", nullable = false, length = 3)
+	@Column(name = "type", nullable = false, length = 2)
 	public int getType() {
 		return type;
 	}
@@ -74,7 +69,7 @@ public class Project implements Serializable {
 		this.type = type;
 	}
 
-	@Column(name = "type", nullable = false, length = 3)
+	@Column(name = "status", nullable = false, length = 2)
 	public int getStatus() {
 		return status;
 	}
@@ -83,18 +78,18 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false)
-	public Staff getManager() {
-		return this.manager;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = ManagerAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Staff> getAssignedManagers() {
+		return this.assignedManagers;
 	}
 
-	public void setManager(Staff man) {
-		this.manager = man;
+	public void setAssignedManagers(Set<Staff> man) {
+		this.assignedManagers = man;
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = TeamAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY, nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	@JoinTable(name = TeamAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;
 	}
@@ -103,13 +98,14 @@ public class Project implements Serializable {
 		this.assignedTeams = teams;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = TABLE_NAME, cascade = CascadeType.ALL)
-	public Set<FieldAssignments> getFieldAssignments() {
-		return fieldAssignments;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = FieldAssignments.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Field> getAssignedFields() {
+		return assignedFields;
 	}
 
-	public void setFieldAssignments(Set<FieldAssignments> fieldAssignments) {
-		this.fieldAssignments = fieldAssignments;
+	public void setAssignedFields(Set<Field> fields) {
+		this.assignedFields = fields;
 	}
 
 	@Override

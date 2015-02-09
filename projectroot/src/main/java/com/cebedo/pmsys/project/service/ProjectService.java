@@ -1,10 +1,10 @@
-package com.cebedo.pmsys.project.dao;
+package com.cebedo.pmsys.project.service;
 
 import java.util.List;
 
 import com.cebedo.pmsys.project.model.Project;
 
-public interface ProjectDAO {
+public interface ProjectService {
 
 	public void create(Project project);
 
