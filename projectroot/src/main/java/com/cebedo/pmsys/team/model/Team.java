@@ -19,22 +19,22 @@ import com.cebedo.pmsys.project.model.Project;
 public class Team implements Serializable {
 
 	public static final String TABLE_NAME = "teams";
-	public static final String COLUMN_PRIMARY_KEY = "id";
+	public static final String COLUMN_PRIMARY_KEY = "team_id";
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private long id;
 	private String name;
 	private Set<Project> projects;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class Team implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedTeams")
 	public Set<Project> getProjects() {
 		return projects;
 	}

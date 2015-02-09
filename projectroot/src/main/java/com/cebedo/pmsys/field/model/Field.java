@@ -3,8 +3,12 @@ package com.cebedo.pmsys.field.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -15,23 +19,26 @@ import com.cebedo.pmsys.project.model.Project;
 public class Field implements Serializable {
 
 	public static final String TABLE_NAME = "fields";
-	public static final String COLUMN_PRIMARY_KEY = "id";
+	public static final String COLUMN_PRIMARY_KEY = "field_id";
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private long id;
 	private String name;
-	private String type;
 	private Set<Project> projects;
 
-	public int getId() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = true)
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
+	@Column(name = "name", unique = true)
 	public String getName() {
 		return name;
 	}
@@ -40,15 +47,7 @@ public class Field implements Serializable {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedFields")
 	public Set<Project> getProjects() {
 		return projects;
 	}

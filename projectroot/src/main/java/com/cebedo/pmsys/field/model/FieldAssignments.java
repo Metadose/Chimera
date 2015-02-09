@@ -4,41 +4,20 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-
-import com.cebedo.pmsys.project.model.Project;
 
 @Entity
 @Table(name = FieldAssignments.TABLE_NAME)
 public class FieldAssignments implements Serializable {
 
-	public static final String TABLE_NAME = "field_assignments";
-	public static final String COLUMN_PRIMARY_KEY = "id";
+	public static final String TABLE_NAME = "assignments_field";
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
 	private String label;
 	private String value;
-	private Project project;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = true)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
+	@Column(name = "label", nullable = false, length = 32)
 	public String getLabel() {
 		return label;
 	}
@@ -47,22 +26,13 @@ public class FieldAssignments implements Serializable {
 		this.label = label;
 	}
 
+	@Column(name = "value", nullable = false)
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumn
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
 	}
 
 }

@@ -19,7 +19,7 @@ import com.cebedo.pmsys.project.model.Project;
 public class Staff implements Serializable {
 
 	public static final String TABLE_NAME = "staff";
-	public static final String COLUMN_PRIMARY_KEY = "id";
+	public static final String COLUMN_PRIMARY_KEY = "staff_id";
 
 	private static final long serialVersionUID = 1L;
 
@@ -97,7 +97,7 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = TABLE_NAME)
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedManagers")
 	public Set<Project> getProjects() {
 		return projects;
 	}

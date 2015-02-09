@@ -28,7 +28,7 @@ public class Project implements Serializable {
 
 	public static final String OBJECT_NAME = "project";
 	public static final String TABLE_NAME = "projects";
-	public static final String COLUMN_PRIMARY_KEY = "id";
+	public static final String COLUMN_PRIMARY_KEY = "project_id";
 
 	private static final long serialVersionUID = 1L;
 
@@ -110,6 +110,6 @@ public class Project implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.toString();
+		return "[Project] " + getId() + " [Name] " + getName();
 	}
 }

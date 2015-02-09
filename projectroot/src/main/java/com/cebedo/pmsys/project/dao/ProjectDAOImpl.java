@@ -30,8 +30,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> list() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = session.createQuery(
-				"from " + Project.TABLE_NAME).list();
+		List<Project> projectList = session.createQuery("from Project").list();
 		for (Project project : projectList) {
 			logger.info("[List] Project: " + project);
 		}

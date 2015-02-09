@@ -27,12 +27,12 @@ public class ProjectController {
 	public static final String JSP_LIST = "projectList";
 	public static final String JSP_EDIT = "projectEdit";
 
-	private ProjectService personService;
+	private ProjectService projectService;
 
 	@Autowired(required = true)
-	@Qualifier(value = "personService")
+	@Qualifier(value = "projectService")
 	public void setProjectService(ProjectService ps) {
-		this.personService = ps;
+		this.projectService = ps;
 	}
 
 	@RequestMapping(value = "edit")
@@ -43,30 +43,30 @@ public class ProjectController {
 	@RequestMapping(value = { REQUEST_ROOT, REQUEST_LIST }, method = RequestMethod.GET)
 	public String listProjects(Model model) {
 		model.addAttribute(ATTR_PROJECT, new Project());
-		model.addAttribute(ATTR_LIST, this.personService.list());
+		model.addAttribute(ATTR_LIST, this.projectService.list());
 		return JSP_LIST;
 	}
 
 	@RequestMapping(value = REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(Project.OBJECT_NAME) Project project) {
 		if (project.getId() == 0) {
-			this.personService.create(project);
+			this.projectService.create(project);
 		} else {
-			this.personService.update(project);
+			this.projectService.update(project);
 		}
 		return "redirect:/" + REQUEST_LIST;
 	}
 
 	@RequestMapping("/delete/{" + Project.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id) {
-		this.personService.delete(id);
+		this.projectService.delete(id);
 		return "redirect:/" + REQUEST_LIST;
 	}
 
 	@RequestMapping("/edit/{" + Project.COLUMN_PRIMARY_KEY + "}")
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
-		model.addAttribute(Project.OBJECT_NAME, this.personService.getByID(id));
+		model.addAttribute(Project.OBJECT_NAME, this.projectService.getByID(id));
 		return JSP_EDIT;
 	}
 }
