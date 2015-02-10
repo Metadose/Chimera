@@ -105,7 +105,7 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
 			+ ".manager")
 	public Set<ManagerAssignment> getAssignedManagers() {
 		return assignedManagers;

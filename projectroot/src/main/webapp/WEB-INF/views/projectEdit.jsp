@@ -66,6 +66,7 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
+                                	<spring:url var="customer" value="/customer"/>
                                     <form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
                                         <div class="form-group">
                                         	<input type="hidden" name="id" value="${project.id}"/>

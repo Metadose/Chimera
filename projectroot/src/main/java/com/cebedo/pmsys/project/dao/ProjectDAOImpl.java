@@ -41,7 +41,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public Project getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session.load(Project.class, new Long(id));
+		Project project = (Project) session.createQuery(
+				"from " + Project.CLASS_NAME + " where "
+						+ Project.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
