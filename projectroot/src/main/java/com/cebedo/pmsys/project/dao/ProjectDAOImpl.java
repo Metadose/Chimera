@@ -58,7 +58,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public void delete(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session.load(Project.class, new Long(id));
+		Project project = getByID(id);
 		if (project != null) {
 			session.delete(project);
 		}

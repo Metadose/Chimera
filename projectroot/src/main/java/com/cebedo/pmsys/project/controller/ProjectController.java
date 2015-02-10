@@ -64,6 +64,10 @@ public class ProjectController {
 	@RequestMapping("/edit/{" + Project.COLUMN_PRIMARY_KEY + "}")
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+		if (id == 0) {
+			model.addAttribute(Project.OBJECT_NAME, new Project());
+			return JSP_EDIT;
+		}
 		model.addAttribute(Project.OBJECT_NAME, this.projectService.getByID(id));
 		return JSP_EDIT;
 	}

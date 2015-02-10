@@ -105,7 +105,9 @@
 				                                            <label>Notes</label>
 				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
 				                                            <button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-															<button class="btn btn-danger btn-sm">Delete This Project</button>
+															<a href="${contextPath}/delete/project/${project.id}">
+																<button class="btn btn-danger btn-sm">Delete This Project</button>
+															</a>
 				                                        </div>
 				                                    </form>
                    								</div>

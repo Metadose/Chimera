@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Projects List</title>
+	<title>Project List</title>
 	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
@@ -15,13 +15,12 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Data Tables ${message}
-	                <small>advanced tables</small>
+	                Project List
+	                <small>Complete list of all projects</small>
 	            </h1>
 	            <ol class="breadcrumb">
-	                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-	                <li><a href="#">Tables</a></li>
-	                <li class="active">Data tables</li>
+	                <li><a href="${contextPath}/dashboard/">Home</a></li>
+	                <li class="active"><a href="${contextPath}/project/list">Projects</a></li>
 	            </ol>
 	        </section>
 	        <section class="content">
@@ -29,10 +28,13 @@
                     <div class="col-xs-12">
                         <div class="box">
                                 <div class="box-header">
-                                    <h3 class="box-title">Data Table With Full Features</h3>
+<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<button class="btn btn-success btn-sm">Create</button><br/>
+                                	<a href="${contextPath}/project/edit/0">
+                                		<button class="btn btn-success btn-sm">Create Project</button>
+                                	</a>
+                                	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -49,9 +51,13 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/project/edit/${project.id}"><button class="btn btn-primary btn-sm">View</button></a>
+																<a href="${contextPath}/project/edit/${project.id}">
+																	<button class="btn btn-primary btn-sm">View</button>
+																</a>
 																<button class="btn btn-warning btn-sm">Edit</button>
-																<button class="btn btn-danger btn-sm">Delete</button>
+																<a href="${contextPath}/project/delete/${project.id}">
+																	<button class="btn btn-danger btn-sm">Delete</button>
+																</a>
 															</center>
 														</td>
 		                                                <td>

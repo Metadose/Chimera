@@ -83,7 +83,7 @@ public class Project implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
-			+ ".project", cascade = CascadeType.ALL)
+			+ ".project", cascade = CascadeType.REMOVE)
 	public Set<ManagerAssignment> getManagerAssignments() {
 		return this.managerAssignments;
 	}
@@ -92,7 +92,7 @@ public class Project implements Serializable {
 		this.managerAssignments = man;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;
@@ -102,7 +102,7 @@ public class Project implements Serializable {
 		this.assignedTeams = teams;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = FieldAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Field> getFieldAssignments() {
 		return fieldAssignments;
