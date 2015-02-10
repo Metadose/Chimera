@@ -66,22 +66,134 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<spring:url var="customer" value="/customer"/>
-                                    <form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
-                                        <div class="form-group">
-                                        	<input type="hidden" name="id" value="${project.id}"/>
-                                            <label>Name</label>
-                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
-                                            <label>Status</label>
-                                            <input type="text" class="form-control" name="status" value="${project.status}"/><br/>
-                                            <label>Location</label>
-                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
-                                            <label>Notes</label>
-                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
-                                        </div>
-										<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-										<button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
+                                	<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Details</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
+				                                        <div class="form-group">
+				                                        	<input type="hidden" name="id" value="${project.id}"/>
+				                                            <label>Name</label>
+				                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
+				                                            <label>Status</label>
+				                                            <input type="text" class="form-control" name="status" value="${project.status}"/><br/>
+				                                            <label>Location</label>
+				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
+				                                            <label>Notes</label>
+				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
+				                                            <button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+															<button class="btn btn-danger btn-sm">Delete</button>
+				                                        </div>
+				                                    </form>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">More Info</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="form-group">
+                   										<table>
+															<tr>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" value="BIR Number">
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" value="202-123-345-123">
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<button class="btn btn-warning btn-sm">Remove</button>
+																</td>
+															</tr>
+															<tr>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" value="Manpower">
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" value="Mandaue Manpower Inc.">
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<button class="btn btn-warning btn-sm">Remove</button>
+																</td>
+															</tr>
+														</table>
+														<br/>
+														<button class="btn btn-warning btn-sm">Update</button>
+														<button class="btn btn-danger btn-sm">Clear All</button>
+														<br/>
+														<br/>
+														<br/>
+														<h4>Add More Fields</h4>
+			                                            <label>Field Name</label>
+			                                            <select class="form-control">
+			                                                <option>Text Field</option>
+			                                                <option>Text Area</option>
+			                                                <option>Selector</option>
+			                                            </select>
+			                                            <br/>
+			                                            <label>Label</label>
+                                            			<input type="text" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
+                                            			<br/>
+                                            			<label>Value</label>
+                                            			<input type="text" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
+                                            			<br/>
+                                            			<button class="btn btn-primary btn-sm">Add</button>
+			                                        </div>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Photo</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									[Photo]
+                   									<div class="form-group">
+				                                        <label for="exampleInputFile">Update Photo</label>
+				                                        <input type="file" id="exampleInputFile">
+				                                    </div>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Managers</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									Configure manager(s) here.
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Teams</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									Configure team(s) here.
+                   								</div>
+                   							</div>
+                   						</div>
+               						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_7">
                                 	<div class="box">
