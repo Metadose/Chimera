@@ -28,13 +28,13 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Project Name
+	                ${project.name}
 	                <small>Edit Project</small>
 	            </h1>
 	            <ol class="breadcrumb">
-	                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-	                <li><a href="#">Tables</a></li>
-	                <li class="active">Data tables</li>
+	                <li><a href="${contextPath}/dashboard/">Home</a></li>
+	                <li><a href="${contextPath}/project/list">Projects</a></li>
+	                <li class="active">${project.name}</li>
 	            </ol>
 	        </section>
 	        <section class="content">
@@ -66,6 +66,7 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
+                                	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
@@ -73,6 +74,25 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
+                   									[Photo]
+                   									<div class="form-group">
+                   										<table>
+                   											<tr>
+                   												<td>
+                   													<label for="exampleInputFile">Update Photo</label>
+                   												</td>
+                   												<td>
+                   													&nbsp;&nbsp;
+                   												</td>
+                   												<td>
+                   													<input type="file" id="exampleInputFile">
+                   												</td>
+                   											</tr>
+                   										</table>
+				                                        <button class="btn btn-warning btn-sm">Upload</button>
+				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
+				                                    </div>
+				                                    <br/>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${project.id}"/>
@@ -85,7 +105,7 @@
 				                                            <label>Notes</label>
 				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
 				                                            <button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-															<button class="btn btn-danger btn-sm">Delete</button>
+															<button class="btn btn-danger btn-sm">Delete This Project</button>
 				                                        </div>
 				                                    </form>
                    								</div>
@@ -124,10 +144,10 @@
 																	&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="Mandaue Manpower Inc.">
+																	<input type="text" class="form-control" value="ABC Services Inc.">
 																</td>
 																<td style="padding-bottom: 3px;">
-																	&nbsp;
+																	&nbsp;&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
 																	<button class="btn btn-warning btn-sm">Remove</button>
@@ -135,51 +155,144 @@
 															</tr>
 														</table>
 														<br/>
-														<button class="btn btn-warning btn-sm">Update</button>
 														<button class="btn btn-danger btn-sm">Clear All</button>
 														<br/>
 														<br/>
-														<br/>
-														<h4>Add More Fields</h4>
-			                                            <label>Field Name</label>
-			                                            <select class="form-control">
-			                                                <option>Text Field</option>
-			                                                <option>Text Area</option>
-			                                                <option>Selector</option>
-			                                            </select>
-			                                            <br/>
-			                                            <label>Label</label>
-                                            			<input type="text" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
-                                            			<br/>
-                                            			<label>Value</label>
-                                            			<input type="text" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
-                                            			<br/>
-                                            			<button class="btn btn-primary btn-sm">Add</button>
+														<h4>Assign More Fields</h4>
+														<table>
+<!-- 															<tr> -->
+<!-- 																<td style="padding-right: 3px;"> -->
+<!-- 																	<label>Field Type </label> -->
+<!-- 																</td> -->
+<!-- 																<td style="padding-bottom: 3px;"> -->
+<!-- 																	&nbsp; -->
+<!-- 																</td> -->
+<!-- 																<td style="padding-bottom: 3px;"> -->
+<!-- 																	<select class="form-control"> -->
+<!-- 						                                                <option>Text Field</option> -->
+<!-- 						                                                <option>Text Area</option> -->
+<!-- 						                                                <option>Selector</option> -->
+<!-- 						                                            </select> -->
+<!-- 																</td> -->
+<!-- 															</tr> -->
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Label</label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
+																</td>
+															</tr>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Value</label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
+																</td>
+															</tr>
+														</table>
+                                            			<button class="btn btn-primary btn-sm">Assign</button>
 			                                        </div>
                    								</div>
                    							</div>
                    						</div>
-                   						<div class="col-md-6">
-                   							<div class="box box-primary">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Photo</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									[Photo]
-                   									<div class="form-group">
-				                                        <label for="exampleInputFile">Update Photo</label>
-				                                        <input type="file" id="exampleInputFile">
-				                                    </div>
-                   								</div>
-                   							</div>
-                   						</div>
+              						</div>
+              						<h2 class="page-header">Staff</h2>
+              						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
                    									<h3 class="box-title">Managers</h3>
                    								</div>
                    								<div class="box-body">
-                   									Configure manager(s) here.
+                   									<table>
+                   										<tr>
+                   											<td>
+                   												<div class="user-panel">
+														            <div class="pull-left image">
+														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
+														            </div>
+														            <div class="pull-left info">
+														                <p>Joy Mercedez</p>
+														                <h6>Project Manager</h6>
+														                <h6>Structural Engineer</h6>
+														                <h6>joy.merc1991@gmail.com</h6>
+														                <h6>(+63) 922 062 2345</h6>
+														            </div>
+														        </div>
+                   											</td>
+                   											<td style="padding-right: 5px">
+                   												&nbsp;
+                   											</td>
+                   											<td>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   											</td>
+                   										</tr>
+                   										<tr>
+                   											<td>
+                   												<div class="user-panel">
+														            <div class="pull-left image">
+														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
+														            </div>
+														            <div class="pull-left info">
+														                <p>Jerry de la Cruz</p>
+														                <h6>Project Architect</h6>
+														                <h6>Engineer III</h6>
+														                <h6>jerry_123@gmail.com</h6>
+														                <h6>(+63) 922 062 2345</h6>
+														            </div>
+														        </div>
+                   											</td>
+                   											<td style="padding-right: 5px">
+                   												&nbsp;
+                   											</td>
+                   											<td>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   											</td>
+                   										</tr>
+                   									</table>
+													<button class="btn btn-danger btn-sm">Clear All</button>
+													<br/>
+													<br/>
+													<h4>Assign More Managers</h4>
+													<table>
+														<tr>
+															<td style="padding-right: 3px;">
+																<label>Staff </label>
+															</td>
+															<td style="padding-bottom: 3px;">
+																&nbsp;
+															</td>
+															<td style="padding-bottom: 3px;">
+																<select class="form-control">
+					                                                <option>Allen Cruz</option>
+					                                                <option>Ernest Loro</option>
+					                                                <option>Mark de la Cruz</option>
+					                                            </select>
+															</td>
+														</tr>
+														<tr>
+															<td style="padding-right: 3px;">
+																<label>Project Position</label>
+															</td>
+															<td style="padding-bottom: 3px;">
+																&nbsp;
+															</td>
+															<td style="padding-bottom: 3px;">
+																<input type="text" class="form-control" placeholder="Example: Project Manager, Foreman, etc...">
+															</td>
+														</tr>
+													</table>
+                                           			<button class="btn btn-primary btn-sm">Assign</button>													
                    								</div>
                    							</div>
                    						</div>
@@ -189,7 +302,68 @@
                    									<h3 class="box-title">Teams</h3>
                    								</div>
                    								<div class="box-body">
-                   									Configure team(s) here.
+                   									<table>
+                   										<tr style="padding-bottom: 5px">
+                   											<td>
+                   												<div class="user-panel">
+                   													<div class="pull-left info">
+														                <p>Costing 1</p>
+														                <h6>Maya Villanueva</h6>
+														                <h6>(+63) 922 062 2345</h6>
+														                <h6>5 Members</h6>
+														            </div>
+                   												</div>
+                   											</td>
+                   											<td style="padding-right: 50px">
+                   												&nbsp;
+                   											</td>
+                   											<td>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   											</td>
+                   										</tr>
+                   										<tr>
+                   											<td>
+                   												<div class="user-panel">
+                   													<div class="pull-left info">
+														                <p>Building Team</p>
+														                <h6>Lennin Cruz</h6>
+														                <h6>(+63) 922 062 2345</h6>
+														                <h6>15 Members</h6>
+														            </div>
+                   												</div>
+                   											</td>
+                   											<td style="padding-right: 50px">
+                   												&nbsp;
+                   											</td>
+                   											<td>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   											</td>
+                   										</tr>
+                   									</table>
+                   									<button class="btn btn-danger btn-sm">Clear All</button>
+													<br/>
+													<br/>
+													<h4>Assign More Teams</h4>
+													<table>
+														<tr>
+															<td style="padding-right: 3px;">
+																<label>Teams </label>
+															</td>
+															<td style="padding-bottom: 3px;">
+																&nbsp;
+															</td>
+															<td style="padding-bottom: 3px;">
+																<select class="form-control">
+					                                                <option>Banilad Builders</option>
+					                                                <option>Manpower 1</option>
+					                                                <option>Costing Team</option>
+					                                            </select>
+															</td>
+														</tr>
+													</table>
+                                           			<button class="btn btn-primary btn-sm">Assign</button>
                    								</div>
                    							</div>
                    						</div>
