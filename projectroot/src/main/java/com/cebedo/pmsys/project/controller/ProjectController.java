@@ -34,11 +34,6 @@ public class ProjectController {
 		this.projectService = ps;
 	}
 
-	@RequestMapping(value = "edit")
-	public String editProject() {
-		return "projectEdit";
-	}
-
 	@RequestMapping(value = { REQUEST_ROOT, REQUEST_LIST }, method = RequestMethod.GET)
 	public String listProjects(Model model) {
 		model.addAttribute(ATTR_LIST, this.projectService.list());

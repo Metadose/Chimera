@@ -16,6 +16,8 @@ import javax.persistence.Table;
 @Table(name = Staff.TABLE_NAME)
 public class Staff implements Serializable {
 
+	public static final String CLASS_NAME = "Staff";
+	public static final String OBJECT_NAME = "staff";
 	public static final String TABLE_NAME = "staff";
 	public static final String COLUMN_PRIMARY_KEY = "staff_id";
 

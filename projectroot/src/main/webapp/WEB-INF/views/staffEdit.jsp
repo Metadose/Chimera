@@ -89,7 +89,6 @@
                    												</td>
                    											</tr>
                    										</table>
-                   										<br/>
 				                                        <button class="btn btn-warning btn-sm">Upload</button>
 				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
 				                                    </div>
@@ -165,7 +164,7 @@
 															</tr>
 														</table>
 														<br/>
-														<button class="btn btn-danger btn-sm">Remove All</button>
+														<button class="btn btn-danger btn-sm">Clear All</button>
 														<br/>
 														<br/>
 														<h4>Assign More Fields</h4>
@@ -208,7 +207,6 @@
 																</td>
 															</tr>
 														</table>
-														<br/>
                                             			<button class="btn btn-primary btn-sm">Assign</button>
 			                                        </div>
                    								</div>
@@ -243,7 +241,7 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
                    												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
                    											</td>
                    										</tr>
@@ -266,12 +264,12 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
                    												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
                    											</td>
                    										</tr>
                    									</table>
-													<button class="btn btn-danger btn-sm">Remove All</button>
+													<button class="btn btn-danger btn-sm">Clear All</button>
 													<br/>
 													<br/>
 													<h4>Assign More Managers</h4>
@@ -303,7 +301,6 @@
 															</td>
 														</tr>
 													</table>
-													<br/>
                                            			<button class="btn btn-primary btn-sm">Assign</button>													
                    								</div>
                    							</div>
@@ -330,7 +327,7 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
                    												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
                    											</td>
                    										</tr>
@@ -349,12 +346,12 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
                    												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
                    											</td>
                    										</tr>
                    									</table>
-                   									<button class="btn btn-danger btn-sm">Remove All</button>
+                   									<button class="btn btn-danger btn-sm">Clear All</button>
 													<br/>
 													<br/>
 													<h4>Assign More Teams</h4>
@@ -375,7 +372,6 @@
 															</td>
 														</tr>
 													</table>
-													<br/>
                                            			<button class="btn btn-primary btn-sm">Assign</button>
                    								</div>
                    							</div>
@@ -636,10 +632,10 @@
                                     <div class="form-group">
                                         <label for="exampleInputFile">Upload Photo</label>
                                         <input type="file" id="exampleInputFile"><br/>
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-                                        <label>Description</label>
-                                        <input type="text" class="form-control" placeholder="Enter ..."/><br/>
+                                            <label>Title</label>
+                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
+                                            <label>Description</label>
+                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
 										<button class="btn btn-primary btn-sm">Upload</button>
                                     </div>
                                     <br/>

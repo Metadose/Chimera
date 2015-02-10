@@ -40,30 +40,31 @@
             <li>
                 <a href="pages/calendar.html">
                     <i class="fa fa-calendar"></i> <span>Calendar</span>
-                    <small class="badge pull-right bg-red">3</small>
+<!--                     <small class="badge pull-right bg-red">3</small> -->
                 </a>
             </li>
             <li>
-                <a href="pages/widgets.html">
-                    <i class="fa fa-users"></i> <span>Teams</span> <small class="badge pull-right bg-green">new</small>
+                <a href="${contextPath}/team/list/">
+                    <i class="fa fa-users"></i> <span>Teams</span>
+<!--                     <small class="badge pull-right bg-green">new</small> -->
                 </a>
             </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-user"></i> <span>Employees</span>
+            <li>
+                <a href="${contextPath}/staff/list/">
+                    <i class="fa fa-user"></i> <span>Staff</span>
                 </a>
             </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-edit"></i>
-                    <span>Fields</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Fields List</a></li>
-                    <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Assign Fields</a></li>
-                </ul>
-            </li>
+<!--             <li class="treeview"> -->
+<!--                 <a href="#"> -->
+<!--                     <i class="fa fa-edit"></i> -->
+<!--                     <span>Fields</span> -->
+<!--                     <i class="fa fa-angle-left pull-right"></i> -->
+<!--                 </a> -->
+<!--                 <ul class="treeview-menu"> -->
+<!--                     <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Fields List</a></li> -->
+<!--                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Assign Fields</a></li> -->
+<!--                 </ul> -->
+<!--             </li> -->
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-wrench"></i>
@@ -89,7 +90,7 @@
             <li>
                 <a href="pages/mailbox.html">
                     <i class="fa fa-sign-out"></i> <span>Logout</span>
-                    <small class="badge pull-right bg-yellow">12</small>
+<!--                     <small class="badge pull-right bg-yellow">12</small> -->
                 </a>
             </li>
         </ul>
