@@ -123,7 +123,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Task many-to-many without extra columns.
 	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
 	public Set<Task> getAssignedTasks() {
 		return assignedTasks;
 	}

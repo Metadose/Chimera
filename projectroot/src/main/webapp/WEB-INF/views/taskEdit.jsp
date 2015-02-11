@@ -28,13 +28,13 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${task.taskContent}
+	                ${task.content}
 	                <small>${action} Task</small>
 	            </h1>
 	            <ol class="breadcrumb">
 	                <li><a href="${contextPath}/dashboard/">Home</a></li>
 	                <li><a href="${contextPath}/task/list">Task</a></li>
-	                <li class="active">${task.taskContent}</li>
+	                <li class="active">${task.content}</li>
 	            </ol>
 	        </section>
 	        <section class="content">
@@ -63,7 +63,7 @@
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${task.id}"/>
 				                                            <label>Content</label>
-				                                            <input type="text" class="form-control" name="taskContent" value="${task.taskContent}"/><br/>
+				                                            <input type="text" class="form-control" name="content" value="${task.content}"/><br/>
 				                                        </div>
 				                                    </form>
 				                                    <c:choose>
@@ -712,7 +712,7 @@
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
                 </div> <!-- /.row -->
-            </section><!-- /.taskContent -->
+            </section><!-- /.content -->
         </aside>
 	</div>
 	<c:import url="/resources/js-includes.jsp" />

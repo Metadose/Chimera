@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.team.model.Team;
 
 @Entity
 @Table(name = Task.TABLE_NAME)
@@ -25,11 +26,13 @@ public class Task {
 	public static final String COLUMN_PRIMARY_KEY = "task_id";
 
 	private long id;
-	private String taskContent;
+	private String content;
 	private Timestamp datetimeStart;
 	private Timestamp datetimeEnd;
 	private Project project;
 	private Staff staff;
+	private Team team;
+	private int status;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +45,13 @@ public class Task {
 		this.id = id;
 	}
 
-	@Column(name = "task_content", nullable = false)
-	public String getTaskContent() {
-		return taskContent;
+	@Column(name = "content", nullable = false)
+	public String getContent() {
+		return content;
 	}
 
-	public void setTaskContent(String taskContent) {
-		this.taskContent = taskContent;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	@Column(name = "datetime_start", nullable = false)
@@ -79,14 +82,33 @@ public class Task {
 		this.project = project;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
 	public Staff getStaff() {
 		return staff;
 	}
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = Team.COLUMN_PRIMARY_KEY)
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	@Column(name = "status", nullable = false)
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }

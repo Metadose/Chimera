@@ -54,7 +54,6 @@
 																<a href="${contextPath}/project/edit/${project.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
 																</a>
-																<button class="btn btn-warning btn-sm">Edit</button>
 																<a href="${contextPath}/project/delete/${project.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</a>

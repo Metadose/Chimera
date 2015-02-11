@@ -39,7 +39,12 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                                <th>Name</th>
+                                            	<th>Project</th>
+                                            	<th>Team</th>
+                                            	<th>Staff</th>
+                                                <th>Content</th>
+                                                <th>Start</th>
+                                                <th>End</th>
                                             </tr>
                                         </thead>
                                         <tbody>

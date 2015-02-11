@@ -450,111 +450,93 @@
 				                    </div><!-- /.row -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
-                                    <!-- TO DO List -->
-		                            <div class="box">
+                                	<div class="box">
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks</h3>
-<!-- 		                                    <div class="box-tools pull-right"> -->
-<!-- 		                                        <ul class="pagination pagination-sm inline"> -->
-<!-- 		                                            <li><a href="#">&laquo;</a></li> -->
-<!-- 		                                            <li><a href="#">1</a></li> -->
-<!-- 		                                            <li><a href="#">2</a></li> -->
-<!-- 		                                            <li><a href="#">3</a></li> -->
-<!-- 		                                            <li><a href="#">&raquo;</a></li> -->
-<!-- 		                                        </ul> -->
-<!-- 		                                    </div> -->
 		                                </div><!-- /.box-header -->
-		                                <div class="box-body">
-		                                    <ul class="todo-list">
-		                                        <li>
-		                                            <!-- drag handle -->
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <!-- checkbox -->
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <!-- todo text -->
-		                                            <span class="text">Design a nice theme</span>
-		                                            <!-- Emphasis label -->
-		                                            <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-		                                            <!-- General tools such as edit or delete-->
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Make the theme responsive</span>
-		                                            <small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Check your messages and notifications</span>
-		                                            <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                    </ul>
+		                                <div class="box-body no-padding">
+		                                    <table class="table table-striped">
+		                                        <tbody>
+			                                        <tr>
+			                                        	<th>&nbsp;</th>
+			                                            <th>Status</th>
+			                                            <th>Content</th>
+			                                            <th>Team</th>
+			                                            <th>Staff</th>
+			                                            <th>Start</th>
+			                                            <th>End</th>
+			                                        </tr>
+			                                        <c:set var="taskList" value="${project.assignedTasks}"/>
+				                                	<c:if test="${!empty taskList}">
+		                                        		<c:forEach items="${taskList}" var="task">
+		                                        			<tr>
+		                                        				<td>
+		                                        					<div class="btn-group">
+							                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                                Mark As&nbsp;
+							                                                <span class="caret"></span>
+							                                            </button>
+							                                            <ul class="dropdown-menu">
+							                                                <li><a href="#">New</a></li>
+							                                                <li><a href="#">Ongoing</a></li>
+							                                                <li><a href="#">Completed</a></li>
+							                                                <li><a href="#">Failed</a></li>
+							                                                <li><a href="#">Cancelled</a></li>
+<!-- 							                                                <li class="divider"></li> -->
+<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+							                                            </ul>
+							                                        </div>
+							                                        <a href="${contextPath}/task/edit/${task.id}">
+					                                            		<button class="btn btn-primary btn-sm">View</button>&nbsp;&nbsp;
+					                                            	</a>
+		                                        				</td>
+					                                            <td style="vertical-align: middle;">
+					                                            	<c:choose>
+						                                            	<c:when test="${task.status == 0}">
+						                                            		<span class="label label-info">New</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 1}">
+						                                            		<span class="label label-primary">Ongoing</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 2}">
+						                                            		<span class="label label-success">Completed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 3}">
+						                                            		<span class="label label-danger">Failed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 4}">
+						                                            		<span class="label label">Cancelled</span>
+						                                            	</c:when>
+						                                            </c:choose>
+					                                            </td>
+					                                            <td>${task.content}</td>
+					                                            <td>
+					                                            	<a href="${contextPath}/team/edit/${task.team.id}">
+					                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+					                                            	</a>
+					                                            	${task.team.name}
+					                                            </td>
+					                                            <c:set var="taskStaff" value="${task.staff}"/>
+					                                            <c:set var="taskTeam" value="${task.team}"/>
+					                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+					                                            <td>
+					                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
+					                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+					                                            	</a>
+					                                            	${taskStaffName}
+					                                            </td>
+					                                            <td>${task.datetimeStart}</td>
+					                                            <td>${task.datetimeEnd}</td>
+					                                        </tr>
+		                                        		</c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
 		                                </div><!-- /.box-body -->
 		                                <div class="box-footer clearfix no-border">
 		                                    <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
 		                                </div>
-		                            </div><!-- /.box -->
+		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
                                     <div class="box-body table-responsive">
