@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name = FieldAssignment.TABLE_NAME)
 public class FieldAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_field";
+	public static final String TABLE_NAME = "assignments_project_field";
 
 	private static final long serialVersionUID = 1L;
 

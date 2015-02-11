@@ -129,9 +129,9 @@
                    								<div class="box-body">
                    									<div class="form-group">
                    										<table>
-                   											<c:set var="projectFields" value="${project.assignedFields}"/>
-                   											<c:if test="${!empty projectFields}">
-                   												<c:forEach var="field" items="${projectFields}">
+<%--                    											<c:set var="projectFields" value="${project.assignedFields}"/> --%>
+<%--                    											<c:if test="${!empty projectFields}"> --%>
+<%--                    												<c:forEach var="field" items="${projectFields}"> --%>
 																	<tr>
 																		<td style="padding-bottom: 3px;">
 																			<input type="text" class="form-control" value="BIR Number">
@@ -149,8 +149,8 @@
 																			<button class="btn btn-warning btn-sm">Remove</button>
 																		</td>
 																	</tr>
-																</c:forEach>
-															</c:if>
+<%-- 																</c:forEach> --%>
+<%-- 															</c:if> --%>
 														</table>
 														<br/>
 														<button class="btn btn-danger btn-sm">Remove All</button>
@@ -212,54 +212,46 @@
                    								</div>
                    								<div class="box-body">
                    									<table>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-														            <div class="pull-left image">
-														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
-														            </div>
-														            <div class="pull-left info">
-														                <p>Joy Mercedez</p>
-														                <h6>Project Manager</h6>
-														                <h6>Structural Engineer</h6>
-														                <h6>joy.merc1991@gmail.com</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														            </div>
-														        </div>
-                   											</td>
-                   											<td style="padding-right: 5px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
-                   											</td>
-                   										</tr>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-														            <div class="pull-left image">
-														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
-														            </div>
-														            <div class="pull-left info">
-														                <p>Jerry de la Cruz</p>
-														                <h6>Project Architect</h6>
-														                <h6>Engineer III</h6>
-														                <h6>jerry_123@gmail.com</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														            </div>
-														        </div>
-                   											</td>
-                   											<td style="padding-right: 5px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
-                   											</td>
-                   										</tr>
+                   										<c:set value="${project.managerAssignments}" var="managerAssignments"/>
+                   										<c:forEach items="${managerAssignments}" var="managerAssignment">
+	                                                		<c:set var="staff" value="${managerAssignment.manager}"/>
+	                                                		<c:set var="manName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+		                                                	<tr>
+	                   											<td>
+	                   												<div class="user-panel">
+															            <div class="pull-left image">
+															                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
+															            </div>
+															            <div class="pull-left info">
+															            	${staff.thumbnailURL}
+															                <p>${manName}</p>
+															                <h6>${managerAssignment.projectPosition}</h6>
+															                <h6>${staff.companyPosition}</h6>
+															                <h6>joy.merc1991@gmail.com</h6>
+															                <h6>(+63) 922 062 2345</h6>
+															            </div>
+															        </div>
+	                   											</td>
+	                   											<td style="padding-right: 5px">
+	                   												&nbsp;
+	                   											</td>
+	                   											<td>
+	                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+	                   												<a href="${contextPath}/staff/edit/${staff.id}">
+	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
+	                   												</a>
+	                   											</td>
+	                   										</tr>
+	                                                	</c:forEach>
                    									</table>
-													<button class="btn btn-danger btn-sm">Remove All</button>
+                   									<c:choose>
+                   										<c:when test="${!empty managerAssignments}">
+                   											<button class="btn btn-danger btn-sm">Remove All</button>
+                   										</c:when>
+                   										<c:when test="${empty managerAssignments}">
+                   											<h5>No manager assigned.</h5>
+                   										</c:when>
+                   									</c:choose>
 													<br/>
 													<br/>
 													<h4>Assign More Managers</h4>
@@ -303,44 +295,32 @@
                    								</div>
                    								<div class="box-body">
                    									<table>
-                   										<tr style="padding-bottom: 5px">
-                   											<td>
-                   												<div class="user-panel">
-                   													<div class="pull-left info">
-														                <p>Costing 1</p>
-														                <h6>Maya Villanueva</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														                <h6>5 Members</h6>
-														            </div>
-                   												</div>
-                   											</td>
-                   											<td style="padding-right: 50px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
-                   											</td>
-                   										</tr>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-                   													<div class="pull-left info">
-														                <p>Building Team</p>
-														                <h6>Lennin Cruz</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														                <h6>15 Members</h6>
-														            </div>
-                   												</div>
-                   											</td>
-                   											<td style="padding-right: 50px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
-                   											</td>
-                   										</tr>
+                   										<c:set var="projTeams" value="${project.assignedTeams}"/>
+                   										<c:if test="${!empty projTeams}">
+                   											<c:forEach var="team" items="${projTeams}">
+                   												<tr style="padding-bottom: 5px">
+		                   											<td>
+		                   												<div class="user-panel">
+		                   													<div class="pull-left info">
+																                <p>${team.name}</p>
+																                <h6>Maya Villanueva</h6>
+																                <h6>(+63) 922 062 2345</h6>
+																                <h6>5 Members</h6>
+																            </div>
+		                   												</div>
+		                   											</td>
+		                   											<td style="padding-right: 50px">
+		                   												&nbsp;
+		                   											</td>
+		                   											<td>
+		                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+		                   												<a href="${contextPath}/team/edit/${team.id}">
+		                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+		                   												</a>
+		                   											</td>
+		                   										</tr>
+                   											</c:forEach>
+                   										</c:if>
                    									</table>
                    									<button class="btn btn-danger btn-sm">Remove All</button>
 													<br/>

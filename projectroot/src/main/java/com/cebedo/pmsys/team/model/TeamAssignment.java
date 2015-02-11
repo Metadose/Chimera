@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Table(name = TeamAssignment.TABLE_NAME)
 public class TeamAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_team";
+	public static final String TABLE_NAME = "assignments_project_team";
 
 	private static final long serialVersionUID = 1L;
 }

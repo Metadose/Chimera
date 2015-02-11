@@ -10,9 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.model.Task;
 
 @Entity
 @Table(name = Team.TABLE_NAME)
@@ -28,6 +30,7 @@ public class Team implements Serializable {
 	private long id;
 	private String name;
 	private Set<Project> projects;
+	private Set<Task> tasks;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +59,15 @@ public class Team implements Serializable {
 
 	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
+	}
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+	public Set<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
 	}
 
 }

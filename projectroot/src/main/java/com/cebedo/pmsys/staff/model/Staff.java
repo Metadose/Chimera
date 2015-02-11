@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.task.model.Task;
+
 @Entity
 @Table(name = Staff.TABLE_NAME)
 public class Staff implements Serializable {
@@ -32,6 +34,7 @@ public class Staff implements Serializable {
 	private String suffix;
 	private String companyPosition;
 	private Set<ManagerAssignment> assignedManagers;
+	private Set<Task> tasks;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -115,5 +118,14 @@ public class Staff implements Serializable {
 
 	public void setAssignedManagers(Set<ManagerAssignment> managers) {
 		this.assignedManagers = managers;
+	}
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "staff")
+	public Set<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
 	}
 }

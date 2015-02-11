@@ -20,7 +20,7 @@ import com.cebedo.pmsys.project.model.Project;
 		@AssociationOverride(name = ManagerAssignment.PRIMARY_KEY + ".manager", joinColumns = @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)) })
 public class ManagerAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_manager";
+	public static final String TABLE_NAME = "assignments_project_manager";
 	public static final String PRIMARY_KEY = "assignmentID";
 
 	private static final long serialVersionUID = 1L;
