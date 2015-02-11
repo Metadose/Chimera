@@ -81,7 +81,7 @@
 				                                    <br/>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/staff/create">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="staff_id" value="${staff.id}"/>
+				                                        	<input type="hidden" name="id" value="${staff.id}"/>
 				                                            <label>Prefix</label>
 				                                            <input type="text" class="form-control" name="prefix" value="${staff.prefix}"/><br/>
 				                                            <label>First</label>

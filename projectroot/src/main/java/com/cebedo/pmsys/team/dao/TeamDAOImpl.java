@@ -32,7 +32,7 @@ public class TeamDAOImpl implements TeamDAO {
 	public Team getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Team team = (Team) session.createQuery(
-				"from " + Team.TABLE_NAME + " where " + Team.COLUMN_PRIMARY_KEY
+				"from " + Team.CLASS_NAME + " where " + Team.COLUMN_PRIMARY_KEY
 						+ "=" + id).uniqueResult();
 		logger.info("[Get by ID] Team: " + team);
 		return team;

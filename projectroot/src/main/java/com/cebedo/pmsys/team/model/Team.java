@@ -40,7 +40,7 @@ public class Team implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 16)
+	@Column(name = "name", nullable = false, length = 32)
 	public String getName() {
 		return name;
 	}
