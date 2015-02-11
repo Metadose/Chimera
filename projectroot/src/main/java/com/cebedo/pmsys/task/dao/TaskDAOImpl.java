@@ -8,14 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.project.dao.ProjectDAOImpl;
 import com.cebedo.pmsys.task.model.Task;
 
 @Repository
 public class TaskDAOImpl implements TaskDAO {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(ProjectDAOImpl.class);
+			.getLogger(TaskDAOImpl.class);
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {

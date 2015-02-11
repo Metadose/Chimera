@@ -8,14 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.project.dao.ProjectDAOImpl;
 import com.cebedo.pmsys.staff.model.Staff;
 
 @Repository
 public class StaffDAOImpl implements StaffDAO {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(ProjectDAOImpl.class);
+			.getLogger(StaffDAOImpl.class);
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {

@@ -124,7 +124,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">More Info</h3>
+                   									<h3 class="box-title">Info</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="form-group">
@@ -156,7 +156,7 @@
 														<button class="btn btn-danger btn-sm">Remove All</button>
 														<br/>
 														<br/>
-														<h4>Assign More Fields</h4>
+														<h4>Assign Fields</h4>
 														<table>
 <!-- 															<tr> -->
 <!-- 																<td style="padding-right: 3px;"> -->
@@ -254,7 +254,7 @@
                    									</c:choose>
 													<br/>
 													<br/>
-													<h4>Assign More Managers</h4>
+													<h4>Assign Managers</h4>
 													<table>
 														<tr>
 															<td style="padding-right: 3px;">
@@ -322,10 +322,17 @@
                    											</c:forEach>
                    										</c:if>
                    									</table>
-                   									<button class="btn btn-danger btn-sm">Remove All</button>
+                   									<c:choose>
+                   										<c:when test="${!empty projTeams}">
+                   											<button class="btn btn-danger btn-sm">Remove All</button>
+                   										</c:when>
+                   										<c:when test="${empty projTeams}">
+                   											<h5>No team assigned.</h5>
+                   										</c:when>
+                   									</c:choose>
 													<br/>
 													<br/>
-													<h4>Assign More Teams</h4>
+													<h4>Assign Teams</h4>
 													<table>
 														<tr>
 															<td style="padding-right: 3px;">
