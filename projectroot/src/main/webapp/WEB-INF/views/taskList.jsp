@@ -1,4 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -39,38 +41,94 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>Project</th>
-                                            	<th>Team</th>
-                                            	<th>Staff</th>
-                                                <th>Content</th>
-                                                <th>Start</th>
-                                                <th>End</th>
+	                                            <th>Status</th>
+	                                            <th>Content</th>
+	                                            <th>Team</th>
+	                                            <th>Staff</th>
+	                                            <th>Start</th>
+	                                            <th>End</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        	<c:if test="${!empty taskList}">
+		                                	<c:if test="${!empty taskList}">
                                         		<c:forEach items="${taskList}" var="task">
-		                                            <tr>
-		                                            	<td>
-		                                            		<center>
-																<a href="${contextPath}/task/edit/${task.id}">
-																	<button class="btn btn-primary btn-sm">View</button>
-																</a>
-																<button class="btn btn-warning btn-sm">Edit</button>
-																<a href="${contextPath}/task/delete/${task.id}">
-																	<button class="btn btn-danger btn-sm">Delete</button>
-																</a>
-															</center>
-														</td>
-		                                                <td>${task.name}</td>
-		                                            </tr>
-	                                            </c:forEach>
-                                            </c:if>
-                                        </tbody>
+                                        			<tr>
+                                        				<td>
+                                        					<div class="btn-group">
+					                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+					                                                Mark As&nbsp;
+					                                                <span class="caret"></span>
+					                                            </button>
+					                                            <ul class="dropdown-menu">
+					                                                <li><a href="#">New</a></li>
+					                                                <li><a href="#">Ongoing</a></li>
+					                                                <li><a href="#">Completed</a></li>
+					                                                <li><a href="#">Failed</a></li>
+					                                                <li><a href="#">Cancelled</a></li>
+<!-- 							                                                <li class="divider"></li> -->
+<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+					                                            </ul>
+					                                        </div>
+					                                        <a href="${contextPath}/task/edit/${task.id}">
+			                                            		<button class="btn btn-primary btn-sm">View</button>
+			                                            	</a>
+			                                            	<a href="${contextPath}/task/delete/${task.id}">
+																<button class="btn btn-danger btn-sm">Delete</button>
+															</a>
+                                        				</td>
+			                                            <td style="vertical-align: middle;">
+			                                            	<c:choose>
+				                                            	<c:when test="${task.status == 0}">
+				                                            		<span class="label label-info">New</span>
+				                                            	</c:when>
+				                                            	<c:when test="${task.status == 1}">
+				                                            		<span class="label label-primary">Ongoing</span>
+				                                            	</c:when>
+				                                            	<c:when test="${task.status == 2}">
+				                                            		<span class="label label-success">Completed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${task.status == 3}">
+				                                            		<span class="label label-danger">Failed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${task.status == 4}">
+				                                            		<h6>Cancelled</h6>
+				                                            	</c:when>
+				                                            </c:choose>
+			                                            </td>
+			                                            <td>${task.content}</td>
+			                                            <td>
+			                                            	<c:if test="${!empty task.team}">
+			                                            		<a href="${contextPath}/team/edit/${task.team.id}">
+				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+				                                            	</a>
+				                                            	${task.team.name}
+			                                            	</c:if>
+			                                            </td>
+			                                            <td>
+			                                            <c:if test="${!empty task.staff}">
+			                                            	<c:set var="taskStaff" value="${task.staff}"/>
+				                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+			                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
+			                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+			                                            	</a>
+			                                            	${taskStaffName}
+			                                            </c:if>
+			                                            </td>
+			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" /></td>
+			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateEnd}" /></td>
+			                                        </tr>
+                                        		</c:forEach>
+                                       		</c:if>
+	                                    </tbody>
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                                <th>Name</th>
+	                                            <th>Status</th>
+	                                            <th>Content</th>
+	                                            <th>Team</th>
+	                                            <th>Staff</th>
+	                                            <th>Start</th>
+	                                            <th>End</th>
                                             </tr>
                                         </tfoot>
                                     </table>

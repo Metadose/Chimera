@@ -129,40 +129,28 @@
                    								<div class="box-body">
                    									<div class="form-group">
                    										<table>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="BIR Number">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="202-123-345-123">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="Manpower">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="ABC Services Inc.">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
+                   											<c:set var="projectFields" value="${project.assignedFields}"/>
+                   											<c:if test="${!empty projectFields}">
+                   												<c:forEach var="field" items="${projectFields}">
+																	<tr>
+																		<td style="padding-bottom: 3px;">
+																			<input type="text" class="form-control" value="BIR Number">
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			&nbsp;
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			<input type="text" class="form-control" value="202-123-345-123">
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			&nbsp;
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			<button class="btn btn-warning btn-sm">Remove</button>
+																		</td>
+																	</tr>
+																</c:forEach>
+															</c:if>
 														</table>
 														<br/>
 														<button class="btn btn-danger btn-sm">Remove All</button>
@@ -525,8 +513,8 @@
 					                                            	</a>
 					                                            	${taskStaffName}
 					                                            </td>
-					                                            <td>${task.datetimeStart}</td>
-					                                            <td>${task.datetimeEnd}</td>
+					                                            <td>${task.dateStart}</td>
+					                                            <td>${task.dateEnd}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 	                                        		</c:if>

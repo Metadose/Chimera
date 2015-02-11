@@ -38,6 +38,11 @@
                 </a>
             </li>
             <li>
+                <a href="${contextPath}/task/list/">
+                    <i class="fa fa-tasks"></i> <span>Tasks</span>
+                </a>
+            </li>
+            <li>
                 <a href="pages/calendar.html">
                     <i class="fa fa-calendar"></i> <span>Calendar</span>
 <!--                     <small class="badge pull-right bg-red">3</small> -->
@@ -47,11 +52,6 @@
                 <a href="${contextPath}/team/list/">
                     <i class="fa fa-users"></i> <span>Teams</span>
 <!--                     <small class="badge pull-right bg-green">new</small> -->
-                </a>
-            </li>
-            <li>
-                <a href="${contextPath}/task/list/">
-                    <i class="fa fa-users"></i> <span>Tasks</span>
                 </a>
             </li>
             <li>

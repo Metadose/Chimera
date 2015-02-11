@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.task.model;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -27,8 +29,8 @@ public class Task {
 
 	private long id;
 	private String content;
-	private Timestamp datetimeStart;
-	private Timestamp datetimeEnd;
+	private Date dateStart;
+	private Date dateEnd;
 	private Project project;
 	private Staff staff;
 	private Team team;
@@ -54,26 +56,28 @@ public class Task {
 		this.content = content;
 	}
 
-	@Column(name = "datetime_start", nullable = false)
-	public Timestamp getDatetimeStart() {
-		return datetimeStart;
+	@Column(name = "date_start", nullable = false)
+	@Temporal(TemporalType.DATE)
+	public Date getDateStart() {
+		return dateStart;
 	}
 
-	public void setDatetimeStart(Timestamp datetimeStart) {
-		this.datetimeStart = datetimeStart;
+	public void setDateStart(Date dateStart) {
+		this.dateStart = dateStart;
 	}
 
-	@Column(name = "datetime_end")
-	public Timestamp getDatetimeEnd() {
-		return datetimeEnd;
+	@Column(name = "date_end")
+	@Temporal(TemporalType.DATE)
+	public Date getDateEnd() {
+		return dateEnd;
 	}
 
-	public void setDatetimeEnd(Timestamp datetimeEnd) {
-		this.datetimeEnd = datetimeEnd;
+	public void setDateEnd(Date dateEnd) {
+		this.dateEnd = dateEnd;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Project.COLUMN_PRIMARY_KEY, nullable = false)
+	@JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
 	public Project getProject() {
 		return project;
 	}
