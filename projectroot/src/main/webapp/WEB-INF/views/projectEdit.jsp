@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Project Edit</title>
+	<title>Project ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 	<style>
 	  ul {         
@@ -29,7 +29,7 @@
 	        <section class="content-header">
 	            <h1>
 	                ${project.name}
-	                <small>Edit Project</small>
+	                <small>${action} Project</small>
 	            </h1>
 	            <ol class="breadcrumb">
 	                <li><a href="${contextPath}/dashboard/">Home</a></li>
@@ -105,19 +105,19 @@
 				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
 				                                            <label>Notes</label>
 				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
-				                                            <c:choose>
-				                                            	<c:when test="${project.id == 0}">
-				                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
-				                                            	</c:when>
-				                                            	<c:when test="${project.id > 0}">
-				                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-				                                            	</c:when>
-				                                            </c:choose>
-															<a href="${contextPath}/delete/project/${project.id}">
-																<button class="btn btn-danger btn-sm">Delete This Project</button>
-															</a>
 				                                        </div>
 				                                    </form>
+				                                    <c:choose>
+		                                            	<c:when test="${project.id == 0}">
+		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            	</c:when>
+		                                            	<c:when test="${project.id > 0}">
+		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<a href="${contextPath}/project/delete/${project.id}">
+																<button class="btn btn-danger btn-sm">Delete This Project</button>
+															</a>
+		                                            	</c:when>
+		                                            </c:choose>
                    								</div>
                    							</div>
                    						</div>
@@ -244,7 +244,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
                    											</td>
                    										</tr>
                    										<tr>
@@ -267,7 +267,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
                    											</td>
                    										</tr>
                    									</table>
@@ -331,7 +331,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
                    											</td>
                    										</tr>
                    										<tr>
@@ -350,7 +350,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
                    											</td>
                    										</tr>
                    									</table>
@@ -782,7 +782,7 @@
 	<c:import url="/resources/js-includes.jsp" />
 	<script>
 		function submitForm(id) {
-			$(id).submit();
+			$('#'+id).submit();
 		}
 	
 		$(document).on('click', 'a.controls', function(){

@@ -33,7 +33,7 @@ public class StaffDAOImpl implements StaffDAO {
 	public Staff getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Staff staff = (Staff) session.createQuery(
-				"from " + Staff.TABLE_NAME + " where "
+				"from " + Staff.CLASS_NAME + " where "
 						+ Staff.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
 		logger.info("[Get by ID] Staff: " + staff);
 		return staff;

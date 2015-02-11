@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Project List</title>
+	<title>Project ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
@@ -15,7 +15,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Project List
+	                Project ${action}
 	                <small>Complete list of all projects</small>
 	            </h1>
 	            <ol class="breadcrumb">

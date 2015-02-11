@@ -1,10 +1,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Project Edit</title>
+	<title>Staff ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 	<style>
 	  ul {         
@@ -28,13 +29,13 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${project.name}
-	                <small>Edit Project</small>
+	                ${staffName}
+	                <small>${action} Staff</small>
 	            </h1>
 	            <ol class="breadcrumb">
 	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/project/list">Projects</a></li>
-	                <li class="active">${project.name}</li>
+	                <li><a href="${contextPath}/staff/list">Staff</a></li>
+	                <li class="active">${staffName}</li>
 	            </ol>
 	        </section>
 	        <section class="content">
@@ -45,24 +46,9 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
+                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
                                 <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
-                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
-                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Map</a></li>
-<!--                                 <li class="dropdown"> -->
-<!--                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"> -->
-<!--                                         Dropdown <span class="caret"></span> -->
-<!--                                     </a> -->
-<!--                                     <ul class="dropdown-menu"> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li> -->
-<!--                                         <li role="presentation" class="divider"></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li> -->
-<!--                                     </ul> -->
-<!--                                 </li> -->
-<!--                                 <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li> -->
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -93,30 +79,34 @@
 				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
 				                                    </div>
 				                                    <br/>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/staff/create">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="id" value="${project.id}"/>
-				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
-				                                            <label>Status</label>
-				                                            <input type="text" class="form-control" name="status" value="${project.status}"/><br/>
-				                                            <label>Location</label>
-				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
-				                                            <label>Notes</label>
-				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
-				                                            <c:choose>
-				                                            	<c:when test="${project.id == 0}">
-				                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
-				                                            	</c:when>
-				                                            	<c:when test="${project.id > 0}">
-				                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-				                                            	</c:when>
-				                                            </c:choose>
-															<a href="${contextPath}/delete/project/${project.id}">
-																<button class="btn btn-danger btn-sm">Delete This Project</button>
-															</a>
+				                                        	<input type="hidden" name="staff_id" value="${staff.id}"/>
+				                                            <label>Prefix</label>
+				                                            <input type="text" class="form-control" name="prefix" value="${staff.prefix}"/><br/>
+				                                            <label>First</label>
+				                                            <input type="text" class="form-control" name="firstName" value="${staff.firstName}"/><br/>
+				                                            <label>Middle</label>
+				                                            <input type="text" class="form-control" name="middleName" value="${staff.middleName}"/><br/>
+				                                            <label>Last</label>
+				                                            <input type="text" class="form-control" name="lastName" value="${staff.lastName}"/><br/>
+				                                            <label>Suffix</label>
+				                                            <input type="text" class="form-control" name="suffix" value="${staff.suffix}"/><br/>
+				                                            <label>Position</label>
+				                                            <input type="text" class="form-control" name="companyPosition" value="${staff.companyPosition}"/><br/>
 				                                        </div>
 				                                    </form>
+				                                    <c:choose>
+		                                            	<c:when test="${staff.id == 0}">
+		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            	</c:when>
+		                                            	<c:when test="${staff.id > 0}">
+		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<a href="${contextPath}/staff/delete/${staff.id}">
+																<button class="btn btn-danger btn-sm">Delete This Staff</button>
+															</a>
+		                                            	</c:when>
+		                                            </c:choose>
                    								</div>
                    							</div>
                    						</div>
@@ -169,21 +159,6 @@
 														<br/>
 														<h4>Assign More Fields</h4>
 														<table>
-<!-- 															<tr> -->
-<!-- 																<td style="padding-right: 3px;"> -->
-<!-- 																	<label>Field Type </label> -->
-<!-- 																</td> -->
-<!-- 																<td style="padding-bottom: 3px;"> -->
-<!-- 																	&nbsp; -->
-<!-- 																</td> -->
-<!-- 																<td style="padding-bottom: 3px;"> -->
-<!-- 																	<select class="form-control"> -->
-<!-- 						                                                <option>Text Field</option> -->
-<!-- 						                                                <option>Text Area</option> -->
-<!-- 						                                                <option>Selector</option> -->
-<!-- 						                                            </select> -->
-<!-- 																</td> -->
-<!-- 															</tr> -->
 															<tr>
 																<td style="padding-right: 3px;">
 																	<label>Label</label>
@@ -213,98 +188,8 @@
                    							</div>
                    						</div>
               						</div>
-              						<h2 class="page-header">Staff</h2>
+              						<h2 class="page-header">Assignments</h2>
               						<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-primary">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Managers</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<table>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-														            <div class="pull-left image">
-														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
-														            </div>
-														            <div class="pull-left info">
-														                <p>Joy Mercedez</p>
-														                <h6>Project Manager</h6>
-														                <h6>Structural Engineer</h6>
-														                <h6>joy.merc1991@gmail.com</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														            </div>
-														        </div>
-                   											</td>
-                   											<td style="padding-right: 5px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
-                   											</td>
-                   										</tr>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-														            <div class="pull-left image">
-														                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
-														            </div>
-														            <div class="pull-left info">
-														                <p>Jerry de la Cruz</p>
-														                <h6>Project Architect</h6>
-														                <h6>Engineer III</h6>
-														                <h6>jerry_123@gmail.com</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														            </div>
-														        </div>
-                   											</td>
-                   											<td style="padding-right: 5px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
-                   											</td>
-                   										</tr>
-                   									</table>
-													<button class="btn btn-danger btn-sm">Clear All</button>
-													<br/>
-													<br/>
-													<h4>Assign More Managers</h4>
-													<table>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Staff </label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<select class="form-control">
-					                                                <option>Allen Cruz</option>
-					                                                <option>Ernest Loro</option>
-					                                                <option>Mark de la Cruz</option>
-					                                            </select>
-															</td>
-														</tr>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Project Position</label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<input type="text" class="form-control" placeholder="Example: Project Manager, Foreman, etc...">
-															</td>
-														</tr>
-													</table>
-                                           			<button class="btn btn-primary btn-sm">Assign</button>													
-                   								</div>
-                   							</div>
-                   						</div>
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
@@ -328,7 +213,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
                    											</td>
                    										</tr>
                    										<tr>
@@ -347,7 +232,7 @@
                    											</td>
                    											<td>
                    												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View</button>
+                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
                    											</td>
                    										</tr>
                    									</table>
@@ -377,14 +262,6 @@
                    							</div>
                    						</div>
                						</div>
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_7">
-                                	<div class="box">
-                                		google map location:<br/>
-	                                    - location of bunk house<br/>
-	                                    - gravel supplier<br/>
-	                                    - actual site location<br/>
-                                	</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_6">
                                 	<div class="row">
@@ -444,6 +321,113 @@
 				                            </div><!-- /. box -->
 				                        </div><!-- /.col -->
 				                    </div><!-- /.row -->
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_7">
+                                    <!-- TO DO List -->
+		                            <div class="box">
+		                                <div class="box-header">
+		                                    <h3 class="box-title">Projects</h3>
+		                                    <div class="box-tools pull-right">
+		                                        <ul class="pagination pagination-sm inline">
+		                                            <li><a href="#">&laquo;</a></li>
+		                                            <li><a href="#">1</a></li>
+		                                            <li><a href="#">2</a></li>
+		                                            <li><a href="#">3</a></li>
+		                                            <li><a href="#">&raquo;</a></li>
+		                                        </ul>
+		                                    </div>
+		                                </div><!-- /.box-header -->
+		                                <div class="box-body">
+		                                    <ul class="todo-list">
+		                                        <li>
+		                                            <!-- drag handle -->
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <!-- checkbox -->
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <!-- todo text -->
+		                                            <span class="text">Design a nice theme</span>
+		                                            <!-- Emphasis label -->
+		                                            <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
+		                                            <!-- General tools such as edit or delete-->
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                        <li>
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <span class="text">Make the theme responsive</span>
+		                                            <small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                        <li>
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <span class="text">Let theme shine like a star</span>
+		                                            <small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                        <li>
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <span class="text">Let theme shine like a star</span>
+		                                            <small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                        <li>
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <span class="text">Check your messages and notifications</span>
+		                                            <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                        <li>
+		                                            <span class="handle">
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                                <i class="fa fa-ellipsis-v"></i>
+		                                            </span>
+		                                            <input type="checkbox" value="" name=""/>
+		                                            <span class="text">Let theme shine like a star</span>
+		                                            <small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
+		                                            <div class="tools">
+		                                                <i class="fa fa-edit"></i>
+		                                                <i class="fa fa-trash-o"></i>
+		                                            </div>
+		                                        </li>
+		                                    </ul>
+		                                </div><!-- /.box-body -->
+		                                <div class="box-footer clearfix no-border">
+		                                    <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
+		                                </div>
+		                            </div><!-- /.box -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
                                     <!-- TO DO List -->
@@ -599,20 +583,6 @@
 	                                                <td>Win 95+</td>
 	                                                <td>5</td>
 	                                                <td>C</td>
-	                                            </tr>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 5.5</td>
-	                                                <td>Win 95+</td>
-	                                                <td>5.5</td>
-	                                                <td>A</td>
 	                                            </tr>
 	                                        </tbody>
 	                                        <tfoot>
@@ -778,7 +748,7 @@
 	<c:import url="/resources/js-includes.jsp" />
 	<script>
 		function submitForm(id) {
-			$(id).submit();
+			$('#'+id).submit();
 		}
 	
 		$(document).on('click', 'a.controls', function(){

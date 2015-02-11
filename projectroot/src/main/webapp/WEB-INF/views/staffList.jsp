@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Staff List</title>
+	<title>Staff ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
@@ -15,7 +15,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Staff List
+	                Staff ${action}
 	                <small>Complete list of all staff members</small>
 	            </h1>
 	            <ol class="breadcrumb">
