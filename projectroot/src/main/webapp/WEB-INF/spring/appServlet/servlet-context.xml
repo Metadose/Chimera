@@ -45,6 +45,7 @@
                 <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -75,6 +76,13 @@
     </beans:bean>
     <beans:bean id="teamService" class="com.cebedo.pmsys.team.service.TeamServiceImpl">
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="taskDAO" class="com.cebedo.pmsys.task.dao.TaskDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="taskService" class="com.cebedo.pmsys.task.service.TaskServiceImpl">
+        <beans:property name="taskDAO" ref="taskDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />

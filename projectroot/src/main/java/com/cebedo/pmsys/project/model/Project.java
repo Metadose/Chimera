@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
 
@@ -39,10 +40,11 @@ public class Project implements Serializable {
 	private int status;
 	private Set<ManagerAssignment> managerAssignments;
 	private Set<Team> assignedTeams;
-	private Set<Field> fieldAssignments;
+	private Set<Field> assignedFields;
 	private String thumbnailURL;
 	private String location;
 	private String notes;
+	private Set<Task> assignedTasks;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +84,9 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
+	/**
+	 * Project to Staff with extra columns.
+	 */
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
 			+ ".project", cascade = CascadeType.REMOVE)
 	public Set<ManagerAssignment> getManagerAssignments() {
@@ -92,6 +97,9 @@ public class Project implements Serializable {
 		this.managerAssignments = man;
 	}
 
+	/**
+	 * Project to Team many-to-many without extra columns.
+	 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
@@ -104,12 +112,24 @@ public class Project implements Serializable {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = FieldAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<Field> getFieldAssignments() {
-		return fieldAssignments;
+	public Set<Field> getAssignedFields() {
+		return assignedFields;
 	}
 
-	public void setFieldAssignments(Set<Field> fields) {
-		this.fieldAssignments = fields;
+	public void setAssignedFields(Set<Field> fields) {
+		this.assignedFields = fields;
+	}
+
+	/**
+	 * Project to Task many-to-many without extra columns.
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+	public Set<Task> getAssignedTasks() {
+		return assignedTasks;
+	}
+
+	public void setAssignedTasks(Set<Task> assignedTasks) {
+		this.assignedTasks = assignedTasks;
 	}
 
 	@Column(name = "thumbnail_url", length = 255)

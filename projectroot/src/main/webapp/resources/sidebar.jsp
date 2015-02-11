@@ -50,6 +50,11 @@
                 </a>
             </li>
             <li>
+                <a href="${contextPath}/task/list/">
+                    <i class="fa fa-users"></i> <span>Tasks</span>
+                </a>
+            </li>
+            <li>
                 <a href="${contextPath}/staff/list/">
                     <i class="fa fa-user"></i> <span>Staff</span>
                 </a>

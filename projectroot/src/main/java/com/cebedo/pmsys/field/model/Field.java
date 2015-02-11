@@ -47,7 +47,7 @@ public class Field implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "fieldAssignments")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedFields")
 	public Set<Project> getProjects() {
 		return projects;
 	}
