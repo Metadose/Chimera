@@ -115,5 +115,10 @@ public class Task {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	
+	@Override
+	public String toString() {
+		return "[Task] " + getId() + " [Content] " + getContent();
+	}
 
 }
