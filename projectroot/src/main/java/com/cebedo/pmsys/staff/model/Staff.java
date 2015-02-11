@@ -35,6 +35,8 @@ public class Staff implements Serializable {
 	private String companyPosition;
 	private Set<ManagerAssignment> assignedManagers;
 	private Set<Task> tasks;
+	private String email;
+	private String contactNumber;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,5 +129,23 @@ public class Staff implements Serializable {
 
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
+	}
+	
+	@Column(name = "email", length = 32)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "contact_number", length = 32)
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
 	}
 }

@@ -39,6 +39,7 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Project</th>
                                                 <th>Manager(s)</th>
                                                 <th>Location</th>
@@ -59,6 +60,7 @@
 																</a>
 															</center>
 														</td>
+														<td>${project.id}</td>
 		                                                <td>
 		                                                	${project.thumbnailURL}<br/>
 		                                                	${project.status}<br/>
@@ -82,6 +84,7 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Project</th>
                                                 <th>Manager(s)</th>
                                                 <th>Location</th>

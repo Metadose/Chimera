@@ -39,9 +39,12 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Photo</th>
                                                 <th>Full Name</th>
                                                 <th>Position</th>
+                                                <th>E-Mail</th>
+                                                <th>Contact Number</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -53,15 +56,17 @@
 																<a href="${contextPath}/staff/edit/${staff.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
 																</a>
-																<button class="btn btn-warning btn-sm">Edit</button>
 																<a href="${contextPath}/staff/delete/${staff.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
+														<td>${staff.id}</td>
 		                                                <td>${staff.thumbnailURL}</td>
 		                                                <td>${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}</td>
 		                                                <td>${staff.companyPosition}</td>
+		                                                <td>${staff.email}</td>
+		                                                <td>${staff.contactNumber}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -69,9 +74,12 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Photo</th>
                                                 <th>Full Name</th>
                                                 <th>Position</th>
+                                                <th>E-Mail</th>
+                                                <th>Contact Number</th>
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -94,6 +94,10 @@
 				                                            <input type="text" class="form-control" name="suffix" value="${staff.suffix}"/><br/>
 				                                            <label>Position</label>
 				                                            <input type="text" class="form-control" name="companyPosition" value="${staff.companyPosition}"/><br/>
+				                                            <label>E-Mail</label>
+				                                            <input type="text" class="form-control" name="email" value="${staff.email}"/><br/>
+				                                            <label>Contact Number</label>
+				                                            <input type="text" class="form-control" name="contactNumber" value="${staff.contactNumber}"/><br/>
 				                                        </div>
 				                                    </form>
 				                                    <c:choose>

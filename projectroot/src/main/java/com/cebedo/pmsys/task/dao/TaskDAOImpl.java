@@ -2,6 +2,7 @@ package com.cebedo.pmsys.task.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -58,8 +59,8 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> list() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = session.createQuery("from " + Task.CLASS_NAME)
-				.list();
+		Query query = session.createQuery("from " + Task.CLASS_NAME);
+		List<Task> taskList = query.list();
 		for (Task task : taskList) {
 			logger.info("[List] Task: " + task);
 		}

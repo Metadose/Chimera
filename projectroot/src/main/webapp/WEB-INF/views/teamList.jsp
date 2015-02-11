@@ -39,6 +39,7 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Name</th>
                                             </tr>
                                         </thead>
@@ -51,12 +52,12 @@
 																<a href="${contextPath}/team/edit/${team.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
 																</a>
-																<button class="btn btn-warning btn-sm">Edit</button>
 																<a href="${contextPath}/team/delete/${team.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
+														<td>${team.id}</td>
 		                                                <td>${team.name}</td>
 		                                            </tr>
 	                                            </c:forEach>
@@ -65,6 +66,7 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
                                                 <th>Name</th>
                                             </tr>
                                         </tfoot>

@@ -41,6 +41,7 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
 	                                            <th>Team</th>
@@ -76,6 +77,7 @@
 																<button class="btn btn-danger btn-sm">Delete</button>
 															</a>
                                         				</td>
+                                        				<td>${task.id}</td>
 			                                            <td style="vertical-align: middle;">
 			                                            	<c:choose>
 				                                            	<c:when test="${task.status == 0}">
@@ -123,6 +125,7 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
+                                            	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
 	                                            <th>Team</th>

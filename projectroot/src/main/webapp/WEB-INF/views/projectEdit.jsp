@@ -227,8 +227,8 @@
 															                <p>${manName}</p>
 															                <h6>${managerAssignment.projectPosition}</h6>
 															                <h6>${staff.companyPosition}</h6>
-															                <h6>joy.merc1991@gmail.com</h6>
-															                <h6>(+63) 922 062 2345</h6>
+															                <h6>${staff.email}</h6>
+															                <h6>${staff.contactNumber}</h6>
 															            </div>
 															        </div>
 	                   											</td>
