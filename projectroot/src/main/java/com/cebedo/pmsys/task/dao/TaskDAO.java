@@ -15,4 +15,6 @@ public interface TaskDAO {
 	public void delete(long id);
 
 	public List<Task> list();
+
+	public List<Task> listWithAllCollections();
 }

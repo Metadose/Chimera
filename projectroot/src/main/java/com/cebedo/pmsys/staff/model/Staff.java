@@ -112,7 +112,7 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
 			+ ".manager")
 	public Set<ManagerAssignment> getAssignedManagers() {
 		return assignedManagers;
@@ -122,7 +122,7 @@ public class Staff implements Serializable {
 		this.assignedManagers = managers;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "staff")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "staff")
 	public Set<Task> getTasks() {
 		return tasks;
 	}
@@ -130,7 +130,7 @@ public class Staff implements Serializable {
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
 	}
-	
+
 	@Column(name = "email", length = 32)
 	public String getEmail() {
 		return email;

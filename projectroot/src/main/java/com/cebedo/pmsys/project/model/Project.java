@@ -87,7 +87,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Staff with extra columns.
 	 */
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = ManagerAssignment.PRIMARY_KEY
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
 			+ ".project", cascade = CascadeType.REMOVE)
 	public Set<ManagerAssignment> getManagerAssignments() {
 		return this.managerAssignments;
@@ -100,7 +100,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Team many-to-many without extra columns.
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;
@@ -123,7 +123,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Task many-to-many without extra columns.
 	 */
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
 	public Set<Task> getAssignedTasks() {
 		return assignedTasks;
 	}

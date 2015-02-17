@@ -47,4 +47,10 @@ public class TaskServiceImpl implements TaskService {
 		return this.taskDAO.list();
 	}
 
+	@Override
+	@Transactional
+	public List<Task> listWithAllCollections() {
+		return this.taskDAO.listWithAllCollections();
+	}
+
 }

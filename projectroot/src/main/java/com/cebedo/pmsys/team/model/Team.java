@@ -61,7 +61,7 @@ public class Team implements Serializable {
 		this.projects = projects;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
 	public Set<Task> getTasks() {
 		return tasks;
 	}

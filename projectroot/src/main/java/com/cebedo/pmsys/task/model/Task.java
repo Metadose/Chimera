@@ -2,7 +2,6 @@ package com.cebedo.pmsys.task.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -87,7 +86,7 @@ public class Task {
 		this.project = project;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
 	public Staff getStaff() {
 		return staff;
@@ -97,7 +96,7 @@ public class Task {
 		this.staff = staff;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = Team.COLUMN_PRIMARY_KEY)
 	public Team getTeam() {
 		return team;
@@ -115,7 +114,7 @@ public class Task {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[Task] " + getId() + " [Content] " + getContent();

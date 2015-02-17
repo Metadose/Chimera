@@ -2,6 +2,7 @@ package com.cebedo.pmsys.task.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -62,6 +63,20 @@ public class TaskDAOImpl implements TaskDAO {
 		Query query = session.createQuery("from " + Task.CLASS_NAME);
 		List<Task> taskList = query.list();
 		for (Task task : taskList) {
+			logger.info("[List] Task: " + task);
+		}
+		return taskList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Task> listWithAllCollections() {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("from " + Task.CLASS_NAME);
+		List<Task> taskList = query.list();
+		for (Task task : taskList) {
+			Hibernate.initialize(task.getTeam());
+			Hibernate.initialize(task.getProject());
+			Hibernate.initialize(task.getStaff());
 			logger.info("[List] Task: " + task);
 		}
 		return taskList;

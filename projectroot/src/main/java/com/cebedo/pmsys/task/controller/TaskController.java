@@ -47,7 +47,7 @@ public class TaskController {
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listTasks(Model model) {
-		model.addAttribute(ATTR_LIST, this.taskService.list());
+		model.addAttribute(ATTR_LIST, this.taskService.listWithAllCollections());
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
