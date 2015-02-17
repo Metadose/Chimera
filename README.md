@@ -28,6 +28,7 @@ TODO:
 - (future) Integrate with email/messaging Api
 - (future) Security: svn-type, any alteration to the code, flag as revised, then send an email (or etc)
 - (future) Asset management, cranes, buldozers, backhoes. In use, under repair, available, retired
+- (future) change uniqueResult to get/load
 
 
 

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.task.model.Task;
 
 @Entity
@@ -37,6 +38,7 @@ public class Staff implements Serializable {
 	private Set<Task> tasks;
 	private String email;
 	private String contactNumber;
+	private Set<ProjectFile> files;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -147,5 +149,14 @@ public class Staff implements Serializable {
 
 	public void setContactNumber(String contactNumber) {
 		this.contactNumber = contactNumber;
+	}
+
+	@OneToMany(mappedBy = "uploader")
+	public Set<ProjectFile> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Set<ProjectFile> files) {
+		this.files = files;
 	}
 }

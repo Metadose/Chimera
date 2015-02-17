@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
@@ -44,6 +45,7 @@ public class Project implements Serializable {
 	private String location;
 	private String notes;
 	private Set<Task> assignedTasks;
+	private Set<ProjectFile> files;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -156,6 +158,15 @@ public class Project implements Serializable {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	@OneToMany(mappedBy = "project")
+	public Set<ProjectFile> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Set<ProjectFile> files) {
+		this.files = files;
 	}
 
 	@Override
