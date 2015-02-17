@@ -15,4 +15,6 @@ public interface StaffDAO {
 	public void delete(long id);
 
 	public List<Staff> list();
+
+	public List<Staff> listWithAllCollections();
 }

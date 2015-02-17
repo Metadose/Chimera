@@ -2,6 +2,7 @@ package com.cebedo.pmsys.project.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -63,6 +64,35 @@ public class ProjectDAOImpl implements ProjectDAO {
 			session.delete(project);
 		}
 		logger.info("[Delete] Project: " + project);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Project> listWithAllCollections() {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Project> projectList = session.createQuery(
+				"from " + Project.CLASS_NAME).list();
+		for (Project project : projectList) {
+			Hibernate.initialize(project.getManagerAssignments());
+			Hibernate.initialize(project.getAssignedTeams());
+			Hibernate.initialize(project.getAssignedFields());
+			Hibernate.initialize(project.getAssignedTasks());
+			logger.info("[List] Project: " + project);
+		}
+		return projectList;
+	}
+
+	@Override
+	public Project getByIDWithAllCollections(int id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Project project = (Project) session.createQuery(
+				"from " + Project.CLASS_NAME + " where "
+						+ Project.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
+		Hibernate.initialize(project.getManagerAssignments());
+		Hibernate.initialize(project.getAssignedTeams());
+		Hibernate.initialize(project.getAssignedFields());
+		Hibernate.initialize(project.getAssignedTasks());
+		logger.info("[Get by ID] Project: " + project);
+		return project;
 	}
 
 }

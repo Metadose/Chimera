@@ -2,6 +2,7 @@ package com.cebedo.pmsys.staff.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -61,6 +62,19 @@ public class StaffDAOImpl implements StaffDAO {
 		List<Staff> staffList = session.createQuery("from " + Staff.CLASS_NAME)
 				.list();
 		for (Staff staff : staffList) {
+			logger.info("[List] Staff: " + staff);
+		}
+		return staffList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Staff> listWithAllCollections() {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Staff> staffList = session.createQuery("from " + Staff.CLASS_NAME)
+				.list();
+		for (Staff staff : staffList) {
+			Hibernate.initialize(staff.getAssignedManagers());
+			Hibernate.initialize(staff.getTasks());
 			logger.info("[List] Staff: " + staff);
 		}
 		return staffList;

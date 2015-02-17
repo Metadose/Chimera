@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.project.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -10,8 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.field.controller.FieldController;
+import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.staff.controller.StaffController;
+import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.team.controller.TeamController;
+import com.cebedo.pmsys.team.model.Team;
 
 @Controller
 @RequestMapping(Project.OBJECT_NAME)
@@ -33,7 +41,8 @@ public class ProjectController {
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listProjects(Model model) {
-		model.addAttribute(ATTR_LIST, this.projectService.list());
+		model.addAttribute(ATTR_LIST,
+				this.projectService.listWithAllCollections());
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
@@ -62,15 +71,34 @@ public class ProjectController {
 			+ Project.COLUMN_PRIMARY_KEY + "}")
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+
+		// If ID is zero, create new.
 		if (id == 0) {
 			model.addAttribute(ATTR_PROJECT, new Project());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
-		model.addAttribute(ATTR_PROJECT, this.projectService.getByID(id));
+
+		Project proj = this.projectService.getByIDWithAllCollections(id);
+		model.addAttribute(ATTR_PROJECT, proj);
+
+		// Get list of fields.
+		List<Field> fieldList = this.projectService.listAllFields();
+		model.addAttribute(FieldController.ATTR_LIST, fieldList);
+
+		// Get list of staff members for manager assignments.
+		List<Staff> staffList = this.projectService.listAllStaff();
+		model.addAttribute(StaffController.ATTR_LIST, staffList);
+
+		// Get list of teams.
+		List<Team> teamList = this.projectService.listAllTeams();
+		model.addAttribute(TeamController.ATTR_LIST, teamList);
+
+		// Add the type of action.
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
+
 		return JSP_EDIT;
 	}
 }

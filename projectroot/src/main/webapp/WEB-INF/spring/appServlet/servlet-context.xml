@@ -42,6 +42,7 @@
             <beans:list>
                 <beans:value>com.cebedo.pmsys.project.model.Project</beans:value>
                 <beans:value>com.cebedo.pmsys.field.model.Field</beans:value>
+                <beans:value>com.cebedo.pmsys.field.model.FieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
@@ -62,6 +63,9 @@
     </beans:bean>
     <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
+        <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
+        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">
@@ -83,6 +87,14 @@
     </beans:bean>
     <beans:bean id="taskService" class="com.cebedo.pmsys.task.service.TaskServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
+        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="fieldDAO" class="com.cebedo.pmsys.field.dao.FieldDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="fieldService" class="com.cebedo.pmsys.field.service.FieldServiceImpl">
+        <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />

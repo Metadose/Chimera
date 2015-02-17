@@ -47,4 +47,10 @@ public class StaffServiceImpl implements StaffService {
 		return this.staffDAO.list();
 	}
 
+	@Override
+	@Transactional
+	public List<Staff> listWithAllCollections() {
+		return this.staffDAO.listWithAllCollections();
+	}
+
 }

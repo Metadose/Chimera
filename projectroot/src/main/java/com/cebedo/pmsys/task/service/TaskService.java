@@ -2,6 +2,7 @@ package com.cebedo.pmsys.task.service;
 
 import java.util.List;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.model.Task;
 
 public interface TaskService {
@@ -17,4 +18,6 @@ public interface TaskService {
 	public List<Task> list();
 
 	public List<Task> listWithAllCollections();
+
+	public Project getProjectByID(int id);
 }

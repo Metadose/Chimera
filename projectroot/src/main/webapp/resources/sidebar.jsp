@@ -59,6 +59,11 @@
                     <i class="fa fa-user"></i> <span>Staff</span>
                 </a>
             </li>
+            <li>
+                <a href="${contextPath}/field/list/">
+                    <i class="fa fa-list"></i> <span>Fields</span>
+                </a>
+            </li>
 <!--             <li class="treeview"> -->
 <!--                 <a href="#"> -->
 <!--                     <i class="fa fa-edit"></i> -->

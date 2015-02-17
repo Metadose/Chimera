@@ -16,4 +16,6 @@ public interface StaffService {
 
 	public List<Staff> list();
 
+	public List<Staff> listWithAllCollections();
+
 }

@@ -9,23 +9,23 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.cebedo.pmsys.project.model.Project;
 
 @Entity
 @Table(name = Field.TABLE_NAME)
 public class Field implements Serializable {
 
 	public static final String TABLE_NAME = "fields";
+	public static final String CLASS_NAME = "Field";
+	public static final String OBJECT_NAME = "field";
 	public static final String COLUMN_PRIMARY_KEY = "field_id";
 
 	private static final long serialVersionUID = 1L;
 
 	private long id;
 	private String name;
-	private Set<Project> projects;
+	private Set<FieldAssignment> fieldAssignments;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,13 +47,14 @@ public class Field implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedFields")
-	public Set<Project> getProjects() {
-		return projects;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = FieldAssignment.PRIMARY_KEY
+			+ ".field")
+	public Set<FieldAssignment> getFieldAssignments() {
+		return fieldAssignments;
 	}
 
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
+	public void setFieldAssignments(Set<FieldAssignment> fieldAssignments) {
+		this.fieldAssignments = fieldAssignments;
 	}
 
 }

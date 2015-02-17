@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.dao.TaskDAO;
 import com.cebedo.pmsys.task.model.Task;
 
@@ -12,9 +14,14 @@ import com.cebedo.pmsys.task.model.Task;
 public class TaskServiceImpl implements TaskService {
 
 	private TaskDAO taskDAO;
+	private ProjectDAO projectDAO;
 
 	public void setTaskDAO(TaskDAO taskDAO) {
 		this.taskDAO = taskDAO;
+	}
+
+	public void setProjectDAO(ProjectDAO projDAO) {
+		this.projectDAO = projDAO;
 	}
 
 	@Override
@@ -51,6 +58,12 @@ public class TaskServiceImpl implements TaskService {
 	@Transactional
 	public List<Task> listWithAllCollections() {
 		return this.taskDAO.listWithAllCollections();
+	}
+
+	@Override
+	@Transactional
+	public Project getProjectByID(int id) {
+		return this.projectDAO.getByID(id);
 	}
 
 }

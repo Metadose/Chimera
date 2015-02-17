@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.task.model.Task;
@@ -40,7 +39,7 @@ public class Project implements Serializable {
 	private int status;
 	private Set<ManagerAssignment> managerAssignments;
 	private Set<Team> assignedTeams;
-	private Set<Field> assignedFields;
+	private Set<FieldAssignment> assignedFields;
 	private String thumbnailURL;
 	private String location;
 	private String notes;
@@ -84,6 +83,16 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = FieldAssignment.PRIMARY_KEY
+			+ ".project", cascade = CascadeType.REMOVE)
+	public Set<FieldAssignment> getAssignedFields() {
+		return assignedFields;
+	}
+
+	public void setAssignedFields(Set<FieldAssignment> fields) {
+		this.assignedFields = fields;
+	}
+
 	/**
 	 * Project to Staff with extra columns.
 	 */
@@ -108,16 +117,6 @@ public class Project implements Serializable {
 
 	public void setAssignedTeams(Set<Team> teams) {
 		this.assignedTeams = teams;
-	}
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = FieldAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Field.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<Field> getAssignedFields() {
-		return assignedFields;
-	}
-
-	public void setAssignedFields(Set<Field> fields) {
-		this.assignedFields = fields;
 	}
 
 	/**

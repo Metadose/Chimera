@@ -16,4 +16,8 @@ public interface ProjectDAO {
 
 	public List<Project> list();
 
+	public List<Project> listWithAllCollections();
+
+	public Project getByIDWithAllCollections(int id);
+
 }

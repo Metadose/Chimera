@@ -55,7 +55,11 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/task/create">
+                   									<c:set var="targetController" value="create"/>
+                   									<c:if test="${!empty assignProjectID}">
+                   										<c:set var="targetController" value="assign/project/${assignProjectID}"/>
+                   									</c:if>
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/task/${targetController}">
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${task.id}"/>
 				                                        	<label>Status</label>
