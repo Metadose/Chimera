@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.project.model.Project;
 
 @Controller
 @RequestMapping(Field.OBJECT_NAME)
@@ -38,6 +42,26 @@ public class FieldController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
+	}
+
+	/**
+	 * Assign a field to a project.
+	 * 
+	 * @param fieldAssignment
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
+	public ModelAndView assignProject(
+			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) String fieldID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) String projectID) {
+		this.fieldService.assign(fieldAssignment, new Long(fieldID), new Long(
+				projectID));
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + fieldAssignment.getProject().getId());
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)

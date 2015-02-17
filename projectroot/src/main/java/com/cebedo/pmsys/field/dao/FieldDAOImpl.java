@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.model.FieldAssignment;
 
 @Repository
 public class FieldDAOImpl implements FieldDAO {
@@ -77,6 +78,13 @@ public class FieldDAOImpl implements FieldDAO {
 			logger.info("[List] Field: " + field);
 		}
 		return fieldList;
+	}
+
+	@Override
+	public void assign(FieldAssignment fieldAssignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(fieldAssignment);
+		logger.info("[Create] Field Assignment: " + fieldAssignment);
 	}
 
 }

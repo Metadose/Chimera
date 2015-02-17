@@ -3,6 +3,7 @@ package com.cebedo.pmsys.field.dao;
 import java.util.List;
 
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.model.FieldAssignment;
 
 public interface FieldDAO {
 
@@ -17,4 +18,6 @@ public interface FieldDAO {
 	public List<Field> list();
 
 	public List<Field> listWithAllCollections();
+
+	public void assign(FieldAssignment fieldAssignment);
 }

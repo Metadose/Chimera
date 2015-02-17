@@ -7,11 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.field.dao.FieldDAO;
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 
 @Service
 public class FieldServiceImpl implements FieldService {
 
 	private FieldDAO fieldDAO;
+	private ProjectDAO projectDAO;
+
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
 
 	public void setFieldDAO(FieldDAO fieldDAO) {
 		this.fieldDAO = fieldDAO;
@@ -51,6 +59,17 @@ public class FieldServiceImpl implements FieldService {
 	@Transactional
 	public List<Field> listWithAllCollections() {
 		return this.fieldDAO.listWithAllCollections();
+	}
+
+	@Override
+	@Transactional
+	public void assign(FieldAssignment fieldAssignment, long fieldID,
+			long projectID) {
+		Field field = this.fieldDAO.getByID(fieldID);
+		Project proj = this.projectDAO.getByID(projectID);
+		fieldAssignment.setField(field);
+		fieldAssignment.setProject(proj);
+		this.fieldDAO.assign(fieldAssignment);
 	}
 
 }

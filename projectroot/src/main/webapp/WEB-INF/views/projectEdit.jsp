@@ -157,49 +157,52 @@
 														<br/>
 														<br/>
 														<h4>Assign Fields</h4>
-														<table>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Field Type </label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<select class="form-control">
-																		<c:if test="${!empty fieldList}">
-																			<c:forEach items="${fieldList}" var="field">
-								                                                <option>${field.name}</option>
-							                                                </c:forEach>
-						                                                </c:if>
-						                                            </select>
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Label</label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Value</label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
-																</td>
-															</tr>
-														</table>
+														<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
+															<input type="hidden" name="project_id" value="${project.id}"/>
+															<table>
+																<tr>
+																	<td style="padding-right: 3px;">
+																		<label>Field Type </label>
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<select class="form-control" id="field_id" name="field_id">
+																			<c:if test="${!empty fieldList}">
+																				<c:forEach items="${fieldList}" var="field">
+									                                                <option value="${field.id}">${field.name}</option>
+								                                                </c:forEach>
+							                                                </c:if>
+							                                            </select>
+																	</td>
+																</tr>
+																<tr>
+																	<td style="padding-right: 3px;">
+																		<label>Label</label>
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<input type="text" name="label" id="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
+																	</td>
+																</tr>
+																<tr>
+																	<td style="padding-right: 3px;">
+																		<label>Value</label>
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<input type="text" name="value" id="value" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
+																	</td>
+																</tr>
+															</table>
+														</form>
 														<br/>
-                                            			<button class="btn btn-primary btn-sm">Assign</button>
+                                           				<button class="btn btn-primary btn-sm" onclick="submitForm('fieldsForm')">Assign</button>
 			                                        </div>
                    								</div>
                    							</div>

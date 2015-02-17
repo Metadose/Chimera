@@ -3,6 +3,7 @@ package com.cebedo.pmsys.field.service;
 import java.util.List;
 
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.model.FieldAssignment;
 
 public interface FieldService {
 
@@ -17,4 +18,7 @@ public interface FieldService {
 	public List<Field> list();
 
 	public List<Field> listWithAllCollections();
+
+	public void assign(FieldAssignment fieldAssignment, long fieldID,
+			long projectID);
 }
