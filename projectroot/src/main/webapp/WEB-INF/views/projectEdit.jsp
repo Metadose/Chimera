@@ -469,7 +469,10 @@
 							                                            </ul>
 							                                        </div>
 							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-primary btn-sm">View</button>&nbsp;&nbsp;
+					                                            		<button class="btn btn-primary btn-sm">View</button>
+					                                            	</a>
+					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            		<button class="btn btn-danger btn-sm">Delete</button>
 					                                            	</a>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">

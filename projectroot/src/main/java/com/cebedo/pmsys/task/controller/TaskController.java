@@ -34,14 +34,12 @@ public class TaskController {
 		this.taskService = ps;
 	}
 
-	// @InitBinder
-	// public void initBinder(WebDataBinder binder) {
-	// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-	// sdf.setLenient(true);
-	// binder.registerCustomEditor(Calendar.class, new CustomDateEditor(sdf,
-	// true));
-	// }
-
+	/**
+	 * List all tasks and load all collections.
+	 * 
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listTasks(Model model) {
@@ -51,8 +49,18 @@ public class TaskController {
 		return JSP_LIST;
 	}
 
+	/**
+	 * Create or update a new task.
+	 * 
+	 * @param task
+	 * @return
+	 */
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TASK) Task task) {
+
+		// If the task is not here yet,
+		// Create it.
+		// Else, update.
 		if (task.getId() == 0) {
 			this.taskService.create(task);
 		} else {
@@ -62,14 +70,25 @@ public class TaskController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_REDIRECT_ASSIGN_PROJECT
-			+ "/{" + Project.COLUMN_PRIMARY_KEY + "}")
+	/**
+	 * User assigns a new task for a project.<br>
+	 * Called when user clicks a create button from the edit project page.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/" + SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
+			+ Project.COLUMN_PRIMARY_KEY + "}")
 	public String redirectAssignProject(
 			@PathVariable(Project.COLUMN_PRIMARY_KEY) int id, Model model) {
+
+		// Redirect to an edit page with an empty task object
+		// And project ID.
 		model.addAttribute(ATTR_TASK, new Task());
 		model.addAttribute(ATTR_ASSIGN_PROJECT_ID, id);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
-				SystemConstants.ACTION_REDIRECT_ASSIGN_PROJECT);
+				SystemConstants.ACTION_ASSIGN);
 		return JSP_EDIT;
 	}
 
@@ -83,7 +102,7 @@ public class TaskController {
 	 */
 	@RequestMapping(value = {
 			SystemConstants.REQUEST_ASSIGN_PROJECT,
-			"/" + SystemConstants.REQUEST_REDIRECT_ASSIGN_PROJECT + "/{"
+			"/" + SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
 					+ Project.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public ModelAndView assignProject(@ModelAttribute(ATTR_TASK) Task task,
 			@PathVariable(Project.COLUMN_PRIMARY_KEY) int projectID) {
@@ -101,6 +120,12 @@ public class TaskController {
 				+ "/" + projectID);
 	}
 
+	/**
+	 * Delete a specific task.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id) {
@@ -109,16 +134,30 @@ public class TaskController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Open a page with appropriate values.<br>
+	 * May be a Create Page or Edit Page.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+
+		// If ID is zero,
+		// Open a page with empty values, ready to create.
 		if (id == 0) {
 			model.addAttribute(ATTR_TASK, new Task());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
+
+		// Else, get the object from DB
+		// then populate the fields in JSP.
 		model.addAttribute(ATTR_TASK, this.taskService.getByID(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);

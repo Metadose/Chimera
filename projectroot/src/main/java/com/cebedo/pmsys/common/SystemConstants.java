@@ -14,12 +14,10 @@ public abstract class SystemConstants {
 
 	public static final String REQUEST_ASSIGN_PROJECT = "assign/project";
 
-	public static final String REQUEST_REDIRECT_ASSIGN_PROJECT = "assign/project";
-
 	public static final String ACTION_CREATE = "Create";
 	public static final String ACTION_EDIT = "Edit";
 	public static final String ACTION_UPDATE = "Update";
 	public static final String ACTION_DELETE = "Delete";
 	public static final String ACTION_LIST = "List";
-	public static final String ACTION_REDIRECT_ASSIGN_PROJECT = "Assign Project";
+	public static final String ACTION_ASSIGN = "Assign";
 }

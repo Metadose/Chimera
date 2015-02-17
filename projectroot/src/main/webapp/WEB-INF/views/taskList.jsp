@@ -44,6 +44,7 @@
                                             	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
+	                                            <th>Project</th>
 	                                            <th>Team</th>
 	                                            <th>Staff</th>
 	                                            <th>Start</th>
@@ -99,6 +100,14 @@
 			                                            </td>
 			                                            <td>${task.content}</td>
 			                                            <td>
+			                                            	<c:if test="${!empty task.project}">
+			                                            		<a href="${contextPath}/project/edit/${task.project.id}">
+				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+				                                            	</a>
+				                                            	${task.project.name}
+			                                            	</c:if>
+			                                            </td>
+			                                            <td>
 			                                            	<c:if test="${!empty task.team}">
 			                                            		<a href="${contextPath}/team/edit/${task.team.id}">
 				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
@@ -128,6 +137,7 @@
                                             	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
+	                                            <th>Project</th>
 	                                            <th>Team</th>
 	                                            <th>Staff</th>
 	                                            <th>Start</th>
