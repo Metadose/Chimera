@@ -98,7 +98,7 @@ public class TaskController {
 		// Redirect to project edit.
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + "{" + projectID + "}");
+				+ "/" + projectID);
 	}
 
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
