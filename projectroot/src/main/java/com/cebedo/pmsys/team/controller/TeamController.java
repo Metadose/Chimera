@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
@@ -72,5 +75,52 @@ public class TeamController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
+	}
+
+	/**
+	 * Assign team to a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
+	public ModelAndView assignProjectTeam(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.teamService.assignProjectTeam(projectID, teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign team from a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
+	public ModelAndView unassignProjectTeam(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.teamService.unassignProjectTeam(projectID, teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign all project teams.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllProjectTeams(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.teamService.unassignAllProjectTeams(projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 }

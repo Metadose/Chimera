@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.model.TeamAssignment;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -45,6 +46,27 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public List<Team> list() {
 		return this.teamDAO.list();
+	}
+
+	@Override
+	@Transactional
+	public void assignProjectTeam(long projectID, long teamID) {
+		TeamAssignment assignment = new TeamAssignment();
+		assignment.setProjectID(projectID);
+		assignment.setTeamID(teamID);
+		this.teamDAO.assignProjectTeam(assignment);
+	}
+
+	@Override
+	@Transactional
+	public void unassignProjectTeam(long projectID, long teamID) {
+		this.teamDAO.unassignProjectTeam(projectID, teamID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllProjectTeams(long projectID) {
+		this.teamDAO.unassignAllProjectTeams(projectID);
 	}
 
 }

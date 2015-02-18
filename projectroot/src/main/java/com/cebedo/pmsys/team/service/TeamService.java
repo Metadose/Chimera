@@ -16,4 +16,10 @@ public interface TeamService {
 
 	public List<Team> list();
 
+	public void assignProjectTeam(long projectID, long teamID);
+
+	public void unassignProjectTeam(long projectID, long teamID);
+
+	public void unassignAllProjectTeams(long projectID);
+
 }

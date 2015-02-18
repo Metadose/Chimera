@@ -124,7 +124,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">Info</h3>
+                   									<h3 class="box-title">Fields</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="form-group">
@@ -232,7 +232,11 @@
                    							</div>
                    						</div>
               						</div>
-              						<h2 class="page-header">Staff</h2>
+              						<h2 class="page-header">Staff&nbsp;&nbsp;
+              						<a href="${contextPath}/staff/edit/0">
+              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+              						</a>
+              						</h2>
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
@@ -333,7 +337,11 @@
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">Teams</h3>
+                   									<h3 class="box-title">Teams&nbsp;&nbsp;
+                   									<a href="${contextPath}/team/edit/0">
+                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   									</a>
+                   									</h3>
                    								</div>
                    								<div class="box-body">
                    									<table>
@@ -355,7 +363,11 @@
 		                   												&nbsp;
 		                   											</td>
 		                   											<td>
-		                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												<form role="form" name="unassignTeamForm" id="unassignTeamForm" method="post" action="${contextPath}/team/unassign/project">
+		                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+		                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
+		                   													<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												</form>
 		                   												<a href="${contextPath}/team/edit/${team.id}">
 		                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
 		                   												</a>
@@ -366,7 +378,10 @@
                    									</table>
                    									<c:choose>
                    										<c:when test="${!empty projTeams}">
-                   											<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											<form role="form" name="unassignAllTeamForm" id="unassignAllTeamForm" method="post" action="${contextPath}/team/unassign/project/all">
+                   												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+                   												<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											</form>
                    										</c:when>
                    										<c:when test="${empty projTeams}">
                    											<h5>No team assigned.</h5>
@@ -375,27 +390,30 @@
 													<br/>
 													<br/>
 													<h4>Assign Teams</h4>
-													<table>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Teams </label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<select class="form-control">
-																	<c:if test="${!empty teamList}">
-																		<c:forEach items="${teamList}" var="team">
-																			<option>${team.name}</option>
-																		</c:forEach>
-																	</c:if>
-					                                            </select>
-															</td>
-														</tr>
-													</table>
+													<form role="form" name="teamForm" id="teamForm" method="post" action="${contextPath}/team/assign/project">
+														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+														<table>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Teams </label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<select id="team_id" name="team_id" class="form-control">
+																		<c:if test="${!empty teamList}">
+																			<c:forEach items="${teamList}" var="team">
+																				<option value="${team.id}">${team.name}</option>
+																			</c:forEach>
+																		</c:if>
+						                                            </select>
+																</td>
+															</tr>
+														</table>
+														<button class="btn btn-primary btn-sm">Assign</button>
+													</form>
 													<br/>
-                                           			<button class="btn btn-primary btn-sm">Assign</button>
                    								</div>
                    							</div>
                    						</div>

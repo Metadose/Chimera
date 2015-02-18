@@ -2,13 +2,16 @@ package com.cebedo.pmsys.team.dao;
 
 import java.util.List;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.model.TeamAssignment;
 
 @Repository
 public class TeamDAOImpl implements TeamDAO {
@@ -64,6 +67,31 @@ public class TeamDAOImpl implements TeamDAO {
 			logger.info("[List] Team: " + team);
 		}
 		return teamList;
+	}
+
+	@Override
+	public void assignProjectTeam(TeamAssignment assignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(assignment);
+	}
+
+	@Override
+	public void unassignProjectTeam(long projectID, long teamID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ TeamAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
+				+ Team.COLUMN_PRIMARY_KEY + " = " + teamID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignAllProjectTeams(long projectID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ TeamAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
+		query.executeUpdate();
 	}
 
 }

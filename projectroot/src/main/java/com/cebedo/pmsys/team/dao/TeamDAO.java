@@ -3,6 +3,7 @@ package com.cebedo.pmsys.team.dao;
 import java.util.List;
 
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.model.TeamAssignment;
 
 public interface TeamDAO {
 
@@ -15,4 +16,10 @@ public interface TeamDAO {
 	public void delete(long id);
 
 	public List<Team> list();
+
+	public void assignProjectTeam(TeamAssignment assignment);
+
+	public void unassignProjectTeam(long projectID, long teamID);
+
+	public void unassignAllProjectTeams(long projectID);
 }
