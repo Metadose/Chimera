@@ -55,13 +55,47 @@ public class FieldController {
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView assignProject(
 			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
-			@RequestParam(Field.COLUMN_PRIMARY_KEY) String fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) String projectID) {
-		this.fieldService.assignProject(fieldAssignment, new Long(fieldID),
-				new Long(projectID));
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.fieldService.assignProject(fieldAssignment, fieldID, projectID);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + fieldAssignment.getProject().getId());
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign all fields of a project.
+	 * 
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllProjects(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.fieldService.unassignAllProjects(projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Update an assigned project field.
+	 * 
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE_ASSIGNED_PROJECT_FIELD, method = RequestMethod.POST)
+	public ModelAndView updateAssignedProjectField(
+			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.fieldService.updateAssignedProjectField(fieldAssignment, fieldID,
+				projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 
 	/**
@@ -73,12 +107,11 @@ public class FieldController {
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView unassignProject(
-			@RequestParam(Field.COLUMN_PRIMARY_KEY) String fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) String projectID,
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Field.COLUMN_LABEL) String label,
 			@RequestParam(Field.COLUMN_VALUE) String value) {
-		this.fieldService.unassignProject(new Long(fieldID),
-				new Long(projectID), label, value);
+		this.fieldService.unassignProject(fieldID, projectID, label, value);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);

@@ -24,4 +24,9 @@ public interface FieldService {
 
 	public void unassignProject(long fieldID, long projID, String label,
 			String value);
+
+	public void unassignAllProjects(long projectID);
+
+	public void updateAssignedProjectField(FieldAssignment fieldAssignment,
+			long fieldID, long projectID);
 }

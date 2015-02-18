@@ -131,9 +131,10 @@
                    										<table>
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
                    											<c:if test="${!empty projectFields}">
+                   												<c:set var="fieldFormID" value="${0}"/>
                    												<c:forEach var="field" items="${projectFields}">
-                   													<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project">
-																		<tr>
+                   													<tr>
+	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
 																			<input type="hidden" name="project_id" value="${project.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
 																			<td style="padding-bottom: 3px;">
@@ -148,16 +149,33 @@
 																			<td style="padding-bottom: 3px;">
 																				&nbsp;
 																			</td>
-																			<td style="padding-bottom: 3px;">
-																				<button class="btn btn-warning btn-sm">Remove</button>
-																			</td>
-																		</tr>
-																	</form>
+																		</form>
+																		<td style="padding-bottom: 3px;">
+																			<button class="btn btn-warning btn-sm">Update</button>
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			&nbsp;
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			<button class="btn btn-danger btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
+																		</td>
+																	</tr>
+																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
 																</c:forEach>
 															</c:if>
 														</table>
 														<br/>
-														<button class="btn btn-danger btn-sm">Remove All</button>
+														<c:choose>
+															<c:when test="${!empty projectFields}">
+																<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+																	<input type="hidden" name="project_id" value="${project.id}"/>
+																	<button class="btn btn-danger btn-sm">Unassign All</button>
+																</form>
+															</c:when>
+															<c:when test="${empty projectFields}">
+																<h5>No field assigned.</h5>
+															</c:when>
+														</c:choose>
 														<br/>
 														<br/>
 														<h4>Assign Fields</h4>
@@ -245,7 +263,7 @@
 	                   												&nbsp;
 	                   											</td>
 	                   											<td>
-	                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+	                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 	                   												<a href="${contextPath}/staff/edit/${staff.id}">
 	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
 	                   												</a>
@@ -255,7 +273,7 @@
                    									</table>
                    									<c:choose>
                    										<c:when test="${!empty managerAssignments}">
-                   											<button class="btn btn-danger btn-sm">Remove All</button>
+                   											<button class="btn btn-danger btn-sm">Unassign All</button>
                    										</c:when>
                    										<c:when test="${empty managerAssignments}">
                    											<h5>No manager assigned.</h5>
@@ -325,7 +343,7 @@
 		                   												&nbsp;
 		                   											</td>
 		                   											<td>
-		                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Remove</button>
+		                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 		                   												<a href="${contextPath}/team/edit/${team.id}">
 		                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
 		                   												</a>
@@ -336,7 +354,7 @@
                    									</table>
                    									<c:choose>
                    										<c:when test="${!empty projTeams}">
-                   											<button class="btn btn-danger btn-sm">Remove All</button>
+                   											<button class="btn btn-danger btn-sm">Unassign All</button>
                    										</c:when>
                    										<c:when test="${empty projTeams}">
                    											<h5>No team assigned.</h5>

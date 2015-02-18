@@ -101,4 +101,20 @@ public class FieldDAOImpl implements FieldDAO {
 				+ Field.COLUMN_VALUE + " = '" + value + "'");
 		query.executeUpdate();
 	}
+
+	@Override
+	public void unassignAllProjects(long projectID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ FieldAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void updateAssignedProjectField(FieldAssignment fieldAssignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(fieldAssignment);
+		logger.info("[Update] Field Assignment: " + fieldAssignment);
+	}
 }
