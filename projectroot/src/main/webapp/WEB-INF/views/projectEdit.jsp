@@ -137,6 +137,8 @@
 	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
 																			<input type="hidden" name="project_id" value="${project.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
+																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
+																			<input type="hidden" id="old_value" name="old_value" value="${field.value}"/>
 																			<td style="padding-bottom: 3px;">
 																				<input type="text" class="form-control" id="label" name="label" value="${field.label}">
 																			</td>
@@ -151,7 +153,7 @@
 																			</td>
 																		</form>
 																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-warning btn-sm">Update</button>
+																			<button class="btn btn-warning btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
 																		</td>
 																		<td style="padding-bottom: 3px;">
 																			&nbsp;
@@ -777,6 +779,19 @@
 	</div>
 	<c:import url="/resources/js-includes.jsp" />
 	<script>
+		function submitAjax(id) {
+			var formObj = $('#'+id);
+			var serializedData = formObj.serialize();
+			$.ajax({
+				type: "POST",
+				url: '${contextPath}/field/update/assigned/project',
+				data: serializedData,
+				success: function(response){
+					location.reload();
+				}
+			});
+		}	
+	
 		function submitForm(id) {
 			$('#'+id).submit();
 		}

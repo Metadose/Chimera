@@ -88,11 +88,14 @@ public class FieldController {
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE_ASSIGNED_PROJECT_FIELD, method = RequestMethod.POST)
 	public ModelAndView updateAssignedProjectField(
-			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
-		this.fieldService.updateAssignedProjectField(fieldAssignment, fieldID,
-				projectID);
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Field.COLUMN_LABEL) String label,
+			@RequestParam(Field.COLUMN_VALUE) String value,
+			@RequestParam("old_" + Field.COLUMN_LABEL) String oldLabel,
+			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue) {
+		this.fieldService.updateAssignedProjectField(projectID, fieldID,
+				oldLabel, oldValue, label, value);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);

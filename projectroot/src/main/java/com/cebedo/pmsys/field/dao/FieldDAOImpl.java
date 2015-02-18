@@ -112,9 +112,32 @@ public class FieldDAOImpl implements FieldDAO {
 	}
 
 	@Override
-	public void updateAssignedProjectField(FieldAssignment fieldAssignment) {
+	public FieldAssignment getFieldByKeys(long projectID, long fieldID,
+			String label, String value) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.update(fieldAssignment);
-		logger.info("[Update] Field Assignment: " + fieldAssignment);
+		FieldAssignment fieldAssignment = (FieldAssignment) session
+				.createQuery(
+						"FROM " + FieldAssignment.CLASS_NAME + " WHERE "
+								+ Project.COLUMN_PRIMARY_KEY + " = "
+								+ projectID + " AND "
+								+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID
+								+ " AND " + Field.COLUMN_LABEL + " = '" + label
+								+ "' and " + Field.COLUMN_VALUE + " =  '"
+								+ value + "'").uniqueResult();
+		logger.info("[Get by Keys] Field Assignment: " + fieldAssignment);
+		return fieldAssignment;
+	}
+
+	@Override
+	public void deleteAssignedField(long projectID, long fieldID, String label,
+			String value) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ FieldAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
+				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND  "
+				+ Field.COLUMN_LABEL + " = '" + label + "' and "
+				+ Field.COLUMN_VALUE + " =  '" + value + "'");
+		query.executeUpdate();
 	}
 }

@@ -19,6 +19,15 @@ public class FieldAssignmentID implements Serializable {
 	private String label;
 	private String value;
 
+	public FieldAssignmentID() {
+		;
+	}
+
+	public FieldAssignmentID(Project proj, Field field2) {
+		setProject(proj);
+		setField(field2);
+	}
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	public Project getProject() {
 		return project;

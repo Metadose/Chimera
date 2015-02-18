@@ -26,5 +26,9 @@ public interface FieldDAO {
 
 	public void unassignAllProjects(long projectID);
 
-	public void updateAssignedProjectField(FieldAssignment fieldAssignment);
+	public FieldAssignment getFieldByKeys(long projectID, long fieldID,
+			String label, String value);
+
+	public void deleteAssignedField(long projectID, long fieldID, String label,
+			String value);
 }
