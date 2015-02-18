@@ -3,6 +3,7 @@ package com.cebedo.pmsys.field.dao;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.project.model.Project;
 
 @Repository
 public class FieldDAOImpl implements FieldDAO {
@@ -81,10 +83,22 @@ public class FieldDAOImpl implements FieldDAO {
 	}
 
 	@Override
-	public void assign(FieldAssignment fieldAssignment) {
+	public void assignProject(FieldAssignment fieldAssignment) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(fieldAssignment);
 		logger.info("[Create] Field Assignment: " + fieldAssignment);
 	}
 
+	@Override
+	public void unassignProject(long fieldID, long projID, String label,
+			String value) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ FieldAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projID + " AND "
+				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND "
+				+ Field.COLUMN_LABEL + " = '" + label + "' AND "
+				+ Field.COLUMN_VALUE + " = '" + value + "'");
+		query.executeUpdate();
+	}
 }

@@ -132,23 +132,27 @@
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
                    											<c:if test="${!empty projectFields}">
                    												<c:forEach var="field" items="${projectFields}">
-																	<tr>
-																		<td style="padding-bottom: 3px;">
-																			<input type="text" class="form-control" value="${field.label}">
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			&nbsp;
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			<input type="text" class="form-control" value="${field.value}">
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			&nbsp;
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-warning btn-sm">Remove</button>
-																		</td>
-																	</tr>
+                   													<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project">
+																		<tr>
+																			<input type="hidden" name="project_id" value="${project.id}"/>
+																			<input type="hidden" name="field_id" value="${field.field.id}"/>
+																			<td style="padding-bottom: 3px;">
+																				<input type="text" class="form-control" id="label" name="label" value="${field.label}">
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				&nbsp;
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				<input type="text" class="form-control" id="value" name="value" value="${field.value}">
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				&nbsp;
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				<button class="btn btn-warning btn-sm">Remove</button>
+																			</td>
+																		</tr>
+																	</form>
 																</c:forEach>
 															</c:if>
 														</table>

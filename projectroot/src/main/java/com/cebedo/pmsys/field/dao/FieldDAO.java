@@ -19,5 +19,8 @@ public interface FieldDAO {
 
 	public List<Field> listWithAllCollections();
 
-	public void assign(FieldAssignment fieldAssignment);
+	public void assignProject(FieldAssignment fieldAssignment);
+
+	public void unassignProject(long fieldID, long projID, String label,
+			String value);
 }

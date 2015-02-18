@@ -19,6 +19,9 @@ public interface FieldService {
 
 	public List<Field> listWithAllCollections();
 
-	public void assign(FieldAssignment fieldAssignment, long fieldID,
+	public void assignProject(FieldAssignment fieldAssignment, long fieldID,
 			long projectID);
+
+	public void unassignProject(long fieldID, long projID, String label,
+			String value);
 }

@@ -13,6 +13,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_CREATE = "create";
 
 	public static final String REQUEST_ASSIGN_PROJECT = "assign/project";
+	public static final String REQUEST_UNASSIGN_PROJECT = "unassign/project";
 
 	public static final String ACTION_CREATE = "Create";
 	public static final String ACTION_EDIT = "Edit";

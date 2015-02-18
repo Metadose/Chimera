@@ -63,13 +63,20 @@ public class FieldServiceImpl implements FieldService {
 
 	@Override
 	@Transactional
-	public void assign(FieldAssignment fieldAssignment, long fieldID,
+	public void assignProject(FieldAssignment fieldAssignment, long fieldID,
 			long projectID) {
 		Field field = this.fieldDAO.getByID(fieldID);
 		Project proj = this.projectDAO.getByID(projectID);
 		fieldAssignment.setField(field);
 		fieldAssignment.setProject(proj);
-		this.fieldDAO.assign(fieldAssignment);
+		this.fieldDAO.assignProject(fieldAssignment);
+	}
+
+	@Override
+	@Transactional
+	public void unassignProject(long fieldID, long projID, String label,
+			String value) {
+		this.fieldDAO.unassignProject(fieldID, projID, label, value);
 	}
 
 }
