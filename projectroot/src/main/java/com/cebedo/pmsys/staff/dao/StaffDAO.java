@@ -20,4 +20,8 @@ public interface StaffDAO {
 	public List<Staff> listWithAllCollections();
 
 	public void assignProjectManager(ManagerAssignment assignment);
+
+	public void unassignProjectManager(long projectID, long staffID);
+
+	public void unassignAllProjectManagers(long projectID);
 }

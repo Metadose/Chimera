@@ -265,7 +265,11 @@
 	                   												&nbsp;
 	                   											</td>
 	                   											<td>
-	                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+	                   												<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
+																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
+																		<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+	                   												</form>
 	                   												<a href="${contextPath}/staff/edit/${staff.id}">
 	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
 	                   												</a>
@@ -275,7 +279,10 @@
                    									</table>
                    									<c:choose>
                    										<c:when test="${!empty managerAssignments}">
-                   											<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											<form name="unassignAllStaffForm" id="unassignAllStaffForm" method="post" action="${contextPath}/staff/unassign/project/all">
+                   												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+                   												<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											</form>
                    										</c:when>
                    										<c:when test="${empty managerAssignments}">
                    											<h5>No manager assigned.</h5>

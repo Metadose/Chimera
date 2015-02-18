@@ -3,12 +3,14 @@ package com.cebedo.pmsys.staff.dao;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 
@@ -86,6 +88,25 @@ public class StaffDAOImpl implements StaffDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(assignment);
 		logger.info("[Create] Manager: " + assignment);
+	}
+
+	@Override
+	public void unassignProjectManager(long projectID, long staffID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ ManagerAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
+				+ Staff.COLUMN_PRIMARY_KEY + " = " + staffID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignAllProjectManagers(long projectID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ ManagerAssignment.TABLE_NAME + " WHERE "
+				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
+		query.executeUpdate();
 	}
 
 }

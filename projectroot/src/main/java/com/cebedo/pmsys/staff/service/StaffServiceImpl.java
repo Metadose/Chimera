@@ -74,4 +74,15 @@ public class StaffServiceImpl implements StaffService {
 		this.staffDAO.assignProjectManager(assignment);
 	}
 
+	@Override
+	@Transactional
+	public void unassignProjectManager(long projectID, long staffID) {
+		this.staffDAO.unassignProjectManager(projectID, staffID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllProjectManagers(long projectID) {
+		this.staffDAO.unassignAllProjectManagers(projectID);
+	}
 }

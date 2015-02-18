@@ -80,6 +80,39 @@ public class StaffController {
 	}
 
 	/**
+	 * Unassign all staff from a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllProjectManagers(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.staffService.unassignAllProjectManagers(projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign a staff from a project.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param position
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
+	public ModelAndView unassignProjectManager(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.staffService.unassignProjectManager(projectID, staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
 	 * Assign a staff to a project.
 	 * 
 	 * @param projectID

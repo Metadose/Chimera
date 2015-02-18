@@ -21,4 +21,8 @@ public interface StaffService {
 	public void assignProjectManager(long projectID, long staffID,
 			String position);
 
+	public void unassignProjectManager(long projectID, long staffID);
+
+	public void unassignAllProjectManagers(long projectID);
+
 }
