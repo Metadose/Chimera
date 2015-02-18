@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 
@@ -73,5 +77,24 @@ public class StaffController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
+	}
+
+	/**
+	 * Assign a staff to a project.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param position
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
+	public ModelAndView assignProjectManager(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(ManagerAssignment.COLUMN_PROJECT_POSITION) String position) {
+		this.staffService.assignProjectManager(projectID, staffID, position);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 }

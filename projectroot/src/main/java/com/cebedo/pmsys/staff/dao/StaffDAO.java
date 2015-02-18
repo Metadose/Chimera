@@ -2,6 +2,7 @@ package com.cebedo.pmsys.staff.dao;
 
 import java.util.List;
 
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 
 public interface StaffDAO {
@@ -17,4 +18,6 @@ public interface StaffDAO {
 	public List<Staff> list();
 
 	public List<Staff> listWithAllCollections();
+
+	public void assignProjectManager(ManagerAssignment assignment);
 }

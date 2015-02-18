@@ -284,39 +284,42 @@
 													<br/>
 													<br/>
 													<h4>Assign Managers</h4>
-													<table>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Staff </label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<select class="form-control">
-																	<c:if test="${!empty staffList}">
-																		<c:forEach items="${staffList}" var="staff">
-																			<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-																			<option>${staffName}</option>
-																		</c:forEach>
-																	</c:if>
-					                                            </select>
-															</td>
-														</tr>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Project Position</label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<input type="text" class="form-control" placeholder="Example: Project Manager, Foreman, etc...">
-															</td>
-														</tr>
-													</table>
-													<br/>
-                                           			<button class="btn btn-primary btn-sm">Assign</button>													
+													<form role="form" name="staffForm" id="staffForm" method="post" action="${contextPath}/staff/assign/project">
+														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+														<table>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Staff </label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<select class="form-control" id="staff_id" name="staff_id">
+																		<c:if test="${!empty staffList}">
+																			<c:forEach items="${staffList}" var="staff">
+																				<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+																				<option value="${staff.id}">${staffName}</option>
+																			</c:forEach>
+																		</c:if>
+						                                            </select>
+																</td>
+															</tr>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Project Position</label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<input type="text" id="project_position" name="project_position" class="form-control" placeholder="Example: Project Manager, Foreman, etc...">
+																</td>
+															</tr>
+														</table>
+														<br/>
+                                           				<button class="btn btn-primary btn-sm">Assign</button>
+                                           			</form>
                    								</div>
                    							</div>
                    						</div>
@@ -523,19 +526,33 @@
 					                                            </td>
 					                                            <td>${task.content}</td>
 					                                            <td>
-					                                            	<a href="${contextPath}/team/edit/${task.team.id}">
-					                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
-					                                            	</a>
-					                                            	${task.team.name}
+					                                            	<c:choose>
+					                                            		<c:when test="${!empty task.team}">
+					                                            			<a href="${contextPath}/team/edit/${task.team.id}">
+							                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${task.team.name}
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.team}">
+					                                            			<h5>No team assigned.</h5>
+					                                            		</c:when>
+					                                            	</c:choose>
 					                                            </td>
-					                                            <c:set var="taskStaff" value="${task.staff}"/>
-					                                            <c:set var="taskTeam" value="${task.team}"/>
-					                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
 					                                            <td>
-					                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
-					                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
-					                                            	</a>
-					                                            	${taskStaffName}
+					                                            	<c:choose>
+					                                            		<c:when test="${!empty task.staff}">
+					                                            			<c:set var="taskStaff" value="${task.staff}"/>
+								                                            <c:set var="taskTeam" value="${task.team}"/>
+								                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+					                                            			<a href="${contextPath}/staff/edit/${taskStaff.id}">
+							                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${taskStaffName}
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.staff}">
+					                                            			<h5>No manager assigned.</h5>
+					                                            		</c:when>
+					                                            	</c:choose>					                                            
 					                                            </td>
 					                                            <td>${task.dateStart}</td>
 					                                            <td>${task.dateEnd}</td>

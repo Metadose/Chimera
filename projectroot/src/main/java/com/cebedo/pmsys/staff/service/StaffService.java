@@ -18,4 +18,7 @@ public interface StaffService {
 
 	public List<Staff> listWithAllCollections();
 
+	public void assignProjectManager(long projectID, long staffID,
+			String position);
+
 }

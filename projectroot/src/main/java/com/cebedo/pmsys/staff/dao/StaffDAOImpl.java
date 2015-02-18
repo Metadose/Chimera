@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 
 @Repository
@@ -78,6 +79,13 @@ public class StaffDAOImpl implements StaffDAO {
 			logger.info("[List] Staff: " + staff);
 		}
 		return staffList;
+	}
+
+	@Override
+	public void assignProjectManager(ManagerAssignment assignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(assignment);
+		logger.info("[Create] Manager: " + assignment);
 	}
 
 }

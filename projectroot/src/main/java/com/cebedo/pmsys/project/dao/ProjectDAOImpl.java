@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.project.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.model.Task;
 
 @Repository
 public class ProjectDAOImpl implements ProjectDAO {
@@ -90,7 +92,15 @@ public class ProjectDAOImpl implements ProjectDAO {
 		Hibernate.initialize(project.getManagerAssignments());
 		Hibernate.initialize(project.getAssignedTeams());
 		Hibernate.initialize(project.getAssignedFields());
-		Hibernate.initialize(project.getAssignedTasks());
+
+		// Initialize all tasks.
+		// And all teams and staff of each task.
+		Set<Task> assignedTasks = project.getAssignedTasks();
+		Hibernate.initialize(assignedTasks);
+		for (Task task : assignedTasks) {
+			Hibernate.initialize(task.getTeam());
+			Hibernate.initialize(task.getStaff());
+		}
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
