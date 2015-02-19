@@ -69,8 +69,25 @@
 		                                                <td>${file.name}</td>
 		                                                <td>${file.description}</td>
 		                                                <td>${file.size}</td>
-		                                                <td>${file.project.name}</td>
-		                                                <td>${staffName}</td>
+		                                                <td>
+		                                                	<c:choose>
+		                                                		<c:when test="${!empty file.project}">
+		                                                			<a href="${contextPath}/project/edit/${file.project.id}">
+																		<button class="btn btn-info btn-sm">View</button>
+																	</a>
+					                                                ${file.project.name}
+		                                                		</c:when>
+		                                                		<c:when test="${empty file.project}">
+		                                                			<h5>No project assigned.</h5>
+		                                                		</c:when>
+		                                                	</c:choose>
+		                                                </td>
+		                                                <td>
+		                                                <a href="${contextPath}/staff/edit/${file.uploader.id}">
+															<button class="btn btn-info btn-sm">View</button>
+														</a>
+		                                                ${staffName}
+		                                                </td>
 		                                                <td>${file.dateUploaded}</td>
 		                                            </tr>
 	                                            </c:forEach>

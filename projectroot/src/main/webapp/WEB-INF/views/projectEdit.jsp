@@ -597,77 +597,58 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
                                     <div class="box-body table-responsive">
-                                    	<form role="form" name="uploadForm" id="uploadForm" method="post" action="${contextPath}/project/file/upload">
-                                    		<div class="form-group">
-		                                        <label for="exampleInputFile">File Upload</label>
-		                                        <input type="file" id="inputFile">
-		                                    </div>
-                                    	</form>
-                                    	<button class="btn btn-warning btn-sm" id="uploadButton" onclick="submitForm('uploadForm')">Upload</button>
+                                    	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project">
+											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+											<label for="exampleInputFile">File Upload (20MB Max)</label>
+											<input type="file" id="file" name="file"/><br/>
+											<label>Description</label>
+											<input type="text" class="form-control" id="description" name="description"/><br/>
+											<button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+										</form>
 	                                    <br/>
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
 	                                            <tr>
 	                                            	<th>&nbsp;</th>
-	                                                <th>Rendering engine</th>
-	                                                <th>Browser</th>
-	                                                <th>Platform(s)</th>
-	                                                <th>Engine version</th>
-	                                                <th>CSS grade</th>
+	                                            	<th>#</th>
+	                                                <th>Name</th>
+	                                                <th>Description</th>
+	                                                <th>Size</th>
+	                                                <th>Uploader</th>
+	                                                <th>Date Uploaded</th>
 	                                            </tr>
 	                                        </thead>
 	                                        <tbody>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 4.0</td>
-	                                                <td>Win 95+</td>
-	                                                <td> 4</td>
-	                                                <td>X</td>
-	                                            </tr>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 5.0</td>
-	                                                <td>Win 95+</td>
-	                                                <td>5</td>
-	                                                <td>C</td>
-	                                            </tr>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 5.5</td>
-	                                                <td>Win 95+</td>
-	                                                <td>5.5</td>
-	                                                <td>A</td>
-	                                            </tr>
+	                                        	<c:if test="${!empty project.files}">
+	                                        		<c:forEach items="${project.files}" var="file">
+	                                        			<c:set var="uploader" value="${file.uploader}"/>
+	                                               		<c:set var="uploaderName" value="${uploader.prefix} ${uploader.firstName} ${uploader.middleName} ${uploader.lastName} ${uploader.suffix}"/>
+	                                        			<tr>
+			                                            	<td>
+			                                            		<center>
+																<button class="btn btn-primary btn-sm">Download</button>
+																<button class="btn btn-danger btn-sm">Delete</button>
+																</center>
+															</td>
+			                                                <td>${file.id}</td>
+			                                                <td>${file.name}</td>
+			                                                <td>${file.description}</td>
+			                                                <td>${file.size}</td>
+			                                                <td>${staffName}</td>
+			                                                <td>${file.dateUploaded}</td>
+			                                            </tr>
+	                                        		</c:forEach>
+	                                        	</c:if>
 	                                        </tbody>
 	                                        <tfoot>
 	                                            <tr>
 	                                            	<th>&nbsp;</th>
-	                                                <th>Rendering engine</th>
-	                                                <th>Browser</th>
-	                                                <th>Platform(s)</th>
-	                                                <th>Engine version</th>
-	                                                <th>CSS grade</th>
+	                                            	<th>#</th>
+	                                                <th>Name</th>
+	                                                <th>Description</th>
+	                                                <th>Size</th>
+	                                                <th>Uploader</th>
+	                                                <th>Date Uploaded</th>
 	                                            </tr>
 	                                        </tfoot>
 	                                    </table>

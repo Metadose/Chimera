@@ -47,6 +47,14 @@ public class Project implements Serializable {
 	private Set<Task> assignedTasks;
 	private Set<ProjectFile> files;
 
+	public Project() {
+		;
+	}
+
+	public Project(long id) {
+		setId(id);
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)

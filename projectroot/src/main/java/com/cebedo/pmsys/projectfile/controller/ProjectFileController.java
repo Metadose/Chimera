@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -95,6 +96,42 @@ public class ProjectFileController {
 						+ file.getOriginalFilename())));
 		stream.write(bytes);
 		stream.close();
+	}
+
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE_TO_PROJECT, method = RequestMethod.POST)
+	public ModelAndView uploadFileToProject(
+			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
+			throws IOException {
+
+		// If file is not empty.
+		if (!file.isEmpty()) {
+
+			// Upload the file to the server.
+			fileUpload(file);
+
+			// Fetch some details and set.
+			long size = file.getSize();
+			Date dateUploaded = new Date(System.currentTimeMillis());
+			ProjectFile projectFile = new ProjectFile();
+
+			// TODO Location and Uploader.
+			projectFile.setLocation("C:/");
+			projectFile.setUploader(new Staff(1));
+
+			projectFile.setProject(new Project(projectID));
+			projectFile.setName(file.getOriginalFilename());
+			projectFile.setDescription(description);
+			projectFile.setSize(size);
+			projectFile.setDateUploaded(dateUploaded);
+			this.projectFileService.create(projectFile);
+		} else {
+			// TODO Handle this scenario.
+		}
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)

@@ -92,6 +92,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 		Hibernate.initialize(project.getManagerAssignments());
 		Hibernate.initialize(project.getAssignedTeams());
 		Hibernate.initialize(project.getAssignedFields());
+		Hibernate.initialize(project.getFiles());
 
 		// Initialize all tasks.
 		// And all teams and staff of each task.

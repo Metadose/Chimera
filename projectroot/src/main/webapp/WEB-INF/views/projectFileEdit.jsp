@@ -53,7 +53,7 @@
 				                                    <c:choose>
 		                                            	<c:when test="${projectfile.id == 0}">
 		                                            		<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file">
-						                                        <label for="exampleInputFile">File Upload</label>
+						                                        <label for="exampleInputFile">File Upload (20MB Max)</label>
 						                                        <input type="file" id="file" name="file"/><br/>
 						                                        <label>Description</label>
 					                                            <input type="text" class="form-control" id="description" name="description"/><br/>
