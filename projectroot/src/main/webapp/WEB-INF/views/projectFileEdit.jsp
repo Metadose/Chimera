@@ -50,31 +50,34 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<c:set var="staff" value="${projectfile.uploader}"/>
-	                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-                   									
-				                                        <div class="form-group">
-				                                            <label>Name</label>
-				                                            <input type="text" disabled class="form-control" name="name" value="${projectfile.name}"/><br/>
-				                                            <form role="form" name="fileForm" id="fileForm" method="post" action="${contextPath}/projectfile/update">
-					                                            <label>Description</label>
-					                                            <input type="hidden" name="projectfile_id" value="${projectfile.id}"/>
-					                                            <input type="text" class="form-control" name="description" value="${projectfile.description}"/><br/>
-				                                            </form>
-				                                            <label>Size</label>
-				                                            <input type="text" disabled class="form-control" name="size" value="${projectfile.size}"/><br/>
-				                                            <label>Project</label>
-				                                            <input type="text" disabled class="form-control" name="project" value="${projectfile.project.name}"/><br/>
-				                                            <label>Uploader</label>
-				                                            <input type="text" disabled class="form-control" name="uploader" value="${staffName}"/><br/>
-				                                            <label>Date Uploaded</label>
-				                                            <input type="text" disabled class="form-control" name="dateUploaded" value="${projectfile.dateUploaded}"/><br/>
-				                                        </div>
 				                                    <c:choose>
 		                                            	<c:when test="${projectfile.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Create</button>
+		                                            		<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file">
+						                                        <label for="exampleInputFile">File Upload</label>
+						                                        <input type="file" id="file" name="file"/><br/>
+					                                            <button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+				                                            </form>
 		                                            	</c:when>
 		                                            	<c:when test="${projectfile.id > 0}">
+		                                            		<c:set var="staff" value="${projectfile.uploader}"/>
+			                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+					                                        <div class="form-group">
+					                                            <label>Name</label>
+					                                            <input type="text" disabled class="form-control" name="name" value="${projectfile.name}"/><br/>
+					                                            <form role="form" name="fileForm" id="fileForm" method="post" action="${contextPath}/projectfile/update">
+						                                            <label>Description</label>
+						                                            <input type="hidden" name="projectfile_id" value="${projectfile.id}"/>
+						                                            <input type="text" class="form-control" name="description" value="${projectfile.description}"/><br/>
+					                                            </form>
+					                                            <label>Size</label>
+					                                            <input type="text" disabled class="form-control" name="size" value="${projectfile.size}"/><br/>
+					                                            <label>Project</label>
+					                                            <input type="text" disabled class="form-control" name="project" value="${projectfile.project.name}"/><br/>
+					                                            <label>Uploader</label>
+					                                            <input type="text" disabled class="form-control" name="uploader" value="${staffName}"/><br/>
+					                                            <label>Date Uploaded</label>
+					                                            <input type="text" disabled class="form-control" name="dateUploaded" value="${projectfile.dateUploaded}"/><br/>
+					                                        </div>
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Update</button>
 		                                            		<a href="${contextPath}/projectfile/delete/${projectfile.id}">
 																<button class="btn btn-danger btn-sm">Delete This File</button>

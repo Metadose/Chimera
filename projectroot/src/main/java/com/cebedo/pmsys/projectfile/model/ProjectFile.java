@@ -26,6 +26,7 @@ public class ProjectFile implements Serializable {
 	public static final String TABLE_NAME = "project_files";
 	public static final String COLUMN_PRIMARY_KEY = "projectfile_id";
 	public static final String COLUMN_DESCRIPTION = "description";
+	public static final String PARAM_FILE = "file";
 
 	private static final long serialVersionUID = 1L;
 

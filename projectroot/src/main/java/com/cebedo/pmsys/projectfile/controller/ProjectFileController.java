@@ -1,5 +1,9 @@
 package com.cebedo.pmsys.projectfile.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
@@ -77,6 +82,28 @@ public class ProjectFileController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
+	}
+
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)
+	public ModelAndView fileUpload(
+			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file) {
+		if (!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
+				// TODO Make SYS_HOME directory.
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(new File("C:/temp/"
+								+ file.getOriginalFilename())));
+				stream.write(bytes);
+				stream.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			// TODO Handle this scenario.
+		}
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
 
 	/**
