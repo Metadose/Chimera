@@ -40,6 +40,14 @@ public class Staff implements Serializable {
 	private String contactNumber;
 	private Set<ProjectFile> files;
 
+	public Staff() {
+		;
+	}
+
+	public Staff(int id) {
+		setId(id);
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)

@@ -55,6 +55,8 @@
 		                                            		<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file">
 						                                        <label for="exampleInputFile">File Upload</label>
 						                                        <input type="file" id="file" name="file"/><br/>
+						                                        <label>Description</label>
+					                                            <input type="text" class="form-control" id="description" name="description"/><br/>
 					                                            <button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
 				                                            </form>
 		                                            	</c:when>

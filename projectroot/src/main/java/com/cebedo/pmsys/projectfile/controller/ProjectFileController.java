@@ -3,6 +3,8 @@ package com.cebedo.pmsys.projectfile.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
+import com.cebedo.pmsys.staff.model.Staff;
 
 @Controller
 @RequestMapping(ProjectFile.OBJECT_NAME)
@@ -84,21 +87,42 @@ public class ProjectFileController {
 		return JSP_EDIT;
 	}
 
+	private void fileUpload(MultipartFile file) throws IOException {
+		byte[] bytes = file.getBytes();
+		// TODO Make SYS_HOME directory.
+		BufferedOutputStream stream = new BufferedOutputStream(
+				new FileOutputStream(new File("C:/temp/"
+						+ file.getOriginalFilename())));
+		stream.write(bytes);
+		stream.close();
+	}
+
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)
-	public ModelAndView fileUpload(
-			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file) {
+	public ModelAndView handleFileUpload(
+			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
+			throws IOException {
+
+		// If file is not empty.
 		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-				// TODO Make SYS_HOME directory.
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(new File("C:/temp/"
-								+ file.getOriginalFilename())));
-				stream.write(bytes);
-				stream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+			// Upload the file to the server.
+			fileUpload(file);
+
+			// Fetch some details and set.
+			long size = file.getSize();
+			Date dateUploaded = new Date(System.currentTimeMillis());
+			ProjectFile projectFile = new ProjectFile();
+
+			// TODO Location and Uploader.
+			projectFile.setLocation("C:/");
+			projectFile.setUploader(new Staff(1));
+
+			projectFile.setName(file.getOriginalFilename());
+			projectFile.setDescription(description);
+			projectFile.setSize(size);
+			projectFile.setDateUploaded(dateUploaded);
+			this.projectFileService.create(projectFile);
 		} else {
 			// TODO Handle this scenario.
 		}

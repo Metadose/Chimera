@@ -35,7 +35,7 @@ public class ProjectFile implements Serializable {
 	private String description;
 	private Date dateUploaded;
 	private Staff uploader;
-	private String size;
+	private long size;
 	private String location;
 	private Project project;
 
@@ -68,12 +68,12 @@ public class ProjectFile implements Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "size", nullable = false, length = 16)
-	public String getSize() {
+	@Column(name = "size", nullable = false)
+	public long getSize() {
 		return size;
 	}
 
-	public void setSize(String size) {
+	public void setSize(long size) {
 		this.size = size;
 	}
 
