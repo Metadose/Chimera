@@ -57,8 +57,11 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
+		                                            			<a href="${contextPath}/projectfile/edit/${file.id}">
+																	<button class="btn btn-primary btn-sm">Download</button>
+																</a>
 																<a href="${contextPath}/projectfile/edit/${file.id}">
-																	<button class="btn btn-primary btn-sm">View</button>
+																	<button class="btn btn-primary btn-sm">View Details</button>
 																</a>
 																<a href="${contextPath}/projectfile/delete/${file.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
