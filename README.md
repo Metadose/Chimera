@@ -15,6 +15,7 @@ TODO:
 - If forget password, send pw reset request to company-wide admin
 - Tomcat logging
 - Notifications module
+- Analytics inside service objs
 
 - (mid) Store images per folder, store files per folder
 - (mid) Company, map of all projects. In google maps, 1 pin one proejct
