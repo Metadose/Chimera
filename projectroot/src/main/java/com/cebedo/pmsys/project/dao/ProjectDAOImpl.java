@@ -92,7 +92,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 		Hibernate.initialize(project.getManagerAssignments());
 		Hibernate.initialize(project.getAssignedTeams());
 		Hibernate.initialize(project.getAssignedFields());
-
+\
 		// Initialize all tasks.
 		// And all teams and staff of each task.
 		Set<Task> assignedTasks = project.getAssignedTasks();
@@ -104,5 +104,4 @@ public class ProjectDAOImpl implements ProjectDAO {
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
-
 }

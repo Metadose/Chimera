@@ -15,4 +15,8 @@ public interface ProjectFileDAO {
 	public void delete(long id);
 
 	public List<ProjectFile> list();
+
+	public List<ProjectFile> listWithAllCollections();
+
+	public void updateDescription(long fileID, String description);
 }

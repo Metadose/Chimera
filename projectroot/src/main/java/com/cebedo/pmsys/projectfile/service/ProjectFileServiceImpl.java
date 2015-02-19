@@ -47,4 +47,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		return this.projectFileDAO.list();
 	}
 
+	@Override
+	@Transactional
+	public List<ProjectFile> listWithAllCollections() {
+		return this.projectFileDAO.listWithAllCollections();
+	}
+
+	@Override
+	@Transactional
+	public void updateDescription(long fileID, String description) {
+		this.projectFileDAO.updateDescription(fileID, description);
+	}
+
 }

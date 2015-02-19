@@ -2,6 +2,8 @@ package com.cebedo.pmsys.projectfile.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -65,6 +67,34 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 			logger.info("[List] Project File: " + projectFile);
 		}
 		return projectFileList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProjectFile> listWithAllCollections() {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectFile> fileList = session.createQuery(
+				"from " + ProjectFile.CLASS_NAME).list();
+		for (ProjectFile file : fileList) {
+			Hibernate.initialize(file.getProject());
+			Hibernate.initialize(file.getUploader());
+			logger.info("[List] Project File: " + file);
+		}
+		return fileList;
+	}
+
+	@Override
+	public void updateDescription(long fileID, String description) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String hql = "UPDATE " + ProjectFile.CLASS_NAME
+				+ " SET description = :description"
+				+ " WHERE id = :projectfile_id";
+
+		Query query = session.createQuery(hql);
+		query.setParameter("description", description);
+		query.setParameter("projectfile_id", fileID);
+		query.executeUpdate();
 	}
 
 }

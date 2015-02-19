@@ -1,10 +1,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>ProjectFile ${action}</title>
+	<title>File ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
@@ -15,12 +16,12 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ProjectFile ${action}
-	                <small>Complete list of all projectFile members</small>
+	                File ${action}
+	                <small>Complete list of all files</small>
 	            </h1>
 	            <ol class="breadcrumb">
 	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li class="active"><a href="${contextPath}/projectFile/list">ProjectFile</a></li>
+	                <li class="active"><a href="${contextPath}/projectfile/list">File</a></li>
 	            </ol>
 	        </section>
 	        <section class="content">
@@ -31,8 +32,8 @@
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<a href="${contextPath}/projectFile/edit/0">
-                                		<button class="btn btn-success btn-sm">Create ProjectFile</button>
+                                	<a href="${contextPath}/projectfile/edit/0">
+                                		<button class="btn btn-success btn-sm">Upload File</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -41,24 +42,36 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Size</th>
+                                                <th>Project</th>
+                                                <th>Uploader</th>
+                                                <th>Date Uploaded</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         	<c:if test="${!empty projectFileList}">
-                                        		<c:forEach items="${projectFileList}" var="projectFile">
+                                        		<c:forEach items="${projectFileList}" var="file">
+                                        			<c:set var="staff" value="${file.uploader}"/>
+	                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/projectFile/edit/${projectFile.id}">
+																<a href="${contextPath}/projectfile/edit/${file.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
 																</a>
-																<a href="${contextPath}/projectFile/delete/${projectFile.id}">
+																<a href="${contextPath}/projectfile/delete/${file.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
-														<td>${projectFile.id}</td>
-		                                                <td>${projectFile.name}</td>
+														<td>${file.id}</td>
+		                                                <td>${file.name}</td>
+		                                                <td>${file.description}</td>
+		                                                <td>${file.size}</td>
+		                                                <td>${file.project.name}</td>
+		                                                <td>${staffName}</td>
+		                                                <td>${file.dateUploaded}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -68,6 +81,11 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Size</th>
+                                                <th>Project</th>
+                                                <th>Uploader</th>
+                                                <th>Date Uploaded</th>
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -232,11 +232,7 @@
                    							</div>
                    						</div>
               						</div>
-              						<h2 class="page-header">Staff&nbsp;&nbsp;
-              						<a href="${contextPath}/staff/edit/0">
-              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
-              						</a>
-              						</h2>
+              						<h2 class="page-header">Staff</h2>
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
@@ -294,7 +290,11 @@
                    									</c:choose>
 													<br/>
 													<br/>
-													<h4>Assign Managers</h4>
+													<h4>Assign Managers&nbsp;
+													<a href="${contextPath}/staff/edit/0">
+				              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+				              						</a>
+													</h4>
 													<form role="form" name="staffForm" id="staffForm" method="post" action="${contextPath}/staff/assign/project">
 														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 														<table>
@@ -337,11 +337,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">Teams&nbsp;&nbsp;
-                   									<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
-                   									</a>
-                   									</h3>
+                   									<h3 class="box-title">Teams</h3>
                    								</div>
                    								<div class="box-body">
                    									<table>
@@ -389,7 +385,11 @@
                    									</c:choose>
 													<br/>
 													<br/>
-													<h4>Assign Teams</h4>
+													<h4>Assign Teams&nbsp;
+													<a href="${contextPath}/team/edit/0">
+                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   									</a>
+													</h4>
 													<form role="form" name="teamForm" id="teamForm" method="post" action="${contextPath}/team/assign/project">
 														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 														<table>
@@ -411,6 +411,7 @@
 																</td>
 															</tr>
 														</table>
+														<br/>
 														<button class="btn btn-primary btn-sm">Assign</button>
 													</form>
 													<br/>

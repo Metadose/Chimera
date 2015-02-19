@@ -38,6 +38,11 @@
                 </a>
             </li>
             <li>
+                <a href="${contextPath}/projectfile/list/">
+                    <i class="fa fa-file"></i> <span>Files</span>
+                </a>
+            </li>
+            <li>
                 <a href="${contextPath}/task/list/">
                     <i class="fa fa-tasks"></i> <span>Tasks</span>
                 </a>

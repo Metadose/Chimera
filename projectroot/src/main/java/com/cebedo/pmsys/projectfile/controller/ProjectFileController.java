@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -33,7 +35,8 @@ public class ProjectFileController {
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listProjectFiles(Model model) {
-		model.addAttribute(ATTR_LIST, this.projectFileService.list());
+		model.addAttribute(ATTR_LIST,
+				this.projectFileService.listWithAllCollections());
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
@@ -74,5 +77,21 @@ public class ProjectFileController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
+	}
+
+	/**
+	 * Update a description of a file.
+	 * 
+	 * @param fileID
+	 * @param description
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
+	public ModelAndView updateDescription(
+			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description) {
+		this.projectFileService.updateDescription(fileID, description);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
 }

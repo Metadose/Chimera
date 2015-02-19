@@ -25,6 +25,7 @@ public class ProjectFile implements Serializable {
 	public static final String OBJECT_NAME = "projectfile";
 	public static final String TABLE_NAME = "project_files";
 	public static final String COLUMN_PRIMARY_KEY = "projectfile_id";
+	public static final String COLUMN_DESCRIPTION = "description";
 
 	private static final long serialVersionUID = 1L;
 
@@ -105,7 +106,7 @@ public class ProjectFile implements Serializable {
 	}
 
 	@Column(name = "date_uploaded", nullable = false)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDateUploaded() {
 		return dateUploaded;
 	}
