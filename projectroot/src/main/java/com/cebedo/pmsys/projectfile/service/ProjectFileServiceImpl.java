@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.projectfile.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -35,10 +36,26 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		this.projectFileDAO.update(projectFile);
 	}
 
+	/**
+	 * Deletes the physical file then the file records.
+	 */
 	@Override
 	@Transactional
 	public void delete(long id) {
+		deletePhysicalFile(id);
 		this.projectFileDAO.delete(id);
+	}
+
+	/**
+	 * Deletes the physical file from the file system.
+	 * 
+	 * @param id
+	 */
+	private void deletePhysicalFile(long id) {
+		ProjectFile file = this.projectFileDAO.getByID(id);
+		String location = file.getLocation();
+		File phyFile = new File(location);
+		phyFile.delete();
 	}
 
 	@Override

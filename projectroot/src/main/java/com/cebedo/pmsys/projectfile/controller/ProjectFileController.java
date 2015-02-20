@@ -23,6 +23,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
 @RequestMapping(ProjectFile.OBJECT_NAME)
@@ -34,11 +35,26 @@ public class ProjectFileController {
 	public static final String JSP_EDIT = "projectFileEdit";
 
 	private ProjectFileService projectFileService;
+	private SystemConfigurationService configService;
+	private String sysHome;
+
+	public String getSysHome() {
+		if (sysHome == null) {
+			sysHome = this.configService.getValueByName("SYS_HOME");
+		}
+		return sysHome;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "projectFileService")
 	public void setProjectFileService(ProjectFileService ps) {
 		this.projectFileService = ps;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "systemConfigurationService")
+	public void setFieldService(SystemConfigurationService ps) {
+		this.configService = ps;
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
@@ -88,14 +104,38 @@ public class ProjectFileController {
 		return JSP_EDIT;
 	}
 
-	private void fileUpload(MultipartFile file) throws IOException {
+	/**
+	 * Upload a file.
+	 * 
+	 * @param file
+	 * @param id
+	 * @param objectName
+	 * @throws IOException
+	 */
+	private void fileUpload(MultipartFile file, String fileLocation)
+			throws IOException {
+		// Prelims.
 		byte[] bytes = file.getBytes();
-		// TODO Make SYS_HOME directory.
+		checkDirectoryExistence(fileLocation);
+
+		// Upload file.
 		BufferedOutputStream stream = new BufferedOutputStream(
-				new FileOutputStream(new File("C:/temp/"
-						+ file.getOriginalFilename())));
+				new FileOutputStream(new File(fileLocation)));
 		stream.write(bytes);
 		stream.close();
+	}
+
+	/**
+	 * Helper function to create non-existing folders.
+	 * 
+	 * @param fileLocation
+	 */
+	private void checkDirectoryExistence(String fileLocation) {
+		File file = new File(fileLocation);
+		File parent = file.getParentFile();
+		if (!parent.exists()) {
+			parent.mkdirs();
+		}
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE_TO_PROJECT, method = RequestMethod.POST)
@@ -109,17 +149,19 @@ public class ProjectFileController {
 		if (!file.isEmpty()) {
 
 			// Upload the file to the server.
-			fileUpload(file);
+			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
+					+ "/" + projectID + "/files/" + file.getOriginalFilename();
+			fileUpload(file, fileLocation);
 
 			// Fetch some details and set.
 			long size = file.getSize();
 			Date dateUploaded = new Date(System.currentTimeMillis());
 			ProjectFile projectFile = new ProjectFile();
 
-			// TODO Location and Uploader.
-			projectFile.setLocation("C:/");
+			// TODO Uploader.
 			projectFile.setUploader(new Staff(1));
 
+			projectFile.setLocation(fileLocation);
 			projectFile.setProject(new Project(projectID));
 			projectFile.setName(file.getOriginalFilename());
 			projectFile.setDescription(description);
@@ -144,7 +186,14 @@ public class ProjectFileController {
 		if (!file.isEmpty()) {
 
 			// Upload the file to the server.
-			fileUpload(file);
+			// If no project id present, upload it to staff folder.
+			// TODO
+			// String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME +
+			// "/"
+			// + staffID + "/files/" + file.getOriginalFilename();
+			String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME + "/"
+					+ 1 + "/files/" + file.getOriginalFilename();
+			fileUpload(file, fileLocation);
 
 			// Fetch some details and set.
 			long size = file.getSize();

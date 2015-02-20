@@ -628,7 +628,9 @@
 			                                            		<center>
 																<button class="btn btn-primary btn-sm">Download</button>
 																<button class="btn btn-primary btn-sm">View Details</button>
-																<button class="btn btn-danger btn-sm">Delete</button>
+																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/${file.id}">
+																	<button class="btn btn-danger btn-sm">Delete</button>
+																</form>
 																</center>
 															</td>
 			                                                <td>${file.id}</td>
