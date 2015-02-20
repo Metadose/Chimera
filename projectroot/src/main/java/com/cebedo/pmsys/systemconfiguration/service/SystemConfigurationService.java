@@ -16,4 +16,6 @@ public interface SystemConfigurationService {
 
 	public List<SystemConfiguration> list();
 
+	public String getValueByName(String name);
+
 }

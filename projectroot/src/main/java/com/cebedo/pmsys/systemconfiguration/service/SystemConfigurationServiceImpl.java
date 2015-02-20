@@ -49,4 +49,9 @@ public class SystemConfigurationServiceImpl implements
 		return this.systemConfigurationDAO.list();
 	}
 
+	@Override
+	@Transactional
+	public String getValueByName(String name) {
+		return this.systemConfigurationDAO.getValueByName(name);
+	}
 }

@@ -68,4 +68,15 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 		return systemConfigurationList;
 	}
 
+	@Override
+	public String getValueByName(String name) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SystemConfiguration systemConfiguration = (SystemConfiguration) session
+				.createQuery(
+						"from " + SystemConfiguration.CLASS_NAME + " where "
+								+ SystemConfiguration.COLUMN_NAME + "='" + name
+								+ "'").uniqueResult();
+		return systemConfiguration.getValue();
+	}
+
 }

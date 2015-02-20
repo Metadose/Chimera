@@ -17,6 +17,7 @@ public class SystemConfiguration implements Serializable {
 	public static final String OBJECT_NAME = "config";
 	public static final String TABLE_NAME = "system_configuration";
 	public static final String COLUMN_PRIMARY_KEY = "sysconf_id";
+	public static final String COLUMN_NAME = "name";
 
 	private static final long serialVersionUID = 1L;
 

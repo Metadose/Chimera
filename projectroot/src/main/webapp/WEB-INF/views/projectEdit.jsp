@@ -670,22 +670,22 @@
                                     	 <br/>
 									     <ul class="row">
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1.jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1.jpg"/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (1).jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (1).jpg"/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (2).jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (2).jpg"/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (3).jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (3).jpg"/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (4).jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (4).jpg"/>
 									          </li>
 									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (5).jpg"/> "/>
+									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (5).jpg"/>
 									          </li>
 									     </ul>
 									</div>
