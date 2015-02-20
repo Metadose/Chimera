@@ -49,6 +49,7 @@
                 <beans:value>com.cebedo.pmsys.team.model.TeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
                 <beans:value>com.cebedo.pmsys.projectfile.model.ProjectFile</beans:value>
+                <beans:value>com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -106,6 +107,13 @@
     </beans:bean>
     <beans:bean id="projectFileService" class="com.cebedo.pmsys.projectfile.service.ProjectFileServiceImpl">
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationServiceImpl">
+        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />
