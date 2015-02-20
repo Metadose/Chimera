@@ -151,6 +151,8 @@ public class ProjectFileController {
 			// Upload the file to the server.
 			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
 					+ "/" + projectID + "/files/" + file.getOriginalFilename();
+
+			// TODO Transfer this to Service class.
 			fileUpload(file, fileLocation);
 
 			// Fetch some details and set.

@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.task.model.Task;
@@ -46,6 +47,7 @@ public class Project implements Serializable {
 	private String notes;
 	private Set<Task> assignedTasks;
 	private Set<ProjectFile> files;
+	private Set<Photo> photos;
 
 	public Project() {
 		;
@@ -175,6 +177,15 @@ public class Project implements Serializable {
 
 	public void setFiles(Set<ProjectFile> files) {
 		this.files = files;
+	}
+
+	@OneToMany(mappedBy = "project")
+	public Set<Photo> getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(Set<Photo> photos) {
+		this.photos = photos;
 	}
 
 	@Override

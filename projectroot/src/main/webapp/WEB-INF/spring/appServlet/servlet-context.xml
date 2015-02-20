@@ -50,6 +50,7 @@
                 <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
                 <beans:value>com.cebedo.pmsys.projectfile.model.ProjectFile</beans:value>
                 <beans:value>com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration</beans:value>
+                <beans:value>com.cebedo.pmsys.photo.model.Photo</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -114,6 +115,13 @@
     </beans:bean>
     <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationServiceImpl">
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="photoDAO" class="com.cebedo.pmsys.photo.dao.PhotoDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="photoService" class="com.cebedo.pmsys.photo.service.PhotoServiceImpl">
+        <beans:property name="photoDAO" ref="photoDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />

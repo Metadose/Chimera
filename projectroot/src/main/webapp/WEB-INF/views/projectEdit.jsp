@@ -658,37 +658,25 @@
 	                                </div><!-- /.box-body -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_4">
-                                    <div class="form-group">
-                                        <label for="exampleInputFile">Upload Photo</label>
-                                        <input type="file" id="exampleInputFile"><br/>
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-                                        <label>Description</label>
-                                        <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-										<button class="btn btn-primary btn-sm">Upload</button>
-                                    </div>
+                                    <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project">
+										<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+										<label for="exampleInputFile">Upload Photo (20MB Max)</label>
+										<input type="file" id="file" name="file"/><br/>
+										<label>Description</label>
+										<input type="text" class="form-control" id="description" name="description"/><br/>
+										<button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+									</form>
                                     <br/>
                                     <div class="box">
                                     	 <br/>
 									     <ul class="row">
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1.jpg"/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (1).jpg"/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (2).jpg"/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (3).jpg"/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (4).jpg"/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="${contextPath}/image/display/?project_id=${project.id}&filename=1 (5).jpg"/>
-									          </li>
+									     	<c:if test="${!empty project.photos}">
+									     		<c:forEach items="${project.photos}" var="photo">
+									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/>
+													</li>
+									     		</c:forEach>
+									     	</c:if>
 									     </ul>
 									</div>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
