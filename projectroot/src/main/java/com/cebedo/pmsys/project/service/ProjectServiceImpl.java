@@ -58,7 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	public Project getByID(int id) {
+	public Project getByID(long id) {
 		return this.projectDAO.getByID(id);
 	}
 

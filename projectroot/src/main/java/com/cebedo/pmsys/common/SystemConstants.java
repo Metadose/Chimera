@@ -15,6 +15,8 @@ public abstract class SystemConstants {
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";
 	public static final String REQUEST_UPLOAD_TO_PROJECT = "upload/project";
+	public static final String REQUEST_UPLOAD_TO_PROJECT_PROFILE = "upload/project/profile";
+	public static final String REQUEST_DISPLAY_PROJECT_PROFILE = "display/project/profile";
 	public static final String REQUEST_DISPLAY = "display";
 
 	public static final String FROM_PROJECT = "from/project";

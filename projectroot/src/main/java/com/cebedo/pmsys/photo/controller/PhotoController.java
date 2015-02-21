@@ -55,6 +55,31 @@ public class PhotoController {
 		this.configService = ps;
 	}
 
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT_PROFILE, method = RequestMethod.POST)
+	public ModelAndView uploadProjectProfile(
+			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID)
+			throws IOException {
+
+		// If file is not empty.
+		if (!file.isEmpty()) {
+
+			// Upload the file to the server.
+			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
+					+ "/" + projectID + "/profile/photo/"
+					+ file.getOriginalFilename();
+
+			// Fetch some details and set.
+			this.photoService.uploadProjectProfile(file, fileLocation,
+					projectID);
+		} else {
+			// TODO Handle this scenario.
+		}
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,

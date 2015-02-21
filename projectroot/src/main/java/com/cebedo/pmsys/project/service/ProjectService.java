@@ -11,7 +11,7 @@ public interface ProjectService {
 
 	public void create(Project project);
 
-	public Project getByID(int id);
+	public Project getByID(long projectID);
 
 	public void update(Project project);
 

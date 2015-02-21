@@ -12,14 +12,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.photo.dao.PhotoDAO;
 import com.cebedo.pmsys.photo.model.Photo;
+import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
 	private PhotoDAO photoDAO;
+	private ProjectDAO projectDAO;
+
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
 
 	public void setPhotoDAO(PhotoDAO photoDAO) {
 		this.photoDAO = photoDAO;
+	}
+
+	@Override
+	@Transactional
+	public void uploadProjectProfile(MultipartFile file, String fileLocation,
+			long projectID) throws IOException {
+		Project proj = this.projectDAO.getByID(projectID);
+		proj.setThumbnailURL(fileLocation);
+		fileUpload(file, fileLocation);
+		this.projectDAO.update(proj);
 	}
 
 	@Override
@@ -93,5 +110,4 @@ public class PhotoServiceImpl implements PhotoService {
 			parent.mkdirs();
 		}
 	}
-
 }

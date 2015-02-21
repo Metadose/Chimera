@@ -74,23 +74,26 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									[Photo]
+                   									<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/><br/><br/>
                    									<div class="form-group">
-                   										<table>
-                   											<tr>
-                   												<td>
-                   													<label for="exampleInputFile">Update Photo</label>
-                   												</td>
-                   												<td>
-                   													&nbsp;&nbsp;
-                   												</td>
-                   												<td>
-                   													<input type="file" id="exampleInputFile">
-                   												</td>
-                   											</tr>
-                   										</table>
-                   										<br/>
-				                                        <button class="btn btn-warning btn-sm">Upload</button>
+                   										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
+                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
+	                   										<table>
+	                   											<tr>
+	                   												<td>
+	                   													<label for="exampleInputFile">Update Photo</label>
+	                   												</td>
+	                   												<td>
+	                   													&nbsp;&nbsp;
+	                   												</td>
+	                   												<td>
+	                   													<input type="file" id="file" name="file"/>
+	                   												</td>
+	                   											</tr>
+	                   										</table>
+	                   										<br/>
+					                                        <button class="btn btn-warning btn-sm">Upload</button>
+				                                        </form>
 				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
 				                                    </div>
 				                                    <br/>
@@ -669,8 +672,7 @@
 										<button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
 									</form>
                                     <br/>
-                                    <div class="box">
-                                    	<div class="box box-primary">
+                                   	<div class="box box-primary">
                                     	<div class="box-header">
            									<h3 class="box-title">Photos</h3>
            								</div>
@@ -692,8 +694,7 @@
 										     	</c:if>
 										     </ul>
            								</div>
-           								</div>
-									</div>
+       								</div>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								      <div class="modal-dialog">
 								        <div class="modal-content">         

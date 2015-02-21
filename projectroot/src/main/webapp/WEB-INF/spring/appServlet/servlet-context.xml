@@ -122,6 +122,7 @@
     </beans:bean>
     <beans:bean id="photoService" class="com.cebedo.pmsys.photo.service.PhotoServiceImpl">
         <beans:property name="photoDAO" ref="photoDAO"></beans:property>
+        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />
