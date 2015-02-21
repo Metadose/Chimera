@@ -113,12 +113,14 @@ public class PhotoController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Photo.COLUMN_PRIMARY_KEY + "}")
-	public String delete(@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id) {
+	@RequestMapping(SystemConstants.REQUEST_DELETE)
+	public ModelAndView delete(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Photo.COLUMN_PRIMARY_KEY) int id) {
 		this.photoService.delete(id);
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PHOTO + "/"
-				+ SystemConstants.REQUEST_LIST;
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"

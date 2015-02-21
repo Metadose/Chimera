@@ -1,12 +1,16 @@
 package com.cebedo.pmsys.projectfile.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 
 public interface ProjectFileService {
 
-	public void create(ProjectFile projectFile);
+	public void create(ProjectFile projectFile, MultipartFile file,
+			String fileLocation) throws IOException;
 
 	public ProjectFile getByID(long id);
 

@@ -42,9 +42,15 @@ public class PhotoServiceImpl implements PhotoService {
 		this.photoDAO.update(photo);
 	}
 
+	/**
+	 * Delete actual physical file and delete photo record.
+	 */
 	@Override
 	@Transactional
 	public void delete(long id) {
+		Photo photo = this.photoDAO.getByID(id);
+		File photoFile = new File(photo.getLocation());
+		photoFile.delete();
 		this.photoDAO.delete(id);
 	}
 

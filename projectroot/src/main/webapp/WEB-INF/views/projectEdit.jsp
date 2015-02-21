@@ -628,7 +628,9 @@
 			                                            		<center>
 																<button class="btn btn-primary btn-sm">Download</button>
 																<button class="btn btn-primary btn-sm">View Details</button>
-																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/${file.id}">
+																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
+																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+																	<input type="hidden" id="projectfile_id" name="projectfile_id" value="${file.id}"/>
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</form>
 																</center>
@@ -668,16 +670,29 @@
 									</form>
                                     <br/>
                                     <div class="box">
-                                    	 <br/>
-									     <ul class="row">
-									     	<c:if test="${!empty project.photos}">
-									     		<c:forEach items="${project.photos}" var="photo">
-									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/>
-													</li>
-									     		</c:forEach>
-									     	</c:if>
-									     </ul>
+                                    	<div class="box box-primary">
+                                    	<div class="box-header">
+           									<h3 class="box-title">Photos</h3>
+           								</div>
+           								<div class="box-body">
+           									<ul class="row">
+										     	<c:if test="${!empty project.photos}">
+										     		<c:forEach items="${project.photos}" var="photo">
+										     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+															<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
+															<form action="${contextPath}/photo/delete">
+																<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+																<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
+																<h5>${photo.name}</h5>
+																<h6>${photo.description}</h6>
+																<button class="btn btn-danger btn-sm" id="photoDeleteButton">Delete</button>
+															</form>
+														</li>
+										     		</c:forEach>
+										     	</c:if>
+										     </ul>
+           								</div>
+           								</div>
 									</div>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								      <div class="modal-dialog">

@@ -1,8 +1,5 @@
 package com.cebedo.pmsys.projectfile.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -71,7 +68,10 @@ public class ProjectFileController {
 	public String create(
 			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile) {
 		if (projectFile.getId() == 0) {
-			this.projectFileService.create(projectFile);
+			// TODO Create function?
+			// Do we need this?
+			// this.projectFileService.create(projectFile);
+			;
 		} else {
 			this.projectFileService.update(projectFile);
 		}
@@ -79,7 +79,17 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
+	@RequestMapping(SystemConstants.REQUEST_DELETE + "/"
+			+ SystemConstants.FROM_PROJECT)
+	public String deleteFromProject(
+			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) int id,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID) {
+		this.projectFileService.delete(id);
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id) {
 		this.projectFileService.delete(id);
@@ -87,7 +97,7 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
+	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String editProjectFile(
 			@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id, Model model) {
@@ -104,40 +114,6 @@ public class ProjectFileController {
 		return JSP_EDIT;
 	}
 
-	/**
-	 * Upload a file.
-	 * 
-	 * @param file
-	 * @param id
-	 * @param objectName
-	 * @throws IOException
-	 */
-	private void fileUpload(MultipartFile file, String fileLocation)
-			throws IOException {
-		// Prelims.
-		byte[] bytes = file.getBytes();
-		checkDirectoryExistence(fileLocation);
-
-		// Upload file.
-		BufferedOutputStream stream = new BufferedOutputStream(
-				new FileOutputStream(new File(fileLocation)));
-		stream.write(bytes);
-		stream.close();
-	}
-
-	/**
-	 * Helper function to create non-existing folders.
-	 * 
-	 * @param fileLocation
-	 */
-	private void checkDirectoryExistence(String fileLocation) {
-		File file = new File(fileLocation);
-		File parent = file.getParentFile();
-		if (!parent.exists()) {
-			parent.mkdirs();
-		}
-	}
-
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE_TO_PROJECT, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -151,9 +127,6 @@ public class ProjectFileController {
 			// Upload the file to the server.
 			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
 					+ "/" + projectID + "/files/" + file.getOriginalFilename();
-
-			// TODO Transfer this to Service class.
-			fileUpload(file, fileLocation);
 
 			// Fetch some details and set.
 			long size = file.getSize();
@@ -169,7 +142,7 @@ public class ProjectFileController {
 			projectFile.setDescription(description);
 			projectFile.setSize(size);
 			projectFile.setDateUploaded(dateUploaded);
-			this.projectFileService.create(projectFile);
+			this.projectFileService.create(projectFile, file, fileLocation);
 		} else {
 			// TODO Handle this scenario.
 		}
@@ -190,12 +163,11 @@ public class ProjectFileController {
 			// Upload the file to the server.
 			// If no project id present, upload it to staff folder.
 			// TODO
-			// String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME +
+			// String fileLocation = getSysHome() + Staff.OBJECT_NAME +
 			// "/"
 			// + staffID + "/files/" + file.getOriginalFilename();
 			String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME + "/"
 					+ 1 + "/files/" + file.getOriginalFilename();
-			fileUpload(file, fileLocation);
 
 			// Fetch some details and set.
 			long size = file.getSize();
@@ -210,7 +182,7 @@ public class ProjectFileController {
 			projectFile.setDescription(description);
 			projectFile.setSize(size);
 			projectFile.setDateUploaded(dateUploaded);
-			this.projectFileService.create(projectFile);
+			this.projectFileService.create(projectFile, file, fileLocation);
 		} else {
 			// TODO Handle this scenario.
 		}

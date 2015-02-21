@@ -42,10 +42,11 @@ public class ImageService {
 
 		InputStream imgStream = new FileInputStream(sysHome
 				+ Project.OBJECT_NAME + "/" + projectID + "/photos/" + fileName);
+		byte[] imgBytes = IOUtils.toByteArray(imgStream);
+		imgStream.close();
 
 		final HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.IMAGE_PNG);
-		return new ResponseEntity<byte[]>(IOUtils.toByteArray(imgStream),
-				headers, HttpStatus.CREATED);
+		return new ResponseEntity<byte[]>(imgBytes, headers, HttpStatus.CREATED);
 	}
 }
