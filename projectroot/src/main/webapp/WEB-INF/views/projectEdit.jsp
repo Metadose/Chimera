@@ -51,25 +51,16 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
-                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
-                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
-                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
-                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Map</a></li>
-<!--                                 <li class="dropdown"> -->
-<!--                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"> -->
-<!--                                         Dropdown <span class="caret"></span> -->
-<!--                                     </a> -->
-<!--                                     <ul class="dropdown-menu"> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li> -->
-<!--                                         <li role="presentation" class="divider"></li> -->
-<!--                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li> -->
-<!--                                     </ul> -->
-<!--                                 </li> -->
-<!--                                 <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li> -->
+                                <c:choose>
+                                	<c:when test="${project.id != 0}">
+                                		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
+		                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
+		                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
+		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
+		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
+		                                <li><a href="#tab_7" data-toggle="tab">Map</a></li>
+                                	</c:when>
+                                </c:choose>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -82,38 +73,42 @@
                    								</div>
                    								<div class="box-body">
                    									<c:choose>
-                   										<c:when test="${!empty project.thumbnailURL}">
-                   											<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-                   										</c:when>
-                   										<c:when test="${empty project.thumbnailURL}">
-                   											No photo uploaded.
-                   										</c:when>
-                   									</c:choose>
-                   									<br/><br/>
-                   									<div class="form-group">
-                   										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
-                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
-	                   										<table>
-	                   											<tr>
-	                   												<td>
-	                   													<label for="exampleInputFile">Update Photo</label>
-	                   												</td>
-	                   												<td>
-	                   													&nbsp;&nbsp;
-	                   												</td>
-	                   												<td>
-	                   													<input type="file" id="file" name="file"/>
-	                   												</td>
-	                   											</tr>
-	                   										</table>
-	                   										<br/>
-					                                        <button class="btn btn-warning btn-sm">Upload</button>
-				                                        </form>
-				                                        &nbsp;
-				                                        <form action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
-				                                        	<button class="btn btn-danger btn-sm">Delete Photo</button>
-				                                        </form>
-				                                    </div>
+                                						<c:when test="${project.id != 0}">
+                                							<c:choose>
+		                   										<c:when test="${!empty project.thumbnailURL}">
+		                   											<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
+		                   										</c:when>
+		                   										<c:when test="${empty project.thumbnailURL}">
+		                   											No photo uploaded.
+		                   										</c:when>
+		                   									</c:choose>
+		                   									<br/><br/>
+		                   									<div class="form-group">
+		                   										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
+		                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
+			                   										<table>
+			                   											<tr>
+			                   												<td>
+			                   													<label for="exampleInputFile">Update Photo</label>
+			                   												</td>
+			                   												<td>
+			                   													&nbsp;&nbsp;
+			                   												</td>
+			                   												<td>
+			                   													<input type="file" id="file" name="file"/>
+			                   												</td>
+			                   											</tr>
+			                   										</table>
+			                   										<br/>
+							                                        <button class="btn btn-warning btn-sm">Upload</button>
+						                                        </form>
+						                                        &nbsp;
+						                                        <form action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
+						                                        	<button class="btn btn-danger btn-sm">Delete Photo</button>
+						                                        </form>
+						                                    </div>
+                                						</c:when>
+                              						</c:choose>
 				                                    <br/>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
 				                                        <div class="form-group">
@@ -142,6 +137,8 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:choose>
+                   						<c:when test="${project.id != 0}">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
@@ -252,7 +249,11 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</c:when>
+                   						</c:choose>
               						</div>
+              						<c:choose>
+                   					<c:when test="${project.id != 0}">
               						<h2 class="page-header">Staff</h2>
               						<div class="row">
                    						<div class="col-md-6">
@@ -440,7 +441,11 @@
                    							</div>
                    						</div>
                						</div>
+               						</c:when>
+               						</c:choose>
                                 </div><!-- /.tab-pane -->
+                                <c:choose>
+                   				<c:when test="${project.id != 0}">
                                 <div class="tab-pane" id="tab_7">
                                 	<div class="box">
                                 		google map location:<br/>
@@ -819,6 +824,8 @@
 		                                </li>
 		                            </ul>
                                 </div><!-- /.tab-pane -->
+                                </c:when>
+                                </c:choose>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
