@@ -55,6 +55,47 @@ public class PhotoController {
 		this.configService = ps;
 	}
 
+	/**
+	 * Delete a project's profile picture.
+	 * 
+	 * @param projectID
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
+			+ SystemConstants.PROJECT_PROFILE, method = RequestMethod.POST)
+	public ModelAndView deleteProjectProfile(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID)
+			throws IOException {
+		this.photoService.deleteProjectProfile(projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_STAFF_PROFILE, method = RequestMethod.POST)
+	public ModelAndView uploadStaffProfile(
+			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID)
+			throws IOException {
+
+		// If file is not empty.
+		if (!file.isEmpty()) {
+
+			// Upload the file to the server.
+			String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME + "/"
+					+ staffID + "/profile/photo/" + file.getOriginalFilename();
+
+			// Fetch some details and set.
+			this.photoService.uploadStaffProfile(file, fileLocation, staffID);
+		} else {
+			// TODO Handle this scenario.
+		}
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
+	}
+
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadProjectProfile(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,

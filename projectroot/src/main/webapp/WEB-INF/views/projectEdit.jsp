@@ -27,8 +27,15 @@
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
-	            <h1>
-	                ${project.name}
+	            <h1>	
+	            	<c:choose>
+	            		<c:when test="${project.id == 0}">
+	            			New Project
+	            		</c:when>
+	            		<c:when test="${project.id != 0}">
+	            			${project.name}
+	            		</c:when>
+	            	</c:choose>
 	                <small>${action} Project</small>
 	            </h1>
 	            <ol class="breadcrumb">
@@ -74,7 +81,15 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/><br/><br/>
+                   									<c:choose>
+                   										<c:when test="${!empty project.thumbnailURL}">
+                   											<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
+                   										</c:when>
+                   										<c:when test="${empty project.thumbnailURL}">
+                   											No photo uploaded.
+                   										</c:when>
+                   									</c:choose>
+                   									<br/><br/>
                    									<div class="form-group">
                    										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
                    											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
@@ -94,7 +109,10 @@
 	                   										<br/>
 					                                        <button class="btn btn-warning btn-sm">Upload</button>
 				                                        </form>
-				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
+				                                        &nbsp;
+				                                        <form action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
+				                                        	<button class="btn btn-danger btn-sm">Delete Photo</button>
+				                                        </form>
 				                                    </div>
 				                                    <br/>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">

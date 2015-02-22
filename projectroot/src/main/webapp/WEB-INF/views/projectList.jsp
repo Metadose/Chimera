@@ -18,10 +18,6 @@
 	                Project ${action}
 	                <small>Complete list of all projects</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li class="active"><a href="${contextPath}/project/list">Projects</a></li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">
@@ -39,7 +35,6 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Project</th>
                                                 <th>Manager(s)</th>
                                                 <th>Location</th>
@@ -60,7 +55,6 @@
 																</form>
 															</center>
 														</td>
-														<td>${project.id}</td>
 		                                                <td>
 		                                                	<c:choose>
 				                                            	<c:when test="${project.status == 0}">
@@ -92,10 +86,24 @@
 		                                                <td>
 		                                                	<c:forEach items="${project.managerAssignments}" var="managerAssignment">
 		                                                		<c:set var="man" value="${managerAssignment.manager}"/>
-			                                                	${man.thumbnailURL}<br/>
+		                                                		<c:choose>
+		                                                			<c:when test="${!empty man.thumbnailURL}">
+		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${man.id}"/>
+		                                                			</c:when>
+		                                                			<c:when test="${empty man.thumbnailURL}">
+		                                                				No photo uploaded.
+		                                                			</c:when>
+		                                                		</c:choose>
+			                                                	<br/>
+			                                                	<br/>
+			                                                	<form action="${contextPath}/staff/edit/${man.id}">
+			                                                		<button class="btn btn-info btn-sm">View</button>
+			                                                	</form>
 			                                                	${managerAssignment.projectPosition}<br/>
 			                                                	${man.prefix} ${man.firstName} ${man.middleName} ${man.lastName} ${man.suffix}<br/>
 			                                                	${man.companyPosition}<br/>
+			                                                	<br/>
+			                                                	<br/>
 		                                                	</c:forEach>
 														</td>
 		                                                <td>${project.location}</td>
@@ -107,7 +115,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Project</th>
                                                 <th>Manager(s)</th>
                                                 <th>Location</th>

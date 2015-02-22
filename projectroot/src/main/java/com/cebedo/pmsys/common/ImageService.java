@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
@@ -28,6 +30,7 @@ public class ImageService {
 
 	private SystemConfigurationService configService;
 	private ProjectService projectService;
+	private StaffService staffService;
 
 	@Autowired(required = true)
 	@Qualifier(value = "systemConfigurationService")
@@ -36,9 +39,38 @@ public class ImageService {
 	}
 
 	@Autowired(required = true)
+	@Qualifier(value = "staffService")
+	public void setStaffService(StaffService ps) {
+		this.staffService = ps;
+	}
+
+	@Autowired(required = true)
 	@Qualifier(value = "projectService")
 	public void setProjectService(ProjectService ps) {
 		this.projectService = ps;
+	}
+
+	/**
+	 * Gets the staff's profile picture.
+	 * 
+	 * @param staffID
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(SystemConstants.REQUEST_DISPLAY_STAFF_PROFILE)
+	public ResponseEntity<byte[]> displayStaffProfile(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID)
+			throws IOException {
+
+		Staff staff = this.staffService.getByID(staffID);
+
+		InputStream imgStream = new FileInputStream(staff.getThumbnailURL());
+		byte[] imgBytes = IOUtils.toByteArray(imgStream);
+		imgStream.close();
+
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		return new ResponseEntity<byte[]>(imgBytes, headers, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(SystemConstants.REQUEST_DISPLAY_PROJECT_PROFILE)

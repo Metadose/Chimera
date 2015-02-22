@@ -14,12 +14,19 @@ import com.cebedo.pmsys.photo.dao.PhotoDAO;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.dao.StaffDAO;
+import com.cebedo.pmsys.staff.model.Staff;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
 	private PhotoDAO photoDAO;
 	private ProjectDAO projectDAO;
+	private StaffDAO staffDAO;
+
+	public void setStaffDAO(StaffDAO staffDAO) {
+		this.staffDAO = staffDAO;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -27,6 +34,31 @@ public class PhotoServiceImpl implements PhotoService {
 
 	public void setPhotoDAO(PhotoDAO photoDAO) {
 		this.photoDAO = photoDAO;
+	}
+
+	@Override
+	@Transactional
+	public void deleteProjectProfile(long projectID) {
+		Project proj = this.projectDAO.getByID(projectID);
+
+		// Delete the physical file.
+		String path = proj.getThumbnailURL();
+		File file = new File(path);
+		file.delete();
+
+		// Null the record.
+		proj.setThumbnailURL(null);
+		this.projectDAO.update(proj);
+	}
+
+	@Override
+	@Transactional
+	public void uploadStaffProfile(MultipartFile file, String fileLocation,
+			long staffID) throws IOException {
+		Staff staff = this.staffDAO.getByID(staffID);
+		staff.setThumbnailURL(fileLocation);
+		fileUpload(file, fileLocation);
+		this.staffDAO.update(staff);
 	}
 
 	@Override
@@ -110,4 +142,5 @@ public class PhotoServiceImpl implements PhotoService {
 			parent.mkdirs();
 		}
 	}
+
 }

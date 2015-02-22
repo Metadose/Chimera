@@ -60,24 +60,36 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									[Photo]
+                   									<c:choose>
+                   										<c:when test="${!empty staff.thumbnailURL}">
+                   											<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}"/>
+                   										</c:when>
+                   										<c:when test="${empty staff.thumbnailURL}">
+                   											No photo uploaded.
+                   										</c:when>
+                   									</c:choose>
+                   									<br/><br/>
                    									<div class="form-group">
-                   										<table>
-                   											<tr>
-                   												<td>
-                   													<label for="exampleInputFile">Update Photo</label>
-                   												</td>
-                   												<td>
-                   													&nbsp;&nbsp;
-                   												</td>
-                   												<td>
-                   													<input type="file" id="exampleInputFile">
-                   												</td>
-                   											</tr>
-                   										</table>
-				                                        <button class="btn btn-warning btn-sm">Upload</button>
-				                                        <button class="btn btn-danger btn-sm">Delete Photo</button>
-				                                    </div>
+                   										<form action="${contextPath}/photo/upload/staff/profile" method="post" enctype="multipart/form-data">	
+	                										<input type="hidden" value="${staff.id}" id="staff_id" name="staff_id"/>
+	                   										<table>
+	                   											<tr>
+	                   												<td>
+	                   													<label for="exampleInputFile">Update Photo</label>
+	                   												</td>
+	                   												<td>
+	                   													&nbsp;&nbsp;
+	                   												</td>
+	                   												<td>
+	                   													<input type="file" id="file" name="file"/>
+	                   												</td>
+	                   											</tr>
+	                   										</table>
+	                   										<br/>
+					                                        <button class="btn btn-warning btn-sm">Upload</button>
+					                                        <button class="btn btn-danger btn-sm">Delete</button>
+				                                        </form>
+                   									</div>
 				                                    <br/>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/staff/create">
 				                                        <div class="form-group">
