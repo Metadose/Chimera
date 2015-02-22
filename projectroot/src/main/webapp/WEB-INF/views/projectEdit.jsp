@@ -281,7 +281,7 @@
 				                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
 				                                                			</c:when>
 				                                                			<c:when test="${empty staff.thumbnailURL}">
-				                                                				No photo uploaded.
+				                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
 				                                                			</c:when>
 					                                                		</c:choose>
 															            </div>
