@@ -116,7 +116,12 @@
 				                                            <label>Name</label>
 				                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
 				                                            <label>Status</label>
-				                                            <input type="text" class="form-control" name="status" value="${project.status}"/><br/>
+				                                            <input type="text" class="form-control" name="status" value="${project.status}"/>
+				                                            
+				                                            <select class="form-control" id="status123" name="status123">
+						                                    	<option value="${project.id}">${project.name}</option>
+				                                            </select><br/>
+				                                            
 				                                            <label>Location</label>
 				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
 				                                            <label>Notes</label>
@@ -271,10 +276,16 @@
 	                   											<td>
 	                   												<div class="user-panel">
 															            <div class="pull-left image">
-															                <img src="/pmsys/resources/img/avatar2.png" class="img-circle" alt="User Image">
+															                <c:choose>
+				                                                			<c:when test="${!empty staff.thumbnailURL}">
+				                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
+				                                                			</c:when>
+				                                                			<c:when test="${empty staff.thumbnailURL}">
+				                                                				No photo uploaded.
+				                                                			</c:when>
+					                                                		</c:choose>
 															            </div>
 															            <div class="pull-left info">
-															            	${staff.thumbnailURL}
 															                <p>${manName}</p>
 															                <h6>${managerAssignment.projectPosition}</h6>
 															                <h6>${staff.companyPosition}</h6>
