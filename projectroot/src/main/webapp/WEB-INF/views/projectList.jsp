@@ -52,19 +52,42 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/project/edit/${project.id}">
+																<form action="${contextPath}/project/edit/${project.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
-																</a>
-																<a href="${contextPath}/project/delete/${project.id}">
+																</form>&nbsp;
+																<form action="${contextPath}/project/delete/${project.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
-																</a>
+																</form>
 															</center>
 														</td>
 														<td>${project.id}</td>
 		                                                <td>
-		                                                	${project.thumbnailURL}<br/>
-		                                                	${project.status}<br/>
-		                                                	${project.name}<br/>
+		                                                	<c:choose>
+				                                            	<c:when test="${project.status == 0}">
+				                                            		<span class="label label-info">New</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 1}">
+				                                            		<span class="label label-primary">Ongoing</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 2}">
+				                                            		<span class="label label-success">Completed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 3}">
+				                                            		<span class="label label-danger">Failed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 4}">
+				                                            		<span class="label label">Cancelled</span>
+				                                            	</c:when>
+				                                            </c:choose>
+				                                            ${project.name}<br/><br/>
+		                                                	<c:choose>
+		                                                		<c:when test="${!empty project.thumbnailURL}">
+		                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
+		                                                		</c:when>
+		                                                		<c:when test="${empty project.thumbnailURL}">
+		                                                			<h5>No photo uploaded.</h5>
+		                                                		</c:when>
+		                                                	</c:choose>
 		                                                </td>
 		                                                <td>
 		                                                	<c:forEach items="${project.managerAssignments}" var="managerAssignment">
