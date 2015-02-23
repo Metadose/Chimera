@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -677,7 +678,16 @@
 			                                                <td>${file.id}</td>
 			                                                <td>${file.name}</td>
 			                                                <td>${file.description}</td>
-			                                                <td>${file.size}</td>
+			                                                <c:choose>
+		                                                	<c:when test="${file.size < 1000000}">
+		                                                		<c:set var="fileSize" value="${file.size / 1000}"/>
+		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> KB</td>
+		                                                	</c:when>
+		                                                	<c:when test="${file.size >= 1000000}">
+		                                                		<c:set var="fileSize" value="${file.size / 1000000}"/>
+		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> MB</td>
+		                                                	</c:when>
+			                                                </c:choose>
 			                                                <td>${staffName}</td>
 			                                                <td>${file.dateUploaded}</td>
 			                                            </tr>
