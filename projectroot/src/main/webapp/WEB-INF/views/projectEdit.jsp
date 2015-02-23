@@ -54,7 +54,7 @@
 		                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
-		                                <li><a href="#tab_7" data-toggle="tab">Map</a></li>
+<!-- 		                                <li><a href="#tab_7" data-toggle="tab">Map</a></li> -->
                                 	</c:when>
                                 </c:choose>
                             </ul>
@@ -456,14 +456,14 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-                                <div class="tab-pane" id="tab_7">
-                                	<div class="box">
-                                		google map location:<br/>
-	                                    - location of bunk house<br/>
-	                                    - gravel supplier<br/>
-	                                    - actual site location<br/>
-                                	</div>
-                                </div><!-- /.tab-pane -->
+<!--                                 <div class="tab-pane" id="tab_7"> -->
+<!--                                 	<div class="box"> -->
+<!--                                 		google map location:<br/> -->
+<!-- 	                                    - location of bunk house<br/> -->
+<!-- 	                                    - gravel supplier<br/> -->
+<!-- 	                                    - actual site location<br/> -->
+<!--                                 	</div> -->
+<!--                                 </div>/.tab-pane -->
                                 <div class="tab-pane" id="tab_6">
                                 	<div class="row">
 				                        <div class="col-md-3">
@@ -731,8 +731,14 @@
 															<form action="${contextPath}/photo/delete">
 																<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
-																<h5>${photo.name}</h5>
+																<h6>${photo.name}</h6>
 																<h6>${photo.description}</h6>
+																<br/>
+																<h6>Uploaded ${photo.dateUploaded}</h6>
+																
+																<c:set var="photoUploader" value="${photo.uploader}"/>
+																<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
+																<h6>${photoUploaderName}</h6>
 																<button class="btn btn-danger btn-sm" id="photoDeleteButton">Delete</button>
 															</form>
 														</li>
@@ -923,16 +929,24 @@
                 
                 var html = '';
                 html += img;                
-                html += '<div style="height:25px;clear:both;display:block;">';
-                html += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
-                html += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
+                html += '<div style="clear:both;padding-top: 5px;display:block;">';
+                
+                // Previous button.
+                html += '<a class="controls previous" href="' + (index) + '">';
+                html += '<button class="btn btn-info btn-sm">Previous</button>';
+                html += '</a>';
+                html += '&nbsp;';
+                
+                // Next button.
+                html += '<a class="controls next" href="'+ (index+2) + '">';
+                html += '<button class="btn btn-info btn-sm">Next</button>';
+                html += '</a>';
+                
                 html += '</div>';
-                html += '<button class="btn btn-danger btn-sm">Delete</button>';
                 
                 $('#myModal').modal();
                 $('#myModal').on('shown.bs.modal', function(){
                     $('#myModal .modal-body').html(html);
-                    //new code
                     $('a.controls').trigger('click');
                 })
                 $('#myModal').on('hidden.bs.modal', function(){

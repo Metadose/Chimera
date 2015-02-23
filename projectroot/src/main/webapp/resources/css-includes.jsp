@@ -24,5 +24,5 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 <![endif]-->
 
-<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.2/fullcalendar.css" rel="stylesheet" type="text/css" />
-<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.2/fullcalendar.print.css" rel="stylesheet" type="text/css" media='print' />
+<link href="<c:url value="/resources/css/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/fullcalendar.print.css" />"rel="stylesheet" type="text/css" media='print'/>
