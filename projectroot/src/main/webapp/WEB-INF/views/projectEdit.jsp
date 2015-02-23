@@ -661,7 +661,11 @@
 	                                        			<tr>
 			                                            	<td>
 			                                            		<center>
-																<button class="btn btn-primary btn-sm">Download</button>
+			                                            		<form action="${contextPath}/projectfile/download/from/project/" method="post">
+			                                            			<input type="hidden" name="project_id" value="${project.id}"/>
+			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
+			                                            			<button class="btn btn-primary btn-sm">Download</button>
+			                                            		</form>
 																<button class="btn btn-primary btn-sm">View Details</button>
 																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
 																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>

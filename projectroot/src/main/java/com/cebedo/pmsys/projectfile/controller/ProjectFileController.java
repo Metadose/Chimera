@@ -1,8 +1,13 @@
 package com.cebedo.pmsys.projectfile.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -145,6 +150,37 @@ public class ProjectFileController {
 			this.projectFileService.create(projectFile, file, fileLocation);
 		} else {
 			// TODO Handle this scenario.
+		}
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Download a file from Project.
+	 * 
+	 * @param projectID
+	 * @param fileID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/"
+			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
+	public ModelAndView downloadFileFromProject(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
+			HttpServletResponse response) {
+
+		File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
+		try {
+			FileInputStream iStream = new FileInputStream(actualFile);
+			response.setContentType("application/octet-stream");
+			response.setContentLength((int) actualFile.length());
+			response.setHeader("Content-Disposition", "attachment; filename=\""
+					+ actualFile.getName() + "\"");
+			IOUtils.copy(iStream, response.getOutputStream());
+			response.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT

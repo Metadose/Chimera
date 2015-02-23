@@ -117,4 +117,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		this.projectFileDAO.updateDescription(fileID, description);
 	}
 
+	/**
+	 * Get the actual physical file from the directory.
+	 */
+	@Override
+	@Transactional
+	public File getPhysicalFileByID(long fileID) {
+		ProjectFile file = this.projectFileDAO.getByID(fileID);
+		String fileLocation = file.getLocation();
+		File actualFile = new File(fileLocation);
+		return actualFile;
+	}
+
 }

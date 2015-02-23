@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.projectfile.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ProjectFileService {
 	public List<ProjectFile> listWithAllCollections();
 
 	public void updateDescription(long fileID, String description);
+
+	public File getPhysicalFileByID(long fileID);
 }

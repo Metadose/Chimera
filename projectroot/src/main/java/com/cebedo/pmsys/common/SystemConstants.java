@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.common;
 
+import com.cebedo.pmsys.project.model.Project;
+
 public abstract class SystemConstants {
 
 	public static final String CONTROLLER_REDIRECT = "redirect:/";
@@ -16,6 +18,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_CREATE = "create";
 	public static final String REQUEST_UPDATE = "update";
 	public static final String REQUEST_MARK = "mark";
+	public static final String REQUEST_DOWNLOAD = "download";
 
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";
@@ -30,7 +33,8 @@ public abstract class SystemConstants {
 	public static final String REQUEST_DISPLAY_STAFF_PROFILE = "display/staff/profile";
 	public static final String REQUEST_DISPLAY = "display";
 
-	public static final String FROM_PROJECT = "from/project";
+	public static final String FROM = "from";
+	public static final String FROM_PROJECT = FROM + "/" + Project.OBJECT_NAME;
 
 	public static final String REQUEST_ASSIGN_PROJECT = "assign/project";
 	public static final String REQUEST_UNASSIGN_PROJECT = "unassign/project";
