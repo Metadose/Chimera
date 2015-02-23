@@ -217,7 +217,7 @@
                    									<button class="btn btn-danger btn-sm">Clear All</button>
 													<br/>
 													<br/>
-													<h4>Assign More Tasks</h4>
+													<h4>Assign More Teams</h4>
 													<table>
 														<tr>
 															<td style="padding-right: 3px;">
@@ -227,10 +227,10 @@
 																&nbsp;
 															</td>
 															<td style="padding-bottom: 3px;">
-																<select class="form-control">
-					                                                <option>Banilad Builders</option>
-					                                                <option>Manpower 1</option>
-					                                                <option>Costing Task</option>
+																<select class="form-control" >
+																	<c:forEach items="${teamList}" var="teamItem">
+																		<option value="${teamItem.id}">${teamItem.name}</option>
+																	</c:forEach>
 					                                            </select>
 															</td>
 														</tr>

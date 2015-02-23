@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.task.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,9 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.service.TaskService;
+import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
 @RequestMapping(Task.OBJECT_NAME)
@@ -30,11 +34,18 @@ public class TaskController {
 	public static final String JSP_EDIT = "taskEdit";
 
 	private TaskService taskService;
+	private TeamService teamService;
 
 	@Autowired(required = true)
 	@Qualifier(value = "taskService")
 	public void setTaskService(TaskService ps) {
 		this.taskService = ps;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "teamService")
+	public void setTeamService(TeamService ps) {
+		this.teamService = ps;
 	}
 
 	/**
@@ -170,6 +181,10 @@ public class TaskController {
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+		// TODO Optimize by getting only name and id.
+		// Get list of teams for the selector.
+		List<Team> teamList = this.teamService.list();
+		model.addAttribute(TeamController.JSP_LIST, teamList);
 
 		// If ID is zero,
 		// Open a page with empty values, ready to create.
