@@ -121,7 +121,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Team many-to-many without extra columns.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany
 	@JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getAssignedTeams() {
 		return this.assignedTeams;

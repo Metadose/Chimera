@@ -1,7 +1,9 @@
 package com.cebedo.pmsys.task.model;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -34,8 +38,8 @@ public class Task {
 	private Date dateStart;
 	private Date dateEnd;
 	private Project project;
-	private Staff staff;
-	private Team team;
+	private Set<Staff> staff;
+	private Set<Team> teams;
 	private int status;
 
 	@Id
@@ -88,24 +92,24 @@ public class Task {
 		this.project = project;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
-	public Staff getStaff() {
+	@ManyToMany
+	@JoinTable(name = TaskStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Staff> getStaff() {
 		return staff;
 	}
 
-	public void setStaff(Staff staff) {
+	public void setStaff(Set<Staff> staff) {
 		this.staff = staff;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = Team.COLUMN_PRIMARY_KEY)
-	public Team getTeam() {
-		return team;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = TaskTeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Team> getTeams() {
+		return teams;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
+	public void setTeams(Set<Team> teams) {
+		this.teams = teams;
 	}
 
 	@Column(name = "status", nullable = false)

@@ -22,4 +22,10 @@ public interface TaskService {
 	public Project getProjectByID(int id);
 
 	public void mark(long taskID, int status);
+
+	public void assignStaffTask(long taskID, long staffID);
+
+	public void assignTeamTask(long taskID, long teamID);
+
+	public Task getByIDWithAllCollections(int id);
 }

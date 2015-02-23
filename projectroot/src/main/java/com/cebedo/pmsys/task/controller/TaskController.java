@@ -13,8 +13,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.service.TaskService;
+import com.cebedo.pmsys.team.model.Team;
 
 @Controller
 @RequestMapping(Task.OBJECT_NAME)
@@ -180,9 +182,46 @@ public class TaskController {
 
 		// Else, get the object from DB
 		// then populate the fields in JSP.
-		model.addAttribute(ATTR_TASK, this.taskService.getByID(id));
+		model.addAttribute(ATTR_TASK,
+				this.taskService.getByIDWithAllCollections(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
+	}
+
+	/**
+	 * Assign a new task to a staff.
+	 * 
+	 * @param taskID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = Task.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME)
+	public ModelAndView assignStaffTask(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.taskService.assignStaffTask(taskID, staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
+	 * Assign a new task to a team.
+	 * 
+	 * @param taskID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = Task.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME)
+	public ModelAndView assignTeamTask(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.taskService.assignTeamTask(taskID, teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
 	}
 }

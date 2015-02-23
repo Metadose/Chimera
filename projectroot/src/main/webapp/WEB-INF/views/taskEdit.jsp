@@ -28,7 +28,10 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${task.content}
+	            	<c:choose>
+	            		<c:when test="${task.id == 0}">New Task</c:when>
+	            		<c:when test="${task.id > 0}">${task.content}</c:when>
+	            	</c:choose>
 	                <small>${action} Task</small>
 	            </h1>
 	        </section>
@@ -92,6 +95,7 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${task.id > 0}">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
@@ -169,54 +173,46 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</c:if>
               						</div>
+              						<c:if test="${task.id > 0}">
               						<h2 class="page-header">Assignments</h2>
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">Tasks</h3>
+                   									<h3 class="box-title">Teams</h3>
                    								</div>
                    								<div class="box-body">
                    									<table>
-                   										<tr style="padding-bottom: 5px">
-                   											<td>
-                   												<div class="user-panel">
-                   													<div class="pull-left info">
-														                <p>Costing 1</p>
-														                <h6>Maya Villanueva</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														                <h6>5 Members</h6>
-														            </div>
-                   												</div>
-                   											</td>
-                   											<td style="padding-right: 50px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
-                   											</td>
-                   										</tr>
-                   										<tr>
-                   											<td>
-                   												<div class="user-panel">
-                   													<div class="pull-left info">
-														                <p>Building Task</p>
-														                <h6>Lennin Cruz</h6>
-														                <h6>(+63) 922 062 2345</h6>
-														                <h6>15 Members</h6>
-														            </div>
-                   												</div>
-                   											</td>
-                   											<td style="padding-right: 50px">
-                   												&nbsp;
-                   											</td>
-                   											<td>
-                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
-                   											</td>
-                   										</tr>
+                   										<c:choose>
+                  										<c:when test="${!empty task.teams}">
+                  											<c:forEach items="${task.teams}" var="team">
+                  												<tr style="padding-bottom: 5px">
+		                   											<td>
+		                   												<div class="user-panel">
+		                   													<div class="pull-left info">
+																                <p>${team.name}</p>
+																                <h6>Maya Villanueva</h6>
+																                <h6>(+63) 922 062 2345</h6>
+																                <h6>5 Members</h6>
+																            </div>
+		                   												</div>
+		                   											</td>
+		                   											<td style="padding-right: 50px">
+		                   												&nbsp;
+		                   											</td>
+		                   											<td>
+		                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
+		                   											</td>
+		                   										</tr>
+                  											</c:forEach>
+                  										</c:when>
+                  										<c:when test="${empty task.teams}">
+                  											<h6>No team assigned.</h6>
+                  										</c:when>
+                   										</c:choose>
                    									</table>
                    									<button class="btn btn-danger btn-sm">Clear All</button>
 													<br/>
@@ -244,6 +240,7 @@
                    							</div>
                    						</div>
                						</div>
+               						</c:if>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->

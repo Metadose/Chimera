@@ -51,6 +51,8 @@
                 <beans:value>com.cebedo.pmsys.projectfile.model.ProjectFile</beans:value>
                 <beans:value>com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration</beans:value>
                 <beans:value>com.cebedo.pmsys.photo.model.Photo</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskStaffAssignment</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">

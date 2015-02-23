@@ -37,7 +37,6 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
 	                                            <th>Project</th>
@@ -74,7 +73,6 @@
 																<button class="btn btn-danger btn-sm">Delete</button>
 															</a>
                                         				</td>
-                                        				<td>${task.id}</td>
 			                                            <td style="vertical-align: middle;">
 			                                            	<c:choose>
 				                                            	<c:when test="${task.status == 0}">
@@ -96,30 +94,45 @@
 			                                            </td>
 			                                            <td>${task.content}</td>
 			                                            <td>
-			                                            	<c:if test="${!empty task.project}">
-			                                            		<a href="${contextPath}/project/edit/${task.project.id}">
+			                                            	<c:choose>
+		                                            		<c:when test="${!empty task.project}">
+		                                            			<a href="${contextPath}/project/edit/${task.project.id}">
 				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 				                                            	</a>
 				                                            	${task.project.name}
-			                                            	</c:if>
+		                                            		</c:when>
+		                                            		<c:when test="${empty task.project}">
+		                                            			<h6>No project assigned.</h6>
+		                                            		</c:when>
+			                                            	</c:choose>
 			                                            </td>
 			                                            <td>
-			                                            	<c:if test="${!empty task.team}">
-			                                            		<a href="${contextPath}/team/edit/${task.team.id}">
+			                                            	<c:choose>
+		                                            		<c:when test="${!empty task.team}">
+		                                            			<a href="${contextPath}/team/edit/${task.team.id}">
 				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 				                                            	</a>
 				                                            	${task.team.name}
-			                                            	</c:if>
+		                                            		</c:when>
+		                                            		<c:when test="${empty task.team}">
+		                                            			<h6>No team assigned.</h6>
+		                                            		</c:when>
+			                                            	</c:choose>
 			                                            </td>
 			                                            <td>
-			                                            <c:if test="${!empty task.staff}">
-			                                            	<c:set var="taskStaff" value="${task.staff}"/>
-				                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-			                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
-			                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
-			                                            	</a>
-			                                            	${taskStaffName}
-			                                            </c:if>
+			                                            	<c:choose>
+		                                            		<c:when test="${!empty task.staff}">
+		                                            			<c:set var="taskStaff" value="${task.staff}"/>
+					                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+				                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
+				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+				                                            	</a>
+				                                            	${taskStaffName}
+		                                            		</c:when>
+		                                            		<c:when test="${empty task.staff}">
+		                                            			<h6>No staff assigned.</h6>
+		                                            		</c:when>
+			                                            	</c:choose>
 			                                            </td>
 			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" /></td>
 			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateEnd}" /></td>
@@ -130,7 +143,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
 	                                            <th>Status</th>
 	                                            <th>Content</th>
 	                                            <th>Project</th>

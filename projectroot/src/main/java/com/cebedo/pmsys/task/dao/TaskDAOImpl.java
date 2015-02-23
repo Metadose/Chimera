@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskStaffAssignment;
+import com.cebedo.pmsys.task.model.TaskTeamAssignment;
 
 @Repository
 public class TaskDAOImpl implements TaskDAO {
@@ -33,9 +35,18 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public Task getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Task task = (Task) session.createQuery(
-				"from " + Task.CLASS_NAME + " where " + Task.COLUMN_PRIMARY_KEY
-						+ "=" + id).uniqueResult();
+		Task task = (Task) session.get(Task.class, new Long(id));
+		logger.info("[Get by ID] Task: " + task);
+		return task;
+	}
+
+	@Override
+	public Task getByIDWithAllCollections(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Task task = (Task) session.get(Task.class, new Long(id));
+		Hibernate.initialize(task.getTeams());
+		Hibernate.initialize(task.getProject());
+		Hibernate.initialize(task.getStaff());
 		logger.info("[Get by ID] Task: " + task);
 		return task;
 	}
@@ -74,7 +85,7 @@ public class TaskDAOImpl implements TaskDAO {
 		Query query = session.createQuery("from " + Task.CLASS_NAME);
 		List<Task> taskList = query.list();
 		for (Task task : taskList) {
-			Hibernate.initialize(task.getTeam());
+			Hibernate.initialize(task.getTeams());
 			Hibernate.initialize(task.getProject());
 			Hibernate.initialize(task.getStaff());
 			logger.info("[List] Task: " + task);
@@ -82,4 +93,15 @@ public class TaskDAOImpl implements TaskDAO {
 		return taskList;
 	}
 
+	@Override
+	public void assignStaffTask(TaskStaffAssignment taskStaffAssign) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(taskStaffAssign);
+	}
+
+	@Override
+	public void assignTeamTask(TaskTeamAssignment taskTeamAssign) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(taskTeamAssign);
+	}
 }
