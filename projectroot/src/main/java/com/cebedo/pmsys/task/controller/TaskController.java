@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
@@ -132,6 +133,27 @@ public class TaskController {
 		this.taskService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 				+ SystemConstants.REQUEST_LIST;
+	}
+
+	/**
+	 * Set the project task to the status specified.
+	 * 
+	 * @param projectID
+	 * @param taskID
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(SystemConstants.REQUEST_MARK + "/" + Project.OBJECT_NAME)
+	public ModelAndView markProject(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Task.COLUMN_STATUS) int status) {
+
+		this.taskService.mark(taskID, status);
+
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 
 	/**

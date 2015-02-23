@@ -66,4 +66,18 @@ public class TaskServiceImpl implements TaskService {
 		return this.projectDAO.getByID(id);
 	}
 
+	/**
+	 * Set the task to the status specified.
+	 */
+	@Override
+	@Transactional
+	public void mark(long taskID, int status) {
+		// Get the task.
+		Task task = this.taskDAO.getByID(taskID);
+
+		// Set the status and update.
+		task.setStatus(status);
+		this.taskDAO.update(task);
+	}
+
 }

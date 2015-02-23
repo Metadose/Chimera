@@ -25,7 +25,9 @@ public class Task {
 	public static final String CLASS_NAME = "Task";
 	public static final String TABLE_NAME = "tasks";
 	public static final String OBJECT_NAME = "task";
+
 	public static final String COLUMN_PRIMARY_KEY = "task_id";
+	public static final String COLUMN_STATUS = "status";
 
 	private long id;
 	private String content;

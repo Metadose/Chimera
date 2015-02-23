@@ -15,6 +15,8 @@ public abstract class SystemConstants {
 	public static final String REQUEST_DELETE = "delete";
 	public static final String REQUEST_CREATE = "create";
 	public static final String REQUEST_UPDATE = "update";
+	public static final String REQUEST_MARK = "mark";
+
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";
 	public static final String REQUEST_UPLOAD_TO_PROJECT = "upload/project";

@@ -20,4 +20,6 @@ public interface TaskService {
 	public List<Task> listWithAllCollections();
 
 	public Project getProjectByID(int id);
+
+	public void mark(long taskID, int status);
 }
