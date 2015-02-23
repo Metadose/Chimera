@@ -4,6 +4,9 @@ public abstract class SystemConstants {
 
 	public static final String CONTROLLER_REDIRECT = "redirect:/";
 
+	public static final String ORIGIN = "origin";
+	public static final String ORIGIN_ID = "originID";
+
 	public static final String ATTR_ACTION = "action";
 
 	public static final String REQUEST_ROOT = "/";

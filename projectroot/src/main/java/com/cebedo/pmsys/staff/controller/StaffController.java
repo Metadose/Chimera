@@ -55,12 +55,64 @@ public class StaffController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Create a staff from the Project Edit jsp.
+	 * 
+	 * @param staff
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
+	public String createFromProject(@ModelAttribute(ATTR_STAFF) Staff staff,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		if (staff.getId() == 0) {
+			this.staffService.create(staff);
+		} else {
+			this.staffService.update(staff);
+		}
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id) {
 		this.staffService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
 				+ SystemConstants.REQUEST_LIST;
+	}
+
+	/**
+	 * If the Create/Edit Staff request is coming from the project.
+	 * 
+	 * @param staffID
+	 * @param projectID
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM_PROJECT)
+	public String editStaffFromProject(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) int staffID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID, Model model) {
+		// Add origin details.
+		model.addAttribute(SystemConstants.ORIGIN, Project.OBJECT_NAME);
+		model.addAttribute(SystemConstants.ORIGIN_ID, projectID);
+
+		// If new, create it.
+		if (staffID == 0) {
+			model.addAttribute(ATTR_STAFF, new Staff());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+
+		// Else if not new, edit it.
+		model.addAttribute(ATTR_STAFF, this.staffService.getByID(staffID));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+		return JSP_EDIT;
 	}
 
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"

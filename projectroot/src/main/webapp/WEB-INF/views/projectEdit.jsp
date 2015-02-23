@@ -116,12 +116,13 @@
 				                                            <label>Name</label>
 				                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
 				                                            <label>Status</label>
-				                                            <input type="text" class="form-control" name="status" value="${project.status}"/>
-				                                            
-				                                            <select class="form-control" id="status123" name="status123">
-						                                    	<option value="${project.id}">${project.name}</option>
+				                                            <select class="form-control" id="project_status" name="status">
+						                                    	<option value="0">New</option>
+						                                    	<option value="1">Ongoing</option>
+						                                    	<option value="2">Completed</option>
+						                                    	<option value="3">Failed</option>
+						                                    	<option value="4">Cancelled</option>
 				                                            </select><br/>
-				                                            
 				                                            <label>Location</label>
 				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
 				                                            <label>Notes</label>
@@ -303,9 +304,11 @@
 																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 																		<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 	                   												</form>
-	                   												<a href="${contextPath}/staff/edit/${staff.id}">
+	                   												<form action="${contextPath}/staff/edit/from/project" method="post">
+	                   													<input type="hidden" name="staff_id" value="${staff.id}"/>
+	                   													<input type="hidden" name="project_id" value="${project.id}"/>
 	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
-	                   												</a>
+	                   												</form>
 	                   											</td>
 	                   										</tr>
 	                                                	</c:forEach>
@@ -324,7 +327,7 @@
 													<br/>
 													<br/>
 													<h4>Assign Managers&nbsp;
-													<a href="${contextPath}/staff/edit/0">
+													<a href="${contextPath}/staff/edit/from/project/?0">
 				              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
 				              						</a>
 													</h4>
@@ -607,7 +610,7 @@
 					                                            			<c:set var="taskStaff" value="${task.staff}"/>
 								                                            <c:set var="taskTeam" value="${task.team}"/>
 								                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-					                                            			<a href="${contextPath}/staff/edit/${taskStaff.id}">
+					                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
 							                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 							                                            	</a>
 							                                            	${taskStaffName}
@@ -900,6 +903,7 @@
 		
 		$(document).ready(function() {
 			$("#example-1").dataTable();
+			$("#project_status").val("${project.status}");
 			
 			$('li img').on('click',function(){
                 var src = $(this).attr('src');

@@ -91,8 +91,15 @@
 				                                        </form>
                    									</div>
 				                                    <br/>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/staff/create">
+				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
+				                                    <c:if test="${!empty origin && !empty originID}">
+				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/project"/>
+				                                    </c:if>
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
+				                                        	<c:if test="${!empty origin && !empty originID}">
+						                                    	<input type="hidden" name="${origin}_id" value="${originID}"/>
+						                                    </c:if>
 				                                        	<input type="hidden" name="id" value="${staff.id}"/>
 				                                            <label>Prefix</label>
 				                                            <input type="text" class="form-control" name="prefix" value="${staff.prefix}"/><br/>
