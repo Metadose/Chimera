@@ -31,11 +31,6 @@
 	                ${field.name}
 	                <small>${action} Field</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/field/list">Field</a></li>
-	                <li class="active">${field.name}</li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

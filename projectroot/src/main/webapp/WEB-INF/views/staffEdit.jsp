@@ -32,11 +32,6 @@
 	                ${staffName}
 	                <small>${action} Staff</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/staff/list">Staff</a></li>
-	                <li class="active">${staffName}</li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

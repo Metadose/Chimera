@@ -18,10 +18,6 @@
 	                Field ${action}
 	                <small>Complete list of all fields</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li class="active"><a href="${contextPath}/field/list">Field</a></li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

@@ -18,10 +18,6 @@
 	                Staff ${action}
 	                <small>Complete list of all staff members</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li class="active"><a href="${contextPath}/staff/list">Staff</a></li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

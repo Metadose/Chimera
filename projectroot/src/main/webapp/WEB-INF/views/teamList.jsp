@@ -18,10 +18,6 @@
 	                Team ${action}
 	                <small>Complete list of all team members</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li class="active"><a href="${contextPath}/team/list">Team</a></li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

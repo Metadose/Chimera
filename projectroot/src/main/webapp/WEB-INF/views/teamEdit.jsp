@@ -31,11 +31,6 @@
 	                ${team.name}
 	                <small>${action} Team</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/team/list">Team</a></li>
-	                <li class="active">${team.name}</li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

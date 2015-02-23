@@ -31,11 +31,6 @@
 	                ${task.content}
 	                <small>${action} Task</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/task/list">Task</a></li>
-	                <li class="active">${task.content}</li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">

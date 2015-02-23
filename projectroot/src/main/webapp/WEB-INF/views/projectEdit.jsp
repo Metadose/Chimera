@@ -38,11 +38,6 @@
 	            	</c:choose>
 	                <small>${action} Project</small>
 	            </h1>
-	            <ol class="breadcrumb">
-	                <li><a href="${contextPath}/dashboard/">Home</a></li>
-	                <li><a href="${contextPath}/project/list">Projects</a></li>
-	                <li class="active">${project.name}</li>
-	            </ol>
 	        </section>
 	        <section class="content">
                 <div class="row">
