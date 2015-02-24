@@ -3,6 +3,7 @@ package com.cebedo.pmsys.field.dao;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Repository
@@ -146,5 +148,15 @@ public class FieldDAOImpl implements FieldDAO {
 	public void assignTask(TaskFieldAssignment taskField) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(taskField);
+	}
+
+	@Override
+	public void unassignAllTasks(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ TaskFieldAssignment.CLASS_NAME + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + "=:" + Task.COLUMN_PRIMARY_KEY);
+		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
+		query.executeUpdate();
 	}
 }

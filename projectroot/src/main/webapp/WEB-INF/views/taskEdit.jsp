@@ -99,7 +99,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
-                   									<h3 class="box-title">More Info</h3>
+                   									<h3 class="box-title">Fields</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="form-group">
@@ -127,7 +127,10 @@
 															</table>
 															</c:forEach>
 															<br/>
-															<button class="btn btn-danger btn-sm">Clear All</button>
+															<form action="${contextPath}/field/unassign/task/all" method="post">
+																<input type="hidden" name="task_id" value="${task.id}"/>
+																<button class="btn btn-danger btn-sm">Unassign All</button>
+															</form>
                											</c:when>
                											<c:when test="${empty task.fields}">
                												<h6>No field assigned.</h6>
@@ -135,8 +138,27 @@
                    										</c:choose>
 														<br/>
 														<br/>
-														<h4>Assign More Fields</h4>
+														<h4>Assign Fields</h4>
+														<form action="${contextPath}/field/assign/task" method="post">
+														<input type="hidden" name="task_id" value="${task.id}"/>
 														<table>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Field Type </label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<select class="form-control" id="field_id" name="field_id">
+																		<c:if test="${!empty fieldList}">
+																			<c:forEach items="${fieldList}" var="field">
+								                                                <option value="${field.id}">${field.name}</option>
+							                                                </c:forEach>
+						                                                </c:if>
+						                                            </select>
+																</td>
+															</tr>
 															<tr>
 																<td style="padding-right: 3px;">
 																	<label>Label</label>
@@ -145,7 +167,7 @@
 																	&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
+																	<input type="text" id="label" name="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
 																</td>
 															</tr>
 															<tr>
@@ -156,11 +178,12 @@
 																	&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
+																	<input type="text" id="value" name="value" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
 																</td>
 															</tr>
 														</table>
                                             			<button class="btn btn-primary btn-sm">Assign</button>
+                                            			</form>
 			                                        </div>
                    								</div>
                    							</div>

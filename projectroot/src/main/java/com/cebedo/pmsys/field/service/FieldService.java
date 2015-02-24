@@ -33,4 +33,6 @@ public interface FieldService {
 
 	public void assignTask(TaskFieldAssignment taskField, long fieldID,
 			long taskID);
+
+	public void unassignAllTasks(long taskID);
 }

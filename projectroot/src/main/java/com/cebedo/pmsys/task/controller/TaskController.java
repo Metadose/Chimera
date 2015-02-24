@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.field.controller.FieldController;
+import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -38,11 +41,18 @@ public class TaskController {
 	private TaskService taskService;
 	private TeamService teamService;
 	private StaffService staffService;
+	private FieldService fieldService;
 
 	@Autowired(required = true)
 	@Qualifier(value = "taskService")
 	public void setTaskService(TaskService ps) {
 		this.taskService = ps;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "fieldService")
+	public void setFieldService(FieldService ps) {
+		this.fieldService = ps;
 	}
 
 	@Autowired(required = true)
@@ -194,8 +204,10 @@ public class TaskController {
 		// Get list of teams for the selector.
 		List<Team> teamList = this.teamService.list();
 		List<Staff> staffList = this.staffService.list();
+		List<Field> fieldList = this.fieldService.list();
 		model.addAttribute(TeamController.JSP_LIST, teamList);
 		model.addAttribute(StaffController.JSP_LIST, staffList);
+		model.addAttribute(FieldController.JSP_LIST, fieldList);
 
 		// If ID is zero,
 		// Open a page with empty values, ready to create.

@@ -86,6 +86,22 @@ public class FieldController {
 	}
 
 	/**
+	 * Unassign all fields in a task.
+	 * 
+	 * @param taskID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Task.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllTasks(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
+		this.fieldService.unassignAllTasks(taskID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
 	 * Unassign all fields of a project.
 	 * 
 	 * @param fieldID

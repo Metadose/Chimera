@@ -123,4 +123,10 @@ public class FieldServiceImpl implements FieldService {
 		this.fieldDAO.assignTask(taskField);
 	}
 
+	@Override
+	@Transactional
+	public void unassignAllTasks(long taskID) {
+		this.fieldDAO.unassignAllTasks(taskID);
+	}
+
 }
