@@ -589,13 +589,16 @@
 					                                            <td>${task.content}</td>
 					                                            <td>
 					                                            	<c:choose>
-					                                            		<c:when test="${!empty task.team}">
-					                                            			<a href="${contextPath}/team/edit/${task.team.id}">
+					                                            		<c:when test="${!empty task.teams}">
+					                                            			<c:forEach items="${task.teams}" var="taskTeam">
+					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
 							                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 							                                            	</a>
-							                                            	${task.team.name}
+							                                            	${taskTeam.name}
+							                                            	<br/>
+					                                            			</c:forEach>
 					                                            		</c:when>
-					                                            		<c:when test="${empty task.team}">
+					                                            		<c:when test="${empty task.teams}">
 					                                            			<h5>No team assigned.</h5>
 					                                            		</c:when>
 					                                            	</c:choose>
@@ -603,13 +606,14 @@
 					                                            <td>
 					                                            	<c:choose>
 					                                            		<c:when test="${!empty task.staff}">
-					                                            			<c:set var="taskStaff" value="${task.staff}"/>
-								                                            <c:set var="taskTeam" value="${task.team}"/>
-								                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+					                                            			<c:forEach items="${task.staff}" var="taskStaff">
+					                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
 					                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
 							                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 							                                            	</a>
 							                                            	${taskStaffName}
+							                                            	<br/>
+					                                            			</c:forEach>
 					                                            		</c:when>
 					                                            		<c:when test="${empty task.staff}">
 					                                            			<h5>No manager assigned.</h5>

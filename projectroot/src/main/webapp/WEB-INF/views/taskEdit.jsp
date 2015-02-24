@@ -178,6 +178,101 @@
               						<c:if test="${task.id > 0}">
               						<h2 class="page-header">Assignments</h2>
               						<div class="row">
+              							<div class="col-md-6">
+                   							<div class="box box-primary">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Staff</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<table>
+                   										<c:set value="${task.staff}" var="staffAssignments"/>
+                   										<c:forEach items="${staffAssignments}" var="staff">
+	                                                		<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+		                                                	<tr>
+	                   											<td>
+	                   												<div class="user-panel">
+															            <div class="pull-left image">
+															                <c:choose>
+				                                                			<c:when test="${!empty staff.thumbnailURL}">
+				                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
+				                                                			</c:when>
+				                                                			<c:when test="${empty staff.thumbnailURL}">
+				                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
+				                                                			</c:when>
+					                                                		</c:choose>
+															            </div>
+															            <div class="pull-left info">
+															                <p>${staffName}</p>
+															                <h6>${staff.companyPosition}</h6>
+															                <h6>${staff.email}</h6>
+															                <h6>${staff.contactNumber}</h6>
+															            </div>
+															        </div>
+	                   											</td>
+	                   											<td style="padding-right: 5px">
+	                   												&nbsp;
+	                   											</td>
+	                   											<td>
+	                   												<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
+																		<input type="hidden" id="project_id" name="project_id" value="${staff.id}"/>
+																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
+																		<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+	                   												</form>
+	                   												<form action="${contextPath}/staff/edit/from/project" method="post">
+	                   													<input type="hidden" name="staff_id" value="${staff.id}"/>
+	                   													<input type="hidden" name="project_id" value="${staff.id}"/>
+	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
+	                   												</form>
+	                   											</td>
+	                   										</tr>
+	                                                	</c:forEach>
+                   									</table>
+                   									<c:choose>
+                   										<c:when test="${!empty task.staff}">
+                   											<form name="unassignAllStaffForm" id="unassignAllStaffForm" method="post" action="${contextPath}/staff/unassign/project/all">
+                   												<input type="hidden" id="project_id" name="project_id" value="${staff.id}"/>
+                   												<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											</form>
+                   										</c:when>
+                   										<c:when test="${empty task.staff}">
+                   											<h5>No manager assigned.</h5>
+                   										</c:when>
+                   									</c:choose>
+													<br/>
+													<br/>
+													<h4>Assign Staff&nbsp;
+													<a href="${contextPath}/staff/edit/from/project/?0">
+				              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+				              						</a>
+													</h4>
+													<form method="post" action="${contextPath}/task/assign/staff">
+														<input type="hidden" name="task_id" value="${task.id}"/>
+														<table>
+															<tr>
+																<td style="padding-right: 3px;">
+																	<label>Staff </label>
+																</td>
+																<td style="padding-bottom: 3px;">
+																	&nbsp;
+																</td>
+																<td style="padding-bottom: 3px;">
+																	<select class="form-control" id="staff_id" name="staff_id">
+																		<c:if test="${!empty staffList}">
+																			<c:forEach items="${staffList}" var="staff">
+																				<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+																				<option value="${staff.id}">${staffName}</option>
+																			</c:forEach>
+																		</c:if>
+						                                            </select>
+																</td>
+															</tr>
+														</table>
+														<br/>
+                                           				<button class="btn btn-primary btn-sm">Assign</button>
+                                           			</form>
+                   								</div>
+                   							</div>
+                   						</div>
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
@@ -203,7 +298,7 @@
 		                   												&nbsp;
 		                   											</td>
 		                   											<td>
-		                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 		                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
 		                   											</td>
 		                   										</tr>
@@ -214,7 +309,7 @@
                   										</c:when>
                    										</c:choose>
                    									</table>
-                   									<button class="btn btn-danger btn-sm">Clear All</button>
+                   									<button class="btn btn-danger btn-sm">Unassign All</button>
 													<br/>
 													<br/>
 													<h4>Assign More Teams</h4>
