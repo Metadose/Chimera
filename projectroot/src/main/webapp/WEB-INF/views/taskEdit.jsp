@@ -218,6 +218,7 @@
 													<br/>
 													<br/>
 													<h4>Assign More Teams</h4>
+													<form action="${contextPath}/task/assign/team" method="post">
 													<table>
 														<tr>
 															<td style="padding-right: 3px;">
@@ -227,7 +228,7 @@
 																&nbsp;
 															</td>
 															<td style="padding-bottom: 3px;">
-																<select class="form-control" >
+																<select class="form-control" name="team_id">
 																	<c:forEach items="${teamList}" var="teamItem">
 																		<option value="${teamItem.id}">${teamItem.name}</option>
 																	</c:forEach>
@@ -235,7 +236,9 @@
 															</td>
 														</tr>
 													</table>
+													<input type="hidden" name="task_id" value="${task.id}"/>
                                            			<button class="btn btn-primary btn-sm">Assign</button>
+                                           			</form>
                    								</div>
                    							</div>
                    						</div>

@@ -108,13 +108,15 @@
 			                                            </td>
 			                                            <td>
 			                                            	<c:choose>
-		                                            		<c:when test="${!empty task.team}">
-		                                            			<a href="${contextPath}/team/edit/${task.team.id}">
+		                                            		<c:when test="${!empty task.teams}">
+		                                            			<c:forEach items="${task.teams}" var="taskTeam">
+	                                            				<a href="${contextPath}/team/edit/${taskTeam.id}">
 				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
 				                                            	</a>
-				                                            	${task.team.name}
+				                                            	${taskTeam.name}
+		                                            			</c:forEach>
 		                                            		</c:when>
-		                                            		<c:when test="${empty task.team}">
+		                                            		<c:when test="${empty task.teams}">
 		                                            			<h6>No team assigned.</h6>
 		                                            		</c:when>
 			                                            	</c:choose>
@@ -122,12 +124,14 @@
 			                                            <td>
 			                                            	<c:choose>
 		                                            		<c:when test="${!empty task.staff}">
-		                                            			<c:set var="taskStaff" value="${task.staff}"/>
-					                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-				                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
-				                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
-				                                            	</a>
-				                                            	${taskStaffName}
+		                                            			<c:forEach items="${task.staff}" var="taskStaffMember">
+		                                            				<c:set var="taskStaff" value="${taskStaffMember}"/>
+						                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+					                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
+					                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+					                                            	</a>
+					                                            	${taskStaffName}
+		                                            			</c:forEach>
 		                                            		</c:when>
 		                                            		<c:when test="${empty task.staff}">
 		                                            			<h6>No staff assigned.</h6>

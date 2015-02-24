@@ -211,8 +211,8 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@RequestMapping(value = Task.OBJECT_NAME + "/"
-			+ SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME)
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaffTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
@@ -229,8 +229,8 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@RequestMapping(value = Task.OBJECT_NAME + "/"
-			+ SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME)
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeamTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
