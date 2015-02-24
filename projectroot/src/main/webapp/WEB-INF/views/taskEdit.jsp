@@ -213,8 +213,8 @@
 	                   												&nbsp;
 	                   											</td>
 	                   											<td>
-	                   												<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
-																		<input type="hidden" id="project_id" name="project_id" value="${staff.id}"/>
+	                   												<form method="post" action="${contextPath}/task/unassign/staff">
+																		<input type="hidden" id="task_id" name="task_id" value="${task.id}"/>
 																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 																		<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 	                   												</form>
@@ -229,8 +229,8 @@
                    									</table>
                    									<c:choose>
                    										<c:when test="${!empty task.staff}">
-                   											<form name="unassignAllStaffForm" id="unassignAllStaffForm" method="post" action="${contextPath}/staff/unassign/project/all">
-                   												<input type="hidden" id="project_id" name="project_id" value="${staff.id}"/>
+                   											<form method="post" action="${contextPath}/task/unassign/staff/all">
+                   												<input type="hidden" name="task_id" value="${task.id}"/>
                    												<button class="btn btn-danger btn-sm">Unassign All</button>
                    											</form>
                    										</c:when>
@@ -298,7 +298,11 @@
 		                   												&nbsp;
 		                   											</td>
 		                   											<td>
-		                   												<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												<form action="${contextPath}/task/unassign/team" method="post">
+		                   													<input type="hidden" name="task_id" value="${task.id}"/>
+		                   													<input type="hidden" name="team_id" value="${team.id}"/>
+		                   													<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   												</form>
 		                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
 		                   											</td>
 		                   										</tr>
@@ -309,7 +313,12 @@
                   										</c:when>
                    										</c:choose>
                    									</table>
-                   									<button class="btn btn-danger btn-sm">Unassign All</button>
+                   									<c:if test="${!empty task.teams}">
+                   									<form action="${contextPath}/task/unassign/team/all" method="post">
+                   										<input type="hidden" name="task_id" value="${task.id}"/>
+                   										<button class="btn btn-danger btn-sm">Unassign All</button>
+                   									</form>
+                   									</c:if>
 													<br/>
 													<br/>
 													<h4>Assign More Teams</h4>

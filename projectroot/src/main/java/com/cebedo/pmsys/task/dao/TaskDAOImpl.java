@@ -104,4 +104,54 @@ public class TaskDAOImpl implements TaskDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(taskTeamAssign);
 	}
+
+	@Override
+	public void unassignTeamTask(long taskID, long teamID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ TaskTeamAssignment.OBJECT_NAME + " WHERE "
+				+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:"
+				+ TaskTeamAssignment.PROPERTY_TASK_ID + " AND "
+				+ TaskTeamAssignment.PROPERTY_TEAM_ID + "=:"
+				+ TaskTeamAssignment.PROPERTY_TEAM_ID);
+		query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
+		query.setParameter(TaskTeamAssignment.PROPERTY_TEAM_ID, teamID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignAllTeamTasks(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ TaskTeamAssignment.OBJECT_NAME + " WHERE "
+				+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:"
+				+ TaskTeamAssignment.PROPERTY_TASK_ID);
+		query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignStaffTask(long taskID, long staffID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ TaskStaffAssignment.OBJECT_NAME + " WHERE "
+				+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:"
+				+ TaskStaffAssignment.PROPERTY_TASK_ID + " AND "
+				+ TaskStaffAssignment.PROPERTY_STAFF_ID + "=:"
+				+ TaskStaffAssignment.PROPERTY_STAFF_ID);
+		query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, taskID);
+		query.setParameter(TaskStaffAssignment.PROPERTY_STAFF_ID, staffID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignAllStaffTasks(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ TaskStaffAssignment.OBJECT_NAME + " WHERE "
+				+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:"
+				+ TaskStaffAssignment.PROPERTY_TASK_ID);
+		query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, id);
+		query.executeUpdate();
+	}
 }

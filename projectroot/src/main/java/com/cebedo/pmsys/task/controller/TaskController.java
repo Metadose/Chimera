@@ -250,4 +250,72 @@ public class TaskController {
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
 	}
+
+	/**
+	 * Unassign all team tasks.
+	 * 
+	 * @param taskID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllTeamTasks(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
+		this.taskService.unassignAllTeamTasks(taskID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
+	 * Unassign a task from a team.
+	 * 
+	 * @param taskID
+	 * @param teamID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignTeamTask(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.taskService.unassignTeamTask(taskID, teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
+	 * Unassign a staff task.
+	 * 
+	 * @param taskID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignStaffTask(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.taskService.unassignStaffTask(taskID, staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
+	 * Unassign all staff tasks.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllStaffTasks(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long id) {
+		this.taskService.unassignAllStaffTasks(id);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ id);
+	}
 }

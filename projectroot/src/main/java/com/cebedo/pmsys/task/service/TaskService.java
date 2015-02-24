@@ -28,4 +28,12 @@ public interface TaskService {
 	public void assignTeamTask(long taskID, long teamID);
 
 	public Task getByIDWithAllCollections(int id);
+
+	public void unassignTeamTask(long taskID, long teamID);
+
+	public void unassignAllTeamTasks(long taskID);
+
+	public void unassignStaffTask(long taskID, long staffID);
+
+	public void unassignAllStaffTasks(long id);
 }

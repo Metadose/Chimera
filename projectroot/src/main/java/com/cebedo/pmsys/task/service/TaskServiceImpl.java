@@ -106,4 +106,28 @@ public class TaskServiceImpl implements TaskService {
 		return this.taskDAO.getByIDWithAllCollections(id);
 	}
 
+	@Override
+	@Transactional
+	public void unassignTeamTask(long taskID, long teamID) {
+		this.taskDAO.unassignTeamTask(taskID, teamID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllTeamTasks(long taskID) {
+		this.taskDAO.unassignAllTeamTasks(taskID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignStaffTask(long taskID, long staffID) {
+		this.taskDAO.unassignStaffTask(taskID, staffID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllStaffTasks(long id) {
+		this.taskDAO.unassignAllStaffTasks(id);
+	}
+
 }

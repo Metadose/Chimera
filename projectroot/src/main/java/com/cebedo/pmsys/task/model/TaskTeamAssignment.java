@@ -14,6 +14,10 @@ import com.cebedo.pmsys.team.model.Team;
 public class TaskTeamAssignment implements Serializable {
 
 	public static final String TABLE_NAME = "assignments_task_team";
+	public static final String OBJECT_NAME = "TaskTeamAssignment";
+
+	public static final String PROPERTY_TASK_ID = "taskID";
+	public static final String PROPERTY_TEAM_ID = "teamID";
 
 	private static final long serialVersionUID = 1L;
 

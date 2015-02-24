@@ -20,6 +20,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_MARK = "mark";
 	public static final String REQUEST_DOWNLOAD = "download";
 	public static final String REQUEST_ASSIGN = "assign";
+	public static final String REQUEST_UNASSIGN = "unassign";
 
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";
@@ -35,6 +36,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_DISPLAY = "display";
 
 	public static final String FROM = "from";
+	public static final String ALL = "all";
 	public static final String FROM_PROJECT = FROM + "/" + Project.OBJECT_NAME;
 
 	public static final String REQUEST_ASSIGN_PROJECT = "assign/project";
