@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 public interface FieldDAO {
 
@@ -31,4 +32,6 @@ public interface FieldDAO {
 
 	public void deleteAssignedField(long projectID, long fieldID, String label,
 			String value);
+
+	public void assignTask(TaskFieldAssignment taskField);
 }

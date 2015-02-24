@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,6 +42,7 @@ public class Task {
 	private Set<Staff> staff;
 	private Set<Team> teams;
 	private int status;
+	private Set<TaskFieldAssignment> fields;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,6 +121,15 @@ public class Task {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".task", cascade = CascadeType.ALL)
+	public Set<TaskFieldAssignment> getFields() {
+		return fields;
+	}
+
+	public void setFields(Set<TaskFieldAssignment> fields) {
+		this.fields = fields;
 	}
 
 	@Override

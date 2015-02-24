@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 public interface FieldService {
 
@@ -29,4 +30,7 @@ public interface FieldService {
 
 	public void updateAssignedProjectField(long projectID, long fieldID,
 			String oldLabel, String oldValue, String label2, String value2);
+
+	public void assignTask(TaskFieldAssignment taskField, long fieldID,
+			long taskID);
 }

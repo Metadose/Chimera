@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Repository
 public class FieldDAOImpl implements FieldDAO {
@@ -139,5 +140,11 @@ public class FieldDAOImpl implements FieldDAO {
 				+ Field.COLUMN_LABEL + " = '" + label + "' and "
 				+ Field.COLUMN_VALUE + " =  '" + value + "'");
 		query.executeUpdate();
+	}
+
+	@Override
+	public void assignTask(TaskFieldAssignment taskField) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(taskField);
 	}
 }

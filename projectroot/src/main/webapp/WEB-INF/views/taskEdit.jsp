@@ -103,44 +103,36 @@
                    								</div>
                    								<div class="box-body">
                    									<div class="form-group">
-                   										<table>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="BIR Number">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="202-123-345-123">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="Manpower">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="ABC Services Inc.">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
-														</table>
-														<br/>
-														<button class="btn btn-danger btn-sm">Clear All</button>
+                   										<c:choose>
+               											<c:when test="${!empty task.fields}">
+               												<c:forEach items="${task.fields}" var="field">
+               												<table>
+																<tr>
+																	<td style="padding-bottom: 3px;">
+																		<input type="text" class="form-control" name="label" value="${field.label}">
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<input type="text" class="form-control" name="value" value="${field.value}">
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<button class="btn btn-warning btn-sm">Remove</button>
+																	</td>
+																</tr>
+															</table>
+															</c:forEach>
+															<br/>
+															<button class="btn btn-danger btn-sm">Clear All</button>
+               											</c:when>
+               											<c:when test="${empty task.fields}">
+               												<h6>No field assigned.</h6>
+               											</c:when>
+                   										</c:choose>
 														<br/>
 														<br/>
 														<h4>Assign More Fields</h4>

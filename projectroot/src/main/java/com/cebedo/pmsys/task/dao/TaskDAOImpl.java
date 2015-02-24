@@ -47,6 +47,7 @@ public class TaskDAOImpl implements TaskDAO {
 		Hibernate.initialize(task.getTeams());
 		Hibernate.initialize(task.getProject());
 		Hibernate.initialize(task.getStaff());
+		Hibernate.initialize(task.getFields());
 		logger.info("[Get by ID] Task: " + task);
 		return task;
 	}

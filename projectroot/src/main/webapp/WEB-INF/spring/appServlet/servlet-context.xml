@@ -53,6 +53,7 @@
                 <beans:value>com.cebedo.pmsys.photo.model.Photo</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.TaskTeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.TaskStaffAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -103,6 +104,7 @@
     <beans:bean id="fieldService" class="com.cebedo.pmsys.field.service.FieldServiceImpl">
         <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
+        <beans:property name="taskDAO" ref="taskDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.projectfile.dao.ProjectFileDAOImpl">

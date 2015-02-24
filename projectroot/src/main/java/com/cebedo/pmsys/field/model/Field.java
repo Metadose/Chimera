@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
+
 @Entity
 @Table(name = Field.TABLE_NAME)
 public class Field implements Serializable {
@@ -29,6 +31,7 @@ public class Field implements Serializable {
 	private long id;
 	private String name;
 	private Set<FieldAssignment> fieldAssignments;
+	private Set<TaskFieldAssignment> tasks;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +61,15 @@ public class Field implements Serializable {
 
 	public void setFieldAssignments(Set<FieldAssignment> fieldAssignments) {
 		this.fieldAssignments = fieldAssignments;
+	}
+
+	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".field")
+	public Set<TaskFieldAssignment> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<TaskFieldAssignment> tasks) {
+		this.tasks = tasks;
 	}
 
 }

@@ -16,6 +16,8 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Controller
 @RequestMapping(Field.OBJECT_NAME)
@@ -42,6 +44,26 @@ public class FieldController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
+	}
+
+	/**
+	 * Assign a field to a task.
+	 * 
+	 * @param taskField
+	 * @param fieldID
+	 * @param taskID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Task.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView assignTask(
+			@ModelAttribute(ATTR_FIELD) TaskFieldAssignment taskField,
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
+		this.fieldService.assignTask(taskField, fieldID, taskID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
 	}
 
 	/**

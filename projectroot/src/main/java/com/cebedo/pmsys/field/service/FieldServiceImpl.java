@@ -10,12 +10,20 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.task.dao.TaskDAO;
+import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Service
 public class FieldServiceImpl implements FieldService {
 
 	private FieldDAO fieldDAO;
 	private ProjectDAO projectDAO;
+	private TaskDAO taskDAO;
+
+	public void setTaskDAO(TaskDAO taskDAO) {
+		this.taskDAO = taskDAO;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -102,6 +110,17 @@ public class FieldServiceImpl implements FieldService {
 		newFieldAssignment.setLabel(label);
 		newFieldAssignment.setValue(value);
 		this.fieldDAO.assignProject(newFieldAssignment);
+	}
+
+	@Override
+	@Transactional
+	public void assignTask(TaskFieldAssignment taskField, long fieldID,
+			long taskID) {
+		Field field = this.fieldDAO.getByID(fieldID);
+		Task task = this.taskDAO.getByID(taskID);
+		taskField.setField(field);
+		taskField.setTask(task);
+		this.fieldDAO.assignTask(taskField);
 	}
 
 }
