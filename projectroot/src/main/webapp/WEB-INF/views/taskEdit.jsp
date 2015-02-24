@@ -332,7 +332,9 @@
 		                   													<input type="hidden" name="team_id" value="${team.id}"/>
 		                   													<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 		                   												</form>
-		                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Task</button>
+		                   												<form action="${contextPath}/team/edit/${team.id}" method="post">
+		                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+		                   												</form>
 		                   											</td>
 		                   										</tr>
                   											</c:forEach>
