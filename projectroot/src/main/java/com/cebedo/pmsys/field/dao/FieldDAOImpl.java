@@ -159,4 +159,17 @@ public class FieldDAOImpl implements FieldDAO {
 		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 		query.executeUpdate();
 	}
+
+	@Override
+	public void unassignTask(long fieldID, long taskID, String label,
+			String value) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("DELETE FROM "
+				+ TaskFieldAssignment.TABLE_NAME + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID + " AND "
+				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND  "
+				+ Field.COLUMN_LABEL + " = '" + label + "' AND "
+				+ Field.COLUMN_VALUE + " =  '" + value + "'");
+		query.executeUpdate();
+	}
 }

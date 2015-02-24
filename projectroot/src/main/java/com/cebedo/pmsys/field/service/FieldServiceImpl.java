@@ -129,4 +129,29 @@ public class FieldServiceImpl implements FieldService {
 		this.fieldDAO.unassignAllTasks(taskID);
 	}
 
+	@Override
+	@Transactional
+	public void unassignTask(long fieldID, long taskID, String label,
+			String value) {
+		this.fieldDAO.unassignTask(fieldID, taskID, label, value);
+	}
+
+	@Override
+	@Transactional
+	public void updateAssignedTaskField(long taskID, long fieldID,
+			String oldLabel, String oldValue, String label, String value) {
+		// Delete the old version of the field.
+		this.fieldDAO.unassignTask(fieldID, taskID, oldLabel, oldValue);
+
+		// Save a new one.
+		TaskFieldAssignment newFieldAssignment = new TaskFieldAssignment();
+		Field field = this.fieldDAO.getByID(fieldID);
+		Task task = this.taskDAO.getByID(taskID);
+		newFieldAssignment.setTask(task);
+		newFieldAssignment.setField(field);
+		newFieldAssignment.setLabel(label);
+		newFieldAssignment.setValue(value);
+		this.fieldDAO.assignTask(newFieldAssignment);
+	}
+
 }

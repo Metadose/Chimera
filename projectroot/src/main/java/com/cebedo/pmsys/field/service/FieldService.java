@@ -35,4 +35,10 @@ public interface FieldService {
 			long taskID);
 
 	public void unassignAllTasks(long taskID);
+
+	public void unassignTask(long fieldID, long taskID, String label,
+			String value);
+
+	public void updateAssignedTaskField(long taskID, long fieldID,
+			String oldLabel, String oldValue, String label, String value);
 }

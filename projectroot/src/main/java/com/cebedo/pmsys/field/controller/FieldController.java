@@ -118,6 +118,33 @@ public class FieldController {
 	}
 
 	/**
+	 * Update a currently assigned Task field.
+	 * 
+	 * @param fieldID
+	 * @param taskID
+	 * @param label
+	 * @param value
+	 * @param oldLabel
+	 * @param oldValue
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
+			+ SystemConstants.ASSIGNED + "/" + Task.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView updateAssignedTaskField(
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Field.COLUMN_LABEL) String label,
+			@RequestParam(Field.COLUMN_VALUE) String value,
+			@RequestParam("old_" + Field.COLUMN_LABEL) String oldLabel,
+			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue) {
+		this.fieldService.updateAssignedTaskField(taskID, fieldID, oldLabel,
+				oldValue, label, value);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
+	}
+
+	/**
 	 * Update an assigned project field.
 	 * 
 	 * @param fieldID
@@ -156,6 +183,28 @@ public class FieldController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign a field from a task.
+	 * 
+	 * @param fieldID
+	 * @param taskID
+	 * @param label
+	 * @param value
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Task.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignTask(
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Field.COLUMN_LABEL) String label,
+			@RequestParam(Field.COLUMN_VALUE) String value) {
+		this.fieldService.unassignTask(fieldID, taskID, label, value);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ taskID);
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)

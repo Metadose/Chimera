@@ -36,4 +36,7 @@ public interface FieldDAO {
 	public void assignTask(TaskFieldAssignment taskField);
 
 	public void unassignAllTasks(long taskID);
+
+	public void unassignTask(long fieldID, long taskID, String label,
+			String value);
 }

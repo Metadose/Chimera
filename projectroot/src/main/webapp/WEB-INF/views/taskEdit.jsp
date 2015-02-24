@@ -105,9 +105,15 @@
                    									<div class="form-group">
                    										<c:choose>
                											<c:when test="${!empty task.fields}">
+               												<c:set var="fieldFormID" value="${0}"/>
                												<c:forEach items="${task.fields}" var="field">
                												<table>
 																<tr>
+																	<form id="field_unassign_${fieldFormID}" action="${contextPath}/field/unassign/task" method="post">
+		               												<input type="hidden" name="task_id" value="${task.id}"/>
+		               												<input type="hidden" name="field_id" value="${field.field.id}"/>
+		               												<input type="hidden" class="form-control" name="old_label" value="${field.label}">
+		               												<input type="hidden" class="form-control" name="old_value" value="${field.value}">
 																	<td style="padding-bottom: 3px;">
 																		<input type="text" class="form-control" name="label" value="${field.label}">
 																	</td>
@@ -120,11 +126,19 @@
 																	<td style="padding-bottom: 3px;">
 																		&nbsp;
 																	</td>
+																	</form>
 																	<td style="padding-bottom: 3px;">
-																		<button class="btn btn-warning btn-sm">Remove</button>
+																		<button class="btn btn-warning btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		&nbsp;
+																	</td>
+																	<td style="padding-bottom: 3px;">
+																		<button class="btn btn-danger btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
 																	</td>
 																</tr>
 															</table>
+															<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
 															</c:forEach>
 															<br/>
 															<form action="${contextPath}/field/unassign/task/all" method="post">
@@ -380,6 +394,19 @@
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();
+		}
+		
+		function submitAjax(id) {
+			var formObj = $('#'+id);
+			var serializedData = formObj.serialize();
+			$.ajax({
+				type: "POST",
+				url: '${contextPath}/field/update/assigned/task',
+				data: serializedData,
+				success: function(response){
+					location.reload();
+				}
+			});
 		}
 	
 		$(document).ready(function() {

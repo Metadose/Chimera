@@ -879,7 +879,7 @@
 					location.reload();
 				}
 			});
-		}	
+		}
 	
 		function submitForm(id) {
 			$('#'+id).submit();
