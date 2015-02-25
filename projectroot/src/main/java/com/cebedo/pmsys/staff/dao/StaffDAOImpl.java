@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.staff.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.task.model.Task;
 
 @Repository
 public class StaffDAOImpl implements StaffDAO {
@@ -39,6 +41,20 @@ public class StaffDAOImpl implements StaffDAO {
 				"from " + Staff.CLASS_NAME + " where "
 						+ Staff.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
 		logger.info("[Get by ID] Staff: " + staff);
+		return staff;
+	}
+
+	@Override
+	public Staff getWithAllCollectionsByID(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Staff staff = (Staff) session.load(Staff.class, new Long(id));
+		Set<Task> taskList = staff.getTasks();
+		for (Task task : taskList) {
+			Hibernate.initialize(task.getTeams());
+			Hibernate.initialize(task.getProject());
+			Hibernate.initialize(task.getStaff());
+			logger.info("[List] Task: " + task);
+		}
 		return staff;
 	}
 

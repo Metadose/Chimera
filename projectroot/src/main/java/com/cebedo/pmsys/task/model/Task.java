@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.task.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -94,7 +95,7 @@ public class Task {
 		this.project = project;
 	}
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = TaskStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Staff> getStaff() {
 		return staff;
@@ -135,6 +136,21 @@ public class Task {
 	@Override
 	public String toString() {
 		return "[Task] " + getId() + " [Content] " + getContent();
+	}
+
+	/**
+	 * Add new staff on the task.
+	 * 
+	 * @param stf
+	 */
+	public void assignStaff(Staff stf) {
+		if (staff == null) {
+			Set<Staff> staffList = new HashSet<Staff>();
+			staffList.add(stf);
+			setStaff(staffList);
+		} else {
+			this.staff.add(stf);
+		}
 	}
 
 }

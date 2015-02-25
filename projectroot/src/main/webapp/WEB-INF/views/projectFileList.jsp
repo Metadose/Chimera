@@ -53,9 +53,10 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-		                                            			<a href="${contextPath}/projectfile/edit/${file.id}">
-																	<button class="btn btn-primary btn-sm">Download</button>
-																</a>
+		                                            			<form action="${contextPath}/projectfile/download/" method="post">
+			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
+			                                            			<button class="btn btn-primary btn-sm">Download</button>
+			                                            		</form>
 																<a href="${contextPath}/projectfile/edit/${file.id}">
 																	<button class="btn btn-primary btn-sm">View Details</button>
 																</a>

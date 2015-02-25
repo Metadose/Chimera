@@ -11,6 +11,8 @@ public interface StaffDAO {
 
 	public Staff getByID(long id);
 
+	public Staff getWithAllCollectionsByID(long id);
+
 	public void update(Staff staff);
 
 	public void delete(long id);

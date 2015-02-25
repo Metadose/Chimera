@@ -85,4 +85,10 @@ public class StaffServiceImpl implements StaffService {
 	public void unassignAllProjectManagers(long projectID) {
 		this.staffDAO.unassignAllProjectManagers(projectID);
 	}
+
+	@Override
+	@Transactional
+	public Staff getWithAllCollectionsByID(int id) {
+		return this.staffDAO.getWithAllCollectionsByID(id);
+	}
 }

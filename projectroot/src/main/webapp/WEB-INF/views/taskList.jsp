@@ -57,13 +57,11 @@
 					                                                <span class="caret"></span>
 					                                            </button>
 					                                            <ul class="dropdown-menu">
-					                                                <li><a href="#">New</a></li>
-					                                                <li><a href="#">Ongoing</a></li>
-					                                                <li><a href="#">Completed</a></li>
-					                                                <li><a href="#">Failed</a></li>
-					                                                <li><a href="#">Cancelled</a></li>
-<!-- 							                                                <li class="divider"></li> -->
-<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+					                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=0">New</a></li>
+					                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=1">Ongoing</a></li>
+					                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=2">Completed</a></li>
+					                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=3">Failed</a></li>
+					                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=4">Cancelled</a></li>
 					                                            </ul>
 					                                        </div>
 					                                        <a href="${contextPath}/task/edit/${task.id}">

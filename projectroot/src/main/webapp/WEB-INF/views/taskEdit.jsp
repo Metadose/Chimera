@@ -54,14 +54,26 @@
                    								</div>
                    								<div class="box-body">
                    									<c:set var="targetController" value="create"/>
-                   									<c:if test="${!empty assignProjectID}">
-                   										<c:set var="targetController" value="assign/project/${assignProjectID}"/>
-                   									</c:if>
+                   									<c:choose>
+                   										<c:when test="${!empty assignProjectID}">
+                   											<c:set var="targetController" value="assign/project/${assignProjectID}"/>
+                   										</c:when>
+                   										<c:when test="${!empty assignStaffID}">
+                   											<c:set var="targetController" value="assign/new/staff/${assignStaffID}"/>
+                   										</c:when>
+                   									</c:choose>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/task/${targetController}">
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${task.id}"/>
+				                                        	<input type="hidden" name="project_id" value="${task.project.id}"/>
 				                                        	<label>Status</label>
-				                                            <input type="text" class="form-control" name="status" value="${task.status}"/><br/>
+				                                            <select class="form-control" id="task_status" name="status">
+						                                    	<option value="0">New</option>
+						                                    	<option value="1">Ongoing</option>
+						                                    	<option value="2">Completed</option>
+						                                    	<option value="3">Failed</option>
+						                                    	<option value="4">Cancelled</option>
+				                                            </select><br/>
 				                                            <label>Content</label>
 				                                            <input type="text" class="form-control" name="content" value="${task.content}"/><br/>
 				                                            
@@ -414,6 +426,7 @@
 		$(document).ready(function() {
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#date-mask2").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
+			$("#task_status").val("${task.status}");
 	    });
 	</script>
 </body>

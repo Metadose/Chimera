@@ -25,4 +25,6 @@ public interface StaffService {
 
 	public void unassignAllProjectManagers(long projectID);
 
+	public Staff getWithAllCollectionsByID(int id);
+
 }

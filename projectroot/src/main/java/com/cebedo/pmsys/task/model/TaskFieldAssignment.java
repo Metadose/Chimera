@@ -23,6 +23,9 @@ public class TaskFieldAssignment implements Serializable {
 	public static final String TABLE_NAME = "assignments_task_field";
 	public static final String PRIMARY_KEY = "assignmentID";
 
+	public static final String PROPERTY_TASK_ID = "task.id";
+	public static final String PROPERTY_FIELD_ID = "field.id";
+
 	private static final long serialVersionUID = 1L;
 
 	private TaskFieldAssignmentID assignmentID = new TaskFieldAssignmentID();

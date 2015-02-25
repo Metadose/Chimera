@@ -34,6 +34,7 @@ public class TaskController {
 	public static final String ATTR_LIST = "taskList";
 	public static final String ATTR_TASK = Task.OBJECT_NAME;
 	public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
+	public static final String ATTR_ASSIGN_STAFF_ID = "assignStaffID";
 
 	public static final String JSP_LIST = "taskList";
 	public static final String JSP_EDIT = "taskEdit";
@@ -96,11 +97,13 @@ public class TaskController {
 		// Else, update.
 		if (task.getId() == 0) {
 			this.taskService.create(task);
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
+					+ SystemConstants.REQUEST_LIST;
 		} else {
 			this.taskService.update(task);
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
+					+ SystemConstants.REQUEST_EDIT + "/" + task.getId();
 		}
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
-				+ SystemConstants.REQUEST_LIST;
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/" + SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
+	@RequestMapping(SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
 			+ Project.COLUMN_PRIMARY_KEY + "}")
 	public String redirectAssignProject(
 			@PathVariable(Project.COLUMN_PRIMARY_KEY) int id, Model model) {
@@ -135,7 +138,7 @@ public class TaskController {
 	 */
 	@RequestMapping(value = {
 			SystemConstants.REQUEST_ASSIGN_PROJECT,
-			"/" + SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
+			SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
 					+ Project.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public ModelAndView assignProject(@ModelAttribute(ATTR_TASK) Task task,
 			@PathVariable(Project.COLUMN_PRIMARY_KEY) int projectID) {
@@ -143,6 +146,7 @@ public class TaskController {
 		// Construct the project object from the ID.
 		// Attach the project to the task.
 		// Create the task.
+		// TODO Transfer getProjectByID() to projectService.
 		Project proj = this.taskService.getProjectByID(projectID);
 		task.setProject(proj);
 		this.taskService.create(task);
@@ -151,6 +155,45 @@ public class TaskController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Assign a new task for a staff.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME
+			+ "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
+	public String redirectAssignStaff(
+			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model) {
+		// Redirect to an edit page with an empty task object
+		// And ID.
+		model.addAttribute(ATTR_TASK, new Task());
+		model.addAttribute(ATTR_ASSIGN_STAFF_ID, id);
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_ASSIGN);
+		return JSP_EDIT;
+	}
+
+	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
+			+ SystemConstants.NEW + "/" + Staff.OBJECT_NAME + "/{"
+			+ Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
+	public ModelAndView assignStaff(@ModelAttribute(ATTR_TASK) Task task,
+			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int staffID) {
+
+		// Construct the object from the ID.
+		// Attach the object to the task.
+		// Create the task.
+		Staff staff = this.staffService.getByID(staffID);
+		task.assignStaff(staff);
+		this.taskService.create(task);
+
+		// Redirect to project edit.
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
 	}
 
 	/**
@@ -165,6 +208,22 @@ public class TaskController {
 		this.taskService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 				+ SystemConstants.REQUEST_LIST;
+	}
+
+	/**
+	 * Mark the status based on param passed.
+	 * 
+	 * @param taskID
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(SystemConstants.REQUEST_MARK)
+	public ModelAndView mark(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Task.COLUMN_STATUS) int status) {
+		this.taskService.mark(taskID, status);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
 
 	/**

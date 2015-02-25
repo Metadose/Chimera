@@ -125,7 +125,8 @@ public class StaffController {
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
-		model.addAttribute(ATTR_STAFF, this.staffService.getByID(id));
+		model.addAttribute(ATTR_STAFF,
+				this.staffService.getWithAllCollectionsByID(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;

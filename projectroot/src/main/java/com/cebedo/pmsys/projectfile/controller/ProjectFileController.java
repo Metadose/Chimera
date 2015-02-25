@@ -156,6 +156,25 @@ public class ProjectFileController {
 				+ "/" + projectID);
 	}
 
+	@RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD, method = RequestMethod.POST)
+	public void downloadFile(
+			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
+			HttpServletResponse response) {
+
+		File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
+		try {
+			FileInputStream iStream = new FileInputStream(actualFile);
+			response.setContentType("application/octet-stream");
+			response.setContentLength((int) actualFile.length());
+			response.setHeader("Content-Disposition", "attachment; filename=\""
+					+ actualFile.getName() + "\"");
+			IOUtils.copy(iStream, response.getOutputStream());
+			response.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Download a file from Project.
 	 * 
@@ -165,7 +184,7 @@ public class ProjectFileController {
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/"
 			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
-	public ModelAndView downloadFileFromProject(
+	public void downloadFileFromProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
 			HttpServletResponse response) {
@@ -182,9 +201,6 @@ public class ProjectFileController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)

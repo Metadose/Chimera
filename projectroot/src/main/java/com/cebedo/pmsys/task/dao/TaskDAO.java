@@ -2,9 +2,12 @@ package com.cebedo.pmsys.task.dao;
 
 import java.util.List;
 
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 import com.cebedo.pmsys.task.model.TaskStaffAssignment;
 import com.cebedo.pmsys.task.model.TaskTeamAssignment;
+import com.cebedo.pmsys.team.model.Team;
 
 public interface TaskDAO {
 
@@ -33,4 +36,10 @@ public interface TaskDAO {
 	public void unassignStaffTask(long taskID, long staffID);
 
 	public void unassignAllStaffTasks(long id);
+
+	public List<TaskFieldAssignment> getFieldsByTaskID(long taskID);
+
+	public List<Staff> getStaffByTaskID(long taskID);
+
+	public List<Team> getTeamByTaskID(long taskID);
 }

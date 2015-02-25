@@ -14,7 +14,9 @@ import com.cebedo.pmsys.staff.model.Staff;
 public class TaskStaffAssignment implements Serializable {
 
 	public static final String TABLE_NAME = "assignments_task_staff";
+	// TODO Duplicate variable below, use the CLASS_NAME.
 	public static final String OBJECT_NAME = "TaskStaffAssignment";
+	public static final String CLASS_NAME = "TaskStaffAssignment";
 
 	public static final String PROPERTY_TASK_ID = "taskID";
 	public static final String PROPERTY_STAFF_ID = "staffID";

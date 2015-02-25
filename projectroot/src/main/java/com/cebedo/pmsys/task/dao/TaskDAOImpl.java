@@ -4,15 +4,19 @@ import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 import com.cebedo.pmsys.task.model.TaskStaffAssignment;
 import com.cebedo.pmsys.task.model.TaskTeamAssignment;
+import com.cebedo.pmsys.team.model.Team;
 
 @Repository
 public class TaskDAOImpl implements TaskDAO {
@@ -154,5 +158,35 @@ public class TaskDAOImpl implements TaskDAO {
 				+ TaskStaffAssignment.PROPERTY_TASK_ID);
 		query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, id);
 		query.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TaskFieldAssignment> getFieldsByTaskID(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("SELECT * FROM "
+				+ TaskFieldAssignment.TABLE_NAME + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Staff> getStaffByTaskID(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("FROM "
+				+ TaskStaffAssignment.CLASS_NAME + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Team> getTeamByTaskID(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("FROM "
+				+ TaskTeamAssignment.CLASS_NAME + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+		return query.list();
 	}
 }

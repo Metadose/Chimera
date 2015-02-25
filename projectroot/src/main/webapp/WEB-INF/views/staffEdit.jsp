@@ -29,7 +29,14 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${staffName}
+	            	<c:choose>
+	            	<c:when test="${staff.id == 0}">
+	            		New Staff
+	            	</c:when>
+	            	<c:when test="${staff.id > 0}">
+	            		${staffName}
+	            	</c:when>
+	            	</c:choose>
 	                <small>${action} Staff</small>
 	            </h1>
 	        </section>
@@ -40,10 +47,12 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
                                 <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
+                                </c:if>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -128,6 +137,7 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${staff.id != 0}">
                    						<div class="col-md-6">
                    							<div class="box box-primary">
                    								<div class="box-header">
@@ -205,7 +215,9 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</c:if>
               						</div>
+              						<c:if test="${staff.id != 0}">
               						<h2 class="page-header">Assignments</h2>
               						<div class="row">
                    						<div class="col-md-6">
@@ -280,7 +292,9 @@
                    							</div>
                    						</div>
                						</div>
+               						</c:if>
                                 </div><!-- /.tab-pane -->
+                                <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_6">
                                 	<div class="row">
 				                        <div class="col-md-3">
@@ -448,216 +462,111 @@
 		                            </div><!-- /.box -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
-                                    <!-- TO DO List -->
-		                            <div class="box">
+                                	<div class="box">
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks</h3>
-		                                    <div class="box-tools pull-right">
-		                                        <ul class="pagination pagination-sm inline">
-		                                            <li><a href="#">&laquo;</a></li>
-		                                            <li><a href="#">1</a></li>
-		                                            <li><a href="#">2</a></li>
-		                                            <li><a href="#">3</a></li>
-		                                            <li><a href="#">&raquo;</a></li>
-		                                        </ul>
-		                                    </div>
 		                                </div><!-- /.box-header -->
-		                                <div class="box-body">
-		                                    <ul class="todo-list">
-		                                        <li>
-		                                            <!-- drag handle -->
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <!-- checkbox -->
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <!-- todo text -->
-		                                            <span class="text">Design a nice theme</span>
-		                                            <!-- Emphasis label -->
-		                                            <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-		                                            <!-- General tools such as edit or delete-->
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Make the theme responsive</span>
-		                                            <small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Check your messages and notifications</span>
-		                                            <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                        <li>
-		                                            <span class="handle">
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                                <i class="fa fa-ellipsis-v"></i>
-		                                            </span>
-		                                            <input type="checkbox" value="" name=""/>
-		                                            <span class="text">Let theme shine like a star</span>
-		                                            <small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
-		                                            <div class="tools">
-		                                                <i class="fa fa-edit"></i>
-		                                                <i class="fa fa-trash-o"></i>
-		                                            </div>
-		                                        </li>
-		                                    </ul>
+		                                <div class="box-body no-padding">
+		                                    <table class="table table-striped">
+		                                        <tbody>
+			                                        <tr>
+			                                        	<th>&nbsp;</th>
+			                                            <th>Status</th>
+			                                            <th>Content</th>
+			                                            <th>Project</th>
+			                                            <th>Team</th>
+			                                            <th>Start</th>
+			                                            <th>End</th>
+			                                        </tr>
+			                                        <c:set var="taskList" value="${staff.tasks}"/>
+				                                	<c:if test="${!empty taskList}">
+		                                        		<c:forEach items="${taskList}" var="task">
+		                                        			<tr>
+		                                        				<td>
+		                                        					<div class="btn-group">
+							                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                                Mark As&nbsp;
+							                                                <span class="caret"></span>
+							                                            </button>
+							                                            <ul class="dropdown-menu">
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
+							                                            </ul>
+							                                        </div>
+							                                        <a href="${contextPath}/task/edit/${task.id}">
+					                                            		<button class="btn btn-primary btn-sm">View</button>
+					                                            	</a>
+					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            		<button class="btn btn-danger btn-sm">Delete</button>
+					                                            	</a>
+		                                        				</td>
+					                                            <td style="vertical-align: middle;">
+					                                            	<c:choose>
+					                                            	<c:when test="${task.status == 0}">
+					                                            		<span class="label label-info">New</span>
+					                                            	</c:when>
+					                                            	<c:when test="${task.status == 1}">
+					                                            		<span class="label label-primary">Ongoing</span>
+					                                            	</c:when>
+					                                            	<c:when test="${task.status == 2}">
+					                                            		<span class="label label-success">Completed</span>
+					                                            	</c:when>
+					                                            	<c:when test="${task.status == 3}">
+					                                            		<span class="label label-danger">Failed</span>
+					                                            	</c:when>
+					                                            	<c:when test="${task.status == 4}">
+					                                            		<h6>Cancelled</h6>
+					                                            	</c:when>
+						                                            </c:choose>
+					                                            </td>
+					                                            <td>${task.content}</td>
+					                                            <td>
+					                                            	<c:choose>
+				                                            		<c:when test="${!empty task.project}">
+				                                            			<a href="${contextPath}/project/edit/from/staff/?${task.project.id}">
+						                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+						                                            	</a>
+						                                            	${task.project.name}
+						                                            	<br/>
+				                                            		</c:when>
+				                                            		<c:when test="${empty task.project}">
+				                                            			<h5>No project assigned.</h5>
+				                                            		</c:when>
+					                                            	</c:choose>					                                            
+					                                            </td>
+					                                            <td>
+					                                            	<c:choose>
+				                                            		<c:when test="${!empty task.teams}">
+				                                            			<c:forEach items="${task.teams}" var="taskTeam">
+				                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
+						                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+						                                            	</a>
+						                                            	${taskTeam.name}
+						                                            	<br/>
+				                                            			</c:forEach>
+				                                            		</c:when>
+				                                            		<c:when test="${empty task.teams}">
+				                                            			<h5>No team assigned.</h5>
+				                                            		</c:when>
+					                                            	</c:choose>
+					                                            </td>
+					                                            <td>${task.dateStart}</td>
+					                                            <td>${task.dateEnd}</td>
+					                                        </tr>
+		                                        		</c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
 		                                </div><!-- /.box-body -->
 		                                <div class="box-footer clearfix no-border">
-		                                    <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
+		                                	<a href="${contextPath}/task/assign/staff/${staff.id}">
+		                                    	<button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add Task</button>
+		                                    </a>
 		                                </div>
-		                            </div><!-- /.box -->
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_3">
-                                    <div class="box-body table-responsive">
-                                    	<div class="form-group">
-	                                        <label for="exampleInputFile">File Upload</label>
-	                                        <input type="file" id="exampleInputFile">
-	                                        <p class="help-block">Upload a file</p>
-	                                    </div>
-	                                    <br/>
-	                                    <table id="example-1" class="table table-bordered table-striped">
-	                                        <thead>
-	                                            <tr>
-	                                            	<th>&nbsp;</th>
-	                                                <th>Rendering engine</th>
-	                                                <th>Browser</th>
-	                                                <th>Platform(s)</th>
-	                                                <th>Engine version</th>
-	                                                <th>CSS grade</th>
-	                                            </tr>
-	                                        </thead>
-	                                        <tbody>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 4.0</td>
-	                                                <td>Win 95+</td>
-	                                                <td> 4</td>
-	                                                <td>X</td>
-	                                            </tr>
-	                                            <tr>
-	                                            	<td>
-	                                            		<center>
-														<button class="btn btn-primary btn-sm">Download</button>
-														<button class="btn btn-danger btn-sm">Delete</button>
-														</center>
-													</td>
-	                                                <td>Trident</td>
-	                                                <td>Internet
-	                                                    Explorer 5.0</td>
-	                                                <td>Win 95+</td>
-	                                                <td>5</td>
-	                                                <td>C</td>
-	                                            </tr>
-	                                        </tbody>
-	                                        <tfoot>
-	                                            <tr>
-	                                            	<th>&nbsp;</th>
-	                                                <th>Rendering engine</th>
-	                                                <th>Browser</th>
-	                                                <th>Platform(s)</th>
-	                                                <th>Engine version</th>
-	                                                <th>CSS grade</th>
-	                                            </tr>
-	                                        </tfoot>
-	                                    </table>
-	                                </div><!-- /.box-body -->
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_4">
-                                    <div class="form-group">
-                                        <label for="exampleInputFile">Upload Photo</label>
-                                        <input type="file" id="exampleInputFile"><br/>
-                                            <label>Title</label>
-                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-                                            <label>Description</label>
-                                            <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-										<button class="btn btn-primary btn-sm">Upload</button>
-                                    </div>
-                                    <br/>
-                                    <div class="box">
-                                    	 <br/>
-									     <ul class="row">
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1.jpg"/> "/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (1).jpg"/> "/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (2).jpg"/> "/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (3).jpg"/> "/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (4).jpg"/> "/>
-									          </li>
-									          <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-									          	<img src="<c:url value="/temp/1 (5).jpg"/> "/>
-									          </li>
-									     </ul>
-									</div>
-									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								      <div class="modal-dialog">
-								        <div class="modal-content">         
-								          <div class="modal-body">                
-								          </div>
-								        </div><!-- /.modal-content -->
-								      </div><!-- /.modal-dialog -->
-								    </div><!-- /.modal -->
+		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_5">
                                     <!-- The time line -->
@@ -743,7 +652,7 @@
 		                                        <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
 		                                        <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
 		                                        <div class="timeline-body">
-		                                            <iframe width="300" height="169" src="//www.youtube.com/embed/fLe_qO4AE-M" frameborder="0" allowfullscreen></iframe>
+<!-- 		                                            <iframe width="300" height="169" src="//www.youtube.com/embed/fLe_qO4AE-M" frameborder="0" allowfullscreen></iframe> -->
 		                                        </div>
 		                                        <div class="timeline-footer">
 		                                            <a href="#" class="btn btn-xs bg-maroon">See comments</a>
@@ -756,6 +665,7 @@
 		                                </li>
 		                            </ul>
                                 </div><!-- /.tab-pane -->
+                                </c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->

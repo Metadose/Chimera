@@ -35,7 +35,6 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Photo</th>
                                                 <th>Full Name</th>
                                                 <th>Position</th>
@@ -57,8 +56,20 @@
 																</a>
 															</center>
 														</td>
-														<td>${staff.id}</td>
-		                                                <td>${staff.thumbnailURL}</td>
+		                                                <td>
+		                                                	<div class="user-panel">
+												            <div class="pull-left image">
+												                <c:choose>
+	                                                			<c:when test="${!empty staff.thumbnailURL}">
+	                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
+	                                                			</c:when>
+	                                                			<c:when test="${empty staff.thumbnailURL}">
+	                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
+	                                                			</c:when>
+		                                                		</c:choose>
+												            </div>
+													        </div>
+		                                                </td>
 		                                                <td>${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}</td>
 		                                                <td>${staff.companyPosition}</td>
 		                                                <td>${staff.email}</td>
@@ -70,7 +81,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Photo</th>
                                                 <th>Full Name</th>
                                                 <th>Position</th>
