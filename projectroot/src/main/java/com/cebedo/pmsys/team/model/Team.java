@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 
 @Entity
@@ -30,6 +30,7 @@ public class Team implements Serializable {
 	private String name;
 	private Set<Project> projects;
 	private Set<Task> tasks;
+	private Set<Staff> members;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +52,7 @@ public class Team implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "assignedTeams")
+	@ManyToMany(mappedBy = "assignedTeams")
 	public Set<Project> getProjects() {
 		return projects;
 	}
@@ -67,6 +68,15 @@ public class Team implements Serializable {
 
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
+	}
+
+	@ManyToMany(mappedBy = "teams")
+	public Set<Staff> getMembers() {
+		return members;
+	}
+
+	public void setMembers(Set<Staff> members) {
+		this.members = members;
 	}
 
 }

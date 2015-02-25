@@ -9,12 +9,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.team.model.Team;
 
 @Entity
 @Table(name = Staff.TABLE_NAME)
@@ -40,6 +43,7 @@ public class Staff implements Serializable {
 	private String email;
 	private String contactNumber;
 	private Set<ProjectFile> files;
+	private Set<Team> teams;
 
 	public Staff() {
 		;
@@ -167,5 +171,15 @@ public class Staff implements Serializable {
 
 	public void setFiles(Set<ProjectFile> files) {
 		this.files = files;
+	}
+
+	@ManyToMany
+	@JoinTable(name = StaffTeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Team> getTeams() {
+		return teams;
+	}
+
+	public void setTeams(Set<Team> teams) {
+		this.teams = teams;
 	}
 }
