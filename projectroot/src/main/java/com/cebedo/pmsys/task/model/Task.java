@@ -1,8 +1,8 @@
 package com.cebedo.pmsys.task.model;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -144,8 +144,10 @@ public class Task {
 	 * @param stf
 	 */
 	public void assignStaff(Staff stf) {
+		// TODO Make this function work.
+		// Identify what Set object to initialize Set.
 		if (staff == null) {
-			Set<Staff> staffList = new HashSet<Staff>();
+			Set<Staff> staffList = new TreeSet<Staff>();
 			staffList.add(stf);
 			setStaff(staffList);
 		} else {

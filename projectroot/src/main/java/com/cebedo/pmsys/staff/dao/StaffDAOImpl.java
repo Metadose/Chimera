@@ -48,6 +48,13 @@ public class StaffDAOImpl implements StaffDAO {
 	public Staff getWithAllCollectionsByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Staff staff = (Staff) session.load(Staff.class, new Long(id));
+
+		Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
+		for (ManagerAssignment assignment : managerAssignment) {
+			Hibernate.initialize(assignment.getProject());
+			Hibernate.initialize(assignment.getManager());
+		}
+
 		Set<Task> taskList = staff.getTasks();
 		for (Task task : taskList) {
 			Hibernate.initialize(task.getTeams());
