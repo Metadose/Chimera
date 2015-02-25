@@ -252,7 +252,7 @@
                												</c:forEach>
                											</c:when>
                											<c:when test="${empty staff.teams}">
-               												<h6>No team assigned.</h6>
+               												<h6>No team assigned.</h6> 
                											</c:when>
                											</c:choose>
                    									</table>
