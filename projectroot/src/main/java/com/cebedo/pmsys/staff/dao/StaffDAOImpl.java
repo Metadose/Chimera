@@ -52,6 +52,7 @@ public class StaffDAOImpl implements StaffDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		Staff staff = (Staff) session.load(Staff.class, new Long(id));
 		Hibernate.initialize(staff.getTeams());
+		Hibernate.initialize(staff.getFieldAssignments());
 
 		Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
 		for (ManagerAssignment assignment : managerAssignment) {
@@ -105,6 +106,7 @@ public class StaffDAOImpl implements StaffDAO {
 		for (Staff staff : staffList) {
 			Hibernate.initialize(staff.getAssignedManagers());
 			Hibernate.initialize(staff.getTasks());
+			Hibernate.initialize(staff.getFieldAssignments());
 			logger.info("[List] Staff: " + staff);
 		}
 		return staffList;
