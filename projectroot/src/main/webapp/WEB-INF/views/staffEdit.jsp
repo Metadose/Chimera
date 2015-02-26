@@ -146,40 +146,42 @@
                    								<div class="box-body">
                    									<div class="form-group">
                    										<table>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="BIR Number">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="202-123-345-123">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="Manpower">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" class="form-control" value="ABC Services Inc.">
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
-																</td>
-															</tr>
+                   											<c:set var="fields" value="${staff.fieldAssignments}"/>
+                   											<c:if test="${!empty fields}">
+                   												<c:set var="fieldFormID" value="${0}"/>
+                   												<c:forEach var="field" items="${fields}">
+                   													<tr>
+	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
+																			<input type="hidden" name="staff_id" value="${staff.id}"/>
+																			<input type="hidden" name="field_id" value="${field.field.id}"/>
+																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
+																			<input type="hidden" id="old_value" name="old_value" value="${field.value}"/>
+																			<td style="padding-bottom: 3px;">
+																				<input type="text" class="form-control" id="label" name="label" value="${field.label}">
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				&nbsp;
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				<input type="text" class="form-control" id="value" name="value" value="${field.value}">
+																			</td>
+																			<td style="padding-bottom: 3px;">
+																				&nbsp;
+																			</td>
+																		</form>
+																		<td style="padding-bottom: 3px;">
+																			<button class="btn btn-warning btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			&nbsp;
+																		</td>
+																		<td style="padding-bottom: 3px;">
+																			<button class="btn btn-danger btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
+																		</td>
+																	</tr>
+																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
+																</c:forEach>
+															</c:if>
 														</table>
 														<br/>
 														<button class="btn btn-danger btn-sm">Clear All</button>

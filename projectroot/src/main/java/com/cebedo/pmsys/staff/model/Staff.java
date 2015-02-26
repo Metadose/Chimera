@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,6 +43,7 @@ public class Staff implements Serializable {
 	private String contactNumber;
 	private Set<ProjectFile> files;
 	private Set<Team> teams;
+	private Set<StaffFieldAssignment> fieldAssignments;
 
 	public Staff() {
 		;
@@ -127,8 +127,7 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
-			+ ".manager")
+	@OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".manager")
 	public Set<ManagerAssignment> getAssignedManagers() {
 		return assignedManagers;
 	}
@@ -181,5 +180,15 @@ public class Staff implements Serializable {
 
 	public void setTeams(Set<Team> teams) {
 		this.teams = teams;
+	}
+
+	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".staff")
+	public Set<StaffFieldAssignment> getFieldAssignments() {
+		return fieldAssignments;
+	}
+
+	public void setFieldAssignments(
+			Set<StaffFieldAssignment> staffFieldAssignments) {
+		this.fieldAssignments = staffFieldAssignments;
 	}
 }

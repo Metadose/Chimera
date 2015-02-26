@@ -5,13 +5,13 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Entity
@@ -32,6 +32,7 @@ public class Field implements Serializable {
 	private String name;
 	private Set<FieldAssignment> fieldAssignments;
 	private Set<TaskFieldAssignment> tasks;
+	private Set<StaffFieldAssignment> staffFieldAssignments;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,8 +54,7 @@ public class Field implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = FieldAssignment.PRIMARY_KEY
-			+ ".field")
+	@OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".field")
 	public Set<FieldAssignment> getFieldAssignments() {
 		return fieldAssignments;
 	}
@@ -70,6 +70,16 @@ public class Field implements Serializable {
 
 	public void setTasks(Set<TaskFieldAssignment> tasks) {
 		this.tasks = tasks;
+	}
+
+	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".field")
+	public Set<StaffFieldAssignment> getStaffFieldAssignments() {
+		return staffFieldAssignments;
+	}
+
+	public void setStaffFieldAssignments(
+			Set<StaffFieldAssignment> staffFieldAssignments) {
+		this.staffFieldAssignments = staffFieldAssignments;
 	}
 
 }

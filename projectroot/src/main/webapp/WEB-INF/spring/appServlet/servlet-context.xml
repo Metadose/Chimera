@@ -46,6 +46,7 @@
                 <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.staff.model.StaffTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.StaffFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
                 <beans:value>com.cebedo.pmsys.team.model.TeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
