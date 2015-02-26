@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.staff.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -15,8 +17,11 @@ import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
+import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
 @RequestMapping(Staff.OBJECT_NAME)
@@ -28,11 +33,18 @@ public class StaffController {
 	public static final String JSP_EDIT = "staffEdit";
 
 	private StaffService staffService;
+	private TeamService teamService;
 
 	@Autowired(required = true)
 	@Qualifier(value = "staffService")
-	public void setStaffService(StaffService ps) {
-		this.staffService = ps;
+	public void setStaffService(StaffService s) {
+		this.staffService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "teamService")
+	public void setTeamService(TeamService s) {
+		this.teamService = s;
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
@@ -120,6 +132,8 @@ public class StaffController {
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+		List<Team> teamList = this.teamService.list();
+		model.addAttribute(TeamController.JSP_LIST, teamList);
 		if (id == 0) {
 			model.addAttribute(ATTR_STAFF, new Staff());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
@@ -215,6 +229,27 @@ public class StaffController {
 	public ModelAndView unassignAllTeams(
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
 		this.staffService.unassignAllTeams(staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
+	}
+
+	/**
+	 * Assign a team to a staff.
+	 * 
+	 * @param staffID
+	 * @param teamID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Team.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView assignTeam(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		StaffTeamAssignment stAssign = new StaffTeamAssignment();
+		stAssign.setStaffID(staffID);
+		stAssign.setTeamID(teamID);
+		this.staffService.assignTeam(stAssign);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);

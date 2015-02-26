@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 
 public interface StaffDAO {
 
@@ -30,4 +31,6 @@ public interface StaffDAO {
 	public void unassignTeam(long teamID, long staffID);
 
 	public void unassignAllTeams(long staffID);
+
+	public void assignTeam(StaffTeamAssignment stAssign);
 }

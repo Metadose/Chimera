@@ -3,6 +3,7 @@ package com.cebedo.pmsys.staff.service;
 import java.util.List;
 
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 
 public interface StaffService {
 
@@ -30,5 +31,7 @@ public interface StaffService {
 	public void unassignTeam(long teamID, long staffID);
 
 	public void unassignAllTeams(long staffID);
+
+	public void assignTeam(StaffTeamAssignment stAssign);
 
 }

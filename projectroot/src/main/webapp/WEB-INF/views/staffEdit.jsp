@@ -272,7 +272,13 @@
                    									</c:choose>
 													<br/>
 													<br/>
-													<h4>Assign More Teams</h4>
+													<h4>Assign Teams&nbsp;
+													<a href="${contextPath}/team/edit/0">
+                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   									</a>
+													</h4>
+													<form method="post" action="${contextPath}/staff/assign/team">
+													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 													<table>
 														<tr>
 															<td style="padding-right: 3px;">
@@ -282,15 +288,19 @@
 																&nbsp;
 															</td>
 															<td style="padding-bottom: 3px;">
-																<select class="form-control">
-					                                                <option>Banilad Builders</option>
-					                                                <option>Manpower 1</option>
-					                                                <option>Costing Team</option>
+																<select id="team_id" name="team_id" class="form-control">
+																	<c:if test="${!empty teamList}">
+																		<c:forEach items="${teamList}" var="team">
+																			<option value="${team.id}">${team.name}</option>
+																		</c:forEach>
+																	</c:if>
 					                                            </select>
 															</td>
 														</tr>
 													</table>
-                                           			<button class="btn btn-primary btn-sm">Assign</button>
+													<br/>
+													<button class="btn btn-primary btn-sm">Assign</button>
+													</form>
                    								</div>
                    							</div>
                    						</div>

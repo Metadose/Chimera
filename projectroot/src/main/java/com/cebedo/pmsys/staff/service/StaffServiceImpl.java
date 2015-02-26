@@ -10,6 +10,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 
 @Service
 public class StaffServiceImpl implements StaffService {
@@ -102,5 +103,11 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public void unassignAllTeams(long staffID) {
 		this.staffDAO.unassignAllTeams(staffID);
+	}
+
+	@Override
+	@Transactional
+	public void assignTeam(StaffTeamAssignment stAssign) {
+		this.staffDAO.assignTeam(stAssign);
 	}
 }

@@ -160,4 +160,10 @@ public class StaffDAOImpl implements StaffDAO {
 		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
 		query.executeUpdate();
 	}
+
+	@Override
+	public void assignTeam(StaffTeamAssignment stAssign) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(stAssign);
+	}
 }
