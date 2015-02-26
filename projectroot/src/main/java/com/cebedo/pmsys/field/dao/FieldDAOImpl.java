@@ -198,4 +198,10 @@ public class FieldDAOImpl implements FieldDAO {
 		query.setParameter(Field.COLUMN_VALUE, value);
 		query.executeUpdate();
 	}
+
+	@Override
+	public void assignStaff(StaffFieldAssignment fieldAssignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(fieldAssignment);
+	}
 }

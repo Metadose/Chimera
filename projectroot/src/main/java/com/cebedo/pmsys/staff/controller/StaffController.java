@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.field.controller.FieldController;
+import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -34,6 +37,13 @@ public class StaffController {
 
 	private StaffService staffService;
 	private TeamService teamService;
+	private FieldService fieldService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "fieldService")
+	public void setFieldService(FieldService s) {
+		this.fieldService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "staffService")
@@ -128,12 +138,21 @@ public class StaffController {
 		return JSP_EDIT;
 	}
 
+	/**
+	 * Open a view page where the user can edit the staff.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		List<Team> teamList = this.teamService.list();
+		List<Field> fields = this.fieldService.list();
 		model.addAttribute(TeamController.JSP_LIST, teamList);
+		model.addAttribute(FieldController.JSP_LIST, fields);
 		if (id == 0) {
 			model.addAttribute(ATTR_STAFF, new Staff());
 			model.addAttribute(SystemConstants.ATTR_ACTION,

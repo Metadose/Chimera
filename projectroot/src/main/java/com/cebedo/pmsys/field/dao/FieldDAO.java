@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
+import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 public interface FieldDAO {
@@ -42,4 +43,6 @@ public interface FieldDAO {
 
 	public void unassignStaff(long fieldID, long staffID, String label,
 			String value);
+
+	public void assignStaff(StaffFieldAssignment fieldAssignment);
 }

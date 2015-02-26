@@ -17,6 +17,7 @@ import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
@@ -84,6 +85,26 @@ public class FieldController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Assign a field to a staff.
+	 * 
+	 * @param fieldAssignment
+	 * @param fieldID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView assignStaff(
+			@ModelAttribute(ATTR_FIELD) StaffFieldAssignment fieldAssignment,
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.fieldService.assignStaff(fieldAssignment, fieldID, staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
 	}
 
 	/**
