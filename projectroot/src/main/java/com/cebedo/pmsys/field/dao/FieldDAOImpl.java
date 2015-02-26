@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
@@ -163,6 +165,7 @@ public class FieldDAOImpl implements FieldDAO {
 	@Override
 	public void unassignTask(long fieldID, long taskID, String label,
 			String value) {
+		// TODO Convert to Query, not SQLQuery.
 		Session session = this.sessionFactory.getCurrentSession();
 		SQLQuery query = session.createSQLQuery("DELETE FROM "
 				+ TaskFieldAssignment.TABLE_NAME + " WHERE "
@@ -170,6 +173,29 @@ public class FieldDAOImpl implements FieldDAO {
 				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND  "
 				+ Field.COLUMN_LABEL + " = '" + label + "' AND "
 				+ Field.COLUMN_VALUE + " =  '" + value + "'");
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignStaff(long fieldID, long staffID, String label,
+			String value) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String queryStr = "DELETE FROM " + StaffFieldAssignment.CLASS_NAME;
+		queryStr += " WHERE ";
+		queryStr += Field.COLUMN_PRIMARY_KEY + "=:" + Field.COLUMN_PRIMARY_KEY;
+		queryStr += " AND ";
+		queryStr += Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY;
+		queryStr += " AND ";
+		queryStr += Field.COLUMN_LABEL + "=:" + Field.COLUMN_LABEL;
+		queryStr += " AND ";
+		queryStr += Field.COLUMN_VALUE + "=:" + Field.COLUMN_VALUE;
+
+		Query query = session.createQuery(queryStr);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
 		query.executeUpdate();
 	}
 }

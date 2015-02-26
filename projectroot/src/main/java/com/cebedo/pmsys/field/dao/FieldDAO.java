@@ -39,4 +39,7 @@ public interface FieldDAO {
 
 	public void unassignTask(long fieldID, long taskID, String label,
 			String value);
+
+	public void unassignStaff(long fieldID, long staffID, String label,
+			String value);
 }

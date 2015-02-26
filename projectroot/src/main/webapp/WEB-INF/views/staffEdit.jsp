@@ -151,7 +151,7 @@
                    												<c:set var="fieldFormID" value="${0}"/>
                    												<c:forEach var="field" items="${fields}">
                    													<tr>
-	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
+	                   													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/staff">
 																			<input type="hidden" name="staff_id" value="${staff.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
 																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
@@ -187,7 +187,7 @@
 														<button class="btn btn-danger btn-sm">Clear All</button>
 														<br/>
 														<br/>
-														<h4>Assign More Fields</h4>
+														<h4>Assign Fields</h4>
 														<table>
 															<tr>
 																<td style="padding-right: 3px;">
@@ -655,6 +655,19 @@
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();
+		}
+		
+		function submitAjax(id) {
+			var formObj = $('#'+id);
+			var serializedData = formObj.serialize();
+			$.ajax({
+				type: "POST",
+				url: '${contextPath}/field/update/assigned/staff',
+				data: serializedData,
+				success: function(response){
+					location.reload();
+				}
+			});
 		}
 	
 		$(document).on('click', 'a.controls', function(){

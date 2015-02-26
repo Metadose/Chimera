@@ -154,4 +154,11 @@ public class FieldServiceImpl implements FieldService {
 		this.fieldDAO.assignTask(newFieldAssignment);
 	}
 
+	@Override
+	@Transactional
+	public void unassignStaff(long fieldID, long staffID, String label,
+			String value) {
+		this.fieldDAO.unassignStaff(fieldID, staffID, label, value);
+	}
+
 }

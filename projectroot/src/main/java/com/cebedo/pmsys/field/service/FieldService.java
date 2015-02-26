@@ -41,4 +41,7 @@ public interface FieldService {
 
 	public void updateAssignedTaskField(long taskID, long fieldID,
 			String oldLabel, String oldValue, String label, String value);
+
+	public void unassignStaff(long fieldID, long staffID, String label,
+			String value);
 }

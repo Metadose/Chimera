@@ -16,6 +16,7 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
@@ -205,6 +206,28 @@ public class FieldController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
+	}
+
+	/**
+	 * Unassign a field from a task.
+	 * 
+	 * @param fieldID
+	 * @param staffID
+	 * @param label
+	 * @param value
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignStaff(
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(Field.COLUMN_LABEL) String label,
+			@RequestParam(Field.COLUMN_VALUE) String value) {
+		this.fieldService.unassignStaff(fieldID, staffID, label, value);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
