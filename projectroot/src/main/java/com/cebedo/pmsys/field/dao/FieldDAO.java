@@ -45,4 +45,7 @@ public interface FieldDAO {
 			String value);
 
 	public void assignStaff(StaffFieldAssignment fieldAssignment);
+
+	public void unassignAllStaff(long staffID);
+
 }

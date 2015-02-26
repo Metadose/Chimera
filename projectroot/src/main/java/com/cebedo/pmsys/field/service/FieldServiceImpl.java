@@ -179,4 +179,28 @@ public class FieldServiceImpl implements FieldService {
 		fieldAssignment.setStaff(staff);
 		this.fieldDAO.assignStaff(fieldAssignment);
 	}
+
+	@Override
+	@Transactional
+	public void unassignAllStaff(long staffID) {
+		this.fieldDAO.unassignAllStaff(staffID);
+	}
+
+	@Override
+	@Transactional
+	public void updateAssignedStaffField(long staffID, long fieldID,
+			String oldLabel, String oldValue, String label, String value) {
+		// Delete the old version of the field.
+		this.fieldDAO.unassignStaff(fieldID, staffID, oldLabel, oldValue);
+
+		// Save a new one.
+		StaffFieldAssignment newFieldAssignment = new StaffFieldAssignment();
+		Field field = this.fieldDAO.getByID(fieldID);
+		Staff staff = this.staffDAO.getByID(staffID);
+		newFieldAssignment.setStaff(staff);
+		newFieldAssignment.setField(field);
+		newFieldAssignment.setLabel(label);
+		newFieldAssignment.setValue(value);
+		this.fieldDAO.assignStaff(newFieldAssignment);
+	}
 }

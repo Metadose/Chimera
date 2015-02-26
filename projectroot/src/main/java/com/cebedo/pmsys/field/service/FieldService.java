@@ -48,4 +48,9 @@ public interface FieldService {
 
 	public void assignStaff(StaffFieldAssignment fieldAssignment, long fieldID,
 			long staffID);
+
+	public void unassignAllStaff(long staffID);
+
+	public void updateAssignedStaffField(long staffID, long fieldID,
+			String oldLabel, String oldValue, String label, String value);
 }

@@ -108,6 +108,22 @@ public class FieldController {
 	}
 
 	/**
+	 * Unassign all fields to a task.
+	 * 
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllStaff(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.fieldService.unassignAllStaff(staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
+	}
+
+	/**
 	 * Unassign all fields in a task.
 	 * 
 	 * @param taskID
@@ -186,6 +202,33 @@ public class FieldController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Update an existing staff field.
+	 * 
+	 * @param fieldID
+	 * @param staffID
+	 * @param label
+	 * @param value
+	 * @param oldLabel
+	 * @param oldValue
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
+			+ SystemConstants.ASSIGNED + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView updateAssignedStaffField(
+			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(Field.COLUMN_LABEL) String label,
+			@RequestParam(Field.COLUMN_VALUE) String value,
+			@RequestParam("old_" + Field.COLUMN_LABEL) String oldLabel,
+			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue) {
+		this.fieldService.updateAssignedStaffField(staffID, fieldID, oldLabel,
+				oldValue, label, value);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
 	}
 
 	/**

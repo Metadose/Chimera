@@ -204,4 +204,14 @@ public class FieldDAOImpl implements FieldDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(fieldAssignment);
 	}
+
+	@Override
+	public void unassignAllStaff(long staffID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ StaffFieldAssignment.CLASS_NAME + " WHERE "
+				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
+		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+		query.executeUpdate();
+	}
 }

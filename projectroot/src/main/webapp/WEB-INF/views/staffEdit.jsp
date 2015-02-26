@@ -184,7 +184,17 @@
 															</c:if>
 														</table>
 														<br/>
-														<button class="btn btn-danger btn-sm">Clear All</button>
+														<c:choose>
+														<c:when test="${!empty fields}">
+															<form method="post" action="${contextPath}/field/unassign/staff/all">
+																<input type="hidden" name="staff_id" value="${staff.id}"/>
+																<button class="btn btn-danger btn-sm">Unassign All</button>
+															</form>
+														</c:when>
+														<c:when test="${empty fields}">
+															<h5>No field assigned.</h5>
+														</c:when>
+														</c:choose>
 														<br/>
 														<br/>
 														<h4>Assign Fields</h4>
