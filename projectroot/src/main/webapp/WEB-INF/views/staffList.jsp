@@ -19,7 +19,7 @@
 	                <small>Complete list of all staff members</small>
 	            </h1>
 	        </section>
-	        <section class="content">
+	        <section class="content"> 
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="box">
