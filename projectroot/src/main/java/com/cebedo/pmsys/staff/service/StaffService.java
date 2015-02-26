@@ -27,4 +27,8 @@ public interface StaffService {
 
 	public Staff getWithAllCollectionsByID(int id);
 
+	public void unassignTeam(long teamID, long staffID);
+
+	public void unassignAllTeams(long staffID);
+
 }

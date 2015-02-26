@@ -245,18 +245,31 @@
 	                   												&nbsp;
 	                   											</td>
 	                   											<td>
-	                   												<button class="btn btn-warning btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-	                   												<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+	                   												<form method="post" action="${contextPath}/staff/unassign/team">
+	                   													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
+	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
+	                   													<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+	                   												</form>
+	                   												<a href="${contextPath}/team/edit/${team.id}">
+	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+	                   												</a>
 	                   											</td>
 		                   										</tr>
                												</c:forEach>
                											</c:when>
-               											<c:when test="${empty staff.teams}">
-               												<h6>No team assigned.</h6>
-               											</c:when>
                											</c:choose>
                    									</table>
-                   									<button class="btn btn-danger btn-sm">Clear All</button>
+                   									<c:choose>
+                   										<c:when test="${!empty staff.teams}">
+                   											<form method="post" action="${contextPath}/staff/unassign/team/all">
+                   												<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
+                   												<button class="btn btn-danger btn-sm">Unassign All</button>
+                   											</form>
+                   										</c:when>
+                   										<c:when test="${empty staff.teams}">
+                   											<h5>No team assigned.</h5>
+                   										</c:when>
+                   									</c:choose>
 													<br/>
 													<br/>
 													<h4>Assign More Teams</h4>

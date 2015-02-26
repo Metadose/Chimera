@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.team.model.Team;
 
 @Repository
 public class StaffDAOImpl implements StaffDAO {
@@ -133,4 +136,28 @@ public class StaffDAOImpl implements StaffDAO {
 		query.executeUpdate();
 	}
 
+	@Override
+	public void unassignTeam(long teamID, long staffID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
+		// Rather than ObjectAssignment.COLUMN_NAME.
+		Query query = session.createQuery("DELETE FROM "
+				+ StaffTeamAssignment.CLASS_NAME + " WHERE "
+				+ Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY
+				+ " AND " + Staff.COLUMN_PRIMARY_KEY + "=:"
+				+ Staff.COLUMN_PRIMARY_KEY);
+		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
+		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void unassignAllTeams(long staffID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM "
+				+ StaffTeamAssignment.CLASS_NAME + " WHERE "
+				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
+		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+		query.executeUpdate();
+	}
 }

@@ -91,4 +91,16 @@ public class StaffServiceImpl implements StaffService {
 	public Staff getWithAllCollectionsByID(int id) {
 		return this.staffDAO.getWithAllCollectionsByID(id);
 	}
+
+	@Override
+	@Transactional
+	public void unassignTeam(long teamID, long staffID) {
+		this.staffDAO.unassignTeam(teamID, staffID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllTeams(long staffID) {
+		this.staffDAO.unassignAllTeams(staffID);
+	}
 }

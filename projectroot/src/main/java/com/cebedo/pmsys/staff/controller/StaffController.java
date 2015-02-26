@@ -16,6 +16,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
+import com.cebedo.pmsys.team.model.Team;
 
 @Controller
 @RequestMapping(Staff.OBJECT_NAME)
@@ -182,5 +183,40 @@ public class StaffController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign a staff from a team.
+	 * 
+	 * @param teamID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignTeam(
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.staffService.unassignTeam(teamID, staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
+	}
+
+	/**
+	 * Unassign all teams from a staff.
+	 * 
+	 * @param teamID
+	 * @param staffID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllTeams(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+		this.staffService.unassignAllTeams(staffID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ staffID);
 	}
 }

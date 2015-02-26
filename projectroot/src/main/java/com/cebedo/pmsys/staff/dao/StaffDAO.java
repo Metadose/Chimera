@@ -26,4 +26,8 @@ public interface StaffDAO {
 	public void unassignProjectManager(long projectID, long staffID);
 
 	public void unassignAllProjectManagers(long projectID);
+
+	public void unassignTeam(long teamID, long staffID);
+
+	public void unassignAllTeams(long staffID);
 }
