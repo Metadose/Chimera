@@ -270,11 +270,18 @@ public class StaffController {
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeam(
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) String originID) {
 		StaffTeamAssignment stAssign = new StaffTeamAssignment();
 		stAssign.setStaffID(staffID);
 		stAssign.setTeamID(teamID);
 		this.staffService.assignTeam(stAssign);
+		if (!origin.isEmpty()) {
+			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
+					+ originID);
+		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);

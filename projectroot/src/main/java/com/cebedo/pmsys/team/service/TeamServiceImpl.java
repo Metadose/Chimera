@@ -81,4 +81,10 @@ public class TeamServiceImpl implements TeamService {
 		this.teamDAO.unassignAllMembers(teamID);
 	}
 
+	@Override
+	@Transactional
+	public void unassignAllTeamsFromProject(long teamID) {
+		this.teamDAO.unassignAllTeamsFromProject(teamID);
+	}
+
 }

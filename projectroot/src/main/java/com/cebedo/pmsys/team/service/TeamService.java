@@ -26,4 +26,6 @@ public interface TeamService {
 
 	public void unassignAllMembers(long teamID);
 
+	public void unassignAllTeamsFromProject(long teamID);
+
 }

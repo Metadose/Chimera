@@ -118,4 +118,17 @@ public class TeamDAOImpl implements TeamDAO {
 		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
 		query.executeUpdate();
 	}
+
+	@Override
+	public void unassignAllTeamsFromProject(long teamID) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String hql = "DELETE FROM " + TeamAssignment.class.getName();
+		hql += " WHERE ";
+		hql += Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY;
+
+		Query query = session.createQuery(hql);
+		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
+		query.executeUpdate();
+	}
 }

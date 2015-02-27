@@ -14,6 +14,7 @@ import com.cebedo.pmsys.project.model.Project;
 public class TeamAssignment implements Serializable {
 
 	public static final String TABLE_NAME = "assignments_project_team";
+	public static final String CLASS_NAME = "TeamAssignment";
 
 	private static final long serialVersionUID = 1L;
 

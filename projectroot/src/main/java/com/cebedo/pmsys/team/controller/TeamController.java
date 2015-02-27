@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.team.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -12,8 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.field.controller.FieldController;
+import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.project.controller.ProjectController;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
@@ -27,11 +36,32 @@ public class TeamController {
 	public static final String JSP_EDIT = "teamEdit";
 
 	private TeamService teamService;
+	private FieldService fieldService;
+	private StaffService staffService;
+	private ProjectService projectService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectService")
+	public void setProjectService(ProjectService s) {
+		this.projectService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "staffService")
+	public void setStaffService(StaffService s) {
+		this.staffService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "fieldService")
+	public void setFieldService(FieldService s) {
+		this.fieldService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "teamService")
-	public void setTeamService(TeamService ps) {
-		this.teamService = ps;
+	public void setTeamService(TeamService s) {
+		this.teamService = s;
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
@@ -66,6 +96,12 @@ public class TeamController {
 			+ Team.COLUMN_PRIMARY_KEY + "}")
 	public String editTeam(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
+		List<Field> fieldList = this.fieldService.list();
+		List<Staff> staffList = this.staffService.list();
+		List<Project> projectList = this.projectService.list();
+		model.addAttribute(FieldController.JSP_LIST, fieldList);
+		model.addAttribute(StaffController.JSP_LIST, staffList);
+		model.addAttribute(ProjectController.JSP_LIST, projectList);
 		if (id == 0) {
 			model.addAttribute(ATTR_TEAM, new Team());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
@@ -85,11 +121,19 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignProjectTeam(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
 		this.teamService.assignProjectTeam(projectID, teamID);
+		if (!origin.isEmpty()) {
+			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
+					+ originID);
+		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -101,11 +145,19 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignProjectTeam(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
 		this.teamService.unassignProjectTeam(projectID, teamID);
+		if (!origin.isEmpty()) {
+			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
+					+ originID);
+		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -117,7 +169,24 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SystemConstants.ALL + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignAllTeamsFromProject(
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.teamService.unassignAllTeamsFromProject(teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ teamID);
+	}
+
+	/**
+	 * Unassign all project teams.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectTeams(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
 		this.teamService.unassignAllProjectTeams(projectID);
