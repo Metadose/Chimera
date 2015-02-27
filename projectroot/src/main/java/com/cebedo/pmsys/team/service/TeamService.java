@@ -22,4 +22,6 @@ public interface TeamService {
 
 	public void unassignAllProjectTeams(long projectID);
 
+	public Team getWithAllCollectionsByID(int id);
+
 }

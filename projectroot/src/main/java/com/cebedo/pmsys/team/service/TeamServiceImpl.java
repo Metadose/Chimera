@@ -69,4 +69,10 @@ public class TeamServiceImpl implements TeamService {
 		this.teamDAO.unassignAllProjectTeams(projectID);
 	}
 
+	@Override
+	@Transactional
+	public Team getWithAllCollectionsByID(int id) {
+		return this.teamDAO.getWithAllCollectionsByID(id);
+	}
+
 }

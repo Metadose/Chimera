@@ -71,7 +71,8 @@ public class TeamController {
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
-		model.addAttribute(ATTR_TEAM, this.teamService.getByID(id));
+		model.addAttribute(ATTR_TEAM,
+				this.teamService.getWithAllCollectionsByID(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
