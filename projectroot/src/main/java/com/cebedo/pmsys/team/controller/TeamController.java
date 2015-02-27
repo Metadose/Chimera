@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
@@ -123,5 +124,21 @@ public class TeamController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign all staff members in this team.
+	 * 
+	 * @param teamID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllMembers(
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+		this.teamService.unassignAllMembers(teamID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+				+ teamID);
 	}
 }

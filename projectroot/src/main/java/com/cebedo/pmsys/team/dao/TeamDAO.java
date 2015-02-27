@@ -24,4 +24,6 @@ public interface TeamDAO {
 	public void unassignAllProjectTeams(long projectID);
 
 	public Team getWithAllCollectionsByID(long id);
+
+	public void unassignAllMembers(long teamID);
 }

@@ -221,12 +221,16 @@
 		                                    <a href="${contextPath}/project/edit/0">
 		                                		<button class="btn btn-success btn-sm">Create Staff</button>
 		                                	</a>
+		                                	<form method="post" action="${contextPath}/team/unassign/staff/all">
+												<input type="hidden" name="team_id" value="${team.id}"/>
+												<button class="btn btn-danger btn-sm">Unassign All</button>
+											</form>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
-		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
+		                                <div class="box-body table-responsive">
+		                                    <table id="members-table" class="table table-striped">
+		                                    	<thead>
+		                                            <tr>
 		                                            	<th>&nbsp;</th>
 		                                                <th>Photo</th>
 		                                                <th>Full Name</th>
@@ -234,6 +238,8 @@
 		                                                <th>E-Mail</th>
 		                                                <th>Contact Number</th>
 		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
 			                                        <c:set var="assignmentList" value="${team.members}"/>
 				                                	<c:if test="${!empty assignmentList}">
 				                                		<c:forEach items="${assignmentList}" var="member">
@@ -243,9 +249,12 @@
 																	<a href="${contextPath}/staff/edit/${member.id}">
 																		<button class="btn btn-primary btn-sm">View</button>
 																	</a>
-																	<a href="${contextPath}/staff/delete/${member.id}">
-																		<button class="btn btn-danger btn-sm">Delete</button>
-																	</a>
+																	<form method="post" action="${contextPath}/staff/unassign/team">
+																		<input type="hidden" name="staff_id" value="${member.id}"/>
+																		<input type="hidden" name="team_id" value="${team.id}"/>
+																		<input type="hidden" name="origin" value="team"/>
+																		<button class="btn btn-danger btn-sm">Unassign</button>
+																	</form>
 																</center>
 															</td>
 			                                                <td>
@@ -281,17 +290,22 @@
 		                                    <a href="${contextPath}/project/edit/0">
 		                                		<button class="btn btn-success btn-sm">Create Project</button>
 		                                	</a>
+		                                	<a href="${contextPath}/project/edit/0">
+		                                		<button class="btn btn-danger btn-sm">Unassign All</button>
+		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
 		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
+		                                    <table id="project-table" class="table table-striped">
+		                                    	<thead>
+		                                    		<tr>
 			                                        	<th>&nbsp;</th>
 		                                                <th>Project</th>
 		                                                <th>Location</th>
 		                                                <th>Notes</th>
 			                                        </tr>
+		                                    	</thead>
+		                                        <tbody>
 			                                        <c:set var="assignmentList" value="${team.projects}"/>
 				                                	<c:if test="${!empty assignmentList}">
 				                                		<c:forEach items="${assignmentList}" var="project">
@@ -351,12 +365,15 @@
 		                                    <a href="${contextPath}/task/assign/team/${team.id}">
 		                                		<button class="btn btn-success btn-sm">Create Task</button>
 		                                	</a>
+		                                	<a href="${contextPath}/project/edit/0">
+		                                		<button class="btn btn-danger btn-sm">Unassign All</button>
+		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
 		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
+		                                    <table id="task-table" class="table table-striped">
+		                                    	<thead>
+		                                    		<tr>
 			                                        	<th>&nbsp;</th>
 			                                            <th>Status</th>
 			                                            <th>Content</th>
@@ -364,6 +381,8 @@
 			                                            <th>Start</th>
 			                                            <th>End</th>
 			                                        </tr>
+		                                    	</thead>
+		                                        <tbody>
 			                                        <c:set var="taskList" value="${team.tasks}"/>
 				                                	<c:if test="${!empty taskList}">
 		                                        		<c:forEach items="${taskList}" var="task">
@@ -579,7 +598,9 @@
 	    });
 		
 		$(document).ready(function() {
-			$("#example-1").dataTable();
+			$("#members-table").dataTable();
+			$("#project-table").dataTable();
+			$("#task-table").dataTable();
 			
 			$('li img').on('click',function(){
                 var src = $(this).attr('src');

@@ -229,8 +229,14 @@ public class StaffController {
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTeam(
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin) {
 		this.staffService.unassignTeam(teamID, staffID);
+		if (origin.equals(Team.OBJECT_NAME)) {
+			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+					+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+					+ "/" + teamID);
+		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);

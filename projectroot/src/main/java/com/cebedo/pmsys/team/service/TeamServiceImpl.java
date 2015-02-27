@@ -75,4 +75,10 @@ public class TeamServiceImpl implements TeamService {
 		return this.teamDAO.getWithAllCollectionsByID(id);
 	}
 
+	@Override
+	@Transactional
+	public void unassignAllMembers(long teamID) {
+		this.teamDAO.unassignAllMembers(teamID);
+	}
+
 }

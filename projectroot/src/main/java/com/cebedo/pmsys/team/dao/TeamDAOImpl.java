@@ -3,6 +3,7 @@ package com.cebedo.pmsys.team.dao;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
 
@@ -105,4 +107,15 @@ public class TeamDAOImpl implements TeamDAO {
 		return team;
 	}
 
+	@Override
+	public void unassignAllMembers(long teamID) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String hql = "DELETE FROM " + StaffTeamAssignment.CLASS_NAME
+				+ " WHERE " + Team.COLUMN_PRIMARY_KEY + "=:"
+				+ Team.COLUMN_PRIMARY_KEY;
+		Query query = session.createQuery(hql);
+		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
+		query.executeUpdate();
+	}
 }
