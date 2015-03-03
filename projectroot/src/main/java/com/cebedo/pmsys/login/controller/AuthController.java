@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.login.authentication;
+package com.cebedo.pmsys.login.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;

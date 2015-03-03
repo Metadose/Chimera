@@ -9,8 +9,7 @@
 			http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 	
 	<!-- This is where we configure Spring-Security  -->
-	<security:http auto-config="false" use-expressions="true" access-denied-page="/pmsys/auth/denied"
-			entry-point-ref="authenticationEntryPoint" >
+	<security:http auto-config="false" use-expressions="true" access-denied-page="/pmsys/auth/denied" entry-point-ref="authenticationEntryPoint" >
 	
 		<security:intercept-url pattern="/pmsys/auth/login" access="permitAll"/>
 		<security:intercept-url pattern="/pmsys/main/admin" access="hasRole('ROLE_ADMIN')"/>
