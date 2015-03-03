@@ -20,6 +20,7 @@ public class SystemUserController {
 
 	public static final String ATTR_LIST = "systemUserList";
 	public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
+	public static final String JSP_LOGIN = "login";
 	public static final String JSP_LIST = "systemUserList";
 	public static final String JSP_EDIT = "systemUserEdit";
 

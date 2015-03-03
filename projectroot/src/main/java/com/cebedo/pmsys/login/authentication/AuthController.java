@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.systemuser.controller;
+package com.cebedo.pmsys.login.authentication;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -46,7 +46,7 @@ public class AuthController {
 		}
 
 		// This will resolve to /WEB-INF/jsp/loginpage.jsp.
-		return "loginpage";
+		return "login";
 	}
 
 	/**
@@ -60,6 +60,6 @@ public class AuthController {
 		logger.debug("Received request to show denied page");
 
 		// This will resolve to /WEB-INF/jsp/deniedpage.jsp.
-		return "deniedpage";
+		return "denied";
 	}
 }

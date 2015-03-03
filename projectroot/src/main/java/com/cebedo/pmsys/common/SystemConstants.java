@@ -12,6 +12,7 @@ public abstract class SystemConstants {
 	public static final String ATTR_ACTION = "action";
 
 	public static final String REQUEST_ROOT = "/";
+	public static final String REQUEST_LOGIN = "login";
 	public static final String REQUEST_LIST = "list";
 	public static final String REQUEST_EDIT = "edit";
 	public static final String REQUEST_DELETE = "delete";
