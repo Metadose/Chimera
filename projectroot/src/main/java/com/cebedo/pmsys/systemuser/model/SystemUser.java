@@ -12,8 +12,11 @@ import javax.persistence.Table;
 public class SystemUser {
 
 	public static final String TABLE_NAME = "system_users";
-	public static final String OBJECT_NAME = "user";
+	public static final String OBJECT_NAME = "systemuser";
 	public static final String COLUMN_PRIMARY_KEY = "user_id";
+	public static final String COLUMN_USER_NAME = "username";
+	public static final String COLUMN_PASSWORD = "password";
+	public static final String COLUMN_ACCESS = "access";
 
 	private long id;
 	private String username;

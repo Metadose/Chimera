@@ -65,6 +65,11 @@
                 </a>
             </li>
             <li>
+                <a href="${contextPath}/systemuser/list/">
+                    <i class="fa fa-user"></i> <span>Users</span>
+                </a>
+            </li>
+            <li>
                 <a href="${contextPath}/field/list/">
                     <i class="fa fa-list"></i> <span>Fields</span>
                 </a>

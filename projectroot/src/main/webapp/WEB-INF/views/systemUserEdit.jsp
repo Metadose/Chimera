@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>System Configuration ${action}</title>
+	<title>User ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 	<style>
 	  ul {         
@@ -28,8 +28,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${config.name}
-	                <small>${action} System Configuration</small>
+	                ${user.name}
+	                <small>${action} User</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -39,10 +39,6 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
-                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
-                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -54,23 +50,23 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/config/create">
+                   									<form method="post" name="detailsForm" action="${contextPath}/systemuser/create">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" id="id" name="id" value="${config.id}"/>
-				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" id="name" name="name" value="${config.name}"/><br/>
-				                                            <label>Value</label>
-				                                            <input type="text" class="form-control" id="value" name="value" value="${config.value}"/><br/>
+				                                        	<input type="hidden" name="user_id" value="${user.id}"/>
+				                                            <label>Username</label>
+				                                            <input type="text" name="username" value="${user.username}"/><br/>
+				                                            <label>Password</label>
+				                                            <input type="password" name="password" value="${user.password}"/><br/>
+				                                            <label>Access</label>
+				                                            <input type="text" name="access" value="${user.access}"/><br/>
 				                                        </div>
+				                                        <button class="btn btn-success btn-sm" id="detailsButton">Create</button>
 				                                    </form>
 				                                    <c:choose>
-		                                            	<c:when test="${config.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
-		                                            	</c:when>
-		                                            	<c:when test="${config.id > 0}">
+		                                            	<c:when test="${user.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/config/delete/${config.id}">
-																<button class="btn btn-danger btn-sm">Delete This Configuration</button>
+		                                            		<a href="${contextPath}/systemuser/delete/${user.id}">
+																<button class="btn btn-danger btn-sm">Delete This User</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

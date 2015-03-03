@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>System Configuration ${action}</title>
+	<title>User ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
@@ -15,8 +15,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                System Configuration ${action}
-	                <small>Complete list of all system configurations</small>
+	                User ${action}
+	                <small>Complete list of all system users</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -27,8 +27,8 @@
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<a href="${contextPath}/config/edit/0">
-                                		<button class="btn btn-success btn-sm">Create System Configuration</button>
+                                	<a href="${contextPath}/systemuser/edit/0">
+                                		<button class="btn btn-success btn-sm">Create User</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -37,26 +37,28 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Value</th>
+                                                <th>Password</th>
+                                                <th>Access</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        	<c:if test="${!empty systemConfigurationList}">
-                                        		<c:forEach items="${systemConfigurationList}" var="systemConfiguration">
+                                        	<c:if test="${!empty systemUserList}">
+                                        		<c:forEach items="${systemUserList}" var="systemUser">
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/config/edit/${systemConfiguration.id}">
+																<a href="${contextPath}/systemuser/edit/${systemUser.id}">
 																	<button class="btn btn-primary btn-sm">View</button>
 																</a>
-																<a href="${contextPath}/config/delete/${systemConfiguration.id}">
+																<a href="${contextPath}/systemuser/delete/${systemUser.id}">
 																	<button class="btn btn-danger btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
-														<td>${systemConfiguration.id}</td>
-		                                                <td>${systemConfiguration.name}</td>
-		                                                <td>${systemConfiguration.value}</td>
+														<td>${systemUser.id}</td>
+		                                                <td>${systemUser.username}</td>
+		                                                <td>${systemUser.password}</td>
+		                                                <td>${systemUser.access}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -66,7 +68,8 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Value</th>
+                                                <th>Password</th>
+                                                <th>Access</th>
                                             </tr>
                                         </tfoot>
                                     </table>

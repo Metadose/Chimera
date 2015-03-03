@@ -2,6 +2,7 @@ package com.cebedo.pmsys.systemuser.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,6 +43,10 @@ public class SystemUserController {
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser) {
 		if (systemUser.getId() == 0) {
+			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+			String encPassword = encoder.encodePassword(
+					systemUser.getPassword(), systemUser.getUsername());
+			systemUser.setPassword(encPassword);
 			this.systemUserService.create(systemUser);
 		} else {
 			this.systemUserService.update(systemUser);
