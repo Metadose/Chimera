@@ -56,6 +56,7 @@
                 <beans:value>com.cebedo.pmsys.task.model.TaskTeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.TaskStaffAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -122,6 +123,13 @@
     </beans:bean>
     <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationServiceImpl">
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
+        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="photoDAO" class="com.cebedo.pmsys.photo.dao.PhotoDAOImpl">
