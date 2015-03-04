@@ -62,7 +62,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// Compare passwords
 		// Make sure to encode the password first before comparing
 		if (passwordEncoder.isPasswordValid(user.getPassword(),
-				(String) auth.getCredentials(), null) == false) {
+				(String) auth.getCredentials(), user.getUsername()) == false) {
 			logger.error("Wrong password!");
 			throw new BadCredentialsException("Wrong password!");
 		}
