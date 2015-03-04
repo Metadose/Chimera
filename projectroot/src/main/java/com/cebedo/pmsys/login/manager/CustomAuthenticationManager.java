@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,25 +15,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
+import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
 /**
  * A custom authentication manager that allows access if the user details exist
  * in the database and if the username and password are not the same. Otherwise,
  * throw a {@link BadCredentialsException}
  */
-public class CustomAuthenticationManager implements AuthenticationManager {
+public class CustomAuthenticationManager implements AuthenticationManager,
+		ServletContextAware {
 
 	protected static Logger logger = Logger.getLogger("service");
-
-	// Our custom DAO layer
-	private SystemUserDAOImpl userDAO = new SystemUserDAOImpl();
-
-	// We need an Md5 encoder since our passwords in the database are Md5
-	// encoded.
+	private SystemUserService systemUserService;
+	private ServletContext servletContext;
 	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
+
+	@Override
+	public void setServletContext(ServletContext context) {
+		this.servletContext = context;
+	}
 
 	public Authentication authenticate(Authentication auth)
 			throws AuthenticationException {
@@ -42,8 +49,11 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 		SystemUser user = null;
 
 		try {
-			// Retrieve user details from database
-			user = userDAO.searchDatabase(auth.getName());
+			WebApplicationContext applicationContext = WebApplicationContextUtils
+					.getWebApplicationContext(servletContext);
+			this.systemUserService = (SystemUserService) applicationContext
+					.getBean("systemUserService");
+			user = this.systemUserService.searchDatabase(auth.getName());
 		} catch (Exception e) {
 			logger.error("User does not exists!");
 			throw new BadCredentialsException("User does not exists!");
@@ -101,5 +111,4 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 		// Return list of granted authorities
 		return authList;
 	}
-
 }

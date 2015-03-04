@@ -92,4 +92,11 @@
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    
+    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
+        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
+    </beans:bean>
 </beans>
