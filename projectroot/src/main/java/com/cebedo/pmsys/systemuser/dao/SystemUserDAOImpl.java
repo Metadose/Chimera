@@ -19,6 +19,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SystemUserDAOImpl.class);
+
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {

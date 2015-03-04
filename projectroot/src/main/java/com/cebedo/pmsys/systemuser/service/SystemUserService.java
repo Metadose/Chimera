@@ -16,4 +16,6 @@ public interface SystemUserService {
 
 	public SystemUser getByID(long id);
 
+	public SystemUser searchDatabase(String name);
+
 }

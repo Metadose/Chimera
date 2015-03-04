@@ -46,4 +46,10 @@ public class SystemUserServiceImpl implements SystemUserService {
 	public List<SystemUser> list() {
 		return this.systemUserDAO.list();
 	}
+
+	@Override
+	@Transactional
+	public SystemUser searchDatabase(String name) {
+		return this.systemUserDAO.searchDatabase(name);
+	}
 }
