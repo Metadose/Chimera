@@ -76,7 +76,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 		} else {
 
-			logger.debug("User details are good and ready to go");
+			logger.debug("User dtails are good and ready to go");
 			return new UsernamePasswordAuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user.getAccess()));
 		}
