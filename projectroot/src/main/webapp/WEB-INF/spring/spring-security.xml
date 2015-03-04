@@ -2,11 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-			http://www.springframework.org/schema/security 
-			http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 	
 	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/pmsys/auth/denied"
@@ -55,4 +59,37 @@
 			org.springframework.security.authentication.ProviderManager. Otherwise we get an error 
 			A probable bug. This is still under investigation-->
 	<security:authentication-manager/>
+	
+	
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <beans:property name="url"
+            value="jdbc:mysql://localhost:3306/test" />
+        <beans:property name="username" value="root" />
+        <beans:property name="password" value="" />
+    </beans:bean>
+	
+	<!-- Hibernate 4 SessionFactory Bean definition -->
+    <beans:bean id="hibernate4AnnotatedSessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <beans:property name="dataSource" ref="dataSource" />
+        <beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
+                </beans:prop>
+                <beans:prop key="hibernate.show_sql">true</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+    <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 </beans>
