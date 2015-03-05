@@ -60,13 +60,13 @@
 				                                            <label>Access</label>
 				                                            <input type="text" name="access" value="${user.access}"/><br/>
 				                                        </div>
-				                                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
+				                                        <button class="btn btn-primary btn-flat btn-sm" id="detailsButton">Create</button>
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${user.id > 0}">
-		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/systemuser/delete/${user.id}">
-																<button class="btn btn-danger btn-sm">Delete This User</button>
+																<button class="btn btn-primary btn-flat btn-sm">Delete This User</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

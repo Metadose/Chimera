@@ -29,7 +29,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/projectfile/edit/0">
-                                		<button class="btn btn-default btn-flat btn-sm">Upload File</button>
+                                		<button class="btn btn-primary btn-flat btn-sm">Upload File</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -55,13 +55,13 @@
 		                                            		<center>
 		                                            			<form action="${contextPath}/projectfile/download/" method="post">
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
-			                                            			<button class="btn btn-primary btn-sm">Download</button>
+			                                            			<button class="btn btn-primary btn-flat btn-sm">Download</button>
 			                                            		</form>
 																<a href="${contextPath}/projectfile/edit/${file.id}">
-																	<button class="btn btn-primary btn-sm">View Details</button>
+																	<button class="btn btn-primary btn-flat btn-sm">View Details</button>
 																</a>
 																<a href="${contextPath}/projectfile/delete/${file.id}">
-																	<button class="btn btn-danger btn-sm">Delete</button>
+																	<button class="btn btn-primary btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
@@ -73,7 +73,7 @@
 		                                                	<c:choose>
 		                                                		<c:when test="${!empty file.project}">
 		                                                			<a href="${contextPath}/project/edit/${file.project.id}">
-																		<button class="btn btn-info btn-sm">View</button>
+																		<button class="btn btn-primary btn-flat btn-sm">View</button>
 																	</a>
 					                                                ${file.project.name}
 		                                                		</c:when>
@@ -84,7 +84,7 @@
 		                                                </td>
 		                                                <td>
 		                                                <a href="${contextPath}/staff/edit/${file.uploader.id}">
-															<button class="btn btn-info btn-sm">View</button>
+															<button class="btn btn-primary btn-flat btn-sm">View</button>
 														</a>
 		                                                ${staffName}
 		                                                </td>

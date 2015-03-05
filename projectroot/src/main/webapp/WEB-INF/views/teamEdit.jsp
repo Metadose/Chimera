@@ -64,12 +64,12 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${team.id == 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${team.id > 0}">
-		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/team/delete/${team.id}">
-																<button class="btn btn-danger btn-sm">Delete This Team</button>
+																<button class="btn btn-primary btn-flat btn-sm">Delete This Team</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -98,7 +98,7 @@
 																	&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
+																	<button class="btn btn-primary btn-flat btn-sm">Remove</button>
 																</td>
 															</tr>
 															<tr>
@@ -115,12 +115,12 @@
 																	&nbsp;&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-warning btn-sm">Remove</button>
+																	<button class="btn btn-primary btn-flat btn-sm">Remove</button>
 																</td>
 															</tr>
 														</table>
 														<br/>
-														<button class="btn btn-danger btn-sm">Clear All</button>
+														<button class="btn btn-primary btn-flat btn-sm">Clear All</button>
 														<br/>
 														<br/>
 														<h4>Assign More Fields</h4>
@@ -148,7 +148,7 @@
 																</td>
 															</tr>
 														</table>
-                                            			<button class="btn btn-primary btn-sm">Assign</button>
+                                            			<button class="btn btn-primary btn-flat btn-sm">Assign</button>
 			                                        </div>
                    								</div>
                    							</div>
@@ -182,7 +182,7 @@
 				                                </div>
 				                                <div class="box-body">
 				                                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-				                                        <button type="button" id="color-chooser-btn" class="btn btn-danger btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
+				                                        <button type="button" id="color-chooser-btn" class="btn btn-primary btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
 				                                        <ul class="dropdown-menu" id="color-chooser">
 				                                            <li><a class="text-green" href="#"><i class="fa fa-square"></i> Green</a></li>
 				                                            <li><a class="text-blue" href="#"><i class="fa fa-square"></i> Blue</a></li>
@@ -198,7 +198,7 @@
 				                                    <div class="input-group">
 				                                        <input id="new-event" type="text" class="form-control" placeholder="Event Title">
 				                                        <div class="input-group-btn">
-				                                            <button id="add-new-event" type="button" class="btn btn-default btn-flat">Add</button>
+				                                            <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add</button>
 				                                        </div><!-- /btn-group -->
 				                                    </div><!-- /input-group -->
 				                                </div>
@@ -222,7 +222,7 @@
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/0">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+				                                    	<button class="btn btn-primary btn-flat btn-sm">Create Staff</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
@@ -248,7 +248,7 @@
 		                                    			<input type="hidden" name="origin" value="team"/>
 		                                    			<input type="hidden" name="originID" value="${team.id}"/>
 		                                    			<input type="hidden" name="team_id" value="${team.id}"/>
-														<button class="btn btn-primary btn-sm">Assign</button>
+														<button class="btn btn-primary btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
 		                                    		<td>
@@ -257,7 +257,7 @@
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/unassign/staff/all">
 														<input type="hidden" name="team_id" value="${team.id}"/>
-														<button class="btn btn-danger btn-sm">Unassign All</button>
+														<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
 														</form>
 		                                    		</td>
 		                                    	</tr>
@@ -284,13 +284,13 @@
 			                                            	<td>
 			                                            		<center>
 																	<a href="${contextPath}/staff/edit/${member.id}">
-																		<button class="btn btn-primary btn-sm">View</button>
+																		<button class="btn btn-primary btn-flat btn-sm">View</button>
 																	</a>
 																	<form method="post" action="${contextPath}/staff/unassign/team">
 																		<input type="hidden" name="staff_id" value="${member.id}"/>
 																		<input type="hidden" name="team_id" value="${team.id}"/>
 																		<input type="hidden" name="origin" value="team"/>
-																		<button class="btn btn-danger btn-sm">Unassign</button>
+																		<button class="btn btn-primary btn-flat btn-sm">Unassign</button>
 																	</form>
 																</center>
 															</td>
@@ -328,7 +328,7 @@
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/project/edit/0">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Project</button>
+				                                    	<button class="btn btn-primary btn-flat btn-sm">Create Project</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
@@ -353,7 +353,7 @@
 		                                    			<input type="hidden" name="origin" value="team"/>
 		                                    			<input type="hidden" name="originID" value="${team.id}"/>
 		                                    			<input type="hidden" name="team_id" value="${team.id}"/>
-														<button class="btn btn-primary btn-sm">Assign</button>
+														<button class="btn btn-primary btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
 		                                    		<td>
@@ -362,7 +362,7 @@
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/unassign/all/project">
 														<input type="hidden" name="team_id" value="${team.id}"/>
-														<button class="btn btn-danger btn-sm">Unassign All</button>
+														<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
 														</form>
 		                                    		</td>
 		                                    	</tr>
@@ -387,14 +387,14 @@
 			                                            	<td>
 			                                            		<center>
 																	<a href="${contextPath}/project/edit/${member.id}">
-																		<button class="btn btn-primary btn-sm">View</button>
+																		<button class="btn btn-primary btn-flat btn-sm">View</button>
 																	</a>
 																	<form method="post" action="${contextPath}/team/unassign/project">
 																		<input type="hidden" name="project_id" value="${project.id}"/>
 																		<input type="hidden" name="team_id" value="${team.id}"/>
 																		<input type="hidden" name="origin" value="team"/>
 																		<input type="hidden" name="originID" value="${team.id}"/>
-																		<button class="btn btn-danger btn-sm">Unassign</button>
+																		<button class="btn btn-primary btn-flat btn-sm">Unassign</button>
 																	</form>
 																</center>
 															</td>
@@ -441,10 +441,10 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks&nbsp;
 		                                    <a href="${contextPath}/task/assign/team/${team.id}">
-		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
+		                                		<button class="btn btn-primary btn-flat btn-sm">Create Task</button>
 		                                	</a>
 		                                	<a href="${contextPath}/project/edit/0">
-		                                		<button class="btn btn-danger btn-sm">Unassign All</button>
+		                                		<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
 		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
@@ -467,7 +467,7 @@
 		                                        			<tr>
 		                                        				<td>
 		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                            <button type="button" class="btn btn-primary btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 							                                                Mark As&nbsp;
 							                                                <span class="caret"></span>
 							                                            </button>
@@ -480,10 +480,10 @@
 							                                            </ul>
 							                                        </div>
 							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-primary btn-sm">View</button>
+					                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>
 					                                            	</a>
 					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-danger btn-sm">Delete</button>
+					                                            		<button class="btn btn-primary btn-flat btn-sm">Delete</button>
 					                                            	</a>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
@@ -510,7 +510,7 @@
 					                                            	<c:choose>
 				                                            		<c:when test="${!empty task.project}">
 				                                            			<a href="${contextPath}/project/edit/from/team/?${task.project.id}">
-						                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+						                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
 						                                            	</a>
 						                                            	${task.project.name}
 						                                            	<br/>
@@ -553,8 +553,8 @@
 		                                            quora plaxo ideeli hulu weebly balihoo...
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-primary btn-xs">Read more</a>
-		                                            <a class="btn btn-danger btn-xs">Delete</a>
+		                                            <a class="btn btn-primary btn-flat btn-xs">Read more</a>
+		                                            <a class="btn btn-primary btn-flat btn-xs">Delete</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -580,7 +580,7 @@
 		                                            We are more like Germany, ambitious and misunderstood!
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-warning btn-flat btn-xs">View comment</a>
+		                                            <a class="btn btn-primary btn-flat btn-flat btn-xs">View comment</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -693,7 +693,7 @@
                 html += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
                 html += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
                 html += '</div>';
-                html += '<button class="btn btn-danger btn-sm">Delete</button>';
+                html += '<button class="btn btn-primary btn-flat btn-sm">Delete</button>';
                 
                 $('#myModal').modal();
                 $('#myModal').on('shown.bs.modal', function(){

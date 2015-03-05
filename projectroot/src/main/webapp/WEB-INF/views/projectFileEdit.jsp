@@ -57,7 +57,7 @@
 						                                        <input type="file" id="file" name="file"/><br/>
 						                                        <label>Description</label>
 					                                            <input type="text" class="form-control" id="description" name="description"/><br/>
-					                                            <button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
+					                                            <button class="btn btn-primary btn-flat btn-sm" id="uploadButton">Upload</button>
 				                                            </form>
 		                                            	</c:when>
 		                                            	<c:when test="${projectfile.id > 0}">
@@ -80,9 +80,9 @@
 					                                            <label>Date Uploaded</label>
 					                                            <input type="text" disabled class="form-control" name="dateUploaded" value="${projectfile.dateUploaded}"/><br/>
 					                                        </div>
-		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Update</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Update</button>
 		                                            		<a href="${contextPath}/projectfile/delete/${projectfile.id}">
-																<button class="btn btn-danger btn-sm">Delete This File</button>
+																<button class="btn btn-primary btn-flat btn-sm">Delete This File</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

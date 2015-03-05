@@ -90,8 +90,8 @@
 	                   											</tr>
 	                   										</table>
 	                   										<br/>
-					                                        <button class="btn btn-warning btn-sm">Upload</button>
-					                                        <button class="btn btn-danger btn-sm">Delete</button>
+					                                        <button class="btn btn-primary btn-flat btn-sm">Upload</button>
+					                                        <button class="btn btn-primary btn-flat btn-sm">Delete</button>
 				                                        </form>
                    									</div>
 				                                    <br/>
@@ -125,12 +125,12 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${staff.id == 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
-		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/staff/delete/${staff.id}">
-																<button class="btn btn-danger btn-sm">Delete This Staff</button>
+																<button class="btn btn-primary btn-flat btn-sm">Delete This Staff</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -170,13 +170,13 @@
 																			</td>
 																		</form>
 																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-warning btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
+																			<button class="btn btn-primary btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
 																		</td>
 																		<td style="padding-bottom: 3px;">
 																			&nbsp;
 																		</td>
 																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-danger btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
+																			<button class="btn btn-primary btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
 																		</td>
 																	</tr>
 																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
@@ -188,7 +188,7 @@
 														<c:when test="${!empty fields}">
 															<form method="post" action="${contextPath}/field/unassign/staff/all">
 																<input type="hidden" name="staff_id" value="${staff.id}"/>
-																<button class="btn btn-danger btn-sm">Unassign All</button>
+																<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
 															</form>
 														</c:when>
 														<c:when test="${empty fields}">
@@ -242,7 +242,7 @@
 																</tr>
 															</table>
 															<br/>
-															<button class="btn btn-primary btn-sm">Assign</button>
+															<button class="btn btn-primary btn-flat btn-sm">Assign</button>
 														</form>
 			                                        </div>
                    								</div>
@@ -281,10 +281,10 @@
 	                   												<form method="post" action="${contextPath}/staff/unassign/team">
 	                   													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
-	                   													<button class="btn btn-danger btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+	                   													<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 	                   												</form>
 	                   												<a href="${contextPath}/team/edit/${team.id}">
-	                   													<button class="btn btn-info btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+	                   													<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
 	                   												</a>
 	                   											</td>
 		                   										</tr>
@@ -296,7 +296,7 @@
                    										<c:when test="${!empty staff.teams}">
                    											<form method="post" action="${contextPath}/staff/unassign/team/all">
                    												<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-                   												<button class="btn btn-danger btn-sm">Unassign All</button>
+                   												<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
                    											</form>
                    										</c:when>
                    										<c:when test="${empty staff.teams}">
@@ -307,7 +307,7 @@
 													<br/>
 													<h4>Assign Teams&nbsp;
 													<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   										<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
                    									</a>
 													</h4>
 													<form method="post" action="${contextPath}/staff/assign/team">
@@ -332,7 +332,7 @@
 														</tr>
 													</table>
 													<br/>
-													<button class="btn btn-primary btn-sm">Assign</button>
+													<button class="btn btn-primary btn-flat btn-sm">Assign</button>
 													</form>
                    								</div>
                    							</div>
@@ -368,7 +368,7 @@
 				                                </div>
 				                                <div class="box-body">
 				                                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-				                                        <button type="button" id="color-chooser-btn" class="btn btn-danger btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
+				                                        <button type="button" id="color-chooser-btn" class="btn btn-primary btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
 				                                        <ul class="dropdown-menu" id="color-chooser">
 				                                            <li><a class="text-green" href="#"><i class="fa fa-square"></i> Green</a></li>
 				                                            <li><a class="text-blue" href="#"><i class="fa fa-square"></i> Blue</a></li>
@@ -384,7 +384,7 @@
 				                                    <div class="input-group">
 				                                        <input id="new-event" type="text" class="form-control" placeholder="Event Title">
 				                                        <div class="input-group-btn">
-				                                            <button id="add-new-event" type="button" class="btn btn-default btn-flat">Add</button>
+				                                            <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add</button>
 				                                        </div><!-- /btn-group -->
 				                                    </div><!-- /input-group -->
 				                                </div>
@@ -405,7 +405,7 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Projects&nbsp;
 		                                    <a href="${contextPath}/project/edit/0">
-		                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
+		                                		<button class="btn btn-primary btn-flat btn-sm">Create Project</button>
 		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
@@ -426,10 +426,10 @@
 			                                            	<td>
 			                                            		<center>
 																	<form action="${contextPath}/project/edit/${project.id}">
-																		<button class="btn btn-primary btn-sm">View</button>
+																		<button class="btn btn-primary btn-flat btn-sm">View</button>
 																	</form>&nbsp;
 																	<form action="${contextPath}/project/delete/${project.id}">
-																		<button class="btn btn-danger btn-sm">Delete</button>
+																		<button class="btn btn-primary btn-flat btn-sm">Delete</button>
 																	</form>
 																</center>
 															</td>
@@ -476,7 +476,7 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks&nbsp;
 		                                    <a href="${contextPath}/task/assign/staff/${staff.id}">
-		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
+		                                		<button class="btn btn-primary btn-flat btn-sm">Create Task</button>
 		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
@@ -498,7 +498,7 @@
 		                                        			<tr>
 		                                        				<td>
 		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                            <button type="button" class="btn btn-primary btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 							                                                Mark As&nbsp;
 							                                                <span class="caret"></span>
 							                                            </button>
@@ -511,10 +511,10 @@
 							                                            </ul>
 							                                        </div>
 							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-primary btn-sm">View</button>
+					                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>
 					                                            	</a>
 					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-danger btn-sm">Delete</button>
+					                                            		<button class="btn btn-primary btn-flat btn-sm">Delete</button>
 					                                            	</a>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
@@ -541,7 +541,7 @@
 					                                            	<c:choose>
 				                                            		<c:when test="${!empty task.project}">
 				                                            			<a href="${contextPath}/project/edit/from/staff/?${task.project.id}">
-						                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+						                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
 						                                            	</a>
 						                                            	${task.project.name}
 						                                            	<br/>
@@ -556,7 +556,7 @@
 				                                            		<c:when test="${!empty task.teams}">
 				                                            			<c:forEach items="${task.teams}" var="taskTeam">
 				                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-						                                            		<button class="btn btn-info btn-sm">View</button>&nbsp;&nbsp;
+						                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
 						                                            	</a>
 						                                            	${taskTeam.name}
 						                                            	<br/>
@@ -600,8 +600,8 @@
 		                                            quora plaxo ideeli hulu weebly balihoo...
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-primary btn-xs">Read more</a>
-		                                            <a class="btn btn-danger btn-xs">Delete</a>
+		                                            <a class="btn btn-primary btn-flat btn-xs">Read more</a>
+		                                            <a class="btn btn-primary btn-flat btn-xs">Delete</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -627,7 +627,7 @@
 		                                            We are more like Germany, ambitious and misunderstood!
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-warning btn-flat btn-xs">View comment</a>
+		                                            <a class="btn btn-primary btn-flat btn-flat btn-xs">View comment</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -752,7 +752,7 @@
                 html += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
                 html += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
                 html += '</div>';
-                html += '<button class="btn btn-danger btn-sm">Delete</button>';
+                html += '<button class="btn btn-primary btn-flat btn-sm">Delete</button>';
                 
                 $('#myModal').modal();
                 $('#myModal').on('shown.bs.modal', function(){

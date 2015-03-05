@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/staff/edit/0">
-                                		<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+                                		<button class="btn btn-primary btn-flat btn-sm">Create Staff</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -49,10 +49,10 @@
 		                                            	<td>
 		                                            		<center>
 																<a href="${contextPath}/staff/edit/${staff.id}">
-																	<button class="btn btn-primary btn-sm">View</button>
+																	<button class="btn btn-primary btn-flat btn-sm">View</button>
 																</a>
 																<a href="${contextPath}/staff/delete/${staff.id}">
-																	<button class="btn btn-danger btn-sm">Delete</button>
+																	<button class="btn btn-primary btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
