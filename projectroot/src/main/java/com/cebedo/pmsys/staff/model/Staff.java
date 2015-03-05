@@ -3,6 +3,7 @@ package com.cebedo.pmsys.staff.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,9 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
@@ -44,6 +47,7 @@ public class Staff implements Serializable {
 	private Set<ProjectFile> files;
 	private Set<Team> teams;
 	private Set<StaffFieldAssignment> fieldAssignments;
+	private Company company;
 
 	public Staff() {
 		;
@@ -190,5 +194,15 @@ public class Staff implements Serializable {
 	public void setFieldAssignments(
 			Set<StaffFieldAssignment> staffFieldAssignments) {
 		this.fieldAssignments = staffFieldAssignments;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

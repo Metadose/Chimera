@@ -3,14 +3,18 @@ package com.cebedo.pmsys.team.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
@@ -31,6 +35,7 @@ public class Team implements Serializable {
 	private Set<Project> projects;
 	private Set<Task> tasks;
 	private Set<Staff> members;
+	private Company company;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,6 +82,16 @@ public class Team implements Serializable {
 
 	public void setMembers(Set<Staff> members) {
 		this.members = members;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }

@@ -13,9 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -48,6 +50,7 @@ public class Project implements Serializable {
 	private Set<Task> assignedTasks;
 	private Set<ProjectFile> files;
 	private Set<Photo> photos;
+	private Company company;
 
 	public Project() {
 		;
@@ -191,5 +194,15 @@ public class Project implements Serializable {
 	@Override
 	public String toString() {
 		return "[Project] " + getId() + " [Name] " + getName();
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

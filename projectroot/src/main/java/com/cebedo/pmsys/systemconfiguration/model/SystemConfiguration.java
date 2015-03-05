@@ -2,12 +2,17 @@ package com.cebedo.pmsys.systemconfiguration.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.cebedo.pmsys.company.model.Company;
 
 @Entity
 @Table(name = SystemConfiguration.TABLE_NAME)
@@ -24,6 +29,7 @@ public class SystemConfiguration implements Serializable {
 	private long id;
 	private String name;
 	private String value;
+	private Company company;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +58,16 @@ public class SystemConfiguration implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }
