@@ -18,7 +18,7 @@
 	
 		<security:intercept-url pattern="/auth/login" access="permitAll"/>
 		<security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/>
-		<security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
 			
 		<security:logout 
 				invalidate-session="true" 

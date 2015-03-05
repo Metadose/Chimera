@@ -109,7 +109,7 @@
                 </ul>
             </li>
             <li>
-                <a href="pages/mailbox.html">
+                <a href="${contextPath}/auth/logout">
                     <i class="fa fa-sign-out"></i> <span>Logout</span>
 <!--                     <small class="badge pull-right bg-yellow">12</small> -->
                 </a>
