@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/project/edit/0">
-                                		<button class="btn btn-primary btn-flat btn-sm">Create Project</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -48,10 +48,10 @@
 		                                            	<td>
 		                                            		<center>
 																<form action="${contextPath}/project/edit/${project.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">View</button>
+																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</form>&nbsp;
 																<form action="${contextPath}/project/delete/${project.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</form>
 															</center>
 														</td>
@@ -96,11 +96,10 @@
 		                                                		</c:choose>
 			                                                	<br/>
 			                                                	<br/>
-			                                                	<form action="${contextPath}/staff/edit/${man.id}">
-			                                                		<button class="btn btn-primary btn-flat btn-sm">View</button>
-			                                                	</form>
 			                                                	${managerAssignment.projectPosition}<br/>
-			                                                	${man.prefix} ${man.firstName} ${man.middleName} ${man.lastName} ${man.suffix}<br/>
+			                                                	<a href="${contextPath}/staff/edit/${man.id}">
+			                                                	${man.prefix} ${man.firstName} ${man.middleName} ${man.lastName} ${man.suffix}
+			                                                	</a><br/>
 			                                                	${man.companyPosition}<br/>
 			                                                	<br/>
 			                                                	<br/>

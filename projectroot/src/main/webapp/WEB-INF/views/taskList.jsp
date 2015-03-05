@@ -30,7 +30,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/task/edit/0">
-                                		<button class="btn btn-primary btn-flat btn-sm">Create Task</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -52,7 +52,7 @@
                                         			<tr>
                                         				<td>
                                         					<div class="btn-group">
-					                                            <button type="button" class="btn btn-primary btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+					                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 					                                                Mark As&nbsp;
 					                                                <span class="caret"></span>
 					                                            </button>
@@ -65,10 +65,10 @@
 					                                            </ul>
 					                                        </div>
 					                                        <a href="${contextPath}/task/edit/${task.id}">
-			                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>
+			                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 			                                            	</a>
 			                                            	<a href="${contextPath}/task/delete/${task.id}">
-																<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+																<button class="btn btn-default btn-flat btn-sm">Delete</button>
 															</a>
                                         				</td>
 			                                            <td style="vertical-align: middle;">
@@ -95,7 +95,7 @@
 			                                            	<c:choose>
 		                                            		<c:when test="${!empty task.project}">
 		                                            			<a href="${contextPath}/project/edit/${task.project.id}">
-				                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
+				                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
 				                                            	</a>
 				                                            	${task.project.name}
 		                                            		</c:when>
@@ -109,7 +109,7 @@
 		                                            		<c:when test="${!empty task.teams}">
 		                                            			<c:forEach items="${task.teams}" var="taskTeam">
 	                                            				<a href="${contextPath}/team/edit/${taskTeam.id}">
-				                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
+				                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
 				                                            	</a>
 				                                            	${taskTeam.name}
 		                                            			</c:forEach>
@@ -126,7 +126,7 @@
 		                                            				<c:set var="taskStaff" value="${taskStaffMember}"/>
 						                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
 					                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
-					                                            		<button class="btn btn-primary btn-flat btn-sm">View</button>&nbsp;&nbsp;
+					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
 					                                            	</a>
 					                                            	${taskStaffName}
 		                                            			</c:forEach>

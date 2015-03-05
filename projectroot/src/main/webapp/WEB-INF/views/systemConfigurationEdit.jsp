@@ -65,12 +65,12 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${config.id == 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${config.id > 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/config/delete/${config.id}">
-																<button class="btn btn-primary btn-flat btn-sm">Delete This Configuration</button>
+																<button class="btn btn-default btn-flat btn-sm">Delete This Configuration</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/config/edit/0">
-                                		<button class="btn btn-primary btn-flat btn-sm">Create System Configuration</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create System Configuration</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -47,10 +47,10 @@
 		                                            	<td>
 		                                            		<center>
 																<a href="${contextPath}/config/edit/${systemConfiguration.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">View</button>
+																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</a>
 																<a href="${contextPath}/config/delete/${systemConfiguration.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>

@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/field/edit/0">
-                                		<button class="btn btn-primary btn-flat btn-sm">Create Field</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create Field</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -46,10 +46,10 @@
 		                                            	<td>
 		                                            		<center>
 																<a href="${contextPath}/field/edit/${field.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">View</button>
+																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</a>
 																<a href="${contextPath}/field/delete/${field.id}">
-																	<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>

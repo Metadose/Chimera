@@ -63,12 +63,12 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${field.id == 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${field.id > 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/field/delete/${field.id}">
-																<button class="btn btn-primary btn-flat btn-sm">Delete This Field</button>
+																<button class="btn btn-default btn-flat btn-sm">Delete This Field</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -97,7 +97,7 @@
 																	&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-primary btn-flat btn-sm">Remove</button>
+																	<button class="btn btn-default btn-flat btn-sm">Remove</button>
 																</td>
 															</tr>
 															<tr>
@@ -114,12 +114,12 @@
 																	&nbsp;&nbsp;
 																</td>
 																<td style="padding-bottom: 3px;">
-																	<button class="btn btn-primary btn-flat btn-sm">Remove</button>
+																	<button class="btn btn-default btn-flat btn-sm">Remove</button>
 																</td>
 															</tr>
 														</table>
 														<br/>
-														<button class="btn btn-primary btn-flat btn-sm">Clear All</button>
+														<button class="btn btn-default btn-flat btn-sm">Clear All</button>
 														<br/>
 														<br/>
 														<h4>Assign More Fields</h4>
@@ -147,7 +147,7 @@
 																</td>
 															</tr>
 														</table>
-                                            			<button class="btn btn-primary btn-flat btn-sm">Assign</button>
+                                            			<button class="btn btn-default btn-flat btn-sm">Assign</button>
 			                                        </div>
                    								</div>
                    							</div>
@@ -177,8 +177,8 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Field</button>
+                   												<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Field</button>
                    											</td>
                    										</tr>
                    										<tr>
@@ -196,12 +196,12 @@
                    												&nbsp;
                    											</td>
                    											<td>
-                   												<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-                   												<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Field</button>
+                   												<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+                   												<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Field</button>
                    											</td>
                    										</tr>
                    									</table>
-                   									<button class="btn btn-primary btn-flat btn-sm">Clear All</button>
+                   									<button class="btn btn-default btn-flat btn-sm">Clear All</button>
 													<br/>
 													<br/>
 													<h4>Assign More Fields</h4>
@@ -222,7 +222,7 @@
 															</td>
 														</tr>
 													</table>
-                                           			<button class="btn btn-primary btn-flat btn-sm">Assign</button>
+                                           			<button class="btn btn-default btn-flat btn-sm">Assign</button>
                    								</div>
                    							</div>
                    						</div>
@@ -255,7 +255,7 @@
 				                                </div>
 				                                <div class="box-body">
 				                                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-				                                        <button type="button" id="color-chooser-btn" class="btn btn-primary btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
+				                                        <button type="button" id="color-chooser-btn" class="btn btn-default btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
 				                                        <ul class="dropdown-menu" id="color-chooser">
 				                                            <li><a class="text-green" href="#"><i class="fa fa-square"></i> Green</a></li>
 				                                            <li><a class="text-blue" href="#"><i class="fa fa-square"></i> Blue</a></li>
@@ -271,7 +271,7 @@
 				                                    <div class="input-group">
 				                                        <input id="new-event" type="text" class="form-control" placeholder="Event Title">
 				                                        <div class="input-group-btn">
-				                                            <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add</button>
+				                                            <button id="add-new-event" type="button" class="btn btn-default btn-flat">Add</button>
 				                                        </div><!-- /btn-group -->
 				                                    </div><!-- /input-group -->
 				                                </div>
@@ -390,7 +390,7 @@
 		                                    </ul>
 		                                </div><!-- /.box-body -->
 		                                <div class="box-footer clearfix no-border">
-		                                    <button class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add item</button>
+		                                    <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
 		                                </div>
 		                            </div><!-- /.box -->
                                 </div><!-- /.tab-pane -->
@@ -497,7 +497,7 @@
 		                                    </ul>
 		                                </div><!-- /.box-body -->
 		                                <div class="box-footer clearfix no-border">
-		                                    <button class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add item</button>
+		                                    <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
 		                                </div>
 		                            </div><!-- /.box -->
                                 </div><!-- /.tab-pane -->
@@ -524,8 +524,8 @@
 	                                            <tr>
 	                                            	<td>
 	                                            		<center>
-														<button class="btn btn-primary btn-flat btn-sm">Download</button>
-														<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+														<button class="btn btn-default btn-flat btn-sm">Download</button>
+														<button class="btn btn-default btn-flat btn-sm">Delete</button>
 														</center>
 													</td>
 	                                                <td>Trident</td>
@@ -538,8 +538,8 @@
 	                                            <tr>
 	                                            	<td>
 	                                            		<center>
-														<button class="btn btn-primary btn-flat btn-sm">Download</button>
-														<button class="btn btn-primary btn-flat btn-sm">Delete</button>
+														<button class="btn btn-default btn-flat btn-sm">Download</button>
+														<button class="btn btn-default btn-flat btn-sm">Delete</button>
 														</center>
 													</td>
 	                                                <td>Trident</td>
@@ -571,7 +571,7 @@
                                             <input type="text" class="form-control" placeholder="Enter ..."/><br/>
                                             <label>Description</label>
                                             <input type="text" class="form-control" placeholder="Enter ..."/><br/>
-										<button class="btn btn-primary btn-flat btn-sm">Upload</button>
+										<button class="btn btn-default btn-flat btn-sm">Upload</button>
                                     </div>
                                     <br/>
                                     <div class="box">
@@ -629,8 +629,8 @@
 		                                            quora plaxo ideeli hulu weebly balihoo...
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-primary btn-flat btn-xs">Read more</a>
-		                                            <a class="btn btn-primary btn-flat btn-xs">Delete</a>
+		                                            <a class="btn btn-default btn-flat btn-xs">Read more</a>
+		                                            <a class="btn btn-default btn-flat btn-xs">Delete</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -656,7 +656,7 @@
 		                                            We are more like Germany, ambitious and misunderstood!
 		                                        </div>
 		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-primary btn-flat btn-flat btn-xs">View comment</a>
+		                                            <a class="btn btn-default btn-flat btn-flat btn-xs">View comment</a>
 		                                        </div>
 		                                    </div>
 		                                </li>
@@ -767,7 +767,7 @@
                 html += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
                 html += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
                 html += '</div>';
-                html += '<button class="btn btn-primary btn-flat btn-sm">Delete</button>';
+                html += '<button class="btn btn-default btn-flat btn-sm">Delete</button>';
                 
                 $('#myModal').modal();
                 $('#myModal').on('shown.bs.modal', function(){

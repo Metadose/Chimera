@@ -95,12 +95,12 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${task.id == 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${task.id > 0}">
-		                                            		<button class="btn btn-primary btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/task/delete/${task.id}">
-																<button class="btn btn-primary btn-flat btn-sm">Delete This Task</button>
+																<button class="btn btn-default btn-flat btn-sm">Delete This Task</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -140,13 +140,13 @@
 																	</td>
 																	</form>
 																	<td style="padding-bottom: 3px;">
-																		<button class="btn btn-primary btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
+																		<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
 																	</td>
 																	<td style="padding-bottom: 3px;">
 																		&nbsp;
 																	</td>
 																	<td style="padding-bottom: 3px;">
-																		<button class="btn btn-primary btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
+																		<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
 																	</td>
 																</tr>
 															</table>
@@ -155,7 +155,7 @@
 															<br/>
 															<form action="${contextPath}/field/unassign/task/all" method="post">
 																<input type="hidden" name="task_id" value="${task.id}"/>
-																<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
+																<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 															</form>
                											</c:when>
                											<c:when test="${empty task.fields}">
@@ -208,7 +208,7 @@
 																</td>
 															</tr>
 														</table>
-                                            			<button class="btn btn-primary btn-flat btn-sm">Assign</button>
+                                            			<button class="btn btn-default btn-flat btn-sm">Assign</button>
                                             			</form>
 			                                        </div>
                    								</div>
@@ -257,12 +257,12 @@
 	                   												<form method="post" action="${contextPath}/task/unassign/staff">
 																		<input type="hidden" id="task_id" name="task_id" value="${task.id}"/>
 																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-																		<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+																		<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 	                   												</form>
 	                   												<form action="${contextPath}/staff/edit/from/project" method="post">
 	                   													<input type="hidden" name="staff_id" value="${staff.id}"/>
 	                   													<input type="hidden" name="project_id" value="${staff.id}"/>
-	                   													<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
+	                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
 	                   												</form>
 	                   											</td>
 	                   										</tr>
@@ -272,7 +272,7 @@
                    										<c:when test="${!empty task.staff}">
                    											<form method="post" action="${contextPath}/task/unassign/staff/all">
                    												<input type="hidden" name="task_id" value="${task.id}"/>
-                   												<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
+                   												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                    											</form>
                    										</c:when>
                    										<c:when test="${empty task.staff}">
@@ -283,7 +283,7 @@
 													<br/>
 													<h4>Assign Staff&nbsp;
 													<a href="${contextPath}/staff/edit/from/project/?0">
-				              							<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+				              							<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
 				              						</a>
 													</h4>
 													<form method="post" action="${contextPath}/task/assign/staff">
@@ -309,7 +309,7 @@
 															</tr>
 														</table>
 														<br/>
-                                           				<button class="btn btn-primary btn-flat btn-sm">Assign</button>
+                                           				<button class="btn btn-default btn-flat btn-sm">Assign</button>
                                            			</form>
                    								</div>
                    							</div>
@@ -342,10 +342,10 @@
 		                   												<form action="${contextPath}/task/unassign/team" method="post">
 		                   													<input type="hidden" name="task_id" value="${task.id}"/>
 		                   													<input type="hidden" name="team_id" value="${team.id}"/>
-		                   													<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
+		                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
 		                   												</form>
 		                   												<form action="${contextPath}/team/edit/${team.id}" method="post">
-		                   													<button class="btn btn-primary btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
+		                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
 		                   												</form>
 		                   											</td>
 		                   										</tr>
@@ -359,7 +359,7 @@
                    									<c:if test="${!empty task.teams}">
                    									<form action="${contextPath}/task/unassign/team/all" method="post">
                    										<input type="hidden" name="task_id" value="${task.id}"/>
-                   										<button class="btn btn-primary btn-flat btn-sm">Unassign All</button>
+                   										<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                    									</form>
                    									</c:if>
 													<br/>
@@ -384,7 +384,7 @@
 														</tr>
 													</table>
 													<input type="hidden" name="task_id" value="${task.id}"/>
-                                           			<button class="btn btn-primary btn-flat btn-sm">Assign</button>
+                                           			<button class="btn btn-default btn-flat btn-sm">Assign</button>
                                            			</form>
                    								</div>
                    							</div>
