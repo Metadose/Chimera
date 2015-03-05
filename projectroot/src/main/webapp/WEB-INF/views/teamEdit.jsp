@@ -50,7 +50,7 @@
                                 	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -77,7 +77,7 @@
                    							</div>
                    						</div>
                    						<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">More Info</h3>
                    								</div>
@@ -158,7 +158,7 @@
                                 <div class="tab-pane" id="tab_6">
                                 	<div class="row">
 				                        <div class="col-md-3">
-				                            <div class="box box-primary">
+				                            <div class="box box-default">
 				                                <div class="box-header">
 				                                    <h4 class="box-title">Draggable Events</h4>
 				                                </div>
@@ -176,7 +176,7 @@
 				                                    </div>
 				                                </div><!-- /.box-body -->
 				                            </div><!-- /. box -->
-				                            <div class="box box-primary">
+				                            <div class="box box-default">
 				                                <div class="box-header">
 				                                    <h3 class="box-title">Create Event</h3>
 				                                </div>
@@ -205,7 +205,7 @@
 				                            </div>
 				                        </div><!-- /.col -->
 				                        <div class="col-md-9">
-				                            <div class="box box-primary">
+				                            <div class="box box-default">
 				                                <div class="box-body no-padding">
 				                                    <!-- THE CALENDAR -->
 				                                    <div id="calendar"></div>

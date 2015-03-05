@@ -48,7 +48,7 @@
                                 	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -109,7 +109,7 @@
                    						</div>
                    						<c:if test="${task.id > 0}">
                    						<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Fields</h3>
                    								</div>
@@ -220,7 +220,7 @@
               						<h2 class="page-header">Assignments</h2>
               						<div class="row">
               							<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Staff</h3>
                    								</div>
@@ -315,7 +315,7 @@
                    							</div>
                    						</div>
                    						<div class="col-md-6">
-                   							<div class="box box-primary">
+                   							<div class="box box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Teams</h3>
                    								</div>
