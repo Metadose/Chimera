@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/systemuser/edit/0">
-                                		<button class="btn btn-success btn-sm">Create User</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create User</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">

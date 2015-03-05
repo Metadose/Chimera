@@ -30,7 +30,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/task/edit/0">
-                                		<button class="btn btn-success btn-sm">Create Task</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">

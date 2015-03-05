@@ -29,7 +29,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/projectfile/edit/0">
-                                		<button class="btn btn-success btn-sm">Upload File</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Upload File</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">

@@ -28,7 +28,7 @@
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
                                 	<a href="${contextPath}/team/edit/0">
-                                		<button class="btn btn-success btn-sm">Create Team</button>
+                                		<button class="btn btn-default btn-flat btn-sm">Create Team</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">

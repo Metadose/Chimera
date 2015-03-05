@@ -127,7 +127,7 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${project.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
@@ -324,7 +324,7 @@
 													<br/>
 													<h4>Assign Managers&nbsp;
 													<a href="${contextPath}/staff/edit/from/project/?0">
-				              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+				              							<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
 				              						</a>
 													</h4>
 													<form role="form" name="staffForm" id="staffForm" method="post" action="${contextPath}/staff/assign/project">
@@ -419,7 +419,7 @@
 													<br/>
 													<h4>Assign Teams&nbsp;
 													<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   										<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
                    									</a>
 													</h4>
 													<form role="form" name="teamForm" id="teamForm" method="post" action="${contextPath}/team/assign/project">
@@ -643,7 +643,7 @@
 											<input type="file" id="file" name="file"/><br/>
 											<label>Description</label>
 											<input type="text" class="form-control" id="description" name="description"/><br/>
-											<button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
 										</form>
 	                                    <br/>
 	                                    <table id="example-1" class="table table-bordered table-striped">
@@ -719,7 +719,7 @@
 										<input type="file" id="file" name="file"/><br/>
 										<label>Description</label>
 										<input type="text" class="form-control" id="description" name="description"/><br/>
-										<button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+										<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
 									</form>
                                     <br/>
                                    	<div class="box box-primary">

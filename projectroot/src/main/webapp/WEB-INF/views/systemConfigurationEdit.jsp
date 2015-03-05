@@ -65,7 +65,7 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${config.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${config.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>

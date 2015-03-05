@@ -60,7 +60,7 @@
 				                                            <label>Access</label>
 				                                            <input type="text" name="access" value="${user.access}"/><br/>
 				                                        </div>
-				                                        <button class="btn btn-success btn-sm" id="detailsButton">Create</button>
+				                                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${user.id > 0}">

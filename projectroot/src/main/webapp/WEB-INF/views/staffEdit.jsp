@@ -125,7 +125,7 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${staff.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
@@ -307,7 +307,7 @@
 													<br/>
 													<h4>Assign Teams&nbsp;
 													<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
+                   										<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
                    									</a>
 													</h4>
 													<form method="post" action="${contextPath}/staff/assign/team">
@@ -405,7 +405,7 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Projects&nbsp;
 		                                    <a href="${contextPath}/project/edit/0">
-		                                		<button class="btn btn-success btn-sm">Create Project</button>
+		                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
 		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
@@ -476,7 +476,7 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks&nbsp;
 		                                    <a href="${contextPath}/task/assign/staff/${staff.id}">
-		                                		<button class="btn btn-success btn-sm">Create Task</button>
+		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
 		                                	</a>
 		                                    </h3>
 		                                </div><!-- /.box-header -->

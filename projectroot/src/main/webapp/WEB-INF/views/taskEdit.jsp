@@ -95,7 +95,7 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${task.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${task.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
@@ -283,7 +283,7 @@
 													<br/>
 													<h4>Assign Staff&nbsp;
 													<a href="${contextPath}/staff/edit/from/project/?0">
-				              							<button class="btn btn-success btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
+				              							<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
 				              						</a>
 													</h4>
 													<form method="post" action="${contextPath}/task/assign/staff">

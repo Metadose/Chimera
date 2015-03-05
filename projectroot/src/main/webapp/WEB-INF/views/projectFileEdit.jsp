@@ -57,7 +57,7 @@
 						                                        <input type="file" id="file" name="file"/><br/>
 						                                        <label>Description</label>
 					                                            <input type="text" class="form-control" id="description" name="description"/><br/>
-					                                            <button class="btn btn-success btn-sm" id="uploadButton">Upload</button>
+					                                            <button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
 				                                            </form>
 		                                            	</c:when>
 		                                            	<c:when test="${projectfile.id > 0}">

@@ -64,7 +64,7 @@
 				                                    </form>
 				                                    <c:choose>
 		                                            	<c:when test="${team.id == 0}">
-		                                            		<button class="btn btn-success btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${team.id > 0}">
 		                                            		<button class="btn btn-warning btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
@@ -222,7 +222,7 @@
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/0">
-				                                    	<button class="btn btn-success btn-sm">Create Staff</button>
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
@@ -328,7 +328,7 @@
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/project/edit/0">
-				                                    	<button class="btn btn-success btn-sm">Create Project</button>
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Project</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
@@ -441,7 +441,7 @@
 		                                <div class="box-header">
 		                                    <h3 class="box-title">Assigned Tasks&nbsp;
 		                                    <a href="${contextPath}/task/assign/team/${team.id}">
-		                                		<button class="btn btn-success btn-sm">Create Task</button>
+		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
 		                                	</a>
 		                                	<a href="${contextPath}/project/edit/0">
 		                                		<button class="btn btn-danger btn-sm">Unassign All</button>
