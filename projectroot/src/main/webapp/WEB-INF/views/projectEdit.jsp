@@ -49,6 +49,8 @@
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
+                                		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
+                                		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
 		                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
@@ -857,6 +859,198 @@
 		                                </li>
 		                            </ul>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_managers">
+                                	<div class="box">
+		                                <div class="box-header">
+		                                	<h3 class="box-title">Members&nbsp;
+		                                    <table>
+		                                    	<tr>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/staff/edit/0">
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+					                                    </form>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<form method="post" action="${contextPath}/staff/assign/team">
+		                                    		<td>
+		                                    			<select class="form-control" name="staff_id">
+		                                    				<c:choose>
+		                                    					<c:when test="${!empty staffList}">
+		                                    						<c:forEach items="${staffList}" var="staff">
+		                                    							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+		                                    							<option value="${staff.id}">${staffName}</option>
+		                                    						</c:forEach>
+		                                    					</c:when>
+		                                    				</c:choose>
+		                                    			</select>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+<!-- 		                                    			<input type="hidden" name="origin" value="team"/> -->
+<%-- 		                                    			<input type="hidden" name="originID" value="${team.id}"/> --%>
+<%-- 		                                    			<input type="hidden" name="team_id" value="${team.id}"/> --%>
+														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+		                                    		</td>
+		                                    		</form>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/team/unassign/staff/all">
+<%-- 														<input type="hidden" name="team_id" value="${team.id}"/> --%>
+														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+														</form>
+		                                    		</td>
+		                                    	</tr>
+		                                    </table>
+		                                    </h3>
+		                                </div><!-- /.box-header -->
+		                                <div class="box-body table-responsive">
+		                                    <table id="managers-table" class="table table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                                <th>Photo</th>
+		                                                <th>Full Name</th>
+		                                                <th>Position</th>
+		                                                <th>E-Mail</th>
+		                                                <th>Contact Number</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="managerAssignments" value="${project.managerAssignments}"/>
+				                                	<c:if test="${!empty managerAssignments}">
+				                                		<c:forEach items="${managerAssignments}" var="assignment">
+			                                			<c:set var="manager" value="${assignment.manager}"/>
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+																	<a href="${contextPath}/staff/edit/${manager.id}">
+																		<button class="btn btn-default btn-flat btn-sm">View</button>
+																	</a>
+																	<form method="post" action="${contextPath}/staff/unassign/team">
+																		<input type="hidden" name="staff_id" value="${manager.id}"/>
+																		<input type="hidden" name="team_id" value="${team.id}"/>
+																		<input type="hidden" name="origin" value="team"/>
+																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+																	</form>
+																</center>
+															</td>
+			                                                <td>
+			                                                	<div class="user-panel">
+													            <div class="pull-left image">
+													                <c:choose>
+		                                                			<c:when test="${!empty manager.thumbnailURL}">
+		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${manager.id}" class="img-circle"/>
+		                                                			</c:when>
+		                                                			<c:when test="${empty manager.thumbnailURL}">
+		                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
+		                                                			</c:when>
+			                                                		</c:choose>
+													            </div>
+														        </div>
+			                                                </td>
+			                                                <td>${manager.prefix} ${manager.firstName} ${manager.middleName} ${manager.lastName} ${manager.suffix}</td>
+			                                                <td>${manager.companyPosition}</td>
+			                                                <td>${manager.email}</td>
+			                                                <td>${manager.contactNumber}</td>
+			                                            </tr>
+		                                            </c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_teams">
+                                	<div class="box">
+		                                <div class="box-header">
+		                                	<h3 class="box-title">Teams&nbsp;
+		                                    <table>
+		                                    	<tr>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/team/edit/0">
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
+					                                    </form>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<form method="post" action="${contextPath}/team/assign/team">
+		                                    		<td>
+		                                    			<select class="form-control" name="team_id">
+		                                    				<c:choose>
+		                                    					<c:when test="${!empty teamList}">
+		                                    						<c:forEach items="${teamList}" var="team">
+		                                    							<option value="${team.id}">${team.name}</option>
+		                                    						</c:forEach>
+		                                    					</c:when>
+		                                    				</c:choose>
+		                                    			</select>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+<!-- 		                                    			<input type="hidden" name="origin" value="team"/> -->
+<%-- 		                                    			<input type="hidden" name="originID" value="${team.id}"/> --%>
+<%-- 		                                    			<input type="hidden" name="team_id" value="${team.id}"/> --%>
+														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+		                                    		</td>
+		                                    		</form>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/team/unassign/team/all">
+<%-- 														<input type="hidden" name="team_id" value="${team.id}"/> --%>
+														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+														</form>
+		                                    		</td>
+		                                    	</tr>
+		                                    </table>
+		                                    </h3>
+		                                </div><!-- /.box-header -->
+		                                <div class="box-body table-responsive">
+		                                    <table id="teams-table" class="table table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                            	<th>#</th>
+		                                                <th>Name</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="teams" value="${project.assignedTeams}"/>
+				                                	<c:if test="${!empty teams}">
+				                                		<c:forEach items="${teams}" var="team">
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+																	<a href="${contextPath}/team/edit/${team.id}">
+																		<button class="btn btn-default btn-flat btn-sm">View</button>
+																	</a>
+																	<form method="post" action="${contextPath}/team/unassign/team">
+																		<input type="hidden" name="team_id" value="${team.id}"/>
+																		<input type="hidden" name="origin" value="team"/>
+																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+																	</form>
+																</center>
+															</td>
+			                                                <td>${team.id}</td>
+		                                                	<td>${team.name}</td>
+			                                            </tr>
+		                                            </c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
                                 </c:when>
                                 </c:choose>
                             </div><!-- /.tab-content -->
@@ -922,6 +1116,8 @@
 		
 		$(document).ready(function() {
 			$("#example-1").dataTable();
+			$("#managers-table").dataTable();
+			$("#teams-table").dataTable();
 			$("#project_status").val("${project.status}");
 			
 			$('li img').on('click',function(){
