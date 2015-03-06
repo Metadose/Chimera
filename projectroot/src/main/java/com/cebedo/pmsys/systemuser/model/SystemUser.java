@@ -1,11 +1,15 @@
 package com.cebedo.pmsys.systemuser.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.cebedo.pmsys.staff.model.Staff;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
@@ -22,6 +26,7 @@ public class SystemUser {
 	private String username;
 	private String password;
 	private Integer access;
+	private Staff staff;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +64,15 @@ public class SystemUser {
 
 	public void setAccess(Integer access) {
 		this.access = access;
+	}
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	public Staff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
 	}
 
 }

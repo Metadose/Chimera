@@ -10,8 +10,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.manager.CustomAuthenticationManager;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -41,7 +44,7 @@ public class StaffDAOImpl implements StaffDAO {
 	public Staff getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Staff staff = (Staff) session.createQuery(
-				"from " + Staff.CLASS_NAME + " where "
+				"from " + Staff.class.getName() + " where "
 						+ Staff.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
 		logger.info("[Get by ID] Staff: " + staff);
 		return staff;
@@ -89,9 +92,19 @@ public class StaffDAOImpl implements StaffDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Staff> list() {
+		CustomAuthenticationManager auth = (CustomAuthenticationManager) SecurityContextHolder
+				.getContext().getAuthentication();
+		Staff authStaff = auth.getStaff();
+
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Staff> staffList = session.createQuery("from " + Staff.CLASS_NAME)
-				.list();
+		String hql = "FROM " + Staff.class.getName() + " WHERE ";
+		hql += Company.COLUMN_PRIMARY_KEY + "=:" + Company.COLUMN_PRIMARY_KEY;
+
+		Query query = session.createQuery(hql);
+		query.setParameter(Company.COLUMN_PRIMARY_KEY, authStaff.getCompany()
+				.getId());
+
+		List<Staff> staffList = query.list();
 		for (Staff staff : staffList) {
 			logger.info("[List] Staff: " + staff);
 		}
@@ -101,8 +114,8 @@ public class StaffDAOImpl implements StaffDAO {
 	@SuppressWarnings("unchecked")
 	public List<Staff> listWithAllCollections() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Staff> staffList = session.createQuery("from " + Staff.CLASS_NAME)
-				.list();
+		List<Staff> staffList = session.createQuery(
+				"from " + Staff.class.getName()).list();
 		for (Staff staff : staffList) {
 			Hibernate.initialize(staff.getAssignedManagers());
 			Hibernate.initialize(staff.getTasks());
@@ -144,7 +157,7 @@ public class StaffDAOImpl implements StaffDAO {
 		// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
 		// Rather than ObjectAssignment.COLUMN_NAME.
 		Query query = session.createQuery("DELETE FROM "
-				+ StaffTeamAssignment.CLASS_NAME + " WHERE "
+				+ StaffTeamAssignment.class.getName() + " WHERE "
 				+ Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY
 				+ " AND " + Staff.COLUMN_PRIMARY_KEY + "=:"
 				+ Staff.COLUMN_PRIMARY_KEY);
@@ -157,7 +170,7 @@ public class StaffDAOImpl implements StaffDAO {
 	public void unassignAllTeams(long staffID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("DELETE FROM "
-				+ StaffTeamAssignment.CLASS_NAME + " WHERE "
+				+ StaffTeamAssignment.class.getName() + " WHERE "
 				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
 		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
 		query.executeUpdate();

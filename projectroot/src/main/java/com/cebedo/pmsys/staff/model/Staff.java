@@ -14,10 +14,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
@@ -48,6 +51,7 @@ public class Staff implements Serializable {
 	private Set<Team> teams;
 	private Set<StaffFieldAssignment> fieldAssignments;
 	private Company company;
+	private SystemUser user;
 
 	public Staff() {
 		;
@@ -204,5 +208,15 @@ public class Staff implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumn
+	public SystemUser getUser() {
+		return user;
+	}
+
+	public void setUser(SystemUser user) {
+		this.user = user;
 	}
 }

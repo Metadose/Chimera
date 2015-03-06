@@ -19,6 +19,8 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -34,6 +36,8 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 	private SystemUserService systemUserService;
 	private ServletContext servletContext;
 	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
+	private Staff staff;
+	private Company company;
 
 	@Override
 	public void setServletContext(ServletContext context) {
@@ -77,6 +81,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		} else {
 
 			logger.debug("User dtails are good and ready to go");
+			setStaff(user.getStaff());
 			return new UsernamePasswordAuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user.getAccess()));
 		}
@@ -110,5 +115,21 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 		// Return list of granted authorities
 		return authList;
+	}
+
+	public Staff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

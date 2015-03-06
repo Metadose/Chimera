@@ -2,6 +2,7 @@ package com.cebedo.pmsys.systemuser.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,6 +42,8 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 		for (SystemUser dbUser : users) {
 			if (dbUser.getUsername().equals(username) == true) {
 				logger.debug("User found");
+				Hibernate.initialize(dbUser.getStaff());
+				Hibernate.initialize(dbUser.getStaff().getCompany());
 				return dbUser;
 			}
 		}
@@ -89,6 +92,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(
 				id));
+		Hibernate.initialize(user.getStaff());
 		return user;
 	}
 }
