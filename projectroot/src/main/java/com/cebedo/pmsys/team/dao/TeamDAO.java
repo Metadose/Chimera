@@ -15,7 +15,7 @@ public interface TeamDAO {
 
 	public void delete(long id);
 
-	public List<Team> list();
+	public List<Team> list(Long companyID);
 
 	public void assignProjectTeam(TeamAssignment assignment);
 

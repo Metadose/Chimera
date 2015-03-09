@@ -5,6 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
@@ -13,6 +18,11 @@ import com.cebedo.pmsys.team.model.TeamAssignment;
 public class TeamServiceImpl implements TeamService {
 
 	private TeamDAO teamDAO;
+	private ProjectDAO projectDAO;
+
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
 
 	public void setTeamDAO(TeamDAO teamDAO) {
 		this.teamDAO = teamDAO;
@@ -22,69 +32,111 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void create(Team team) {
 		this.teamDAO.create(team);
+		AuthenticationToken auth = AuthUtils.getAuth();
+		Company authCompany = auth.getCompany();
+		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+			team.setCompany(authCompany);
+			this.teamDAO.update(team);
+		}
 	}
 
 	@Override
 	@Transactional
 	public Team getByID(long id) {
-		return this.teamDAO.getByID(id);
+		Team team = this.teamDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(team)) {
+			return team;
+		}
+		return new Team();
 	}
 
 	@Override
 	@Transactional
 	public void update(Team team) {
-		this.teamDAO.update(team);
+		if (AuthUtils.isActionAuthorized(team)) {
+			this.teamDAO.update(team);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void delete(long id) {
-		this.teamDAO.delete(id);
+		Team team = this.teamDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(team)) {
+			this.teamDAO.delete(id);
+		}
 	}
 
 	@Override
 	@Transactional
 	public List<Team> list() {
-		return this.teamDAO.list();
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.teamDAO.list(null);
+		}
+		return this.teamDAO.list(token.getCompany().getId());
 	}
 
 	@Override
 	@Transactional
 	public void assignProjectTeam(long projectID, long teamID) {
-		TeamAssignment assignment = new TeamAssignment();
-		assignment.setProjectID(projectID);
-		assignment.setTeamID(teamID);
-		this.teamDAO.assignProjectTeam(assignment);
+		Project project = this.projectDAO.getByID(projectID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(project)
+				&& AuthUtils.isActionAuthorized(team)) {
+			TeamAssignment assignment = new TeamAssignment();
+			assignment.setProjectID(projectID);
+			assignment.setTeamID(teamID);
+			this.teamDAO.assignProjectTeam(assignment);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignProjectTeam(long projectID, long teamID) {
-		this.teamDAO.unassignProjectTeam(projectID, teamID);
+		Project project = this.projectDAO.getByID(projectID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(project)
+				&& AuthUtils.isActionAuthorized(team)) {
+			this.teamDAO.unassignProjectTeam(projectID, teamID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignAllProjectTeams(long projectID) {
-		this.teamDAO.unassignAllProjectTeams(projectID);
+		Project project = this.projectDAO.getByID(projectID);
+		if (AuthUtils.isActionAuthorized(project)) {
+			this.teamDAO.unassignAllProjectTeams(projectID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public Team getWithAllCollectionsByID(int id) {
-		return this.teamDAO.getWithAllCollectionsByID(id);
+		Team team = this.teamDAO.getWithAllCollectionsByID(id);
+		if (AuthUtils.isActionAuthorized(team)) {
+			return team;
+		}
+		return new Team();
 	}
 
 	@Override
 	@Transactional
 	public void unassignAllMembers(long teamID) {
-		this.teamDAO.unassignAllMembers(teamID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(team)) {
+			this.teamDAO.unassignAllMembers(teamID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignAllTeamsFromProject(long teamID) {
-		this.teamDAO.unassignAllTeamsFromProject(teamID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(team)) {
+			this.teamDAO.unassignAllTeamsFromProject(teamID);
+		}
 	}
 
 }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.team.model.Team;
@@ -37,9 +38,7 @@ public class TeamDAOImpl implements TeamDAO {
 	@Override
 	public Team getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Team team = (Team) session.createQuery(
-				"from " + Team.CLASS_NAME + " where " + Team.COLUMN_PRIMARY_KEY
-						+ "=" + id).uniqueResult();
+		Team team = (Team) session.load(Team.class, new Long(id));
 		logger.info("[Get by ID] Team: " + team);
 		return team;
 	}
@@ -62,13 +61,10 @@ public class TeamDAOImpl implements TeamDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Team> list() {
+	public List<Team> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Team> teamList = session.createQuery("from " + Team.CLASS_NAME)
-				.list();
-		for (Team team : teamList) {
-			logger.info("[List] Team: " + team);
-		}
+		List<Team> teamList = QueryUtils.getSelectQueryFilterCompany(session,
+				Team.class.getName(), companyID).list();
 		return teamList;
 	}
 
