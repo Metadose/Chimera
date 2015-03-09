@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -23,6 +22,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 	private Company company;
 	private boolean superAdmin;
 	private boolean companyAdmin;
+	private static AuthenticationToken token;
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -100,11 +100,6 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 		credentials = null;
 	}
 
-	public static AuthenticationToken get() {
-		return (AuthenticationToken) SecurityContextHolder.getContext()
-				.getAuthentication();
-	}
-
 	public Staff getStaff() {
 		return staff;
 	}
@@ -135,5 +130,13 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 
 	public void setCompanyAdmin(boolean companyAdmin) {
 		this.companyAdmin = companyAdmin;
+	}
+
+	public static AuthenticationToken getToken() {
+		return token;
+	}
+
+	public static void setToken(AuthenticationToken token) {
+		AuthenticationToken.token = token;
 	}
 }

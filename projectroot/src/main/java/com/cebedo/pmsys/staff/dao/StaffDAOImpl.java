@@ -89,10 +89,19 @@ public class StaffDAOImpl implements StaffDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Staff> list() {
+	public List<Staff> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String hql = "FROM " + Staff.class.getName();
+		if (companyID != null) {
+			hql += " WHERE ";
+			hql += Company.COLUMN_PRIMARY_KEY + "=:"
+					+ Company.COLUMN_PRIMARY_KEY;
+		}
+
 		Query query = session.createQuery(hql);
+		if (companyID != null) {
+			query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
+		}
 
 		List<Staff> staffList = query.list();
 		for (Staff staff : staffList) {
