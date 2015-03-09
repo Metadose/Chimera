@@ -64,6 +64,7 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
+                   									<c:if test="${staff.id != 0}">
                    									<c:choose>
                    										<c:when test="${!empty staff.thumbnailURL}">
                    											<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}"/>
@@ -95,6 +96,7 @@
 				                                        </form>
                    									</div>
 				                                    <br/>
+				                                    </c:if>
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
 				                                    <c:if test="${!empty origin && !empty originID}">
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/project"/>

@@ -30,7 +30,14 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public void create(Staff staff) {
+		// Create the staff first since to attach it's relationship
+		// with the company.
 		this.staffDAO.create(staff);
+
+		// Update it afterwards.
+		AuthenticationToken token = AuthenticationToken.get();
+		staff.setCompany(token.isSuperAdmin() ? null : token.getCompany());
+		update(staff);
 	}
 
 	@Override

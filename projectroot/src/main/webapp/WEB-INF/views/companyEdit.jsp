@@ -50,23 +50,21 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/company/create">
+                   									<form role="form" method="post" action="${contextPath}/company/create/">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="id" value="${company.id}"/>
+				                                        	<input type="hidden" name="company_id" value="${company.id}"/>
 				                                            <label>Name</label>
 				                                            <input type="text" class="form-control" name="name" value="${company.name}"/><br/>
 				                                            <label>Description</label>
 				                                            <input type="text" class="form-control" name="description" value="${company.description}"/><br/>
 			                                                <label>Date Started</label>
-			                                                <input type="text" class="form-control" name="dateStarted" value="${company.dateStarted}"/><br/>
+			                                                <input type="text" class="form-control" name="date_started" value="${company.dateStarted}"/><br/>
 			                                                <label>Date Expiration</label>
-			                                                <input type="text" class="form-control" name="dateExpiration" value="${company.dateExpiration}"/><br/>
+			                                                <input type="text" class="form-control" name="date_expiration" value="${company.dateExpiration}"/><br/>
 				                                        </div>
+				                                        <button class="btn btn-default btn-flat btn-sm">Create</button>
 				                                    </form>
 				                                    <c:choose>
-		                                            	<c:when test="${company.id == 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
-		                                            	</c:when>
 		                                            	<c:when test="${company.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="${contextPath}/company/delete/${company.id}">

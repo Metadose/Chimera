@@ -39,6 +39,14 @@ public class Company {
 	private Set<Team> teams;
 	private Set<SystemConfiguration> configs;
 
+	public Company() {
+		;
+	}
+
+	public Company(long id) {
+		setId(id);
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
