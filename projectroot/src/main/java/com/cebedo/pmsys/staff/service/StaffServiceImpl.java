@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
@@ -59,7 +60,11 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public List<Staff> listWithAllCollections() {
-		return this.staffDAO.listWithAllCollections();
+		AuthenticationToken token = AuthenticationToken.get();
+		if (token.isSuperAdmin()) {
+			return this.staffDAO.listWithAllCollections(null);
+		}
+		return this.staffDAO.listWithAllCollections(token.getCompany().getId());
 	}
 
 	@Override

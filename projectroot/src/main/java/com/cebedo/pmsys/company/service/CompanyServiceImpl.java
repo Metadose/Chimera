@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.company.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -44,7 +46,9 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	@Transactional
 	public List<Company> list() {
+		if (!AuthenticationToken.get().isSuperAdmin()) {
+			return new ArrayList<Company>();
+		}
 		return this.companyDAO.list();
 	}
-
 }

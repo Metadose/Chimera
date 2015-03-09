@@ -76,7 +76,24 @@
         <beans:property name="dataSource" ref="dataSource" />
         <beans:property name="annotatedClasses">
             <beans:list>
+                <beans:value>com.cebedo.pmsys.project.model.Project</beans:value>
+                <beans:value>com.cebedo.pmsys.field.model.Field</beans:value>
+                <beans:value>com.cebedo.pmsys.field.model.FieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.StaffTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.staff.model.StaffFieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
+                <beans:value>com.cebedo.pmsys.team.model.TeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
+                <beans:value>com.cebedo.pmsys.projectfile.model.ProjectFile</beans:value>
+                <beans:value>com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration</beans:value>
+                <beans:value>com.cebedo.pmsys.photo.model.Photo</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskStaffAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
+                <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -99,4 +116,5 @@
     <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
     </beans:bean>
+    
 </beans>

@@ -103,7 +103,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Companies</a></li>
+                    <li><a href="${contextPath}/company/list/"><i class="fa fa-angle-double-right"></i> Companies</a></li>
                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Licenses</a></li>
                     <li><a href="${contextPath}/config/list"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
                 </ul>

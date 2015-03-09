@@ -37,6 +37,9 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Date Started</th>
+                                                <th>Date Expiration</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -55,6 +58,9 @@
 														</td>
 														<td>${company.id}</td>
 		                                                <td>${company.name}</td>
+		                                                <td>${company.description}</td>
+		                                                <td>${company.dateStarted}</td>
+		                                                <td>${company.dateExpiration}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -64,6 +70,9 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Date Started</th>
+                                                <th>Date Expiration</th>
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -20,7 +20,7 @@ public interface StaffDAO {
 
 	public List<Staff> list();
 
-	public List<Staff> listWithAllCollections();
+	public List<Staff> listWithAllCollections(Long companyID);
 
 	public void assignProjectManager(ManagerAssignment assignment);
 

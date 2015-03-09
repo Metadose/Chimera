@@ -10,11 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.manager.CustomAuthenticationManager;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -92,17 +90,9 @@ public class StaffDAOImpl implements StaffDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Staff> list() {
-		CustomAuthenticationManager auth = (CustomAuthenticationManager) SecurityContextHolder
-				.getContext().getAuthentication();
-		Staff authStaff = auth.getStaff();
-
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "FROM " + Staff.class.getName() + " WHERE ";
-		hql += Company.COLUMN_PRIMARY_KEY + "=:" + Company.COLUMN_PRIMARY_KEY;
-
+		String hql = "FROM " + Staff.class.getName();
 		Query query = session.createQuery(hql);
-		query.setParameter(Company.COLUMN_PRIMARY_KEY, authStaff.getCompany()
-				.getId());
 
 		List<Staff> staffList = query.list();
 		for (Staff staff : staffList) {
@@ -111,11 +101,28 @@ public class StaffDAOImpl implements StaffDAO {
 		return staffList;
 	}
 
+	/**
+	 * Get the list of all staff members, filter by a specific company. If no
+	 * company is supplied, get all staff members.
+	 */
 	@SuppressWarnings("unchecked")
-	public List<Staff> listWithAllCollections() {
+	public List<Staff> listWithAllCollections(Long companyID) {
+		// Setup the query.
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Staff> staffList = session.createQuery(
-				"from " + Staff.class.getName()).list();
+		String hql = "FROM " + Staff.class.getName();
+		if (companyID != null) {
+			hql += " WHERE ";
+			hql += Company.COLUMN_PRIMARY_KEY + "=:"
+					+ Company.COLUMN_PRIMARY_KEY;
+		}
+
+		// Set params.
+		Query query = session.createQuery(hql);
+		if (companyID != null) {
+			query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
+		}
+
+		List<Staff> staffList = query.list();
 		for (Staff staff : staffList) {
 			Hibernate.initialize(staff.getAssignedManagers());
 			Hibernate.initialize(staff.getTasks());
@@ -181,4 +188,5 @@ public class StaffDAOImpl implements StaffDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(stAssign);
 	}
+
 }

@@ -5,18 +5,23 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.team.model.Team;
 
+@Entity
+@Table(name = Company.TABLE_NAME)
 public class Company {
 
 	public static final String TABLE_NAME = "companies";
@@ -29,7 +34,7 @@ public class Company {
 	private Date dateStarted;
 	private Date dateExpiration;
 	private Set<Staff> admins;
-	private Set<Staff> employees;
+	private Set<SystemUser> employees;
 	private Set<Project> projects;
 	private Set<Team> teams;
 	private Set<SystemConfiguration> configs;
@@ -93,11 +98,11 @@ public class Company {
 	}
 
 	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-	public Set<Staff> getEmployees() {
+	public Set<SystemUser> getEmployees() {
 		return employees;
 	}
 
-	public void setEmployees(Set<Staff> employees) {
+	public void setEmployees(Set<SystemUser> employees) {
 		this.employees = employees;
 	}
 

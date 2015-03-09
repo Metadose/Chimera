@@ -43,7 +43,6 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 			if (dbUser.getUsername().equals(username) == true) {
 				logger.debug("User found");
 				Hibernate.initialize(dbUser.getStaff());
-				Hibernate.initialize(dbUser.getStaff().getCompany());
 				return dbUser;
 			}
 		}
