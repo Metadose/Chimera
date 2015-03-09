@@ -8,7 +8,7 @@ public interface SystemUserDAO {
 
 	public SystemUser searchDatabase(String username);
 
-	public List<SystemUser> list();
+	public List<SystemUser> list(Long companyID);
 
 	public void create(SystemUser user);
 

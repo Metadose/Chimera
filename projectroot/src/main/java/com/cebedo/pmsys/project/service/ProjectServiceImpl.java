@@ -5,34 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.field.dao.FieldDAO;
-import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
-import com.cebedo.pmsys.staff.dao.StaffDAO;
-import com.cebedo.pmsys.staff.model.Staff;
-import com.cebedo.pmsys.team.dao.TeamDAO;
-import com.cebedo.pmsys.team.model.Team;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
 	private ProjectDAO projectDAO;
-	private FieldDAO fieldDAO;
-	private StaffDAO staffDAO;
-	private TeamDAO teamDAO;
-
-	public void setFieldDAO(FieldDAO fieldDAO) {
-		this.fieldDAO = fieldDAO;
-	}
-
-	public void setStaffDAO(StaffDAO staffDAO) {
-		this.staffDAO = staffDAO;
-	}
-
-	public void setTeamDAO(TeamDAO teamDAO) {
-		this.teamDAO = teamDAO;
-	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -79,23 +58,4 @@ public class ProjectServiceImpl implements ProjectService {
 	public Project getByIDWithAllCollections(int id) {
 		return this.projectDAO.getByIDWithAllCollections(id);
 	}
-
-	@Override
-	@Transactional
-	public List<Field> listAllFields() {
-		return this.fieldDAO.list();
-	}
-
-	@Override
-	@Transactional
-	public List<Staff> listAllStaff() {
-		return this.staffDAO.list();
-	}
-
-	@Override
-	@Transactional
-	public List<Team> listAllTeams() {
-		return this.teamDAO.list();
-	}
-
 }

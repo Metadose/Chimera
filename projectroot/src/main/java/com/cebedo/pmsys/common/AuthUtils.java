@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.team.model.Team;
 
 public abstract class AuthUtils {
@@ -32,7 +33,7 @@ public abstract class AuthUtils {
 	 * @param stf
 	 * @return
 	 */
-	public static boolean isProjectActionAuthorized(Project proj) {
+	public static boolean isActionAuthorized(Project proj) {
 		AuthenticationToken auth = getAuth();
 
 		// If the auth is a super admin,
@@ -54,27 +55,31 @@ public abstract class AuthUtils {
 	 * @param stf
 	 * @return
 	 */
-	public static boolean isStaffActionAuthorized(Staff stf) {
+	public static boolean isActionAuthorized(Staff stf) {
 		AuthenticationToken auth = getAuth();
-
-		// If the auth is a super admin,
-		// return the user.
 		if (auth.isSuperAdmin()) {
 			return true;
-		}
-		// If not, check if the user has the same company with
-		// the returned user.
-		else if (stf.getCompany().getId() == auth.getCompany().getId()) {
+		} else if (stf.getCompany().getId() == auth.getCompany().getId()) {
 			return true;
 		}
 		return false;
 	}
 
-	public static boolean isTeamActionAuthorized(Team team) {
+	public static boolean isActionAuthorized(Team team) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
 		} else if (team.getCompany().getId() == auth.getCompany().getId()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isActionAuthorized(SystemUser obj) {
+		AuthenticationToken auth = getAuth();
+		if (auth.isSuperAdmin()) {
+			return true;
+		} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
 			return true;
 		}
 		return false;

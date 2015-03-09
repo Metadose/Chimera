@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
+import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
+import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
 @RequestMapping(Project.OBJECT_NAME)
@@ -31,11 +34,32 @@ public class ProjectController {
 	public static final String JSP_EDIT = "projectEdit";
 
 	private ProjectService projectService;
+	private StaffService staffService;
+	private TeamService teamService;
+	private FieldService fieldService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "fieldService")
+	public void setFieldService(FieldService s) {
+		this.fieldService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "teamService")
+	public void setTeamService(TeamService s) {
+		this.teamService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "staffService")
+	public void setStaffService(StaffService s) {
+		this.staffService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "projectService")
-	public void setProjectService(ProjectService ps) {
-		this.projectService = ps;
+	public void setProjectService(ProjectService s) {
+		this.projectService = s;
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
@@ -84,15 +108,15 @@ public class ProjectController {
 		model.addAttribute(ATTR_PROJECT, proj);
 
 		// Get list of fields.
-		List<Field> fieldList = this.projectService.listAllFields();
+		List<Field> fieldList = this.fieldService.list();
 		model.addAttribute(FieldController.ATTR_LIST, fieldList);
 
 		// Get list of staff members for manager assignments.
-		List<Staff> staffList = this.projectService.listAllStaff();
+		List<Staff> staffList = this.staffService.list();
 		model.addAttribute(StaffController.ATTR_LIST, staffList);
 
 		// Get list of teams.
-		List<Team> teamList = this.projectService.listAllTeams();
+		List<Team> teamList = this.teamService.list();
 		model.addAttribute(TeamController.ATTR_LIST, teamList);
 
 		// Add the type of action.

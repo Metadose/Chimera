@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 /**
@@ -36,7 +37,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 	@Override
 	public SystemUser searchDatabase(String username) {
 		// Retrieve all users from the database.
-		List<SystemUser> users = list();
+		List<SystemUser> users = list(null);
 
 		// Search user based on the parameters.
 		for (SystemUser dbUser : users) {
@@ -56,10 +57,11 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SystemUser> list() {
+	public List<SystemUser> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SystemUser> systemUserList = session.createQuery(
-				"FROM " + SystemUser.class.getName()).list();
+		List<SystemUser> systemUserList = QueryUtils
+				.getSelectQueryFilterCompany(session,
+						SystemUser.class.getName(), companyID).list();
 		return systemUserList;
 	}
 
