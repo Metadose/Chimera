@@ -14,9 +14,9 @@ public interface ProjectDAO {
 
 	public void delete(long id);
 
-	public List<Project> list();
+	public List<Project> list(Long companyID);
 
-	public List<Project> listWithAllCollections();
+	public List<Project> listWithAllCollections(Long companyID);
 
 	public Project getByIDWithAllCollections(int id);
 

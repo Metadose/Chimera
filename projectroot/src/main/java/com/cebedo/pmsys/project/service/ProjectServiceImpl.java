@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 
@@ -21,41 +24,69 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public void create(Project project) {
 		this.projectDAO.create(project);
+		AuthenticationToken auth = AuthUtils.getAuth();
+		Company authCompany = auth.getCompany();
+		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+			project.setCompany(authCompany);
+			this.projectDAO.update(project);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void update(Project project) {
-		this.projectDAO.update(project);
+		if (AuthUtils.isActionAuthorized(project)) {
+			this.projectDAO.update(project);
+		}
 	}
 
 	@Override
 	@Transactional
 	public List<Project> list() {
-		return this.projectDAO.list();
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.projectDAO.list(null);
+		}
+		return this.projectDAO.list(token.getCompany().getId());
 	}
 
 	@Override
 	@Transactional
 	public Project getByID(long id) {
-		return this.projectDAO.getByID(id);
+		Project project = this.projectDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(project)) {
+			return project;
+		}
+		return new Project();
 	}
 
 	@Override
 	@Transactional
 	public void delete(int id) {
-		this.projectDAO.delete(id);
+		Project project = this.projectDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(project)) {
+			this.projectDAO.delete(id);
+		}
 	}
 
 	@Override
 	@Transactional
 	public List<Project> listWithAllCollections() {
-		return this.projectDAO.listWithAllCollections();
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.projectDAO.listWithAllCollections(null);
+		}
+		return this.projectDAO.listWithAllCollections(token.getCompany()
+				.getId());
 	}
 
 	@Override
 	@Transactional
 	public Project getByIDWithAllCollections(int id) {
-		return this.projectDAO.getByIDWithAllCollections(id);
+		Project project = this.projectDAO.getByIDWithAllCollections(id);
+		if (AuthUtils.isActionAuthorized(project)) {
+			return project;
+		}
+		return new Project();
 	}
 }

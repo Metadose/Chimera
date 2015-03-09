@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.model.Task;
 
@@ -31,22 +32,18 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Project> list() {
+	public List<Project> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = session.createQuery(
-				"from " + Project.CLASS_NAME).list();
-		for (Project project : projectList) {
-			logger.info("[List] Project: " + project);
-		}
+		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+				session, Project.class.getName(), companyID).list();
 		return projectList;
 	}
 
 	@Override
 	public Project getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session.createQuery(
-				"from " + Project.CLASS_NAME + " where "
-						+ Project.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
+		Project project = (Project) session.load(Project.class.getName(),
+				new Long(id));
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
@@ -69,10 +66,10 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Project> listWithAllCollections() {
+	public List<Project> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = session.createQuery(
-				"from " + Project.CLASS_NAME).list();
+		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+				session, Project.class.getName(), companyID).list();
 		for (Project project : projectList) {
 			Hibernate.initialize(project.getManagerAssignments());
 			Hibernate.initialize(project.getAssignedTeams());
@@ -86,9 +83,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public Project getByIDWithAllCollections(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Project project = (Project) session.createQuery(
-				"from " + Project.CLASS_NAME + " where "
-						+ Project.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
+		Project project = (Project) session.load(Project.class, new Long(id));
 		Hibernate.initialize(project.getManagerAssignments());
 		Hibernate.initialize(project.getAssignedTeams());
 		Hibernate.initialize(project.getAssignedFields());

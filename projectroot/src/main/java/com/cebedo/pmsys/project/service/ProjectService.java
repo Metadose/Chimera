@@ -2,7 +2,6 @@ package com.cebedo.pmsys.project.service;
 
 import java.util.List;
 
-import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.project.model.Project;
 
 public interface ProjectService {
