@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 
 @Repository
@@ -58,10 +59,11 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SystemConfiguration> list() {
+	public List<SystemConfiguration> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SystemConfiguration> systemConfigurationList = session
-				.createQuery("from " + SystemConfiguration.CLASS_NAME).list();
+		List<SystemConfiguration> systemConfigurationList = QueryUtils
+				.getSelectQueryFilterCompany(session,
+						SystemConfiguration.class.getName(), companyID).list();
 		for (SystemConfiguration systemConfiguration : systemConfigurationList) {
 			logger.info("[List] SystemConfiguration: " + systemConfiguration);
 		}
@@ -77,6 +79,17 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 								+ SystemConfiguration.COLUMN_NAME + "='" + name
 								+ "'").uniqueResult();
 		return systemConfiguration.getValue();
+	}
+
+	@Override
+	public SystemConfiguration getByName(String name) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SystemConfiguration systemConfiguration = (SystemConfiguration) session
+				.createQuery(
+						"from " + SystemConfiguration.CLASS_NAME + " where "
+								+ SystemConfiguration.COLUMN_NAME + "='" + name
+								+ "'").uniqueResult();
+		return systemConfiguration;
 	}
 
 }

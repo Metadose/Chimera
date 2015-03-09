@@ -39,6 +39,10 @@ public class Company {
 	private Set<Team> teams;
 	private Set<SystemConfiguration> configs;
 
+	// TODO
+	// Tasks
+	// ProjectFiles
+
 	public Company() {
 		;
 	}

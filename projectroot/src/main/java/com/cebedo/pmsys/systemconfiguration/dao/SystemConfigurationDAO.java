@@ -14,8 +14,10 @@ public interface SystemConfigurationDAO {
 
 	public void delete(long id);
 
-	public List<SystemConfiguration> list();
+	public List<SystemConfiguration> list(Long companyID);
 
 	public String getValueByName(String name);
+
+	public SystemConfiguration getByName(String name);
 
 }
