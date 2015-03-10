@@ -136,7 +136,7 @@ public class Staff implements Serializable {
 		this.companyPosition = companyPosition;
 	}
 
-	@OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".manager")
+	@OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".manager", cascade = CascadeType.REMOVE)
 	public Set<ManagerAssignment> getAssignedManagers() {
 		return assignedManagers;
 	}
@@ -191,7 +191,7 @@ public class Staff implements Serializable {
 		this.teams = teams;
 	}
 
-	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".staff")
+	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".staff", cascade = CascadeType.REMOVE)
 	public Set<StaffFieldAssignment> getFieldAssignments() {
 		return fieldAssignments;
 	}
@@ -201,7 +201,7 @@ public class Staff implements Serializable {
 		this.fieldAssignments = staffFieldAssignments;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;
@@ -211,7 +211,7 @@ public class Staff implements Serializable {
 		this.company = company;
 	}
 
-	@OneToOne(mappedBy = Staff.OBJECT_NAME, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = Staff.OBJECT_NAME)
 	public SystemUser getUser() {
 		return user;
 	}

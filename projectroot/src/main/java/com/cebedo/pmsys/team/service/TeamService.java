@@ -2,6 +2,7 @@ package com.cebedo.pmsys.team.service;
 
 import java.util.List;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.team.model.Team;
 
 public interface TeamService {
@@ -16,6 +17,8 @@ public interface TeamService {
 
 	public List<Team> list();
 
+	public List<Team> list(Long companyID);
+
 	public void assignProjectTeam(long projectID, long teamID);
 
 	public void unassignProjectTeam(long projectID, long teamID);
@@ -27,5 +30,7 @@ public interface TeamService {
 	public void unassignAllMembers(long teamID);
 
 	public void unassignAllTeamsFromProject(long teamID);
+
+	public List<Team> listUnassignedInProject(Long companyID, Project project);
 
 }

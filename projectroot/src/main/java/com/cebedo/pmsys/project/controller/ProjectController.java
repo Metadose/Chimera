@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
@@ -86,6 +87,7 @@ public class ProjectController {
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Project.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id) {
+		// TODO Cleanup also the SYS_HOME.
 		this.projectService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 				+ SystemConstants.REQUEST_LIST;
@@ -105,6 +107,8 @@ public class ProjectController {
 		}
 
 		Project proj = this.projectService.getByIDWithAllCollections(id);
+		Long companyID = AuthUtils.getAuth().isSuperAdmin() ? null : proj
+				.getCompany().getId();
 		model.addAttribute(ATTR_PROJECT, proj);
 
 		// Get list of fields.
@@ -112,11 +116,13 @@ public class ProjectController {
 		model.addAttribute(FieldController.ATTR_LIST, fieldList);
 
 		// Get list of staff members for manager assignments.
-		List<Staff> staffList = this.staffService.list();
+		List<Staff> staffList = this.staffService.listUnassignedInProject(
+				companyID, proj);
 		model.addAttribute(StaffController.ATTR_LIST, staffList);
 
 		// Get list of teams.
-		List<Team> teamList = this.teamService.list();
+		List<Team> teamList = this.teamService.listUnassignedInProject(
+				companyID, proj);
 		model.addAttribute(TeamController.ATTR_LIST, teamList);
 
 		// Add the type of action.

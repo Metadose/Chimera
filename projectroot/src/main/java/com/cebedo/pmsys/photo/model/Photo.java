@@ -3,7 +3,6 @@ package com.cebedo.pmsys.photo.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -132,7 +131,7 @@ public class Photo implements Serializable {
 		this.dateUploaded = dateUploaded;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;

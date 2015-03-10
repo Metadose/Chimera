@@ -2,7 +2,6 @@ package com.cebedo.pmsys.systemconfiguration.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,7 +59,7 @@ public class SystemConfiguration implements Serializable {
 		this.value = value;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;

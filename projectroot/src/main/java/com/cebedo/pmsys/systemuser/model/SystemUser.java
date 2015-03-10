@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.systemuser.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -72,7 +71,7 @@ public class SystemUser {
 		this.access = access;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
 	public Staff getStaff() {
 		return staff;
@@ -100,7 +99,7 @@ public class SystemUser {
 		this.companyAdmin = companyAdmin;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;

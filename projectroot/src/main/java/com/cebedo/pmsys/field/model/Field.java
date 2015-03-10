@@ -3,6 +3,7 @@ package com.cebedo.pmsys.field.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,7 +55,7 @@ public class Field implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".field")
+	@OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)
 	public Set<FieldAssignment> getFieldAssignments() {
 		return fieldAssignments;
 	}
@@ -63,7 +64,7 @@ public class Field implements Serializable {
 		this.fieldAssignments = fieldAssignments;
 	}
 
-	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".field")
+	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)
 	public Set<TaskFieldAssignment> getTasks() {
 		return tasks;
 	}
@@ -72,7 +73,7 @@ public class Field implements Serializable {
 		this.tasks = tasks;
 	}
 
-	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".field")
+	@OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)
 	public Set<StaffFieldAssignment> getStaffFieldAssignments() {
 		return staffFieldAssignments;
 	}

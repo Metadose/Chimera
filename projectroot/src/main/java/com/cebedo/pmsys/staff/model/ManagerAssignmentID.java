@@ -2,7 +2,6 @@ package com.cebedo.pmsys.staff.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
@@ -15,7 +14,7 @@ public class ManagerAssignmentID implements Serializable {
 	private Staff manager;
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Project getProject() {
 		return project;
 	}
@@ -24,7 +23,7 @@ public class ManagerAssignmentID implements Serializable {
 		this.project = project;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Staff getManager() {
 		return manager;
 	}

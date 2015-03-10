@@ -75,7 +75,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 					"Entered username and password are the same!");
 
 		} else {
-
+			// TODO Check if the user's company is expired.
 			logger.debug("User dtails are good and ready to go");
 			return new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user.getAccess()),

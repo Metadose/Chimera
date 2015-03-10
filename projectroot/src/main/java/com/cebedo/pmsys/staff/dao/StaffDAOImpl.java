@@ -81,7 +81,7 @@ public class StaffDAOImpl implements StaffDAO {
 	@Override
 	public void delete(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Staff staff = getByID(id);
+		Staff staff = (Staff) session.load(Staff.class, new Long(id));
 		if (staff != null) {
 			session.delete(staff);
 		}
@@ -197,5 +197,4 @@ public class StaffDAOImpl implements StaffDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(stAssign);
 	}
-
 }

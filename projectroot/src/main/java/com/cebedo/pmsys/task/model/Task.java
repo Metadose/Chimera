@@ -97,7 +97,7 @@ public class Task {
 		this.project = project;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = TaskStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Staff> getStaff() {
 		return staff;
@@ -107,7 +107,7 @@ public class Task {
 		this.staff = staff;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = TaskTeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<Team> getTeams() {
 		return teams;
@@ -126,7 +126,7 @@ public class Task {
 		this.status = status;
 	}
 
-	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".task", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".task", cascade = CascadeType.REMOVE)
 	public Set<TaskFieldAssignment> getFields() {
 		return fields;
 	}
@@ -157,7 +157,7 @@ public class Task {
 		}
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;

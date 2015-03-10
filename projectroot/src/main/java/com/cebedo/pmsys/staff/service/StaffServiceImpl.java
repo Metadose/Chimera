@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.staff.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -186,6 +187,23 @@ public class StaffServiceImpl implements StaffService {
 			return;
 		}
 		this.staffDAO.assignTeam(stAssign);
+	}
+
+	@Override
+	@Transactional
+	public List<Staff> list(Long companyID) {
+		return this.staffDAO.list(companyID);
+	}
+
+	@Override
+	@Transactional
+	public List<Staff> listUnassignedInProject(Long companyID, Project project) {
+		if (AuthUtils.isActionAuthorized(project)) {
+			List<Staff> companyStaffList = this.staffDAO.list(companyID);
+			companyStaffList.removeAll(project.getManagerAssignments());
+			return companyStaffList;
+		}
+		return new ArrayList<Staff>();
 	}
 
 }

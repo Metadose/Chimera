@@ -2,6 +2,7 @@ package com.cebedo.pmsys.staff.service;
 
 import java.util.List;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 
@@ -16,6 +17,8 @@ public interface StaffService {
 	public void delete(long id);
 
 	public List<Staff> list();
+
+	public List<Staff> list(Long companyID);
 
 	public List<Staff> listWithAllCollections();
 
@@ -33,5 +36,7 @@ public interface StaffService {
 	public void unassignAllTeams(long staffID);
 
 	public void assignTeam(StaffTeamAssignment stAssign);
+
+	public List<Staff> listUnassignedInProject(Long companyID, Project project);
 
 }

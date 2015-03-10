@@ -33,4 +33,5 @@ public interface StaffDAO {
 	public void unassignAllTeams(long staffID);
 
 	public void assignTeam(StaffTeamAssignment stAssign);
+
 }

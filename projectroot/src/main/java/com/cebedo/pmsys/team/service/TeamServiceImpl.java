@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.team.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -137,6 +138,23 @@ public class TeamServiceImpl implements TeamService {
 		if (AuthUtils.isActionAuthorized(team)) {
 			this.teamDAO.unassignAllTeamsFromProject(teamID);
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<Team> list(Long companyID) {
+		return this.teamDAO.list(companyID);
+	}
+
+	@Override
+	@Transactional
+	public List<Team> listUnassignedInProject(Long companyID, Project project) {
+		if (AuthUtils.isActionAuthorized(project)) {
+			List<Team> companyTeamList = this.teamDAO.list(companyID);
+			companyTeamList.removeAll(project.getManagerAssignments());
+			return companyTeamList;
+		}
+		return new ArrayList<Team>();
 	}
 
 }

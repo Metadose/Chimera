@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -100,8 +99,7 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = FieldAssignment.PRIMARY_KEY
-			+ ".project", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".project", cascade = CascadeType.REMOVE)
 	public Set<FieldAssignment> getAssignedFields() {
 		return assignedFields;
 	}
@@ -113,8 +111,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Staff with extra columns.
 	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = ManagerAssignment.PRIMARY_KEY
-			+ ".project", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".project", cascade = CascadeType.REMOVE)
 	public Set<ManagerAssignment> getManagerAssignments() {
 		return this.managerAssignments;
 	}
@@ -175,7 +172,7 @@ public class Project implements Serializable {
 		this.notes = notes;
 	}
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<ProjectFile> getFiles() {
 		return files;
 	}
@@ -184,7 +181,7 @@ public class Project implements Serializable {
 		this.files = files;
 	}
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Photo> getPhotos() {
 		return photos;
 	}
@@ -198,7 +195,7 @@ public class Project implements Serializable {
 		return "[Project] " + getId() + " [Name] " + getName();
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;

@@ -2,7 +2,6 @@ package com.cebedo.pmsys.field.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -28,7 +27,7 @@ public class FieldAssignmentID implements Serializable {
 		setField(field2);
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Project getProject() {
 		return project;
 	}
@@ -37,7 +36,7 @@ public class FieldAssignmentID implements Serializable {
 		this.project = project;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Field getField() {
 		return field;
 	}

@@ -2,7 +2,6 @@ package com.cebedo.pmsys.task.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -28,7 +27,7 @@ public class TaskFieldAssignmentID implements Serializable {
 		setField(field2);
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Task getTask() {
 		return task;
 	}
@@ -37,7 +36,7 @@ public class TaskFieldAssignmentID implements Serializable {
 		this.task = task;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	public Field getField() {
 		return field;
 	}
