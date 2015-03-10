@@ -75,9 +75,6 @@ public class SystemConfigurationServiceImpl implements
 	@Transactional
 	public String getValueByName(String name) {
 		SystemConfiguration conf = this.systemConfigurationDAO.getByName(name);
-		if (AuthUtils.isActionAuthorized(conf)) {
-			return conf.getValue();
-		}
-		return "";
+		return conf.getValue();
 	}
 }

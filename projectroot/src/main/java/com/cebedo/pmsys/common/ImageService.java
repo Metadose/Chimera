@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -93,14 +95,31 @@ public class ImageService {
 	public ResponseEntity<byte[]> display(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(PARAM_FILENAME) String fileName) throws IOException {
+		// If not authorized to view this image, return.
+		// TODO Handle this, don't let it crash.
+		Project proj = this.projectService.getByID(projectID);
+		if (!AuthUtils.isActionAuthorized(proj)) {
+			return null;
+		}
 
+		// Otherwise, user proj company, over user company.
+		// If both are not existing, set to zero.
 		String sysHome = this.configService.getValueByName("SYS_HOME");
+		Company projCompany = proj.getCompany();
+		Company userCompany = AuthUtils.getAuth().getCompany();
+		String fileURI = FileUtils.constructSysHomeFileURI(
+				sysHome,
+				projCompany == null ? userCompany == null ? 0 : userCompany
+						.getId() : projCompany.getId(), Project.class
+						.getSimpleName(), projectID, Photo.class
+						.getSimpleName(), fileName);
 
-		InputStream imgStream = new FileInputStream(sysHome
-				+ Project.OBJECT_NAME + "/" + projectID + "/photos/" + fileName);
+		// Convert to bytes.
+		InputStream imgStream = new FileInputStream(fileURI);
 		byte[] imgBytes = IOUtils.toByteArray(imgStream);
 		imgStream.close();
 
+		// Send it back to user.
 		final HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.IMAGE_PNG);
 		return new ResponseEntity<byte[]>(imgBytes, headers, HttpStatus.CREATED);

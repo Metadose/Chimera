@@ -73,13 +73,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 					userStaff == null ? SystemUser.class.getSimpleName()
 							: Staff.class.getSimpleName(),
 					userStaff == null ? auth.getUser().getId() : userStaff
-							.getId(), ProjectFile.class.getName(), file
+							.getId(), ProjectFile.class.getSimpleName(), file
 							.getOriginalFilename());
 		} else {
 			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(), auth
 					.getCompany().getId(), Staff.class.getSimpleName(), auth
-					.getStaff().getId(), ProjectFile.class.getName(), file
-					.getOriginalFilename());
+					.getStaff().getId(), ProjectFile.class.getSimpleName(),
+					file.getOriginalFilename());
 		}
 		// Set the properties.
 		ProjectFile projectFile = new ProjectFile(auth.getStaff(),
@@ -114,7 +114,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
 					projCompany == null ? 0 : projCompany.getId(),
 					Project.class.getSimpleName(), projectID,
-					ProjectFile.class.getName(), file.getOriginalFilename());
+					ProjectFile.class.getSimpleName(),
+					file.getOriginalFilename());
 		} else {
 			// file://SYS_HOME/"company"/[id]/"staff|project|team"/[id]/files/file.getOriginalFilename();
 			// Fetch some details and set.
@@ -123,7 +124,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 					projCompany == null ? auth.getCompany().getId()
 							: projCompany.getId(), Project.class
 							.getSimpleName(), projectID, ProjectFile.class
-							.getName(), file.getOriginalFilename());
+							.getSimpleName(), file.getOriginalFilename());
 		}
 
 		long size = file.getSize();

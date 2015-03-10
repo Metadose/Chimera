@@ -20,7 +20,6 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
-import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -186,33 +185,22 @@ public class PhotoServiceImpl implements PhotoService {
 		String fileLocation = "";
 		if (auth.isSuperAdmin()) {
 			Company userCompany = auth.getCompany();
-			Staff userStaff = auth.getStaff();
-
 			// If the project has no company, use the user's company.
 			// If the user has no company, set it to zero.
 			// If the user has no staff, user the sysuser details.
 			fileLocation = FileUtils.constructSysHomeFileURI(
 					getSysHome(),
 					projCompany == null ? userCompany == null ? 0 : userCompany
-							.getId() : projCompany.getId(),
-					userStaff == null ? SystemUser.class.getSimpleName()
-							: Staff.class.getSimpleName(),
-					userStaff == null ? auth.getUser().getId() : userStaff
-							.getId(), Photo.class.getName(), file
-							.getOriginalFilename());
-
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
-					projCompany == null ? auth.getCompany().getId()
-							: projCompany.getId(), Project.class
-							.getSimpleName(), projectID, Photo.class.getName(),
-					file.getOriginalFilename());
+							.getId() : projCompany.getId(), Project.class
+							.getSimpleName(), projectID, Photo.class
+							.getSimpleName(), file.getOriginalFilename());
 		} else {
 			// If has no company, use the user's company.
 			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
 					projCompany == null ? auth.getCompany().getId()
 							: projCompany.getId(), Project.class
-							.getSimpleName(), projectID, Photo.class.getName(),
-					file.getOriginalFilename());
+							.getSimpleName(), projectID, Photo.class
+							.getSimpleName(), file.getOriginalFilename());
 		}
 
 		// Fetch some details and set.
