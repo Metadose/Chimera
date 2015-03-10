@@ -3,7 +3,6 @@ package com.cebedo.pmsys.projectfile.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +23,6 @@ import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
-import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
@@ -125,29 +123,9 @@ public class ProjectFileController {
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
 			throws IOException {
-
 		// If file is not empty.
 		if (!file.isEmpty()) {
-
-			// Upload the file to the server.
-			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
-					+ "/" + projectID + "/files/" + file.getOriginalFilename();
-
-			// Fetch some details and set.
-			long size = file.getSize();
-			Date dateUploaded = new Date(System.currentTimeMillis());
-			ProjectFile projectFile = new ProjectFile();
-
-			// TODO Uploader.
-			projectFile.setUploader(new Staff(1));
-
-			projectFile.setLocation(fileLocation);
-			projectFile.setProject(new Project(projectID));
-			projectFile.setName(file.getOriginalFilename());
-			projectFile.setDescription(description);
-			projectFile.setSize(size);
-			projectFile.setDateUploaded(dateUploaded);
-			this.projectFileService.create(projectFile, file, fileLocation);
+			this.projectFileService.create(file, projectID, description);
 		} else {
 			// TODO Handle this scenario.
 		}
@@ -211,30 +189,7 @@ public class ProjectFileController {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
-
-			// Upload the file to the server.
-			// If no project id present, upload it to staff folder.
-			// TODO
-			// String fileLocation = getSysHome() + Staff.OBJECT_NAME +
-			// "/"
-			// + staffID + "/files/" + file.getOriginalFilename();
-			String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME + "/"
-					+ 1 + "/files/" + file.getOriginalFilename();
-
-			// Fetch some details and set.
-			long size = file.getSize();
-			Date dateUploaded = new Date(System.currentTimeMillis());
-			ProjectFile projectFile = new ProjectFile();
-
-			// TODO Location and Uploader.
-			projectFile.setLocation("C:/");
-			projectFile.setUploader(new Staff(1));
-
-			projectFile.setName(file.getOriginalFilename());
-			projectFile.setDescription(description);
-			projectFile.setSize(size);
-			projectFile.setDateUploaded(dateUploaded);
-			this.projectFileService.create(projectFile, file, fileLocation);
+			this.projectFileService.createForStaff(file, description);
 		} else {
 			// TODO Handle this scenario.
 		}

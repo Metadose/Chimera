@@ -80,7 +80,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			return new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user.getAccess()),
 					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
-					user.isCompanyAdmin());
+					user.isCompanyAdmin(), user);
 		}
 	}
 

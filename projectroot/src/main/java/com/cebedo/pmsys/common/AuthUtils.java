@@ -4,6 +4,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
@@ -98,6 +99,16 @@ public abstract class AuthUtils {
 	}
 
 	public static boolean isActionAuthorized(Task obj) {
+		AuthenticationToken auth = getAuth();
+		if (auth.isSuperAdmin()) {
+			return true;
+		} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isActionAuthorized(ProjectFile obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;

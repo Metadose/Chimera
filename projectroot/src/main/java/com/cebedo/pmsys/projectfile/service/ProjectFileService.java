@@ -10,8 +10,11 @@ import com.cebedo.pmsys.projectfile.model.ProjectFile;
 
 public interface ProjectFileService {
 
-	public void create(ProjectFile projectFile, MultipartFile file,
-			String fileLocation) throws IOException;
+	public void create(MultipartFile file, long projectID, String description)
+			throws IOException;
+
+	public void createForStaff(MultipartFile file, String description)
+			throws IOException;
 
 	public ProjectFile getByID(long id);
 

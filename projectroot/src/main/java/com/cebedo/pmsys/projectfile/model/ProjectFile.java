@@ -3,6 +3,7 @@ package com.cebedo.pmsys.projectfile.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 
@@ -38,6 +40,32 @@ public class ProjectFile implements Serializable {
 	private long size;
 	private String location;
 	private Project project;
+	private Company company;
+
+	public ProjectFile() {
+		;
+	}
+
+	public ProjectFile(Staff staff, String fileLocation, Project proj,
+			String originalFilename, String descript, long size, Date uploaded) {
+		this.setUploader(staff);
+		this.setLocation(fileLocation);
+		this.setProject(proj);
+		this.setName(originalFilename);
+		this.setDescription(descript);
+		this.setSize(size);
+		this.setDateUploaded(uploaded);
+	}
+
+	public ProjectFile(Staff staff, String fileLocation,
+			String originalFilename, String descript, long size, Date uploaded) {
+		this.setUploader(staff);
+		this.setLocation(fileLocation);
+		this.setName(originalFilename);
+		this.setDescription(descript);
+		this.setSize(size);
+		this.setDateUploaded(uploaded);
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,4 +144,13 @@ public class ProjectFile implements Serializable {
 		this.dateUploaded = dateUploaded;
 	}
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 }

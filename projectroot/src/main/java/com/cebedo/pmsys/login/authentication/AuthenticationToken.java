@@ -8,6 +8,7 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public class AuthenticationToken extends AbstractAuthenticationToken {
 
@@ -18,6 +19,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 
 	private final Object principal;
 	private Object credentials;
+	private SystemUser user;
 	private Staff staff;
 	private Company company;
 	private boolean superAdmin;
@@ -61,7 +63,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 	public AuthenticationToken(String name, Object cred,
 			Collection<GrantedAuthority> authorities, Staff staffMember,
 			Company com, boolean superAdministrator,
-			boolean companyAdministrator) {
+			boolean companyAdministrator, SystemUser user) {
 		super(authorities);
 		this.principal = name;
 		this.credentials = cred;
@@ -71,6 +73,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 		setCompany(com);
 		setSuperAdmin(superAdministrator);
 		setCompanyAdmin(companyAdministrator);
+		setUser(user);
 	}
 
 	// ~ Methods
@@ -138,5 +141,13 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 
 	public static void setToken(AuthenticationToken token) {
 		AuthenticationToken.token = token;
+	}
+
+	public SystemUser getUser() {
+		return user;
+	}
+
+	public void setUser(SystemUser user) {
+		this.user = user;
 	}
 }

@@ -123,6 +123,7 @@
     </beans:bean>
     <beans:bean id="projectFileService" class="com.cebedo.pmsys.projectfile.service.ProjectFileServiceImpl">
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
+        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAOImpl">

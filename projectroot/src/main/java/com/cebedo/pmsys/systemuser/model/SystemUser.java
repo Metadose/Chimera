@@ -72,7 +72,8 @@ public class SystemUser {
 		this.access = access;
 	}
 
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
 	public Staff getStaff() {
 		return staff;
 	}
