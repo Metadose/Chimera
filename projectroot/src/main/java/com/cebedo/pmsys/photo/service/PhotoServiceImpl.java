@@ -1,21 +1,26 @@
 package com.cebedo.pmsys.photo.service;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.FileUtils;
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.photo.dao.PhotoDAO;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -23,6 +28,13 @@ public class PhotoServiceImpl implements PhotoService {
 	private PhotoDAO photoDAO;
 	private ProjectDAO projectDAO;
 	private StaffDAO staffDAO;
+	private SystemConfigurationDAO systemConfigurationDAO;
+	private String sysHome;
+
+	public void setSystemConfigurationDAO(
+			SystemConfigurationDAO systemConfigurationDAO) {
+		this.systemConfigurationDAO = systemConfigurationDAO;
+	}
 
 	public void setStaffDAO(StaffDAO staffDAO) {
 		this.staffDAO = staffDAO;
@@ -36,59 +48,130 @@ public class PhotoServiceImpl implements PhotoService {
 		this.photoDAO = photoDAO;
 	}
 
+	private String getSysHome() {
+		if (sysHome == null) {
+			sysHome = this.systemConfigurationDAO.getValueByName("SYS_HOME");
+		}
+		return sysHome;
+	}
+
 	@Override
 	@Transactional
 	public void deleteProjectProfile(long projectID) {
 		Project proj = this.projectDAO.getByID(projectID);
+		if (AuthUtils.isActionAuthorized(proj)) {
+			// Delete the physical file.
+			String path = proj.getThumbnailURL();
+			File file = new File(path);
+			file.delete();
 
-		// Delete the physical file.
-		String path = proj.getThumbnailURL();
-		File file = new File(path);
-		file.delete();
-
-		// Null the record.
-		proj.setThumbnailURL(null);
-		this.projectDAO.update(proj);
+			// Null the record.
+			proj.setThumbnailURL(null);
+			this.projectDAO.update(proj);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void uploadStaffProfile(MultipartFile file, String fileLocation,
 			long staffID) throws IOException {
+		// TODO
 		Staff staff = this.staffDAO.getByID(staffID);
 		staff.setThumbnailURL(fileLocation);
-		fileUpload(file, fileLocation);
+		FileUtils.fileUpload(file, fileLocation);
 		this.staffDAO.update(staff);
 	}
 
+	/**
+	 * Upload a profile picture for the project.
+	 */
 	@Override
 	@Transactional
 	public void uploadProjectProfile(MultipartFile file, String fileLocation,
 			long projectID) throws IOException {
+		// TODO
 		Project proj = this.projectDAO.getByID(projectID);
 		proj.setThumbnailURL(fileLocation);
-		fileUpload(file, fileLocation);
+		FileUtils.fileUpload(file, fileLocation);
 		this.projectDAO.update(proj);
 	}
 
+	/**
+	 * Insert a photo to the project.
+	 */
 	@Override
 	@Transactional
-	public void create(MultipartFile file, String fileLocation, Photo photo)
+	public void create(MultipartFile file, long projectID, String description)
 			throws IOException {
-		fileUpload(file, fileLocation);
+		// If not authorized, return.
+		Project proj = this.projectDAO.getByID(projectID);
+		if (!AuthUtils.isActionAuthorized(proj)) {
+			return;
+		}
+
+		AuthenticationToken auth = AuthUtils.getAuth();
+		Company projCompany = proj.getCompany();
+
+		// Construct the photo URI.
+		String fileLocation = "";
+		if (auth.isSuperAdmin()) {
+			Company userCompany = auth.getCompany();
+			Staff userStaff = auth.getStaff();
+
+			// If the project has no company, use the user's company.
+			// If the user has no company, set it to zero.
+			// If the user has no staff, user the sysuser details.
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					projCompany == null ? userCompany == null ? 0 : userCompany
+							.getId() : projCompany.getId(),
+					userStaff == null ? SystemUser.class.getSimpleName()
+							: Staff.class.getSimpleName(),
+					userStaff == null ? auth.getUser().getId() : userStaff
+							.getId(), Photo.class.getName(), file
+							.getOriginalFilename());
+
+			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
+					projCompany == null ? auth.getCompany().getId()
+							: projCompany.getId(), Project.class
+							.getSimpleName(), projectID, Photo.class.getName(),
+					file.getOriginalFilename());
+		} else {
+			// If has no company, use the user's company.
+			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
+					projCompany == null ? auth.getCompany().getId()
+							: projCompany.getId(), Project.class
+							.getSimpleName(), projectID, Photo.class.getName(),
+					file.getOriginalFilename());
+		}
+
+		// Fetch some details and set.
+		long size = file.getSize();
+		Date dateUploaded = new Date(System.currentTimeMillis());
+		Photo photo = new Photo(auth.getStaff(), fileLocation, proj,
+				file.getOriginalFilename(), description, size, dateUploaded);
+
+		// Do the actual upload.
+		FileUtils.fileUpload(file, fileLocation);
 		this.photoDAO.create(photo);
 	}
 
 	@Override
 	@Transactional
 	public Photo getByID(long id) {
-		return this.photoDAO.getByID(id);
+		Photo photo = this.photoDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(photo)) {
+			return photo;
+		}
+		return new Photo();
 	}
 
 	@Override
 	@Transactional
 	public void update(Photo photo) {
-		this.photoDAO.update(photo);
+		if (AuthUtils.isActionAuthorized(photo)) {
+			this.photoDAO.update(photo);
+		}
 	}
 
 	/**
@@ -98,49 +181,17 @@ public class PhotoServiceImpl implements PhotoService {
 	@Transactional
 	public void delete(long id) {
 		Photo photo = this.photoDAO.getByID(id);
-		File photoFile = new File(photo.getLocation());
-		photoFile.delete();
-		this.photoDAO.delete(id);
+		if (AuthUtils.isActionAuthorized(photo)) {
+			File photoFile = new File(photo.getLocation());
+			photoFile.delete();
+			this.photoDAO.delete(id);
+		}
 	}
 
 	@Override
 	@Transactional
 	public List<Photo> list() {
+		// TODO
 		return this.photoDAO.list();
 	}
-
-	/**
-	 * Upload a file.
-	 * 
-	 * @param file
-	 * @param id
-	 * @param objectName
-	 * @throws IOException
-	 */
-	private void fileUpload(MultipartFile file, String fileLocation)
-			throws IOException {
-		// Prelims.
-		byte[] bytes = file.getBytes();
-		checkDirectoryExistence(fileLocation);
-
-		// Upload file.
-		BufferedOutputStream stream = new BufferedOutputStream(
-				new FileOutputStream(new File(fileLocation)));
-		stream.write(bytes);
-		stream.close();
-	}
-
-	/**
-	 * Helper function to create non-existing folders.
-	 * 
-	 * @param fileLocation
-	 */
-	private void checkDirectoryExistence(String fileLocation) {
-		File file = new File(fileLocation);
-		File parent = file.getParentFile();
-		if (!parent.exists()) {
-			parent.mkdirs();
-		}
-	}
-
 }

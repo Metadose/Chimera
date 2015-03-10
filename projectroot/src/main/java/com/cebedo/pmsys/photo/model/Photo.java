@@ -3,6 +3,7 @@ package com.cebedo.pmsys.photo.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 
@@ -36,6 +38,22 @@ public class Photo implements Serializable {
 	private long size;
 	private String location;
 	private Project project;
+	private Company company;
+
+	public Photo() {
+		;
+	}
+
+	public Photo(Staff staff, String fileLocation, Project proj,
+			String originalFilename, String descript, long size, Date uploaded) {
+		this.setUploader(staff);
+		this.setLocation(fileLocation);
+		this.setProject(proj);
+		this.setName(originalFilename);
+		this.setDescription(descript);
+		this.setSize(size);
+		this.setDateUploaded(uploaded);
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,6 +130,16 @@ public class Photo implements Serializable {
 
 	public void setDateUploaded(Date dateUploaded) {
 		this.dateUploaded = dateUploaded;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }

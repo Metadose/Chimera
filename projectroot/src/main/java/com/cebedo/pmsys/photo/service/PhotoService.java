@@ -9,7 +9,7 @@ import com.cebedo.pmsys.photo.model.Photo;
 
 public interface PhotoService {
 
-	public void create(MultipartFile file, String fileLocation, Photo photo)
+	public void create(MultipartFile file, long projectID, String description)
 			throws IOException;
 
 	public Photo getByID(long id);

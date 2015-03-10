@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.photo.controller;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -130,26 +129,7 @@ public class PhotoController {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
-
-			// Upload the file to the server.
-			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
-					+ "/" + projectID + "/photos/" + file.getOriginalFilename();
-
-			// Fetch some details and set.
-			long size = file.getSize();
-			Date dateUploaded = new Date(System.currentTimeMillis());
-			Photo photo = new Photo();
-
-			// TODO Uploader.
-			photo.setUploader(new Staff(1));
-
-			photo.setLocation(fileLocation);
-			photo.setProject(new Project(projectID));
-			photo.setName(file.getOriginalFilename());
-			photo.setDescription(description);
-			photo.setSize(size);
-			photo.setDateUploaded(dateUploaded);
-			this.photoService.create(file, fileLocation, photo);
+			this.photoService.create(file, projectID, description);
 		} else {
 			// TODO Handle this scenario.
 		}

@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.company.model.Company;
+
 public abstract class FileUtils {
 
 	/**
@@ -50,11 +52,14 @@ public abstract class FileUtils {
 	}
 
 	public static String constructSysHomeFileURI(String sysHome,
-			long companyID, String className, long objID, String fileName) {
+			long companyID, String className, long objID, String moduleName,
+			String fileName) {
+		String companyClass = Company.class.getSimpleName().toLowerCase();
+
 		String fileLocation = sysHome;
-		fileLocation += "/company/" + companyID;
+		fileLocation += "/" + companyClass + "/" + companyID;
 		fileLocation += "/" + className.toLowerCase() + "/" + objID;
-		fileLocation += "/files/" + fileName;
+		fileLocation += "/" + moduleName.toLowerCase() + "/" + fileName;
 		return fileLocation;
 	}
 

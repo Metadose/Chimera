@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -42,9 +43,7 @@ public class Company {
 	private Set<SystemConfiguration> configs;
 	private Set<Task> tasks;
 	private Set<ProjectFile> files;
-
-	// TODO
-	// Photos
+	private Set<Photo> photos;
 
 	public Company() {
 		;
@@ -164,5 +163,14 @@ public class Company {
 
 	public void setFiles(Set<ProjectFile> files) {
 		this.files = files;
+	}
+
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+	public Set<Photo> getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(Set<Photo> photos) {
+		this.photos = photos;
 	}
 }

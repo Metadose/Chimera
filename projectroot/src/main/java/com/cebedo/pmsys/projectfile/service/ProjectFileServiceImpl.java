@@ -13,6 +13,7 @@ import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.common.FileUtils;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.dao.ProjectFileDAO;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -24,8 +25,13 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 public class ProjectFileServiceImpl implements ProjectFileService {
 
 	private ProjectFileDAO projectFileDAO;
+	private ProjectDAO projectDAO;
 	private SystemConfigurationDAO systemConfigurationDAO;
 	private String sysHome;
+
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
 
 	public void setProjectFileDAO(ProjectFileDAO projectFileDAO) {
 		this.projectFileDAO = projectFileDAO;
@@ -56,14 +62,24 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		long size = file.getSize();
 		Date dateUploaded = new Date(System.currentTimeMillis());
 
+		// If user is super admin, and has company? and has staff?
+		// If user is not super admin, has company, has a staff.
 		if (auth.isSuperAdmin()) {
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(), 0,
-					SystemUser.class.getSimpleName(), auth.getUser().getId(),
-					file.getOriginalFilename());
+			Company userCompany = auth.getCompany();
+			Staff userStaff = auth.getStaff();
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					userCompany == null ? 0 : userCompany.getId(),
+					userStaff == null ? SystemUser.class.getSimpleName()
+							: Staff.class.getSimpleName(),
+					userStaff == null ? auth.getUser().getId() : userStaff
+							.getId(), ProjectFile.class.getName(), file
+							.getOriginalFilename());
 		} else {
 			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(), auth
 					.getCompany().getId(), Staff.class.getSimpleName(), auth
-					.getStaff().getId(), file.getOriginalFilename());
+					.getStaff().getId(), ProjectFile.class.getName(), file
+					.getOriginalFilename());
 		}
 		// Set the properties.
 		ProjectFile projectFile = new ProjectFile(auth.getStaff(),
@@ -87,13 +103,29 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	public void create(MultipartFile file, long projectID, String description)
 			throws IOException {
 		AuthenticationToken auth = AuthUtils.getAuth();
+		Project proj = this.projectDAO.getByID(projectID);
+		Company projCompany = proj.getCompany();
 
-		// Upload the file to the server.
-		// file://SYS_HOME/"company"/[id]/"staff|project|team"/[id]/files/file.getOriginalFilename();
-		// Fetch some details and set.
-		String fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
-				auth.getCompany().getId(), Project.class.getSimpleName(),
-				projectID, file.getOriginalFilename());
+		// If user is super admin, has company? and has project.
+		// Get the company from the project.
+		// If user is not super admin, has company, and has project.
+		String fileLocation = "";
+		if (auth.isSuperAdmin()) {
+			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
+					projCompany == null ? 0 : projCompany.getId(),
+					Project.class.getSimpleName(), projectID,
+					ProjectFile.class.getName(), file.getOriginalFilename());
+		} else {
+			// file://SYS_HOME/"company"/[id]/"staff|project|team"/[id]/files/file.getOriginalFilename();
+			// Fetch some details and set.
+			// If project's company is not defined, use the user's company.
+			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
+					projCompany == null ? auth.getCompany().getId()
+							: projCompany.getId(), Project.class
+							.getSimpleName(), projectID, ProjectFile.class
+							.getName(), file.getOriginalFilename());
+		}
+
 		long size = file.getSize();
 		Date dateUploaded = new Date(System.currentTimeMillis());
 

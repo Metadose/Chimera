@@ -123,6 +123,7 @@
     </beans:bean>
     <beans:bean id="projectFileService" class="com.cebedo.pmsys.projectfile.service.ProjectFileServiceImpl">
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
+        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
@@ -154,6 +155,7 @@
         <beans:property name="photoDAO" ref="photoDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     <context:component-scan base-package="com.cebedo.pmsys" />

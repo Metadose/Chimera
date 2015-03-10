@@ -31,9 +31,7 @@ public class PhotoDAOImpl implements PhotoDAO {
 	@Override
 	public Photo getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Photo photo = (Photo) session.createQuery(
-				"from " + Photo.CLASS_NAME + " where "
-						+ Photo.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
+		Photo photo = (Photo) session.load(Photo.class.getName(), new Long(id));
 		logger.info("[Get by ID] Photo: " + photo);
 		return photo;
 	}
