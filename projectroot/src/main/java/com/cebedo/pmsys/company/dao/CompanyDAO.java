@@ -14,6 +14,6 @@ public interface CompanyDAO {
 
 	public void delete(long id);
 
-	public List<Company> list();
+	public List<Company> list(Long companyID);
 
 }

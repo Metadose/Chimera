@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -46,9 +47,10 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	@Transactional
 	public List<Company> list() {
-		if (!AuthUtils.getAuth().isSuperAdmin()) {
-			return new ArrayList<Company>();
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.companyDAO.list(null);
 		}
-		return this.companyDAO.list();
+		return new ArrayList<Company>();
 	}
 }

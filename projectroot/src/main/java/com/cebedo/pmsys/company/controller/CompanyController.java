@@ -41,6 +41,8 @@ public class CompanyController {
 
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_COMPANY) Company company) {
+		// TODO This has a bug.
+		// Fix your client-side JSP forms to handle dates.
 		if (company.getId() == 0) {
 			this.companyService.create(company);
 		} else {
