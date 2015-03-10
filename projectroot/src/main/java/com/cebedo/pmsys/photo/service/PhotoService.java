@@ -20,11 +20,11 @@ public interface PhotoService {
 
 	public List<Photo> list();
 
-	public void uploadProjectProfile(MultipartFile file, String fileLocation,
-			long projectID) throws IOException;
+	public void uploadProjectProfile(MultipartFile file, long projectID)
+			throws IOException;
 
-	public void uploadStaffProfile(MultipartFile file, String fileLocation,
-			long staffID) throws IOException;
+	public void uploadStaffProfile(MultipartFile file, long staffID)
+			throws IOException;
 
 	public void deleteProjectProfile(long projectID);
 

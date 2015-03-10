@@ -73,10 +73,44 @@ public class PhotoServiceImpl implements PhotoService {
 
 	@Override
 	@Transactional
-	public void uploadStaffProfile(MultipartFile file, String fileLocation,
-			long staffID) throws IOException {
-		// TODO
+	public void uploadStaffProfile(MultipartFile file, long staffID)
+			throws IOException {
+		// If not authorized, return.
 		Staff staff = this.staffDAO.getByID(staffID);
+		if (!AuthUtils.isActionAuthorized(staff)) {
+			return;
+		}
+		AuthenticationToken auth = AuthUtils.getAuth();
+		Company staffCompany = staff.getCompany();
+
+		String fileLocation = "";
+		if (auth.isSuperAdmin()) {
+			// If the staff company is null, get it from the user.
+			// If the user has no company, set it to zero.
+			Company userCompany = auth.getCompany();
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					staffCompany == null ? userCompany == null ? 0
+							: userCompany.getId() : staffCompany.getId(),
+					Staff.class.getSimpleName(),
+					staffID,
+					Staff.SUB_MODULE_PROFILE + "/"
+							+ Photo.class.getSimpleName(), file
+							.getOriginalFilename());
+		} else {
+			// If the staff company is null, get it from the user.
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					staffCompany == null ? auth.getCompany().getId()
+							: staffCompany.getId(),
+					Staff.class.getSimpleName(),
+					staffID,
+					Staff.SUB_MODULE_PROFILE + "/"
+							+ Photo.class.getSimpleName(), file
+							.getOriginalFilename());
+		}
+
+		// Update the staff obj with the new profile pic.
 		staff.setThumbnailURL(fileLocation);
 		FileUtils.fileUpload(file, fileLocation);
 		this.staffDAO.update(staff);
@@ -87,10 +121,46 @@ public class PhotoServiceImpl implements PhotoService {
 	 */
 	@Override
 	@Transactional
-	public void uploadProjectProfile(MultipartFile file, String fileLocation,
-			long projectID) throws IOException {
-		// TODO
+	public void uploadProjectProfile(MultipartFile file, long projectID)
+			throws IOException {
+		// If the user is not authorized in this project,
+		// return.
 		Project proj = this.projectDAO.getByID(projectID);
+		if (!AuthUtils.isActionAuthorized(proj)) {
+			return;
+		}
+		Company projCompany = proj.getCompany();
+		AuthenticationToken auth = AuthUtils.getAuth();
+
+		String fileLocation = "";
+		if (auth.isSuperAdmin()) {
+			// If the project company is null, get it from the user.
+			// If the user has no company, set it to zero.
+			Company userCompany = auth.getCompany();
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					projCompany == null ? userCompany == null ? 0 : userCompany
+							.getId() : projCompany.getId(),
+					Project.class.getSimpleName(),
+					projectID,
+					Project.SUB_MODULE_PROFILE + "/"
+							+ Photo.class.getSimpleName(), file
+							.getOriginalFilename());
+		} else {
+			// If the project company is null, get it from the user.
+			fileLocation = FileUtils.constructSysHomeFileURI(
+					getSysHome(),
+					projCompany == null ? auth.getCompany().getId()
+							: projCompany.getId(),
+					Project.class.getSimpleName(),
+					projectID,
+					Project.SUB_MODULE_PROFILE + "/"
+							+ Photo.class.getSimpleName(), file
+							.getOriginalFilename());
+		}
+
+		// Upload and
+		// Update the project entry.
 		proj.setThumbnailURL(fileLocation);
 		FileUtils.fileUpload(file, fileLocation);
 		this.projectDAO.update(proj);

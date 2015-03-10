@@ -35,6 +35,8 @@ public class Project implements Serializable {
 	public static final String TABLE_NAME = "projects";
 	public static final String COLUMN_PRIMARY_KEY = "project_id";
 
+	public static final String SUB_MODULE_PROFILE = "profile";
+
 	private static final long serialVersionUID = 1L;
 
 	private long id;

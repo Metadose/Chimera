@@ -32,6 +32,8 @@ public class Staff implements Serializable {
 	public static final String TABLE_NAME = "staff";
 	public static final String COLUMN_PRIMARY_KEY = "staff_id";
 
+	public static final String SUB_MODULE_PROFILE = "profile";
+
 	private static final long serialVersionUID = 1L;
 
 	private long id;

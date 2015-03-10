@@ -80,13 +80,7 @@ public class PhotoController {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
-
-			// Upload the file to the server.
-			String fileLocation = getSysHome() + "/" + Staff.OBJECT_NAME + "/"
-					+ staffID + "/profile/photo/" + file.getOriginalFilename();
-
-			// Fetch some details and set.
-			this.photoService.uploadStaffProfile(file, fileLocation, staffID);
+			this.photoService.uploadStaffProfile(file, staffID);
 		} else {
 			// TODO Handle this scenario.
 		}
@@ -103,15 +97,7 @@ public class PhotoController {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
-
-			// Upload the file to the server.
-			String fileLocation = getSysHome() + "/" + Project.OBJECT_NAME
-					+ "/" + projectID + "/profile/photo/"
-					+ file.getOriginalFilename();
-
-			// Fetch some details and set.
-			this.photoService.uploadProjectProfile(file, fileLocation,
-					projectID);
+			this.photoService.uploadProjectProfile(file, projectID);
 		} else {
 			// TODO Handle this scenario.
 		}
