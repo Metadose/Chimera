@@ -719,7 +719,7 @@
 		                                    </h3>
 		                                </div><!-- /.box-header -->
 		                                <div class="box-body table-responsive">
-		                                    <table id="managers-table" class="table table-striped">
+		                                    <table id="managers-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
@@ -825,7 +825,7 @@
 		                                    </h3>
 		                                </div><!-- /.box-header -->
 		                                <div class="box-body table-responsive">
-		                                    <table id="teams-table" class="table table-striped">
+		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
