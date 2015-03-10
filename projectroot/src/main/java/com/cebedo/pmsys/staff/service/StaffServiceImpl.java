@@ -15,6 +15,7 @@ import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
+import com.cebedo.pmsys.staff.model.StaffWrapper;
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
 
@@ -200,8 +201,12 @@ public class StaffServiceImpl implements StaffService {
 	public List<Staff> listUnassignedInProject(Long companyID, Project project) {
 		if (AuthUtils.isActionAuthorized(project)) {
 			List<Staff> companyStaffList = this.staffDAO.list(companyID);
-			companyStaffList.removeAll(project.getManagerAssignments());
-			return companyStaffList;
+			List<StaffWrapper> wrappedStaffList = StaffWrapper
+					.wrap(companyStaffList);
+			List<StaffWrapper> assignedStaffList = StaffWrapper.wrap(project
+					.getManagerAssignments());
+			wrappedStaffList.removeAll(assignedStaffList);
+			return StaffWrapper.unwrap(wrappedStaffList);
 		}
 		return new ArrayList<Staff>();
 	}

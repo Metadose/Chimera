@@ -862,7 +862,7 @@
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Members&nbsp;
+		                                	<h3 class="box-title">Staff&nbsp;
 		                                    <table>
 		                                    	<tr>
 		                                    		<td>
@@ -873,7 +873,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
-		                                    		<form method="post" action="${contextPath}/staff/assign/team">
+		                                    		<form role="form" method="post" action="${contextPath}/staff/assign/project">
 		                                    		<td>
 		                                    			<select class="form-control" name="staff_id">
 		                                    				<c:choose>
@@ -890,9 +890,13 @@
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-<!-- 		                                    			<input type="hidden" name="origin" value="team"/> -->
-<%-- 		                                    			<input type="hidden" name="originID" value="${team.id}"/> --%>
-<%-- 		                                    			<input type="hidden" name="team_id" value="${team.id}"/> --%>
+		                                    			<input type="text" class="form-control" name="project_position"/>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
@@ -900,10 +904,10 @@
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/team/unassign/staff/all">
-<%-- 														<input type="hidden" name="team_id" value="${team.id}"/> --%>
-														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-														</form>
+		                                    			<form method="post" action="${contextPath}/staff/unassign/project/all">
+                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+               											</form>
 		                                    		</td>
 		                                    	</tr>
 		                                    </table>
@@ -929,15 +933,15 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-																	<a href="${contextPath}/staff/edit/${manager.id}">
-																		<button class="btn btn-default btn-flat btn-sm">View</button>
-																	</a>
-																	<form method="post" action="${contextPath}/staff/unassign/team">
-																		<input type="hidden" name="staff_id" value="${manager.id}"/>
-																		<input type="hidden" name="team_id" value="${team.id}"/>
-																		<input type="hidden" name="origin" value="team"/>
+	                   												<form action="${contextPath}/staff/edit/${manager.id}" method="post">
+	                   													<input type="hidden" name="staff_id" value="${manager.id}"/>
+	                   													<button class="btn btn-default btn-flat btn-sm">View</button>
+	                   												</form>
+																	<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
+																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+																		<input type="hidden" id="staff_id" name="staff_id" value="${manager.id}"/>
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-																	</form>
+	                   												</form>
 																</center>
 															</td>
 			                                                <td>
