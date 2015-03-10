@@ -258,201 +258,6 @@
               						</div>
               						<c:choose>
                    					<c:when test="${project.id != 0}">
-              						<h2 class="page-header">Staff</h2>
-              						<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Managers</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<table>
-                   										<c:set value="${project.managerAssignments}" var="managerAssignments"/>
-                   										<c:forEach items="${managerAssignments}" var="managerAssignment">
-	                                                		<c:set var="staff" value="${managerAssignment.manager}"/>
-	                                                		<c:set var="manName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-		                                                	<tr>
-	                   											<td>
-	                   												<div class="user-panel">
-															            <div class="pull-left image">
-															                <c:choose>
-				                                                			<c:when test="${!empty staff.thumbnailURL}">
-				                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
-				                                                			</c:when>
-				                                                			<c:when test="${empty staff.thumbnailURL}">
-				                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
-				                                                			</c:when>
-					                                                		</c:choose>
-															            </div>
-															            <div class="pull-left info">
-															                <p>${manName}</p>
-															                <h6>${managerAssignment.projectPosition}</h6>
-															                <h6>${staff.companyPosition}</h6>
-															                <h6>${staff.email}</h6>
-															                <h6>${staff.contactNumber}</h6>
-															            </div>
-															        </div>
-	                   											</td>
-	                   											<td style="padding-right: 5px">
-	                   												&nbsp;
-	                   											</td>
-	                   											<td>
-	                   												<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
-																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-																		<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-																		<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-	                   												</form>
-	                   												<form action="${contextPath}/staff/edit/from/project" method="post">
-	                   													<input type="hidden" name="staff_id" value="${staff.id}"/>
-	                   													<input type="hidden" name="project_id" value="${project.id}"/>
-	                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Staff</button>
-	                   												</form>
-	                   											</td>
-	                   										</tr>
-	                                                	</c:forEach>
-                   									</table>
-                   									<c:choose>
-                   										<c:when test="${!empty managerAssignments}">
-                   											<form name="unassignAllStaffForm" id="unassignAllStaffForm" method="post" action="${contextPath}/staff/unassign/project/all">
-                   												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-                   												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-                   											</form>
-                   										</c:when>
-                   										<c:when test="${empty managerAssignments}">
-                   											<h5>No manager assigned.</h5>
-                   										</c:when>
-                   									</c:choose>
-													<br/>
-													<br/>
-													<h4>Assign Managers&nbsp;
-													<a href="${contextPath}/staff/edit/from/project/?0">
-				              							<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Staff</button>
-				              						</a>
-													</h4>
-													<form role="form" name="staffForm" id="staffForm" method="post" action="${contextPath}/staff/assign/project">
-														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-														<table>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Staff </label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<select class="form-control" id="staff_id" name="staff_id">
-																		<c:if test="${!empty staffList}">
-																			<c:forEach items="${staffList}" var="staff">
-																				<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-																				<option value="${staff.id}">${staffName}</option>
-																			</c:forEach>
-																		</c:if>
-						                                            </select>
-																</td>
-															</tr>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Project Position</label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<input type="text" id="project_position" name="project_position" class="form-control" placeholder="Example: Project Manager, Foreman, etc...">
-																</td>
-															</tr>
-														</table>
-														<br/>
-                                           				<button class="btn btn-default btn-flat btn-sm">Assign</button>
-                                           			</form>
-                   								</div>
-                   							</div>
-                   						</div>
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Teams</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<table>
-                   										<c:set var="projTeams" value="${project.assignedTeams}"/>
-                   										<c:if test="${!empty projTeams}">
-                   											<c:forEach var="team" items="${projTeams}">
-                   												<tr style="padding-bottom: 5px">
-		                   											<td>
-		                   												<div class="user-panel">
-		                   													<div class="pull-left info">
-																                <p>${team.name}</p>
-																                <h6>Maya Villanueva</h6>
-																                <h6>(+63) 922 062 2345</h6>
-																                <h6>5 Members</h6>
-																            </div>
-		                   												</div>
-		                   											</td>
-		                   											<td style="padding-right: 50px">
-		                   												&nbsp;
-		                   											</td>
-		                   											<td>
-		                   												<form role="form" name="unassignTeamForm" id="unassignTeamForm" method="post" action="${contextPath}/team/unassign/project">
-		                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-		                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
-		                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-		                   												</form>
-		                   												<a href="${contextPath}/team/edit/${team.id}">
-		                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
-		                   												</a>
-		                   											</td>
-		                   										</tr>
-                   											</c:forEach>
-                   										</c:if>
-                   									</table>
-                   									<c:choose>
-                   										<c:when test="${!empty projTeams}">
-                   											<form role="form" name="unassignAllTeamForm" id="unassignAllTeamForm" method="post" action="${contextPath}/team/unassign/project/all">
-                   												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-                   												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-                   											</form>
-                   										</c:when>
-                   										<c:when test="${empty projTeams}">
-                   											<h5>No team assigned.</h5>
-                   										</c:when>
-                   									</c:choose>
-													<br/>
-													<br/>
-													<h4>Assign Teams&nbsp;
-													<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
-                   									</a>
-													</h4>
-													<form role="form" name="teamForm" id="teamForm" method="post" action="${contextPath}/team/assign/project">
-														<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-														<table>
-															<tr>
-																<td style="padding-right: 3px;">
-																	<label>Teams </label>
-																</td>
-																<td style="padding-bottom: 3px;">
-																	&nbsp;
-																</td>
-																<td style="padding-bottom: 3px;">
-																	<select id="team_id" name="team_id" class="form-control">
-																		<c:if test="${!empty teamList}">
-																			<c:forEach items="${teamList}" var="team">
-																				<option value="${team.id}">${team.name}</option>
-																			</c:forEach>
-																		</c:if>
-						                                            </select>
-																</td>
-															</tr>
-														</table>
-														<br/>
-														<button class="btn btn-default btn-flat btn-sm">Assign</button>
-													</form>
-													<br/>
-                   								</div>
-                   							</div>
-                   						</div>
-               						</div>
                						</c:when>
                						</c:choose>
                                 </div><!-- /.tab-pane -->
@@ -862,7 +667,7 @@
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Staff&nbsp;
+		                                	<h3 class="box-title">Managers&nbsp;
 		                                    <table>
 		                                    	<tr>
 		                                    		<td>
@@ -984,7 +789,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
-		                                    		<form method="post" action="${contextPath}/team/assign/team">
+		                                    		<form role="form" method="post" action="${contextPath}/team/assign/project">
 		                                    		<td>
 		                                    			<select class="form-control" name="team_id">
 		                                    				<c:choose>
@@ -1000,9 +805,9 @@
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-<!-- 		                                    			<input type="hidden" name="origin" value="team"/> -->
-<%-- 		                                    			<input type="hidden" name="originID" value="${team.id}"/> --%>
-<%-- 		                                    			<input type="hidden" name="team_id" value="${team.id}"/> --%>
+		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
+		                                    			<input type="hidden" name="origin" value="project"/>
+		                                    			<input type="hidden" name="originID" value="${project.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
@@ -1010,10 +815,10 @@
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/team/unassign/team/all">
-<%-- 														<input type="hidden" name="team_id" value="${team.id}"/> --%>
-														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-														</form>
+		                                    			<form role="form" method="post" action="${contextPath}/team/unassign/project/all">
+              												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+              												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+              											</form>
 		                                    		</td>
 		                                    	</tr>
 		                                    </table>
@@ -1038,11 +843,13 @@
 																	<a href="${contextPath}/team/edit/${team.id}">
 																		<button class="btn btn-default btn-flat btn-sm">View</button>
 																	</a>
-																	<form method="post" action="${contextPath}/team/unassign/team">
-																		<input type="hidden" name="team_id" value="${team.id}"/>
-																		<input type="hidden" name="origin" value="team"/>
-																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-																	</form>
+																	<form role="form" method="post" action="${contextPath}/team/unassign/project">
+	                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
+	                   													<input type="hidden" name="origin" value="project"/>
+		                                    							<input type="hidden" name="originID" value="${project.id}"/>
+	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+	                   												</form>
 																</center>
 															</td>
 			                                                <td>${team.id}</td>

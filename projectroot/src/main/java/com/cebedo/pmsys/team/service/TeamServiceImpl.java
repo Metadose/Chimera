@@ -14,6 +14,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
+import com.cebedo.pmsys.team.model.TeamWrapper;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -151,8 +152,12 @@ public class TeamServiceImpl implements TeamService {
 	public List<Team> listUnassignedInProject(Long companyID, Project project) {
 		if (AuthUtils.isActionAuthorized(project)) {
 			List<Team> companyTeamList = this.teamDAO.list(companyID);
-			companyTeamList.removeAll(project.getManagerAssignments());
-			return companyTeamList;
+			List<TeamWrapper> wrappedTeamList = TeamWrapper
+					.wrap(companyTeamList);
+			List<TeamWrapper> wrappedAssignedList = TeamWrapper.wrap(project
+					.getAssignedTeams());
+			wrappedTeamList.removeAll(wrappedAssignedList);
+			return TeamWrapper.unwrap(wrappedTeamList);
 		}
 		return new ArrayList<Team>();
 	}
