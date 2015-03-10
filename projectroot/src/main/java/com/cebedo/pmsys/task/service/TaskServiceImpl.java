@@ -5,37 +5,57 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.project.dao.ProjectDAO;
-import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.staff.dao.StaffDAO;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.dao.TaskDAO;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskStaffAssignment;
 import com.cebedo.pmsys.task.model.TaskTeamAssignment;
+import com.cebedo.pmsys.team.dao.TeamDAO;
+import com.cebedo.pmsys.team.model.Team;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
 	private TaskDAO taskDAO;
-	private ProjectDAO projectDAO;
+	private StaffDAO staffDAO;
+	private TeamDAO teamDAO;
+
+	public void setTeamDAO(TeamDAO teamDAO) {
+		this.teamDAO = teamDAO;
+	}
+
+	public void setStaffDAO(StaffDAO staffDAO) {
+		this.staffDAO = staffDAO;
+	}
 
 	public void setTaskDAO(TaskDAO taskDAO) {
 		this.taskDAO = taskDAO;
-	}
-
-	public void setProjectDAO(ProjectDAO projDAO) {
-		this.projectDAO = projDAO;
 	}
 
 	@Override
 	@Transactional
 	public void create(Task task) {
 		this.taskDAO.create(task);
+		AuthenticationToken auth = AuthUtils.getAuth();
+		Company authCompany = auth.getCompany();
+		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+			task.setCompany(authCompany);
+			this.taskDAO.update(task);
+		}
 	}
 
 	@Override
 	@Transactional
 	public Task getByID(long id) {
-		return this.taskDAO.getByID(id);
+		Task task = this.taskDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(task)) {
+			return task;
+		}
+		return new Task();
 	}
 
 	@Override
@@ -66,31 +86,39 @@ public class TaskServiceImpl implements TaskService {
 		// Set<Team> teamSet = (Set<Team>) ConversionUtils.listToSet(teamList);
 		// task.setTeams(teamSet);
 		// }
-		this.taskDAO.update(task);
+
+		if (AuthUtils.isActionAuthorized(task)) {
+			this.taskDAO.update(task);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void delete(long id) {
-		this.taskDAO.delete(id);
+		Task task = this.taskDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(task)) {
+			this.taskDAO.delete(id);
+		}
 	}
 
 	@Override
 	@Transactional
 	public List<Task> list() {
-		return this.taskDAO.list();
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.taskDAO.list(null);
+		}
+		return this.taskDAO.list(token.getCompany().getId());
 	}
 
 	@Override
 	@Transactional
 	public List<Task> listWithAllCollections() {
-		return this.taskDAO.listWithAllCollections();
-	}
-
-	@Override
-	@Transactional
-	public Project getProjectByID(int id) {
-		return this.projectDAO.getByID(id);
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.taskDAO.listWithAllCollections(null);
+		}
+		return this.taskDAO.listWithAllCollections(token.getCompany().getId());
 	}
 
 	/**
@@ -102,57 +130,89 @@ public class TaskServiceImpl implements TaskService {
 		// Get the task.
 		Task task = this.taskDAO.getByID(taskID);
 
-		// Set the status and update.
-		task.setStatus(status);
-		this.taskDAO.update(task);
+		// Set the status and update, if authorized.
+		if (AuthUtils.isActionAuthorized(task)) {
+			task.setStatus(status);
+			this.taskDAO.update(task);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void assignStaffTask(long taskID, long staffID) {
-		TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
-		taskStaffAssign.setTaskID(taskID);
-		taskStaffAssign.setStaffID(staffID);
-		this.taskDAO.assignStaffTask(taskStaffAssign);
+		Task task = this.taskDAO.getByID(taskID);
+		Staff staff = this.staffDAO.getByID(staffID);
+		if (AuthUtils.isActionAuthorized(task)
+				&& AuthUtils.isActionAuthorized(staff)) {
+			TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
+			taskStaffAssign.setTaskID(taskID);
+			taskStaffAssign.setStaffID(staffID);
+			this.taskDAO.assignStaffTask(taskStaffAssign);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void assignTeamTask(long taskID, long teamID) {
-		TaskTeamAssignment taskTeamAssign = new TaskTeamAssignment();
-		taskTeamAssign.setTaskID(taskID);
-		taskTeamAssign.setTeamID(teamID);
-		this.taskDAO.assignTeamTask(taskTeamAssign);
+		Task task = this.taskDAO.getByID(taskID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(task)
+				&& AuthUtils.isActionAuthorized(team)) {
+			TaskTeamAssignment taskTeamAssign = new TaskTeamAssignment();
+			taskTeamAssign.setTaskID(taskID);
+			taskTeamAssign.setTeamID(teamID);
+			this.taskDAO.assignTeamTask(taskTeamAssign);
+		}
 	}
 
 	@Override
 	@Transactional
 	public Task getByIDWithAllCollections(int id) {
-		return this.taskDAO.getByIDWithAllCollections(id);
+		Task task = this.taskDAO.getByIDWithAllCollections(id);
+		if (AuthUtils.isActionAuthorized(task)) {
+			return task;
+		}
+		return new Task();
 	}
 
 	@Override
 	@Transactional
 	public void unassignTeamTask(long taskID, long teamID) {
-		this.taskDAO.unassignTeamTask(taskID, teamID);
+		Task task = this.taskDAO.getByID(taskID);
+		Team team = this.teamDAO.getByID(teamID);
+		if (AuthUtils.isActionAuthorized(task)
+				&& AuthUtils.isActionAuthorized(team)) {
+			this.taskDAO.unassignTeamTask(taskID, teamID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignAllTeamTasks(long taskID) {
-		this.taskDAO.unassignAllTeamTasks(taskID);
+		Task task = this.taskDAO.getByID(taskID);
+		if (AuthUtils.isActionAuthorized(task)) {
+			this.taskDAO.unassignAllTeamTasks(taskID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignStaffTask(long taskID, long staffID) {
-		this.taskDAO.unassignStaffTask(taskID, staffID);
+		Task task = this.taskDAO.getByID(taskID);
+		Staff staff = this.staffDAO.getByID(staffID);
+		if (AuthUtils.isActionAuthorized(task)
+				&& AuthUtils.isActionAuthorized(staff)) {
+			this.taskDAO.unassignStaffTask(taskID, staffID);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void unassignAllStaffTasks(long id) {
-		this.taskDAO.unassignAllStaffTasks(id);
+		Task task = this.taskDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(task)) {
+			this.taskDAO.unassignAllStaffTasks(id);
+		}
 	}
 
 }

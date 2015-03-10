@@ -19,9 +19,9 @@ public interface TaskDAO {
 
 	public void delete(long id);
 
-	public List<Task> list();
+	public List<Task> list(Long companyID);
 
-	public List<Task> listWithAllCollections();
+	public List<Task> listWithAllCollections(Long companyID);
 
 	public void assignStaffTask(TaskStaffAssignment taskStaffAssign);
 
@@ -42,4 +42,5 @@ public interface TaskDAO {
 	public List<Staff> getStaffByTaskID(long taskID);
 
 	public List<Team> getTeamByTaskID(long taskID);
+
 }

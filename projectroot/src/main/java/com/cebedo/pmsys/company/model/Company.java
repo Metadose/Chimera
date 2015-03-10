@@ -18,6 +18,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
 @Entity
@@ -38,9 +39,9 @@ public class Company {
 	private Set<Project> projects;
 	private Set<Team> teams;
 	private Set<SystemConfiguration> configs;
+	private Set<Task> tasks;
 
 	// TODO
-	// Tasks
 	// ProjectFiles
 
 	public Company() {
@@ -143,5 +144,14 @@ public class Company {
 
 	public void setConfigs(Set<SystemConfiguration> configs) {
 		this.configs = configs;
+	}
+
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+	public Set<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
 	}
 }

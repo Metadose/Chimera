@@ -7,6 +7,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
 public abstract class AuthUtils {
@@ -96,4 +97,13 @@ public abstract class AuthUtils {
 		return false;
 	}
 
+	public static boolean isActionAuthorized(Task obj) {
+		AuthenticationToken auth = getAuth();
+		if (auth.isSuperAdmin()) {
+			return true;
+		} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+			return true;
+		}
+		return false;
+	}
 }

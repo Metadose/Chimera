@@ -18,6 +18,7 @@ import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
@@ -43,29 +44,36 @@ public class TaskController {
 	private TeamService teamService;
 	private StaffService staffService;
 	private FieldService fieldService;
+	private ProjectService projectService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectService")
+	public void setProjectService(ProjectService s) {
+		this.projectService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "taskService")
-	public void setTaskService(TaskService ps) {
-		this.taskService = ps;
+	public void setTaskService(TaskService s) {
+		this.taskService = s;
 	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "fieldService")
-	public void setFieldService(FieldService ps) {
-		this.fieldService = ps;
+	public void setFieldService(FieldService s) {
+		this.fieldService = s;
 	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "staffService")
-	public void setStaffService(StaffService ps) {
-		this.staffService = ps;
+	public void setStaffService(StaffService s) {
+		this.staffService = s;
 	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "teamService")
-	public void setTeamService(TeamService ps) {
-		this.teamService = ps;
+	public void setTeamService(TeamService s) {
+		this.teamService = s;
 	}
 
 	/**
@@ -146,8 +154,7 @@ public class TaskController {
 		// Construct the project object from the ID.
 		// Attach the project to the task.
 		// Create the task.
-		// TODO Transfer getProjectByID() to projectService.
-		Project proj = this.taskService.getProjectByID(projectID);
+		Project proj = this.projectService.getByID(projectID);
 		task.setProject(proj);
 		this.taskService.create(task);
 

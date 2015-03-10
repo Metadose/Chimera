@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
@@ -39,7 +40,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public Task getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Task task = (Task) session.get(Task.class, new Long(id));
+		Task task = (Task) session.load(Task.class, new Long(id));
 		logger.info("[Get by ID] Task: " + task);
 		return task;
 	}
@@ -47,7 +48,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public Task getByIDWithAllCollections(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Task task = (Task) session.get(Task.class, new Long(id));
+		Task task = (Task) session.load(Task.class, new Long(id));
 		Hibernate.initialize(task.getTeams());
 		Hibernate.initialize(task.getProject());
 		Hibernate.initialize(task.getStaff());
@@ -74,26 +75,22 @@ public class TaskDAOImpl implements TaskDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Task> list() {
+	public List<Task> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("from " + Task.CLASS_NAME);
-		List<Task> taskList = query.list();
-		for (Task task : taskList) {
-			logger.info("[List] Task: " + task);
-		}
+		List<Task> taskList = QueryUtils.getSelectQueryFilterCompany(session,
+				Task.class.getName(), companyID).list();
 		return taskList;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Task> listWithAllCollections() {
+	public List<Task> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("from " + Task.CLASS_NAME);
-		List<Task> taskList = query.list();
+		List<Task> taskList = QueryUtils.getSelectQueryFilterCompany(session,
+				Task.class.getName(), companyID).list();
 		for (Task task : taskList) {
 			Hibernate.initialize(task.getTeams());
 			Hibernate.initialize(task.getProject());
 			Hibernate.initialize(task.getStaff());
-			logger.info("[List] Task: " + task);
 		}
 		return taskList;
 	}

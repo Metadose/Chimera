@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.team.model.Team;
@@ -44,6 +45,7 @@ public class Task {
 	private Set<Team> teams;
 	private int status;
 	private Set<TaskFieldAssignment> fields;
+	private Company company;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -155,4 +157,13 @@ public class Task {
 		}
 	}
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 }
