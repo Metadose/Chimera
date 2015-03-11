@@ -333,12 +333,36 @@
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                    <h3 class="box-title">Assigned Tasks</h3>
+		                                	<h3 class="box-title">Tasks&nbsp;
+		                                    <table>
+		                                    	<tr>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/task/assign/from/project/">
+		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
+		                                    			<input type="hidden" name="origin" value="project"/>
+		                                    			<input type="hidden" name="originID" value="${project.id}"/>
+				                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
+					                                    </form>
+		                                    		</td>
+		                                    		<c:if test="${!empty project.assignedTasks}">
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
+                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+               											</form>
+		                                    		</td>
+		                                    		</c:if>
+		                                    	</tr>
+		                                    </table>
+		                                    </h3>
 		                                </div><!-- /.box-header -->
-		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
+		                                <div class="box-body table-responsive">
+		                                    <table id="tasks-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
 			                                        	<th>&nbsp;</th>
 			                                            <th>Status</th>
 			                                            <th>Content</th>
@@ -347,6 +371,8 @@
 			                                            <th>Start</th>
 			                                            <th>End</th>
 			                                        </tr>
+                                        		</thead>
+		                                        <tbody>
 			                                        <c:set var="taskList" value="${project.assignedTasks}"/>
 				                                	<c:if test="${!empty taskList}">
 		                                        		<c:forEach items="${taskList}" var="task">
@@ -435,11 +461,6 @@
 			                                    </tbody>
 			                                </table>
 		                                </div><!-- /.box-body -->
-		                                <div class="box-footer clearfix no-border">
-		                                	<a href="${contextPath}/task/assign/project/${project.id}">
-		                                    	<button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add Task</button>
-		                                    </a>
-		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
@@ -529,35 +550,35 @@
 										<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
 									</form>
                                     <br/>
+                                    <c:if test="${!empty project.photos}">
                                    	<div class="box box-default">
                                     	<div class="box-header">
            									<h3 class="box-title">Photos</h3>
            								</div>
            								<div class="box-body">
            									<ul class="row">
-										     	<c:if test="${!empty project.photos}">
-										     		<c:forEach items="${project.photos}" var="photo">
-										     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-															<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
-															<form action="${contextPath}/photo/delete">
-																<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-																<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
-																<h6>${photo.name}</h6>
-																<h6>${photo.description}</h6>
-																<br/>
-																<h6>Uploaded ${photo.dateUploaded}</h6>
-																
-																<c:set var="photoUploader" value="${photo.uploader}"/>
-																<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
-																<h6>${photoUploaderName}</h6>
-																<button class="btn btn-default btn-flat btn-sm" id="photoDeleteButton">Delete</button>
-															</form>
-														</li>
-										     		</c:forEach>
-										     	</c:if>
+									     		<c:forEach items="${project.photos}" var="photo">
+									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
+														<form action="${contextPath}/photo/delete">
+															<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+															<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
+															<h6>${photo.name}</h6>
+															<h6>${photo.description}</h6>
+															<br/>
+															<h6>Uploaded ${photo.dateUploaded}</h6>
+															
+															<c:set var="photoUploader" value="${photo.uploader}"/>
+															<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
+															<h6>${photoUploaderName}</h6>
+															<button class="btn btn-default btn-flat btn-sm" id="photoDeleteButton">Delete</button>
+														</form>
+													</li>
+									     		</c:forEach>
 										     </ul>
            								</div>
        								</div>
+       								</c:if>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								      <div class="modal-dialog">
 								        <div class="modal-content">         
@@ -678,17 +699,14 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:if test="${!empty staffList}">
 		                                    		<form role="form" method="post" action="${contextPath}/staff/assign/project">
 		                                    		<td>
 		                                    			<select class="form-control" name="staff_id">
-		                                    				<c:choose>
-		                                    					<c:when test="${!empty staffList}">
-		                                    						<c:forEach items="${staffList}" var="staff">
-		                                    							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-		                                    							<option value="${staff.id}">${staffName}</option>
-		                                    						</c:forEach>
-		                                    					</c:when>
-		                                    				</c:choose>
+                                    						<c:forEach items="${staffList}" var="staff">
+                                    							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+                                    							<option value="${staff.id}">${staffName}</option>
+                                    						</c:forEach>
 		                                    			</select>
 		                                    		</td>
 		                                    		<td>
@@ -705,15 +723,18 @@
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
+		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:if test="${!empty project.managerAssignments}">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/unassign/project/all">
                 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                											</form>
 		                                    		</td>
+		                                    		</c:if>
 		                                    	</tr>
 		                                    </table>
 		                                    </h3>
@@ -789,16 +810,13 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:if test="${!empty teamList}">
 		                                    		<form role="form" method="post" action="${contextPath}/team/assign/project">
 		                                    		<td>
 		                                    			<select class="form-control" name="team_id">
-		                                    				<c:choose>
-		                                    					<c:when test="${!empty teamList}">
-		                                    						<c:forEach items="${teamList}" var="team">
-		                                    							<option value="${team.id}">${team.name}</option>
-		                                    						</c:forEach>
-		                                    					</c:when>
-		                                    				</c:choose>
+                                    						<c:forEach items="${teamList}" var="team">
+                                    							<option value="${team.id}">${team.name}</option>
+                                    						</c:forEach>
 		                                    			</select>
 		                                    		</td>
 		                                    		<td>
@@ -811,15 +829,18 @@
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
 		                                    		</form>
+		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:if test="${!empty project.assignedTeams}">
 		                                    		<td>
 		                                    			<form role="form" method="post" action="${contextPath}/team/unassign/project/all">
               												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
               												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
               											</form>
 		                                    		</td>
+		                                    		</c:if>
 		                                    	</tr>
 		                                    </table>
 		                                    </h3>
@@ -929,6 +950,7 @@
 			$("#example-1").dataTable();
 			$("#managers-table").dataTable();
 			$("#teams-table").dataTable();
+			$("#tasks-table").dataTable();
 			$("#project_status").val("${project.status}");
 			
 			$('li img').on('click',function(){

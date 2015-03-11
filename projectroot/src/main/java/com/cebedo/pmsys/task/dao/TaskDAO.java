@@ -43,4 +43,6 @@ public interface TaskDAO {
 
 	public List<Team> getTeamByTaskID(long taskID);
 
+	public void unassignAllProjectTasks(long projectID);
+
 }

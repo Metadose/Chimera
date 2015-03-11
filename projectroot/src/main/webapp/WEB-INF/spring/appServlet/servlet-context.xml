@@ -106,6 +106,7 @@
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
+        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="fieldDAO" class="com.cebedo.pmsys.field.dao.FieldDAOImpl">

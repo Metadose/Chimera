@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.dao.TaskDAO;
@@ -21,8 +23,13 @@ import com.cebedo.pmsys.team.model.Team;
 public class TaskServiceImpl implements TaskService {
 
 	private TaskDAO taskDAO;
+	private ProjectDAO projectDAO;
 	private StaffDAO staffDAO;
 	private TeamDAO teamDAO;
+
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
 
 	public void setTeamDAO(TeamDAO teamDAO) {
 		this.teamDAO = teamDAO;
@@ -215,4 +222,29 @@ public class TaskServiceImpl implements TaskService {
 		}
 	}
 
+	@Override
+	@Transactional
+	public void unassignAllProjectTasks(long projectID) {
+		Project project = this.projectDAO.getByID(projectID);
+		if (AuthUtils.isActionAuthorized(project)) {
+			this.taskDAO.unassignAllProjectTasks(projectID);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void createWithProject(Task task, long projectID) {
+		Project proj = this.projectDAO.getByID(projectID);
+		if (AuthUtils.isActionAuthorized(proj)) {
+			task.setProject(proj);
+			this.taskDAO.create(task);
+
+			AuthenticationToken auth = AuthUtils.getAuth();
+			Company authCompany = auth.getCompany();
+			if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+				task.setCompany(authCompany);
+				this.taskDAO.update(task);
+			}
+		}
+	}
 }

@@ -97,6 +97,26 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
+	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
+	public String createWithProject(
+			@ModelAttribute(ATTR_TASK) Task task,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
+
+		// If the task is not here yet,
+		// Create it.
+		this.taskService.createWithProject(task, originID);
+		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + originID;
+	}
+
+	/**
+	 * Create or update a new task.
+	 * 
+	 * @param task
+	 * @return
+	 */
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TASK) Task task) {
 
@@ -118,19 +138,24 @@ public class TaskController {
 	 * User assigns a new task for a project.<br>
 	 * Called when user clicks a create button from the edit project page.
 	 * 
-	 * @param id
+	 * @param projectID
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
-			+ Project.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public String redirectAssignProject(
-			@PathVariable(Project.COLUMN_PRIMARY_KEY) int id, Model model) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
 
 		// Redirect to an edit page with an empty task object
 		// And project ID.
 		model.addAttribute(ATTR_TASK, new Task());
-		model.addAttribute(ATTR_ASSIGN_PROJECT_ID, id);
+		model.addAttribute(Project.COLUMN_PRIMARY_KEY, projectID);
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_ASSIGN);
 		return JSP_EDIT;
@@ -379,6 +404,22 @@ public class TaskController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
+	}
+
+	/**
+	 * Unassign all project tasks.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView unassignAllProjectTasks(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+		this.taskService.unassignAllProjectTasks(projectID);
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
 	}
 
 	/**

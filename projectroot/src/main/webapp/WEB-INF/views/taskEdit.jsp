@@ -53,19 +53,18 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<c:set var="targetController" value="create"/>
-                   									<c:choose>
-                   										<c:when test="${!empty assignProjectID}">
-                   											<c:set var="targetController" value="assign/project/${assignProjectID}"/>
-                   										</c:when>
-                   										<c:when test="${!empty assignStaffID}">
-                   											<c:set var="targetController" value="assign/new/staff/${assignStaffID}"/>
-                   										</c:when>
-                   									</c:choose>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/task/${targetController}">
+                   									<c:set var="formAction" value="${contextPath}/task/create"/>
+                   									<c:if test="${!empty origin && !empty originID}">
+                   										<c:set var="formAction" value="${contextPath}/task/create/${origin}"/>
+                   									</c:if>
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${formAction}">
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${task.id}"/>
+				                                        	<c:if test="${!empty task.project.id}">
 				                                        	<input type="hidden" name="project_id" value="${task.project.id}"/>
+				                                        	</c:if>
+				                                        	<input type="hidden" name="origin" value="${origin}"/>
+				                                        	<input type="hidden" name="originID" value="${originID}"/>
 				                                        	<label>Status</label>
 				                                            <select class="form-control" id="task_status" name="status">
 						                                    	<option value="0">New</option>

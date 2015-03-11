@@ -33,4 +33,8 @@ public interface TaskService {
 	public void unassignStaffTask(long taskID, long staffID);
 
 	public void unassignAllStaffTasks(long id);
+
+	public void unassignAllProjectTasks(long projectID);
+
+	public void createWithProject(Task task, long projectID);
 }

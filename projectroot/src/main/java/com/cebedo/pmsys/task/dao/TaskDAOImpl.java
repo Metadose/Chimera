@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
@@ -185,5 +186,22 @@ public class TaskDAOImpl implements TaskDAO {
 				+ TaskTeamAssignment.CLASS_NAME + " WHERE "
 				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
 		return query.list();
+	}
+
+	/**
+	 * Unassign all tasks with project id.
+	 */
+	@Override
+	public void unassignAllProjectTasks(long projectID) {
+		// Construct hql.
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql = "DELETE FROM " + Task.class.getName();
+		hql += " WHERE ";
+		hql += Project.COLUMN_PRIMARY_KEY + "=:" + Project.COLUMN_PRIMARY_KEY;
+
+		// Create, set and update.
+		Query query = session.createQuery(hql);
+		query.setParameter(Project.COLUMN_PRIMARY_KEY, projectID);
+		query.executeUpdate();
 	}
 }
