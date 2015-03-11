@@ -7,18 +7,34 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Project ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
-	<style>
-	  ul {         
-	      padding:0 0 0 0;
-	      margin:0 0 0 0;
-	  }
-	  ul li {     
-	      list-style:none;
-	      margin-bottom:25px;           
-	  }
-	  ul li img {
-	      cursor: pointer;
-	  }
+	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
+	<style type="text/css">
+		ul {         
+		    padding:0 0 0 0;
+		    margin:0 0 0 0;
+		}
+		ul li {     
+		    list-style:none;
+		    margin-bottom:25px;           
+		}
+		ul li img {
+		    cursor: pointer;
+		}
+		html, body { height: 100%; padding:0px; margin:0px; overflow: hidden; }
+		.gantt_task_cell.day_end, .gantt_task_cell.no_work_hour.day_start{
+			border-right-color: #C7DFFF;
+		}
+		.gantt_task_cell.week_end.day_end, .gantt_task_cell.week_end.day_start{
+			border-right-color: #E2E1E1;
+		}
+		
+		.gantt_task_cell.week_end, .gantt_task_cell.no_work_hour{
+			background-color: #F5F5F5;
+		}
+		.gantt_task_row.gantt_selected .gantt_task_cell.week_end{
+			background-color: #F8EC9C;
+		}
+		html, body{ height:100%; padding:0px; margin:0px; overflow: hidden;}
 	</style>
 </head>
 <body class="skin-blue">
@@ -54,7 +70,6 @@
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
-		                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
 <!-- 		                                <li><a href="#tab_7" data-toggle="tab">Map</a></li> -->
@@ -593,231 +608,11 @@
                                 	<div class="box">
 		                                <div class="box-header">
 		                                	<h3 class="box-title">Timeline&nbsp;
-		                                    <table>
-		                                    	<tr>
-		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/task/assign/from/project/">
-		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
-		                                    			<input type="hidden" name="origin" value="project"/>
-		                                    			<input type="hidden" name="originID" value="${project.id}"/>
-				                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
-					                                    </form>
-		                                    		</td>
-		                                    		<c:if test="${!empty project.assignedTasks}">
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
-                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-               											</form>
-		                                    		</td>
-		                                    		</c:if>
-		                                    	</tr>
-		                                    </table>
 		                                    </h3>
 		                                </div><!-- /.box-header -->
-		                                <div class="box-body table-responsive">
-		                                    <table id="tasks-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-			                                        	<th>&nbsp;</th>
-			                                            <th>Status</th>
-			                                            <th>Content</th>
-			                                            <th>Team</th>
-			                                            <th>Staff</th>
-			                                            <th>Start</th>
-			                                            <th>End</th>
-			                                        </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                        <c:set var="taskList" value="${project.assignedTasks}"/>
-				                                	<c:if test="${!empty taskList}">
-		                                        		<c:forEach items="${taskList}" var="task">
-		                                        			<tr>
-		                                        				<td>
-		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-							                                                Mark As&nbsp;
-							                                                <span class="caret"></span>
-							                                            </button>
-							                                            <ul class="dropdown-menu">
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0">New</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1">Ongoing</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2">Completed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3">Failed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4">Cancelled</a></li>
-<!-- 							                                                <li class="divider"></li> -->
-<!-- 							                                                <li><a href="#">Separated link</a></li> -->
-							                                            </ul>
-							                                        </div>
-							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
-					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-					                                            	</a>
-		                                        				</td>
-					                                            <td style="vertical-align: middle;">
-					                                            	<c:choose>
-						                                            	<c:when test="${task.status == 0}">
-						                                            		<span class="label label-info">New</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 1}">
-						                                            		<span class="label label-primary">Ongoing</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 2}">
-						                                            		<span class="label label-success">Completed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 3}">
-						                                            		<span class="label label-danger">Failed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 4}">
-						                                            		<h6>Cancelled</h6>
-						                                            	</c:when>
-						                                            </c:choose>
-					                                            </td>
-					                                            <td>${task.content}</td>
-					                                            <td>
-					                                            	<c:choose>
-					                                            		<c:when test="${!empty task.teams}">
-					                                            			<c:forEach items="${task.teams}" var="taskTeam">
-					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
-							                                            	${taskTeam.name}
-							                                            	<br/>
-					                                            			</c:forEach>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.teams}">
-					                                            			<h5>No team assigned.</h5>
-					                                            		</c:when>
-					                                            	</c:choose>
-					                                            </td>
-					                                            <td>
-					                                            	<c:choose>
-					                                            		<c:when test="${!empty task.staff}">
-					                                            			<c:forEach items="${task.staff}" var="taskStaff">
-					                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-					                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
-							                                            	${taskStaffName}
-							                                            	<br/>
-					                                            			</c:forEach>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.staff}">
-					                                            			<h5>No manager assigned.</h5>
-					                                            		</c:when>
-					                                            	</c:choose>					                                            
-					                                            </td>
-					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.dateEnd}</td>
-					                                        </tr>
-		                                        		</c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
+		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
 		                                </div><!-- /.box-body -->
 		                            </div>
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_5">
-                                    <!-- The time line -->
-		                            <ul class="timeline">
-		                                <!-- timeline time label -->
-		                                <li class="time-label">
-		                                    <span class="bg-red">
-		                                        10 Feb. 2014
-		                                    </span>
-		                                </li>
-		                                <!-- /.timeline-label -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-envelope bg-blue"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
-		                                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you and email</h3>
-		                                        <div class="timeline-body">
-		                                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-		                                            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-		                                            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-		                                            quora plaxo ideeli hulu weebly balihoo...
-		                                        </div>
-		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-default btn-flat btn-xs">Read more</a>
-		                                            <a class="btn btn-default btn-flat btn-xs">Delete</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-user bg-aqua"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-		                                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-comments bg-yellow"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-		                                        <div class="timeline-body">
-		                                            Take me to your leader!
-		                                            Switzerland is small and neutral!
-		                                            We are more like Germany, ambitious and misunderstood!
-		                                        </div>
-		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-default btn-flat btn-flat btn-xs">View comment</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline time label -->
-		                                <li class="time-label">
-		                                    <span class="bg-green">
-		                                        3 Jan. 2014
-		                                    </span>
-		                                </li>
-		                                <!-- /.timeline-label -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-camera bg-purple"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 2 days ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-		                                        <div class="timeline-body">
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin' />
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-video-camera bg-maroon"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-		                                        <div class="timeline-body">
-		                                            <iframe width="300" height="169" src="//www.youtube.com/embed/fLe_qO4AE-M" frameborder="0" allowfullscreen></iframe>
-		                                        </div>
-		                                        <div class="timeline-footer">
-		                                            <a href="#" class="btn btn-xs bg-maroon">See comments</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <li>
-		                                    <i class="fa fa-clock-o"></i>
-		                                </li>
-		                            </ul>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
@@ -1027,6 +822,7 @@
         </aside>
 	</div>
 	<c:import url="/resources/js-includes.jsp" />
+	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script>
 		function submitAjax(id) {
 			var formObj = $('#'+id);
@@ -1284,5 +1080,155 @@
             });
         });
     </script>
+    
+    <script type="text/javascript">
+    var demo_tasks = {
+    		"data":[
+    			{"id":11, "text":"Project #1", "start_date":"28-03-2013", "duration":"11", "progress": 0.6, "open": true},
+    			{"id":1, "text":"Project #2", "start_date":"01-04-2013", "duration":"18", "progress": 0.4, "open": true},
+
+    			{"id":2, "text":"Task #1", "start_date":"02-04-2013", "duration":"8", "parent":"1", "progress":0.5, "open": true},
+    			{"id":3, "text":"Task #2", "start_date":"11-04-2013", "duration":"8", "parent":"1", "progress": 0.6, "open": true},
+    			{"id":4, "text":"Task #3", "start_date":"13-04-2013", "duration":"6", "parent":"1", "progress": 0.5, "open": true},
+    			{"id":5, "text":"Task #1.1", "start_date":"02-04-2013", "duration":"7", "parent":"2", "progress": 0.6, "open": true},
+    			{"id":6, "text":"Task #1.2", "start_date":"03-04-2013", "duration":"7", "parent":"2", "progress": 0.6, "open": true},
+    			{"id":7, "text":"Task #2.1", "start_date":"11-04-2013", "duration":"8", "parent":"3", "progress": 0.6, "open": true},
+    			{"id":8, "text":"Task #3.1", "start_date":"14-04-2013", "duration":"5", "parent":"4", "progress": 0.5, "open": true},
+    			{"id":9, "text":"Task #3.2", "start_date":"14-04-2013", "duration":"4", "parent":"4", "progress": 0.5, "open": true},
+    			{"id":10, "text":"Task #3.3", "start_date":"14-04-2013", "duration":"3", "parent":"4", "progress": 0.5, "open": true},
+    			
+    			{"id":12, "text":"Task #1", "start_date":"03-04-2013", "duration":"5", "parent":"11", "progress": 1, "open": true},
+    			{"id":13, "text":"Task #2", "start_date":"02-04-2013", "duration":"7", "parent":"11", "progress": 0.5, "open": true},
+    			{"id":14, "text":"Task #3", "start_date":"02-04-2013", "duration":"6", "parent":"11", "progress": 0.8, "open": true},
+    			{"id":15, "text":"Task #4", "start_date":"02-04-2013", "duration":"5", "parent":"11", "progress": 0.2, "open": true},
+    			{"id":16, "text":"Task #5", "start_date":"02-04-2013", "duration":"7", "parent":"11", "progress": 0, "open": true},
+
+    			{"id":17, "text":"Task #2.1", "start_date":"03-04-2013", "duration":"2", "parent":"13", "progress": 1, "open": true},
+    			{"id":18, "text":"Task #2.2", "start_date":"06-04-2013", "duration":"3", "parent":"13", "progress": 0.8, "open": true},
+    			{"id":19, "text":"Task #2.3", "start_date":"10-04-2013", "duration":"4", "parent":"13", "progress": 0.2, "open": true},
+    			{"id":20, "text":"Task #2.4", "start_date":"10-04-2013", "duration":"4", "parent":"13", "progress": 0, "open": true},
+    			{"id":21, "text":"Task #4.1", "start_date":"03-04-2013", "duration":"4", "parent":"15", "progress": 0.5, "open": true},
+    			{"id":22, "text":"Task #4.2", "start_date":"03-04-2013", "duration":"4", "parent":"15", "progress": 0.1, "open": true},
+    			{"id":23, "text":"Task #4.3", "start_date":"03-04-2013", "duration":"5", "parent":"15", "progress": 0, "open": true}
+    		],
+    		"links":[
+    			{"id":"1","source":"1","target":"2","type":"1"},
+    			{"id":"2","source":"2","target":"3","type":"0"},
+    			{"id":"3","source":"3","target":"4","type":"0"},
+    			{"id":"4","source":"2","target":"5","type":"2"},
+    			{"id":"5","source":"2","target":"6","type":"2"},
+    			{"id":"6","source":"3","target":"7","type":"2"},
+    			{"id":"7","source":"4","target":"8","type":"2"},
+    			{"id":"8","source":"4","target":"9","type":"2"},
+    			{"id":"9","source":"4","target":"10","type":"2"},
+    			{"id":"10","source":"11","target":"12","type":"1"},
+    			{"id":"11","source":"11","target":"13","type":"1"},
+    			{"id":"12","source":"11","target":"14","type":"1"},
+    			{"id":"13","source":"11","target":"15","type":"1"},
+    			{"id":"14","source":"11","target":"16","type":"1"},
+    			{"id":"15","source":"13","target":"17","type":"1"},
+    			{"id":"16","source":"17","target":"18","type":"0"},
+    			{"id":"17","source":"18","target":"19","type":"0"},
+    			{"id":"18","source":"19","target":"20","type":"0"},
+    			{"id":"19","source":"15","target":"21","type":"2"},
+    			{"id":"20","source":"15","target":"22","type":"2"},
+    			{"id":"21","source":"15","target":"23","type":"2"}
+    		]
+    	};
+
+    	var users_data = {
+    		"data":[
+    			{"id":1, "text":"Project #1", "start_date":"01-04-2013", "duration":"11", "progress": 0.6, "open": true, "users": ["John", "Mike", "Anna"], "priority": "2"},
+    			{"id":2, "text":"Task #1", "start_date":"03-04-2013", "duration":"5", "parent":"1", "progress": 1, "open": true, "users": ["John", "Mike"], "priority": "1"},
+    			{"id":3, "text":"Task #2", "start_date":"02-04-2013", "duration":"7", "parent":"1", "progress": 0.5, "open": true, "users": ["Anna"], "priority": "1"},
+    			{"id":4, "text":"Task #3", "start_date":"02-04-2013", "duration":"6", "parent":"1", "progress": 0.8, "open": true, "users": ["Mike", "Anna"], "priority": "2"},
+    			{"id":5, "text":"Task #4", "start_date":"02-04-2013", "duration":"5", "parent":"1", "progress": 0.2, "open": true, "users": ["John"], "priority": "3"},
+    			{"id":6, "text":"Task #5", "start_date":"02-04-2013", "duration":"7", "parent":"1", "progress": 0, "open": true, "users": ["John"], "priority": "2"},
+    			{"id":7, "text":"Task #2.1", "start_date":"03-04-2013", "duration":"2", "parent":"3", "progress": 1, "open": true, "users": ["Mike", "Anna"], "priority": "2"},
+    			{"id":8, "text":"Task #2.2", "start_date":"06-04-2013", "duration":"3", "parent":"3", "progress": 0.8, "open": true, "users": ["Anna"], "priority": "3"},
+    			{"id":9, "text":"Task #2.3", "start_date":"10-04-2013", "duration":"4", "parent":"3", "progress": 0.2, "open": true, "users": ["Mike", "Anna"], "priority": "1"},
+    			{"id":10, "text":"Task #2.4", "start_date":"10-04-2013", "duration":"4", "parent":"3", "progress": 0, "open": true, "users": ["John", "Mike"], "priority": "1"},
+    			{"id":11, "text":"Task #4.1", "start_date":"03-04-2013", "duration":"4", "parent":"5", "progress": 0.5, "open": true, "users": ["John", "Anna"], "priority": "3"},
+    			{"id":12, "text":"Task #4.2", "start_date":"03-04-2013", "duration":"4", "parent":"5", "progress": 0.1, "open": true, "users": ["John"], "priority": "3"},
+    			{"id":13, "text":"Task #4.3", "start_date":"03-04-2013", "duration":"5", "parent":"5", "progress": 0, "open": true, "users": ["Anna"], "priority": "3"}
+    		],
+    		"links":[
+    			{"id":"10","source":"11","target":"12","type":"1"},
+    			{"id":"11","source":"11","target":"13","type":"1"},
+    			{"id":"12","source":"11","target":"14","type":"1"},
+    			{"id":"13","source":"11","target":"15","type":"1"},
+    			{"id":"14","source":"11","target":"16","type":"1"},
+
+    			{"id":"15","source":"13","target":"17","type":"1"},
+    			{"id":"16","source":"17","target":"18","type":"0"},
+    			{"id":"17","source":"18","target":"19","type":"0"},
+    			{"id":"18","source":"19","target":"20","type":"0"},
+    			{"id":"19","source":"15","target":"21","type":"2"},
+    			{"id":"20","source":"15","target":"22","type":"2"},
+    			{"id":"21","source":"15","target":"23","type":"2"}
+    		]
+    	};
+    	
+    	
+	gantt.config.work_time = true;
+	gantt.setWorkTime({hours : [8, 12, 13, 17]});//global working hours. 8:00-12:00, 13:00-17:00
+
+	gantt.config.scale_unit = "day";
+	gantt.config.date_scale = "%l, %F %d";
+	gantt.config.min_column_width = 20;
+	gantt.config.duration_unit = "hour";
+	gantt.config.scale_height = 20*3;
+
+	gantt.templates.task_cell_class = function(task, date){
+		var css = [];
+		if(date.getHours() == 7){
+			css.push("day_start");
+		}
+		if(date.getHours() == 16){
+			css.push("day_end");
+		}
+		if(!gantt.isWorkTime(date, 'day')){
+			css.push("week_end");
+		}else if(!gantt.isWorkTime(date, 'hour')){
+			css.push("no_work_hour");
+		}
+		return css.join(" ");
+	};
+
+	var weekScaleTemplate = function(date){
+		var dateToStr = gantt.date.date_to_str("%d %M");
+		var weekNum = gantt.date.date_to_str("(week %W)");
+		var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+		return dateToStr(date) + " - " + dateToStr(endDate) + " " + weekNum(date);
+	};
+
+	gantt.config.subscales = [
+		{unit:"week", step:1, template:weekScaleTemplate},
+		{unit:"hour", step:1, date:"%G"}
+
+	];
+
+	function showAll(){
+		gantt.ignore_time = null;
+		gantt.render();
+	}
+	
+	function hideWeekEnds(){
+		gantt.ignore_time = function(date){
+			return !gantt.isWorkTime(date, "day");
+		};
+		gantt.render();
+	}
+	
+	function hideNotWorkingTime(){
+		gantt.ignore_time = function(date){
+			return !gantt.isWorkTime(date);
+		};
+		gantt.render();
+	}
+
+	gantt.init("gantt-chart");
+	gantt.parse(demo_tasks);
+</script>
 </body>
 </html>
