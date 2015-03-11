@@ -53,6 +53,7 @@
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
+		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
@@ -587,6 +588,139 @@
 								        </div><!-- /.modal-content -->
 								      </div><!-- /.modal-dialog -->
 								    </div><!-- /.modal -->
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_timeline">
+                                	<div class="box">
+		                                <div class="box-header">
+		                                	<h3 class="box-title">Timeline&nbsp;
+		                                    <table>
+		                                    	<tr>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/task/assign/from/project/">
+		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
+		                                    			<input type="hidden" name="origin" value="project"/>
+		                                    			<input type="hidden" name="originID" value="${project.id}"/>
+				                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
+					                                    </form>
+		                                    		</td>
+		                                    		<c:if test="${!empty project.assignedTasks}">
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+		                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
+                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+               											</form>
+		                                    		</td>
+		                                    		</c:if>
+		                                    	</tr>
+		                                    </table>
+		                                    </h3>
+		                                </div><!-- /.box-header -->
+		                                <div class="box-body table-responsive">
+		                                    <table id="tasks-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+			                                        	<th>&nbsp;</th>
+			                                            <th>Status</th>
+			                                            <th>Content</th>
+			                                            <th>Team</th>
+			                                            <th>Staff</th>
+			                                            <th>Start</th>
+			                                            <th>End</th>
+			                                        </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="taskList" value="${project.assignedTasks}"/>
+				                                	<c:if test="${!empty taskList}">
+		                                        		<c:forEach items="${taskList}" var="task">
+		                                        			<tr>
+		                                        				<td>
+		                                        					<div class="btn-group">
+							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                                Mark As&nbsp;
+							                                                <span class="caret"></span>
+							                                            </button>
+							                                            <ul class="dropdown-menu">
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0">New</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1">Ongoing</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2">Completed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3">Failed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4">Cancelled</a></li>
+<!-- 							                                                <li class="divider"></li> -->
+<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+							                                            </ul>
+							                                        </div>
+							                                        <a href="${contextPath}/task/edit/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            	</a>
+					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+					                                            	</a>
+		                                        				</td>
+					                                            <td style="vertical-align: middle;">
+					                                            	<c:choose>
+						                                            	<c:when test="${task.status == 0}">
+						                                            		<span class="label label-info">New</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 1}">
+						                                            		<span class="label label-primary">Ongoing</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 2}">
+						                                            		<span class="label label-success">Completed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 3}">
+						                                            		<span class="label label-danger">Failed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 4}">
+						                                            		<h6>Cancelled</h6>
+						                                            	</c:when>
+						                                            </c:choose>
+					                                            </td>
+					                                            <td>${task.content}</td>
+					                                            <td>
+					                                            	<c:choose>
+					                                            		<c:when test="${!empty task.teams}">
+					                                            			<c:forEach items="${task.teams}" var="taskTeam">
+					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
+							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${taskTeam.name}
+							                                            	<br/>
+					                                            			</c:forEach>
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.teams}">
+					                                            			<h5>No team assigned.</h5>
+					                                            		</c:when>
+					                                            	</c:choose>
+					                                            </td>
+					                                            <td>
+					                                            	<c:choose>
+					                                            		<c:when test="${!empty task.staff}">
+					                                            			<c:forEach items="${task.staff}" var="taskStaff">
+					                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+					                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
+							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${taskStaffName}
+							                                            	<br/>
+					                                            			</c:forEach>
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.staff}">
+					                                            			<h5>No manager assigned.</h5>
+					                                            		</c:when>
+					                                            	</c:choose>					                                            
+					                                            </td>
+					                                            <td>${task.dateStart}</td>
+					                                            <td>${task.dateEnd}</td>
+					                                        </tr>
+		                                        		</c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_5">
                                     <!-- The time line -->
