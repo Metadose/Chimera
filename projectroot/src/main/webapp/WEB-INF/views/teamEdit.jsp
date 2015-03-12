@@ -457,7 +457,7 @@
 			                                            <th>Content</th>
 			                                            <th>Project</th>
 			                                            <th>Start</th>
-			                                            <th>End</th>
+			                                            <th>Duration</th>
 			                                        </tr>
 		                                    	</thead>
 		                                        <tbody>
@@ -521,7 +521,7 @@
 					                                            	</c:choose>					                                            
 					                                            </td>
 					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.dateEnd}</td>
+					                                            <td>${task.duration}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 	                                        		</c:if>

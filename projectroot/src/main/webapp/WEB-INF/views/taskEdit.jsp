@@ -86,13 +86,8 @@
 					                                            </div>
 					                                            <input type="text" id="date-mask" class="form-control" name="dateStart" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask" value="${task.dateStart}"/>
 					                                        </div>
-					                                        <label>End</label>
-					                                        <div class="input-group">
-					                                            <div class="input-group-addon">
-					                                                <i class="fa fa-calendar"></i>
-					                                            </div>
-					                                            <input type="text" id="date-mask2" class="form-control" name="dateEnd" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask value="${task.dateEnd}"/>
-					                                        </div>
+					                                        <label>Duration (Man Days)</label>
+				                                            <input type="text" class="form-control" name="duration" value="${task.duration}"/><br/>
 				                                        </div>
 				                                    </form>
 				                                    <c:choose>
@@ -427,7 +422,6 @@
 	
 		$(document).ready(function() {
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#date-mask2").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task_status").val("${task.status}");
 	    });
 	</script>

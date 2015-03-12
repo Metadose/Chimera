@@ -492,7 +492,7 @@
 			                                            <th>Project</th>
 			                                            <th>Team</th>
 			                                            <th>Start</th>
-			                                            <th>End</th>
+			                                            <th>Duration</th>
 			                                        </tr>
 			                                        <c:set var="taskList" value="${staff.tasks}"/>
 				                                	<c:if test="${!empty taskList}">
@@ -570,7 +570,7 @@
 					                                            	</c:choose>
 					                                            </td>
 					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.dateEnd}</td>
+					                                            <td>${task.duration}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 	                                        		</c:if>

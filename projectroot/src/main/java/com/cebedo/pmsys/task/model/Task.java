@@ -40,7 +40,7 @@ public class Task {
 	private String title;
 	private String content;
 	private Date dateStart;
-	private Date dateEnd;
+	private int duration;
 	private Project project;
 	private Set<Staff> staff;
 	private Set<Team> teams;
@@ -87,14 +87,13 @@ public class Task {
 		this.dateStart = dateStart;
 	}
 
-	@Column(name = "date_end")
-	@Temporal(TemporalType.DATE)
-	public Date getDateEnd() {
-		return dateEnd;
+	@Column(name = "duration", nullable = false)
+	public int getDuration() {
+		return duration;
 	}
 
-	public void setDateEnd(Date dateEnd) {
-		this.dateEnd = dateEnd;
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

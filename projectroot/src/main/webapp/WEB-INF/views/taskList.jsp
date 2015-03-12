@@ -43,7 +43,7 @@
 	                                            <th>Team</th>
 	                                            <th>Staff</th>
 	                                            <th>Start</th>
-	                                            <th>End</th>
+	                                            <th>Duration</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -137,7 +137,7 @@
 			                                            	</c:choose>
 			                                            </td>
 			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" /></td>
-			                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateEnd}" /></td>
+			                                            <td>${task.duration}</td>
 			                                        </tr>
                                         		</c:forEach>
                                        		</c:if>
@@ -151,7 +151,7 @@
 	                                            <th>Team</th>
 	                                            <th>Staff</th>
 	                                            <th>Start</th>
-	                                            <th>End</th>
+	                                            <th>Duration</th>
                                             </tr>
                                         </tfoot>
                                     </table>

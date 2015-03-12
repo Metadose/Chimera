@@ -10,6 +10,34 @@
 	<c:import url="/resources/css-includes.jsp" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<style type="text/css">
+	/* 	Start of gantt task colors */
+	.gantt-info{
+		border:2px solid #00c0ef;
+		color: #00c0ef;
+		background: #00c0ef;
+	}
+	.gantt-primary{
+		border:2px solid #3c8dbc;
+		color: #3c8dbc;
+		background: #3c8dbc;
+	}
+	.gantt-success{
+		border:2px solid #00a65a;
+		color: #00a65a;
+		background: #00a65a;
+	}
+	.gantt-danger{
+		border:2px solid #f56954;
+		color: #f56954;
+		background: #f56954;
+	}
+	.gantt-default{
+		border:2px solid #666;
+		color: #666;
+		background: #666;
+	}
+	/* 	End of gantt task colors */
+	
 		ul {         
 		    padding:0 0 0 0;
 		    margin:0 0 0 0;
@@ -21,21 +49,6 @@
 		ul li img {
 		    cursor: pointer;
 		}
-		html, body { height: 100%; padding:0px; margin:0px; overflow: hidden; }
-		.gantt_task_cell.day_end, .gantt_task_cell.no_work_hour.day_start{
-			border-right-color: #C7DFFF;
-		}
-		.gantt_task_cell.week_end.day_end, .gantt_task_cell.week_end.day_start{
-			border-right-color: #E2E1E1;
-		}
-		
-		.gantt_task_cell.week_end, .gantt_task_cell.no_work_hour{
-			background-color: #F5F5F5;
-		}
-		.gantt_task_row.gantt_selected .gantt_task_cell.week_end{
-			background-color: #F8EC9C;
-		}
-		html, body{ height:100%; padding:0px; margin:0px; overflow: hidden;}
 	</style>
 </head>
 <body class="skin-blue">
@@ -471,7 +484,6 @@
 					                                            	</c:choose>					                                            
 					                                            </td>
 					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.dateEnd}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 	                                        		</c:if>
@@ -611,7 +623,8 @@
 		                                	<h3 class="box-title">Timeline&nbsp;
 		                                    </h3>
 		                                </div><!-- /.box-header -->
-		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
+<!-- 		                                <div id="gantt-chart" style='width:1000px; height:400px;'> -->
+		                                <div id="gantt-chart" class="box-body table-responsive">
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
@@ -823,6 +836,10 @@
         </aside>
 	</div>
 	<c:import url="/resources/js-includes.jsp" />
+	<!-- InputMask -->
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script>
 		function submitAjax(id) {
@@ -882,6 +899,7 @@
 			$("#managers-table").dataTable();
 			$("#teams-table").dataTable();
 			$("#tasks-table").dataTable();
+			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#project_status").val("${project.status}");
 			
 			$('li img').on('click',function(){
@@ -1083,11 +1101,12 @@
     </script>
     
 	<!-- Generate the data to be used by the gantt. -->
-	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', start_date:'02-01-2015', duration:18},"/>
+	<fmt:formatDate pattern="dd-MM-yyyy" value="${project.dateStart}" var="projectDateStart"/>
+	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', start_date:'${projectDateStart}', open: true, duration:0},"/>
     <c:if test="${!empty project.assignedTasks}">
     	<c:forEach var="task" items="${project.assignedTasks}">
     		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
-    		<c:set var="taskRow" value="{id:'${task.id}', text:'${fn:escapeXml(task.title)}', start_date:'${taskDateStart}', duration:8, parent:'${project.id}'},"/>
+    		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${project.id}'},"/>
     		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
     	</c:forEach>
     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
@@ -1097,150 +1116,43 @@
    	
     <script type="text/javascript">
     var tasks = ${ganttData};
-    var demo_tasks = {
-    		"data":[
-    			{"id":11, "text":"Project #1", "start_date":"28-03-2013", "duration":"11", "progress": 0.6, "open": true},
-    			{"id":1, "text":"Project #2", "start_date":"01-04-2013", "duration":"18", "progress": 0.4, "open": true},
-
-    			{"id":2, "text":"Task #1", "start_date":"02-04-2013", "duration":"8", "parent":"1", "progress":0.5, "open": true},
-    			{"id":3, "text":"Task #2", "start_date":"11-04-2013", "duration":"8", "parent":"1", "progress": 0.6, "open": true},
-    			{"id":4, "text":"Task #3", "start_date":"13-04-2013", "duration":"6", "parent":"1", "progress": 0.5, "open": true},
-    			{"id":5, "text":"Task #1.1", "start_date":"02-04-2013", "duration":"7", "parent":"2", "progress": 0.6, "open": true},
-    			{"id":6, "text":"Task #1.2", "start_date":"03-04-2013", "duration":"7", "parent":"2", "progress": 0.6, "open": true},
-    			{"id":7, "text":"Task #2.1", "start_date":"11-04-2013", "duration":"8", "parent":"3", "progress": 0.6, "open": true},
-    			{"id":8, "text":"Task #3.1", "start_date":"14-04-2013", "duration":"5", "parent":"4", "progress": 0.5, "open": true},
-    			{"id":9, "text":"Task #3.2", "start_date":"14-04-2013", "duration":"4", "parent":"4", "progress": 0.5, "open": true},
-    			{"id":10, "text":"Task #3.3", "start_date":"14-04-2013", "duration":"3", "parent":"4", "progress": 0.5, "open": true},
-    			
-    			{"id":12, "text":"Task #1", "start_date":"03-04-2013", "duration":"5", "parent":"11", "progress": 1, "open": true},
-    			{"id":13, "text":"Task #2", "start_date":"02-04-2013", "duration":"7", "parent":"11", "progress": 0.5, "open": true},
-    			{"id":14, "text":"Task #3", "start_date":"02-04-2013", "duration":"6", "parent":"11", "progress": 0.8, "open": true},
-    			{"id":15, "text":"Task #4", "start_date":"02-04-2013", "duration":"5", "parent":"11", "progress": 0.2, "open": true},
-    			{"id":16, "text":"Task #5", "start_date":"02-04-2013", "duration":"7", "parent":"11", "progress": 0, "open": true},
-
-    			{"id":17, "text":"Task #2.1", "start_date":"03-04-2013", "duration":"2", "parent":"13", "progress": 1, "open": true},
-    			{"id":18, "text":"Task #2.2", "start_date":"06-04-2013", "duration":"3", "parent":"13", "progress": 0.8, "open": true},
-    			{"id":19, "text":"Task #2.3", "start_date":"10-04-2013", "duration":"4", "parent":"13", "progress": 0.2, "open": true},
-    			{"id":20, "text":"Task #2.4", "start_date":"10-04-2013", "duration":"4", "parent":"13", "progress": 0, "open": true},
-    			{"id":21, "text":"Task #4.1", "start_date":"03-04-2013", "duration":"4", "parent":"15", "progress": 0.5, "open": true},
-    			{"id":22, "text":"Task #4.2", "start_date":"03-04-2013", "duration":"4", "parent":"15", "progress": 0.1, "open": true},
-    			{"id":23, "text":"Task #4.3", "start_date":"03-04-2013", "duration":"5", "parent":"15", "progress": 0, "open": true}
-    		],
-    		"links":[
-    			{"id":"1","source":"1","target":"2","type":"1"},
-    			{"id":"2","source":"2","target":"3","type":"0"},
-    			{"id":"3","source":"3","target":"4","type":"0"},
-    			{"id":"4","source":"2","target":"5","type":"2"},
-    			{"id":"5","source":"2","target":"6","type":"2"},
-    			{"id":"6","source":"3","target":"7","type":"2"},
-    			{"id":"7","source":"4","target":"8","type":"2"},
-    			{"id":"8","source":"4","target":"9","type":"2"},
-    			{"id":"9","source":"4","target":"10","type":"2"},
-    			{"id":"10","source":"11","target":"12","type":"1"},
-    			{"id":"11","source":"11","target":"13","type":"1"},
-    			{"id":"12","source":"11","target":"14","type":"1"},
-    			{"id":"13","source":"11","target":"15","type":"1"},
-    			{"id":"14","source":"11","target":"16","type":"1"},
-    			{"id":"15","source":"13","target":"17","type":"1"},
-    			{"id":"16","source":"17","target":"18","type":"0"},
-    			{"id":"17","source":"18","target":"19","type":"0"},
-    			{"id":"18","source":"19","target":"20","type":"0"},
-    			{"id":"19","source":"15","target":"21","type":"2"},
-    			{"id":"20","source":"15","target":"22","type":"2"},
-    			{"id":"21","source":"15","target":"23","type":"2"}
-    		]
-    	};
-
-    	var users_data = {
-    		"data":[
-    			{"id":1, "text":"Project #1", "start_date":"01-04-2013", "duration":"11", "progress": 0.6, "open": true, "users": ["John", "Mike", "Anna"], "priority": "2"},
-    			{"id":2, "text":"Task #1", "start_date":"03-04-2013", "duration":"5", "parent":"1", "progress": 1, "open": true, "users": ["John", "Mike"], "priority": "1"},
-    			{"id":3, "text":"Task #2", "start_date":"02-04-2013", "duration":"7", "parent":"1", "progress": 0.5, "open": true, "users": ["Anna"], "priority": "1"},
-    			{"id":4, "text":"Task #3", "start_date":"02-04-2013", "duration":"6", "parent":"1", "progress": 0.8, "open": true, "users": ["Mike", "Anna"], "priority": "2"},
-    			{"id":5, "text":"Task #4", "start_date":"02-04-2013", "duration":"5", "parent":"1", "progress": 0.2, "open": true, "users": ["John"], "priority": "3"},
-    			{"id":6, "text":"Task #5", "start_date":"02-04-2013", "duration":"7", "parent":"1", "progress": 0, "open": true, "users": ["John"], "priority": "2"},
-    			{"id":7, "text":"Task #2.1", "start_date":"03-04-2013", "duration":"2", "parent":"3", "progress": 1, "open": true, "users": ["Mike", "Anna"], "priority": "2"},
-    			{"id":8, "text":"Task #2.2", "start_date":"06-04-2013", "duration":"3", "parent":"3", "progress": 0.8, "open": true, "users": ["Anna"], "priority": "3"},
-    			{"id":9, "text":"Task #2.3", "start_date":"10-04-2013", "duration":"4", "parent":"3", "progress": 0.2, "open": true, "users": ["Mike", "Anna"], "priority": "1"},
-    			{"id":10, "text":"Task #2.4", "start_date":"10-04-2013", "duration":"4", "parent":"3", "progress": 0, "open": true, "users": ["John", "Mike"], "priority": "1"},
-    			{"id":11, "text":"Task #4.1", "start_date":"03-04-2013", "duration":"4", "parent":"5", "progress": 0.5, "open": true, "users": ["John", "Anna"], "priority": "3"},
-    			{"id":12, "text":"Task #4.2", "start_date":"03-04-2013", "duration":"4", "parent":"5", "progress": 0.1, "open": true, "users": ["John"], "priority": "3"},
-    			{"id":13, "text":"Task #4.3", "start_date":"03-04-2013", "duration":"5", "parent":"5", "progress": 0, "open": true, "users": ["Anna"], "priority": "3"}
-    		],
-    		"links":[
-    			{"id":"10","source":"11","target":"12","type":"1"},
-    			{"id":"11","source":"11","target":"13","type":"1"},
-    			{"id":"12","source":"11","target":"14","type":"1"},
-    			{"id":"13","source":"11","target":"15","type":"1"},
-    			{"id":"14","source":"11","target":"16","type":"1"},
-
-    			{"id":"15","source":"13","target":"17","type":"1"},
-    			{"id":"16","source":"17","target":"18","type":"0"},
-    			{"id":"17","source":"18","target":"19","type":"0"},
-    			{"id":"18","source":"19","target":"20","type":"0"},
-    			{"id":"19","source":"15","target":"21","type":"2"},
-    			{"id":"20","source":"15","target":"22","type":"2"},
-    			{"id":"21","source":"15","target":"23","type":"2"}
-    		]
-    	};
-    	
-    	
-	gantt.config.work_time = true;
-	gantt.setWorkTime({hours : [8, 12, 13, 17]});//global working hours. 8:00-12:00, 13:00-17:00
-
-	gantt.config.scale_unit = "day";
-	gantt.config.date_scale = "%l, %F %d";
-	gantt.config.min_column_width = 20;
-	gantt.config.duration_unit = "hour";
-	gantt.config.scale_height = 20*3;
-
-	gantt.templates.task_cell_class = function(task, date){
-		var css = [];
-		if(date.getHours() == 7){
-			css.push("day_start");
-		}
-		if(date.getHours() == 16){
-			css.push("day_end");
-		}
-		if(!gantt.isWorkTime(date, 'day')){
-			css.push("week_end");
-		}else if(!gantt.isWorkTime(date, 'hour')){
-			css.push("no_work_hour");
-		}
-		return css.join(" ");
-	};
-
-	var weekScaleTemplate = function(date){
-		var dateToStr = gantt.date.date_to_str("%d %M");
-		var weekNum = gantt.date.date_to_str("(week %W)");
-		var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
-		return dateToStr(date) + " - " + dateToStr(endDate) + " " + weekNum(date);
-	};
-
+	
+	gantt.config.scale_unit = "month";
+	gantt.config.date_scale = "%F, %Y";
+	gantt.config.scale_height = 50;
 	gantt.config.subscales = [
-		{unit:"week", step:1, template:weekScaleTemplate},
-		{unit:"hour", step:1, date:"%G"}
+		{unit:"day", step:1, date:"%j, %D" }
 	];
-
-	function showAll(){
-		gantt.ignore_time = null;
-		gantt.render();
-	}
 	
-	function hideWeekEnds(){
-		gantt.ignore_time = function(date){
-			return !gantt.isWorkTime(date, "day");
-		};
-		gantt.render();
-	}
+	gantt.config.columns = [
+        {name:"text",       label:" ",  width:"*", tree:true },
+        {name:"start_date", label:"Start", align: "center" },
+        {name:"duration",   label:"Man Days",   align: "center" },
+        {name:"add",        label:"",           width:44 }
+    ];
 	
-	function hideNotWorkingTime(){
-		gantt.ignore_time = function(date){
-			return !gantt.isWorkTime(date);
-		};
-		gantt.render();
-	}
-
+	gantt.templates.task_text = function(start, end, task){
+		if(typeof task.content !== "undefined"){
+			return "<b>"+task.text+"</b> ("+task.content+")";	
+		}
+		return "<b>"+task.text+"</b>";
+	};
+	
+	// Returned string refers to a CSS declared above.
+	gantt.templates.task_class = function(start, end, task){
+		if(task.status == 0){
+			return "gantt-info";
+		} else if(task.status == 1) {
+			return "gantt-primary";
+		} else if(task.status == 2) {
+			return "gantt-success";
+		} else if(task.status == 3) {
+			return "gantt-danger";
+		} else if(task.status == 4) {
+			return "gantt-default";
+		}
+	};
+	
 	gantt.init("gantt-chart");
 	gantt.parse(tasks);
 </script>
