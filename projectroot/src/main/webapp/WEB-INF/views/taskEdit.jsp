@@ -73,6 +73,9 @@
 						                                    	<option value="3">Failed</option>
 						                                    	<option value="4">Cancelled</option>
 				                                            </select><br/>
+				                                            <label>Title</label>
+				                                            <input type="text" class="form-control" name="title" value="${task.title}"/><br/>
+				                                            
 				                                            <label>Content</label>
 				                                            <input type="text" class="form-control" name="content" value="${task.content}"/><br/>
 				                                            

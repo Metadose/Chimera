@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -1081,7 +1082,21 @@
         });
     </script>
     
+	<!-- Generate the data to be used by the gantt. -->
+	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', start_date:'02-01-2015', duration:18},"/>
+    <c:if test="${!empty project.assignedTasks}">
+    	<c:forEach var="task" items="${project.assignedTasks}">
+    		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
+    		<c:set var="taskRow" value="{id:'${task.id}', text:'${fn:escapeXml(task.title)}', start_date:'${taskDateStart}', duration:8, parent:'${project.id}'},"/>
+    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
+    	</c:forEach>
+    	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
+    </c:if>
+    <c:set var="ganttEnd" value="]"/>
+   	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
+   	
     <script type="text/javascript">
+    var tasks = ${ganttData};
     var demo_tasks = {
     		"data":[
     			{"id":11, "text":"Project #1", "start_date":"28-03-2013", "duration":"11", "progress": 0.6, "open": true},
@@ -1205,7 +1220,6 @@
 	gantt.config.subscales = [
 		{unit:"week", step:1, template:weekScaleTemplate},
 		{unit:"hour", step:1, date:"%G"}
-
 	];
 
 	function showAll(){
@@ -1228,7 +1242,7 @@
 	}
 
 	gantt.init("gantt-chart");
-	gantt.parse(demo_tasks);
+	gantt.parse(tasks);
 </script>
 </body>
 </html>

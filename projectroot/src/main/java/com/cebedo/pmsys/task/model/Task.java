@@ -37,6 +37,7 @@ public class Task {
 	public static final String COLUMN_STATUS = "status";
 
 	private long id;
+	private String title;
 	private String content;
 	private Date dateStart;
 	private Date dateEnd;
@@ -56,6 +57,15 @@ public class Task {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	@Column(name = "title", nullable = false)
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	@Column(name = "content", nullable = false)
