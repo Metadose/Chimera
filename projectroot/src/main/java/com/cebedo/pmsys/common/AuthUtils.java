@@ -7,6 +7,7 @@ import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.task.model.Task;
@@ -120,6 +121,16 @@ public abstract class AuthUtils {
 	}
 
 	public static boolean isActionAuthorized(Photo obj) {
+		AuthenticationToken auth = getAuth();
+		if (auth.isSuperAdmin()) {
+			return true;
+		} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isActionAuthorized(Subcontractor obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;

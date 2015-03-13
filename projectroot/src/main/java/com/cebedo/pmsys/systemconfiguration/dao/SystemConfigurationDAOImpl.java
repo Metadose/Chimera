@@ -51,7 +51,8 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 	@Override
 	public void delete(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SystemConfiguration systemConfiguration = getByID(id);
+		SystemConfiguration systemConfiguration = (SystemConfiguration) session
+				.load(SystemConfiguration.class, new Long(id));
 		if (systemConfiguration != null) {
 			session.delete(systemConfiguration);
 		}
