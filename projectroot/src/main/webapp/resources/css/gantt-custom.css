@@ -1,0 +1,29 @@
+@CHARSET "ISO-8859-1";
+
+/* 	Start of gantt task colors */
+.gantt-info{
+	border:2px solid #00c0ef;
+	color: #00c0ef;
+	background: #00c0ef;
+}
+.gantt-primary{
+	border:2px solid #3c8dbc;
+	color: #3c8dbc;
+	background: #3c8dbc;
+}
+.gantt-success{
+	border:2px solid #00a65a;
+	color: #00a65a;
+	background: #00a65a;
+}
+.gantt-danger{
+	border:2px solid #f56954;
+	color: #f56954;
+	background: #f56954;
+}
+.gantt-default{
+	border:2px solid #666;
+	color: #666;
+	background: #666;
+}
+/* 	End of gantt task colors */

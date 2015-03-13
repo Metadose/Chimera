@@ -8,49 +8,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Staff ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
+	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
-	<style type="text/css">
-	/* 	Start of gantt task colors */
-	.gantt-info{
-		border:2px solid #00c0ef;
-		color: #00c0ef;
-		background: #00c0ef;
-	}
-	.gantt-primary{
-		border:2px solid #3c8dbc;
-		color: #3c8dbc;
-		background: #3c8dbc;
-	}
-	.gantt-success{
-		border:2px solid #00a65a;
-		color: #00a65a;
-		background: #00a65a;
-	}
-	.gantt-danger{
-		border:2px solid #f56954;
-		color: #f56954;
-		background: #f56954;
-	}
-	.gantt-default{
-		border:2px solid #666;
-		color: #666;
-		background: #666;
-	}
-	/* 	End of gantt task colors */
-	</style>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
-		<!-- Content Header (Page header) -->
-<!-- 	        <section class="content-header"> -->
-<!-- 	            <h1> -->
-<%-- 	                Staff ${action} --%>
-<!-- 	                <small>Complete list of all staff members</small> -->
-<!-- 	            </h1> -->
-<!-- 	        </section>   -->
 	         <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
@@ -58,7 +23,6 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_list" data-toggle="tab">List</a></li>
-<!--                                 TODO -->
                                 <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
                             </ul>
                             <div class="tab-content">
@@ -158,16 +122,9 @@
                      </div>
                  </div>
               </section>
-	        
-	        
-	        
-<!-- 	        <section class="content">  -->
-                
-<!--             </section>/.content -->
         </aside>
 	</div>
-	<c:import url="/resources/js-includes.jsp" />
-	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+	
 	<!-- Generate the data to be used by the gantt. -->
 	<c:set var="ganttData" value="'data':["/>
     <c:if test="${!empty staffList}">
@@ -186,65 +143,18 @@
     <c:set var="ganttEnd" value="]"/>
    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
    	
+	<!-- Javascript components -->
+   	<c:import url="/resources/js-includes.jsp" />
+	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	<script type="text/javascript">
-	function sleep(milliseconds) {
-	  var start = new Date().getTime();
-	  for (var i = 0; i < 1e7; i++) {
-	    if ((new Date().getTime() - start) > milliseconds){
-	      break;
-	    }
-	  }
-	}
-	
-    var tasks = ${ganttData};
-	gantt.config.scale_unit = "month";
-	gantt.config.date_scale = "%F, %Y";
-	gantt.config.scale_height = 50;
-	gantt.config.subscales = [
-		{unit:"day", step:1, date:"%j, %D" }
-	];
-	
-	gantt.config.columns = [
-        {name:"text",       label:" ",  width:"*", tree:true },
-        {name:"start_date", label:"Start", align: "center" },
-        {name:"duration",   label:"Man Days",   align: "center" },
-        {name:"add",        label:"",           width:44 }
-    ];
-	
-	gantt.templates.task_text = function(start, end, task){
-		if(typeof task.content !== "undefined"){
-			return "<b>"+task.text+"</b> ("+task.content+")";	
-		}
-		return "<b>"+task.text+"</b>";
-	};
-	
-	// Returned string refers to a CSS declared above.
-	gantt.templates.task_class = function(start, end, task){
-		if(task.status == 0){
-			return "gantt-info";
-		} else if(task.status == 1) {
-			return "gantt-primary";
-		} else if(task.status == 2) {
-			return "gantt-success";
-		} else if(task.status == 3) {
-			return "gantt-danger";
-		} else if(task.status == 4) {
-			return "gantt-default";
-		}
-	};
-	gantt.init("gantt-chart");
-    gantt.parse(tasks);
-	
-	$(document).ready(function() {
-		$("#example-1").dataTable();
-	});
-	
-	var ganttRendered = false;
-	$("#tab_timeline-href").mouseout(function() {
-		if(!ganttRendered){
-			gantt.render();
-		}
-	});
-</script>
+	    var tasks = ${ganttData};
+		gantt.init("gantt-chart");
+	    gantt.parse(tasks);
+		$(document).ready(function() {
+			$("#example-1").dataTable();
+		});
+	</script>
 </body>
 </html>
