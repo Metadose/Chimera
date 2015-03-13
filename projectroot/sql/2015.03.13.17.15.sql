@@ -187,7 +187,7 @@ CREATE TABLE `project_files` (
   CONSTRAINT `FK_project_files` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_project_files_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_staff_files` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `projects` */
 
@@ -205,7 +205,7 @@ CREATE TABLE `projects` (
   PRIMARY KEY (`project_id`),
   KEY `FK_projects_company` (`company_id`),
   CONSTRAINT `FK_projects_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `staff` */
 
@@ -241,7 +241,7 @@ CREATE TABLE `system_configuration` (
   UNIQUE KEY `name` (`name`),
   KEY `FK_system_configuration_company` (`company_id`),
   CONSTRAINT `FK_system_configuration_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `system_users` */
 
@@ -269,9 +269,10 @@ DROP TABLE IF EXISTS `tasks`;
 
 CREATE TABLE `tasks` (
   `task_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(64) NOT NULL,
   `content` varchar(255) NOT NULL,
   `date_start` date NOT NULL,
-  `date_end` date NOT NULL,
+  `duration` int(8) NOT NULL DEFAULT '0',
   `project_id` bigint(20) DEFAULT NULL,
   `status` int(2) NOT NULL DEFAULT '0',
   `company_id` bigint(20) DEFAULT NULL,
@@ -280,7 +281,7 @@ CREATE TABLE `tasks` (
   KEY `FK_tasks_company` (`company_id`),
   CONSTRAINT `FK_tasks_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_tasks_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `teams` */
 
