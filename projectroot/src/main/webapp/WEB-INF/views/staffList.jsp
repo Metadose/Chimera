@@ -187,6 +187,15 @@
    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
    	
 	<script type="text/javascript">
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	}
+	
     var tasks = ${ganttData};
 	gantt.config.scale_unit = "month";
 	gantt.config.date_scale = "%F, %Y";
@@ -225,15 +234,16 @@
 	};
 	gantt.init("gantt-chart");
     gantt.parse(tasks);
-</script>
-<script>
+	
 	$(document).ready(function() {
 		$("#example-1").dataTable();
 	});
-	$(function() {
-	    $('#tab_timeline-href').bind('click', function (e) {
-	        gantt.render();
-	    });
+	
+	var ganttRendered = false;
+	$("#tab_timeline-href").mouseout(function() {
+		if(!ganttRendered){
+			gantt.render();
+		}
 	});
 </script>
 </body>
