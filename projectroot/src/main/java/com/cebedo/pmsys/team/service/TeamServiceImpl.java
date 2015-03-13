@@ -162,4 +162,14 @@ public class TeamServiceImpl implements TeamService {
 		return new ArrayList<Team>();
 	}
 
+	@Override
+	@Transactional
+	public List<Team> listWithTasks() {
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.teamDAO.listWithTasks(null);
+		}
+		return this.teamDAO.listWithTasks(token.getCompany().getId());
+	}
+
 }

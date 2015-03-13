@@ -28,4 +28,6 @@ public interface TeamDAO {
 	public void unassignAllMembers(long teamID);
 
 	public void unassignAllTeamsFromProject(long teamID);
+
+	public List<Team> listWithTasks(Long companyID);
 }

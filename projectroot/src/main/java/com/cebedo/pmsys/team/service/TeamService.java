@@ -33,4 +33,6 @@ public interface TeamService {
 
 	public List<Team> listUnassignedInProject(Long companyID, Project project);
 
+	public List<Team> listWithTasks();
+
 }

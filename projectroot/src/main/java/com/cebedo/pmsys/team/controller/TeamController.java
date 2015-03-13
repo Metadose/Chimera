@@ -67,7 +67,7 @@ public class TeamController {
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listTeams(Model model) {
-		model.addAttribute(ATTR_LIST, this.teamService.list());
+		model.addAttribute(ATTR_LIST, this.teamService.listWithTasks());
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;

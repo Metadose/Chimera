@@ -127,4 +127,16 @@ public class TeamDAOImpl implements TeamDAO {
 		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
 		query.executeUpdate();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Team> listWithTasks(Long companyID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> teamList = QueryUtils.getSelectQueryFilterCompany(session,
+				Team.class.getName(), companyID).list();
+		for (Team team : teamList) {
+			Hibernate.initialize(team.getTasks());
+		}
+		return teamList;
+	}
 }

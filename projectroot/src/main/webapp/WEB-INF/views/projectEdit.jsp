@@ -79,7 +79,7 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
+                                	<h2 class="box-header">&nbsp;</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
@@ -350,7 +350,7 @@
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Tasks&nbsp;
+		                                	<h3 class="box-title">&nbsp;
 		                                    <table>
 		                                    	<tr>
 		                                    		<td>
@@ -608,7 +608,7 @@
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Timeline&nbsp;
+		                                	<h3 class="box-title">&nbsp;
 		                                    </h3>
 		                                </div><!-- /.box-header -->
 		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
@@ -619,7 +619,7 @@
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Managers&nbsp;
+		                                	<h3 class="box-title">&nbsp;
 		                                    <table>
 		                                    	<tr>
 		                                    		<td>
@@ -730,7 +730,7 @@
                                 <div class="tab-pane" id="tab_teams">
                                 	<div class="box">
 		                                <div class="box-header">
-		                                	<h3 class="box-title">Teams&nbsp;
+		                                	<h3 class="box-title">&nbsp;
 		                                    <table>
 		                                    	<tr>
 		                                    		<td>
@@ -823,6 +823,14 @@
             </section><!-- /.content -->
         </aside>
 	</div>
+	
+	<c:import url="/resources/js-includes.jsp" />
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
+
+	<c:if test="${project.id != 0}">
 	<!-- Generate the data to be used by the gantt. -->
 	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', open: true, duration:0},"/>
     <c:if test="${!empty project.assignedTasks}">
@@ -835,20 +843,19 @@
     </c:if>
     <c:set var="ganttEnd" value="]"/>
    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
-	
-	<c:import url="/resources/js-includes.jsp" />
-	<!-- InputMask -->
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
-	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+	
 	<script type="text/javascript">
 	    var tasks = ${ganttData};
 		gantt.init("gantt-chart");
 	    gantt.parse(tasks);
-
+	</script>
+	
+   	</c:if>
+	
+	
+	<script type="text/javascript">
 	    // Photos event handler.
 		$(document).on('click', 'a.controls', function(){
 	        var index = $(this).attr('href');
