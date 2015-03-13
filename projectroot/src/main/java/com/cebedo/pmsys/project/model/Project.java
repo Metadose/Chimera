@@ -21,6 +21,8 @@ import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
+import com.cebedo.pmsys.subcontractor.model.SubconProjectAssignment;
+import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
@@ -52,6 +54,7 @@ public class Project implements Serializable {
 	private Set<ProjectFile> files;
 	private Set<Photo> photos;
 	private Company company;
+	private Set<Subcontractor> subcontractor;
 
 	public Project() {
 		;
@@ -203,5 +206,15 @@ public class Project implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@ManyToMany
+	@JoinTable(name = SubconProjectAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Subcontractor> getSubcontractor() {
+		return subcontractor;
+	}
+
+	public void setSubcontractor(Set<Subcontractor> subcontractor) {
+		this.subcontractor = subcontractor;
 	}
 }

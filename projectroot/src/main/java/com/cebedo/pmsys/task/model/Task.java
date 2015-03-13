@@ -23,6 +23,8 @@ import javax.persistence.TemporalType;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.subcontractor.model.SubconTaskAssignment;
+import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.team.model.Team;
 
 @Entity
@@ -47,6 +49,7 @@ public class Task {
 	private int status;
 	private Set<TaskFieldAssignment> fields;
 	private Company company;
+	private Set<Subcontractor> subcontractor;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -174,5 +177,15 @@ public class Task {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@ManyToMany
+	@JoinTable(name = SubconTaskAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<Subcontractor> getSubcontractor() {
+		return subcontractor;
+	}
+
+	public void setSubcontractor(Set<Subcontractor> subcontractor) {
+		this.subcontractor = subcontractor;
 	}
 }
