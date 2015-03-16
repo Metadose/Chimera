@@ -1,6 +1,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- Left side column. contains the logo and sidebar -->
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
+<sec:authentication var="authStaff" property="staff"/>
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -10,9 +13,17 @@
                 <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-                <p>Hello, Jane</p>
-
-                <h6>Engineer</h6>
+            	<c:choose>
+            	 	<c:when test="${!empty authStaff}">
+            	 		<c:set var="staffName" value="${authStaff.prefix} ${authStaff.firstName} ${authStaff.middleName} ${authStaff.lastName} ${authStaff.suffix}"/>
+            	 		<p>Hello, ${staffName}</p>
+            	 		<h6>${authStaff.companyPosition}</h6>
+            	 	</c:when>
+            	 	<c:when test="${empty authStaff}">
+            	 		<p>Hello, ${authUser.username}</p>
+            	 		<h6>No Staff for this User.</h6>
+            	 	</c:when>
+            	</c:choose>
             </div>
         </div>
         <!-- search form -->
@@ -47,12 +58,11 @@
                     <i class="fa fa-tasks"></i> <span>Tasks</span>
                 </a>
             </li>
-            <li>
-                <a href="pages/calendar.html">
-                    <i class="fa fa-calendar"></i> <span>Calendar</span>
-<!--                     <small class="badge pull-right bg-red">3</small> -->
-                </a>
-            </li>
+<!--             <li> -->
+<!--                 <a href="pages/calendar.html"> -->
+<!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->
+<!--                 </a> -->
+<!--             </li> -->
             <li>
                 <a href="${contextPath}/team/list/">
                     <i class="fa fa-users"></i> <span>Teams</span>
