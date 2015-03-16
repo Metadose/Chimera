@@ -3,23 +3,13 @@ package com.cebedo.pmsys.subcontractor.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.cebedo.pmsys.cashflow.expense.model.Expense;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.model.Task;
 
-@Entity
-@Table(name = Subcontractor.TABLE_NAME)
+//@Entity
+//@Table(name = Subcontractor.TABLE_NAME)
 public class Subcontractor implements Serializable {
 
 	public static final String OBJECT_NAME = "subcontractor";
@@ -34,9 +24,9 @@ public class Subcontractor implements Serializable {
 	private Set<Task> tasks;
 	private Set<Expense> expenses;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+	// @Id
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
 	public long getId() {
 		return id;
 	}
@@ -45,7 +35,7 @@ public class Subcontractor implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 64)
+	// @Column(name = "name", nullable = false, length = 64)
 	public String getName() {
 		return name;
 	}
@@ -54,8 +44,8 @@ public class Subcontractor implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+	// @ManyToOne
+	// @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
 		return company;
 	}
@@ -64,7 +54,7 @@ public class Subcontractor implements Serializable {
 		this.company = company;
 	}
 
-	@ManyToMany(mappedBy = "subcontractor")
+	// @ManyToMany(mappedBy = "subcontractor")
 	public Set<Project> getProjects() {
 		return projects;
 	}
@@ -73,7 +63,7 @@ public class Subcontractor implements Serializable {
 		this.projects = projects;
 	}
 
-	@ManyToMany(mappedBy = "subcontractor")
+	// @ManyToMany(mappedBy = "subcontractor")
 	public Set<Task> getTasks() {
 		return tasks;
 	}
@@ -82,7 +72,7 @@ public class Subcontractor implements Serializable {
 		this.tasks = tasks;
 	}
 
-	@ManyToMany(mappedBy = "subcontractor")
+	// @ManyToMany(mappedBy = "subcontractor")
 	public Set<Expense> getExpenses() {
 		return expenses;
 	}

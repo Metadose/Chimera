@@ -64,7 +64,8 @@
                 <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
-                <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value>
+<!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
+<!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -136,12 +137,12 @@
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="subcontractorDAO" class="com.cebedo.pmsys.subcontractor.dao.SubcontractorDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="subcontractorService" class="com.cebedo.pmsys.subcontractor.service.SubcontractorServiceImpl">
-        <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property>
-    </beans:bean>
+<!--     <beans:bean id="subcontractorDAO" class="com.cebedo.pmsys.subcontractor.dao.SubcontractorDAOImpl"> -->
+<!--         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" /> -->
+<!--     </beans:bean> -->
+<!--     <beans:bean id="subcontractorService" class="com.cebedo.pmsys.subcontractor.service.SubcontractorServiceImpl"> -->
+<!--         <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property> -->
+<!--     </beans:bean> -->
     
     <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />

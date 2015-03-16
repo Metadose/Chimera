@@ -5,29 +5,18 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.staff.model.Staff;
-import com.cebedo.pmsys.subcontractor.model.SubconExpenseAssignment;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
-@Entity
-@Table(name = Expense.TABLE_NAME)
+//@Entity
+//@Table(name = Expense.TABLE_NAME)
 public class Expense implements Serializable {
 
 	public static final String OBJECT_NAME = "subcontractor";
@@ -49,9 +38,9 @@ public class Expense implements Serializable {
 	private Set<ProjectFile> files;
 	private Set<Subcontractor> subcontractor;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+	// @Id
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
 	public long getId() {
 		return id;
 	}
@@ -60,7 +49,7 @@ public class Expense implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 64)
+	// @Column(name = "name", nullable = false, length = 64)
 	public String getName() {
 		return name;
 	}
@@ -134,7 +123,7 @@ public class Expense implements Serializable {
 		this.files = files;
 	}
 
-	@Column(name = "description")
+	// @Column(name = "description")
 	public String getDescription() {
 		return description;
 	}
@@ -143,8 +132,8 @@ public class Expense implements Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "date", nullable = false)
-	@Temporal(TemporalType.DATE)
+	// @Column(name = "date", nullable = false)
+	// @Temporal(TemporalType.DATE)
 	public Date getDate() {
 		return date;
 	}
@@ -153,8 +142,11 @@ public class Expense implements Serializable {
 		this.date = date;
 	}
 
-	@ManyToMany
-	@JoinTable(name = SubconExpenseAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	// @ManyToMany
+	// @JoinTable(name = SubconExpenseAssignment.TABLE_NAME, joinColumns = {
+	// @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
+	// @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false,
+	// updatable = false) })
 	public Set<Subcontractor> getSubcontractor() {
 		return subcontractor;
 	}

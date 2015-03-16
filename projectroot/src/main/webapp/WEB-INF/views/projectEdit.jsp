@@ -79,7 +79,6 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="box-header">&nbsp;</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
@@ -349,9 +348,8 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
-		                                <div class="box-header">
-		                                	<h3 class="box-title">&nbsp;
-		                                    <table>
+		                                <div class="box-body table-responsive">
+		                                	<table>
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/task/assign/from/project/">
@@ -373,10 +371,7 @@
 		                                    		</td>
 		                                    		</c:if>
 		                                    	</tr>
-		                                    </table>
-		                                    </h3>
-		                                </div><!-- /.box-header -->
-		                                <div class="box-body table-responsive">
+		                                    </table><br/>
 		                                    <table id="tasks-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
@@ -481,6 +476,7 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
+                                	<div class="box box-default">
                                     <div class="box-body table-responsive">
                                     	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project">
 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
@@ -556,8 +552,11 @@
 	                                        </tfoot>
 	                                    </table>
 	                                </div><!-- /.box-body -->
+	                                </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_4">
+                                	<div class="box box-default">
+                                	<div class="box-body">
                                     <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project">
 										<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 										<label for="exampleInputFile">Upload Photo (20MB Max)</label>
@@ -568,11 +567,7 @@
 									</form>
                                     <br/>
                                     <c:if test="${!empty project.photos}">
-                                   	<div class="box box-default">
-                                    	<div class="box-header">
-           									<h3 class="box-title">Photos</h3>
-           								</div>
-           								<div class="box-body">
+                                    	<br/>
            									<ul class="row">
 									     		<c:forEach items="${project.photos}" var="photo">
 									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
@@ -593,9 +588,9 @@
 													</li>
 									     		</c:forEach>
 										     </ul>
-           								</div>
-       								</div>
        								</c:if>
+       								</div>
+       								</div>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								      <div class="modal-dialog">
 								        <div class="modal-content">         
@@ -606,21 +601,18 @@
 								    </div><!-- /.modal -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
-                                	<div class="box">
-		                                <div class="box-header">
-		                                	<h3 class="box-title">&nbsp;
-		                                    </h3>
-		                                </div><!-- /.box-header -->
+                                	<div class="box box-default">
+		                                <div class="box-body">
 		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
 <!-- 		                                <div id="gantt-chart" class="box-body table-responsive"> -->
 		                                </div><!-- /.box-body -->
+		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
-		                                <div class="box-header">
-		                                	<h3 class="box-title">&nbsp;
-		                                    <table>
+		                                <div class="box-body table-responsive">
+		                                	<table>
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/0">
@@ -667,10 +659,7 @@
 		                                    		</td>
 		                                    		</c:if>
 		                                    	</tr>
-		                                    </table>
-		                                    </h3>
-		                                </div><!-- /.box-header -->
-		                                <div class="box-body table-responsive">
+		                                    </table><br/>
 		                                    <table id="managers-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
@@ -729,9 +718,8 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_teams">
                                 	<div class="box">
-		                                <div class="box-header">
-		                                	<h3 class="box-title">&nbsp;
-		                                    <table>
+		                                <div class="box-body table-responsive">
+		                                	<table>
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/edit/0">
@@ -773,10 +761,7 @@
 		                                    		</td>
 		                                    		</c:if>
 		                                    	</tr>
-		                                    </table>
-		                                    </h3>
-		                                </div><!-- /.box-header -->
-		                                <div class="box-body table-responsive">
+		                                    </table><br/>
 		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
