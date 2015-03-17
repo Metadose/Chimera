@@ -1,3 +1,5 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
@@ -7,6 +9,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Staff ${action}</title>
 	<c:import url="/resources/css-includes.jsp" />
+	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -50,8 +54,7 @@
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
-                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li>
-                                <li><a href="#tab_5" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -343,65 +346,6 @@
                						</c:if>
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
-                                <div class="tab-pane" id="tab_6">
-                                	<div class="row">
-				                        <div class="col-md-3">
-				                            <div class="box box-default">
-				                                <div class="box-header">
-				                                    <h4 class="box-title">Draggable Events</h4>
-				                                </div>
-				                                <div class="box-body">
-				                                    <!-- the events -->
-				                                    <div id='external-events'>
-				                                        <div class='external-event bg-green'>Lunch</div>
-				                                        <div class='external-event bg-red'>Go home</div>
-				                                        <div class='external-event bg-aqua'>Do homework</div>
-				                                        <div class='external-event bg-yellow'>Work on UI design</div>
-				                                        <div class='external-event bg-navy'>Sleep tight</div>
-				                                        <p>
-				                                            <input type='checkbox' id='drop-remove' /> <label for='drop-remove'>remove after drop</label>
-				                                        </p>
-				                                    </div>
-				                                </div><!-- /.box-body -->
-				                            </div><!-- /. box -->
-				                            <div class="box box-default">
-				                                <div class="box-header">
-				                                    <h3 class="box-title">Create Event</h3>
-				                                </div>
-				                                <div class="box-body">
-				                                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-				                                        <button type="button" id="color-chooser-btn" class="btn btn-default btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>
-				                                        <ul class="dropdown-menu" id="color-chooser">
-				                                            <li><a class="text-green" href="#"><i class="fa fa-square"></i> Green</a></li>
-				                                            <li><a class="text-blue" href="#"><i class="fa fa-square"></i> Blue</a></li>
-				                                            <li><a class="text-navy" href="#"><i class="fa fa-square"></i> Navy</a></li>
-				                                            <li><a class="text-yellow" href="#"><i class="fa fa-square"></i> Yellow</a></li>
-				                                            <li><a class="text-orange" href="#"><i class="fa fa-square"></i> Orange</a></li>
-				                                            <li><a class="text-aqua" href="#"><i class="fa fa-square"></i> Aqua</a></li>
-				                                            <li><a class="text-red" href="#"><i class="fa fa-square"></i> Red</a></li>
-				                                            <li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i> Fuchsia</a></li>
-				                                            <li><a class="text-purple" href="#"><i class="fa fa-square"></i> Purple</a></li>
-				                                        </ul>
-				                                    </div><!-- /btn-group -->
-				                                    <div class="input-group">
-				                                        <input id="new-event" type="text" class="form-control" placeholder="Event Title">
-				                                        <div class="input-group-btn">
-				                                            <button id="add-new-event" type="button" class="btn btn-default btn-flat">Add</button>
-				                                        </div><!-- /btn-group -->
-				                                    </div><!-- /input-group -->
-				                                </div>
-				                            </div>
-				                        </div><!-- /.col -->
-				                        <div class="col-md-9">
-				                            <div class="box box-default">
-				                                <div class="box-body no-padding">
-				                                    <!-- THE CALENDAR -->
-				                                    <div id="calendar"></div>
-				                                </div><!-- /.box-body -->
-				                            </div><!-- /. box -->
-				                        </div><!-- /.col -->
-				                    </div><!-- /.row -->
-                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_7">
                                 	<div class="box">
 		                                <div class="box-header">
@@ -579,102 +523,14 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_5">
-                                    <!-- The time line -->
-		                            <ul class="timeline">
-		                                <!-- timeline time label -->
-		                                <li class="time-label">
-		                                    <span class="bg-red">
-		                                        10 Feb. 2014
-		                                    </span>
-		                                </li>
-		                                <!-- /.timeline-label -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-envelope bg-blue"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
-		                                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you and email</h3>
-		                                        <div class="timeline-body">
-		                                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-		                                            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-		                                            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-		                                            quora plaxo ideeli hulu weebly balihoo...
-		                                        </div>
-		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-default btn-flat btn-xs">Read more</a>
-		                                            <a class="btn btn-default btn-flat btn-xs">Delete</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-user bg-aqua"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-		                                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-comments bg-yellow"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-		                                        <div class="timeline-body">
-		                                            Take me to your leader!
-		                                            Switzerland is small and neutral!
-		                                            We are more like Germany, ambitious and misunderstood!
-		                                        </div>
-		                                        <div class='timeline-footer'>
-		                                            <a class="btn btn-default btn-flat btn-flat btn-xs">View comment</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline time label -->
-		                                <li class="time-label">
-		                                    <span class="bg-green">
-		                                        3 Jan. 2014
-		                                    </span>
-		                                </li>
-		                                <!-- /.timeline-label -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-camera bg-purple"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 2 days ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-		                                        <div class="timeline-body">
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin' />
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                            <img src="http://placehold.it/150x100" alt="..." class='margin'/>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <!-- timeline item -->
-		                                <li>
-		                                    <i class="fa fa-video-camera bg-maroon"></i>
-		                                    <div class="timeline-item">
-		                                        <span class="time"><i class="fa fa-clock-o"></i> 5 days ago</span>
-		                                        <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-		                                        <div class="timeline-body">
-<!-- 		                                            <iframe width="300" height="169" src="//www.youtube.com/embed/fLe_qO4AE-M" frameborder="0" allowfullscreen></iframe> -->
-		                                        </div>
-		                                        <div class="timeline-footer">
-		                                            <a href="#" class="btn btn-xs bg-maroon">See comments</a>
-		                                        </div>
-		                                    </div>
-		                                </li>
-		                                <!-- END timeline item -->
-		                                <li>
-		                                    <i class="fa fa-clock-o"></i>
-		                                </li>
-		                            </ul>
+                                <div class="tab-pane" id="tab_timeline">
+                                	<div class="box box-default">
+		                                <div class="box-body">
+		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
+<!-- 		                                <div id="gantt-chart" class="box-body table-responsive"> -->
+		                                </div><!-- /.box-body -->
+		                                </div>
+		                            </div>
                                 </div><!-- /.tab-pane -->
                                 </c:if>
                             </div><!-- /.tab-content -->
@@ -685,6 +541,31 @@
         </aside>
 	</div>
 	<c:import url="/resources/js-includes.jsp" />
+	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
+	
+	<c:if test="${staff.id != 0}">
+	<!-- Generate the data to be used by the gantt. -->
+	<c:set var="ganttData" value="'data':[{id:'${staff.id}', text:'${fn:escapeXml(staffName)}', open: true, duration:0},"/>
+    <c:if test="${!empty staff.tasks}">
+    	<c:forEach var="task" items="${staff.tasks}">
+    		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
+    		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${staff.id}'},"/>
+    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
+    	</c:forEach>
+    	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
+    </c:if>
+    <c:set var="ganttEnd" value="]"/>
+   	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
+   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+	
+	<script type="text/javascript">
+	    var tasks = ${ganttData};
+		gantt.init("gantt-chart");
+	    gantt.parse(tasks);
+	</script>
+   	</c:if>
+   	
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();
@@ -702,233 +583,10 @@
 				}
 			});
 		}
-	
-		$(document).on('click', 'a.controls', function(){
-	        var index = $(this).attr('href');
-	        var src = $('ul.row li:nth-child('+ index +') img').attr('src');             
-	        
-	        $('.modal-body img').attr('src', src);
-	        
-	        var newPrevIndex = parseInt(index) - 1; 
-	        var newNextIndex = parseInt(newPrevIndex) + 2; 
-	        
-	        if($(this).hasClass('previous')){               
-	            $(this).attr('href', newPrevIndex); 
-	            $('a.next').attr('href', newNextIndex);
-	        }else{
-	            $(this).attr('href', newNextIndex); 
-	            $('a.previous').attr('href', newPrevIndex);
-	        }
-	        
-	        var total = $('ul.row li').length + 1; 
-	        //hide next button
-	        if(total === newNextIndex){
-	            $('a.next').hide();
-	        }else{
-	            $('a.next').show()
-	        }            
-	        //hide previous button
-	        if(newPrevIndex === 0){
-	            $('a.previous').hide();
-	        }else{
-	            $('a.previous').show()
-	        }
-	        
-	        
-	        return false;
-	    });
 		
 		$(document).ready(function() {
 			$("#example-1").dataTable();
-			
-			$('li img').on('click',function(){
-                var src = $(this).attr('src');
-                var img = '<img src="' + src + '" class="img-responsive"/>';
-                
-                //start of new code new code
-                var index = $(this).parent('li').index();   
-                
-                var html = '';
-                html += img;                
-                html += '<div style="height:25px;clear:both;display:block;">';
-                html += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
-                html += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
-                html += '</div>';
-                html += '<button class="btn btn-default btn-flat btn-sm">Delete</button>';
-                
-                $('#myModal').modal();
-                $('#myModal').on('shown.bs.modal', function(){
-                    $('#myModal .modal-body').html(html);
-                    //new code
-                    $('a.controls').trigger('click');
-                })
-                $('#myModal').on('hidden.bs.modal', function(){
-                    $('#myModal .modal-body').html('');
-                });
-                
-                
-                
-                
-           });
 	    });
 	</script>
-	<script type="text/javascript">
-        $(function() {
-
-            /* initialize the external events
-             -----------------------------------------------------------------*/
-            function ini_events(ele) {
-                ele.each(function() {
-
-                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-                    // it doesn't need to have a start or end
-                    var eventObject = {
-                        title: $.trim($(this).text()) // use the element's text as the event title
-                    };
-
-                    // store the Event Object in the DOM element so we can get to it later
-                    $(this).data('eventObject', eventObject);
-
-                    // make the event draggable using jQuery UI
-                    $(this).draggable({
-                        zIndex: 1070,
-                        revert: true, // will cause the event to go back to its
-                        revertDuration: 0  //  original position after the drag
-                    });
-
-                });
-            }
-            ini_events($('#external-events div.external-event'));
-
-            /* initialize the calendar
-             -----------------------------------------------------------------*/
-            //Date for the calendar events (dummy data)
-            var date = new Date();
-            var d = date.getDate(),
-                    m = date.getMonth(),
-                    y = date.getFullYear();
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                buttonText: {
-                    today: 'today',
-                    month: 'month',
-                    week: 'week',
-                    day: 'day'
-                },
-                //Random default events
-                events: [
-                    {
-                        title: 'All Day Event',
-                        start: new Date(y, m, 1),
-                        backgroundColor: "#f56954", //red
-                        borderColor: "#f56954" //red
-                    },
-                    {
-                        title: 'Long Event',
-                        start: new Date(y, m, d - 5),
-                        end: new Date(y, m, d - 2),
-                        backgroundColor: "#f39c12", //yellow
-                        borderColor: "#f39c12" //yellow
-                    },
-                    {
-                        title: 'Meeting',
-                        start: new Date(y, m, d, 10, 30),
-                        allDay: false,
-                        backgroundColor: "#0073b7", //Blue
-                        borderColor: "#0073b7" //Blue
-                    },
-                    {
-                        title: 'Lunch',
-                        start: new Date(y, m, d, 12, 0),
-                        end: new Date(y, m, d, 14, 0),
-                        allDay: false,
-                        backgroundColor: "#00c0ef", //Info (aqua)
-                        borderColor: "#00c0ef" //Info (aqua)
-                    },
-                    {
-                        title: 'Birthday Party',
-                        start: new Date(y, m, d + 1, 19, 0),
-                        end: new Date(y, m, d + 1, 22, 30),
-                        allDay: false,
-                        backgroundColor: "#00a65a", //Success (green)
-                        borderColor: "#00a65a" //Success (green)
-                    },
-                    {
-                        title: 'Click for Google',
-                        start: new Date(y, m, 28),
-                        end: new Date(y, m, 29),
-                        url: 'http://google.com/',
-                        backgroundColor: "#3c8dbc", //Primary (light-blue)
-                        borderColor: "#3c8dbc" //Primary (light-blue)
-                    }
-                ],
-                editable: true,
-                droppable: true, // this allows things to be dropped onto the calendar !!!
-                drop: function(date, allDay) { // this function is called when something is dropped
-
-                    // retrieve the dropped element's stored Event Object
-                    var originalEventObject = $(this).data('eventObject');
-
-                    // we need to copy it, so that multiple events don't have a reference to the same object
-                    var copiedEventObject = $.extend({}, originalEventObject);
-
-                    // assign it the date that was reported
-                    copiedEventObject.start = date;
-                    copiedEventObject.allDay = allDay;
-                    copiedEventObject.backgroundColor = $(this).css("background-color");
-                    copiedEventObject.borderColor = $(this).css("border-color");
-
-                    // render the event on the calendar
-                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                    $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-                    // is the "remove after drop" checkbox checked?
-                    if ($('#drop-remove').is(':checked')) {
-                        // if so, remove the element from the "Draggable Events" list
-                        $(this).remove();
-                    }
-
-                }
-            });
-
-            /* ADDING EVENTS */
-            var currColor = "#f56954"; //Red by default
-            //Color chooser button
-            var colorChooser = $("#color-chooser-btn");
-            $("#color-chooser > li > a").click(function(e) {
-                e.preventDefault();
-                //Save color
-                currColor = $(this).css("color");
-                //Add color effect to button
-                colorChooser
-                        .css({"background-color": currColor, "border-color": currColor})
-                        .html($(this).text()+' <span class="caret"></span>');
-            });
-            $("#add-new-event").click(function(e) {
-                e.preventDefault();
-                //Get value and make sure it is not null
-                var val = $("#new-event").val();
-                if (val.length == 0) {
-                    return;
-                }
-
-                //Create events
-                var event = $("<div />");
-                event.css({"background-color": currColor, "border-color": currColor, "color": "#fff"}).addClass("external-event");
-                event.html(val);
-                $('#external-events').prepend(event);
-
-                //Add draggable funtionality
-                ini_events(event);
-
-                //Remove event from text input
-                $("#new-event").val("");
-            });
-        });
-    </script>
 </body>
 </html>

@@ -66,8 +66,7 @@ public class ProjectController {
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listProjects(Model model) {
-		model.addAttribute(ATTR_LIST,
-				this.projectService.listWithAllCollections());
+		model.addAttribute(ATTR_LIST, this.projectService.listWithTasks());
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;

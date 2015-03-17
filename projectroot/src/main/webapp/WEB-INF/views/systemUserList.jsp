@@ -37,7 +37,6 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Password</th>
                                                 <th>Access</th>
                                             </tr>
                                         </thead>
@@ -57,7 +56,6 @@
 														</td>
 														<td>${systemUser.id}</td>
 		                                                <td>${systemUser.username}</td>
-		                                                <td>${systemUser.password}</td>
 		                                                <td>${systemUser.access}</td>
 		                                            </tr>
 	                                            </c:forEach>
@@ -68,7 +66,6 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Password</th>
                                                 <th>Access</th>
                                             </tr>
                                         </tfoot>

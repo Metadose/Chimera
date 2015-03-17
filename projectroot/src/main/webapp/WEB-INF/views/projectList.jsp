@@ -49,8 +49,8 @@
 				                                        <thead>
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
+				                                            	<th>Status</th>
 				                                                <th>Project</th>
-				                                                <th>Manager(s)</th>
 				                                                <th>Location</th>
 				                                                <th>Notes</th>
 				                                            </tr>
@@ -69,7 +69,7 @@
 																				</form>
 																			</center>
 																		</td>
-						                                                <td>
+																		<td>
 						                                                	<c:choose>
 								                                            	<c:when test="${project.status == 0}">
 								                                            		<span class="label label-info">New</span>
@@ -87,6 +87,8 @@
 								                                            		<span class="label label">Cancelled</span>
 								                                            	</c:when>
 								                                            </c:choose>
+						                                                </td>
+						                                                <td>
 								                                            ${project.name}<br/><br/>
 						                                                	<c:choose>
 						                                                		<c:when test="${!empty project.thumbnailURL}">
@@ -97,28 +99,6 @@
 						                                                		</c:when>
 						                                                	</c:choose>
 						                                                </td>
-						                                                <td>
-						                                                	<c:forEach items="${project.managerAssignments}" var="managerAssignment">
-						                                                		<c:set var="man" value="${managerAssignment.manager}"/>
-						                                                		<c:choose>
-						                                                			<c:when test="${!empty man.thumbnailURL}">
-						                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${man.id}"/>
-						                                                			</c:when>
-						                                                			<c:when test="${empty man.thumbnailURL}">
-						                                                				No photo uploaded.
-						                                                			</c:when>
-						                                                		</c:choose>
-							                                                	<br/>
-							                                                	<br/>
-							                                                	${managerAssignment.projectPosition}<br/>
-							                                                	<a href="${contextPath}/staff/edit/${man.id}">
-							                                                	${man.prefix} ${man.firstName} ${man.middleName} ${man.lastName} ${man.suffix}
-							                                                	</a><br/>
-							                                                	${man.companyPosition}<br/>
-							                                                	<br/>
-							                                                	<br/>
-						                                                	</c:forEach>
-																		</td>
 						                                                <td>${project.location}</td>
 						                                                <td>${project.notes}</td>
 						                                            </tr>
@@ -128,8 +108,8 @@
 				                                        <tfoot>
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
+				                                                <th>Status</th>
 				                                                <th>Project</th>
-				                                                <th>Manager(s)</th>
 				                                                <th>Location</th>
 				                                                <th>Notes</th>
 				                                            </tr>

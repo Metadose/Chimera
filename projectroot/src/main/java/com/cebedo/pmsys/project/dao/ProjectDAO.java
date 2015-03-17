@@ -20,4 +20,6 @@ public interface ProjectDAO {
 
 	public Project getByIDWithAllCollections(int id);
 
+	public List<Project> listWithTasks(Long id);
+
 }

@@ -42,13 +42,9 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
 				                                    <c:choose>
 		                                            	<c:when test="${projectfile.id == 0}">

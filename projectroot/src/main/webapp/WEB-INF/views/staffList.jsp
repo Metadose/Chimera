@@ -16,7 +16,12 @@
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
-		
+			<section class="content-header">
+	            <h1>
+	                Staff ${action}
+	                <small>Complete list of all staff members</small>
+	            </h1>
+	        </section>
 	         <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
@@ -28,7 +33,6 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_list">
-                                	<h2 class="page-header">List of All Staff Members</h2>
                                 	<div class="row">
 					                    <div class="col-xs-12">
 					                        <div class="box">
@@ -104,7 +108,6 @@
                                 	</div>
                                	</div>
                                	<div class="tab-pane" id="tab_timeline">
-									<h2 class="page-header">Timeline of Staff Schedules and Tasks</h2>
 									<div class="row">
 										<div class="col-xs-12">
 											<div class="box box-default">

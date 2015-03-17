@@ -101,4 +101,16 @@ public class ProjectDAOImpl implements ProjectDAO {
 		logger.info("[Get by ID] Project: " + project);
 		return project;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Project> listWithTasks(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+				session, Project.class.getName(), id).list();
+		for (Project project : projectList) {
+			Hibernate.initialize(project.getAssignedTasks());
+		}
+		return projectList;
+	}
 }

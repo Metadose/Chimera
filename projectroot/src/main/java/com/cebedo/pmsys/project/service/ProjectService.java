@@ -20,4 +20,6 @@ public interface ProjectService {
 
 	public Project getByIDWithAllCollections(int id);
 
+	public List<Project> listWithTasks();
+
 }

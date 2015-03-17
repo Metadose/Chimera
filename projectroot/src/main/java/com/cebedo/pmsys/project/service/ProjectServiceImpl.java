@@ -89,4 +89,14 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return new Project();
 	}
+
+	@Override
+	@Transactional
+	public List<Project> listWithTasks() {
+		AuthenticationToken token = AuthUtils.getAuth();
+		if (token.isSuperAdmin()) {
+			return this.projectDAO.listWithTasks(null);
+		}
+		return this.projectDAO.listWithTasks(token.getCompany().getId());
+	}
 }

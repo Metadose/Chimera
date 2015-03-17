@@ -45,13 +45,9 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
                    									<c:set var="formAction" value="${contextPath}/task/create"/>
                    									<c:if test="${!empty origin && !empty originID}">
@@ -86,6 +82,7 @@
 					                                            </div>
 					                                            <input type="text" id="date-mask" class="form-control" name="dateStart" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask" value="${task.dateStart}"/>
 					                                        </div>
+					                                        <br/>
 					                                        <label>Duration (Man Days)</label>
 				                                            <input type="text" class="form-control" name="duration" value="${task.duration}"/><br/>
 				                                        </div>
