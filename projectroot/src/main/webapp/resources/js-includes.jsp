@@ -34,4 +34,3 @@
 <script src="<c:url value="/resources/js/plugins/datatables/jquery.dataTables.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/js/plugins/datatables/dataTables.bootstrap.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/js/moment.min.js" />"type="text/javascript"></script>
-<script src="<c:url value="/resources/js/fullcalendar.min.js" />"type="text/javascript"></script>

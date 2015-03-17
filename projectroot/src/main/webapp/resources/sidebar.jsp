@@ -10,7 +10,14 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="User Image" />
+            	<c:choose>
+				<c:when test="${!empty authStaff.thumbnailURL}">
+					<img src="${contextPath}/image/display/staff/profile/?staff_id=${authStaff.id}" class="img-circle" alt="User Image" />
+				</c:when>
+				<c:when test="${empty authStaff.thumbnailURL}">
+					<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
+				</c:when>
+				</c:choose>
             </div>
             <div class="pull-left info">
             	<c:choose>

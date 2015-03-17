@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginLogoutController {
 
 	protected static Logger logger = Logger.getLogger("controller");
+	public static final String JSP_LOGIN = "login";
 
 	/**
 	 * Handles and retrieves the login JSP page
@@ -44,8 +45,7 @@ public class LoginLogoutController {
 			model.put("error", "");
 		}
 
-		// This will resolve to /WEB-INF/jsp/loginpage.jsp
-		return "loginpage";
+		return JSP_LOGIN;
 	}
 
 	/**
