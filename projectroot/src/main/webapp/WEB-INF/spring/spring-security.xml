@@ -16,9 +16,33 @@
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
 			entry-point-ref="authenticationEntryPoint" >
 	
-		<security:intercept-url pattern="/auth/login" access="permitAll"/>
-		<security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/>
-		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/auth/login/**" access="permitAll"/>
+
+		<security:intercept-url pattern="/image/display/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/field/assign/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/field/unassign/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/field/update/assigned/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/photo/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/project/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/projectfile/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/staff/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/task/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/team/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/systemuser/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/config/**" access="hasRole('ROLE_USER')"/>
+		
+		<security:intercept-url pattern="/field/create/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/field/delete/{field_id}/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/field/edit/{field_id}/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/field" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/field/" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/field/list/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/company/create/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/company/delete/{company_id}/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		<security:intercept-url pattern="/company/edit/{company_id}/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+		
+		<security:intercept-url pattern="/company/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+		<security:intercept-url pattern="/company/list/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
 			
 		<security:logout 
 				invalidate-session="true" 

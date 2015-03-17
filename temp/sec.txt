@@ -1,0 +1,35 @@
+=== ROLE_USER
+/dashboard/
+/image/display/**
+/field/assign/**
+/field/unassign/**
+/field/update/assigned/**
+/auth/** 
+/photo/**
+/project/**
+/projectfile/**
+/staff/**
+/task/**
+/team/**
+/systemuser/**
+/config/**
+
+=== ROLE_SUPER_ADMIN
+=== /company/create
+=== /company/delete/{company_id} 
+=== /company/edit/{company_id} 
+
+=== ROLE_COMPANY_ADMIN
+=== /company/
+=== /company/list 
+
+
+=== ROLE_SUPER_ADMIN
+=== /field/create
+=== /field/delete/{field_id} 
+=== /field/edit/{field_id} 
+=== /field/
+=== /field/list 
+
+
+

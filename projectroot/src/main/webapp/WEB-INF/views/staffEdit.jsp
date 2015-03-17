@@ -59,7 +59,6 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
@@ -348,68 +347,69 @@
                                 <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_7">
                                 	<div class="box">
-		                                <div class="box-header">
-		                                    <h3 class="box-title">Assigned Projects&nbsp;
-		                                    <a href="${contextPath}/project/edit/0">
+		                                <div class="box-body table-responsive">
+		                                	<a href="${contextPath}/project/edit/0">
 		                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
-		                                	</a>
-		                                    </h3>
-		                                </div><!-- /.box-header -->
-		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
-			                                        	<th>&nbsp;</th>
+		                                	</a><br/><br/>
+		                                    <table id="project-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                    		<tr>
+		                                            	<th>&nbsp;</th>
+		                                            	<th>Status</th>
 		                                                <th>Project</th>
 		                                                <th>Location</th>
 		                                                <th>Notes</th>
-			                                        </tr>
+		                                            </tr>
+		                                    	</thead>
+		                                        <tbody>
 			                                        <c:set var="assignmentList" value="${staff.assignedManagers}"/>
 				                                	<c:if test="${!empty assignmentList}">
 				                                		<c:forEach items="${assignmentList}" var="projectAssignment">
 				                                		<c:set var="project" value="${projectAssignment.project}"/>	
 			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-																	<form action="${contextPath}/project/edit/${project.id}">
-																		<button class="btn btn-default btn-flat btn-sm">View</button>
-																	</form>&nbsp;
-																	<form action="${contextPath}/project/delete/${project.id}">
-																		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																	</form>
-																</center>
-															</td>
-			                                                <td>
-			                                                	<c:choose>
-					                                            	<c:when test="${project.status == 0}">
-					                                            		<span class="label label-info">New</span>
-					                                            	</c:when>
-					                                            	<c:when test="${project.status == 1}">
-					                                            		<span class="label label-primary">Ongoing</span>
-					                                            	</c:when>
-					                                            	<c:when test="${project.status == 2}">
-					                                            		<span class="label label-success">Completed</span>
-					                                            	</c:when>
-					                                            	<c:when test="${project.status == 3}">
-					                                            		<span class="label label-danger">Failed</span>
-					                                            	</c:when>
-					                                            	<c:when test="${project.status == 4}">
-					                                            		<span class="label label">Cancelled</span>
-					                                            	</c:when>
-					                                            </c:choose>
-					                                            ${project.name}<br/><br/>
-			                                                	<c:choose>
-			                                                		<c:when test="${!empty project.thumbnailURL}">
-			                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-			                                                		</c:when>
-			                                                		<c:when test="${empty project.thumbnailURL}">
-			                                                			<h5>No photo uploaded.</h5>
-			                                                		</c:when>
-			                                                	</c:choose>
-			                                                </td>
-			                                                <td>${project.location}</td>
-			                                                <td>${project.notes}</td>
-			                                            </tr>
+		                                            	<td>
+		                                            		<center>
+																<form action="${contextPath}/project/edit/${project.id}">
+																	<button class="btn btn-default btn-flat btn-sm">View</button>
+																</form>&nbsp;
+																<form action="${contextPath}/project/delete/${project.id}">
+																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																</form>
+															</center>
+														</td>
+														<td>
+		                                                	<c:choose>
+				                                            	<c:when test="${project.status == 0}">
+				                                            		<span class="label label-info">New</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 1}">
+				                                            		<span class="label label-primary">Ongoing</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 2}">
+				                                            		<span class="label label-success">Completed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 3}">
+				                                            		<span class="label label-danger">Failed</span>
+				                                            	</c:when>
+				                                            	<c:when test="${project.status == 4}">
+				                                            		<span class="label label">Cancelled</span>
+				                                            	</c:when>
+				                                            </c:choose>
+		                                                </td>
+		                                                <td>
+				                                            ${project.name}<br/><br/>
+		                                                	<c:choose>
+		                                                		<c:when test="${!empty project.thumbnailURL}">
+		                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
+		                                                		</c:when>
+		                                                		<c:when test="${empty project.thumbnailURL}">
+		                                                			<h5>No photo uploaded.</h5>
+		                                                		</c:when>
+		                                                	</c:choose>
+		                                                </td>
+		                                                <td>${project.location}</td>
+		                                                <td>${project.notes}</td>
+		                                            </tr>
 		                                            </c:forEach>
 	                                        		</c:if>
 			                                    </tbody>
@@ -419,17 +419,13 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
-		                                <div class="box-header">
-		                                    <h3 class="box-title">Assigned Tasks&nbsp;
-		                                    <a href="${contextPath}/task/assign/staff/${staff.id}">
+		                                <div class="box-body table-responsive">	
+		                               		<a href="${contextPath}/task/assign/staff/${staff.id}">
 		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
-		                                	</a>
-		                                    </h3>
-		                                </div><!-- /.box-header -->
-		                                <div class="box-body no-padding">
-		                                    <table class="table table-striped">
-		                                        <tbody>
-			                                        <tr>
+		                                	</a><br/><br/>
+		                                    <table id="task-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                    		<tr>
 			                                        	<th>&nbsp;</th>
 			                                            <th>Status</th>
 			                                            <th>Content</th>
@@ -438,6 +434,8 @@
 			                                            <th>Start</th>
 			                                            <th>Duration</th>
 			                                        </tr>
+		                                    	</thead>
+		                                        <tbody>
 			                                        <c:set var="taskList" value="${staff.tasks}"/>
 				                                	<c:if test="${!empty taskList}">
 		                                        		<c:forEach items="${taskList}" var="task">
@@ -586,6 +584,8 @@
 		
 		$(document).ready(function() {
 			$("#example-1").dataTable();
+			$("#project-table").dataTable();
+			$("#task-table").dataTable();
 	    });
 	</script>
 </body>
