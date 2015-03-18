@@ -20,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
-import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
+import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -81,16 +81,16 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			logger.debug("User dtails are good and ready to go");
 			return new AuthenticationToken(auth.getName(),
 					auth.getCredentials(),
-					getAuthorities(user.getSecurityGroups()), user.getStaff(),
+					getAuthorities(user.getSecurityAccess()), user.getStaff(),
 					user.getCompany(), user.isSuperAdmin(),
 					user.isCompanyAdmin(), user);
 		}
 	}
 
-	public Collection<GrantedAuthority> getAuthorities(Set<SecurityGroup> groups) {
+	public Collection<GrantedAuthority> getAuthorities(Set<SecurityAccess> groups) {
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 		authList.add(new SimpleGrantedAuthority("ROLE_AUTH_USER"));
-		for (SecurityGroup group : groups) {
+		for (SecurityAccess group : groups) {
 			authList.add(new SimpleGrantedAuthority(group.getName()));
 		}
 		return authList;

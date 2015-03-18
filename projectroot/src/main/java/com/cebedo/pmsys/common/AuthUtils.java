@@ -6,7 +6,7 @@ import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
-import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
+import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
@@ -141,7 +141,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(SecurityGroup obj) {
+	public static boolean isActionAuthorized(SecurityAccess obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;

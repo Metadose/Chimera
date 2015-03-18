@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.security.securitygroup.model;
+package com.cebedo.pmsys.security.securityaccess.model;
 
 import java.util.Set;
 
@@ -13,11 +13,11 @@ import javax.persistence.Table;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 @Entity
-@Table(name = SecurityGroup.TABLE_NAME)
-public class SecurityGroup {
+@Table(name = SecurityAccess.TABLE_NAME)
+public class SecurityAccess {
 
-	public static final String OBJECT_NAME = "securitygroup";
-	public static final String TABLE_NAME = "security_groups";
+	public static final String OBJECT_NAME = "securityaccess";
+	public static final String TABLE_NAME = "security_access";
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
 	private long id;
@@ -44,7 +44,7 @@ public class SecurityGroup {
 		this.name = name;
 	}
 
-	@ManyToMany(mappedBy = "securityGroups")
+	@ManyToMany(mappedBy = "securityAccess")
 	public Set<SystemUser> getUsers() {
 		return users;
 	}

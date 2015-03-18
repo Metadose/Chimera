@@ -7,13 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
+import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 
 @Entity
 @Table(name = UserGroupAssignment.TABLE_NAME)
 public class UserGroupAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_group_user";
+	public static final String TABLE_NAME = "assignments_access_user";
 	private static final long serialVersionUID = 1L;
 
 	private long userID;
@@ -30,12 +30,12 @@ public class UserGroupAssignment implements Serializable {
 	}
 
 	@Id
-	@Column(name = SecurityGroup.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getSecurityGroupID() {
+	@Column(name = SecurityAccess.COLUMN_PRIMARY_KEY, nullable = false)
+	public long getSecurityAccessID() {
 		return groupID;
 	}
 
-	public void setSecurityGroupID(long groupID) {
+	public void setSecurityAccessID(long groupID) {
 		this.groupID = groupID;
 	}
 }

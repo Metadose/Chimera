@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
+import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.staff.model.Staff;
 
 @Entity
@@ -37,7 +37,7 @@ public class SystemUser {
 	private boolean superAdmin;
 	private Company company;
 	private boolean companyAdmin;
-	private Set<SecurityGroup> securityGroups;
+	private Set<SecurityAccess> securityAccess;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,13 +116,13 @@ public class SystemUser {
 	}
 
 	@ManyToMany
-	@JoinTable(name = UserGroupAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityGroup.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<SecurityGroup> getSecurityGroups() {
-		return securityGroups;
+	@JoinTable(name = UserGroupAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityAccess.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<SecurityAccess> getSecurityAccess() {
+		return securityAccess;
 	}
 
-	public void setSecurityGroups(Set<SecurityGroup> securityGroups) {
-		this.securityGroups = securityGroups;
+	public void setSecurityAccess(Set<SecurityAccess> securityAccess) {
+		this.securityAccess = securityAccess;
 	}
 
 }

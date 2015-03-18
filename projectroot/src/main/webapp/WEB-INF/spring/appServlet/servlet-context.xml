@@ -69,7 +69,7 @@
                 <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
-                <beans:value>com.cebedo.pmsys.security.securitygroup.model.SecurityGroup</beans:value>
+                <beans:value>com.cebedo.pmsys.security.securityaccess.model.SecurityAccess</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
             </beans:list>
@@ -107,11 +107,11 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="securityGroupDAO" class="com.cebedo.pmsys.security.securitygroup.dao.SecurityGroupDAOImpl">
+    <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.security.securityaccess.dao.SecurityAccessDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="securityGroupService" class="com.cebedo.pmsys.security.securitygroup.service.SecurityGroupServiceImpl">
-        <beans:property name="securityGroupDAO" ref="securityGroupDAO"></beans:property>
+    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.security.securityaccess.service.SecurityAccessServiceImpl">
+        <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="taskDAO" class="com.cebedo.pmsys.task.dao.TaskDAOImpl">
