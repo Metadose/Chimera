@@ -53,4 +53,6 @@ public abstract class SystemConstants {
 	public static final String ACTION_DELETE = "Delete";
 	public static final String ACTION_LIST = "List";
 	public static final String ACTION_ASSIGN = "Assign";
+
+	public static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 }

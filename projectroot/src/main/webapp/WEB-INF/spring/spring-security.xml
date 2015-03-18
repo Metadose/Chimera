@@ -11,34 +11,20 @@
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
-
-<!-- xmlns:sec="http://www.springframework.org/schema/security" -->
-<!-- 	<sec:global-method-security pre-post-annotations="enabled"> -->
-<!-- 		<sec:expression-handler ref="expressionHandler"/> -->
-<!-- 	</sec:global-method-security> -->
-<!-- 	<bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"> -->
-<!-- 		<property name="permissionEvaluator" ref="permissionEvaluator"/> -->
-<!-- 	</bean>   -->
-<!-- 	<bean id="permissionEvaluator" class="com.cebedo.pmsys.login.authorization.BasePermissionEvaluator"/> -->
+	
+	<security:global-method-security secured-annotations="enabled"/>
 	
 	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
 			entry-point-ref="authenticationEntryPoint" >
 				
 		<!-- Permit everyone to see the login page and the js css resources -->
-		<security:intercept-url pattern="/resources/**" access="permitAll"/>
 		<security:intercept-url pattern="/auth/**" access="permitAll"/>
 		
 		<!-- Only an authenticated user can view the dashboard and images -->
 		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/image/display/**" access="isAuthenticated()"/>
-
-		<!-- ROLE_SUPER_ADMIN -->
-		<security:intercept-url pattern="/**" access="hasRole('ROLE_SUPER_ADMIN')"/>
 		
-		<!-- ROLE_COMPANY_ADMIN -->
-		<security:intercept-url pattern="/company/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
-			
 		<security:logout 
 				invalidate-session="true" 
 				logout-success-url="/auth/login" 
