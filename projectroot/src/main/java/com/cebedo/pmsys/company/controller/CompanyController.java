@@ -2,7 +2,6 @@ package com.cebedo.pmsys.company.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,7 +30,6 @@ public class CompanyController {
 		this.companyService = ps;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SUPER_ADMIN + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listCompanies(Model model) {
@@ -41,7 +39,6 @@ public class CompanyController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SUPER_ADMIN + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_COMPANY) Company company) {
 		// TODO This has a bug.
@@ -55,7 +52,6 @@ public class CompanyController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SUPER_ADMIN + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
 			+ Company.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id) {
@@ -64,7 +60,6 @@ public class CompanyController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SUPER_ADMIN + "')")
 	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
 			+ Company.COLUMN_PRIMARY_KEY + "}")
 	public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -97,6 +98,7 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public String createWithProject(
@@ -117,6 +119,7 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TASK) Task task) {
 
@@ -142,6 +145,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public String redirectAssignProject(
@@ -169,6 +173,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = {
 			SystemConstants.REQUEST_ASSIGN_PROJECT,
 			SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
@@ -196,6 +201,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME
 			+ "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
 	public String redirectAssignStaff(
@@ -209,6 +215,7 @@ public class TaskController {
 		return JSP_EDIT;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.NEW + "/" + Staff.OBJECT_NAME + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
@@ -234,6 +241,7 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id) {
@@ -249,6 +257,7 @@ public class TaskController {
 	 * @param status
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_MARK)
 	public ModelAndView mark(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
@@ -266,6 +275,7 @@ public class TaskController {
 	 * @param status
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_MARK + "/" + Project.OBJECT_NAME)
 	public ModelAndView markProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -287,6 +297,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,
@@ -325,6 +336,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaffTask(
@@ -343,6 +355,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeamTask(
@@ -360,6 +373,7 @@ public class TaskController {
 	 * @param taskID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamTasks(
@@ -377,6 +391,7 @@ public class TaskController {
 	 * @param teamID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTeamTask(
@@ -395,6 +410,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignStaffTask(
@@ -412,6 +428,7 @@ public class TaskController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectTasks(
@@ -428,6 +445,7 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllStaffTasks(

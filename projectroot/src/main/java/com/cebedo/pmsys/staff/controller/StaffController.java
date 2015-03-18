@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -67,6 +68,7 @@ public class StaffController {
 		return JSP_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_STAFF) Staff staff) {
 		if (staff.getId() == 0) {
@@ -85,6 +87,7 @@ public class StaffController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
 			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
 	public String createFromProject(@ModelAttribute(ATTR_STAFF) Staff staff,
@@ -98,6 +101,7 @@ public class StaffController {
 				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id) {
@@ -114,6 +118,7 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
 			+ SystemConstants.FROM_PROJECT)
 	public String editStaffFromProject(
@@ -145,6 +150,7 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
@@ -172,6 +178,7 @@ public class StaffController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectManagers(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
@@ -189,6 +196,7 @@ public class StaffController {
 	 * @param position
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView unassignProjectManager(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -207,6 +215,7 @@ public class StaffController {
 	 * @param position
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView assignProjectManager(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -225,6 +234,7 @@ public class StaffController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTeam(
@@ -249,6 +259,7 @@ public class StaffController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeams(
@@ -266,6 +277,7 @@ public class StaffController {
 	 * @param teamID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeam(

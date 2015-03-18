@@ -2,6 +2,7 @@ package com.cebedo.pmsys.field.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -56,6 +57,7 @@ public class FieldController {
 	 * @param taskID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTask(
@@ -76,6 +78,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView assignProject(
 			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
@@ -95,6 +98,7 @@ public class FieldController {
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaff(
@@ -108,11 +112,12 @@ public class FieldController {
 	}
 
 	/**
-	 * Unassign all fields to a task.
+	 * Unassign all fields from a staff.
 	 * 
 	 * @param staffID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllStaff(
@@ -129,6 +134,7 @@ public class FieldController {
 	 * @param taskID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Task.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTasks(
@@ -146,6 +152,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjects(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
@@ -166,6 +173,7 @@ public class FieldController {
 	 * @param oldValue
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.ASSIGNED + "/" + Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedTaskField(
@@ -189,6 +197,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE_ASSIGNED_PROJECT_FIELD, method = RequestMethod.POST)
 	public ModelAndView updateAssignedProjectField(
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
@@ -215,6 +224,7 @@ public class FieldController {
 	 * @param oldValue
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.ASSIGNED + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedStaffField(
@@ -238,6 +248,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView unassignProject(
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
@@ -259,6 +270,7 @@ public class FieldController {
 	 * @param value
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTask(
@@ -281,6 +293,7 @@ public class FieldController {
 	 * @param value
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignStaff(
@@ -294,6 +307,7 @@ public class FieldController {
 				+ staffID);
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_FIELD) Field field) {
 		if (field.getId() == 0) {
@@ -305,6 +319,7 @@ public class FieldController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Field.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id) {
@@ -313,6 +328,7 @@ public class FieldController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Field.COLUMN_PRIMARY_KEY + "}")
 	public String editField(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id,

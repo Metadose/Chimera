@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -67,6 +68,7 @@ public class ProjectFileController {
 		return JSP_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile) {
@@ -82,6 +84,7 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.FROM_PROJECT)
 	public String deleteFromProject(
@@ -92,6 +95,7 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id) {
@@ -100,6 +104,7 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String editProjectFile(
@@ -117,6 +122,7 @@ public class ProjectFileController {
 		return JSP_EDIT;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE_TO_PROJECT, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -154,7 +160,7 @@ public class ProjectFileController {
 	}
 
 	/**
-	 * Download a file from Project.
+	 * Download a file from Project. TODO Need work on security url here.
 	 * 
 	 * @param projectID
 	 * @param fileID
@@ -181,6 +187,9 @@ public class ProjectFileController {
 		}
 	}
 
+	// TODO Create another role which is not a Project File Editor but can
+	// upload files.
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)
 	public ModelAndView handleFileUpload(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -204,6 +213,7 @@ public class ProjectFileController {
 	 * @param description
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
 	public ModelAndView updateDescription(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,

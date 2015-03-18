@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -61,6 +62,7 @@ public class PhotoController {
 	 * @return
 	 * @throws IOException
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView deleteProjectProfile(
@@ -72,6 +74,7 @@ public class PhotoController {
 				+ "/" + projectID);
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_STAFF_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadStaffProfile(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -89,6 +92,7 @@ public class PhotoController {
 				+ staffID);
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadProjectProfile(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -106,6 +110,7 @@ public class PhotoController {
 				+ "/" + projectID);
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -133,6 +138,7 @@ public class PhotoController {
 		return JSP_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_PHOTO) Photo photo) {
 		if (photo.getId() == 0) {
@@ -145,6 +151,7 @@ public class PhotoController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE)
 	public ModelAndView delete(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -155,6 +162,7 @@ public class PhotoController {
 				+ "/" + projectID);
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Photo.COLUMN_PRIMARY_KEY + "}")
 	public String editPhoto(@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id,

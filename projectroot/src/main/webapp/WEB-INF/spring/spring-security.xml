@@ -25,6 +25,18 @@
 		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/image/display/**" access="isAuthenticated()"/>
 		
+		<!-- These are just general access security, a finer security level resides in the Controller and JSP -->
+		<security:intercept-url pattern="/company/**" access="hasRole('ACCESS_COMPANY')"/>
+		<security:intercept-url pattern="/field/**" access="hasRole('ACCESS_FIELD')"/>
+		<security:intercept-url pattern="/photo/**" access="hasRole('ACCESS_PHOTO')"/>
+		<security:intercept-url pattern="/project/**" access="hasRole('ACCESS_PROJECT')"/>
+		<security:intercept-url pattern="/projectfile/**" access="hasRole('ACCESS_PROJECTFILE')"/>
+		<security:intercept-url pattern="/staff/**" access="hasRole('ACCESS_STAFF')"/>
+		<security:intercept-url pattern="/task/**" access="hasRole('ACCESS_TASK')"/>
+		<security:intercept-url pattern="/team/**" access="hasRole('ACCESS_TEAM')"/>
+		<security:intercept-url pattern="/systemuser/**" access="hasRole('ACCESS_SYSTEMUSER')"/>
+		<security:intercept-url pattern="/config/**" access="hasRole('ACCESS_CONFIG')"/>
+		
 		<security:logout 
 				invalidate-session="true" 
 				logout-success-url="/auth/login" 

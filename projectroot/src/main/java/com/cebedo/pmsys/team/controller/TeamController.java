@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -73,6 +74,7 @@ public class TeamController {
 		return JSP_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TEAM) Team team) {
 		if (team.getId() == 0) {
@@ -84,6 +86,7 @@ public class TeamController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Team.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id) {
@@ -92,6 +95,7 @@ public class TeamController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Team.COLUMN_PRIMARY_KEY + "}")
 	public String editTeam(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
@@ -121,6 +125,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignProjectTeam(
@@ -145,6 +150,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignProjectTeam(
@@ -169,6 +175,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SystemConstants.ALL + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamsFromProject(
@@ -185,6 +192,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectTeams(
@@ -201,6 +209,7 @@ public class TeamController {
 	 * @param teamID
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllMembers(

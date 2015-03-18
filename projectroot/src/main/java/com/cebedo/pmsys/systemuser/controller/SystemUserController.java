@@ -2,6 +2,7 @@ package com.cebedo.pmsys.systemuser.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,7 @@ public class SystemUserController {
 		return JSP_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser) {
 		if (systemUser.getId() == 0) {
@@ -55,6 +57,7 @@ public class SystemUserController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id) {
@@ -63,6 +66,7 @@ public class SystemUserController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemUser(
