@@ -3,6 +3,7 @@ package com.cebedo.pmsys.login.manager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -19,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -78,10 +80,20 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			// TODO Check if the user's company is expired.
 			logger.debug("User dtails are good and ready to go");
 			return new AuthenticationToken(auth.getName(),
-					auth.getCredentials(), getAuthorities(user.getAccess()),
-					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
+					auth.getCredentials(),
+					getAuthorities(user.getSecurityGroups()), user.getStaff(),
+					user.getCompany(), user.isSuperAdmin(),
 					user.isCompanyAdmin(), user);
 		}
+	}
+
+	public Collection<GrantedAuthority> getAuthorities(Set<SecurityGroup> groups) {
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		authList.add(new SimpleGrantedAuthority("ROLE_AUTH_USER"));
+		for (SecurityGroup group : groups) {
+			authList.add(new SimpleGrantedAuthority(group.getName()));
+		}
+		return authList;
 	}
 
 	/**
@@ -93,24 +105,24 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 	 *            an integer value representing the access of the user
 	 * @return collection of granted authorities
 	 */
-	public Collection<GrantedAuthority> getAuthorities(Integer access) {
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-
-		// All users are granted with ROLE_USER access.
-		// Therefore this user gets a ROLE_USER by default.
-		authList.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-		// Check if this user has super admin access.
-		if (access.compareTo(1) == 0) {
-			authList.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
-			authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
-		}
-
-		// Check if this user has company admin access.
-		if (access.compareTo(2) == 0) {
-			authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
-		}
-		return authList;
-	}
+	// public Collection<GrantedAuthority> getAuthorities(Integer access) {
+	// List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+	//
+	// // All users are granted with ROLE_USER access.
+	// // Therefore this user gets a ROLE_USER by default.
+	// authList.add(new SimpleGrantedAuthority("ROLE_USER"));
+	//
+	// // Check if this user has super admin access.
+	// if (access.compareTo(1) == 0) {
+	// authList.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
+	// authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
+	// }
+	//
+	// // Check if this user has company admin access.
+	// if (access.compareTo(2) == 0) {
+	// authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
+	// }
+	// return authList;
+	// }
 
 }

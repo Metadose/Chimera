@@ -1,16 +1,21 @@
 package com.cebedo.pmsys.systemuser.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.security.securitygroup.model.SecurityGroup;
 import com.cebedo.pmsys.staff.model.Staff;
 
 @Entity
@@ -32,6 +37,7 @@ public class SystemUser {
 	private boolean superAdmin;
 	private Company company;
 	private boolean companyAdmin;
+	private Set<SecurityGroup> securityGroups;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -107,6 +113,16 @@ public class SystemUser {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@ManyToMany
+	@JoinTable(name = UserGroupAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityGroup.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+	public Set<SecurityGroup> getSecurityGroups() {
+		return securityGroups;
+	}
+
+	public void setSecurityGroups(Set<SecurityGroup> securityGroups) {
+		this.securityGroups = securityGroups;
 	}
 
 }

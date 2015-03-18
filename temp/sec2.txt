@@ -1,0 +1,218 @@
+=== GOOD
+=== ROLE_COMPANY_ADMIN
+/company/create 
+/company/delete/{company_id}
+/company/
+/company/list
+/company/edit/{company_id}
+
+
+=== GOOD
+=== ROLE_TASK_EDITOR
+/task/edit/0
+/task/create
+/task/delete/{task_id}
+/task/mark
+/task/assign/new/staff/{staff_id} 
+/task/assign/staff
+/task/assign/team 
+/task/unassign/team 
+/task/unassign/team/all 
+/task/unassign/staff
+/task/unassign/staff/all
+/task/assign/staff/{staff_id} 
+/field/assign/task
+/field/unassign/task/all
+/field/unassign/task
+/field/update/assigned/task 
+/task/unassign/project/all
+/task/create/project
+/task/assign/project
+/task/assign/project/{project_id} 
+/task/mark/project
+/task/assign/from/project 
+
+=== ROLE_TASK_VIEWER
+/task/edit/{task_id}
+/task/
+/task/list
+
+
+
+=== GOOD
+=== ROLE_PROJECT_EDITOR
+/photo/upload/project/profile 
+/photo/delete/project/profile 
+/photo/upload/project 
+/project/create 
+/project/edit/0
+/project/delete/{project_id}
+/projectfile/delete/from/project
+/projectfile/upload/file/project
+/staff/assign/project 
+/staff/unassign/project 
+/staff/unassign/project/all 
+/field/update/assigned/project
+/field/assign/project 
+/field/unassign/project 
+/field/unassign/project/all 
+/task/unassign/project/all
+/task/create/project
+/task/assign/project
+/task/assign/project/{project_id} 
+/team/assign/project
+/team/unassign/project
+/team/unassign/project/all
+/team/unassign/all/project
+/task/mark/project
+/task/assign/from/project 
+
+=== ROLE_PROJECT_VIEWER
+/project/edit/{project_id}
+/project/
+/project/list
+/projectfile/download/from/project
+
+
+
+=== GOOD
+=== ROLE_TEAM_EDITOR
+/team/create
+/team/delete/{team_id}
+/team/unassign/staff/all
+/team/edit/0
+/staff/unassign/team
+/staff/unassign/team/all
+/staff/assign/team
+/task/assign/team 
+/task/unassign/team 
+/task/unassign/team/all 
+/team/assign/project
+/team/unassign/project
+/team/unassign/project/all
+/team/unassign/all/project
+
+=== ROLE_TEAM_VIEWER
+/team/
+/team/list
+/team/edit/{team_id}
+
+
+
+=== GOOD
+=== ROLE_FIELD_EDITOR
+/field/create 
+/field/delete/{field_id}
+/field/assign/staff 
+/field/unassign/staff 
+/field/unassign/staff/all 
+/field/update/assigned/staff
+/field/edit/0
+/field/assign/task
+/field/unassign/task/all
+/field/unassign/task
+/field/update/assigned/task 
+/field/update/assigned/project
+/field/assign/project 
+/field/unassign/project 
+/field/unassign/project/all 
+
+=== ROLE_FIELD_VIEWER
+/field/
+/field/list
+/field/edit/{field_id}
+
+
+=== GOOD
+=== ROLE_PHOTO_EDITOR
+/photo/create 
+/photo/delete 
+/photo/upload/staff/profile 
+/photo/edit/0
+/photo/upload/project/profile 
+/photo/delete/project/profile 
+/photo/upload/project 
+
+=== ROLE_PHOTO_VIEWER
+/photo/
+/photo/list
+/photo/edit/{photo_id}
+
+
+
+
+
+
+=== GOOD
+=== ROLE_PROJECTFILE_EDITOR
+/projectfile/create 
+/projectfile/delete/{projectfile_id}
+/projectfile/update 
+/projectfile/download 
+/projectfile/edit/0
+/projectfile/upload/file
+/projectfile/delete/from/project
+/projectfile/upload/file/project
+/projectfile/download/from/project
+
+=== ROLE_PROJECTFILE_VIEWER
+/projectfile/
+/projectfile/list
+/projectfile/edit/{projectfile_id}
+
+
+
+
+
+=== GOOD
+=== ROLE_STAFF_EDITOR
+/staff/create 
+/staff/delete/{staff_id}
+/staff/unassign/team
+/staff/unassign/team/all
+/staff/assign/team
+/staff/create/from/project
+/staff/edit/from/project
+/staff/edit/0
+/task/assign/new/staff/{staff_id} 
+/task/assign/staff
+/task/unassign/staff
+/task/unassign/staff/all
+/task/assign/staff/{staff_id} 
+/staff/assign/project 
+/staff/unassign/project 
+/staff/unassign/project/all 
+/field/assign/staff 
+/field/unassign/staff 
+/field/unassign/staff/all 
+/field/update/assigned/staff
+/photo/upload/staff/profile 
+
+=== ROLE_STAFF_VIEWER
+/staff/
+/staff/list
+/staff/edit/{staff_id}
+
+
+=== GOOD
+=== ROLE_CONFIG_EDITOR
+/config/create
+/config/delete/{sysconf_id} 
+/config/edit/0
+
+=== ROLE_CONFIG_VIEWER
+/config/
+/config/list
+/config/edit/{sysconf_id} 
+
+
+=== GOOD
+=== ROLE_SYSTEMUSER_EDITOR
+/systemuser/create
+/systemuser/delete/{user_id}
+/systemuser/edit/0
+
+=== ROLE_SYSTEMUSER_VIEWER
+/systemuser/
+/systemuser/list
+/systemuser/edit/{user_id}

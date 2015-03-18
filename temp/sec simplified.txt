@@ -1,0 +1,233 @@
+<!-- ROLE_COMPANY_ADMIN -->
+<security:intercept-url pattern="/company/create/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+<security:intercept-url pattern="/company/delete/{company_id}/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+<security:intercept-url pattern="/company" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+<security:intercept-url pattern="/company/" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+<security:intercept-url pattern="/company/list/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+<security:intercept-url pattern="/company/edit/{company_id}/**" access="hasRole('ROLE_COMPANY_ADMIN')"/>
+
+
+<!-- ROLE_TASK_EDITOR -->
+<security:intercept-url pattern="/task/edit/0/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/create" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/create/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/delete/{task_id}/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/mark" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/mark/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/new/staff/{staff_id}/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/team/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/team/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/team/all/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff/all/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff/{staff_id}/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/task/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task/all/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/task/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/project/all/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/create/project/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project/" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project/{project_id}/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/mark/project/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/from/project/**" access="hasRole('ROLE_TASK_EDITOR')"/>
+
+<!-- ROLE_TASK_VIEWER -->
+<security:intercept-url pattern="/task/edit/{task_id}/**" access="hasRole('ROLE_TASK_VIEWER')"/>
+<security:intercept-url pattern="/task" access="hasRole('ROLE_TASK_VIEWER')"/>
+<security:intercept-url pattern="/task/" access="hasRole('ROLE_TASK_VIEWER')"/>
+<security:intercept-url pattern="/task/list/**" access="hasRole('ROLE_TASK_VIEWER')"/>
+
+
+<!-- ROLE_PROJECT_EDITOR -->
+<security:intercept-url pattern="/photo/upload/project/profile/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/photo/delete/project/profile/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/project" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/project/" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/project/create/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/project/edit/0/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/project/delete/{project_id}/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/delete/from/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/upload/file/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/staff/assign/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project/" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project/all/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project/" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project/all/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/project/all/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/create/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project/" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/project/{project_id}/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/team/assign/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project/" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project/all/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/all/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/mark/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/from/project/**" access="hasRole('ROLE_PROJECT_EDITOR')"/>
+
+<!-- ROLE_PROJECT_VIEWER -->
+<security:intercept-url pattern="/project/edit/{project_id}/**" access="hasRole('ROLE_PROJECT_VIEWER')"/>
+<security:intercept-url pattern="/project" access="hasRole('ROLE_PROJECT_VIEWER')"/>
+<security:intercept-url pattern="/project/" access="hasRole('ROLE_PROJECT_VIEWER')"/>
+<security:intercept-url pattern="/project/list/**" access="hasRole('ROLE_PROJECT_VIEWER')"/>
+<security:intercept-url pattern="/projectfile/download/from/project/**" access="hasRole('ROLE_PROJECT_VIEWER')"/>
+
+
+<!-- ROLE_TEAM_EDITOR -->
+<security:intercept-url pattern="/team/create/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/delete/{team_id}/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/staff/all/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/edit/0/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team/" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team/all/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/staff/assign/team/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/team/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/team" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/team/" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/team/all/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/assign/project/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project/" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/project/all/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+<security:intercept-url pattern="/team/unassign/all/project/**" access="hasRole('ROLE_TEAM_EDITOR')"/>
+
+<!-- ROLE_TEAM_VIEWER -->
+<security:intercept-url pattern="/team" access="hasRole('ROLE_TEAM_VIEWER')"/>
+<security:intercept-url pattern="/team/" access="hasRole('ROLE_TEAM_VIEWER')"/>
+<security:intercept-url pattern="/team/list/**" access="hasRole('ROLE_TEAM_VIEWER')"/>
+<security:intercept-url pattern="/team/edit/{team_id}/**" access="hasRole('ROLE_TEAM_VIEWER')"/>
+
+
+<!-- ROLE_FIELD_EDITOR -->
+<security:intercept-url pattern="/field/create/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/delete/{field_id}/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/staff/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff/" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff/all/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/staff/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/edit/0/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/task/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task/all/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/task/" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/task/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/project/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/project/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project/" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/project/all/**" access="hasRole('ROLE_FIELD_EDITOR')"/>
+<security:intercept-url pattern="/field" access="hasRole('ROLE_FIELD_VIEWER')"/>
+<security:intercept-url pattern="/field/" access="hasRole('ROLE_FIELD_VIEWER')"/>
+<security:intercept-url pattern="/field/list/**" access="hasRole('ROLE_FIELD_VIEWER')"/>
+<security:intercept-url pattern="/field/edit/{field_id}/**" access="hasRole('ROLE_FIELD_VIEWER')"/>
+
+
+<!-- ROLE_PHOTO_EDITOR -->
+<security:intercept-url pattern="/photo/create/**" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/delete" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/delete/" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/staff/profile/**" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/edit/0/**" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/project/profile/**" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/delete/project/profile/**" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/project" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/project/" access="hasRole('ROLE_PHOTO_EDITOR')"/>
+
+<!-- ROLE_PHOTO_VIEWER -->
+<security:intercept-url pattern="/photo" access="hasRole('ROLE_PHOTO_VIEWER')"/>
+<security:intercept-url pattern="/photo/" access="hasRole('ROLE_PHOTO_VIEWER')"/>
+<security:intercept-url pattern="/photo/list/**" access="hasRole('ROLE_PHOTO_VIEWER')"/>
+<security:intercept-url pattern="/photo/edit/{photo_id}/**" access="hasRole('ROLE_PHOTO_VIEWER')"/>
+
+
+<!-- ROLE_PROJECTFILE_EDITOR -->
+<security:intercept-url pattern="/projectfile/create/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/delete/{projectfile_id}/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/update/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/download" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/download/" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/edit/0/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/upload/file" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/upload/file/" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/delete/from/project/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/upload/file/project/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+<security:intercept-url pattern="/projectfile/download/from/project/**" access="hasRole('ROLE_PROJECTFILE_EDITOR')"/>
+
+<!-- ROLE_PROJECTFILE_VIEWER -->
+<security:intercept-url pattern="/projectfile" access="hasRole('ROLE_PROJECTFILE_VIEWER')"/>
+<security:intercept-url pattern="/projectfile/" access="hasRole('ROLE_PROJECTFILE_VIEWER')"/>
+<security:intercept-url pattern="/projectfile/list/**" access="hasRole('ROLE_PROJECTFILE_VIEWER')"/>
+<security:intercept-url pattern="/projectfile/edit/{projectfile_id}/**" access="hasRole('ROLE_PROJECTFILE_VIEWER')"/>
+
+
+<!-- ROLE_STAFF_EDITOR -->
+<security:intercept-url pattern="/staff/create" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/create/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/delete/{staff_id}/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/team/all/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/assign/team/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/create/from/project/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/edit/from/project/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/edit/0/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/new/staff/{staff_id}/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/unassign/staff/all/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/task/assign/staff/{staff_id}/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/assign/project/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/staff/unassign/project/all/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/field/assign/staff/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff/" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/field/unassign/staff/all/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/field/update/assigned/staff/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+<security:intercept-url pattern="/photo/upload/staff/profile/**" access="hasRole('ROLE_STAFF_EDITOR')"/>
+
+<!-- ROLE_STAFF_VIEWER -->
+<security:intercept-url pattern="/staff" access="hasRole('ROLE_STAFF_VIEWER')"/>
+<security:intercept-url pattern="/staff/" access="hasRole('ROLE_STAFF_VIEWER')"/>
+<security:intercept-url pattern="/staff/list/**" access="hasRole('ROLE_STAFF_VIEWER')"/>
+<security:intercept-url pattern="/staff/edit/{staff_id}/**" access="hasRole('ROLE_STAFF_VIEWER')"/>
+
+
+<!-- ROLE_CONFIG_EDITOR -->
+<security:intercept-url pattern="/config/create/**" access="hasRole('ROLE_CONFIG_EDITOR')"/>
+<security:intercept-url pattern="/config/delete/{sysconf_id}/**" access="hasRole('ROLE_CONFIG_EDITOR')"/>
+<security:intercept-url pattern="/config/edit/0/**" access="hasRole('ROLE_CONFIG_EDITOR')"/>
+
+<!-- ROLE_CONFIG_VIEWER -->
+<security:intercept-url pattern="/config" access="hasRole('ROLE_CONFIG_VIEWER')"/>
+<security:intercept-url pattern="/config/" access="hasRole('ROLE_CONFIG_VIEWER')"/>
+<security:intercept-url pattern="/config/list/**" access="hasRole('ROLE_CONFIG_VIEWER')"/>
+<security:intercept-url pattern="/config/edit/{sysconf_id}/**" access="hasRole('ROLE_CONFIG_VIEWER')"/>
+
+
+<!-- ROLE_SYSTEMUSER_EDITOR -->
+<security:intercept-url pattern="/systemuser/create/**" access="hasRole('ROLE_SYSTEMUSER_EDITOR')"/>
+<security:intercept-url pattern="/systemuser/delete/{user_id}/**" access="hasRole('ROLE_SYSTEMUSER_EDITOR')"/>
+<security:intercept-url pattern="/systemuser/edit/0/**" access="hasRole('ROLE_SYSTEMUSER_EDITOR')"/>
+
+<!-- ROLE_SYSTEMUSER_VIEWER -->
+<security:intercept-url pattern="/systemuser" access="hasRole('ROLE_SYSTEMUSER_VIEWER')"/>
+<security:intercept-url pattern="/systemuser/" access="hasRole('ROLE_SYSTEMUSER_VIEWER')"/>
+<security:intercept-url pattern="/systemuser/list/**" access="hasRole('ROLE_SYSTEMUSER_VIEWER')"/>
+<security:intercept-url pattern="/systemuser/edit/{user_id}/**" access="hasRole('ROLE_SYSTEMUSER_VIEWER')"/>
