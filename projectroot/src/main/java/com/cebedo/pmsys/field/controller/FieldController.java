@@ -328,7 +328,6 @@ public class FieldController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Field.COLUMN_PRIMARY_KEY + "}")
 	public String editField(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id,

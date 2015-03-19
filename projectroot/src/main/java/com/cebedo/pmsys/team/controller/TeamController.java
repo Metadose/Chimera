@@ -95,7 +95,6 @@ public class TeamController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Team.COLUMN_PRIMARY_KEY + "}")
 	public String editTeam(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,

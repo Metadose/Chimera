@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -40,11 +41,13 @@
 												<div class="box-header">
 				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 												</div><!-- /.box-header -->
-												<div class="box-body table-responsive">
+												<div class="box-body table-responsive">	
+													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                	<a href="${contextPath}/team/edit/0">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Team</button>
 				                                	</a>
 				                                	<br/><br/>
+				                                	</sec:authorize>
 				                                    <table id="example-1" class="table table-bordered table-striped">
 				                                        <thead>
 				                                            <tr>
@@ -62,9 +65,11 @@
 																				<a href="${contextPath}/team/edit/${team.id}">
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
 																				</a>
+																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																				<a href="${contextPath}/team/delete/${team.id}">
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																				</a>
+																				</sec:authorize>
 																			</center>
 																		</td>
 																		<td>${team.id}</td>

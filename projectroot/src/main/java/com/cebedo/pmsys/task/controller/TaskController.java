@@ -297,7 +297,6 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,

@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -41,10 +42,12 @@
 				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">
+													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                	<a href="${contextPath}/project/edit/0">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
 				                                	</a>
 				                                	<br/><br/>
+				                                	</sec:authorize>
 				                                    <table id="example-1" class="table table-bordered table-striped">
 				                                        <thead>
 				                                            <tr>
@@ -64,9 +67,11 @@
 																				<form action="${contextPath}/project/edit/${project.id}">
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
 																				</form>&nbsp;
+																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																				<form action="${contextPath}/project/delete/${project.id}">
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																				</form>
+																				</sec:authorize>
 																			</center>
 																		</td>
 																		<td>

@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -70,9 +71,11 @@
 		                                            	</c:when>
 		                                            	<c:when test="${team.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                            		<a href="${contextPath}/team/delete/${team.id}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Team</button>
 															</a>
+															</sec:authorize>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -162,6 +165,7 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/0">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
@@ -170,6 +174,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		</sec:authorize>
 		                                    		<form method="post" action="${contextPath}/staff/assign/team">
 		                                    		<td>
 		                                    			<select class="form-control" name="staff_id">
@@ -264,6 +269,7 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/project/edit/0">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Project</button>
@@ -272,6 +278,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		</sec:authorize>
 		                                    		<form method="post" action="${contextPath}/team/assign/project">
 		                                    		<td>
 		                                    			<select class="form-control" name="project_id">
@@ -413,9 +420,11 @@
 							                                        <a href="${contextPath}/task/edit/${task.id}">
 					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 					                                            	</a>
+					                                            	<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 					                                            	<a href="${contextPath}/task/delete/${task.id}">
 					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
 					                                            	</a>
+					                                            	</sec:authorize>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
 					                                            	<c:choose>
