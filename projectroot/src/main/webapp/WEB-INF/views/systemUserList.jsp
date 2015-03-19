@@ -37,7 +37,6 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Access</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -56,7 +55,6 @@
 														</td>
 														<td>${systemUser.id}</td>
 		                                                <td>${systemUser.username}</td>
-		                                                <td>${systemUser.access}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -66,7 +64,6 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
-                                                <th>Access</th>
                                             </tr>
                                         </tfoot>
                                     </table>

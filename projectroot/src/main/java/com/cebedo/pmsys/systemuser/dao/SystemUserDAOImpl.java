@@ -45,6 +45,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 				logger.debug("User found");
 				Hibernate.initialize(dbUser.getStaff());
 				Hibernate.initialize(dbUser.getSecurityAccess());
+				Hibernate.initialize(dbUser.getSecurityRoles());
 				return dbUser;
 			}
 		}

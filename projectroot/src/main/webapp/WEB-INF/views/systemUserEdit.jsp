@@ -54,11 +54,9 @@
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="user_id" value="${user.id}"/>
 				                                            <label>Username</label>
-				                                            <input type="text" name="username" value="${user.username}"/><br/>
+				                                            <input type="text" class="form-control" name="username" value="${user.username}"/><br/>
 				                                            <label>Password</label>
-				                                            <input type="password" name="password" value="${user.password}"/><br/>
-				                                            <label>Access</label>
-				                                            <input type="text" name="access" value="${user.access}"/><br/>
+				                                            <input type="password" class="form-control" name="password" value="${user.password}"/><br/>
 				                                        </div>
 				                                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
 				                                    </form>

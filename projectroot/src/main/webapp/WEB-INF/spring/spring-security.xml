@@ -112,6 +112,7 @@
                 <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
                 <beans:value>com.cebedo.pmsys.security.securityaccess.model.SecurityAccess</beans:value>
+                <beans:value>com.cebedo.pmsys.security.securityrole.model.SecurityRole</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
             </beans:list>

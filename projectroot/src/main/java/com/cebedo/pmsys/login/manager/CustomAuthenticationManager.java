@@ -21,6 +21,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -80,49 +81,32 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			// TODO Check if the user's company is expired.
 			logger.debug("User dtails are good and ready to go");
 			return new AuthenticationToken(auth.getName(),
-					auth.getCredentials(),
-					getAuthorities(user.getSecurityAccess()), user.getStaff(),
-					user.getCompany(), user.isSuperAdmin(),
+					auth.getCredentials(), getAuthorities(user),
+					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
 					user.isCompanyAdmin(), user);
 		}
 	}
 
-	public Collection<GrantedAuthority> getAuthorities(Set<SecurityAccess> groups) {
+	/**
+	 * Get all the granted authorities from a specific user.
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
+		Set<SecurityAccess> accessSet = user.getSecurityAccess();
+		Set<SecurityRole> roles = user.getSecurityRoles();
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		authList.add(new SimpleGrantedAuthority("ROLE_AUTH_USER"));
-		for (SecurityAccess group : groups) {
-			authList.add(new SimpleGrantedAuthority(group.getName()));
+
+		// Add all defined access.
+		for (SecurityAccess access : accessSet) {
+			authList.add(new SimpleGrantedAuthority(access.getName()));
+		}
+
+		// Add all roles.
+		for (SecurityRole role : roles) {
+			authList.add(new SimpleGrantedAuthority(role.getName()));
 		}
 		return authList;
 	}
-
-	/**
-	 * Retrieves the correct ROLE type depending on the access level, where
-	 * access level is an Integer. Basically, this interprets the access value
-	 * whether it's for a regular user or admin.
-	 * 
-	 * @param access
-	 *            an integer value representing the access of the user
-	 * @return collection of granted authorities
-	 */
-	// public Collection<GrantedAuthority> getAuthorities(Integer access) {
-	// List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-	//
-	// // All users are granted with ROLE_USER access.
-	// // Therefore this user gets a ROLE_USER by default.
-	// authList.add(new SimpleGrantedAuthority("ROLE_USER"));
-	//
-	// // Check if this user has super admin access.
-	// if (access.compareTo(1) == 0) {
-	// authList.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
-	// authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
-	// }
-	//
-	// // Check if this user has company admin access.
-	// if (access.compareTo(2) == 0) {
-	// authList.add(new SimpleGrantedAuthority("ROLE_COMPANY_ADMIN"));
-	// }
-	// return authList;
-	// }
-
 }

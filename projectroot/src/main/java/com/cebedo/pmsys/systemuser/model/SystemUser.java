@@ -33,7 +33,6 @@ public class SystemUser {
 	private long id;
 	private String username;
 	private String password;
-	private Integer access;
 	private Staff staff;
 	private boolean superAdmin;
 	private Company company;
@@ -68,15 +67,6 @@ public class SystemUser {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	@Column(name = "access", nullable = false, length = 3)
-	public Integer getAccess() {
-		return access;
-	}
-
-	public void setAccess(Integer access) {
-		this.access = access;
 	}
 
 	@OneToOne
@@ -127,6 +117,8 @@ public class SystemUser {
 		this.securityAccess = securityAccess;
 	}
 
+	@ManyToMany
+	@JoinTable(name = UserRoleAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
 	public Set<SecurityRole> getSecurityRoles() {
 		return securityRoles;
 	}

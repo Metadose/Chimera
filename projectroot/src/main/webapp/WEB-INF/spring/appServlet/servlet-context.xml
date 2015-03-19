@@ -70,6 +70,7 @@
                 <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
                 <beans:value>com.cebedo.pmsys.security.securityaccess.model.SecurityAccess</beans:value>
+                <beans:value>com.cebedo.pmsys.security.securityrole.model.SecurityRole</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
             </beans:list>
@@ -112,6 +113,13 @@
     </beans:bean>
     <beans:bean id="securityAccessService" class="com.cebedo.pmsys.security.securityaccess.service.SecurityAccessServiceImpl">
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.security.securityrole.dao.SecurityRoleDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.security.securityrole.service.SecurityRoleServiceImpl">
+        <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="taskDAO" class="com.cebedo.pmsys.task.dao.TaskDAOImpl">

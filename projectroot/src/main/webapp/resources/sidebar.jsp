@@ -50,47 +50,61 @@
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
+            <sec:authorize access="hasRole('ACCESS_PROJECT')">
             <li>
                 <a href="${contextPath}/project/list/">
                     <i class="fa fa-folder"></i> <span>Projects</span>
                 </a>
             </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_PROJECTFILE')">
             <li>
                 <a href="${contextPath}/projectfile/list/">
                     <i class="fa fa-file"></i> <span>Files</span>
                 </a>
             </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_TASK')">
             <li>
                 <a href="${contextPath}/task/list/">
                     <i class="fa fa-tasks"></i> <span>Tasks</span>
                 </a>
             </li>
+            </sec:authorize>
 <!--             <li> -->
 <!--                 <a href="pages/calendar.html"> -->
 <!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->
 <!--                 </a> -->
 <!--             </li> -->
+			<sec:authorize access="hasRole('ACCESS_TEAM')">
             <li>
                 <a href="${contextPath}/team/list/">
                     <i class="fa fa-users"></i> <span>Teams</span>
 <!--                     <small class="badge pull-right bg-green">new</small> -->
                 </a>
             </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_STAFF')">
             <li>
                 <a href="${contextPath}/staff/list/">
                     <i class="fa fa-user"></i> <span>Staff</span>
                 </a>
             </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_SYSTEMUSER')">
             <li>
                 <a href="${contextPath}/systemuser/list/">
                     <i class="fa fa-user"></i> <span>Users</span>
                 </a>
             </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_FIELD')">
             <li>
                 <a href="${contextPath}/field/list/">
                     <i class="fa fa-list"></i> <span>Fields</span>
                 </a>
             </li>
+            </sec:authorize>
 <!--             <li class="treeview"> -->
 <!--                 <a href="#"> -->
 <!--                     <i class="fa fa-edit"></i> -->
@@ -113,6 +127,7 @@
                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Change Password</a></li>
                 </ul>
             </li>
+            <c:if test="${authUser.superAdmin == true}">
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
@@ -125,6 +140,7 @@
                     <li><a href="${contextPath}/config/list"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
                 </ul>
             </li>
+            </c:if>
             <li>
                 <a href="${contextPath}/auth/logout">
                     <i class="fa fa-sign-out"></i> <span>Logout</span>
