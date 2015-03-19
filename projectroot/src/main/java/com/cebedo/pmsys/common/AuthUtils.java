@@ -7,6 +7,7 @@ import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
@@ -141,7 +142,29 @@ public abstract class AuthUtils {
 		return false;
 	}
 
+	/**
+	 * TODO Check if we really need this since we're just check if it's super
+	 * admin.
+	 * 
+	 * @param obj
+	 * @return
+	 */
 	public static boolean isActionAuthorized(SecurityAccess obj) {
+		AuthenticationToken auth = getAuth();
+		if (auth.isSuperAdmin()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * TODO Check if we really need this since we're just check if it's super
+	 * admin.
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static boolean isActionAuthorized(SecurityRole obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;

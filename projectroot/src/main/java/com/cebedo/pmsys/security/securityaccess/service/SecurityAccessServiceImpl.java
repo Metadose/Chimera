@@ -28,9 +28,9 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Override
 	@Transactional
 	public SecurityAccess getByID(long id) {
-		SecurityAccess grp = this.securityAccessDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(grp)) {
-			return grp;
+		SecurityAccess obj = this.securityAccessDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(obj)) {
+			return obj;
 		}
 		return new SecurityAccess();
 	}
@@ -46,8 +46,8 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Override
 	@Transactional
 	public void delete(long id) {
-		SecurityAccess grp = this.securityAccessDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(grp)) {
+		SecurityAccess obj = this.securityAccessDAO.getByID(id);
+		if (AuthUtils.isActionAuthorized(obj)) {
 			this.securityAccessDAO.delete(id);
 		}
 	}
