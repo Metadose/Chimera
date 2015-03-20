@@ -97,7 +97,9 @@
 		                   											No photo uploaded.
 		                   										</c:when>
 		                   									</c:choose>
-		                   									<br/><br/>
+		                   									<br/>
+		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+		                   									<br/>
 		                   									<div class="form-group">
 		                   										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
 		                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
@@ -122,6 +124,7 @@
 						                                        	<button class="btn btn-default btn-flat btn-sm">Delete Photo</button>
 						                                        </form>
 						                                    </div>
+						                                    </sec:authorize>
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
@@ -144,6 +147,7 @@
 				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
 				                                        </div>
 				                                    </form>
+				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                    <c:choose>
 		                                            	<c:when test="${project.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
@@ -155,6 +159,7 @@
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
+		                                            </sec:authorize>
                    								</div>
                    							</div>
                    						</div>
@@ -191,6 +196,7 @@
 																				&nbsp;
 																			</td>
 																		</form>
+																		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																		<td style="padding-bottom: 3px;">
 																			<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
 																		</td>
@@ -200,6 +206,7 @@
 																		<td style="padding-bottom: 3px;">
 																			<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
 																		</td>
+																		</sec:authorize>
 																	</tr>
 																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
 																</c:forEach>
@@ -208,15 +215,18 @@
 														<br/>
 														<c:choose>
 															<c:when test="${!empty projectFields}">
+																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
 																	<input type="hidden" name="project_id" value="${project.id}"/>
 																	<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 																</form>
+																</sec:authorize>
 															</c:when>
 															<c:when test="${empty projectFields}">
 																<h5>No field assigned.</h5>
 															</c:when>
 														</c:choose>
+														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 														<br/>
 														<br/>
 														<h4>Assign Fields</h4>
@@ -266,6 +276,7 @@
 														</form>
 														<br/>
                                            				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Assign</button>
+                                           				</sec:authorize>
 			                                        </div>
                    								</div>
                    							</div>

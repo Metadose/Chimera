@@ -89,6 +89,7 @@
     </beans:bean>
     <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
+        <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">

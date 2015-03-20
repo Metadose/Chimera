@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
@@ -15,9 +16,14 @@ import com.cebedo.pmsys.project.model.Project;
 public class ProjectServiceImpl implements ProjectService {
 
 	private ProjectDAO projectDAO;
+	private CompanyDAO companyDAO;
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
+	}
+
+	public void setCompanyDAO(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
 	}
 
 	@Override
@@ -35,6 +41,10 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public void update(Project project) {
+		long companyID = this.projectDAO.getCompanyIDByID(project.getId());
+		Company company = this.companyDAO.getByID(companyID);
+		project.setCompany(company);
+
 		if (AuthUtils.isActionAuthorized(project)) {
 			this.projectDAO.update(project);
 		}

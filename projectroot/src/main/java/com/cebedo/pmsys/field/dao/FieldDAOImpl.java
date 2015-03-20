@@ -120,16 +120,14 @@ public class FieldDAOImpl implements FieldDAO {
 	public FieldAssignment getFieldByKeys(long projectID, long fieldID,
 			String label, String value) {
 		Session session = this.sessionFactory.getCurrentSession();
+		String hql = "FROM " + FieldAssignment.class.getName();
+		hql += " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID;
+		hql += " AND " + Field.COLUMN_PRIMARY_KEY + " = " + fieldID;
+		hql += " AND " + Field.COLUMN_LABEL + " = '" + label;
+		hql += "' AND " + Field.COLUMN_VALUE + " =  '" + value + "'";
+
 		FieldAssignment fieldAssignment = (FieldAssignment) session
-				.createQuery(
-						"FROM " + FieldAssignment.CLASS_NAME + " WHERE "
-								+ Project.COLUMN_PRIMARY_KEY + " = "
-								+ projectID + " AND "
-								+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID
-								+ " AND " + Field.COLUMN_LABEL + " = '" + label
-								+ "' and " + Field.COLUMN_VALUE + " =  '"
-								+ value + "'").uniqueResult();
-		logger.info("[Get by Keys] Field Assignment: " + fieldAssignment);
+				.createQuery(hql).uniqueResult();
 		return fieldAssignment;
 	}
 
@@ -212,6 +210,30 @@ public class FieldDAOImpl implements FieldDAO {
 				+ StaffFieldAssignment.CLASS_NAME + " WHERE "
 				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
 		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void updateAssignedProjectField(FieldAssignment assignment) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.update(assignment.getAssignmentID());
+	}
+
+	@Override
+	public void updateAssignedField(String table, String objectKeyCol,
+			long objectID, long fieldID, String oldLabel, String oldValue,
+			String label, String value) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String sql = "UPDATE " + table;
+		sql += " SET ";
+		sql += Field.COLUMN_LABEL + " = '" + label + "',";
+		sql += Field.COLUMN_VALUE + " = '" + value + "' ";
+		sql += "WHERE " + Field.COLUMN_LABEL + " = '" + oldLabel + "' ";
+		sql += "AND " + Field.COLUMN_VALUE + " = '" + oldValue + "' ";
+		sql += "AND " + objectKeyCol + " = " + objectID + " ";
+		sql += "AND " + Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " ";
+
+		SQLQuery query = session.createSQLQuery(sql);
 		query.executeUpdate();
 	}
 }

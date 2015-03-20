@@ -48,4 +48,10 @@ public interface FieldDAO {
 
 	public void unassignAllStaff(long staffID);
 
+	public void updateAssignedProjectField(FieldAssignment assignment);
+
+	public void updateAssignedField(String table, String objectKeyCol,
+			long objectID, long fieldID, String oldLabel, String oldValue,
+			String label, String value);
+
 }

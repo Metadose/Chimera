@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.model.Task;
 
@@ -112,5 +113,16 @@ public class ProjectDAOImpl implements ProjectDAO {
 			Hibernate.initialize(project.getAssignedTasks());
 		}
 		return projectList;
+	}
+
+	@Override
+	public long getCompanyIDByID(long projectID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
+				+ Project.TABLE_NAME + " WHERE " + Project.COLUMN_PRIMARY_KEY
+				+ " = " + projectID + " LIMIT 1";
+		String resultStr = session.createSQLQuery(queryStr).uniqueResult()
+				.toString();
+		return Long.parseLong(resultStr);
 	}
 }

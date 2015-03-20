@@ -105,19 +105,9 @@ public class FieldServiceImpl implements FieldService {
 	@Transactional
 	public void updateAssignedProjectField(long projectID, long fieldID,
 			String oldLabel, String oldValue, String label, String value) {
-		// Delete the old version of the field.
-		this.fieldDAO.deleteAssignedField(projectID, fieldID, oldLabel,
-				oldValue);
-
-		// Save a new one.
-		FieldAssignment newFieldAssignment = new FieldAssignment();
-		Field field = this.fieldDAO.getByID(fieldID);
-		Project proj = this.projectDAO.getByID(projectID);
-		newFieldAssignment.setProject(proj);
-		newFieldAssignment.setField(field);
-		newFieldAssignment.setLabel(label);
-		newFieldAssignment.setValue(value);
-		this.fieldDAO.assignProject(newFieldAssignment);
+		this.fieldDAO.updateAssignedField(FieldAssignment.TABLE_NAME,
+				Project.COLUMN_PRIMARY_KEY, projectID, fieldID, oldLabel,
+				oldValue, label, value);
 	}
 
 	@Override

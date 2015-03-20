@@ -198,7 +198,8 @@ public class FieldController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPDATE_ASSIGNED_PROJECT_FIELD, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
+			+ SystemConstants.ASSIGNED + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedProjectField(
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,

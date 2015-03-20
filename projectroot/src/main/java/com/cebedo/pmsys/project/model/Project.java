@@ -138,7 +138,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Task many-to-many without extra columns.
 	 */
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Task> getAssignedTasks() {
 		return assignedTasks;
 	}

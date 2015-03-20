@@ -1,0 +1,16 @@
+projedit
+
+= details
+upload foto
+delete foto
+update proj
+delete proj
+create proj
+- field
+assign
+unassign
+unassign all
+update
+
+= bugs
+invalid day index of timeline
