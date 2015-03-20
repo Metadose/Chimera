@@ -759,14 +759,20 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/team/edit/0">
+		                                    			<form method="post" action="${contextPath}/team/edit/from/origin">
+		                                    			<input type="hidden" name="team_id" value="0"/>
+		                                    			<input type="hidden" name="origin" value="project"/>
+		                                    			<input type="hidden" name="originID" value="${project.id}"/>
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		</sec:authorize>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty teamList}">
 		                                    		<form role="form" method="post" action="${contextPath}/team/assign/project">
 		                                    		<td>
@@ -798,6 +804,7 @@
               											</form>
 		                                    		</td>
 		                                    		</c:if>
+		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table><br/>
 		                                    <table id="teams-table" class="table table-bordered table-striped">
@@ -815,9 +822,13 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-																	<a href="${contextPath}/team/edit/${team.id}">
-																		<button class="btn btn-default btn-flat btn-sm">View</button>
-																	</a>
+			                                            			<form method="post" action="${contextPath}/team/edit/from/origin">
+					                                    			<input type="hidden" name="team_id" value="${team.id}"/>
+					                                    			<input type="hidden" name="origin" value="project"/>
+					                                    			<input type="hidden" name="originID" value="${project.id}"/>
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+								                                    </form>
+								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																	<form role="form" method="post" action="${contextPath}/team/unassign/project">
 	                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
@@ -825,6 +836,7 @@
 		                                    							<input type="hidden" name="originID" value="${project.id}"/>
 	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 	                   												</form>
+	                   												</sec:authorize>
 																</center>
 															</td>
 			                                                <td>${team.id}</td>

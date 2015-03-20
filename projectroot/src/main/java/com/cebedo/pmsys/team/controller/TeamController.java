@@ -74,6 +74,28 @@ public class TeamController {
 		return JSP_LIST;
 	}
 
+	/**
+	 * Create a staff from the origin.
+	 * 
+	 * @param staff
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+	public String createFromOrigin(@ModelAttribute(ATTR_TEAM) Team team,
+			@RequestParam(value = SystemConstants.ORIGIN) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID) {
+		if (team.getId() == 0) {
+			this.teamService.create(team);
+		} else {
+			this.teamService.update(team);
+		}
+		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + originID;
+	}
+
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TEAM) Team team) {
@@ -93,6 +115,39 @@ public class TeamController {
 		this.teamService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 				+ SystemConstants.REQUEST_LIST;
+	}
+
+	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	public String editTeamFromOrigin(
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long id,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
+
+		// Add origin details.
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+
+		List<Field> fieldList = this.fieldService.list();
+		List<Staff> staffList = this.staffService.list();
+		List<Project> projectList = this.projectService.list();
+		model.addAttribute(FieldController.JSP_LIST, fieldList);
+		model.addAttribute(StaffController.JSP_LIST, staffList);
+		model.addAttribute(ProjectController.JSP_LIST, projectList);
+
+		if (id == 0) {
+			model.addAttribute(ATTR_TEAM, new Team());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+
+		model.addAttribute(ATTR_TEAM,
+				this.teamService.getWithAllCollectionsByID(id));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+		return JSP_EDIT;
 	}
 
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"

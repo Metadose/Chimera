@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
@@ -21,6 +22,11 @@ public class TeamServiceImpl implements TeamService {
 
 	private TeamDAO teamDAO;
 	private ProjectDAO projectDAO;
+	private CompanyDAO companyDAO;
+
+	public void setCompanyDAO(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -55,6 +61,9 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	@Transactional
 	public void update(Team team) {
+		Company company = this.companyDAO.getCompanyByObjID(Team.TABLE_NAME,
+				Team.COLUMN_PRIMARY_KEY, team.getId());
+		team.setCompany(company);
 		if (AuthUtils.isActionAuthorized(team)) {
 			this.teamDAO.update(team);
 		}
@@ -115,7 +124,7 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	@Transactional
-	public Team getWithAllCollectionsByID(int id) {
+	public Team getWithAllCollectionsByID(long id) {
 		Team team = this.teamDAO.getWithAllCollectionsByID(id);
 		if (AuthUtils.isActionAuthorized(team)) {
 			return team;

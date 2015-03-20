@@ -1,22 +1,21 @@
 projedit
 
 = details
-upload foto
-delete foto
-update proj
-delete proj
-create proj
-- field
-assign
-unassign
-unassign all
-update
-==== DONE
+* upload foto
+* delete foto
+* field assign
+* field assigned update
+* field assigned unassign
+* field unassign all
+
 
 = managers
-create staff
-assign
-unassign
+==== DONE
+
+= teams
+create team
+assign team & selector
+unassign team
 unassign all
 view
 

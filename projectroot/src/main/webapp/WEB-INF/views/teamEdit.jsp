@@ -58,7 +58,15 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/team/create">
+                   									<c:set var="detailsFormURL" value="${contextPath}/team/create"/>
+				                                    <c:if test="${!empty origin && !empty originID}">
+				                                    	<c:set var="detailsFormURL" value="${contextPath}/team/create/from/origin"/>
+				                                    </c:if>
+                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
+                   										<c:if test="${!empty origin && !empty originID}">
+				                                    	<input type="hidden" name="origin" value="${origin}"/>
+				                                    	<input type="hidden" name="originID" value="${originID}"/>
+					                                    </c:if>
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${team.id}"/>
 				                                            <label>Name</label>
