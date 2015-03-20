@@ -14,3 +14,4 @@ update
 
 = bugs
 invalid day index of timeline
+order fields accordingly

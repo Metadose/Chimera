@@ -128,6 +128,19 @@
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
+				                                    <sec:authorize access="!hasRole('ROLE_PROJECT_EDITOR')">
+					                                    <div class="form-group">
+				                                            <label>Name</label><br/>
+				                                            ${project.name}<br/><br/>
+				                                            <label>Status</label><br/>
+				                                            ${project.notes}<br/><br/>
+				                                            <label>Location</label><br/>
+				                                            ${project.location}<br/><br/>
+				                                            <label>Notes</label><br/>
+				                                            ${project.notes}
+				                                        </div>
+				                                    </sec:authorize>
+				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${project.id}"/>
@@ -147,7 +160,6 @@
 				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
 				                                        </div>
 				                                    </form>
-				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                    <c:choose>
 		                                            	<c:when test="${project.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
@@ -178,6 +190,13 @@
                    												<c:set var="fieldFormID" value="${0}"/>
                    												<c:forEach var="field" items="${projectFields}">
                    													<tr>
+                   														<sec:authorize access="!hasRole('ROLE_PROJECT_EDITOR')">
+                   															<td style="padding-bottom: 20px;">
+	                   															<label>${field.label}</label><br/>
+	                   															${field.value}
+																			</td>
+                   														</sec:authorize>
+                   														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
 																			<input type="hidden" name="project_id" value="${project.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
@@ -192,11 +211,7 @@
 																			<td style="padding-bottom: 3px;">
 																				<input type="text" class="form-control" id="value" name="value" value="${field.value}">
 																			</td>
-																			<td style="padding-bottom: 3px;">
-																				&nbsp;
-																			</td>
 																		</form>
-																		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																		<td style="padding-bottom: 3px;">
 																			<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
 																		</td>
