@@ -1,13 +1,7 @@
 projedit
 
 = details
-* upload foto
-* delete foto
-* field assign
-* field assigned update
-* field assigned unassign
-* field unassign all
-
+==== DONE
 
 = managers
 ==== DONE
@@ -18,6 +12,7 @@ assign team & selector
 unassign team
 unassign all
 view
+==== DONE mana man guro pero not sure???
 
 = bugs
 invalid day index of timeline
