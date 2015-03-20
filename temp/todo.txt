@@ -11,6 +11,14 @@ assign
 unassign
 unassign all
 update
+==== DONE
+
+= managers
+create staff
+assign
+unassign
+unassign all
+view
 
 = bugs
 invalid day index of timeline

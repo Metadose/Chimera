@@ -22,6 +22,4 @@ public interface ProjectDAO {
 
 	public List<Project> listWithTasks(Long id);
 
-	public long getCompanyIDByID(long id);
-
 }

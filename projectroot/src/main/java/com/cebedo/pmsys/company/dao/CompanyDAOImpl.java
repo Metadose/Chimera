@@ -65,4 +65,21 @@ public class CompanyDAOImpl implements CompanyDAO {
 		return companyList;
 	}
 
+	@Override
+	public long getCompanyIDByObjID(String objTable, String objKeyCol,
+			long objID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
+				+ objTable + " WHERE " + objKeyCol + " = " + objID + " LIMIT 1";
+		String resultStr = session.createSQLQuery(queryStr).uniqueResult()
+				.toString();
+		return Long.parseLong(resultStr);
+	}
+
+	@Override
+	public Company getCompanyByObjID(String objTable, String objKeyCol,
+			long objID) {
+		long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
+		return (Company) getByID(companyID);
+	}
 }

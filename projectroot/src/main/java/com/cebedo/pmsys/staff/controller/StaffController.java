@@ -81,7 +81,7 @@ public class StaffController {
 	}
 
 	/**
-	 * Create a staff from the Project Edit jsp.
+	 * Create a staff from the origin.
 	 * 
 	 * @param staff
 	 * @param projectID
@@ -89,16 +89,17 @@ public class StaffController {
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
-			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
-	public String createFromProject(@ModelAttribute(ATTR_STAFF) Staff staff,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+	public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
+			@RequestParam(value = SystemConstants.ORIGIN) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID) {
 		if (staff.getId() == 0) {
 			this.staffService.create(staff);
 		} else {
 			this.staffService.update(staff);
 		}
-		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
@@ -118,15 +119,16 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM_PROJECT)
-	public String editStaffFromProject(
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) int staffID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID, Model model) {
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	public String editStaffFromOrigin(
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
 		// Add origin details.
-		model.addAttribute(SystemConstants.ORIGIN, Project.OBJECT_NAME);
-		model.addAttribute(SystemConstants.ORIGIN_ID, projectID);
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
 
 		// If new, create it.
 		if (staffID == 0) {
@@ -137,7 +139,8 @@ public class StaffController {
 		}
 
 		// Else if not new, edit it.
-		model.addAttribute(ATTR_STAFF, this.staffService.getByID(staffID));
+		model.addAttribute(ATTR_STAFF,
+				this.staffService.getWithAllCollectionsByID(staffID));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;

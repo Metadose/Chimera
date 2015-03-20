@@ -41,8 +41,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public void update(Project project) {
-		long companyID = this.projectDAO.getCompanyIDByID(project.getId());
-		Company company = this.companyDAO.getByID(companyID);
+		Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
+				Project.COLUMN_PRIMARY_KEY, project.getId());
 		project.setCompany(company);
 
 		if (AuthUtils.isActionAuthorized(project)) {

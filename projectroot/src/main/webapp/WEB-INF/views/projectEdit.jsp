@@ -641,14 +641,20 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/staff/edit/0">
+		                                    			<form method="post" action="${contextPath}/staff/edit/from/origin">
+		                                    			<input type="hidden" name="staff_id" value="0"/>
+		                                    			<input type="hidden" name="origin" value="project"/>
+		                                    			<input type="hidden" name="originID" value="${project.id}"/>
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                    </form>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		</sec:authorize>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
 		                                    		<form role="form" method="post" action="${contextPath}/staff/assign/project">
 		                                    		<td>
@@ -685,6 +691,7 @@
                											</form>
 		                                    		</td>
 		                                    		</c:if>
+		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table><br/>
 		                                    <table id="managers-table" class="table table-bordered table-striped">
@@ -706,15 +713,19 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-	                   												<form action="${contextPath}/staff/edit/${manager.id}" method="post">
-	                   													<input type="hidden" name="staff_id" value="${manager.id}"/>
-	                   													<button class="btn btn-default btn-flat btn-sm">View</button>
-	                   												</form>
+			                                            			<form method="post" action="${contextPath}/staff/edit/from/origin">
+					                                    			<input type="hidden" name="staff_id" value="${manager.id}"/>
+					                                    			<input type="hidden" name="origin" value="project"/>
+					                                    			<input type="hidden" name="originID" value="${project.id}"/>
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+								                                    </form>
+	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																	<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
 																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																		<input type="hidden" id="staff_id" name="staff_id" value="${manager.id}"/>
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 	                   												</form>
+	                   												</sec:authorize>
 																</center>
 															</td>
 			                                                <td>

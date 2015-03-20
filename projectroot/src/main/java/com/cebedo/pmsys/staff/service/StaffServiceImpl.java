@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
@@ -25,6 +26,11 @@ public class StaffServiceImpl implements StaffService {
 	private StaffDAO staffDAO;
 	private ProjectDAO projectDAO;
 	private TeamDAO teamDAO;
+	private CompanyDAO companyDAO;
+
+	public void setCompanyDAO(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -68,6 +74,10 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public void update(Staff staff) {
+		Company company = this.companyDAO.getCompanyByObjID(Staff.TABLE_NAME,
+				Staff.COLUMN_PRIMARY_KEY, staff.getId());
+		staff.setCompany(company);
+
 		if (AuthUtils.isActionAuthorized(staff)) {
 			this.staffDAO.update(staff);
 		}
@@ -148,7 +158,7 @@ public class StaffServiceImpl implements StaffService {
 
 	@Override
 	@Transactional
-	public Staff getWithAllCollectionsByID(int id) {
+	public Staff getWithAllCollectionsByID(long id) {
 		Staff stf = this.staffDAO.getWithAllCollectionsByID(id);
 		if (AuthUtils.isActionAuthorized(stf)) {
 			return stf;

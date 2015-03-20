@@ -16,4 +16,10 @@ public interface CompanyDAO {
 
 	public List<Company> list(Long companyID);
 
+	public long getCompanyIDByObjID(String objTable, String objKeyCol,
+			long objID);
+
+	public Company getCompanyByObjID(String objTable, String objKeyCol,
+			long objID);
+
 }

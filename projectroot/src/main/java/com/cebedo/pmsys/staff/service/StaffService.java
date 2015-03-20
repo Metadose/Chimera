@@ -29,7 +29,7 @@ public interface StaffService {
 
 	public void unassignAllProjectManagers(long projectID);
 
-	public Staff getWithAllCollectionsByID(int id);
+	public Staff getWithAllCollectionsByID(long id);
 
 	public void unassignTeam(long teamID, long staffID);
 
