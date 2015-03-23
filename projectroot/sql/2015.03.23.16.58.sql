@@ -231,7 +231,7 @@ CREATE TABLE `projects` (
   PRIMARY KEY (`project_id`),
   KEY `FK_projects_company` (`company_id`),
   CONSTRAINT `FK_projects_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `security_access` */
 
@@ -273,7 +273,7 @@ CREATE TABLE `staff` (
   PRIMARY KEY (`staff_id`),
   KEY `FK_staff_company` (`company_id`),
   CONSTRAINT `FK_staff_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `system_configuration` */
 
@@ -327,7 +327,7 @@ CREATE TABLE `tasks` (
   KEY `FK_tasks_company` (`company_id`),
   CONSTRAINT `FK_tasks_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`),
   CONSTRAINT `FK_tasks_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `teams` */
 
