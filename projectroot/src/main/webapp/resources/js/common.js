@@ -1,3 +1,9 @@
+// Store the currently selected tab in the hash value.
+$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+	var id = $(e.target).attr("href").substr(1);
+    window.name = id;
+});
+
 // Toggle display of two divs.
 function switchDisplay(div1, div2) {
 	toggleVisibility(div1);

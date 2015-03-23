@@ -50,7 +50,7 @@
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
-                            <ul class="nav nav-tabs">
+                            <ul class="nav nav-tabs" id="myTab">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
@@ -775,9 +775,15 @@
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
 	<script type="text/javascript">
-	    var tasks = ${ganttData};
-		gantt.init("gantt-chart");
-	    gantt.parse(tasks);
+	    $(document).ready(function() {
+	    	var tasks = ${ganttData};
+			gantt.init("gantt-chart");
+		    gantt.parse(tasks);
+		 	
+		    // On load of the page: switch to the currently selected tab.
+		    var hash = window.name;
+		    $('#myTab').find("[href='#"+ hash +"']").tab('show');
+		});
 	</script>
    	</c:if>
    	
