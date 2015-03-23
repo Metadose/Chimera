@@ -57,11 +57,9 @@
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
-<!-- 		                                <li><a href="#tab_6" data-toggle="tab">Calendar</a></li> -->
 		                                <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
-<!-- 		                                <li><a href="#tab_7" data-toggle="tab">Map</a></li> -->
                                 	</c:when>
                                 </c:choose>
                             </ul>

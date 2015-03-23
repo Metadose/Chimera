@@ -99,7 +99,9 @@ public class TeamDAOImpl implements TeamDAO {
 		Team team = (Team) session.load(Team.class, new Long(id));
 		Hibernate.initialize(team.getTasks());
 		Hibernate.initialize(team.getMembers());
-		Hibernate.initialize(team.getProjects());
+		for (Project project : team.getProjects()) {
+			Hibernate.initialize(project);
+		}
 		return team;
 	}
 

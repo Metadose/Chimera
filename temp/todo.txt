@@ -7,18 +7,16 @@ projedit
 ==== DONE
 
 = teams
-create team
-assign team & selector
-unassign team
-unassign all
-view
-==== DONE mana man guro pero not sure???
+==== DONE
+==== BUTNGI UG NOTIFICATIONS/ALERT AFTER ACTION
+
 
 = bugs
 invalid day index of timeline
 
 
 = todo
+butngig loading page
 Custom progress/status fields, custom sd ang color.
 
 Prioritize sec grup, audit, nd basic pmsys functions
