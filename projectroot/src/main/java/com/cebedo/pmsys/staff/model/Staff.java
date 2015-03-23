@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -31,6 +32,13 @@ public class Staff implements Serializable {
 	public static final String OBJECT_NAME = "staff";
 	public static final String TABLE_NAME = "staff";
 	public static final String COLUMN_PRIMARY_KEY = "staff_id";
+
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_PREFIX = "prefix";
+	public static final String PROPERTY_FIRST_NAME = "firstName";
+	public static final String PROPERTY_MIDDLE_NAME = "middleName";
+	public static final String PROPERTY_LAST_NAME = "lastName";
+	public static final String PROPERTY_SUFFIX = "suffix";
 
 	public static final String SUB_MODULE_PROFILE = "profile";
 
@@ -218,5 +226,11 @@ public class Staff implements Serializable {
 
 	public void setUser(SystemUser user) {
 		this.user = user;
+	}
+
+	@Transient
+	public String getFullName() {
+		return getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "
+				+ getLastName() + " " + getSuffix();
 	}
 }

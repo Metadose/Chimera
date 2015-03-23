@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -92,12 +94,20 @@ public class StaffController {
 			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
 			@RequestParam(value = SystemConstants.ORIGIN) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID) {
+			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (staff.getId() == 0) {
+			alertFactory.setMessage("Successfully <b>created</b> staff <b>"
+					+ staff.getFullName() + "</b>.");
 			this.staffService.create(staff);
 		} else {
+			alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
+					+ staff.getFullName() + "</b>.");
 			this.staffService.update(staff);
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
@@ -184,8 +194,15 @@ public class StaffController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectManagers(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
 		this.staffService.unassignAllProjectManagers(projectID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -203,7 +220,16 @@ public class StaffController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView unassignProjectManager(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			RedirectAttributes redirectAttrs) {
+
+		String staffName = this.staffService.getNameByID(staffID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned " + staffName
+				+ "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.staffService.unassignProjectManager(projectID, staffID);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
@@ -223,7 +249,16 @@ public class StaffController {
 	public ModelAndView assignProjectManager(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-			@RequestParam(ManagerAssignment.COLUMN_PROJECT_POSITION) String position) {
+			@RequestParam(ManagerAssignment.COLUMN_PROJECT_POSITION) String position,
+			RedirectAttributes redirectAttrs) {
+
+		String staffName = this.staffService.getNameByID(staffID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned " + staffName
+				+ "</b> as <b>" + position + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.staffService.assignProjectManager(projectID, staffID, position);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT

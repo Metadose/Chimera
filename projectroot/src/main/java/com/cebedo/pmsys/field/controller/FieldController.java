@@ -89,8 +89,9 @@ public class FieldController {
 			RedirectAttributes redirectAttrs) {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>added</b> the <b>"
-				+ fieldAssignment.getLabel() + "</b> in this project.");
+		alertFactory
+				.setMessage("Successfully <b>added</b> extra information <b>"
+						+ fieldAssignment.getLabel() + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
@@ -170,7 +171,7 @@ public class FieldController {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		alertFactory
-				.setMessage("Successfully <b>removed all</b> extra information in this project.");
+				.setMessage("Successfully <b>removed all</b> extra information.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
@@ -228,8 +229,9 @@ public class FieldController {
 			RedirectAttributes redirectAttrs) {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>updated</b> the <b>" + label
-				+ "</b> in this project.");
+		alertFactory
+				.setMessage("Successfully <b>updated</b> extra information <b>"
+						+ label + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
@@ -285,8 +287,9 @@ public class FieldController {
 			RedirectAttributes redirectAttrs) {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>removed</b> the <b>" + label
-				+ "</b> in this project.");
+		alertFactory
+				.setMessage("Successfully <b>removed</b> extra information <b>"
+						+ label + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 

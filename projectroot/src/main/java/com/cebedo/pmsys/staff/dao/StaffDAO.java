@@ -34,4 +34,6 @@ public interface StaffDAO {
 
 	public void assignTeam(StaffTeamAssignment stAssign);
 
+	public String getNameByID(long staffID);
+
 }

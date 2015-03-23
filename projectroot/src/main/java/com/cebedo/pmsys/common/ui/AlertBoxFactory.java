@@ -16,8 +16,8 @@ public class AlertBoxFactory {
 			+ CONFIG_ALERT_STATUS
 			+ " alert-dismissable\"><i class=\"fa fa-"
 			+ CONFIG_ALERT_ICON
-			+ "\"></i><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button><b>"
-			+ CONFIG_ALERT_HEADER + "</b> " + CONFIG_ALERT_MESSAGE + "</div>";
+			+ "\"></i><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button><h4>"
+			+ CONFIG_ALERT_HEADER + "</h4>" + CONFIG_ALERT_MESSAGE + "</div>";
 
 	private String status;
 	private String icon;

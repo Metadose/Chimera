@@ -39,4 +39,6 @@ public interface StaffService {
 
 	public List<Staff> listUnassignedInProject(Long companyID, Project project);
 
+	public String getNameByID(long staffID);
+
 }

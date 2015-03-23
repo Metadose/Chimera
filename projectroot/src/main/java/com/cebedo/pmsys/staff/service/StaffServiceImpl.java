@@ -221,4 +221,10 @@ public class StaffServiceImpl implements StaffService {
 		return new ArrayList<Staff>();
 	}
 
+	@Override
+	@Transactional
+	public String getNameByID(long staffID) {
+		return this.staffDAO.getNameByID(staffID);
+	}
+
 }
