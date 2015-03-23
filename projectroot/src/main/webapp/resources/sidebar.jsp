@@ -98,13 +98,13 @@
                 </a>
             </li>
             </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_FIELD')">
+            <c:if test="${authUser.superAdmin == true}">
             <li>
                 <a href="${contextPath}/field/list/">
                     <i class="fa fa-list"></i> <span>Fields</span>
                 </a>
             </li>
-            </sec:authorize>
+            </c:if>
 <!--             <li class="treeview"> -->
 <!--                 <a href="#"> -->
 <!--                     <i class="fa fa-edit"></i> -->

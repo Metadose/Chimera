@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.photo.service.PhotoService;
 import com.cebedo.pmsys.project.model.Project;
@@ -66,9 +68,16 @@ public class PhotoController {
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView deleteProjectProfile(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID)
-			throws IOException {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) throws IOException {
 		this.photoService.deleteProjectProfile(projectID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>deleted</b> the <b>profile picture</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -115,8 +124,8 @@ public class PhotoController {
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
-			throws IOException {
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
+			RedirectAttributes redirectAttrs) throws IOException {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
@@ -124,6 +133,12 @@ public class PhotoController {
 		} else {
 			// TODO Handle this scenario.
 		}
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>uploaded</b> the file <b>"
+				+ file.getOriginalFilename() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -140,13 +155,19 @@ public class PhotoController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_PHOTO) Photo photo) {
+	public String create(@ModelAttribute(ATTR_PHOTO) Photo photo,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (photo.getId() == 0) {
 			// TODO
 			// this.photoService.create(photo);
 		} else {
+			alertFactory.setMessage("Successfully <b>updated</b> the photo <b>"
+					+ photo.getName() + "</b>.");
 			this.photoService.update(photo);
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PHOTO + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}

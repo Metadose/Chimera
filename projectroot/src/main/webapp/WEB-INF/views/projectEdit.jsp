@@ -24,20 +24,6 @@
 		    cursor: pointer;
 		}
 	</style>
-	<script type="text/javascript">
-	function submitAjax(id) {
-		var formObj = $('#'+id);
-		var serializedData = formObj.serialize();
-		$.ajax({
-			type: "POST",
-			url: '${contextPath}/field/update/assigned/project',
-			data: serializedData,
-			success: function(response){
-				location.reload();
-			}
-		});
-	}
-	</script>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -61,6 +47,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -127,6 +114,7 @@
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
+				                                    <c:if test="${project.id != 0}">
 				                                    <div class="form-group" id="detailsDivViewer">
 			                                            <label>Name</label><br/>
 			                                            ${fn:escapeXml(project.name)}<br/><br/>
@@ -140,6 +128,7 @@
 			                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit</button>
 			                                            </sec:authorize>
 			                                        </div>
+			                                        </c:if>
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
                   										<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
@@ -171,8 +160,10 @@
 		                                            	</c:when>
 		                                            </c:choose>
 		                                            <br/>
+		                                            <c:if test="${project.id != 0}">
 		                                            <br/>
 		                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
+		                                            </c:if>
 			                                        </div>
 		                                            </sec:authorize>
                    								</div>
@@ -188,9 +179,9 @@
                    								<div class="box-body">
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
-                   											<c:if test="${!empty projectFields}">
                												<c:set var="fieldFormID" value="${0}"/>
                												
+                   											<c:if test="${!empty projectFields}">
    															<div class="form-group" id="fieldsDivViewer">
 	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
 		       															<label>${fn:escapeXml(field.label)}</label><br/>
@@ -201,40 +192,49 @@
 					                                            	<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivViewer, fieldsDivEditor)">Edit</button>
 					                                            </sec:authorize>
    															</div>
+   															</c:if>
    															
            													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                												<c:set var="formStyle" value="padding-bottom: 40px"/>
 	           												<div class="form-group" id="fieldsDivEditor">
-	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
-	           														<c:if test="${loop.last}">
-	           															<c:set var="formStyle" value="padding-bottom: 18px"/>
-	           														</c:if>
-	           														<div style="${formStyle}">
-	               													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
-																		<input type="hidden" name="project_id" value="${project.id}"/>
-																		<input type="hidden" name="field_id" value="${field.field.id}"/>
-																		<input type="hidden" id="old_label" name="old_label" value="${fn:escapeXml(field.label)}"/>
-																		<input type="hidden" id="old_value" name="old_value" value="${fn:escapeXml(field.value)}"/>
-		       															<input type="text" class="form-control" id="label" name="label" value="${fn:escapeXml(field.label)}"><br/>
-		       															<textarea class="form-control" rows="3" id="value" name="value">${fn:escapeXml(field.value)}</textarea><br/>
-																	</form>
-	       															<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>&nbsp;
-	       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Remove</button>
-	       															</div>
-																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
-																</c:forEach>
-																<c:choose>
-																	<c:when test="${!empty projectFields}">
-																		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																		<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+	           													<c:if test="${!empty projectFields}">
+		               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
+		           														<c:if test="${loop.last}">
+		           															<c:set var="formStyle" value="padding-bottom: 18px"/>
+		           														</c:if>
+		           														<div style="${formStyle}">
+		           														<form id="field_update_${fieldFormID}" method="post" action="${contextPath}/field/update/assigned/project">
 																			<input type="hidden" name="project_id" value="${project.id}"/>
-																			<button class="btn btn-default btn-flat btn-sm">Remove All</button>
+																			<input type="hidden" name="field_id" value="${field.field.id}"/>
+																			<input type="hidden" id="old_label" name="old_label" value="${fn:escapeXml(field.label)}"/>
+																			<input type="hidden" id="old_value" name="old_value" value="${fn:escapeXml(field.value)}"/>
+			       															<input type="text" class="form-control" id="label" name="label" value="${fn:escapeXml(field.label)}"><br/>
+			       															<textarea class="form-control" rows="3" id="value" name="value">${fn:escapeXml(field.value)}</textarea><br/>
 																		</form>
-																		</sec:authorize>
-																	</c:when>
-																</c:choose>
-																<br/>
-																<br/>
+		               													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
+																			<input type="hidden" name="project_id" value="${project.id}"/>
+																			<input type="hidden" name="field_id" value="${field.field.id}"/>
+			       															<input type="hidden" name="label" value="${fn:escapeXml(field.label)}">
+			       															<input type="hidden" name="value" value="${fn:escapeXml(field.value)}">
+																		</form>
+		       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_update_${fieldFormID}')">Update</button>&nbsp;
+		       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Remove</button>
+		       															</div>
+																		<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
+																	</c:forEach>
+																	<c:choose>
+																		<c:when test="${!empty projectFields}">
+																			<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+																			<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+																				<input type="hidden" name="project_id" value="${project.id}"/>
+																				<button class="btn btn-default btn-flat btn-sm">Remove All</button>
+																			</form>
+																			</sec:authorize>
+																		</c:when>
+																	</c:choose>
+																	<br/>
+																	<br/>
+																</c:if>
 																<h4>Add More Information</h4>
 																<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
 																	<input type="hidden" name="project_id" value="${project.id}"/>
@@ -245,11 +245,13 @@
 																	<textarea class="form-control" rows="3" id="value" name="value" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">${fn:escapeXml(field.value)}</textarea>
 																</form>
 																<br/>
-		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/><br/>
+		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
+		                                           				<c:if test="${!empty projectFields}">
+		                                           				<br/>
 																<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivEditor, fieldsDivViewer)">Done Editing</button>
+																</c:if>
 															</div>
 															</sec:authorize>
-															</c:if>
 			                                        </div>
                    								</div>
                    							</div>
@@ -779,6 +781,18 @@
 	</script>
    	</c:if>
    	
+   	
+   	<c:if test="${project.id != 0}">
+   	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+   	<script type="text/javascript">
+   	$(document).ready(function() {
+		$('#detailsDivEditor').hide();
+	});
+   	</script>
+	</sec:authorize>
+	</c:if>
+	
+	<c:if test="${project.id != 0 && !empty project.assignedFields}">
    	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
    	<script type="text/javascript">
    	$(document).ready(function() {
@@ -787,6 +801,7 @@
 	});
    	</script>
 	</sec:authorize>
+	</c:if>
 	
 	<script type="text/javascript">
 	    // Photos event handler.

@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.company.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -25,8 +26,9 @@ import com.cebedo.pmsys.team.model.Team;
 
 @Entity
 @Table(name = Company.TABLE_NAME)
-public class Company {
+public class Company implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String TABLE_NAME = "companies";
 	public static final String OBJECT_NAME = "company";
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";

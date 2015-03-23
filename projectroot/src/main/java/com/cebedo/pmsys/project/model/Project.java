@@ -33,7 +33,12 @@ public class Project implements Serializable {
 	public static final String CLASS_NAME = "Project";
 	public static final String OBJECT_NAME = "project";
 	public static final String TABLE_NAME = "projects";
+
 	public static final String COLUMN_PRIMARY_KEY = "project_id";
+	public static final String COLUMN_NAME = "name";
+
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_NAME = "name";
 
 	public static final String SUB_MODULE_PROFILE = "profile";
 

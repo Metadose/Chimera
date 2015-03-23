@@ -27,6 +27,7 @@
 	        <section class="content">
 			<div class="row">
 				<div class="col-xs-12">
+					${uiParamAlert}
 					<!-- Custom Tabs -->
 					<div class="nav-tabs-custom">
 						<ul class="nav nav-tabs">
@@ -38,9 +39,6 @@
 								<div class="row">
 									<div class="col-xs-12">
 										<div class="box">
-												<div class="box-header">
-				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
-												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">
 													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                	<a href="${contextPath}/project/edit/0">

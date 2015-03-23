@@ -72,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	public void delete(int id) {
+	public void delete(long id) {
 		Project project = this.projectDAO.getByID(id);
 		if (AuthUtils.isActionAuthorized(project)) {
 			this.projectDAO.delete(id);
@@ -92,7 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	public Project getByIDWithAllCollections(int id) {
+	public Project getByIDWithAllCollections(long id) {
 		Project project = this.projectDAO.getByIDWithAllCollections(id);
 		if (AuthUtils.isActionAuthorized(project)) {
 			return project;
@@ -108,5 +108,11 @@ public class ProjectServiceImpl implements ProjectService {
 			return this.projectDAO.listWithTasks(null);
 		}
 		return this.projectDAO.listWithTasks(token.getCompany().getId());
+	}
+
+	@Override
+	@Transactional
+	public String getNameByID(long projectID) {
+		return this.projectDAO.getNameByID(projectID);
 	}
 }

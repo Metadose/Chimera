@@ -18,8 +18,10 @@ public interface ProjectDAO {
 
 	public List<Project> listWithAllCollections(Long companyID);
 
-	public Project getByIDWithAllCollections(int id);
+	public Project getByIDWithAllCollections(long id);
 
 	public List<Project> listWithTasks(Long id);
+
+	public String getNameByID(long projectID);
 
 }

@@ -12,14 +12,16 @@ public interface ProjectService {
 
 	public void update(Project project);
 
-	public void delete(int id);
+	public void delete(long id);
 
 	public List<Project> list();
 
 	public List<Project> listWithAllCollections();
 
-	public Project getByIDWithAllCollections(int id);
+	public Project getByIDWithAllCollections(long id);
 
 	public List<Project> listWithTasks();
+
+	public String getNameByID(long projectID);
 
 }

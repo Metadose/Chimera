@@ -63,4 +63,11 @@ public abstract class SystemConstants {
 	public static final String ROLE_TEAM_EDITOR = "ROLE_TEAM_EDITOR";
 	public static final String ROLE_CONFIG_EDITOR = "ROLE_CONFIG_EDITOR";
 	public static final String ROLE_SYSTEMUSER_EDITOR = "ROLE_SYSTEMUSER_EDITOR";
+
+	public static final String UI_PARAM_ALERT = "uiParamAlert";
+
+	public static final String UI_STATUS_INFO = "info";
+	public static final String UI_STATUS_SUCCESS = "success";
+	public static final String UI_STATUS_DANGER = "danger";
+	public static final String UI_STATUS_WARNING = "warning";
 }

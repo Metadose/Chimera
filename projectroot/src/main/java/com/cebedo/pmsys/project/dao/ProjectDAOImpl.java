@@ -6,6 +6,8 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -81,7 +83,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	public Project getByIDWithAllCollections(int id) {
+	public Project getByIDWithAllCollections(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Project project = (Project) session.load(Project.class, new Long(id));
 		Hibernate.initialize(project.getManagerAssignments());
@@ -112,5 +114,15 @@ public class ProjectDAOImpl implements ProjectDAO {
 			Hibernate.initialize(project.getAssignedTasks());
 		}
 		return projectList;
+	}
+
+	@Override
+	public String getNameByID(long projectID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String result = (String) session.createCriteria(Project.class)
+				.add(Restrictions.eq(Project.PROPERTY_ID, projectID))
+				.setProjection(Property.forName(Project.PROPERTY_NAME))
+				.uniqueResult();
+		return result;
 	}
 }

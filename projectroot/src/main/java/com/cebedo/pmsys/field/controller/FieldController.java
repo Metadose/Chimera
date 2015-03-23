@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -83,7 +85,15 @@ public class FieldController {
 	public ModelAndView assignProject(
 			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>added</b> the <b>"
+				+ fieldAssignment.getLabel() + "</b> in this project.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.fieldService.assignProject(fieldAssignment, fieldID, projectID);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
@@ -155,7 +165,15 @@ public class FieldController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjects(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>removed all</b> extra information in this project.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.fieldService.unassignAllProjects(projectID);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
@@ -206,7 +224,15 @@ public class FieldController {
 			@RequestParam(Field.COLUMN_LABEL) String label,
 			@RequestParam(Field.COLUMN_VALUE) String value,
 			@RequestParam("old_" + Field.COLUMN_LABEL) String oldLabel,
-			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue) {
+			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>updated</b> the <b>" + label
+				+ "</b> in this project.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.fieldService.updateAssignedProjectField(projectID, fieldID,
 				oldLabel, oldValue, label, value);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
@@ -243,7 +269,7 @@ public class FieldController {
 	}
 
 	/**
-	 * Unassign a field to a project.
+	 * Unassign a field from a project.
 	 * 
 	 * @param fieldID
 	 * @param projectID
@@ -255,7 +281,15 @@ public class FieldController {
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Field.COLUMN_LABEL) String label,
-			@RequestParam(Field.COLUMN_VALUE) String value) {
+			@RequestParam(Field.COLUMN_VALUE) String value,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>removed</b> the <b>" + label
+				+ "</b> in this project.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.fieldService.unassignProject(fieldID, projectID, label, value);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT

@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -75,22 +77,50 @@ public class ProjectController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_PROJECT) Project project) {
+	public String create(@ModelAttribute(ATTR_PROJECT) Project project,
+			RedirectAttributes redirectAttrs) {
+
+		// Used for notification purposes.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+
+		// If request is to create a new project.
 		if (project.getId() == 0) {
+			alertFactory.setMessage("Successfully <b>created</b> project <b>"
+					+ project.getName() + "</b>.");
 			this.projectService.create(project);
-		} else {
-			this.projectService.update(project);
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
+					+ SystemConstants.REQUEST_LIST;
 		}
+
+		// If request is to edit a project.
+		alertFactory.setMessage("Successfully <b>updated</b> project <b>"
+				+ project.getName() + "</b>.");
+		this.projectService.update(project);
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
-				+ SystemConstants.REQUEST_LIST;
+				+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Project.COLUMN_PRIMARY_KEY + "}")
-	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id) {
+	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
+			RedirectAttributes redirectAttrs) {
+
+		// Alert result.
+		String projectName = this.projectService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> project <b>"
+				+ projectName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		// TODO Cleanup also the SYS_HOME.
 		this.projectService.delete(id);
+
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
