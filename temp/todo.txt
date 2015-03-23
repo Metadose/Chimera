@@ -17,3 +17,14 @@ view
 = bugs
 invalid day index of timeline
 order fields accordingly
+
+
+= todo
+For fields, term should be add/remove. Remove visibility of "fields" dropdown and sidebar.
+Reorder fields, para up down, not left right, nia expand textarea dpending on how big data is..
+
+if muclick ug "update", ang ang redirect kay padungs list
+Custom progress/status fields, custom sd ang color.
+Click Edit, then toggle to editable input fields
+Prioritize sec grup, audit, nd basic pmsys functions
+Add more in salt md5 encryption (change password feature una, para di naka mag usab ug users)

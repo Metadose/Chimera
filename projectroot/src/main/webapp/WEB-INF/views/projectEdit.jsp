@@ -52,7 +52,7 @@
 	            			New Project
 	            		</c:when>
 	            		<c:when test="${project.id != 0}">
-	            			${project.name}
+	            			${fn:escapeXml(project.name)}
 	            		</c:when>
 	            	</c:choose>
 	                <small>${action} Project</small>
@@ -101,7 +101,7 @@
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<br/>
 		                   									<div class="form-group">
-		                   										<form action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
+		                   										<form id="uploadPhotoForm" action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
 		                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
 			                   										<table>
 			                   											<tr>
@@ -116,51 +116,50 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-			                   										<br/>
-							                                        <button class="btn btn-default btn-flat btn-sm">Upload</button>
 						                                        </form>
-						                                        &nbsp;
-						                                        <form action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
-						                                        	<button class="btn btn-default btn-flat btn-sm">Delete Photo</button>
+						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
 						                                        </form>
+						                                        <br/>
+						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-default btn-flat btn-sm">Upload</button>
+						                                        <button onclick="submitForm('deletePhotoForm')" class="btn btn-default btn-flat btn-sm">Delete Photo</button>
 						                                    </div>
 						                                    </sec:authorize>
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
-				                                    <sec:authorize access="!hasRole('ROLE_PROJECT_EDITOR')">
-					                                    <div class="form-group">
-				                                            <label>Name</label><br/>
-				                                            ${project.name}<br/><br/>
-				                                            <label>Status</label><br/>
-				                                            ${project.notes}<br/><br/>
-				                                            <label>Location</label><br/>
-				                                            ${project.location}<br/><br/>
-				                                            <label>Notes</label><br/>
-				                                            ${project.notes}
-				                                        </div>
-				                                    </sec:authorize>
+				                                    <div class="form-group" id="detailsDivViewer">
+			                                            <label>Name</label><br/>
+			                                            ${fn:escapeXml(project.name)}<br/><br/>
+			                                            <label>Status</label><br/>
+			                                            ${fn:escapeXml(project.status)}<br/><br/>
+			                                            <label>Location</label><br/>
+			                                            ${fn:escapeXml(project.location)}<br/><br/>
+			                                            <label>Notes</label><br/>
+			                                            ${fn:escapeXml(project.notes)}<br/><br/>
+			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+			                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit</button>
+			                                            </sec:authorize>
+			                                        </div>
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
-				                                        <div class="form-group">
-				                                        	<input type="hidden" name="id" value="${project.id}"/>
-				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" name="name" value="${project.name}"/><br/>
-				                                            <label>Status</label>
-				                                            <select class="form-control" id="project_status" name="status">
-						                                    	<option value="0">New</option>
-						                                    	<option value="1">Ongoing</option>
-						                                    	<option value="2">Completed</option>
-						                                    	<option value="3">Failed</option>
-						                                    	<option value="4">Cancelled</option>
-				                                            </select><br/>
-				                                            <label>Location</label>
-				                                            <input type="text" class="form-control" name="location" value="${project.location}"/><br/>
-				                                            <label>Notes</label>
-				                                            <input type="text" class="form-control" name="notes" value="${project.notes}"/><br/>
-				                                        </div>
-				                                    </form>
-				                                    <c:choose>
+			                                        <div class="form-group" id="detailsDivEditor">
+                  										<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
+			                                        	<input type="hidden" name="id" value="${project.id}"/>
+			                                            <label>Name</label>
+			                                            <input type="text" class="form-control" name="name" value="${fn:escapeXml(project.name)}"/><br/>
+			                                            <label>Status</label>
+			                                            <select class="form-control" id="project_status" name="status">
+					                                    	<option value="0">New</option>
+					                                    	<option value="1">Ongoing</option>
+					                                    	<option value="2">Completed</option>
+					                                    	<option value="3">Failed</option>
+					                                    	<option value="4">Cancelled</option>
+			                                            </select><br/>
+			                                            <label>Location</label>
+			                                            <input type="text" class="form-control" name="location" value="${fn:escapeXml(project.location)}"/><br/>
+			                                            <label>Notes</label>
+			                                            <input type="text" class="form-control" name="notes" value="${fn:escapeXml(project.notes)}"/><br/>
+			                                    	</form>
+			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
@@ -171,6 +170,10 @@
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
+		                                            <br/>
+		                                            <br/>
+		                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
+			                                        </div>
 		                                            </sec:authorize>
                    								</div>
                    							</div>
@@ -180,118 +183,73 @@
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Fields</h3>
+                   									<h3 class="box-title">More Information</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="form-group">
-                   										<table>
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
                    											<c:if test="${!empty projectFields}">
-                   												<c:set var="fieldFormID" value="${0}"/>
-                   												<c:forEach var="field" items="${projectFields}">
-                   													<tr>
-                   														<sec:authorize access="!hasRole('ROLE_PROJECT_EDITOR')">
-                   															<td style="padding-bottom: 20px;">
-	                   															<label>${field.label}</label><br/>
-	                   															${field.value}
-																			</td>
-                   														</sec:authorize>
-                   														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-	                   													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
-																			<input type="hidden" name="project_id" value="${project.id}"/>
-																			<input type="hidden" name="field_id" value="${field.field.id}"/>
-																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
-																			<input type="hidden" id="old_value" name="old_value" value="${field.value}"/>
-																			<td style="padding-bottom: 3px;">
-																				<input type="text" class="form-control" id="label" name="label" value="${field.label}">
-																			</td>
-																			<td style="padding-bottom: 3px;">
-																				&nbsp;
-																			</td>
-																			<td style="padding-bottom: 3px;">
-																				<input type="text" class="form-control" id="value" name="value" value="${field.value}">
-																			</td>
-																		</form>
-																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			&nbsp;
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
-																		</td>
-																		</sec:authorize>
-																	</tr>
+               												<c:set var="fieldFormID" value="${0}"/>
+               												
+   															<div class="form-group" id="fieldsDivViewer">
+	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
+		       															<label>${fn:escapeXml(field.label)}</label><br/>
+		       															${fn:escapeXml(field.value)}<br/>
+		       															<br/>
+																</c:forEach>
+																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+					                                            	<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivViewer, fieldsDivEditor)">Edit</button>
+					                                            </sec:authorize>
+   															</div>
+   															
+           													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+               												<c:set var="formStyle" value="padding-bottom: 40px"/>
+	           												<div class="form-group" id="fieldsDivEditor">
+	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
+	           														<c:if test="${loop.last}">
+	           															<c:set var="formStyle" value="padding-bottom: 18px"/>
+	           														</c:if>
+	           														<div style="${formStyle}">
+	               													<form role="form" name="field_unassign_${fieldFormID}" id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
+																		<input type="hidden" name="project_id" value="${project.id}"/>
+																		<input type="hidden" name="field_id" value="${field.field.id}"/>
+																		<input type="hidden" id="old_label" name="old_label" value="${fn:escapeXml(field.label)}"/>
+																		<input type="hidden" id="old_value" name="old_value" value="${fn:escapeXml(field.value)}"/>
+		       															<input type="text" class="form-control" id="label" name="label" value="${fn:escapeXml(field.label)}"><br/>
+		       															<textarea class="form-control" rows="3" id="value" name="value">${fn:escapeXml(field.value)}</textarea><br/>
+																	</form>
+	       															<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>&nbsp;
+	       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Remove</button>
+	       															</div>
 																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
 																</c:forEach>
-															</c:if>
-														</table>
-														<br/>
-														<c:choose>
-															<c:when test="${!empty projectFields}">
-																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+																<c:choose>
+																	<c:when test="${!empty projectFields}">
+																		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+																		<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+																			<input type="hidden" name="project_id" value="${project.id}"/>
+																			<button class="btn btn-default btn-flat btn-sm">Remove All</button>
+																		</form>
+																		</sec:authorize>
+																	</c:when>
+																</c:choose>
+																<br/>
+																<br/>
+																<h4>Add More Information</h4>
+																<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
 																	<input type="hidden" name="project_id" value="${project.id}"/>
-																	<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+																	<input type="hidden" name="field_id" value="1"/>
+																	<label>Label</label><br/>
+																	<input type="text" name="label" id="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."><br/>
+																	<label>Information</label><br/>
+																	<textarea class="form-control" rows="3" id="value" name="value" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">${fn:escapeXml(field.value)}</textarea>
 																</form>
-																</sec:authorize>
-															</c:when>
-															<c:when test="${empty projectFields}">
-																<h5>No field assigned.</h5>
-															</c:when>
-														</c:choose>
-														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-														<br/>
-														<br/>
-														<h4>Assign Fields</h4>
-														<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
-															<input type="hidden" name="project_id" value="${project.id}"/>
-															<table>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Field Type </label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<select class="form-control" id="field_id" name="field_id">
-																			<c:if test="${!empty fieldList}">
-																				<c:forEach items="${fieldList}" var="field">
-									                                                <option value="${field.id}">${field.name}</option>
-								                                                </c:forEach>
-							                                                </c:if>
-							                                            </select>
-																	</td>
-																</tr>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Label</label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<input type="text" name="label" id="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
-																	</td>
-																</tr>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Value</label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<input type="text" name="value" id="value" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
-																	</td>
-																</tr>
-															</table>
-														</form>
-														<br/>
-                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Assign</button>
-                                           				</sec:authorize>
+																<br/>
+		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/><br/>
+																<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivEditor, fieldsDivViewer)">Done Editing</button>
+															</div>
+															</sec:authorize>
+															</c:if>
 			                                        </div>
                    								</div>
                    							</div>
@@ -306,73 +264,6 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-<!--                                 <div class="tab-pane" id="tab_7"> -->
-<!--                                 	<div class="box"> -->
-<!--                                 		google map location:<br/> -->
-<!-- 	                                    - location of bunk house<br/> -->
-<!-- 	                                    - gravel supplier<br/> -->
-<!-- 	                                    - actual site location<br/> -->
-<!--                                 	</div> -->
-<!--                                 </div>/.tab-pane -->
-<!--                                 <div class="tab-pane" id="tab_6"> -->
-<!--                                 	<div class="row"> -->
-<!-- 				                        <div class="col-md-3"> -->
-<!-- 				                            <div class="box box-default"> -->
-<!-- 				                                <div class="box-header"> -->
-<!-- 				                                    <h4 class="box-title">Draggable Events</h4> -->
-<!-- 				                                </div> -->
-<!-- 				                                <div class="box-body"> -->
-<!-- 				                                    the events -->
-<!-- 				                                    <div id='external-events'> -->
-<!-- 				                                        <div class='external-event bg-green'>Lunch</div> -->
-<!-- 				                                        <div class='external-event bg-red'>Go home</div> -->
-<!-- 				                                        <div class='external-event bg-aqua'>Do homework</div> -->
-<!-- 				                                        <div class='external-event bg-yellow'>Work on UI design</div> -->
-<!-- 				                                        <div class='external-event bg-navy'>Sleep tight</div> -->
-<!-- 				                                        <p> -->
-<!-- 				                                            <input type='checkbox' id='drop-remove' /> <label for='drop-remove'>remove after drop</label> -->
-<!-- 				                                        </p> -->
-<!-- 				                                    </div> -->
-<!-- 				                                </div>/.box-body -->
-<!-- 				                            </div>/. box -->
-<!-- 				                            <div class="box box-default"> -->
-<!-- 				                                <div class="box-header"> -->
-<!-- 				                                    <h3 class="box-title">Create Event</h3> -->
-<!-- 				                                </div> -->
-<!-- 				                                <div class="box-body"> -->
-<!-- 				                                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;"> -->
-<!-- 				                                        <button type="button" id="color-chooser-btn" class="btn btn-default btn-flat btn-block btn-sm dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button> -->
-<!-- 				                                        <ul class="dropdown-menu" id="color-chooser"> -->
-<!-- 				                                            <li><a class="text-green" href="#"><i class="fa fa-square"></i> Green</a></li> -->
-<!-- 				                                            <li><a class="text-blue" href="#"><i class="fa fa-square"></i> Blue</a></li> -->
-<!-- 				                                            <li><a class="text-navy" href="#"><i class="fa fa-square"></i> Navy</a></li> -->
-<!-- 				                                            <li><a class="text-yellow" href="#"><i class="fa fa-square"></i> Yellow</a></li> -->
-<!-- 				                                            <li><a class="text-orange" href="#"><i class="fa fa-square"></i> Orange</a></li> -->
-<!-- 				                                            <li><a class="text-aqua" href="#"><i class="fa fa-square"></i> Aqua</a></li> -->
-<!-- 				                                            <li><a class="text-red" href="#"><i class="fa fa-square"></i> Red</a></li> -->
-<!-- 				                                            <li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i> Fuchsia</a></li> -->
-<!-- 				                                            <li><a class="text-purple" href="#"><i class="fa fa-square"></i> Purple</a></li> -->
-<!-- 				                                        </ul> -->
-<!-- 				                                    </div>/btn-group -->
-<!-- 				                                    <div class="input-group"> -->
-<!-- 				                                        <input id="new-event" type="text" class="form-control" placeholder="Event Title"> -->
-<!-- 				                                        <div class="input-group-btn"> -->
-<!-- 				                                            <button id="add-new-event" type="button" class="btn btn-default btn-flat">Add</button> -->
-<!-- 				                                        </div>/btn-group -->
-<!-- 				                                    </div>/input-group -->
-<!-- 				                                </div> -->
-<!-- 				                            </div> -->
-<!-- 				                        </div>/.col -->
-<!-- 				                        <div class="col-md-9"> -->
-<!-- 				                            <div class="box box-default"> -->
-<!-- 				                                <div class="box-body no-padding"> -->
-<!-- 				                                    THE CALENDAR -->
-<!-- 				                                    <div id="calendar"></div> -->
-<!-- 				                                </div>/.box-body -->
-<!-- 				                            </div>/. box -->
-<!-- 				                        </div>/.col -->
-<!-- 				                    </div>/.row -->
-<!--                                 </div>/.tab-pane -->
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
@@ -887,7 +778,15 @@
 	    gantt.parse(tasks);
 	</script>
    	</c:if>
-	
+   	
+   	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+   	<script type="text/javascript">
+   	$(document).ready(function() {
+		$('#detailsDivEditor').hide();
+		$('#fieldsDivEditor').hide();
+	});
+   	</script>
+	</sec:authorize>
 	
 	<script type="text/javascript">
 	    // Photos event handler.
@@ -926,7 +825,7 @@
 			$("#teams-table").dataTable();
 			$("#tasks-table").dataTable();
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#project_status").val("${project.status}");
+			$("#project_status").val("${fn:escapeXml(project.status)}");
 			
 			// Event handler for photos.
 			$('li img').on('click',function(){

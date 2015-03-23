@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.company.model.Company;
@@ -101,6 +102,7 @@ public class Project implements Serializable {
 		this.status = status;
 	}
 
+	@OrderBy(Project.COLUMN_PRIMARY_KEY)
 	@OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".project", cascade = CascadeType.REMOVE)
 	public Set<FieldAssignment> getAssignedFields() {
 		return assignedFields;

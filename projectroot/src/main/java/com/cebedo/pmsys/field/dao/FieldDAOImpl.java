@@ -137,10 +137,17 @@ public class FieldDAOImpl implements FieldDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		SQLQuery query = session.createSQLQuery("DELETE FROM "
 				+ FieldAssignment.TABLE_NAME + " WHERE "
-				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
-				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND  "
-				+ Field.COLUMN_LABEL + " = '" + label + "' and "
-				+ Field.COLUMN_VALUE + " =  '" + value + "'");
+				+ Project.COLUMN_PRIMARY_KEY + " =:"
+				+ Project.COLUMN_PRIMARY_KEY + " AND "
+				+ Field.COLUMN_PRIMARY_KEY + " =:" + Field.COLUMN_PRIMARY_KEY
+				+ " AND  " + Field.COLUMN_LABEL + " =:" + Field.COLUMN_LABEL
+				+ " AND " + Field.COLUMN_VALUE + " =:" + Field.COLUMN_VALUE);
+
+		query.setParameter(Project.COLUMN_PRIMARY_KEY, projectID);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
+
 		query.executeUpdate();
 	}
 
@@ -226,14 +233,24 @@ public class FieldDAOImpl implements FieldDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		String sql = "UPDATE " + table;
 		sql += " SET ";
-		sql += Field.COLUMN_LABEL + " = '" + label + "',";
-		sql += Field.COLUMN_VALUE + " = '" + value + "' ";
-		sql += "WHERE " + Field.COLUMN_LABEL + " = '" + oldLabel + "' ";
-		sql += "AND " + Field.COLUMN_VALUE + " = '" + oldValue + "' ";
-		sql += "AND " + objectKeyCol + " = " + objectID + " ";
-		sql += "AND " + Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " ";
+		sql += Field.COLUMN_LABEL + " =:" + Field.COLUMN_LABEL + ",";
+		sql += Field.COLUMN_VALUE + " =:" + Field.COLUMN_VALUE + " ";
+		sql += "WHERE " + Field.COLUMN_LABEL + " =:" + "old"
+				+ Field.COLUMN_LABEL + " ";
+		sql += "AND " + Field.COLUMN_VALUE + " =:" + "old" + Field.COLUMN_VALUE
+				+ " ";
+		sql += "AND " + objectKeyCol + " =:" + objectKeyCol + " ";
+		sql += "AND " + Field.COLUMN_PRIMARY_KEY + " =:"
+				+ Field.COLUMN_PRIMARY_KEY + " ";
 
 		SQLQuery query = session.createSQLQuery(sql);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
+		query.setParameter("old" + Field.COLUMN_LABEL, oldLabel);
+		query.setParameter("old" + Field.COLUMN_VALUE, oldValue);
+		query.setParameter(objectKeyCol, objectID);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+
 		query.executeUpdate();
 	}
 }

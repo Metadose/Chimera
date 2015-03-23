@@ -3,7 +3,7 @@ SQLyog Community Edition- MySQL GUI v6.07
 Host - 5.5.32 : Database - test
 *********************************************************************
 Server version : 5.5.32
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
