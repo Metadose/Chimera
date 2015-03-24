@@ -9,6 +9,17 @@ projedit
 = teams
 ==== DONE
 
+= tasks
+ang delete di mubalik sa project (actually delete jud)
+ang edit sad
+
+mark as -okna
+add task -okna
+unassign all- okna (actually delete all)
+
+
+order by startdate
+
 
 = bugs
 invalid day index of timeline

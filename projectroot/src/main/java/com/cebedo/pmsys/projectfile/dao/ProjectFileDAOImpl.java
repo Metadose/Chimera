@@ -101,7 +101,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@Override
 	public String getNameByID(long fileID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getNameByID(session, ProjectFile.class,
+		String result = QueryUtils.getProjectionByID(session, ProjectFile.class,
 				ProjectFile.PROPERTY_ID, fileID, ProjectFile.PROPERTY_NAME);
 		return result;
 	}

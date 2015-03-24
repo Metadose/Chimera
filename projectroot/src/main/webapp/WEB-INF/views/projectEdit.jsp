@@ -270,7 +270,7 @@
 		                                	<table>
 		                                    	<tr>
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/task/assign/from/project/">
+		                                    			<form method="post" action="${contextPath}/task/assign/from/project">
 		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
 		                                    			<input type="hidden" name="origin" value="project"/>
 		                                    			<input type="hidden" name="originID" value="${project.id}"/>

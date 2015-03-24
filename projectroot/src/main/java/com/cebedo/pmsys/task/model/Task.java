@@ -36,6 +36,10 @@ public class Task {
 	public static final String COLUMN_PRIMARY_KEY = "task_id";
 	public static final String COLUMN_STATUS = "status";
 
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_TITLE = "title";
+	public static final String PROPERTY_PROJECT = "project";
+
 	private long id;
 	private String title;
 	private String content;

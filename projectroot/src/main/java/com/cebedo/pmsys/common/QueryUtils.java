@@ -33,7 +33,7 @@ public abstract class QueryUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static String getNameByID(Session session, Class clazz,
+	public static String getProjectionByID(Session session, Class clazz,
 			String restrictionID, long objectID, String projectionName) {
 		String result = (String) session.createCriteria(clazz)
 				.add(Restrictions.eq(restrictionID, objectID))

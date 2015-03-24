@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -104,11 +106,19 @@ public class TaskController {
 	public String createWithProject(
 			@ModelAttribute(ATTR_TASK) Task task,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			RedirectAttributes redirectAttrs) {
 
 		// If the task is not here yet,
 		// Create it.
 		this.taskService.createWithProject(task, originID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>created</b> task <b>"
+				+ task.getTitle() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
@@ -121,20 +131,63 @@ public class TaskController {
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_TASK) Task task) {
+	public String create(@ModelAttribute(ATTR_TASK) Task task,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 
 		// If the task is not here yet,
 		// Create it.
 		// Else, update.
 		if (task.getId() == 0) {
 			this.taskService.create(task);
+			alertFactory.setMessage("Successfully <b>created</b> task <b>"
+					+ task.getTitle() + "</b>.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 					+ SystemConstants.REQUEST_LIST;
 		} else {
 			this.taskService.merge(task);
+			alertFactory.setMessage("Successfully <b>updated</b> task <b>"
+					+ task.getTitle() + "</b>.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 					+ SystemConstants.REQUEST_EDIT + "/" + task.getId();
 		}
+	}
+
+	/**
+	 * Create or update a task from origin.
+	 * 
+	 * @param task
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+	public String createFromOrigin(
+			@ModelAttribute(ATTR_TASK) Task task,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			RedirectAttributes redirectAttrs) {
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+
+		if (task.getId() == 0) {
+			this.taskService.create(task);
+			alertFactory.setMessage("Successfully <b>created</b> task <b>"
+					+ task.getTitle() + "</b>.");
+		} else {
+			this.taskService.merge(task);
+			alertFactory.setMessage("Successfully <b>updated</b> task <b>"
+					+ task.getTitle() + "</b>.");
+		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
 
 	/**
@@ -166,7 +219,10 @@ public class TaskController {
 	}
 
 	/**
-	 * Assign a task to a project.
+	 * Assign a task to a project. TODO Figure out return ModelAndView vs return
+	 * String. TODO Instead of passing the whole Model of Task and using
+	 * "merge", pass only the ID, get the object, attach the project and
+	 * "update".
 	 * 
 	 * @param task
 	 * @param projectID
@@ -179,14 +235,21 @@ public class TaskController {
 			SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
 					+ Project.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public ModelAndView assignProject(@ModelAttribute(ATTR_TASK) Task task,
-			@PathVariable(Project.COLUMN_PRIMARY_KEY) int projectID) {
+			@PathVariable(Project.COLUMN_PRIMARY_KEY) int projectID,
+			RedirectAttributes redirectAttrs) {
 
 		// Construct the project object from the ID.
 		// Attach the project to the task.
 		// Create the task.
 		Project proj = this.projectService.getByID(projectID);
 		task.setProject(proj);
-		this.taskService.create(task);
+		this.taskService.merge(task);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
+				+ task.getTitle() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 
 		// Redirect to project edit.
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
@@ -195,7 +258,7 @@ public class TaskController {
 	}
 
 	/**
-	 * Assign a new task for a staff.
+	 * Redirect to assign a new task for a staff.
 	 * 
 	 * @param id
 	 * @param model
@@ -215,19 +278,34 @@ public class TaskController {
 		return JSP_EDIT;
 	}
 
+	/**
+	 * TODO Fix also "merge" to "update" here.
+	 * 
+	 * @param task
+	 * @param staffID
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.NEW + "/" + Staff.OBJECT_NAME + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public ModelAndView assignStaff(@ModelAttribute(ATTR_TASK) Task task,
-			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int staffID) {
+			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int staffID,
+			RedirectAttributes redirectAttrs) {
 
 		// Construct the object from the ID.
 		// Attach the object to the task.
 		// Create the task.
 		Staff staff = this.staffService.getByID(staffID);
 		task.assignStaff(staff);
-		this.taskService.create(task);
+		this.taskService.merge(task);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
+				+ task.getTitle() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 
 		// Redirect to project edit.
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
@@ -244,7 +322,16 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}")
-	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id) {
+	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) long id,
+			RedirectAttributes redirectAttrs) {
+
+		String taskTitle = this.taskService.getTitleByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> task <b>"
+				+ taskTitle + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.taskService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 				+ SystemConstants.REQUEST_LIST;
@@ -261,8 +348,18 @@ public class TaskController {
 	@RequestMapping(SystemConstants.REQUEST_MARK)
 	public ModelAndView mark(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Task.COLUMN_STATUS) int status) {
+			@RequestParam(Task.COLUMN_STATUS) int status,
+			RedirectAttributes redirectAttrs) {
+
 		this.taskService.mark(taskID, status);
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		// TODO Change the int value of "status" to a text.
+		alertFactory.setMessage("Successfully <b>marked</b> task <b>"
+				+ taskTitle + "</b> as <b>" + status + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
@@ -280,9 +377,17 @@ public class TaskController {
 	public ModelAndView markProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Task.COLUMN_STATUS) int status) {
+			@RequestParam(Task.COLUMN_STATUS) int status,
+			RedirectAttributes redirectAttrs) {
 
 		this.taskService.mark(taskID, status);
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		// TODO Change the int value of "status" to a text.
+		alertFactory.setMessage("Successfully <b>marked</b> task <b>"
+				+ taskTitle + "</b> as <b>" + status + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
@@ -340,8 +445,17 @@ public class TaskController {
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaffTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.assignStaffTask(taskID, staffID);
+
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
+				+ taskTitle + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
@@ -359,15 +473,22 @@ public class TaskController {
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeamTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.assignTeamTask(taskID, teamID);
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
+				+ taskTitle + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
 	}
 
 	/**
-	 * Unassign all team tasks.
+	 * Delete all team assignments in a specific task.
 	 * 
 	 * @param taskID
 	 * @return
@@ -376,8 +497,15 @@ public class TaskController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamTasks(
-			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignAllTeamTasks(taskID);
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned " + taskTitle
+				+ "</b> from all teams.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
@@ -395,8 +523,17 @@ public class TaskController {
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTeamTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignTeamTask(taskID, teamID);
+
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
+				+ taskTitle + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
@@ -414,15 +551,22 @@ public class TaskController {
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignStaffTask(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
+			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignStaffTask(taskID, staffID);
+		String taskTitle = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
+				+ taskTitle + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ taskID);
 	}
 
 	/**
-	 * Unassign all project tasks.
+	 * Unassign all tasks linked to a project.
 	 * 
 	 * @param projectID
 	 * @return
@@ -430,16 +574,53 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllProjectTasks(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
-		this.taskService.unassignAllProjectTasks(projectID);
+	public ModelAndView unassignAllTasksByProject(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
+		this.taskService.unassignAllTasksByProject(projectID);
+		String projName = this.projectService.getNameByID(projectID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>unassigned all</b> tasks assigned to <b>"
+						+ projName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
 	}
 
 	/**
-	 * Unassign all staff tasks.
+	 * Delete all tasks linked to a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
+			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public ModelAndView deleteAllTasksByProject(
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
+		this.taskService.deleteAllTasksByProject(projectID);
+
+		String projName = this.projectService.getNameByID(projectID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>deleted all</b> tasks assigned to <b>"
+						+ projName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Unassign all staff assignments given a task ID. Remove all staff linked
+	 * to a task.
 	 * 
 	 * @param id
 	 * @return
@@ -448,8 +629,17 @@ public class TaskController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllStaffTasks(
-			@RequestParam(Task.COLUMN_PRIMARY_KEY) long id) {
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long id,
+			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignAllStaffTasks(id);
+
+		String taskTitle = this.taskService.getTitleByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
+				+ taskTitle + "</b> from all staff members.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ id);

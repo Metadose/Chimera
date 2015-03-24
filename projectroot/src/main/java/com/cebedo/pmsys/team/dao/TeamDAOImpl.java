@@ -154,7 +154,7 @@ public class TeamDAOImpl implements TeamDAO {
 	@Override
 	public String getNameByID(long teamID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getNameByID(session, Team.class,
+		String result = QueryUtils.getProjectionByID(session, Team.class,
 				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
 		return result;
 	}

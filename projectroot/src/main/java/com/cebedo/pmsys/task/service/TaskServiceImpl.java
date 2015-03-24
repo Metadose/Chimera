@@ -202,10 +202,10 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	@Transactional
-	public void unassignAllProjectTasks(long projectID) {
+	public void deleteAllTasksByProject(long projectID) {
 		Project project = this.projectDAO.getByID(projectID);
 		if (AuthUtils.isActionAuthorized(project)) {
-			this.taskDAO.unassignAllProjectTasks(projectID);
+			this.taskDAO.deleteAllTasksByProject(projectID);
 		}
 	}
 
@@ -233,10 +233,27 @@ public class TaskServiceImpl implements TaskService {
 		if (AuthUtils.isActionAuthorized(oldTask)) {
 			task.setCompany(oldTask.getCompany());
 			task.setFields(oldTask.getFields());
-			task.setProject(oldTask.getProject());
-			task.setStaff(oldTask.getStaff());
+			if (task.getProject() == null) {
+				task.setProject(oldTask.getProject());
+			}
+			if (task.getStaff() == null) {
+				task.setStaff(oldTask.getStaff());
+			}
 			task.setTeams(oldTask.getTeams());
 			this.taskDAO.merge(task);
 		}
+	}
+
+	@Override
+	@Transactional
+	public String getTitleByID(long taskID) {
+		return this.taskDAO.getTitleByID(taskID);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllTasksByProject(long projectID) {
+		Project project = this.projectDAO.getByID(projectID);
+		this.taskDAO.unassignAllTasksByProject(project);
 	}
 }

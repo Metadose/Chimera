@@ -117,7 +117,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public String getNameByID(long projectID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getNameByID(session, Project.class,
+		String result = QueryUtils.getProjectionByID(session, Project.class,
 				Project.PROPERTY_ID, projectID, Project.PROPERTY_NAME);
 		return result;
 	}

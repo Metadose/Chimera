@@ -2,6 +2,7 @@ package com.cebedo.pmsys.task.dao;
 
 import java.util.List;
 
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
@@ -43,8 +44,12 @@ public interface TaskDAO {
 
 	public List<Team> getTeamByTaskID(long taskID);
 
-	public void unassignAllProjectTasks(long projectID);
+	public void deleteAllTasksByProject(long projectID);
 
 	public void merge(Task task);
+
+	public String getTitleByID(long taskID);
+
+	public void unassignAllTasksByProject(Project project);
 
 }

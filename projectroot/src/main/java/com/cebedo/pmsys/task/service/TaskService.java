@@ -34,9 +34,13 @@ public interface TaskService {
 
 	public void unassignAllStaffTasks(long id);
 
-	public void unassignAllProjectTasks(long projectID);
+	public void deleteAllTasksByProject(long projectID);
 
 	public void createWithProject(Task task, long projectID);
 
 	public void merge(Task task);
+
+	public String getTitleByID(long taskID);
+
+	public void unassignAllTasksByProject(long projectID);
 }

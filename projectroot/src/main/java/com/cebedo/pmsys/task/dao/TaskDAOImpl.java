@@ -2,11 +2,13 @@ package com.cebedo.pmsys.task.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -121,6 +123,9 @@ public class TaskDAOImpl implements TaskDAO {
 		query.executeUpdate();
 	}
 
+	/**
+	 * Delete all team assignments in a specific task.
+	 */
 	@Override
 	public void unassignAllTeamTasks(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -146,6 +151,10 @@ public class TaskDAOImpl implements TaskDAO {
 		query.executeUpdate();
 	}
 
+	/**
+	 * Unassign all staff assignments given a task ID. Remove all staff linked
+	 * to a task.
+	 */
 	@Override
 	public void unassignAllStaffTasks(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -188,10 +197,10 @@ public class TaskDAOImpl implements TaskDAO {
 	}
 
 	/**
-	 * Unassign all tasks with project id.
+	 * Delete all tasks linked to a project.
 	 */
 	@Override
-	public void unassignAllProjectTasks(long projectID) {
+	public void deleteAllTasksByProject(long projectID) {
 		// Construct hql.
 		Session session = this.sessionFactory.getCurrentSession();
 		String hql = "DELETE FROM " + Task.class.getName();
@@ -208,5 +217,33 @@ public class TaskDAOImpl implements TaskDAO {
 	public void merge(Task task) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.merge(task);
+	}
+
+	@Override
+	public String getTitleByID(long taskID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String result = QueryUtils.getProjectionByID(session, Task.class,
+				Task.PROPERTY_ID, taskID, Task.PROPERTY_TITLE);
+		return result;
+	}
+
+	/**
+	 * Since we don't have a map of project to task assignment, simply set the
+	 * project id to null when unassigning.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void unassignAllTasksByProject(Project project) {
+		// Load the task.
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Task.class);
+		criteria.add(Restrictions.eq(Task.PROPERTY_PROJECT, project));
+		List<Task> taskList = criteria.list();
+
+		// To unassign, set the project to null.
+		for (Task task : taskList) {
+			task.setProject(null);
+			session.update(task);
+		}
 	}
 }
