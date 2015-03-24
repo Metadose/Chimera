@@ -84,6 +84,9 @@ public class TeamDAOImpl implements TeamDAO {
 		query.executeUpdate();
 	}
 
+	/**
+	 * Delete all teams inside the project.
+	 */
 	@Override
 	public void unassignAllProjectTeams(long projectID) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -117,6 +120,9 @@ public class TeamDAOImpl implements TeamDAO {
 		query.executeUpdate();
 	}
 
+	/**
+	 * Delete all team assignments of the specified team.
+	 */
 	@Override
 	public void unassignAllTeamsFromProject(long teamID) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -140,5 +146,13 @@ public class TeamDAOImpl implements TeamDAO {
 			Hibernate.initialize(team.getTasks());
 		}
 		return teamList;
+	}
+
+	@Override
+	public String getNameByID(long teamID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String result = QueryUtils.getNameByID(session, Team.class,
+				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
+		return result;
 	}
 }

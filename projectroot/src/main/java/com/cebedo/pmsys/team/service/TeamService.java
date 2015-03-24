@@ -35,4 +35,6 @@ public interface TeamService {
 
 	public List<Team> listWithTasks();
 
+	public String getNameByID(long teamID);
+
 }

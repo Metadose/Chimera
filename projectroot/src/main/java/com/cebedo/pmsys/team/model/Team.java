@@ -27,6 +27,9 @@ public class Team implements Serializable {
 	public static final String TABLE_NAME = "teams";
 	public static final String COLUMN_PRIMARY_KEY = "team_id";
 
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_NAME = "name";
+
 	private static final long serialVersionUID = 1L;
 
 	private long id;

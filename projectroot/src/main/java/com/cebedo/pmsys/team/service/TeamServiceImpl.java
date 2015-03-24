@@ -181,4 +181,10 @@ public class TeamServiceImpl implements TeamService {
 		return this.teamDAO.listWithTasks(token.getCompany().getId());
 	}
 
+	@Override
+	@Transactional
+	public String getNameByID(long teamID) {
+		return this.teamDAO.getNameByID(teamID);
+	}
+
 }

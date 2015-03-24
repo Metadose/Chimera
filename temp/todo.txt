@@ -8,7 +8,6 @@ projedit
 
 = teams
 ==== DONE
-==== BUTNGI UG NOTIFICATIONS/ALERT AFTER ACTION
 
 
 = bugs

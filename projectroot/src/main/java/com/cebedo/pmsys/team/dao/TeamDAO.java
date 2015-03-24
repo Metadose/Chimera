@@ -30,4 +30,6 @@ public interface TeamDAO {
 	public void unassignAllTeamsFromProject(long teamID);
 
 	public List<Team> listWithTasks(Long companyID);
+
+	public String getNameByID(long teamID);
 }

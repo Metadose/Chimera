@@ -2,6 +2,8 @@ package com.cebedo.pmsys.common;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 
 import com.cebedo.pmsys.company.model.Company;
 
@@ -28,6 +30,15 @@ public abstract class QueryUtils {
 			query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
 		}
 		return query;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static String getNameByID(Session session, Class clazz,
+			String restrictionID, long objectID, String projectionName) {
+		String result = (String) session.createCriteria(clazz)
+				.add(Restrictions.eq(restrictionID, objectID))
+				.setProjection(Property.forName(projectionName)).uniqueResult();
+		return result;
 	}
 
 }

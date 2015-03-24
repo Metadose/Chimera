@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -86,24 +88,40 @@ public class TeamController {
 			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String createFromOrigin(@ModelAttribute(ATTR_TEAM) Team team,
 			@RequestParam(value = SystemConstants.ORIGIN) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID) {
+			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
+			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
+					+ team.getName() + "</b>.");
 			this.teamService.create(team);
 		} else {
+			alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
+					+ team.getName() + "</b>.");
 			this.teamService.update(team);
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_TEAM) Team team) {
+	public String create(@ModelAttribute(ATTR_TEAM) Team team,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
+			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
+					+ team.getName() + "</b>.");
 			this.teamService.create(team);
 		} else {
+			alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
+					+ team.getName() + "</b>.");
 			this.teamService.update(team);
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
@@ -111,7 +129,15 @@ public class TeamController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Team.COLUMN_PRIMARY_KEY + "}")
-	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id) {
+	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
+			RedirectAttributes redirectAttrs) {
+		String teamName = this.teamService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted<b/> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.teamService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 				+ SystemConstants.REQUEST_LIST;
@@ -186,8 +212,17 @@ public class TeamController {
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			RedirectAttributes redirectAttrs) {
+		String teamName = this.teamService.getNameByID(teamID);
 		this.teamService.assignProjectTeam(projectID, teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned<b/> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		if (!origin.isEmpty()) {
 			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
@@ -211,8 +246,17 @@ public class TeamController {
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID) {
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			RedirectAttributes redirectAttrs) {
+		String teamName = this.teamService.getNameByID(teamID);
 		this.teamService.unassignProjectTeam(projectID, teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned<b/> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		if (!origin.isEmpty()) {
 			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
@@ -224,7 +268,7 @@ public class TeamController {
 	}
 
 	/**
-	 * Unassign all project teams.
+	 * Delete all team assignments of the specified team.
 	 * 
 	 * @param projectID
 	 * @return
@@ -233,15 +277,24 @@ public class TeamController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SystemConstants.ALL + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamsFromProject(
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			RedirectAttributes redirectAttrs) {
+		String teamName = this.teamService.getNameByID(teamID);
 		this.teamService.unassignAllTeamsFromProject(teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned " + teamName
+				+ "</b> from all projects.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ teamID);
 	}
 
 	/**
-	 * Unassign all project teams.
+	 * Unassign all teams inside a project.
 	 * 
 	 * @param projectID
 	 * @return
@@ -250,8 +303,15 @@ public class TeamController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectTeams(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
 		this.teamService.unassignAllProjectTeams(projectID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
@@ -267,8 +327,18 @@ public class TeamController {
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllMembers(
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID) {
+			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+			RedirectAttributes redirectAttrs) {
+		String teamName = this.teamService.getNameByID(teamID);
 		this.teamService.unassignAllMembers(teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>unassigned all</b> team members of <b>"
+						+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ teamID);
