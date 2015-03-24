@@ -13,7 +13,7 @@ projedit
 order by startdate
 
 = project file
-ok na unta TANAN pero ang view details dapat mubalik sa edit page pag human ug update
+==== DONE
 
 = photos
 butngan ug view nga button
