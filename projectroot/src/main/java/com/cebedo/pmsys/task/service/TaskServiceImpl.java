@@ -256,4 +256,11 @@ public class TaskServiceImpl implements TaskService {
 		Project project = this.projectDAO.getByID(projectID);
 		this.taskDAO.unassignAllTasksByProject(project);
 	}
+
+	@Override
+	@Transactional
+	public void unassignTaskByProject(long taskID, long projectID) {
+		Project project = this.projectDAO.getByID(projectID);
+		this.taskDAO.unassignTaskByProject(taskID, project);
+	}
 }

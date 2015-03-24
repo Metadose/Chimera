@@ -326,9 +326,11 @@
 							                                        <a href="${contextPath}/task/edit/${task.id}">
 					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-					                                            	</a>
+					                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
+					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
+					                                            	<input type="hidden" name="project_id" value="${project.id}"/>
+					                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+					                                            	</form> 
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
 					                                            	<c:choose>

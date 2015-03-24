@@ -246,4 +246,18 @@ public class TaskDAOImpl implements TaskDAO {
 			session.update(task);
 		}
 	}
+
+	@Override
+	public void unassignTaskByProject(long taskID, Project project) {
+		// Load the task.
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Task.class);
+		criteria.add(Restrictions.eq(Task.PROPERTY_ID, taskID));
+		criteria.add(Restrictions.eq(Task.PROPERTY_PROJECT, project));
+		Task task = (Task) criteria.uniqueResult();
+
+		// Null the project and update.
+		task.setProject(null);
+		session.update(task);
+	}
 }

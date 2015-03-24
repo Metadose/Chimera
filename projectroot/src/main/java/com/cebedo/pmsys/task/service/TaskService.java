@@ -43,4 +43,6 @@ public interface TaskService {
 	public String getTitleByID(long taskID);
 
 	public void unassignAllTasksByProject(long projectID);
+
+	public void unassignTaskByProject(long taskID, long projectID);
 }

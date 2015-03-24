@@ -566,6 +566,32 @@ public class TaskController {
 	}
 
 	/**
+	 * Unassign a task linked to a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
+	public ModelAndView unassignTaskByProject(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			RedirectAttributes redirectAttrs) {
+		this.taskService.unassignTaskByProject(taskID, projectID);
+		String taskName = this.taskService.getTitleByID(taskID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
+				+ taskName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
 	 * Unassign all tasks linked to a project.
 	 * 
 	 * @param projectID
