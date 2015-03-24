@@ -83,10 +83,10 @@ public class AlertBoxFactory {
 		if (header != null) {
 			return header;
 		} else if (this.status.equals(SystemConstants.UI_STATUS_INFO)) {
-			setHeader("Notification");
+			setHeader("Notice");
 			return header;
 		} else if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
-			setHeader("Failed!");
+			setHeader("Error!");
 			return header;
 		} else if (this.status.equals(SystemConstants.UI_STATUS_WARNING)) {
 			setHeader("Warning");

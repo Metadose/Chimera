@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.team.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -102,7 +103,9 @@ public class TeamDAOImpl implements TeamDAO {
 		Team team = (Team) session.load(Team.class, new Long(id));
 		Hibernate.initialize(team.getTasks());
 		Hibernate.initialize(team.getMembers());
-		for (Project project : team.getProjects()) {
+
+		Set<Project> projects = team.getProjects();
+		for (Project project : projects) {
 			Hibernate.initialize(project);
 		}
 		return team;

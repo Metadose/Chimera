@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
@@ -71,7 +73,9 @@ public class ProjectFileController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
-			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile) {
+			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (projectFile.getId() == 0) {
 			// TODO Create function?
 			// Do we need this?
@@ -79,17 +83,38 @@ public class ProjectFileController {
 			;
 		} else {
 			this.projectFileService.update(projectFile);
+			alertFactory.setMessage("Successfully <b>updated</b> file <b>"
+					+ projectFile.getName() + "<b/>.");
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECTFILE + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Make a generalized version of this function. Implementation of Origins.
+	 * 
+	 * @param id
+	 * @param projectID
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.FROM_PROJECT)
 	public String deleteFromProject(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) int id,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID) {
+			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID,
+			RedirectAttributes redirectAttrs) {
+
+		String fileName = this.projectFileService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> file <b>"
+				+ fileName + "<b/>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.projectFileService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -98,12 +123,28 @@ public class ProjectFileController {
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
-	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id) {
+	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id,
+			RedirectAttributes redirectAttrs) {
+
+		String fileName = this.projectFileService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> file <b>"
+				+ fileName + "<b/>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.projectFileService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECTFILE + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Create new or open an existing one.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
@@ -127,26 +168,48 @@ public class ProjectFileController {
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
-			throws IOException {
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
+			RedirectAttributes redirectAttrs) throws IOException {
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
 		// If file is not empty.
 		if (!file.isEmpty()) {
 			this.projectFileService.create(file, projectID, description);
+			alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+			alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
+					+ file.getOriginalFilename() + "</b>.");
 		} else {
-			// TODO Handle this scenario.
+			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			alertFactory.setMessage("Failed to <b>upload</b> empty file <b>"
+					+ file.getOriginalFilename() + "</b>.");
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
 	}
 
+	/**
+	 * TODO Put security here. TODO Create version where request can come from
+	 * "origin" with "originID". TODO Put notification after download.
+	 * 
+	 * @param fileID
+	 * @param response
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD, method = RequestMethod.POST)
 	public void downloadFile(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
 			HttpServletResponse response) {
 
 		File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
+		// AlertBoxFactory alertFactory = new AlertBoxFactory();
 		try {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_INFO);
+			// alertFactory.setMessage("<b>Downloading</b> file <b>"
+			// + actualFile.getName() + "<b/>.");
+
 			FileInputStream iStream = new FileInputStream(actualFile);
 			response.setContentType("application/octet-stream");
 			response.setContentLength((int) actualFile.length());
@@ -155,8 +218,16 @@ public class ProjectFileController {
 			IOUtils.copy(iStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch (Exception e) {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			// alertFactory.setMessage("Failed to <b>download<b/> file <b>"
+			// + actualFile.getName() + "<b/>.");
+
 			e.printStackTrace();
 		}
+		// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		// alertFactory.generateHTML());
+		// return SystemConstants.CONTROLLER_REDIRECT + ProjectFile.OBJECT_NAME
+		// + "/" + SystemConstants.REQUEST_LIST;
 	}
 
 	/**
@@ -174,7 +245,12 @@ public class ProjectFileController {
 			HttpServletResponse response) {
 
 		File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
+		// AlertBoxFactory alertFactory = new AlertBoxFactory();
 		try {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_INFO);
+			// alertFactory.setMessage("<b>Downloading</b> file <b>"
+			// + actualFile.getName() + "<b/>.");
+
 			FileInputStream iStream = new FileInputStream(actualFile);
 			response.setContentType("application/octet-stream");
 			response.setContentLength((int) actualFile.length());
@@ -183,8 +259,18 @@ public class ProjectFileController {
 			IOUtils.copy(iStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch (Exception e) {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			// alertFactory.setMessage("Failed to <b>download<b/> file <b>"
+			// + actualFile.getName() + "<b/>.");
 			e.printStackTrace();
 		}
+
+		// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		// alertFactory.generateHTML());
+		//
+		// return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME +
+		// "/"
+		// + SystemConstants.REQUEST_EDIT + "/" + projectID;
 	}
 
 	// TODO Create another role which is not a Project File Editor but can
@@ -193,15 +279,23 @@ public class ProjectFileController {
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)
 	public ModelAndView handleFileUpload(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description)
-			throws IOException {
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
+			RedirectAttributes redirectAttrs) throws IOException {
 
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
 		// If file is not empty.
 		if (!file.isEmpty()) {
 			this.projectFileService.createForStaff(file, description);
+			alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+			alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
+					+ file.getOriginalFilename() + "<b/>.");
 		} else {
-			// TODO Handle this scenario.
+			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			alertFactory.setMessage("Failed to <b>upload</b> empty file <b>"
+					+ file.getOriginalFilename() + "<b/>.");
 		}
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
@@ -217,8 +311,18 @@ public class ProjectFileController {
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
 	public ModelAndView updateDescription(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description) {
+			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
+			RedirectAttributes redirectAttrs) {
+
 		this.projectFileService.updateDescription(fileID, description);
+		String fileName = this.projectFileService.getNameByID(fileID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>updated description</b> of file <b>"
+						+ fileName + "<b/>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}

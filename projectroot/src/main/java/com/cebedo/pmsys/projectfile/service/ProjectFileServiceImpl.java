@@ -225,4 +225,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		// Return an empty file instead.
 		return null;
 	}
+
+	@Override
+	@Transactional
+	public String getNameByID(long fileID) {
+		return this.projectFileDAO.getNameByID(fileID);
+	}
 }

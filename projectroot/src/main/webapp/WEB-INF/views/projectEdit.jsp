@@ -451,7 +451,7 @@
 		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> MB</td>
 		                                                	</c:when>
 			                                                </c:choose>
-			                                                <td>${staffName}</td>
+			                                                <td>${uploaderName}</td>
 			                                                <td>${file.dateUploaded}</td>
 			                                            </tr>
 	                                        		</c:forEach>
@@ -560,7 +560,7 @@
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<input type="text" class="form-control" name="project_position"/>
+		                                    			<input placeholder="Example: Project Manager, Leader, etc..." type="text" class="form-control" name="project_position"/>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;

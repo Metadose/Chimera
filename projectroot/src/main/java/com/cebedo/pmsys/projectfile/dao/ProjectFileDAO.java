@@ -19,4 +19,6 @@ public interface ProjectFileDAO {
 	public List<ProjectFile> listWithAllCollections(Long companyID);
 
 	public void updateDescription(long fileID, String description);
+
+	public String getNameByID(long fileID);
 }

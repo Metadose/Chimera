@@ -65,34 +65,14 @@ public class TaskServiceImpl implements TaskService {
 		return new Task();
 	}
 
+	/**
+	 * A task object has many relationships to other objects. Merging this with
+	 * an existing object would be safer than Updating the existing one.
+	 */
 	@Override
 	@Transactional
 	public void update(Task task) {
-		// long taskID = task.getId();
-
-		// TODO Get a more standard way of updating with foreign keys.
-		// List<TaskFieldAssignment> fieldList = this.taskDAO
-		// .getFieldsByTaskID(taskID);
-		// if (!fieldList.isEmpty()) {
-		// // TODO Get a standard library for converting list to set.
-		// Set<TaskFieldAssignment> fieldSet = (Set<TaskFieldAssignment>)
-		// ConversionUtils
-		// .listToSet(fieldList);
-		// task.setFields(fieldSet);
-		// }
-		//
-		// List<Staff> staffList = this.taskDAO.getStaffByTaskID(taskID);
-		// if (!staffList.isEmpty()) {
-		// Set<Staff> staffSet = (Set<Staff>) ConversionUtils
-		// .listToSet(staffList);
-		// task.setStaff(staffSet);
-		// }
-		//
-		// List<Team> teamList = this.taskDAO.getTeamByTaskID(taskID);
-		// if (!teamList.isEmpty()) {
-		// Set<Team> teamSet = (Set<Team>) ConversionUtils.listToSet(teamList);
-		// task.setTeams(teamSet);
-		// }
+		long taskID = task.getId();
 
 		if (AuthUtils.isActionAuthorized(task)) {
 			this.taskDAO.update(task);

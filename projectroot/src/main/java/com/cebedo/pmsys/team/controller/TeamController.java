@@ -77,7 +77,7 @@ public class TeamController {
 	}
 
 	/**
-	 * Create a staff from the origin.
+	 * Create a team from the origin.
 	 * 
 	 * @param staff
 	 * @param projectID

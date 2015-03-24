@@ -29,4 +29,6 @@ public interface ProjectFileService {
 	public void updateDescription(long fileID, String description);
 
 	public File getPhysicalFileByID(long fileID);
+
+	public String getNameByID(long fileID);
 }
