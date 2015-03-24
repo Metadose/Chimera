@@ -267,9 +267,9 @@
                                 <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                	<table>
 		                                    	<tr>
-		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/task/assign/from/project">
 		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
@@ -289,9 +289,9 @@
                											</form>
 		                                    		</td>
 		                                    		</c:if>
-		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table><br/>
+                                    		</sec:authorize>
 		                                    <table id="tasks-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
@@ -413,6 +413,7 @@
                                 <div class="tab-pane" id="tab_3">
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">
+                                    	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                                     	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project">
 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 											<label for="exampleInputFile">File Upload (20MB Max)</label>
@@ -422,6 +423,7 @@
 											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
 										</form>
 	                                    <br/>
+	                                    </sec:authorize>
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
 	                                            <tr>
@@ -447,14 +449,19 @@
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
 			                                            		</form>
-			                                            		<a href="${contextPath}/projectfile/edit/${file.id}">
-																<button class="btn btn-default btn-flat btn-sm">View</button>
-																</a>
+			                                            		<form action="${contextPath}/projectfile/edit/from/origin" method="post">
+			                                            			<input type="hidden" name="origin" value="project"/>
+			                                            			<input type="hidden" name="originID" value="${project.id}"/>
+			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
+			                                            			<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            		</form>
+			                                            		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
 																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																	<input type="hidden" id="projectfile_id" name="projectfile_id" value="${file.id}"/>
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</form>
+																</sec:authorize>
 																</center>
 															</td>
 			                                                <td>${file.id}</td>
@@ -516,7 +523,6 @@
 															<h6>${photo.description}</h6>
 															<br/>
 															<h6>Uploaded ${photo.dateUploaded}</h6>
-															
 															<c:set var="photoUploader" value="${photo.uploader}"/>
 															<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
 															<h6>${photoUploaderName}</h6>
@@ -549,6 +555,7 @@
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+		                                	<c:set var="displayBreakManager" value="${false}"/>
 		                                	<table>
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
@@ -563,6 +570,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:set var="displayBreakManager" value="${true}"/>
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
@@ -601,9 +609,13 @@
                											</form>
 		                                    		</td>
 		                                    		</c:if>
+		                                    		<c:set var="displayBreakManager" value="${true}"/>
 		                                    		</sec:authorize>
 		                                    	</tr>
-		                                    </table><br/>
+		                                    </table>
+		                                    <c:if test="${displayBreakManager}">
+		                                    <br/>
+		                                    </c:if>
 		                                    <table id="managers-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
@@ -667,6 +679,7 @@
                                 <div class="tab-pane" id="tab_teams">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+		                                	<c:set var="displayBreakTeam" value="${false}"/>
 		                                	<table>
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
@@ -681,6 +694,7 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
+		                                    		<c:set var="displayBreakTeam" value="${true}"/>
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty teamList}">
@@ -714,9 +728,13 @@
               											</form>
 		                                    		</td>
 		                                    		</c:if>
+		                                    		<c:set var="displayBreakTeam" value="${true}"/>
 		                                    		</sec:authorize>
 		                                    	</tr>
-		                                    </table><br/>
+		                                    </table>
+		                                    <c:if test="${displayBreakTeam}">
+		                                    <br/>
+		                                    </c:if>
 		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>

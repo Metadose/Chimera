@@ -64,6 +64,10 @@
 					                                            <input type="text" disabled class="form-control" name="name" value="${projectfile.name}"/><br/>
 					                                            <form role="form" name="fileForm" id="fileForm" method="post" action="${contextPath}/projectfile/update">
 						                                            <label>Description</label>
+						                                            <c:if test="${!empty origin && !empty originID}">
+						                                            <input type="hidden" name="origin" value="${origin}"/>
+				                                        			<input type="hidden" name="originID" value="${originID}"/>
+						                                            </c:if>
 						                                            <input type="hidden" name="projectfile_id" value="${projectfile.id}"/>
 						                                            <input type="text" class="form-control" name="description" value="${projectfile.description}"/><br/>
 					                                            </form>

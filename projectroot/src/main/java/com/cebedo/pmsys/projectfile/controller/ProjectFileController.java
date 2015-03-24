@@ -139,13 +139,41 @@ public class ProjectFileController {
 	}
 
 	/**
+	 * Create new or open an existing one from origin.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+	public String editProjectFileFromOrigin(
+			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) int id,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+		if (id == 0) {
+			model.addAttribute(ATTR_PROJECTFILE, new ProjectFile());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+		model.addAttribute(ATTR_PROJECTFILE,
+				this.projectFileService.getByID(id));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+		return JSP_EDIT;
+	}
+
+	/**
 	 * Create new or open an existing one.
 	 * 
 	 * @param id
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String editProjectFile(
@@ -312,6 +340,8 @@ public class ProjectFileController {
 	public ModelAndView updateDescription(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
 			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
 			RedirectAttributes redirectAttrs) {
 
 		this.projectFileService.updateDescription(fileID, description);
@@ -323,6 +353,11 @@ public class ProjectFileController {
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
+		if (!(origin == null || originID == 0)) {
+			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
+					+ originID);
+		}
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
 	}
