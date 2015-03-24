@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.common.AuthUtils;
 import com.cebedo.pmsys.common.FileUtils;
+import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.photo.dao.PhotoDAO;
@@ -28,7 +29,12 @@ public class PhotoServiceImpl implements PhotoService {
 	private ProjectDAO projectDAO;
 	private StaffDAO staffDAO;
 	private SystemConfigurationDAO systemConfigurationDAO;
+	private CompanyDAO companyDAO;
 	private String sysHome;
+
+	public void setCompanyDAO(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
+	}
 
 	public void setSystemConfigurationDAO(
 			SystemConfigurationDAO systemConfigurationDAO) {
@@ -207,7 +213,8 @@ public class PhotoServiceImpl implements PhotoService {
 		long size = file.getSize();
 		Date dateUploaded = new Date(System.currentTimeMillis());
 		Photo photo = new Photo(auth.getStaff(), fileLocation, proj,
-				file.getOriginalFilename(), description, size, dateUploaded);
+				file.getOriginalFilename(), description, size, dateUploaded,
+				projCompany);
 
 		// Do the actual upload.
 		FileUtils.fileUpload(file, fileLocation);
@@ -239,6 +246,10 @@ public class PhotoServiceImpl implements PhotoService {
 	@Transactional
 	public void delete(long id) {
 		Photo photo = this.photoDAO.getByID(id);
+		Company company = this.companyDAO.getCompanyByObjID(Photo.TABLE_NAME,
+				Photo.COLUMN_PRIMARY_KEY, photo.getId());
+		photo.setCompany(company);
+
 		if (AuthUtils.isActionAuthorized(photo)) {
 			File photoFile = new File(photo.getLocation());
 			photoFile.delete();
@@ -249,7 +260,11 @@ public class PhotoServiceImpl implements PhotoService {
 	@Override
 	@Transactional
 	public List<Photo> list() {
-		// TODO
-		return this.photoDAO.list();
+		AuthenticationToken auth = AuthUtils.getAuth();
+		if (auth.isSuperAdmin()) {
+			return this.photoDAO.list(null);
+		}
+		Long companyID = auth.getCompany().getId();
+		return this.photoDAO.list(companyID);
 	}
 }

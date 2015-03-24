@@ -44,7 +44,8 @@ public class Photo implements Serializable {
 	}
 
 	public Photo(Staff staff, String fileLocation, Project proj,
-			String originalFilename, String descript, long size, Date uploaded) {
+			String originalFilename, String descript, long size, Date uploaded,
+			Company company) {
 		this.setUploader(staff);
 		this.setLocation(fileLocation);
 		this.setProject(proj);
@@ -52,6 +53,7 @@ public class Photo implements Serializable {
 		this.setDescription(descript);
 		this.setSize(size);
 		this.setDateUploaded(uploaded);
+		this.setCompany(company);
 	}
 
 	@Id

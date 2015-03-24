@@ -14,6 +14,6 @@ public interface PhotoDAO {
 
 	public void delete(long id);
 
-	public List<Photo> list();
+	public List<Photo> list(Long companyID);
 
 }

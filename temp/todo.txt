@@ -15,6 +15,9 @@ order by startdate
 = project file
 ok na unta TANAN pero ang view details dapat mubalik sa edit page pag human ug update
 
+= photos
+butngan ug view nga button
+ang delete walay notifs after action
 
 = bugs
 invalid day index of timeline

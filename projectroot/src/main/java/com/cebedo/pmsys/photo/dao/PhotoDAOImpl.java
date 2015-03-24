@@ -2,12 +2,14 @@ package com.cebedo.pmsys.photo.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.QueryUtils;
 import com.cebedo.pmsys.photo.model.Photo;
 
 @Repository
@@ -54,13 +56,11 @@ public class PhotoDAOImpl implements PhotoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Photo> list() {
+	public List<Photo> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Photo> photoList = session.createQuery("from " + Photo.CLASS_NAME)
-				.list();
-		for (Photo photo : photoList) {
-			logger.info("[List] Photo: " + photo);
-		}
+		Query query = QueryUtils.getSelectQueryFilterCompany(session,
+				Photo.class.getName(), companyID);
+		List<Photo> photoList = query.list();
 		return photoList;
 	}
 
