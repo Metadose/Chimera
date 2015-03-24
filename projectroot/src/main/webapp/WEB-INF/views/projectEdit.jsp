@@ -447,7 +447,9 @@
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
 			                                            		</form>
-																<button class="btn btn-default btn-flat btn-sm">View Details</button>
+			                                            		<a href="${contextPath}/projectfile/edit/${file.id}">
+																<button class="btn btn-default btn-flat btn-sm">View</button>
+																</a>
 																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
 																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																	<input type="hidden" id="projectfile_id" name="projectfile_id" value="${file.id}"/>

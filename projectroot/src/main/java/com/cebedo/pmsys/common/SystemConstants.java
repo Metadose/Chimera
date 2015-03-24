@@ -22,6 +22,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_DOWNLOAD = "download";
 	public static final String REQUEST_ASSIGN = "assign";
 	public static final String REQUEST_UNASSIGN = "unassign";
+	public static final String REQUEST_UPLOAD = "upload";
 
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";

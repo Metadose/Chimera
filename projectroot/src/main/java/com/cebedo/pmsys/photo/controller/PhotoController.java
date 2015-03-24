@@ -120,7 +120,8 @@ public class PhotoController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -135,7 +136,7 @@ public class PhotoController {
 		}
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>uploaded</b> the file <b>"
+		alertFactory.setMessage("Successfully <b>uploaded</b> the photo <b>"
 				+ file.getOriginalFilename() + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
