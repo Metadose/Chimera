@@ -109,13 +109,20 @@ public class TaskController {
 			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
 			RedirectAttributes redirectAttrs) {
 
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+
 		// If the task is not here yet,
 		// Create it.
-		this.taskService.createWithProject(task, originID);
+		if (task.getId() == 0) {
+			this.taskService.createWithProject(task, originID);
+			alertFactory.setMessage("Successfully <b>created</b> task <b>"
+					+ task.getTitle() + "</b>.");
+		} else {
+			this.taskService.merge(task);
+			alertFactory.setMessage("Successfully <b>updated</b> task <b>"
+					+ task.getTitle() + "</b>.");
+		}
 
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>created</b> task <b>"
-				+ task.getTitle() + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
@@ -307,7 +314,7 @@ public class TaskController {
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
-		// Redirect to project edit.
+		// Redirect to staff edit.
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);
@@ -392,6 +399,53 @@ public class TaskController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	/**
+	 * Open a page with appropriate values from a project object.<br>
+	 * May be a Create Page or Edit Page. TODO Add method-level security.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+	public String editTaskFromOrigin(
+			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
+
+		// TODO Optimize by getting only name and id.
+		// Get list of teams for the selector.
+		List<Team> teamList = this.teamService.list();
+		List<Staff> staffList = this.staffService.list();
+		List<Field> fieldList = this.fieldService.list();
+		model.addAttribute(TeamController.JSP_LIST, teamList);
+		model.addAttribute(StaffController.JSP_LIST, staffList);
+		model.addAttribute(FieldController.JSP_LIST, fieldList);
+
+		// Set origin values.
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+
+		// If ID is zero,
+		// Open a page with empty values, ready to create.
+		if (taskID == 0) {
+			model.addAttribute(ATTR_TASK, new Task());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+
+		// Else, get the object from DB
+		// then populate the fields in JSP.
+		model.addAttribute(ATTR_TASK,
+				this.taskService.getByIDWithAllCollections(taskID));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+		return JSP_EDIT;
 	}
 
 	/**

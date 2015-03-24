@@ -24,7 +24,7 @@ public interface TaskService {
 
 	public void assignTeamTask(long taskID, long teamID);
 
-	public Task getByIDWithAllCollections(int id);
+	public Task getByIDWithAllCollections(long id);
 
 	public void unassignTeamTask(long taskID, long teamID);
 

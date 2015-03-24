@@ -152,7 +152,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	@Transactional
-	public Task getByIDWithAllCollections(int id) {
+	public Task getByIDWithAllCollections(long id) {
 		Task task = this.taskDAO.getByIDWithAllCollections(id);
 		if (AuthUtils.isActionAuthorized(task)) {
 			return task;

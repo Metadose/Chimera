@@ -269,6 +269,7 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/task/assign/from/project">
 		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
@@ -288,6 +289,7 @@
                											</form>
 		                                    		</td>
 		                                    		</c:if>
+		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table><br/>
 		                                    <table id="tasks-table" class="table table-bordered table-striped">
@@ -295,6 +297,7 @@
 		                                            <tr>
 			                                        	<th>&nbsp;</th>
 			                                            <th>Status</th>
+			                                            <th>Title</th>
 			                                            <th>Content</th>
 			                                            <th>Team</th>
 			                                            <th>Staff</th>
@@ -308,6 +311,7 @@
 		                                        		<c:forEach items="${taskList}" var="task">
 		                                        			<tr>
 		                                        				<td>
+		                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                        					<div class="btn-group">
 							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 							                                                Mark As&nbsp;
@@ -323,14 +327,20 @@
 <!-- 							                                                <li><a href="#">Separated link</a></li> -->
 							                                            </ul>
 							                                        </div>
-							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
-					                                            	</a>
+							                                        </sec:authorize>
+					                                            	<form method="post" action="${contextPath}/task/edit/from/origin">
+					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
+					                                            	<input type="hidden" name="origin" value="project"/>
+					                                            	<input type="hidden" name="originID" value="${project.id}"/>
+					                                            	<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            	</form> 
+					                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 					                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
 					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
 					                                            	<input type="hidden" name="project_id" value="${project.id}"/>
 					                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 					                                            	</form> 
+					                                            	</sec:authorize>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
 					                                            	<c:choose>
@@ -350,6 +360,9 @@
 						                                            		<h6>Cancelled</h6>
 						                                            	</c:when>
 						                                            </c:choose>
+					                                            </td>
+					                                            <td>
+					                                            ${task.title}
 					                                            </td>
 					                                            <td>
 					                                            ${task.content}
