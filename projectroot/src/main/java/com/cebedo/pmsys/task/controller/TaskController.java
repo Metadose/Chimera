@@ -131,7 +131,7 @@ public class TaskController {
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 					+ SystemConstants.REQUEST_LIST;
 		} else {
-			this.taskService.update(task);
+			this.taskService.merge(task);
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
 					+ SystemConstants.REQUEST_EDIT + "/" + task.getId();
 		}

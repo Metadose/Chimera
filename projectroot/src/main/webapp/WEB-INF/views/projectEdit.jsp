@@ -349,7 +349,9 @@
 						                                            	</c:when>
 						                                            </c:choose>
 					                                            </td>
-					                                            <td>${task.content}</td>
+					                                            <td>
+					                                            ${task.content}
+					                                            </td>
 					                                            <td>
 					                                            	<c:choose>
 					                                            		<c:when test="${!empty task.teams}">
@@ -362,7 +364,7 @@
 					                                            			</c:forEach>
 					                                            		</c:when>
 					                                            		<c:when test="${empty task.teams}">
-					                                            			<h5>No team assigned.</h5>
+					                                            			No team assigned.
 					                                            		</c:when>
 					                                            	</c:choose>
 					                                            </td>
@@ -379,7 +381,7 @@
 					                                            			</c:forEach>
 					                                            		</c:when>
 					                                            		<c:when test="${empty task.staff}">
-					                                            			<h5>No manager assigned.</h5>
+					                                            			No manager assigned.
 					                                            		</c:when>
 					                                            	</c:choose>					                                            
 					                                            </td>

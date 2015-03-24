@@ -72,8 +72,6 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	@Transactional
 	public void update(Task task) {
-		long taskID = task.getId();
-
 		if (AuthUtils.isActionAuthorized(task)) {
 			this.taskDAO.update(task);
 		}
@@ -225,6 +223,20 @@ public class TaskServiceImpl implements TaskService {
 				task.setCompany(authCompany);
 				this.taskDAO.update(task);
 			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void merge(Task task) {
+		Task oldTask = this.taskDAO.getByIDWithAllCollections(task.getId());
+		if (AuthUtils.isActionAuthorized(oldTask)) {
+			task.setCompany(oldTask.getCompany());
+			task.setFields(oldTask.getFields());
+			task.setProject(oldTask.getProject());
+			task.setStaff(oldTask.getStaff());
+			task.setTeams(oldTask.getTeams());
+			this.taskDAO.merge(task);
 		}
 	}
 }

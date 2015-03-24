@@ -62,7 +62,6 @@ public class TaskDAOImpl implements TaskDAO {
 	public void update(Task task) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(task);
-		logger.info("[Update] Task:" + task);
 	}
 
 	@Override
@@ -203,5 +202,11 @@ public class TaskDAOImpl implements TaskDAO {
 		Query query = session.createQuery(hql);
 		query.setParameter(Project.COLUMN_PRIMARY_KEY, projectID);
 		query.executeUpdate();
+	}
+
+	@Override
+	public void merge(Task task) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.merge(task);
 	}
 }

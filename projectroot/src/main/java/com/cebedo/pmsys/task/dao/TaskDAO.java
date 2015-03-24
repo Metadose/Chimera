@@ -45,4 +45,6 @@ public interface TaskDAO {
 
 	public void unassignAllProjectTasks(long projectID);
 
+	public void merge(Task task);
+
 }

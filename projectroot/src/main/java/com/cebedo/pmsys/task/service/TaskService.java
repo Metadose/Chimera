@@ -37,4 +37,6 @@ public interface TaskService {
 	public void unassignAllProjectTasks(long projectID);
 
 	public void createWithProject(Task task, long projectID);
+
+	public void merge(Task task);
 }
