@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.task.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,8 +28,9 @@ import com.cebedo.pmsys.team.model.Team;
 
 @Entity
 @Table(name = Task.TABLE_NAME)
-public class Task {
+public class Task implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String TABLE_NAME = "tasks";
 	public static final String OBJECT_NAME = "task";
 

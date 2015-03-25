@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.security.securityaccess.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,8 +15,9 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 @Entity
 @Table(name = SecurityAccess.TABLE_NAME)
-public class SecurityAccess {
+public class SecurityAccess implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String OBJECT_NAME = "securityaccess";
 	public static final String TABLE_NAME = "security_access";
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
