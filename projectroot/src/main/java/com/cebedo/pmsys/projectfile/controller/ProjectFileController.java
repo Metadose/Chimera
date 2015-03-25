@@ -146,7 +146,7 @@ public class ProjectFileController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
 	public String editProjectFileFromOrigin(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) int id,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -175,7 +175,7 @@ public class ProjectFileController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ ProjectFile.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
 	public String editProjectFile(
 			@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id, Model model) {
 		if (id == 0) {

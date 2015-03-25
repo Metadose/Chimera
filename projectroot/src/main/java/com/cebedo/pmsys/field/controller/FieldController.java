@@ -366,8 +366,15 @@ public class FieldController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Open a view for a create new or update an existing one.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Field.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Field.COLUMN_PRIMARY_KEY + "}")
 	public String editField(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {

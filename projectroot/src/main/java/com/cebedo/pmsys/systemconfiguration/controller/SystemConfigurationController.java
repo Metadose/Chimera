@@ -65,7 +65,7 @@ public class SystemConfigurationController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemConfiguration(
 			@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id,
 			Model model) {

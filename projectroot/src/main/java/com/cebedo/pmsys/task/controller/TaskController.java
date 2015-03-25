@@ -207,7 +207,7 @@ public class TaskController {
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
+			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME)
 	public String redirectAssignProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -273,7 +273,7 @@ public class TaskController {
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-			+ Staff.OBJECT_NAME + "/{" + Staff.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Staff.OBJECT_NAME + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
 	public String redirectAssignStaff(
 			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model) {
 		// Redirect to an edit page with an empty task object
@@ -411,7 +411,7 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
 	public String editTaskFromOrigin(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -458,7 +458,7 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Task.COLUMN_PRIMARY_KEY + "}")
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		// TODO Optimize by getting only name and id.

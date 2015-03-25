@@ -144,7 +144,7 @@ public class TeamController {
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
 	public String editTeamFromOrigin(
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long id,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -177,7 +177,7 @@ public class TeamController {
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Team.COLUMN_PRIMARY_KEY + "}")
 	public String editTeam(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		List<Field> fieldList = this.fieldService.list();

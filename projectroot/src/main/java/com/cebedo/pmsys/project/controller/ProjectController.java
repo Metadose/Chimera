@@ -127,7 +127,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Project.COLUMN_PRIMARY_KEY + "}")
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 

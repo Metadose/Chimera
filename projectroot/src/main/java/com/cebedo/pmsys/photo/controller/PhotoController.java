@@ -186,7 +186,7 @@ public class PhotoController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ Photo.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Photo.COLUMN_PRIMARY_KEY + "}")
 	public String editPhoto(@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {

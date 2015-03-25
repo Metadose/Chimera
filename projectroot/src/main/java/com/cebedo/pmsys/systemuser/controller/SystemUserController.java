@@ -68,7 +68,7 @@ public class SystemUserController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemUser(
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
 		if (id == 0) {

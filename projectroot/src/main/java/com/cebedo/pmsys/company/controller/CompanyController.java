@@ -39,6 +39,12 @@ public class CompanyController {
 		return JSP_LIST;
 	}
 
+	/**
+	 * Create or update a company.
+	 * 
+	 * @param company
+	 * @return
+	 */
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_COMPANY) Company company) {
 		// TODO This has a bug.
@@ -52,6 +58,12 @@ public class CompanyController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Delete a company.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/{"
 			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id) {
@@ -61,7 +73,7 @@ public class CompanyController {
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
-			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
+			+ Company.COLUMN_PRIMARY_KEY + "}" })
 	public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {
