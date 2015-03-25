@@ -75,8 +75,8 @@ public class FieldDAOImpl implements FieldDAO {
 	@SuppressWarnings("unchecked")
 	public List<Field> listWithAllCollections() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Field> fieldList = session.createQuery("FROM " + Field.class.getName())
-				.list();
+		List<Field> fieldList = session.createQuery(
+				"FROM " + Field.class.getName()).list();
 		for (Field field : fieldList) {
 			Hibernate.initialize(field.getFieldAssignments());
 		}
@@ -96,10 +96,15 @@ public class FieldDAOImpl implements FieldDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		SQLQuery query = session.createSQLQuery("DELETE FROM "
 				+ FieldAssignment.TABLE_NAME + " WHERE "
-				+ Project.COLUMN_PRIMARY_KEY + " = " + projID + " AND "
-				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND "
-				+ Field.COLUMN_LABEL + " = '" + label + "' AND "
-				+ Field.COLUMN_VALUE + " = '" + value + "'");
+				+ Project.COLUMN_PRIMARY_KEY + " =:"
+				+ Project.COLUMN_PRIMARY_KEY + " AND "
+				+ Field.COLUMN_PRIMARY_KEY + " =:" + Field.COLUMN_PRIMARY_KEY
+				+ " AND " + Field.COLUMN_LABEL + " =:" + Field.COLUMN_LABEL
+				+ " AND " + Field.COLUMN_VALUE + " =:" + Field.COLUMN_VALUE);
+		query.setParameter(Project.COLUMN_PRIMARY_KEY, projID);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
 		query.executeUpdate();
 	}
 
@@ -179,10 +184,17 @@ public class FieldDAOImpl implements FieldDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		SQLQuery query = session.createSQLQuery("DELETE FROM "
 				+ TaskFieldAssignment.TABLE_NAME + " WHERE "
-				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID + " AND "
-				+ Field.COLUMN_PRIMARY_KEY + " = " + fieldID + " AND  "
-				+ Field.COLUMN_LABEL + " = '" + label + "' AND "
-				+ Field.COLUMN_VALUE + " =  '" + value + "'");
+				+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY
+				+ " AND " + Field.COLUMN_PRIMARY_KEY + " =:"
+				+ Field.COLUMN_PRIMARY_KEY + " AND  " + Field.COLUMN_LABEL
+				+ " =:" + Field.COLUMN_LABEL + " AND " + Field.COLUMN_VALUE
+				+ " =:" + Field.COLUMN_VALUE);
+
+		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
+
 		query.executeUpdate();
 	}
 

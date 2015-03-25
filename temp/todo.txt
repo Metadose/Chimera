@@ -24,7 +24,6 @@ invalid day index of timeline
 
 
 = todo
-use hibernate for sql injection,
 secure jsp by escaping for xss
 
 Change password
