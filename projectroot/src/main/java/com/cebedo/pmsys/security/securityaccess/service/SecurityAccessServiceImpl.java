@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityaccess.dao.SecurityAccessDAO;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
@@ -13,6 +13,7 @@ import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 @Service
 public class SecurityAccessServiceImpl implements SecurityAccessService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private SecurityAccessDAO securityAccessDAO;
 
 	public void setSecurityAccessDAO(SecurityAccessDAO securityAccessDAO) {
@@ -29,7 +30,7 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Transactional
 	public SecurityAccess getByID(long id) {
 		SecurityAccess obj = this.securityAccessDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(obj)) {
+		if (this.authHelper.isActionAuthorized(obj)) {
 			return obj;
 		}
 		return new SecurityAccess();
@@ -38,7 +39,7 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Override
 	@Transactional
 	public void update(SecurityAccess securityAccess) {
-		if (AuthUtils.isActionAuthorized(securityAccess)) {
+		if (this.authHelper.isActionAuthorized(securityAccess)) {
 			this.securityAccessDAO.update(securityAccess);
 		}
 	}
@@ -47,7 +48,7 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Transactional
 	public void delete(long id) {
 		SecurityAccess obj = this.securityAccessDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(obj)) {
+		if (this.authHelper.isActionAuthorized(obj)) {
 			this.securityAccessDAO.delete(id);
 		}
 	}
@@ -55,7 +56,7 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Override
 	@Transactional
 	public List<SecurityAccess> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.securityAccessDAO.list(null);
 		}

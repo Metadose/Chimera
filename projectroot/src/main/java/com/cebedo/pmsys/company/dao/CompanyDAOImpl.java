@@ -34,7 +34,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	@Override
 	public Company getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Criteria criteria = daoHelper.criteriaGetObjByID(session,
+		Criteria criteria = this.daoHelper.criteriaGetObjByID(session,
 				Company.class, Company.PROPERTY_ID, id);
 		Company company = (Company) criteria.uniqueResult();
 		return company;
@@ -61,7 +61,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	@Override
 	public List<Company> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Company> companyList = daoHelper.getSelectQueryFilterCompany(
+		List<Company> companyList = this.daoHelper.getSelectQueryFilterCompany(
 				session, Company.class.getName(), companyID).list();
 		return companyList;
 	}

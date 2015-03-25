@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.subcontractor.dao.SubcontractorDAO;
@@ -14,6 +14,7 @@ import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 @Service
 public class SubcontractorServiceImpl implements SubcontractorService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private SubcontractorDAO subcontractorDAO;
 
 	public void setSubcontractorDAO(SubcontractorDAO subcontractorDAO) {
@@ -24,9 +25,9 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Transactional
 	public void create(Subcontractor subcontractor) {
 		this.subcontractorDAO.create(subcontractor);
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			subcontractor.setCompany(authCompany);
 			this.subcontractorDAO.update(subcontractor);
 		}
@@ -36,7 +37,7 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Transactional
 	public Subcontractor getByID(long id) {
 		Subcontractor subcon = this.subcontractorDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(subcon)) {
+		if (this.authHelper.isActionAuthorized(subcon)) {
 			return subcon;
 		}
 		return new Subcontractor();
@@ -45,7 +46,7 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Override
 	@Transactional
 	public void update(Subcontractor subcontractor) {
-		if (AuthUtils.isActionAuthorized(subcontractor)) {
+		if (this.authHelper.isActionAuthorized(subcontractor)) {
 			this.subcontractorDAO.update(subcontractor);
 		}
 	}
@@ -54,7 +55,7 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Transactional
 	public void delete(long id) {
 		Subcontractor subcon = this.subcontractorDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(subcon)) {
+		if (this.authHelper.isActionAuthorized(subcon)) {
 			this.subcontractorDAO.delete(id);
 		}
 	}
@@ -62,7 +63,7 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Override
 	@Transactional
 	public List<Subcontractor> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.subcontractorDAO.list(null);
 		}
@@ -72,7 +73,7 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Override
 	@Transactional
 	public List<Subcontractor> listWithAllCollections() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.subcontractorDAO.listWithAllCollections(null);
 		}

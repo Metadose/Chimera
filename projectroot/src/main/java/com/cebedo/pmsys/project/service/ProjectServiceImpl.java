@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -15,6 +15,7 @@ import com.cebedo.pmsys.project.model.Project;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
 
@@ -30,9 +31,9 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public void create(Project project) {
 		this.projectDAO.create(project);
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			project.setCompany(authCompany);
 			this.projectDAO.update(project);
 		}
@@ -45,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
 				Project.COLUMN_PRIMARY_KEY, project.getId());
 		project.setCompany(company);
 
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			this.projectDAO.update(project);
 		}
 	}
@@ -53,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public List<Project> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.projectDAO.list(null);
 		}
@@ -64,7 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public Project getByID(long id) {
 		Project project = this.projectDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			return project;
 		}
 		return new Project();
@@ -74,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public void delete(long id) {
 		Project project = this.projectDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			this.projectDAO.delete(id);
 		}
 	}
@@ -82,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public List<Project> listWithAllCollections() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.projectDAO.listWithAllCollections(null);
 		}
@@ -94,7 +95,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public Project getByIDWithAllCollections(long id) {
 		Project project = this.projectDAO.getByIDWithAllCollections(id);
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			return project;
 		}
 		return new Project();
@@ -103,7 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public List<Project> listWithTasks() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.projectDAO.listWithTasks(null);
 		}

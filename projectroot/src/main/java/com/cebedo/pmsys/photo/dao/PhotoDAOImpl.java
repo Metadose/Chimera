@@ -59,7 +59,7 @@ public class PhotoDAOImpl implements PhotoDAO {
 	@SuppressWarnings("unchecked")
 	public List<Photo> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = daoHelper.getSelectQueryFilterCompany(session,
+		Query query = this.daoHelper.getSelectQueryFilterCompany(session,
 				Photo.class.getName(), companyID);
 		List<Photo> photoList = query.list();
 		return photoList;

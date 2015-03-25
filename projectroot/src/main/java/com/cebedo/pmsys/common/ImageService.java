@@ -30,6 +30,8 @@ public class ImageService {
 	public static final String SERVICE_NAME = "image";
 	public static final String PARAM_FILENAME = "filename";
 
+	private AuthHelper authHelper = new AuthHelper();
+
 	private SystemConfigurationService configService;
 	private ProjectService projectService;
 	private StaffService staffService;
@@ -98,7 +100,7 @@ public class ImageService {
 		// If not authorized to view this image, return.
 		// TODO Handle this, don't let it crash.
 		Project proj = this.projectService.getByID(projectID);
-		if (!AuthUtils.isActionAuthorized(proj)) {
+		if (!this.authHelper.isActionAuthorized(proj)) {
 			return null;
 		}
 
@@ -106,7 +108,7 @@ public class ImageService {
 		// If both are not existing, set to zero.
 		String sysHome = this.configService.getValueByName("SYS_HOME");
 		Company projCompany = proj.getCompany();
-		Company userCompany = AuthUtils.getAuth().getCompany();
+		Company userCompany = this.authHelper.getAuth().getCompany();
 		String fileURI = FileUtils.constructSysHomeFileURI(
 				sysHome,
 				projCompany == null ? userCompany == null ? 0 : userCompany

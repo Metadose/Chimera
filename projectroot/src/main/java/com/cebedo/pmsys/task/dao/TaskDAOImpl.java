@@ -80,7 +80,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = daoHelper.getSelectQueryFilterCompany(session,
+		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session,
 				Task.class.getName(), companyID).list();
 		return taskList;
 	}
@@ -88,7 +88,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = daoHelper.getSelectQueryFilterCompany(session,
+		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session,
 				Task.class.getName(), companyID).list();
 		for (Task task : taskList) {
 			Hibernate.initialize(task.getTeams());
@@ -223,7 +223,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public String getTitleByID(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = daoHelper.getProjectionByID(session, Task.class,
+		String result = this.daoHelper.getProjectionByID(session, Task.class,
 				Task.PROPERTY_ID, taskID, Task.PROPERTY_TITLE);
 		return result;
 	}

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -20,6 +20,7 @@ import com.cebedo.pmsys.team.model.TeamWrapper;
 @Service
 public class TeamServiceImpl implements TeamService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private TeamDAO teamDAO;
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
@@ -40,9 +41,9 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void create(Team team) {
 		this.teamDAO.create(team);
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			team.setCompany(authCompany);
 			this.teamDAO.update(team);
 		}
@@ -52,7 +53,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public Team getByID(long id) {
 		Team team = this.teamDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			return team;
 		}
 		return new Team();
@@ -64,7 +65,7 @@ public class TeamServiceImpl implements TeamService {
 		Company company = this.companyDAO.getCompanyByObjID(Team.TABLE_NAME,
 				Team.COLUMN_PRIMARY_KEY, team.getId());
 		team.setCompany(company);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			this.teamDAO.update(team);
 		}
 	}
@@ -73,7 +74,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void delete(long id) {
 		Team team = this.teamDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			this.teamDAO.delete(id);
 		}
 	}
@@ -81,7 +82,7 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	@Transactional
 	public List<Team> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.teamDAO.list(null);
 		}
@@ -93,8 +94,8 @@ public class TeamServiceImpl implements TeamService {
 	public void assignProjectTeam(long projectID, long teamID) {
 		Project project = this.projectDAO.getByID(projectID);
 		Team team = this.teamDAO.getByID(teamID);
-		if (AuthUtils.isActionAuthorized(project)
-				&& AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(project)
+				&& this.authHelper.isActionAuthorized(team)) {
 			TeamAssignment assignment = new TeamAssignment();
 			assignment.setProjectID(projectID);
 			assignment.setTeamID(teamID);
@@ -107,8 +108,8 @@ public class TeamServiceImpl implements TeamService {
 	public void unassignProjectTeam(long projectID, long teamID) {
 		Project project = this.projectDAO.getByID(projectID);
 		Team team = this.teamDAO.getByID(teamID);
-		if (AuthUtils.isActionAuthorized(project)
-				&& AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(project)
+				&& this.authHelper.isActionAuthorized(team)) {
 			this.teamDAO.unassignProjectTeam(projectID, teamID);
 		}
 	}
@@ -117,7 +118,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void unassignAllProjectTeams(long projectID) {
 		Project project = this.projectDAO.getByID(projectID);
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			this.teamDAO.unassignAllProjectTeams(projectID);
 		}
 	}
@@ -126,7 +127,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public Team getWithAllCollectionsByID(long id) {
 		Team team = this.teamDAO.getWithAllCollectionsByID(id);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			return team;
 		}
 		return new Team();
@@ -136,7 +137,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void unassignAllMembers(long teamID) {
 		Team team = this.teamDAO.getByID(teamID);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			this.teamDAO.unassignAllMembers(teamID);
 		}
 	}
@@ -145,7 +146,7 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional
 	public void unassignAllTeamsFromProject(long teamID) {
 		Team team = this.teamDAO.getByID(teamID);
-		if (AuthUtils.isActionAuthorized(team)) {
+		if (this.authHelper.isActionAuthorized(team)) {
 			this.teamDAO.unassignAllTeamsFromProject(teamID);
 		}
 	}
@@ -159,7 +160,7 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	@Transactional
 	public List<Team> listUnassignedInProject(Long companyID, Project project) {
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			List<Team> companyTeamList = this.teamDAO.list(companyID);
 			List<TeamWrapper> wrappedTeamList = TeamWrapper
 					.wrap(companyTeamList);
@@ -174,7 +175,7 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	@Transactional
 	public List<Team> listWithTasks() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.teamDAO.listWithTasks(null);
 		}

@@ -35,7 +35,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
+		List<Project> projectList = this.daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), companyID).list();
 		return projectList;
 	}
@@ -69,7 +69,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
+		List<Project> projectList = this.daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), companyID).list();
 		for (Project project : projectList) {
 			Hibernate.initialize(project.getManagerAssignments());
@@ -107,7 +107,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public List<Project> listWithTasks(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
+		List<Project> projectList = this.daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), id).list();
 		for (Project project : projectList) {
 			Hibernate.initialize(project.getAssignedTasks());
@@ -118,7 +118,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public String getNameByID(long projectID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = daoHelper.getProjectionByID(session, Project.class,
+		String result = this.daoHelper.getProjectionByID(session, Project.class,
 				Project.PROPERTY_ID, projectID, Project.PROPERTY_NAME);
 		return result;
 	}

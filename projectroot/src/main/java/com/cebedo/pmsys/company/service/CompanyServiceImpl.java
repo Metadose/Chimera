@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -14,6 +14,7 @@ import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private CompanyDAO companyDAO;
 
 	public void setCompanyDAO(CompanyDAO companyDAO) {
@@ -47,7 +48,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	@Transactional
 	public List<Company> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.companyDAO.list(null);
 		}

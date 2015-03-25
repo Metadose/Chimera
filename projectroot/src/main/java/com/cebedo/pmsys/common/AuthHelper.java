@@ -15,19 +15,19 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
-public abstract class AuthUtils {
+public class AuthHelper {
 
 	/**
 	 * Get the authentication object from the context.
 	 * 
 	 * @return
 	 */
-	public static AuthenticationToken getAuth() {
+	public AuthenticationToken getAuth() {
 		return (AuthenticationToken) SecurityContextHolder.getContext()
 				.getAuthentication();
 	}
 
-	public static boolean notNullObjNotSuperAdmin(Object obj) {
+	public boolean notNullObjNotSuperAdmin(Object obj) {
 		if (!(obj == null || getAuth().isSuperAdmin())) {
 			return true;
 		}
@@ -40,7 +40,7 @@ public abstract class AuthUtils {
 	 * @param stf
 	 * @return
 	 */
-	public static boolean isActionAuthorized(Project proj) {
+	public boolean isActionAuthorized(Project proj) {
 		AuthenticationToken auth = getAuth();
 
 		// If the auth is a super admin,
@@ -62,7 +62,7 @@ public abstract class AuthUtils {
 	 * @param stf
 	 * @return
 	 */
-	public static boolean isActionAuthorized(Staff stf) {
+	public boolean isActionAuthorized(Staff stf) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -72,7 +72,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(Team team) {
+	public boolean isActionAuthorized(Team team) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -82,7 +82,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(SystemConfiguration obj) {
+	public boolean isActionAuthorized(SystemConfiguration obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -92,7 +92,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(SystemUser obj) {
+	public boolean isActionAuthorized(SystemUser obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -102,7 +102,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(Task obj) {
+	public boolean isActionAuthorized(Task obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -112,7 +112,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(ProjectFile obj) {
+	public boolean isActionAuthorized(ProjectFile obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -122,7 +122,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(Photo obj) {
+	public boolean isActionAuthorized(Photo obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -132,7 +132,7 @@ public abstract class AuthUtils {
 		return false;
 	}
 
-	public static boolean isActionAuthorized(Subcontractor obj) {
+	public boolean isActionAuthorized(Subcontractor obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -149,7 +149,7 @@ public abstract class AuthUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static boolean isActionAuthorized(SecurityAccess obj) {
+	public boolean isActionAuthorized(SecurityAccess obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;
@@ -164,7 +164,7 @@ public abstract class AuthUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static boolean isActionAuthorized(SecurityRole obj) {
+	public boolean isActionAuthorized(SecurityRole obj) {
 		AuthenticationToken auth = getAuth();
 		if (auth.isSuperAdmin()) {
 			return true;

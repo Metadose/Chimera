@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.FileUtils;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -24,6 +24,7 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 @Service
 public class ProjectFileServiceImpl implements ProjectFileService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private ProjectFileDAO projectFileDAO;
 	private ProjectDAO projectDAO;
 	private SystemConfigurationDAO systemConfigurationDAO;
@@ -53,7 +54,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public void createForStaff(MultipartFile file, String description)
 			throws IOException {
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 
 		// Upload the file to the server.
 		// file://SYS_HOME/"company"/[id]/"staff|project|team"/[id]/files/file.getOriginalFilename();
@@ -92,7 +93,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 		// Update the entry for company details.
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			projectFile.setCompany(authCompany);
 			this.projectFileDAO.update(projectFile);
 		}
@@ -102,7 +103,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public void create(MultipartFile file, long projectID, String description)
 			throws IOException {
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Project proj = this.projectDAO.getByID(projectID);
 		Company projCompany = proj.getCompany();
 
@@ -141,7 +142,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 		// Update the entry for company details.
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			projectFile.setCompany(authCompany);
 			this.projectFileDAO.update(projectFile);
 		}
@@ -151,7 +152,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public ProjectFile getByID(long id) {
 		ProjectFile file = this.projectFileDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(file)) {
+		if (this.authHelper.isActionAuthorized(file)) {
 			return file;
 		}
 		return new ProjectFile();
@@ -160,7 +161,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Override
 	@Transactional
 	public void update(ProjectFile projectFile) {
-		if (AuthUtils.isActionAuthorized(projectFile)) {
+		if (this.authHelper.isActionAuthorized(projectFile)) {
 			this.projectFileDAO.update(projectFile);
 		}
 	}
@@ -172,7 +173,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public void delete(long id) {
 		ProjectFile file = this.projectFileDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(file)) {
+		if (this.authHelper.isActionAuthorized(file)) {
 			String location = file.getLocation();
 			FileUtils.deletePhysicalFile(location);
 			this.projectFileDAO.delete(id);
@@ -182,7 +183,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Override
 	@Transactional
 	public List<ProjectFile> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.projectFileDAO.list(null);
 		}
@@ -192,7 +193,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Override
 	@Transactional
 	public List<ProjectFile> listWithAllCollections() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.projectFileDAO.listWithAllCollections(null);
 		}
@@ -204,7 +205,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public void updateDescription(long fileID, String description) {
 		ProjectFile file = this.projectFileDAO.getByID(fileID);
-		if (AuthUtils.isActionAuthorized(file)) {
+		if (this.authHelper.isActionAuthorized(file)) {
 			this.projectFileDAO.updateDescription(fileID, description);
 		}
 	}
@@ -216,7 +217,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	@Transactional
 	public File getPhysicalFileByID(long fileID) {
 		ProjectFile file = this.projectFileDAO.getByID(fileID);
-		if (AuthUtils.isActionAuthorized(file)) {
+		if (this.authHelper.isActionAuthorized(file)) {
 			String fileLocation = file.getLocation();
 			File actualFile = new File(fileLocation);
 			return actualFile;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.FileUtils;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
@@ -24,6 +24,8 @@ import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
+
+	private AuthHelper authHelper = new AuthHelper();
 
 	private PhotoDAO photoDAO;
 	private ProjectDAO projectDAO;
@@ -64,7 +66,7 @@ public class PhotoServiceImpl implements PhotoService {
 	@Transactional
 	public void deleteProjectProfile(long projectID) {
 		Project proj = this.projectDAO.getByID(projectID);
-		if (AuthUtils.isActionAuthorized(proj)) {
+		if (this.authHelper.isActionAuthorized(proj)) {
 			// Delete the physical file.
 			String path = proj.getThumbnailURL();
 			File file = new File(path);
@@ -82,10 +84,10 @@ public class PhotoServiceImpl implements PhotoService {
 			throws IOException {
 		// If not authorized, return.
 		Staff staff = this.staffDAO.getByID(staffID);
-		if (!AuthUtils.isActionAuthorized(staff)) {
+		if (!this.authHelper.isActionAuthorized(staff)) {
 			return;
 		}
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company staffCompany = staff.getCompany();
 
 		String fileLocation = "";
@@ -131,11 +133,11 @@ public class PhotoServiceImpl implements PhotoService {
 		// If the user is not authorized in this project,
 		// return.
 		Project proj = this.projectDAO.getByID(projectID);
-		if (!AuthUtils.isActionAuthorized(proj)) {
+		if (!this.authHelper.isActionAuthorized(proj)) {
 			return;
 		}
 		Company projCompany = proj.getCompany();
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 
 		String fileLocation = "";
 		if (auth.isSuperAdmin()) {
@@ -180,11 +182,11 @@ public class PhotoServiceImpl implements PhotoService {
 			throws IOException {
 		// If not authorized, return.
 		Project proj = this.projectDAO.getByID(projectID);
-		if (!AuthUtils.isActionAuthorized(proj)) {
+		if (!this.authHelper.isActionAuthorized(proj)) {
 			return;
 		}
 
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company projCompany = proj.getCompany();
 
 		// Construct the photo URI.
@@ -225,7 +227,7 @@ public class PhotoServiceImpl implements PhotoService {
 	@Transactional
 	public Photo getByID(long id) {
 		Photo photo = this.photoDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(photo)) {
+		if (this.authHelper.isActionAuthorized(photo)) {
 			return photo;
 		}
 		return new Photo();
@@ -234,7 +236,7 @@ public class PhotoServiceImpl implements PhotoService {
 	@Override
 	@Transactional
 	public void update(Photo photo) {
-		if (AuthUtils.isActionAuthorized(photo)) {
+		if (this.authHelper.isActionAuthorized(photo)) {
 			this.photoDAO.update(photo);
 		}
 	}
@@ -250,7 +252,7 @@ public class PhotoServiceImpl implements PhotoService {
 				Photo.COLUMN_PRIMARY_KEY, photo.getId());
 		photo.setCompany(company);
 
-		if (AuthUtils.isActionAuthorized(photo)) {
+		if (this.authHelper.isActionAuthorized(photo)) {
 			File photoFile = new File(photo.getLocation());
 			photoFile.delete();
 			this.photoDAO.delete(id);
@@ -260,7 +262,7 @@ public class PhotoServiceImpl implements PhotoService {
 	@Override
 	@Transactional
 	public List<Photo> list() {
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		if (auth.isSuperAdmin()) {
 			return this.photoDAO.list(null);
 		}

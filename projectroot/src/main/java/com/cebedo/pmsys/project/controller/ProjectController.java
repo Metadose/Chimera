@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.field.controller.FieldController;
@@ -37,6 +37,7 @@ public class ProjectController {
 	public static final String JSP_LIST = "projectList";
 	public static final String JSP_EDIT = "projectEdit";
 
+	private AuthHelper authHelper = new AuthHelper();
 	private ProjectService projectService;
 	private StaffService staffService;
 	private TeamService teamService;
@@ -139,7 +140,7 @@ public class ProjectController {
 		}
 
 		Project proj = this.projectService.getByIDWithAllCollections(id);
-		Long companyID = AuthUtils.getAuth().isSuperAdmin() ? null : proj
+		Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
 				.getCompany().getId();
 		model.addAttribute(ATTR_PROJECT, proj);
 

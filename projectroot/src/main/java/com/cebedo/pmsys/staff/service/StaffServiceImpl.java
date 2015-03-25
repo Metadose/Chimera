@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -23,6 +23,7 @@ import com.cebedo.pmsys.team.model.Team;
 @Service
 public class StaffServiceImpl implements StaffService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private StaffDAO staffDAO;
 	private ProjectDAO projectDAO;
 	private TeamDAO teamDAO;
@@ -52,10 +53,10 @@ public class StaffServiceImpl implements StaffService {
 		this.staffDAO.create(staff);
 
 		// Update it afterwards.
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
 
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			staff.setCompany(authCompany);
 			this.staffDAO.update(staff);
 		}
@@ -65,7 +66,7 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public Staff getByID(long id) {
 		Staff stf = this.staffDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(stf)) {
+		if (this.authHelper.isActionAuthorized(stf)) {
 			return stf;
 		}
 		return new Staff();
@@ -78,7 +79,7 @@ public class StaffServiceImpl implements StaffService {
 				Staff.COLUMN_PRIMARY_KEY, staff.getId());
 		staff.setCompany(company);
 
-		if (AuthUtils.isActionAuthorized(staff)) {
+		if (this.authHelper.isActionAuthorized(staff)) {
 			this.staffDAO.update(staff);
 		}
 	}
@@ -87,7 +88,7 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public void delete(long id) {
 		Staff stf = this.staffDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(stf)) {
+		if (this.authHelper.isActionAuthorized(stf)) {
 			this.staffDAO.delete(id);
 		}
 	}
@@ -95,7 +96,7 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public List<Staff> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.staffDAO.list(null);
 		}
@@ -105,7 +106,7 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public List<Staff> listWithAllCollections() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.staffDAO.listWithAllCollections(null);
 		}
@@ -121,8 +122,8 @@ public class StaffServiceImpl implements StaffService {
 
 		// If this action is not authorized,
 		// return.
-		if (!AuthUtils.isActionAuthorized(staff)
-				|| !AuthUtils.isActionAuthorized(project)) {
+		if (!this.authHelper.isActionAuthorized(staff)
+				|| !this.authHelper.isActionAuthorized(project)) {
 			return;
 		}
 
@@ -138,8 +139,8 @@ public class StaffServiceImpl implements StaffService {
 	public void unassignProjectManager(long projectID, long staffID) {
 		Project project = this.projectDAO.getByID(projectID);
 		Staff staff = this.staffDAO.getByID(staffID);
-		if (!AuthUtils.isActionAuthorized(staff)
-				|| !AuthUtils.isActionAuthorized(project)) {
+		if (!this.authHelper.isActionAuthorized(staff)
+				|| !this.authHelper.isActionAuthorized(project)) {
 			return;
 		}
 		// If authorized, continue with the action.
@@ -150,7 +151,7 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public void unassignAllProjectManagers(long projectID) {
 		Project project = this.projectDAO.getByID(projectID);
-		if (!AuthUtils.isActionAuthorized(project)) {
+		if (!this.authHelper.isActionAuthorized(project)) {
 			return;
 		}
 		this.staffDAO.unassignAllProjectManagers(projectID);
@@ -160,7 +161,7 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public Staff getWithAllCollectionsByID(long id) {
 		Staff stf = this.staffDAO.getWithAllCollectionsByID(id);
-		if (AuthUtils.isActionAuthorized(stf)) {
+		if (this.authHelper.isActionAuthorized(stf)) {
 			return stf;
 		}
 		return new Staff();
@@ -171,8 +172,8 @@ public class StaffServiceImpl implements StaffService {
 	public void unassignTeam(long teamID, long staffID) {
 		Team team = this.teamDAO.getByID(teamID);
 		Staff staff = this.staffDAO.getByID(staffID);
-		if (!AuthUtils.isActionAuthorized(staff)
-				|| !AuthUtils.isActionAuthorized(team)) {
+		if (!this.authHelper.isActionAuthorized(staff)
+				|| !this.authHelper.isActionAuthorized(team)) {
 			return;
 		}
 		this.staffDAO.unassignTeam(teamID, staffID);
@@ -182,7 +183,7 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public void unassignAllTeams(long staffID) {
 		Staff staff = this.staffDAO.getByID(staffID);
-		if (!AuthUtils.isActionAuthorized(staff)) {
+		if (!this.authHelper.isActionAuthorized(staff)) {
 			return;
 		}
 		this.staffDAO.unassignAllTeams(staffID);
@@ -193,8 +194,8 @@ public class StaffServiceImpl implements StaffService {
 	public void assignTeam(StaffTeamAssignment stAssign) {
 		Staff staff = this.staffDAO.getByID(stAssign.getStaffID());
 		Team team = this.teamDAO.getByID(stAssign.getTeamID());
-		if (!AuthUtils.isActionAuthorized(staff)
-				|| !AuthUtils.isActionAuthorized(team)) {
+		if (!this.authHelper.isActionAuthorized(staff)
+				|| !this.authHelper.isActionAuthorized(team)) {
 			return;
 		}
 		this.staffDAO.assignTeam(stAssign);
@@ -209,7 +210,7 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public List<Staff> listUnassignedInProject(Long companyID, Project project) {
-		if (AuthUtils.isActionAuthorized(project)) {
+		if (this.authHelper.isActionAuthorized(project)) {
 			List<Staff> companyStaffList = this.staffDAO.list(companyID);
 			List<StaffWrapper> wrappedStaffList = StaffWrapper
 					.wrap(companyStaffList);

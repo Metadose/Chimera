@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthUtils;
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
@@ -15,6 +15,7 @@ import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 public class SystemConfigurationServiceImpl implements
 		SystemConfigurationService {
 
+	private AuthHelper authHelper = new AuthHelper();
 	private SystemConfigurationDAO systemConfigurationDAO;
 
 	public void setSystemConfigurationDAO(
@@ -26,9 +27,9 @@ public class SystemConfigurationServiceImpl implements
 	@Transactional
 	public void create(SystemConfiguration systemConfiguration) {
 		this.systemConfigurationDAO.create(systemConfiguration);
-		AuthenticationToken auth = AuthUtils.getAuth();
+		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (AuthUtils.notNullObjNotSuperAdmin(authCompany)) {
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			systemConfiguration.setCompany(authCompany);
 			this.systemConfigurationDAO.update(systemConfiguration);
 		}
@@ -38,7 +39,7 @@ public class SystemConfigurationServiceImpl implements
 	@Transactional
 	public SystemConfiguration getByID(long id) {
 		SystemConfiguration conf = this.systemConfigurationDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(conf)) {
+		if (this.authHelper.isActionAuthorized(conf)) {
 			return conf;
 		}
 		return new SystemConfiguration();
@@ -47,7 +48,7 @@ public class SystemConfigurationServiceImpl implements
 	@Override
 	@Transactional
 	public void update(SystemConfiguration systemConfiguration) {
-		if (AuthUtils.isActionAuthorized(systemConfiguration)) {
+		if (this.authHelper.isActionAuthorized(systemConfiguration)) {
 			this.systemConfigurationDAO.update(systemConfiguration);
 		}
 	}
@@ -56,7 +57,7 @@ public class SystemConfigurationServiceImpl implements
 	@Transactional
 	public void delete(long id) {
 		SystemConfiguration conf = this.systemConfigurationDAO.getByID(id);
-		if (AuthUtils.isActionAuthorized(conf)) {
+		if (this.authHelper.isActionAuthorized(conf)) {
 			this.systemConfigurationDAO.delete(id);
 		}
 	}
@@ -64,7 +65,7 @@ public class SystemConfigurationServiceImpl implements
 	@Override
 	@Transactional
 	public List<SystemConfiguration> list() {
-		AuthenticationToken token = AuthUtils.getAuth();
+		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
 			return this.systemConfigurationDAO.list(null);
 		}
