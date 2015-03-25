@@ -31,6 +31,7 @@ public class ImageService {
 	public static final String PARAM_FILENAME = "filename";
 
 	private AuthHelper authHelper = new AuthHelper();
+	private FileHelper fileHelper = new FileHelper();
 
 	private SystemConfigurationService configService;
 	private ProjectService projectService;
@@ -109,7 +110,7 @@ public class ImageService {
 		String sysHome = this.configService.getValueByName("SYS_HOME");
 		Company projCompany = proj.getCompany();
 		Company userCompany = this.authHelper.getAuth().getCompany();
-		String fileURI = FileUtils.constructSysHomeFileURI(
+		String fileURI = this.fileHelper.constructSysHomeFileURI(
 				sysHome,
 				projCompany == null ? userCompany == null ? 0 : userCompany
 						.getId() : projCompany.getId(), Project.class

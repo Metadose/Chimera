@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.common.FileUtils;
+import com.cebedo.pmsys.common.FileHelper;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
@@ -25,6 +25,8 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 public class ProjectFileServiceImpl implements ProjectFileService {
 
 	private AuthHelper authHelper = new AuthHelper();
+	private FileHelper fileHelper = new FileHelper();
+
 	private ProjectFileDAO projectFileDAO;
 	private ProjectDAO projectDAO;
 	private SystemConfigurationDAO systemConfigurationDAO;
@@ -68,7 +70,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		if (auth.isSuperAdmin()) {
 			Company userCompany = auth.getCompany();
 			Staff userStaff = auth.getStaff();
-			fileLocation = FileUtils.constructSysHomeFileURI(
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
 					getSysHome(),
 					userCompany == null ? 0 : userCompany.getId(),
 					userStaff == null ? SystemUser.class.getSimpleName()
@@ -77,9 +79,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 							.getId(), ProjectFile.class.getSimpleName(), file
 							.getOriginalFilename());
 		} else {
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(), auth
-					.getCompany().getId(), Staff.class.getSimpleName(), auth
-					.getStaff().getId(), ProjectFile.class.getSimpleName(),
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(), auth.getCompany().getId(),
+					Staff.class.getSimpleName(), auth.getStaff().getId(),
+					ProjectFile.class.getSimpleName(),
 					file.getOriginalFilename());
 		}
 		// Set the properties.
@@ -88,7 +91,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 				dateUploaded);
 
 		// Do actual upload.
-		FileUtils.fileUpload(file, fileLocation);
+		this.fileHelper.fileUpload(file, fileLocation);
 		this.projectFileDAO.create(projectFile);
 
 		// Update the entry for company details.
@@ -112,7 +115,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		// If user is not super admin, has company, and has project.
 		String fileLocation = "";
 		if (auth.isSuperAdmin()) {
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(),
 					projCompany == null ? 0 : projCompany.getId(),
 					Project.class.getSimpleName(), projectID,
 					ProjectFile.class.getSimpleName(),
@@ -121,9 +125,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 			// file://SYS_HOME/"company"/[id]/"staff|project|team"/[id]/files/file.getOriginalFilename();
 			// Fetch some details and set.
 			// If project's company is not defined, use the user's company.
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
-					projCompany == null ? auth.getCompany().getId()
-							: projCompany.getId(), Project.class
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(), projCompany == null ? auth.getCompany()
+							.getId() : projCompany.getId(), Project.class
 							.getSimpleName(), projectID, ProjectFile.class
 							.getSimpleName(), file.getOriginalFilename());
 		}
@@ -137,7 +141,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 				file.getOriginalFilename(), description, size, dateUploaded);
 
 		// Do actual upload.
-		FileUtils.fileUpload(file, fileLocation);
+		this.fileHelper.fileUpload(file, fileLocation);
 		this.projectFileDAO.create(projectFile);
 
 		// Update the entry for company details.
@@ -175,7 +179,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		ProjectFile file = this.projectFileDAO.getByID(id);
 		if (this.authHelper.isActionAuthorized(file)) {
 			String location = file.getLocation();
-			FileUtils.deletePhysicalFile(location);
+			this.fileHelper.deletePhysicalFile(location);
 			this.projectFileDAO.delete(id);
 		}
 	}

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.common.FileUtils;
+import com.cebedo.pmsys.common.FileHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -26,6 +26,7 @@ import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
 public class PhotoServiceImpl implements PhotoService {
 
 	private AuthHelper authHelper = new AuthHelper();
+	private FileHelper fileHelper = new FileHelper();
 
 	private PhotoDAO photoDAO;
 	private ProjectDAO projectDAO;
@@ -95,7 +96,7 @@ public class PhotoServiceImpl implements PhotoService {
 			// If the staff company is null, get it from the user.
 			// If the user has no company, set it to zero.
 			Company userCompany = auth.getCompany();
-			fileLocation = FileUtils.constructSysHomeFileURI(
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
 					getSysHome(),
 					staffCompany == null ? userCompany == null ? 0
 							: userCompany.getId() : staffCompany.getId(),
@@ -106,20 +107,17 @@ public class PhotoServiceImpl implements PhotoService {
 							.getOriginalFilename());
 		} else {
 			// If the staff company is null, get it from the user.
-			fileLocation = FileUtils.constructSysHomeFileURI(
-					getSysHome(),
-					staffCompany == null ? auth.getCompany().getId()
-							: staffCompany.getId(),
-					Staff.class.getSimpleName(),
-					staffID,
-					Staff.SUB_MODULE_PROFILE + "/"
-							+ Photo.class.getSimpleName(), file
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(), staffCompany == null ? auth.getCompany()
+							.getId() : staffCompany.getId(), Staff.class
+							.getSimpleName(), staffID, Staff.SUB_MODULE_PROFILE
+							+ "/" + Photo.class.getSimpleName(), file
 							.getOriginalFilename());
 		}
 
 		// Update the staff obj with the new profile pic.
 		staff.setThumbnailURL(fileLocation);
-		FileUtils.fileUpload(file, fileLocation);
+		this.fileHelper.fileUpload(file, fileLocation);
 		this.staffDAO.update(staff);
 	}
 
@@ -144,7 +142,7 @@ public class PhotoServiceImpl implements PhotoService {
 			// If the project company is null, get it from the user.
 			// If the user has no company, set it to zero.
 			Company userCompany = auth.getCompany();
-			fileLocation = FileUtils.constructSysHomeFileURI(
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
 					getSysHome(),
 					projCompany == null ? userCompany == null ? 0 : userCompany
 							.getId() : projCompany.getId(),
@@ -155,7 +153,7 @@ public class PhotoServiceImpl implements PhotoService {
 							.getOriginalFilename());
 		} else {
 			// If the project company is null, get it from the user.
-			fileLocation = FileUtils.constructSysHomeFileURI(
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
 					getSysHome(),
 					projCompany == null ? auth.getCompany().getId()
 							: projCompany.getId(),
@@ -169,7 +167,7 @@ public class PhotoServiceImpl implements PhotoService {
 		// Upload and
 		// Update the project entry.
 		proj.setThumbnailURL(fileLocation);
-		FileUtils.fileUpload(file, fileLocation);
+		this.fileHelper.fileUpload(file, fileLocation);
 		this.projectDAO.update(proj);
 	}
 
@@ -196,17 +194,16 @@ public class PhotoServiceImpl implements PhotoService {
 			// If the project has no company, use the user's company.
 			// If the user has no company, set it to zero.
 			// If the user has no staff, user the sysuser details.
-			fileLocation = FileUtils.constructSysHomeFileURI(
-					getSysHome(),
-					projCompany == null ? userCompany == null ? 0 : userCompany
-							.getId() : projCompany.getId(), Project.class
-							.getSimpleName(), projectID, Photo.class
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(), projCompany == null ? userCompany == null ? 0
+							: userCompany.getId() : projCompany.getId(),
+					Project.class.getSimpleName(), projectID, Photo.class
 							.getSimpleName(), file.getOriginalFilename());
 		} else {
 			// If has no company, use the user's company.
-			fileLocation = FileUtils.constructSysHomeFileURI(getSysHome(),
-					projCompany == null ? auth.getCompany().getId()
-							: projCompany.getId(), Project.class
+			fileLocation = this.fileHelper.constructSysHomeFileURI(
+					getSysHome(), projCompany == null ? auth.getCompany()
+							.getId() : projCompany.getId(), Project.class
 							.getSimpleName(), projectID, Photo.class
 							.getSimpleName(), file.getOriginalFilename());
 		}
@@ -219,7 +216,7 @@ public class PhotoServiceImpl implements PhotoService {
 				projCompany);
 
 		// Do the actual upload.
-		FileUtils.fileUpload(file, fileLocation);
+		this.fileHelper.fileUpload(file, fileLocation);
 		this.photoDAO.create(photo);
 	}
 

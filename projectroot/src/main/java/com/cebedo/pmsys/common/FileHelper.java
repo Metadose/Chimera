@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.company.model.Company;
 
-public abstract class FileUtils {
+public class FileHelper {
 
 	/**
 	 * Upload a file.
@@ -19,7 +19,7 @@ public abstract class FileUtils {
 	 * @param objectName
 	 * @throws IOException
 	 */
-	public static void fileUpload(MultipartFile file, String fileLocation)
+	public void fileUpload(MultipartFile file, String fileLocation)
 			throws IOException {
 		// Prelims.
 		byte[] bytes = file.getBytes();
@@ -38,7 +38,7 @@ public abstract class FileUtils {
 	 * 
 	 * @param fileLocation
 	 */
-	public static void checkDirectoryExistence(String fileLocation) {
+	public void checkDirectoryExistence(String fileLocation) {
 		File file = new File(fileLocation);
 		File parent = file.getParentFile();
 		if (!parent.exists()) {
@@ -46,14 +46,13 @@ public abstract class FileUtils {
 		}
 	}
 
-	public static void deletePhysicalFile(String location) {
+	public void deletePhysicalFile(String location) {
 		File phyFile = new File(location);
 		phyFile.delete();
 	}
 
-	public static String constructSysHomeFileURI(String sysHome,
-			long companyID, String className, long objID, String moduleName,
-			String fileName) {
+	public String constructSysHomeFileURI(String sysHome, long companyID,
+			String className, long objID, String moduleName, String fileName) {
 		String companyClass = Company.class.getSimpleName().toLowerCase();
 
 		String fileLocation = sysHome;
