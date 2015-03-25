@@ -58,8 +58,8 @@ public class SystemUserController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id) {
 		this.systemUserService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
@@ -67,8 +67,8 @@ public class SystemUserController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editSystemUser(
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
 		if (id == 0) {

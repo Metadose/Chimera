@@ -127,8 +127,8 @@ public class TeamController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Team.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
 			RedirectAttributes redirectAttrs) {
 		String teamName = this.teamService.getNameByID(id);
@@ -143,8 +143,8 @@ public class TeamController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String editTeamFromOrigin(
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long id,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -176,8 +176,8 @@ public class TeamController {
 		return JSP_EDIT;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Team.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editTeam(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		List<Field> fieldList = this.fieldService.list();

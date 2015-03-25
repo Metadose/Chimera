@@ -105,8 +105,8 @@ public class ProjectController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Project.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			RedirectAttributes redirectAttrs) {
 
@@ -125,8 +125,8 @@ public class ProjectController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Project.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 

@@ -54,8 +54,8 @@ public class SystemConfigurationController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(
 			@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id) {
 		this.systemConfigurationService.delete(id);
@@ -64,8 +64,8 @@ public class SystemConfigurationController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editSystemConfiguration(
 			@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id,
 			Model model) {

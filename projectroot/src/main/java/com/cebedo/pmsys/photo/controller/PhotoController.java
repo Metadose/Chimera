@@ -174,7 +174,7 @@ public class PhotoController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_DELETE)
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
 	public ModelAndView delete(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Photo.COLUMN_PRIMARY_KEY) int id) {
@@ -185,8 +185,8 @@ public class PhotoController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Photo.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Photo.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editPhoto(@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {

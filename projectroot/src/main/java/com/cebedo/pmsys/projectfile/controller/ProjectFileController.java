@@ -101,8 +101,8 @@ public class ProjectFileController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_DELETE + "/"
-			+ SystemConstants.FROM_PROJECT)
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
+			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
 	public String deleteFromProject(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) int id,
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) int projectID,
@@ -121,8 +121,8 @@ public class ProjectFileController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
-			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ ProjectFile.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id,
 			RedirectAttributes redirectAttrs) {
 
@@ -174,8 +174,8 @@ public class ProjectFileController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
-			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ ProjectFile.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editProjectFile(
 			@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id, Model model) {
 		if (id == 0) {

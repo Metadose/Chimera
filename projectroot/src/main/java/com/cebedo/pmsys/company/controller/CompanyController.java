@@ -52,16 +52,16 @@ public class CompanyController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping(SystemConstants.REQUEST_DELETE + "/{"
-			+ Company.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/{"
+			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id) {
 		this.companyService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping(SystemConstants.REQUEST_EDIT + "/{"
-			+ Company.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
+			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
 	public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {

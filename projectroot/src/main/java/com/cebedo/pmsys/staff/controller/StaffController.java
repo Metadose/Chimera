@@ -113,8 +113,8 @@ public class StaffController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Staff.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ Staff.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id) {
 		this.staffService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
@@ -129,8 +129,8 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String editStaffFromOrigin(
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
 			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -164,8 +164,8 @@ public class StaffController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Staff.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Staff.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		List<Team> teamList = this.teamService.list();

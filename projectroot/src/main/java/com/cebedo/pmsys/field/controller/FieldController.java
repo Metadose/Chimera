@@ -358,16 +358,16 @@ public class FieldController {
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Field.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = "/" + SystemConstants.REQUEST_DELETE + "/{"
+			+ Field.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id) {
 		this.fieldService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_FIELD + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Field.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = "/" + SystemConstants.REQUEST_EDIT + "/{"
+			+ Field.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editField(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		if (id == 0) {

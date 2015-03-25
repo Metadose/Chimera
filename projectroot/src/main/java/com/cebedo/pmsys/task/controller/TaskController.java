@@ -272,8 +272,8 @@ public class TaskController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME
-			+ "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/{" + Staff.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String redirectAssignStaff(
 			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model) {
 		// Redirect to an edit page with an empty task object
@@ -327,8 +327,8 @@ public class TaskController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
-	@RequestMapping("/" + SystemConstants.REQUEST_DELETE + "/{"
-			+ Task.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
+			+ Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) long id,
 			RedirectAttributes redirectAttrs) {
 
@@ -352,7 +352,7 @@ public class TaskController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_MARK)
+	@RequestMapping(value = SystemConstants.REQUEST_MARK, method = RequestMethod.POST)
 	public ModelAndView mark(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Task.COLUMN_STATUS) int status,
@@ -380,7 +380,8 @@ public class TaskController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(SystemConstants.REQUEST_MARK + "/" + Project.OBJECT_NAME)
+	@RequestMapping(value = SystemConstants.REQUEST_MARK + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView markProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
@@ -456,8 +457,8 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/" + SystemConstants.REQUEST_EDIT + "/{"
-			+ Task.COLUMN_PRIMARY_KEY + "}")
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 		// TODO Optimize by getting only name and id.
