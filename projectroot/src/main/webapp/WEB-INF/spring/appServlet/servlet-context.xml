@@ -145,7 +145,7 @@
             <beans:props>
                 <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
                 </beans:prop>
-                <beans:prop key="hibernate.show_sql">true</beans:prop>
+                <beans:prop key="hibernate.show_sql">false</beans:prop>
             </beans:props>
         </beans:property>
     </beans:bean>

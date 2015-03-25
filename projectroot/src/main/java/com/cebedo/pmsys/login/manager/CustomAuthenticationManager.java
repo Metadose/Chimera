@@ -19,6 +19,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
@@ -33,7 +34,8 @@ import com.cebedo.pmsys.systemuser.service.SystemUserService;
 public class CustomAuthenticationManager implements AuthenticationManager,
 		ServletContextAware {
 
-	protected static Logger logger = Logger.getLogger("service");
+	private static Logger logger = Logger
+			.getLogger(SystemConstants.LOGGER_LOGIN);
 	private SystemUserService systemUserService;
 	private ServletContext servletContext;
 	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
@@ -46,9 +48,6 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 	public Authentication authenticate(Authentication auth)
 			throws AuthenticationException {
 
-		logger.debug("Performing custom authentication");
-
-		// Init a database user object
 		SystemUser user = null;
 
 		try {
@@ -58,28 +57,33 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 					.getBean("systemUserService");
 			user = this.systemUserService.searchDatabase(auth.getName());
 		} catch (Exception e) {
-			logger.error("User does not exists!");
-			throw new BadCredentialsException("User does not exists!");
+			String text = "User does not exist: " + auth.getName();
+			logger.warn(text);
+			throw new BadCredentialsException(text);
 		}
 
-		// Compare passwords
-		// Make sure to encode the password first before comparing
+		// Compare passwords.
+		// Make sure to encode the password first before comparing.
 		if (passwordEncoder.isPasswordValid(user.getPassword(),
 				(String) auth.getCredentials(), user.getUsername()) == false) {
-			logger.error("Wrong password!");
-			throw new BadCredentialsException("Wrong password!");
+			String text = "Invalid password of user: " + user.getId() + " = "
+					+ user.getUsername();
+			logger.error(text);
+			throw new BadCredentialsException(text);
 		}
 
-		// Here's the main logic of this custom authentication manager
-		// Username and password must be the same to authenticate
+		// Here's the main logic of this custom authentication manager.
+		// Username and password must not be the same to authenticate.
 		if (auth.getName().equals(auth.getCredentials()) == true) {
-			logger.debug("Entered username and password are the same!");
-			throw new BadCredentialsException(
-					"Entered username and password are the same!");
+			String text = "Username and password are the same for user: "
+					+ user.getId() + " = " + auth.getName();
+			logger.warn(text);
+			throw new BadCredentialsException(text);
 
 		} else {
 			// TODO Check if the user's company is expired.
-			logger.debug("User dtails are good and ready to go");
+			logger.info("User is authenticated: " + user.getId() + " = "
+					+ auth.getName());
 			return new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user),
 					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
@@ -98,13 +102,19 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		Set<SecurityRole> roles = user.getSecurityRoles();
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 
+		logger.debug("Access levels for user: " + user.getId() + " = "
+				+ user.getUsername());
 		// Add all defined access.
 		for (SecurityAccess access : accessSet) {
+			logger.debug("Access: " + access.getName());
 			authList.add(new SimpleGrantedAuthority(access.getName()));
 		}
 
+		logger.debug("Roles for user: " + user.getId() + " = "
+				+ user.getUsername());
 		// Add all roles.
 		for (SecurityRole role : roles) {
+			logger.debug("Role: " + role.getName());
 			authList.add(new SimpleGrantedAuthority(role.getName()));
 		}
 		return authList;

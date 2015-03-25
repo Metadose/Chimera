@@ -71,4 +71,6 @@ public abstract class SystemConstants {
 	public static final String UI_STATUS_SUCCESS = "success";
 	public static final String UI_STATUS_DANGER = "danger";
 	public static final String UI_STATUS_WARNING = "warning";
+
+	public static final String LOGGER_LOGIN = "login";
 }

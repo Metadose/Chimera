@@ -177,4 +177,14 @@ public class Company implements Serializable {
 	public void setPhotos(Set<Photo> photos) {
 		this.photos = photos;
 	}
+
+	public String toString() {
+		String str = "";
+		str += "id=" + id;
+		str += ", name=" + name;
+		str += ", description=" + description;
+		str += ", dateStarted=" + dateStarted;
+		str += ", dateExpiration=" + dateExpiration;
+		return str;
+	}
 }
