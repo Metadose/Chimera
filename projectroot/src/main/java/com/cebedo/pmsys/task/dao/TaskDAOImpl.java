@@ -80,16 +80,16 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session,
-				Task.class.getName(), companyID).list();
+		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
+				session, Task.class.getName(), companyID).list();
 		return taskList;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Task> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session,
-				Task.class.getName(), companyID).list();
+		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
+				session, Task.class.getName(), companyID).list();
 		for (Task task : taskList) {
 			Hibernate.initialize(task.getTeams());
 			Hibernate.initialize(task.getProject());
@@ -171,9 +171,11 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public List<TaskFieldAssignment> getFieldsByTaskID(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SQLQuery query = session.createSQLQuery("SELECT * FROM "
-				+ TaskFieldAssignment.TABLE_NAME + " WHERE "
-				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+		String sql = "SELECT * FROM " + TaskFieldAssignment.TABLE_NAME
+				+ " WHERE " + Task.COLUMN_PRIMARY_KEY + " =:"
+				+ Task.COLUMN_PRIMARY_KEY;
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 		return query.list();
 	}
 
@@ -182,8 +184,9 @@ public class TaskDAOImpl implements TaskDAO {
 	public List<Staff> getStaffByTaskID(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("FROM "
-				+ TaskStaffAssignment.CLASS_NAME + " WHERE "
-				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+				+ TaskStaffAssignment.class.getName() + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
+		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 		return query.list();
 	}
 
@@ -192,8 +195,9 @@ public class TaskDAOImpl implements TaskDAO {
 	public List<Team> getTeamByTaskID(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("FROM "
-				+ TaskTeamAssignment.CLASS_NAME + " WHERE "
-				+ Task.COLUMN_PRIMARY_KEY + " = " + taskID);
+				+ TaskTeamAssignment.class.getName() + " WHERE "
+				+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
+		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 		return query.list();
 	}
 

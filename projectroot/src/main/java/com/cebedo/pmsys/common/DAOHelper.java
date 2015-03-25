@@ -35,6 +35,13 @@ public class DAOHelper {
 
 	@SuppressWarnings("rawtypes")
 	public Criteria criteriaGetObjByID(Session session, Class clazz,
+			String propertyID, String objID) {
+		return session.createCriteria(clazz).add(
+				Restrictions.eq(propertyID, objID));
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Criteria criteriaGetObjByID(Session session, Class clazz,
 			String propertyID, long objID) {
 		return session.createCriteria(clazz).add(
 				Restrictions.eq(propertyID, objID));

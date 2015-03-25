@@ -65,9 +65,6 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 		List<ProjectFile> projectFileList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						ProjectFile.class.getName(), companyID).list();
-		for (ProjectFile projectFile : projectFileList) {
-			logger.info("[List] Project File: " + projectFile);
-		}
 		return projectFileList;
 	}
 
@@ -81,7 +78,6 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 		for (ProjectFile file : fileList) {
 			Hibernate.initialize(file.getProject());
 			Hibernate.initialize(file.getUploader());
-			logger.info("[List] Project File: " + file);
 		}
 		return fileList;
 	}
@@ -90,7 +86,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	public void updateDescription(long fileID, String description) {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String hql = "UPDATE " + ProjectFile.CLASS_NAME
+		String hql = "UPDATE " + ProjectFile.class.getName()
 				+ " SET description = :description"
 				+ " WHERE id = :projectfile_id";
 

@@ -29,7 +29,6 @@ import com.cebedo.pmsys.team.model.Team;
 @Table(name = Task.TABLE_NAME)
 public class Task {
 
-	public static final String CLASS_NAME = "Task";
 	public static final String TABLE_NAME = "tasks";
 	public static final String OBJECT_NAME = "task";
 

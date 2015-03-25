@@ -33,12 +33,9 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 	@Override
 	public SystemConfiguration getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SystemConfiguration systemConfiguration = (SystemConfiguration) session
-				.createQuery(
-						"from " + SystemConfiguration.CLASS_NAME + " where "
-								+ SystemConfiguration.COLUMN_PRIMARY_KEY + "="
-								+ id).uniqueResult();
-		logger.info("[Get by ID] SystemConfiguration: " + systemConfiguration);
+		SystemConfiguration systemConfiguration = (SystemConfiguration) this.daoHelper
+				.criteriaGetObjByID(session, SystemConfiguration.class,
+						SystemConfiguration.PROPERTY_ID, id).uniqueResult();
 		return systemConfiguration;
 	}
 
@@ -66,31 +63,24 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 		List<SystemConfiguration> systemConfigurationList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SystemConfiguration.class.getName(), companyID).list();
-		for (SystemConfiguration systemConfiguration : systemConfigurationList) {
-			logger.info("[List] SystemConfiguration: " + systemConfiguration);
-		}
 		return systemConfigurationList;
 	}
 
 	@Override
 	public String getValueByName(String name) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SystemConfiguration systemConfiguration = (SystemConfiguration) session
-				.createQuery(
-						"from " + SystemConfiguration.CLASS_NAME + " where "
-								+ SystemConfiguration.COLUMN_NAME + "='" + name
-								+ "'").uniqueResult();
+		SystemConfiguration systemConfiguration = (SystemConfiguration) this.daoHelper
+				.criteriaGetObjByID(session, SystemConfiguration.class,
+						SystemConfiguration.PROPERTY_NAME, name).uniqueResult();
 		return systemConfiguration.getValue();
 	}
 
 	@Override
 	public SystemConfiguration getByName(String name) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SystemConfiguration systemConfiguration = (SystemConfiguration) session
-				.createQuery(
-						"from " + SystemConfiguration.CLASS_NAME + " where "
-								+ SystemConfiguration.COLUMN_NAME + "='" + name
-								+ "'").uniqueResult();
+		SystemConfiguration systemConfiguration = (SystemConfiguration) this.daoHelper
+				.criteriaGetObjByID(session, SystemConfiguration.class,
+						SystemConfiguration.PROPERTY_NAME, name).uniqueResult();
 		return systemConfiguration;
 	}
 

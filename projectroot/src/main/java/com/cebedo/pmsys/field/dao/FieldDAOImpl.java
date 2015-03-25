@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.project.model.Project;
@@ -24,6 +25,7 @@ public class FieldDAOImpl implements FieldDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FieldDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -40,10 +42,8 @@ public class FieldDAOImpl implements FieldDAO {
 	@Override
 	public Field getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Field field = (Field) session.createQuery(
-				"from " + Field.CLASS_NAME + " where "
-						+ Field.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
-		logger.info("[Get by ID] Field: " + field);
+		Field field = (Field) this.daoHelper.criteriaGetObjByID(session,
+				Field.class, Field.PROPERTY_ID, id).uniqueResult();
 		return field;
 	}
 
@@ -67,22 +67,18 @@ public class FieldDAOImpl implements FieldDAO {
 	@SuppressWarnings("unchecked")
 	public List<Field> list() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Field> fieldList = session.createQuery("from " + Field.CLASS_NAME)
-				.list();
-		for (Field field : fieldList) {
-			logger.info("[List] Field: " + field);
-		}
+		List<Field> fieldList = session.createQuery(
+				"FROM " + Field.class.getName()).list();
 		return fieldList;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Field> listWithAllCollections() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Field> fieldList = session.createQuery("from " + Field.CLASS_NAME)
+		List<Field> fieldList = session.createQuery("FROM " + Field.class.getName())
 				.list();
 		for (Field field : fieldList) {
 			Hibernate.initialize(field.getFieldAssignments());
-			logger.info("[List] Field: " + field);
 		}
 		return fieldList;
 	}
@@ -120,14 +116,23 @@ public class FieldDAOImpl implements FieldDAO {
 	public FieldAssignment getFieldByKeys(long projectID, long fieldID,
 			String label, String value) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "FROM " + FieldAssignment.class.getName();
-		hql += " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID;
-		hql += " AND " + Field.COLUMN_PRIMARY_KEY + " = " + fieldID;
-		hql += " AND " + Field.COLUMN_LABEL + " = '" + label;
-		hql += "' AND " + Field.COLUMN_VALUE + " =  '" + value + "'";
 
-		FieldAssignment fieldAssignment = (FieldAssignment) session
-				.createQuery(hql).uniqueResult();
+		String hql = "FROM " + FieldAssignment.class.getName();
+		hql += " WHERE " + Project.COLUMN_PRIMARY_KEY + " =:"
+				+ Project.COLUMN_PRIMARY_KEY;
+		hql += " AND " + Field.COLUMN_PRIMARY_KEY + " =:"
+				+ Field.COLUMN_PRIMARY_KEY;
+		hql += " AND " + Field.COLUMN_LABEL + " =:" + Field.COLUMN_LABEL;
+		hql += " AND " + Field.COLUMN_VALUE + " =:" + Field.COLUMN_VALUE;
+
+		Query query = session.createQuery(hql);
+		query.setParameter(Project.COLUMN_PRIMARY_KEY, projectID);
+		query.setParameter(Field.COLUMN_PRIMARY_KEY, fieldID);
+		query.setParameter(Field.COLUMN_LABEL, label);
+		query.setParameter(Field.COLUMN_VALUE, value);
+
+		FieldAssignment fieldAssignment = (FieldAssignment) query
+				.uniqueResult();
 		return fieldAssignment;
 	}
 
@@ -161,7 +166,7 @@ public class FieldDAOImpl implements FieldDAO {
 	public void unassignAllTasks(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("DELETE FROM "
-				+ TaskFieldAssignment.CLASS_NAME + " WHERE "
+				+ TaskFieldAssignment.class.getName() + " WHERE "
 				+ Task.COLUMN_PRIMARY_KEY + "=:" + Task.COLUMN_PRIMARY_KEY);
 		query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 		query.executeUpdate();
@@ -186,7 +191,7 @@ public class FieldDAOImpl implements FieldDAO {
 			String value) {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String queryStr = "DELETE FROM " + StaffFieldAssignment.CLASS_NAME;
+		String queryStr = "DELETE FROM " + StaffFieldAssignment.class.getName();
 		queryStr += " WHERE ";
 		queryStr += Field.COLUMN_PRIMARY_KEY + "=:" + Field.COLUMN_PRIMARY_KEY;
 		queryStr += " AND ";
@@ -214,7 +219,7 @@ public class FieldDAOImpl implements FieldDAO {
 	public void unassignAllStaff(long staffID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query = session.createQuery("DELETE FROM "
-				+ StaffFieldAssignment.CLASS_NAME + " WHERE "
+				+ StaffFieldAssignment.class.getName() + " WHERE "
 				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
 		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
 		query.executeUpdate();

@@ -3,6 +3,7 @@ package com.cebedo.pmsys.company.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -70,10 +71,12 @@ public class CompanyDAOImpl implements CompanyDAO {
 	public long getCompanyIDByObjID(String objTable, String objKeyCol,
 			long objID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String queryStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
-				+ objTable + " WHERE " + objKeyCol + " = " + objID + " LIMIT 1";
-		String resultStr = session.createSQLQuery(queryStr).uniqueResult()
-				.toString();
+		String qStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
+				+ objTable + " WHERE " + objKeyCol + " =:" + objKeyCol
+				+ " LIMIT 1";
+		SQLQuery query = session.createSQLQuery(qStr);
+		query.setParameter(objKeyCol, objID);
+		String resultStr = query.uniqueResult().toString();
 		return Long.parseLong(resultStr);
 	}
 

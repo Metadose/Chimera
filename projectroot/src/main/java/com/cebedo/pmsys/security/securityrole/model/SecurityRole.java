@@ -20,6 +20,8 @@ public class SecurityRole {
 	public static final String TABLE_NAME = "security_roles";
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
+	public static final String PROPERTY_ID = "id";
+
 	private long id;
 	private String name;
 	private Set<SystemUser> users;

@@ -33,11 +33,9 @@ public class SecurityRoleDAOImpl implements SecurityRoleDAO {
 	@Override
 	public SecurityRole getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SecurityRole securityRole = (SecurityRole) session.createQuery(
-				"from " + SecurityRole.class.getName() + " where "
-						+ SecurityRole.COLUMN_PRIMARY_KEY + "=" + id)
-				.uniqueResult();
-		logger.info("[Get by ID] SecurityRole: " + securityRole);
+		SecurityRole securityRole = (SecurityRole) this.daoHelper
+				.criteriaGetObjByID(session, SecurityRole.class,
+						SecurityRole.PROPERTY_ID, id).uniqueResult();
 		return securityRole;
 	}
 
@@ -65,9 +63,6 @@ public class SecurityRoleDAOImpl implements SecurityRoleDAO {
 		List<SecurityRole> securityRoleList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SecurityRole.class.getName(), companyID).list();
-		for (SecurityRole securityRole : securityRoleList) {
-			logger.info("[List] SecurityRole: " + securityRole);
-		}
 		return securityRoleList;
 	}
 

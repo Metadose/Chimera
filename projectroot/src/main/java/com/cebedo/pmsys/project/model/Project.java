@@ -30,7 +30,6 @@ import com.cebedo.pmsys.team.model.TeamAssignment;
 @Table(name = Project.TABLE_NAME)
 public class Project implements Serializable {
 
-	public static final String CLASS_NAME = "Project";
 	public static final String OBJECT_NAME = "project";
 	public static final String TABLE_NAME = "projects";
 

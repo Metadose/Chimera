@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
@@ -29,6 +30,7 @@ public class StaffDAOImpl implements StaffDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(StaffDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -45,10 +47,8 @@ public class StaffDAOImpl implements StaffDAO {
 	@Override
 	public Staff getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Staff staff = (Staff) session.createQuery(
-				"from " + Staff.class.getName() + " where "
-						+ Staff.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
-		logger.info("[Get by ID] Staff: " + staff);
+		Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session,
+				Staff.class, Staff.PROPERTY_ID, id).uniqueResult();
 		return staff;
 	}
 
@@ -108,9 +108,6 @@ public class StaffDAOImpl implements StaffDAO {
 		}
 
 		List<Staff> staffList = query.list();
-		for (Staff staff : staffList) {
-			logger.info("[List] Staff: " + staff);
-		}
 		return staffList;
 	}
 
@@ -140,7 +137,6 @@ public class StaffDAOImpl implements StaffDAO {
 			Hibernate.initialize(staff.getAssignedManagers());
 			Hibernate.initialize(staff.getTasks());
 			Hibernate.initialize(staff.getFieldAssignments());
-			logger.info("[List] Staff: " + staff);
 		}
 		return staffList;
 	}

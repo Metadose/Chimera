@@ -22,7 +22,6 @@ import com.cebedo.pmsys.task.model.Task;
 @Table(name = Team.TABLE_NAME)
 public class Team implements Serializable {
 
-	public static final String CLASS_NAME = "Team";
 	public static final String OBJECT_NAME = "team";
 	public static final String TABLE_NAME = "teams";
 	public static final String COLUMN_PRIMARY_KEY = "team_id";

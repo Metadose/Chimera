@@ -22,7 +22,6 @@ import com.cebedo.pmsys.staff.model.Staff;
 @Table(name = Photo.TABLE_NAME)
 public class Photo implements Serializable {
 
-	public static final String CLASS_NAME = "Photo";
 	public static final String OBJECT_NAME = "photo";
 	public static final String TABLE_NAME = "photos";
 	public static final String COLUMN_PRIMARY_KEY = "photo_id";

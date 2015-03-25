@@ -19,7 +19,6 @@ import com.cebedo.pmsys.field.model.Field;
 		@AssociationOverride(name = TaskFieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
 public class TaskFieldAssignment implements Serializable {
 
-	public static final String CLASS_NAME = "TaskFieldAssignment";
 	public static final String TABLE_NAME = "assignments_task_field";
 	public static final String PRIMARY_KEY = "assignmentID";
 

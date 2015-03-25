@@ -22,7 +22,6 @@ import com.cebedo.pmsys.staff.model.Staff;
 @Table(name = ProjectFile.TABLE_NAME)
 public class ProjectFile implements Serializable {
 
-	public static final String CLASS_NAME = "ProjectFile";
 	public static final String OBJECT_NAME = "projectfile";
 	public static final String TABLE_NAME = "project_files";
 	public static final String COLUMN_PRIMARY_KEY = "projectfile_id";

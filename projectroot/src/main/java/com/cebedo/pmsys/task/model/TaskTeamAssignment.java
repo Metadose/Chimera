@@ -14,9 +14,7 @@ import com.cebedo.pmsys.team.model.Team;
 public class TaskTeamAssignment implements Serializable {
 
 	public static final String TABLE_NAME = "assignments_task_team";
-	// TODO Duplicate values below, use CLASS_NAME.
 	public static final String OBJECT_NAME = "TaskTeamAssignment";
-	public static final String CLASS_NAME = "TaskTeamAssignment";
 
 	public static final String PROPERTY_TASK_ID = "taskID";
 	public static final String PROPERTY_TEAM_ID = "teamID";

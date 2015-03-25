@@ -17,11 +17,13 @@ import com.cebedo.pmsys.company.model.Company;
 @Table(name = SystemConfiguration.TABLE_NAME)
 public class SystemConfiguration implements Serializable {
 
-	public static final String CLASS_NAME = "SystemConfiguration";
 	public static final String OBJECT_NAME = "config";
 	public static final String TABLE_NAME = "system_configuration";
 	public static final String COLUMN_PRIMARY_KEY = "sysconf_id";
 	public static final String COLUMN_NAME = "name";
+
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_NAME = "name";
 
 	private static final long serialVersionUID = 1L;
 

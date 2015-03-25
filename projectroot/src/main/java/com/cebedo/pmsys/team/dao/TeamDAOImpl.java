@@ -116,7 +116,7 @@ public class TeamDAOImpl implements TeamDAO {
 	public void unassignAllMembers(long teamID) {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String hql = "DELETE FROM " + StaffTeamAssignment.CLASS_NAME
+		String hql = "DELETE FROM " + StaffTeamAssignment.class.getName()
 				+ " WHERE " + Team.COLUMN_PRIMARY_KEY + "=:"
 				+ Team.COLUMN_PRIMARY_KEY;
 		Query query = session.createQuery(hql);

@@ -33,11 +33,9 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 	@Override
 	public Subcontractor getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Subcontractor subcontractor = (Subcontractor) session.createQuery(
-				"from " + Subcontractor.class.getName() + " where "
-						+ Subcontractor.COLUMN_PRIMARY_KEY + "=" + id)
-				.uniqueResult();
-		logger.info("[Get by ID] Subcontractor: " + subcontractor);
+		Subcontractor subcontractor = (Subcontractor) this.daoHelper
+				.criteriaGetObjByID(session, Subcontractor.class,
+						Subcontractor.PROPERTY_ID, id).uniqueResult();
 		return subcontractor;
 	}
 

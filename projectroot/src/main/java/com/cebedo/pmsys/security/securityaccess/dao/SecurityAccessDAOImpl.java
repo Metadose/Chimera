@@ -33,11 +33,9 @@ public class SecurityAccessDAOImpl implements SecurityAccessDAO {
 	@Override
 	public SecurityAccess getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		SecurityAccess securityAccess = (SecurityAccess) session.createQuery(
-				"from " + SecurityAccess.class.getName() + " where "
-						+ SecurityAccess.COLUMN_PRIMARY_KEY + "=" + id)
-				.uniqueResult();
-		logger.info("[Get by ID] SecurityAccess: " + securityAccess);
+		SecurityAccess securityAccess = (SecurityAccess) this.daoHelper
+				.criteriaGetObjByID(session, SecurityAccess.class,
+						SecurityAccess.PROPERTY_ID, id).uniqueResult();
 		return securityAccess;
 	}
 
@@ -65,9 +63,6 @@ public class SecurityAccessDAOImpl implements SecurityAccessDAO {
 		List<SecurityAccess> securityAccessList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SecurityAccess.class.getName(), companyID).list();
-		for (SecurityAccess securityAccess : securityAccessList) {
-			logger.info("[List] SecurityAccess: " + securityAccess);
-		}
 		return securityAccessList;
 	}
 
