@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.photo.model.Photo;
 
 @Repository
@@ -18,6 +18,7 @@ public class PhotoDAOImpl implements PhotoDAO {
 	private static final Logger logger = LoggerFactory
 			.getLogger(PhotoDAOImpl.class);
 	private SessionFactory sessionFactory;
+	private DAOHelper daoHelper = new DAOHelper();
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -58,7 +59,7 @@ public class PhotoDAOImpl implements PhotoDAO {
 	@SuppressWarnings("unchecked")
 	public List<Photo> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = QueryUtils.getSelectQueryFilterCompany(session,
+		Query query = daoHelper.getSelectQueryFilterCompany(session,
 				Photo.class.getName(), companyID);
 		List<Photo> photoList = query.list();
 		return photoList;

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 
 @Repository
@@ -19,6 +19,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	private static final Logger logger = LoggerFactory
 			.getLogger(ProjectFileDAOImpl.class);
 	private SessionFactory sessionFactory;
+	private DAOHelper daoHelper = new DAOHelper();
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -61,7 +62,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@SuppressWarnings("unchecked")
 	public List<ProjectFile> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ProjectFile> projectFileList = QueryUtils
+		List<ProjectFile> projectFileList = DAOHelper
 				.getSelectQueryFilterCompany(session,
 						ProjectFile.class.getName(), companyID).list();
 		for (ProjectFile projectFile : projectFileList) {
@@ -74,7 +75,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@Override
 	public List<ProjectFile> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ProjectFile> fileList = QueryUtils.getSelectQueryFilterCompany(
+		List<ProjectFile> fileList = daoHelper.getSelectQueryFilterCompany(
 				session, ProjectFile.class.getName(), companyID).list();
 		for (ProjectFile file : fileList) {
 			Hibernate.initialize(file.getProject());
@@ -101,7 +102,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@Override
 	public String getNameByID(long fileID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getProjectionByID(session, ProjectFile.class,
+		String result = daoHelper.getProjectionByID(session, ProjectFile.class,
 				ProjectFile.PROPERTY_ID, fileID, ProjectFile.PROPERTY_NAME);
 		return result;
 	}

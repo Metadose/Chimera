@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 
 @Repository
@@ -61,7 +61,7 @@ public class SecurityAccessDAOImpl implements SecurityAccessDAO {
 	@SuppressWarnings("unchecked")
 	public List<SecurityAccess> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SecurityAccess> securityAccessList = QueryUtils
+		List<SecurityAccess> securityAccessList = DAOHelper
 				.getSelectQueryFilterCompany(session,
 						SecurityAccess.class.getName(), companyID).list();
 		for (SecurityAccess securityAccess : securityAccessList) {

@@ -24,7 +24,6 @@ invalid day index of timeline
 
 
 = todo
-Security: use only POST, 
 use hibernate for sql injection,
 secure jsp by escaping for xss
 enable csrf protection token.

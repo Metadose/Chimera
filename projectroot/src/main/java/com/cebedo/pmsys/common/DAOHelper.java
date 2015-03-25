@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.common;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Property;
@@ -7,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.cebedo.pmsys.company.model.Company;
 
-public abstract class QueryUtils {
+public class DAOHelper {
 
 	/**
 	 * Get a select all query, filtered by company id.
@@ -17,8 +18,8 @@ public abstract class QueryUtils {
 	 * @param companyID
 	 * @return
 	 */
-	public static Query getSelectQueryFilterCompany(Session session,
-			String className, Long companyID) {
+	public Query getSelectQueryFilterCompany(Session session, String className,
+			Long companyID) {
 		String hql = "FROM " + className;
 		if (companyID != null) {
 			hql += " WHERE ";
@@ -33,7 +34,14 @@ public abstract class QueryUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static String getProjectionByID(Session session, Class clazz,
+	public Criteria criteriaGetObjByID(Session session, Class clazz,
+			String propertyID, long objID) {
+		return session.createCriteria(clazz).add(
+				Restrictions.eq(propertyID, objID));
+	}
+
+	@SuppressWarnings("rawtypes")
+	public String getProjectionByID(Session session, Class clazz,
 			String restrictionID, long objectID, String projectionName) {
 		String result = (String) session.createCriteria(clazz)
 				.add(Restrictions.eq(restrictionID, objectID))

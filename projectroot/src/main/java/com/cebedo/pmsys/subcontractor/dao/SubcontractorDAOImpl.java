@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 
 //@Repository
@@ -61,7 +61,7 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 	@SuppressWarnings("unchecked")
 	public List<Subcontractor> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Subcontractor> subcontractorList = QueryUtils
+		List<Subcontractor> subcontractorList = DAOHelper
 				.getSelectQueryFilterCompany(session,
 						Subcontractor.class.getName(), companyID).list();
 		return subcontractorList;
@@ -71,7 +71,7 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 	@Override
 	public List<Subcontractor> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Subcontractor> subcontractorList = QueryUtils
+		List<Subcontractor> subcontractorList = DAOHelper
 				.getSelectQueryFilterCompany(session,
 						Subcontractor.class.getName(), companyID).list();
 		for (Subcontractor subcontractor : subcontractorList) {

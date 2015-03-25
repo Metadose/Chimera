@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.task.model.Task;
@@ -28,6 +28,7 @@ public class TaskDAOImpl implements TaskDAO {
 	private static final Logger logger = LoggerFactory
 			.getLogger(TaskDAOImpl.class);
 	private SessionFactory sessionFactory;
+	private DAOHelper daoHelper = new DAOHelper();
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -79,7 +80,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = QueryUtils.getSelectQueryFilterCompany(session,
+		List<Task> taskList = daoHelper.getSelectQueryFilterCompany(session,
 				Task.class.getName(), companyID).list();
 		return taskList;
 	}
@@ -87,7 +88,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@SuppressWarnings("unchecked")
 	public List<Task> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Task> taskList = QueryUtils.getSelectQueryFilterCompany(session,
+		List<Task> taskList = daoHelper.getSelectQueryFilterCompany(session,
 				Task.class.getName(), companyID).list();
 		for (Task task : taskList) {
 			Hibernate.initialize(task.getTeams());
@@ -222,7 +223,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public String getTitleByID(long taskID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getProjectionByID(session, Task.class,
+		String result = daoHelper.getProjectionByID(session, Task.class,
 				Task.PROPERTY_ID, taskID, Task.PROPERTY_TITLE);
 		return result;
 	}

@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.team.model.Team;
@@ -24,6 +24,7 @@ public class TeamDAOImpl implements TeamDAO {
 	private static final Logger logger = LoggerFactory
 			.getLogger(TeamDAOImpl.class);
 	private SessionFactory sessionFactory;
+	private DAOHelper daoHelper = new DAOHelper();
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -64,7 +65,7 @@ public class TeamDAOImpl implements TeamDAO {
 	@SuppressWarnings("unchecked")
 	public List<Team> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Team> teamList = QueryUtils.getSelectQueryFilterCompany(session,
+		List<Team> teamList = daoHelper.getSelectQueryFilterCompany(session,
 				Team.class.getName(), companyID).list();
 		return teamList;
 	}
@@ -143,7 +144,7 @@ public class TeamDAOImpl implements TeamDAO {
 	@Override
 	public List<Team> listWithTasks(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Team> teamList = QueryUtils.getSelectQueryFilterCompany(session,
+		List<Team> teamList = daoHelper.getSelectQueryFilterCompany(session,
 				Team.class.getName(), companyID).list();
 		for (Team team : teamList) {
 			Hibernate.initialize(team.getTasks());
@@ -154,7 +155,7 @@ public class TeamDAOImpl implements TeamDAO {
 	@Override
 	public String getNameByID(long teamID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getProjectionByID(session, Team.class,
+		String result = daoHelper.getProjectionByID(session, Team.class,
 				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
 		return result;
 	}

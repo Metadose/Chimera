@@ -33,6 +33,8 @@ public class Company implements Serializable {
 	public static final String OBJECT_NAME = "company";
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
+	public static final String PROPERTY_ID = "id";
+
 	private long id;
 	private String name;
 	private String description;

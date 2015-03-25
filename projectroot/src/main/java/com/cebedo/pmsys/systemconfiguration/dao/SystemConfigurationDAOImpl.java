@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 
 @Repository
@@ -62,7 +62,7 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 	@SuppressWarnings("unchecked")
 	public List<SystemConfiguration> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SystemConfiguration> systemConfigurationList = QueryUtils
+		List<SystemConfiguration> systemConfigurationList = DAOHelper
 				.getSelectQueryFilterCompany(session,
 						SystemConfiguration.class.getName(), companyID).list();
 		for (SystemConfiguration systemConfiguration : systemConfigurationList) {

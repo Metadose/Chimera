@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.task.model.Task;
 
@@ -20,6 +20,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	private static final Logger logger = LoggerFactory
 			.getLogger(ProjectDAOImpl.class);
 	private SessionFactory sessionFactory;
+	private DAOHelper daoHelper = new DAOHelper();
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -34,7 +35,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), companyID).list();
 		return projectList;
 	}
@@ -68,7 +69,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@SuppressWarnings("unchecked")
 	public List<Project> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), companyID).list();
 		for (Project project : projectList) {
 			Hibernate.initialize(project.getManagerAssignments());
@@ -106,7 +107,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public List<Project> listWithTasks(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Project> projectList = QueryUtils.getSelectQueryFilterCompany(
+		List<Project> projectList = daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), id).list();
 		for (Project project : projectList) {
 			Hibernate.initialize(project.getAssignedTasks());
@@ -117,7 +118,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public String getNameByID(long projectID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = QueryUtils.getProjectionByID(session, Project.class,
+		String result = daoHelper.getProjectionByID(session, Project.class,
 				Project.PROPERTY_ID, projectID, Project.PROPERTY_NAME);
 		return result;
 	}

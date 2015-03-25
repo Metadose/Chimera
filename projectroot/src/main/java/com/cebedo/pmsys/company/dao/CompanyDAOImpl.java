@@ -2,13 +2,14 @@ package com.cebedo.pmsys.company.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.QueryUtils;
+import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.company.model.Company;
 
 @Repository
@@ -16,6 +17,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CompanyDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -32,10 +34,9 @@ public class CompanyDAOImpl implements CompanyDAO {
 	@Override
 	public Company getByID(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Company company = (Company) session.createQuery(
-				"from " + Company.class.getName() + " where "
-						+ Company.COLUMN_PRIMARY_KEY + "=" + id).uniqueResult();
-		logger.info("[Get by ID] Company: " + company);
+		Criteria criteria = daoHelper.criteriaGetObjByID(session,
+				Company.class, Company.PROPERTY_ID, id);
+		Company company = (Company) criteria.uniqueResult();
 		return company;
 	}
 
@@ -60,7 +61,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	@Override
 	public List<Company> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Company> companyList = QueryUtils.getSelectQueryFilterCompany(
+		List<Company> companyList = daoHelper.getSelectQueryFilterCompany(
 				session, Company.class.getName(), companyID).list();
 		return companyList;
 	}
