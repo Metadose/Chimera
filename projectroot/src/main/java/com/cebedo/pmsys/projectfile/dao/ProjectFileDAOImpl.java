@@ -62,7 +62,7 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@SuppressWarnings("unchecked")
 	public List<ProjectFile> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ProjectFile> projectFileList = DAOHelper
+		List<ProjectFile> projectFileList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						ProjectFile.class.getName(), companyID).list();
 		for (ProjectFile projectFile : projectFileList) {
@@ -75,8 +75,9 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@Override
 	public List<ProjectFile> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ProjectFile> fileList = this.daoHelper.getSelectQueryFilterCompany(
-				session, ProjectFile.class.getName(), companyID).list();
+		List<ProjectFile> fileList = this.daoHelper
+				.getSelectQueryFilterCompany(session,
+						ProjectFile.class.getName(), companyID).list();
 		for (ProjectFile file : fileList) {
 			Hibernate.initialize(file.getProject());
 			Hibernate.initialize(file.getUploader());
@@ -102,8 +103,9 @@ public class ProjectFileDAOImpl implements ProjectFileDAO {
 	@Override
 	public String getNameByID(long fileID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = this.daoHelper.getProjectionByID(session, ProjectFile.class,
-				ProjectFile.PROPERTY_ID, fileID, ProjectFile.PROPERTY_NAME);
+		String result = this.daoHelper.getProjectionByID(session,
+				ProjectFile.class, ProjectFile.PROPERTY_ID, fileID,
+				ProjectFile.PROPERTY_NAME);
 		return result;
 	}
 

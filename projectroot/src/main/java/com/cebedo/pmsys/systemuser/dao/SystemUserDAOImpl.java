@@ -21,7 +21,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SystemUserDAOImpl.class);
-
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -61,7 +61,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 	@Override
 	public List<SystemUser> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SystemUser> systemUserList = DAOHelper
+		List<SystemUser> systemUserList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SystemUser.class.getName(), companyID).list();
 		return systemUserList;

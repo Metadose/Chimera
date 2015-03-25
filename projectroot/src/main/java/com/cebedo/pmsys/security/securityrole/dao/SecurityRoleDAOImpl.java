@@ -16,6 +16,7 @@ public class SecurityRoleDAOImpl implements SecurityRoleDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SecurityRoleDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -61,7 +62,7 @@ public class SecurityRoleDAOImpl implements SecurityRoleDAO {
 	@SuppressWarnings("unchecked")
 	public List<SecurityRole> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SecurityRole> securityRoleList = DAOHelper
+		List<SecurityRole> securityRoleList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SecurityRole.class.getName(), companyID).list();
 		for (SecurityRole securityRole : securityRoleList) {

@@ -16,6 +16,7 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SystemConfigurationDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -62,7 +63,7 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 	@SuppressWarnings("unchecked")
 	public List<SystemConfiguration> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SystemConfiguration> systemConfigurationList = DAOHelper
+		List<SystemConfiguration> systemConfigurationList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						SystemConfiguration.class.getName(), companyID).list();
 		for (SystemConfiguration systemConfiguration : systemConfigurationList) {

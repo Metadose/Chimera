@@ -16,6 +16,7 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SubcontractorDAOImpl.class);
+	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -61,7 +62,7 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 	@SuppressWarnings("unchecked")
 	public List<Subcontractor> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Subcontractor> subcontractorList = DAOHelper
+		List<Subcontractor> subcontractorList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						Subcontractor.class.getName(), companyID).list();
 		return subcontractorList;
@@ -71,7 +72,7 @@ public class SubcontractorDAOImpl implements SubcontractorDAO {
 	@Override
 	public List<Subcontractor> listWithAllCollections(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Subcontractor> subcontractorList = DAOHelper
+		List<Subcontractor> subcontractorList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
 						Subcontractor.class.getName(), companyID).list();
 		for (Subcontractor subcontractor : subcontractorList) {
