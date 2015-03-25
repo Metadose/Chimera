@@ -4,6 +4,11 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <sec:authentication var="authUser" property="user"/>
 <sec:authentication var="authStaff" property="staff"/>
+<script type="text/javascript">
+function logout(){
+	document.getElementById('logoutForm').submit();
+}
+</script>
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -142,10 +147,12 @@
                 </ul>
             </li>
             </c:if>
-            <li>
-                <a href="${contextPath}/auth/logout">
+            <li>	
+            	<form id="logoutForm" action="${contextPath}/auth/logout" method="post">
+            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            	</form>
+                <a href="#" onclick="return logout();">
                     <i class="fa fa-sign-out"></i> <span>Logout</span>
-<!--                     <small class="badge pull-right bg-yellow">12</small> -->
                 </a>
             </li>
         </ul>
