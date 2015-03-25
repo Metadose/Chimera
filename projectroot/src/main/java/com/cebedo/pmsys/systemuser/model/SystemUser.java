@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.systemuser.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -21,8 +22,9 @@ import com.cebedo.pmsys.staff.model.Staff;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
-public class SystemUser {
+public class SystemUser implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public static final String TABLE_NAME = "system_users";
 	public static final String OBJECT_NAME = "systemuser";
 	public static final String COLUMN_PRIMARY_KEY = "user_id";

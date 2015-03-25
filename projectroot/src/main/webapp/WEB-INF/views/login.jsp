@@ -38,6 +38,7 @@
                     </div>
                 </div>
                 <div class="footer">
+                	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <button type="submit" class="btn bg-olive btn-block">Log me in</button>
 
                     <p><a href="#">I forgot my password</a></p>

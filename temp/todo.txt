@@ -24,6 +24,8 @@ invalid day index of timeline
 
 
 = todo
+Security: use only POST, use hibernate for sql injection, secure jsp by escaping for xss, enable csrf protection token. Change password, add more md5 hashcode(?) or secret key. Confirmation and password bfore delete proj.
+
 butngig loading page
 Custom progress/status fields, custom sd ang color.
 

@@ -17,6 +17,8 @@
 	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
 			entry-point-ref="authenticationEntryPoint" >
+			
+		<security:csrf/>
 				
 		<!-- Permit everyone to see the login page and the js css resources -->
 		<security:intercept-url pattern="/auth/**" access="permitAll"/>

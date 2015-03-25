@@ -4,6 +4,7 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p" 
     xmlns:security="http://www.springframework.org/schema/security"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -16,6 +17,71 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
  
+ 	<!-- This is where we configure Spring-Security  -->
+	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
+			entry-point-ref="authenticationEntryPoint" >
+			
+		<security:csrf/>
+				
+		<!-- Permit everyone to see the login page and the js css resources -->
+		<security:intercept-url pattern="/auth/**" access="permitAll"/>
+		
+		<!-- Only an authenticated user can view the dashboard and images -->
+		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/image/display/**" access="isAuthenticated()"/>
+		
+		<!-- These are just general access security, a finer security level resides in the Controller and JSP -->
+		<security:intercept-url pattern="/company/**" access="hasRole('ACCESS_COMPANY')"/>
+		<security:intercept-url pattern="/field/**" access="hasRole('ACCESS_FIELD')"/>
+		<security:intercept-url pattern="/photo/**" access="hasRole('ACCESS_PHOTO')"/>
+		<security:intercept-url pattern="/project/**" access="hasRole('ACCESS_PROJECT')"/>
+		<security:intercept-url pattern="/projectfile/**" access="hasRole('ACCESS_PROJECTFILE')"/>
+		<security:intercept-url pattern="/staff/**" access="hasRole('ACCESS_STAFF')"/>
+		<security:intercept-url pattern="/task/**" access="hasRole('ACCESS_TASK')"/>
+		<security:intercept-url pattern="/team/**" access="hasRole('ACCESS_TEAM')"/>
+		<security:intercept-url pattern="/systemuser/**" access="hasRole('ACCESS_SYSTEMUSER')"/>
+		<security:intercept-url pattern="/config/**" access="hasRole('ACCESS_CONFIG')"/>
+		
+		<security:logout 
+				invalidate-session="true" 
+				logout-success-url="/auth/login" 
+				logout-url="/auth/logout"/>
+	
+		<security:custom-filter ref="blacklistFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+		<security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
+	</security:http>
+	
+ 	<!--  Custom filter to deny unwanted users even though registered -->
+ 	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.login.filter.BlacklistFilter" />
+ 	
+ 	<!-- Custom filter for username and password. The real customization is done in the customAthenticationManager -->
+ 	<beans:bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"
+  		p:authenticationManager-ref="customAuthenticationManager"
+  		p:authenticationFailureHandler-ref="customAuthenticationFailureHandler"
+  		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
+  		
+	<!-- Custom authentication manager. In order to authenticate, username and password must not be the same -->
+	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.login.manager.CustomAuthenticationManager" />
+ 	
+ 	<!-- We just actually need to set the default failure url here -->
+ 	<beans:bean id="customAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
+ 		p:defaultFailureUrl="/auth/login?error=true" />
+ 		
+ 	 <!-- We just actually need to set the default target url here -->
+ 	<beans:bean id="customAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler"
+ 		p:defaultTargetUrl="/dashboard/" />
+ 	
+ 	<!-- The AuthenticationEntryPoint is responsible for redirecting the user to a particular page, like a login page,
+ 			whenever the server sends back a response requiring authentication -->
+ 	<!-- See Spring-Security Reference 5.4.1 for more info -->
+ 	<beans:bean id="authenticationEntryPoint"  class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint"
+	 	p:loginFormUrl="/auth/login"/>
+
+	<!-- The tag below has no use but Spring Security needs it to autowire the parent property of 
+			org.springframework.security.authentication.ProviderManager. Otherwise we get an error 
+			A probable bug. This is still under investigation-->
+	<security:authentication-manager/>
+	 	
  	<security:global-method-security pre-post-annotations="enabled" />
  
     <!-- DispatcherServlet Context: defines this servlet's request-processing 
