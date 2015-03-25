@@ -49,6 +49,7 @@
 				                                    <c:choose>
 		                                            	<c:when test="${projectfile.id == 0}">
 		                                            		<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file">
+		                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 						                                        <label for="exampleInputFile">File Upload (20MB Max)</label>
 						                                        <input type="file" id="file" name="file"/><br/>
 						                                        <label>Description</label>
@@ -63,6 +64,7 @@
 					                                            <label>Name</label>
 					                                            <input type="text" disabled class="form-control" name="name" value="${projectfile.name}"/><br/>
 					                                            <form role="form" name="fileForm" id="fileForm" method="post" action="${contextPath}/projectfile/update">
+					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 						                                            <label>Description</label>
 						                                            <c:if test="${!empty origin && !empty originID}">
 						                                            <input type="hidden" name="origin" value="${origin}"/>

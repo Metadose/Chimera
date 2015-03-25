@@ -51,6 +51,7 @@
                    								</div>
                    								<div class="box-body">
                    									<form role="form" method="post" action="${contextPath}/company/create/">
+                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="company_id" value="${company.id}"/>
 				                                            <label>Name</label>

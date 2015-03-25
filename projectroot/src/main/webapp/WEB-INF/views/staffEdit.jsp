@@ -78,6 +78,7 @@
                    									<br/><br/>
                    									<div class="form-group">
                    										<form action="${contextPath}/photo/upload/staff/profile" method="post" enctype="multipart/form-data">	
+                   											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	                										<input type="hidden" value="${staff.id}" id="staff_id" name="staff_id"/>
 	                   										<table>
 	                   											<tr>
@@ -104,6 +105,7 @@
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/origin"/>
 				                                    </c:if>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
+                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                        <div class="form-group">
 				                                        	<c:if test="${!empty origin && !empty originID}">
 						                                    	<input type="hidden" name="origin" value="${origin}"/>
@@ -157,6 +159,7 @@
                    												<c:forEach var="field" items="${fields}">
                    													<tr>
 	                   													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/staff">
+	                   														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																			<input type="hidden" name="staff_id" value="${staff.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
 																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
@@ -192,6 +195,7 @@
 														<c:choose>
 														<c:when test="${!empty fields}">
 															<form method="post" action="${contextPath}/field/unassign/staff/all">
+																<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																<input type="hidden" name="staff_id" value="${staff.id}"/>
 																<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 															</form>
@@ -204,6 +208,7 @@
 														<br/>
 														<h4>Assign Fields</h4>
 														<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/staff">
+															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 															<input type="hidden" name="staff_id" value="${staff.id}"/>
 															<table>
 																<tr>
@@ -284,6 +289,7 @@
 	                   											</td>
 	                   											<td>
 	                   												<form method="post" action="${contextPath}/staff/unassign/team">
+	                   													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	                   													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
 	                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
@@ -300,6 +306,7 @@
                    									<c:choose>
                    										<c:when test="${!empty staff.teams}">
                    											<form method="post" action="${contextPath}/staff/unassign/team/all">
+                   												<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                    												<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
                    												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                    											</form>
@@ -316,6 +323,7 @@
                    									</a>
 													</h4>
 													<form method="post" action="${contextPath}/staff/assign/team">
+													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
 													<table>
 														<tr>
@@ -370,10 +378,12 @@
 			                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<form action="${contextPath}/project/edit/${project.id}">
+																<form action="${contextPath}/project/edit/${project.id}" method="post">
+																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</form>&nbsp;
-																<form action="${contextPath}/project/delete/${project.id}">
+																<form action="${contextPath}/project/delete/${project.id}" method="post">
+																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</form>
 															</center>

@@ -87,6 +87,7 @@
 		                   									<br/>
 		                   									<div class="form-group">
 		                   										<form id="uploadPhotoForm" action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
+		                   											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
 			                   										<table>
 			                   											<tr>
@@ -103,6 +104,7 @@
 			                   										</table>
 						                                        </form>
 						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
+						                                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 						                                        </form>
 						                                        <br/>
 						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-default btn-flat btn-sm">Upload</button>
@@ -130,6 +132,7 @@
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
                   										<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
+                  										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			                                        	<input type="hidden" name="id" value="${project.id}"/>
 			                                            <label>Name</label>
 			                                            <input type="text" class="form-control" name="name" value="${fn:escapeXml(project.name)}"/><br/>
@@ -202,6 +205,7 @@
 		           														</c:if>
 		           														<div style="${formStyle}">
 		           														<form id="field_update_${fieldFormID}" method="post" action="${contextPath}/field/update/assigned/project">
+		           															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																			<input type="hidden" name="project_id" value="${project.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
 																			<input type="hidden" id="old_label" name="old_label" value="${fn:escapeXml(field.label)}"/>
@@ -210,6 +214,7 @@
 			       															<textarea class="form-control" rows="3" id="value" name="value">${fn:escapeXml(field.value)}</textarea><br/>
 																		</form>
 		               													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
+		               														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																			<input type="hidden" name="project_id" value="${project.id}"/>
 																			<input type="hidden" name="field_id" value="${field.field.id}"/>
 			       															<input type="hidden" name="label" value="${fn:escapeXml(field.label)}">
@@ -224,6 +229,7 @@
 																		<c:when test="${!empty projectFields}">
 																			<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																			<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
+																				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																				<input type="hidden" name="project_id" value="${project.id}"/>
 																				<button class="btn btn-default btn-flat btn-sm">Remove All</button>
 																			</form>
@@ -235,6 +241,7 @@
 																</c:if>
 																<h4>Add More Information</h4>
 																<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
+																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																	<input type="hidden" name="project_id" value="${project.id}"/>
 																	<input type="hidden" name="field_id" value="1"/>
 																	<label>Label</label><br/>
@@ -272,6 +279,7 @@
 		                                    	<tr>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/task/assign/from/project">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
 		                                    			<input type="hidden" name="origin" value="project"/>
 		                                    			<input type="hidden" name="originID" value="${project.id}"/>
@@ -284,6 +292,7 @@
 		                                    		</td>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
+		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                											</form>
@@ -329,6 +338,7 @@
 							                                        </div>
 							                                        </sec:authorize>
 					                                            	<form method="post" action="${contextPath}/task/edit/from/origin">
+					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
 					                                            	<input type="hidden" name="origin" value="project"/>
 					                                            	<input type="hidden" name="originID" value="${project.id}"/>
@@ -336,6 +346,7 @@
 					                                            	</form> 
 					                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 					                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
+					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
 					                                            	<input type="hidden" name="project_id" value="${project.id}"/>
 					                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
@@ -415,6 +426,7 @@
                                     <div class="box-body table-responsive">
                                     	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                                     	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project">
+                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 											<label for="exampleInputFile">File Upload (20MB Max)</label>
 											<input type="file" id="file" name="file"/><br/>
@@ -445,11 +457,13 @@
 			                                            	<td>
 			                                            		<center>
 			                                            		<form action="${contextPath}/projectfile/download/from/project/" method="post">
+			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			                                            			<input type="hidden" name="project_id" value="${project.id}"/>
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
 			                                            		</form>
 			                                            		<form action="${contextPath}/projectfile/edit/from/origin" method="post">
+			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			                                            			<input type="hidden" name="origin" value="project"/>
 			                                            			<input type="hidden" name="originID" value="${project.id}"/>
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
@@ -457,6 +471,7 @@
 			                                            		</form>
 			                                            		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
+																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																	<input type="hidden" id="projectfile_id" name="projectfile_id" value="${file.id}"/>
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
@@ -502,6 +517,7 @@
                                 	<div class="box box-default">
                                 	<div class="box-body">
                                     <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project">
+                                    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 										<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 										<label for="exampleInputFile">Upload Photo (20MB Max)</label>
 										<input type="file" id="file" name="file"/><br/>
@@ -516,7 +532,8 @@
 									     		<c:forEach items="${project.photos}" var="photo">
 									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
-														<form action="${contextPath}/photo/delete">
+														<form action="${contextPath}/photo/delete" method="post">
+															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 															<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 															<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
 															<h6>${photo.name}</h6>
@@ -561,6 +578,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/from/origin">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    			<input type="hidden" name="staff_id" value="0"/>
 		                                    			<input type="hidden" name="origin" value="project"/>
 		                                    			<input type="hidden" name="originID" value="${project.id}"/>
@@ -575,6 +593,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
 		                                    		<form role="form" method="post" action="${contextPath}/staff/assign/project">
+		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    		<td>
 		                                    			<select class="form-control" name="staff_id">
                                     						<c:forEach items="${staffList}" var="staff">
@@ -604,6 +623,7 @@
 		                                    		<c:if test="${!empty project.managerAssignments}">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/unassign/project/all">
+		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
                											</form>
@@ -636,6 +656,7 @@
 			                                            	<td>
 			                                            		<center>
 			                                            			<form method="post" action="${contextPath}/staff/edit/from/origin">
+			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					                                    			<input type="hidden" name="staff_id" value="${manager.id}"/>
 					                                    			<input type="hidden" name="origin" value="project"/>
 					                                    			<input type="hidden" name="originID" value="${project.id}"/>
@@ -643,6 +664,7 @@
 								                                    </form>
 	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																	<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
+																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 																		<input type="hidden" id="staff_id" name="staff_id" value="${manager.id}"/>
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
@@ -685,6 +707,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/edit/from/origin">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    			<input type="hidden" name="team_id" value="0"/>
 		                                    			<input type="hidden" name="origin" value="project"/>
 		                                    			<input type="hidden" name="originID" value="${project.id}"/>
@@ -699,6 +722,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty teamList}">
 		                                    		<form role="form" method="post" action="${contextPath}/team/assign/project">
+		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    		<td>
 		                                    			<select class="form-control" name="team_id">
                                     						<c:forEach items="${teamList}" var="team">
@@ -723,6 +747,7 @@
 		                                    		<c:if test="${!empty project.assignedTeams}">
 		                                    		<td>
 		                                    			<form role="form" method="post" action="${contextPath}/team/unassign/project/all">
+		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
               												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
               												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
               											</form>
@@ -751,6 +776,7 @@
 			                                            	<td>
 			                                            		<center>
 			                                            			<form method="post" action="${contextPath}/team/edit/from/origin">
+			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					                                    			<input type="hidden" name="team_id" value="${team.id}"/>
 					                                    			<input type="hidden" name="origin" value="project"/>
 					                                    			<input type="hidden" name="originID" value="${project.id}"/>
@@ -758,6 +784,7 @@
 								                                    </form>
 								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																	<form role="form" method="post" action="${contextPath}/team/unassign/project">
+																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
 	                   													<input type="hidden" name="origin" value="project"/>

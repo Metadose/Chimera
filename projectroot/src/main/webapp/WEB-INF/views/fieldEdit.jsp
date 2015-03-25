@@ -48,6 +48,7 @@
                    							<div class="box box-default">
                    								<div class="box-body">
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/field/create">
+                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="id" value="${field.id}"/>
 				                                            <label>Name</label>

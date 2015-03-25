@@ -51,6 +51,7 @@
                    								</div>
                    								<div class="box-body">
                    									<form method="post" name="detailsForm" action="${contextPath}/systemuser/create">
+                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                        <div class="form-group">
 				                                        	<input type="hidden" name="user_id" value="${user.id}"/>
 				                                            <label>Username</label>

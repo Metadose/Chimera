@@ -26,6 +26,7 @@
         <div class="form-box" id="login-box">
             <div class="header">Log In</div>
             <form action="${contextPath}/j_spring_security_check" method="post">
+              	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <div class="body bg-gray">
                     <div class="form-group">
                         <input type="text" name="j_username" id="j_username" class="form-control" placeholder="Username"/>
@@ -38,7 +39,6 @@
                     </div>
                 </div>
                 <div class="footer">
-                	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <button type="submit" class="btn bg-olive btn-block">Log me in</button>
 
                     <p><a href="#">I forgot my password</a></p>

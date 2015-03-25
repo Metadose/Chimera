@@ -63,6 +63,7 @@
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/team/create/from/origin"/>
 				                                    </c:if>
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
+                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                    										<c:if test="${!empty origin && !empty originID}">
 				                                    	<input type="hidden" name="origin" value="${origin}"/>
 				                                    	<input type="hidden" name="originID" value="${originID}"/>
@@ -176,6 +177,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/staff/edit/0">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                    </form>
 		                                    		</td>
@@ -184,6 +186,7 @@
 		                                    		</td>
 		                                    		</sec:authorize>
 		                                    		<form method="post" action="${contextPath}/staff/assign/team">
+		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    		<td>
 		                                    			<select class="form-control" name="staff_id">
 		                                    				<c:choose>
@@ -211,6 +214,7 @@
 		                                    		</td>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/unassign/staff/all">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 														<input type="hidden" name="team_id" value="${team.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 														</form>
@@ -239,6 +243,7 @@
 																		<button class="btn btn-default btn-flat btn-sm">View</button>
 																	</a>
 																	<form method="post" action="${contextPath}/staff/unassign/team">
+																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																		<input type="hidden" name="staff_id" value="${member.id}"/>
 																		<input type="hidden" name="team_id" value="${team.id}"/>
 																		<input type="hidden" name="origin" value="team"/>
@@ -280,6 +285,7 @@
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/project/edit/0">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Project</button>
 					                                    </form>
 		                                    		</td>
@@ -288,6 +294,7 @@
 		                                    		</td>
 		                                    		</sec:authorize>
 		                                    		<form method="post" action="${contextPath}/team/assign/project">
+		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		                                    		<td>
 		                                    			<select class="form-control" name="project_id">
 		                                    				<c:choose>
@@ -314,6 +321,7 @@
 		                                    		</td>
 		                                    		<td>
 		                                    			<form method="post" action="${contextPath}/team/unassign/all/project">
+		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 														<input type="hidden" name="team_id" value="${team.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 														</form>
@@ -340,6 +348,7 @@
 																		<button class="btn btn-default btn-flat btn-sm">View</button>
 																	</a>
 																	<form method="post" action="${contextPath}/team/unassign/project">
+																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																		<input type="hidden" name="project_id" value="${project.id}"/>
 																		<input type="hidden" name="team_id" value="${team.id}"/>
 																		<input type="hidden" name="origin" value="team"/>

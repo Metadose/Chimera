@@ -54,6 +54,7 @@
 		                                            	<td>
 		                                            		<center>
 		                                            			<form action="${contextPath}/projectfile/download/" method="post">
+		                                            				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
 			                                            		</form>
