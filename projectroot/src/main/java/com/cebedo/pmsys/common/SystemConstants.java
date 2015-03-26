@@ -23,6 +23,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_ASSIGN = "assign";
 	public static final String REQUEST_UNASSIGN = "unassign";
 	public static final String REQUEST_UPLOAD = "upload";
+	public static final String REQUEST_VIEW = "view";
 
 	public static final String REQUEST_UPLOAD_FILE = "upload/file";
 	public static final String REQUEST_UPLOAD_FILE_TO_PROJECT = "upload/file/project";
@@ -64,6 +65,7 @@ public abstract class SystemConstants {
 	public static final String ROLE_TEAM_EDITOR = "ROLE_TEAM_EDITOR";
 	public static final String ROLE_CONFIG_EDITOR = "ROLE_CONFIG_EDITOR";
 	public static final String ROLE_SYSTEMUSER_EDITOR = "ROLE_SYSTEMUSER_EDITOR";
+	public static final String ROLE_LOG_EDITOR = "ROLE_LOG_EDITOR";
 
 	public static final String UI_PARAM_ALERT = "uiParamAlert";
 
@@ -73,4 +75,7 @@ public abstract class SystemConstants {
 	public static final String UI_STATUS_WARNING = "warning";
 
 	public static final String LOGGER_LOGIN = "login";
+	public static final String LOGGER_DIR_RESOURCES = "resources";
+	public static final String LOGGER_DELIMETER_HEADER_END = "<!-- log-header-end -->";
+	public static final String LOGGER_DELIMETER_FOOTER_START = "<!-- log-footer-start -->";
 }

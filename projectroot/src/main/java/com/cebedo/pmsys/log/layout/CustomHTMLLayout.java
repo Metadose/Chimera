@@ -1,10 +1,12 @@
-package com.cebedo.pmsys.log;
+package com.cebedo.pmsys.log.layout;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+
+import com.cebedo.pmsys.common.SystemConstants;
 
 public class CustomHTMLLayout extends Layout {
 
@@ -223,6 +225,8 @@ public class CustomHTMLLayout extends Layout {
 		sbuf.append("	</tr>" + Layout.LINE_SEP);
 		sbuf.append("	</thead>" + Layout.LINE_SEP);
 		sbuf.append("	<tbody>" + Layout.LINE_SEP);
+		sbuf.append(SystemConstants.LOGGER_DELIMETER_HEADER_END
+				+ Layout.LINE_SEP);
 		return sbuf.toString();
 	}
 
@@ -230,7 +234,9 @@ public class CustomHTMLLayout extends Layout {
 	 * The footer of the HTML log file.
 	 */
 	public String getFooter() {
-		return "<object type=\"text/html\" data=\"../resources/footer.html\"></object>";
+		String footer = SystemConstants.LOGGER_DELIMETER_FOOTER_START;
+		footer += "\n<object type=\"text/html\" data=\"../resources/footer.html\"></object>";
+		return footer;
 	}
 
 	/**
