@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>DataTables Bootstrap 3 example</title>
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="AdminLTE.css">
+<link rel="stylesheet" type="text/css" href="dataTables.bootstrap.css">
+<script type="text/javascript" language="javascript" src="jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="dataTables.bootstrap.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+			$('#log-table').dataTable();
+		});
+	</script>
+</head>
+<body class="skin-blue">
+<table id="log-table" class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	<th>Name</th>
+	<th>Position</th>
+	<th>Office</th>
+	<th>Salary</th>
+	</tr>
+	</thead>
+	<tbody>
