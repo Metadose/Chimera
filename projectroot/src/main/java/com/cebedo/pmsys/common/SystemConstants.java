@@ -77,7 +77,5 @@ public abstract class SystemConstants {
 	public static final String UI_STATUS_WARNING = "warning";
 
 	public static final String LOGGER_LOGIN = "login";
-	public static final String LOGGER_DIR_RESOURCES = "resources";
-	public static final String LOGGER_DELIMETER_HEADER_END = "<!-- log-header-end -->";
-	public static final String LOGGER_DELIMETER_FOOTER_START = "<!-- log-footer-start -->";
+	public static final String LOGGER_ERROR = "error";
 }

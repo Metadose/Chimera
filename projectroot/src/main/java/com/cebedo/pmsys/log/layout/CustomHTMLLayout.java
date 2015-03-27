@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.log.layout;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.Transform;
@@ -15,6 +17,7 @@ public class CustomHTMLLayout extends Layout {
 
 	// output buffer appended to when format() is invoked
 	private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	/**
 	 * A string constant used in naming the option for setting the the location
@@ -36,8 +39,8 @@ public class CustomHTMLLayout extends Layout {
 	 */
 	public static final String TITLE_OPTION = "Title";
 
-	// Print no location info by default
-	boolean locationInfo = false;
+	// Print location info by default.
+	boolean locationInfo = true;
 
 	String title = "Log4J Log Messages";
 
@@ -106,7 +109,7 @@ public class CustomHTMLLayout extends Layout {
 		sbuf.append(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
 
 		sbuf.append("<td>");
-		sbuf.append(event.timeStamp - LoggingEvent.getStartTime());
+		sbuf.append(sdf.format(event.timeStamp));
 		sbuf.append("</td>" + Layout.LINE_SEP);
 
 		String escapedThread = Transform.escapeTags(event.getThreadName());

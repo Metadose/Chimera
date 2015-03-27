@@ -29,11 +29,12 @@
 	                                <table id="log-table" class="table table-bordered table-striped">
 										<thead>
 										<tr>
-										<th>1</th>
-										<th>2</th>
-										<th>3</th>
-										<th>4</th>
-										<th>5</th>
+										<th>Timestamp</th>
+										<th>Thread</th>
+										<th>Level</th>
+										<th>Logger</th>
+										<th>Location</th>
+										<th>Message</th>
 										</tr>
 										</thead>
 										<tbody>

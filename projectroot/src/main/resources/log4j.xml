@@ -8,14 +8,18 @@
 	    </layout>
 	</appender>
 	
+	<appender name="errorFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/error/error.html" />
+	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	</appender>
+	
 	<appender name="loginFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/login/login.html" />
 	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
-<!-- 	    <layout class="org.apache.log4j.PatternLayout"> -->
-<!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" /> -->
-<!-- 	    </layout> -->
 	</appender>
 	
 	<appender name="companyFile" class="org.apache.log4j.RollingFileAppender">
@@ -23,9 +27,6 @@
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/company/company.html" />
 	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
-<!-- 	    <layout class="org.apache.log4j.PatternLayout"> -->
-<!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" /> -->
-<!-- 	    </layout> -->
 	</appender>
 	
 	<!-- Application Loggers -->
@@ -33,6 +34,12 @@
 		<level value="debug" />
 		<appender-ref ref="console" />
 		<appender-ref ref="loginFile" />
+	</logger>
+	
+	<logger name="error">
+	    <level value="warn" />
+	    <appender-ref ref="console" />
+		<appender-ref ref="errorFile" />
 	</logger>
 	
 	<logger name="company">

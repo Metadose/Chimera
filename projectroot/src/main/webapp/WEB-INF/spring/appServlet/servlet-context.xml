@@ -16,6 +16,16 @@
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.log.resolver.LoggingExceptionResolver">
+	    <beans:property name="exceptionMappings">
+	        <beans:props>
+	            <beans:prop key="java.lang.Exception">/fix</beans:prop>
+	        </beans:props>
+	    </beans:property>
+	    <beans:property name="defaultErrorView" value="/fix" />
+	    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
+	</beans:bean>
  
  	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
