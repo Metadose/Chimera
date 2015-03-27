@@ -4,6 +4,8 @@ import com.cebedo.pmsys.project.model.Project;
 
 public abstract class SystemConstants {
 
+	public static final String CONFIG_SYS_HOME = "SYS_HOME";
+
 	public static final String CONTROLLER_REDIRECT = "redirect:/";
 
 	public static final String ORIGIN = "origin";

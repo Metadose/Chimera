@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.FileHelper;
+import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
@@ -47,7 +48,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 	private String getSysHome() {
 		if (sysHome == null) {
-			sysHome = this.systemConfigurationDAO.getValueByName("SYS_HOME");
+			sysHome = this.systemConfigurationDAO
+					.getValueByName(SystemConstants.CONFIG_SYS_HOME);
 		}
 		return sysHome;
 	}

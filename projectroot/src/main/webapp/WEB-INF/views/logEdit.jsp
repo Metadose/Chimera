@@ -1,12 +1,10 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Log Manager</title>
 	<c:import url="/resources/css-includes.jsp" />
-	<link href="<c:url value="/resources/lib/jstree/src/themes/default/style.css" />"rel="stylesheet" type="text/css" />
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -28,8 +26,20 @@
                                 
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-	                                <div id="jstree">
-	                               	</div>
+	                                <table id="log-table" class="table table-bordered table-striped">
+										<thead>
+										<tr>
+										<th>1</th>
+										<th>2</th>
+										<th>3</th>
+										<th>4</th>
+										<th>5</th>
+										</tr>
+										</thead>
+										<tbody>
+											${logContent}
+										</tbody>
+									</table>
                                 </div><!-- /.box-body -->
                             </div><!-- /.box -->
                     </div>
@@ -37,26 +47,11 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	<form id="logEditForm" action="${contextPath}/log/edit" method="post">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		<input type="hidden" id="input_log_address" name="input_log_address" value=""/>
-	</form>
 	<c:import url="/resources/js-includes.jsp" />
-	<script src="<c:url value="/resources/lib/jstree/dist/jstree.min.js" />"></script>
 	<script type="text/javascript">
-		var data = ${logList};
-		$(document).ready(function() {
-			// HOW IT WORKS:
-			// Getting an attribute of the object.
-			// data.instance.get_node(data.selected[0]).text
-			$('#jstree').on('changed.jstree', function (e, data) {
-				var address = data.instance.get_node(data.selected[0]).id;
-				$('#input_log_address').val(address);
-				$('#logEditForm').submit();
-			}).on('loaded.jstree', function() {
-				$('#jstree').jstree('open_all');
-			}).jstree({'core': data});
-		});
+	$(document).ready(function() {
+		$('#log-table').dataTable();
+	});
 	</script>
 </body>
 </html>

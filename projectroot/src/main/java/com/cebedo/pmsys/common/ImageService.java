@@ -107,7 +107,8 @@ public class ImageService {
 
 		// Otherwise, user proj company, over user company.
 		// If both are not existing, set to zero.
-		String sysHome = this.configService.getValueByName("SYS_HOME");
+		String sysHome = this.configService
+				.getValueByName(SystemConstants.CONFIG_SYS_HOME);
 		Company projCompany = proj.getCompany();
 		Company userCompany = this.authHelper.getAuth().getCompany();
 		String fileURI = this.fileHelper.constructSysHomeFileURI(

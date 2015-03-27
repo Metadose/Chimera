@@ -2,14 +2,25 @@ package com.cebedo.pmsys.common;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.company.model.Company;
 
 public class FileHelper {
+
+	@SuppressWarnings("resource")
+	public String getFileContents(String path) throws FileNotFoundException {
+		File file = new File(path);
+		if (file.length() == 0) {
+			return "";
+		}
+		return new Scanner(new File(path)).useDelimiter("\\Z").next();
+	}
 
 	/**
 	 * Upload a file.

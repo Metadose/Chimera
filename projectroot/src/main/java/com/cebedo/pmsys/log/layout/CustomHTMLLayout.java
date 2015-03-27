@@ -6,8 +6,6 @@ import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
-import com.cebedo.pmsys.common.SystemConstants;
-
 public class CustomHTMLLayout extends Layout {
 
 	protected final int BUF_SIZE = 256;
@@ -184,59 +182,14 @@ public class CustomHTMLLayout extends Layout {
 	 * This is the header of the HTML log file.
 	 */
 	public String getHeader() {
-		StringBuffer sbuf = new StringBuffer();
-		sbuf.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("<html>" + Layout.LINE_SEP);
-		sbuf.append("<head>" + Layout.LINE_SEP);
-		sbuf.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-				+ Layout.LINE_SEP);
-		sbuf.append("<title>DataTables Bootstrap 3 example</title>"
-				+ Layout.LINE_SEP);
-		sbuf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"../resources/bootstrap.min.css\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"../resources/AdminLTE.css\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"../resources/dataTables.bootstrap.css\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("<script type=\"text/javascript\" language=\"javascript\" src=\"../resources/jquery.min.js\"></script>"
-				+ Layout.LINE_SEP);
-		sbuf.append("<script type=\"text/javascript\" language=\"javascript\" src=\"../resources/jquery.dataTables.js\"></script>"
-				+ Layout.LINE_SEP);
-		sbuf.append("<script type=\"text/javascript\" language=\"javascript\" src=\"../resources/dataTables.bootstrap.js\"></script>"
-				+ Layout.LINE_SEP);
-		sbuf.append("	<script type=\"text/javascript\" charset=\"utf-8\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("		$(document).ready(function() {" + Layout.LINE_SEP);
-		sbuf.append("			$('#log-table').dataTable();" + Layout.LINE_SEP);
-		sbuf.append("		});" + Layout.LINE_SEP);
-		sbuf.append("	</script>" + Layout.LINE_SEP);
-		sbuf.append("</head>" + Layout.LINE_SEP);
-		sbuf.append("<body class=\"skin-blue\">" + Layout.LINE_SEP);
-		sbuf.append("<table id=\"log-table\" class=\"table table-bordered table-striped\">"
-				+ Layout.LINE_SEP);
-		sbuf.append("	<thead>" + Layout.LINE_SEP);
-		sbuf.append("	<tr>" + Layout.LINE_SEP);
-		sbuf.append("	<th>1</th>" + Layout.LINE_SEP);
-		sbuf.append("	<th>2</th>" + Layout.LINE_SEP);
-		sbuf.append("	<th>3</th>" + Layout.LINE_SEP);
-		sbuf.append("	<th>4</th>" + Layout.LINE_SEP);
-		sbuf.append("	<th>5</th>" + Layout.LINE_SEP);
-		sbuf.append("	</tr>" + Layout.LINE_SEP);
-		sbuf.append("	</thead>" + Layout.LINE_SEP);
-		sbuf.append("	<tbody>" + Layout.LINE_SEP);
-		sbuf.append(SystemConstants.LOGGER_DELIMETER_HEADER_END
-				+ Layout.LINE_SEP);
-		return sbuf.toString();
+		return "";
 	}
 
 	/**
 	 * The footer of the HTML log file.
 	 */
 	public String getFooter() {
-		String footer = SystemConstants.LOGGER_DELIMETER_FOOTER_START;
-		footer += "\n<object type=\"text/html\" data=\"../resources/footer.html\"></object>";
-		return footer;
+		return "";
 	}
 
 	/**

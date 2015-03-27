@@ -43,7 +43,8 @@ public class ProjectFileController {
 
 	public String getSysHome() {
 		if (sysHome == null) {
-			sysHome = this.configService.getValueByName("SYS_HOME");
+			sysHome = this.configService
+					.getValueByName(SystemConstants.CONFIG_SYS_HOME);
 		}
 		return sysHome;
 	}
