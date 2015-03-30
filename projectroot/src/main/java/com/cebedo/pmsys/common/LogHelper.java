@@ -3,10 +3,94 @@ package com.cebedo.pmsys.common;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public class LogHelper {
 
 	private FileHelper fileHelper = new FileHelper();
+
+	/**
+	 * Generate a log message using the auth.
+	 * 
+	 * @param auth
+	 * @param message
+	 * @return
+	 */
+	public String generateLogMessage(AuthenticationToken auth, String message) {
+		// IP address.
+		String ip = "<td>" + auth.getIpAddress() + "</td>\n";
+
+		// Company.
+		Company company = auth.getCompany();
+		String companyStr = company == null ? "<td></td>\n" : "<td>"
+				+ company.getId() + " = " + company.getName() + "</td>\n";
+
+		// User.
+		SystemUser user = auth.getUser();
+		String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId()
+				+ " = " + user.getUsername() + "</td>\n";
+
+		// Staff.
+		Staff staff = auth.getStaff();
+		String staffStr = staff == null ? "<td></td>\n" : "<td>"
+				+ staff.getId() + " = " + staff.getFullName() + "</td>\n";
+
+		// Authorities.
+		String authorityStr = "";
+		Collection<GrantedAuthority> auths = auth.getAuthorities();
+		if (auths == null) {
+			authorityStr = "<td></td>\n";
+		} else {
+			authorityStr = "<td>";
+			for (GrantedAuthority authority : auths) {
+				authorityStr += authority.getAuthority() + "\n";
+			}
+			authorityStr += "</td>\n";
+		}
+
+		return ip + userStr + staffStr + companyStr + authorityStr + "<td>"
+				+ message + "</td>";
+	}
+
+	public String generateLogMessage(String ipAddr, Company company,
+			SystemUser user, Staff staff, Collection<GrantedAuthority> auths,
+			String message) {
+		// IP address.
+		String ip = "<td>" + ipAddr + "</td>\n";
+
+		// Company.
+		String companyStr = company == null ? "<td></td>\n" : "<td>"
+				+ company.getId() + " = " + company.getName() + "</td>\n";
+
+		// User.
+		String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId()
+				+ " = " + user.getUsername() + "</td>\n";
+
+		// Staff.
+		String staffStr = staff == null ? "<td></td>\n" : "<td>"
+				+ staff.getId() + " = " + staff.getFullName() + "</td>\n";
+
+		// Authorities.
+		String authorityStr = "";
+		if (auths == null) {
+			authorityStr = "<td></td>\n";
+		} else {
+			authorityStr = "<td>";
+			for (GrantedAuthority authority : auths) {
+				authorityStr += authority.getAuthority() + "\n";
+			}
+			authorityStr += "</td>\n";
+		}
+		return ip + userStr + staffStr + companyStr + authorityStr + "<td>"
+				+ message + "</td>";
+	}
 
 	public String getLogContents(String logPath) {
 		try {
@@ -17,13 +101,17 @@ public class LogHelper {
 		}
 	}
 
+	public String getLogRootDir(String rootPath) {
+		return rootPath + "/system/logs/";
+	}
+
 	/**
 	 * Generate a tree json data for the logs.
 	 * 
 	 * @return
 	 */
 	public String getLogTree(String rootPath) {
-		String root = rootPath + "/system/logs/";
+		String root = getLogRootDir(rootPath);
 		File rootDir = new File(root);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

@@ -145,23 +145,26 @@ public class CustomHTMLLayout extends Layout {
 			sbuf.append("</td>" + Layout.LINE_SEP);
 		}
 
-		sbuf.append("<td title=\"Message\">");
-		sbuf.append(Transform.escapeTags(event.getRenderedMessage()));
-		sbuf.append("</td>" + Layout.LINE_SEP);
-		sbuf.append("</tr>" + Layout.LINE_SEP);
+		// sbuf.append("<td title=\"Message\">");
+		// sbuf.append(Transform.escapeTags(event.getRenderedMessage()));
+		sbuf.append(event.getRenderedMessage());
+		// sbuf.append("</td>" + Layout.LINE_SEP);
+		sbuf.append(Layout.LINE_SEP);
 
 		if (event.getNDC() != null) {
-			sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
+			sbuf.append("<td colspan=\"6\" title=\"Nested Diagnostic Context\">");
 			sbuf.append("NDC: " + Transform.escapeTags(event.getNDC()));
-			sbuf.append("</td></tr>" + Layout.LINE_SEP);
+			sbuf.append("</td>" + Layout.LINE_SEP);
 		}
 
 		String[] s = event.getThrowableStrRep();
 		if (s != null) {
-			sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
+			sbuf.append("<td colspan=\"6\">");
 			appendThrowableAsHTML(s, sbuf);
-			sbuf.append("</td></tr>" + Layout.LINE_SEP);
+			sbuf.append("</td>" + Layout.LINE_SEP);
 		}
+
+		sbuf.append("</tr>" + Layout.LINE_SEP);
 
 		return sbuf.toString();
 	}

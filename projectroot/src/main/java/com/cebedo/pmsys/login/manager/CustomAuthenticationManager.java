@@ -15,10 +15,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
@@ -36,6 +38,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 	private static Logger logger = Logger
 			.getLogger(SystemConstants.LOGGER_LOGIN);
+	private LogHelper logHelper = new LogHelper();
 	private SystemUserService systemUserService;
 	private ServletContext servletContext;
 	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
@@ -47,8 +50,10 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 	public Authentication authenticate(Authentication auth)
 			throws AuthenticationException {
-
 		SystemUser user = null;
+		WebAuthenticationDetails details = (WebAuthenticationDetails) auth
+				.getDetails();
+		String ipAddress = details.getRemoteAddress();
 
 		try {
 			WebApplicationContext applicationContext = WebApplicationContextUtils
@@ -57,7 +62,8 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 					.getBean("systemUserService");
 			user = this.systemUserService.searchDatabase(auth.getName());
 		} catch (Exception e) {
-			String text = "User does not exist: " + auth.getName();
+			String text = this.logHelper.generateLogMessage(ipAddress, null,
+					null, null, null, "User does not exist: " + auth.getName());
 			logger.warn(text);
 			throw new BadCredentialsException(text);
 		}
@@ -66,8 +72,9 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// Make sure to encode the password first before comparing.
 		if (passwordEncoder.isPasswordValid(user.getPassword(),
 				(String) auth.getCredentials(), user.getUsername()) == false) {
-			String text = "Invalid password of user: " + user.getId() + " = "
-					+ user.getUsername();
+			String text = this.logHelper.generateLogMessage(ipAddress,
+					user.getCompany(), user, user.getStaff(), null,
+					"Invalid password.");
 			logger.error(text);
 			throw new BadCredentialsException(text);
 		}
@@ -75,19 +82,22 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// Here's the main logic of this custom authentication manager.
 		// Username and password must not be the same to authenticate.
 		if (auth.getName().equals(auth.getCredentials()) == true) {
-			String text = "Username and password are the same for user: "
-					+ user.getId() + " = " + auth.getName();
+			String text = this.logHelper.generateLogMessage(ipAddress,
+					user.getCompany(), user, user.getStaff(), null,
+					"Username and password are the same.");
 			logger.warn(text);
 			throw new BadCredentialsException(text);
 
 		} else {
 			// TODO Check if the user's company is expired.
-			logger.info("User is authenticated: " + user.getId() + " = "
-					+ auth.getName());
-			return new AuthenticationToken(auth.getName(),
+			AuthenticationToken token = new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user),
 					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
 					user.isCompanyAdmin(), user);
+			token.setIpAddress(ipAddress);
+			logger.info(this.logHelper.generateLogMessage(token,
+					"User is authenticated."));
+			return token;
 		}
 	}
 
@@ -102,19 +112,13 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		Set<SecurityRole> roles = user.getSecurityRoles();
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 
-		logger.debug("Access levels for user: " + user.getId() + " = "
-				+ user.getUsername());
 		// Add all defined access.
 		for (SecurityAccess access : accessSet) {
-			logger.debug("Access: " + access.getName());
 			authList.add(new SimpleGrantedAuthority(access.getName()));
 		}
 
-		logger.debug("Roles for user: " + user.getId() + " = "
-				+ user.getUsername());
 		// Add all roles.
 		for (SecurityRole role : roles) {
-			logger.debug("Role: " + role.getName());
 			authList.add(new SimpleGrantedAuthority(role.getName()));
 		}
 		return authList;

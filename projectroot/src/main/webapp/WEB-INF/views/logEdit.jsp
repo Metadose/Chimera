@@ -34,7 +34,15 @@
 										<th>Level</th>
 										<th>Logger</th>
 										<th>Location</th>
+										<th>IP Address</th>
+										<th>User</th>
+										<th>Staff</th>
+										<th>Company</th>
+										<th>Authorities</th>
 										<th>Message</th>
+										<c:if test="${isError}">
+											<th>Exception</th>
+										</c:if>
 										</tr>
 										</thead>
 										<tbody>

@@ -24,7 +24,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 	private Company company;
 	private boolean superAdmin;
 	private boolean companyAdmin;
-	private static AuthenticationToken token;
+	private String ipAddress;
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -135,19 +135,19 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 		this.companyAdmin = companyAdmin;
 	}
 
-	public static AuthenticationToken getToken() {
-		return token;
-	}
-
-	public static void setToken(AuthenticationToken token) {
-		AuthenticationToken.token = token;
-	}
-
 	public SystemUser getUser() {
 		return user;
 	}
 
 	public void setUser(SystemUser user) {
 		this.user = user;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 }

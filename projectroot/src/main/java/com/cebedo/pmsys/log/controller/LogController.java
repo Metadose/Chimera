@@ -19,6 +19,7 @@ public class LogController {
 
 	public static final String ATTR_LIST = "logList";
 	public static final String ATTR_CONTENT = "logContent";
+	public static final String ATTR_IS_ERROR = "isError";
 	public static final String PARAM_INPUT_LOG = "input_log_address";
 
 	public static final String MAPPING_LOG_CONTROLLER = "log";
@@ -57,6 +58,14 @@ public class LogController {
 	public String editLog(@RequestParam(PARAM_INPUT_LOG) String logPath,
 			Model model) {
 		String content = this.logHelper.getLogContents(logPath);
+		if (logPath
+				.replace("//", "/")
+				.replace(
+						this.logHelper.getLogRootDir(getSysHome()).replace(
+								"//", "/"), "").split("/")[0]
+				.equals(SystemConstants.LOGGER_ERROR)) {
+			model.addAttribute(ATTR_IS_ERROR, true);
+		}
 		model.addAttribute(ATTR_CONTENT, content);
 		return JSP_EDIT;
 	}
