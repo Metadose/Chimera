@@ -30,19 +30,27 @@
 										<thead>
 										<tr>
 										<th>Timestamp</th>
-										<th>Thread</th>
-										<th>Level</th>
-										<th>Logger</th>
-										<th>Location</th>
-										<th>IP Address</th>
-										<th>User</th>
-										<th>Staff</th>
-										<th>Company</th>
-										<th>Authorities</th>
-										<th>Message</th>
-										<c:if test="${isError}">
-											<th>Exception</th>
-										</c:if>
+										<c:choose>
+											<c:when test="${isPerformance}">
+												<th>Method</th>
+												<th>Milliseconds</th>
+											</c:when>
+											<c:when test="${!isPerformance}">
+												<th>Thread</th>
+												<th>Level</th>
+												<th>Logger</th>
+												<th>Location</th>
+												<th>IP Address</th>
+												<th>User</th>
+												<th>Staff</th>
+												<th>Company</th>
+												<th>Authorities</th>
+												<th>Message</th>
+												<c:if test="${isError}">
+													<th>Exception</th>
+												</c:if>
+											</c:when>
+										</c:choose>
 										</tr>
 										</thead>
 										<tbody>

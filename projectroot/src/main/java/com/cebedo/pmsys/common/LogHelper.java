@@ -92,6 +92,12 @@ public class LogHelper {
 				+ message + "</td>";
 	}
 
+	public boolean isSpecialView(String logPath, String sysHome, String module) {
+		return logPath.replace("//", "/")
+				.replace(getLogRootDir(sysHome).replace("//", "/"), "")
+				.split("/")[0].equals(module);
+	}
+
 	public String getLogContents(String logPath) {
 		try {
 			return this.fileHelper.getFileContents(logPath);

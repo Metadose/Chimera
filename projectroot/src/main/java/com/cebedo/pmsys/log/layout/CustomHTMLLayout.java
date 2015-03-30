@@ -8,6 +8,8 @@ import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
+import com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor;
+
 public class CustomHTMLLayout extends Layout {
 
 	protected final int BUF_SIZE = 256;
@@ -106,11 +108,21 @@ public class CustomHTMLLayout extends Layout {
 			sbuf.setLength(0);
 		}
 
+		// Start log.
 		sbuf.append(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
-
 		sbuf.append("<td>");
 		sbuf.append(sdf.format(event.timeStamp));
 		sbuf.append("</td>" + Layout.LINE_SEP);
+
+		// If this log is a performance log.
+		if (event.getLoggerName().equals(
+				CustomPerformanceInterceptor.class.getName())) {
+
+			// Log the method name and the time millis.
+			sbuf.append(event.getRenderedMessage());
+			sbuf.append("</tr>" + Layout.LINE_SEP);
+			return sbuf.toString();
+		}
 
 		String escapedThread = Transform.escapeTags(event.getThreadName());
 		sbuf.append("<td title=\"" + escapedThread + " thread\">");
@@ -145,10 +157,7 @@ public class CustomHTMLLayout extends Layout {
 			sbuf.append("</td>" + Layout.LINE_SEP);
 		}
 
-		// sbuf.append("<td title=\"Message\">");
-		// sbuf.append(Transform.escapeTags(event.getRenderedMessage()));
 		sbuf.append(event.getRenderedMessage());
-		// sbuf.append("</td>" + Layout.LINE_SEP);
 		sbuf.append(Layout.LINE_SEP);
 
 		if (event.getNDC() != null) {

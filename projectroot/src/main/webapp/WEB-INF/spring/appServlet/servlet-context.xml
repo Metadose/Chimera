@@ -6,10 +6,13 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:p="http://www.springframework.org/schema/p" 
     xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx
@@ -17,6 +20,14 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
+	<!-- Performance logging -->
+	<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor" />
+    <aop:config>
+        <aop:pointcut id="allServiceMethods" expression="execution(* com.cebedo.pmsys.*.service.*.*(..))"/>
+        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
+    </aop:config>
+	
+	<!-- Exception logging -->
 	<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.log.resolver.LoggingExceptionResolver">
 	    <beans:property name="exceptionMappings">
 	        <beans:props>
