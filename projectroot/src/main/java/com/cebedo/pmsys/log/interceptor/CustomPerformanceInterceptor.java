@@ -8,6 +8,7 @@ import org.springframework.util.StopWatch;
 public class CustomPerformanceInterceptor extends AbstractMonitoringInterceptor {
 
 	private static final long serialVersionUID = 1L;
+	private static final int THRESHOLD_MIN = 500;
 
 	/**
 	 * Create a new PerformanceMonitorInterceptor with a static logger.
@@ -40,7 +41,9 @@ public class CustomPerformanceInterceptor extends AbstractMonitoringInterceptor 
 			stopWatch.stop();
 			long timeMillis = stopWatch.getTotalTimeMillis();
 			String logStr = "<td>" + name + "</td><td>" + timeMillis + "</td>";
-			if (timeMillis > 0) {
+
+			// Log only requests that take more than the minimum threshold.
+			if (timeMillis > THRESHOLD_MIN) {
 				logger.trace(logStr);
 			}
 		}

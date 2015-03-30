@@ -19,6 +19,7 @@ public class LogController {
 
 	public static final String ATTR_LIST = "logList";
 	public static final String ATTR_CONTENT = "logContent";
+	public static final String ATTR_PATH = "logPath";
 	public static final String ATTR_IS_ERROR = "isError";
 	public static final String ATTR_IS_PERFORMANCE = "isPerformance";
 	public static final String PARAM_INPUT_LOG = "input_log_address";
@@ -71,6 +72,7 @@ public class LogController {
 			model.addAttribute(ATTR_IS_PERFORMANCE, true);
 		}
 		model.addAttribute(ATTR_CONTENT, content);
+		model.addAttribute(ATTR_PATH, logPath);
 		return JSP_EDIT;
 	}
 }

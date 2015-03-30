@@ -16,8 +16,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Field ${action}
-	                <small>Complete list of all fields</small>
+	                Log Manager
+	                <small>List of system logs</small>
 	            </h1>
 	        </section>
 	        <section class="content">

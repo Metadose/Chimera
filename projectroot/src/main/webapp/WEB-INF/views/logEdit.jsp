@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,8 +15,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Field ${action}
-	                <small>Complete list of all fields</small>
+	                Log Viewer
+	                <small>${logPath}</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -26,6 +27,9 @@
                                 
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
+                                	<a href="${contextPath}/log/list">
+                                		<button class="btn btn-default btn-flat btn-sm">Back</button>
+                                	</a><br/><br/>
 	                                <table id="log-table" class="table table-bordered table-striped">
 										<thead>
 										<tr>
