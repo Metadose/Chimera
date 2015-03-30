@@ -45,8 +45,18 @@
 	</filter-mapping>
 	
 	<error-page>
-		<error-code>404</error-code>
+		<error-code>500</error-code>
 		<location>/fix</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>405</error-code>
+		<location>/fix</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/fix/404</location>
 	</error-page>
 	
 	<error-page>

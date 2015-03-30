@@ -50,7 +50,7 @@ public class LogHelper {
 		} else {
 			authorityStr = "<td>";
 			for (GrantedAuthority authority : auths) {
-				authorityStr += authority.getAuthority() + "\n";
+				authorityStr += authority.getAuthority() + "<br/>\n";
 			}
 			authorityStr += "</td>\n";
 		}
@@ -84,7 +84,7 @@ public class LogHelper {
 		} else {
 			authorityStr = "<td>";
 			for (GrantedAuthority authority : auths) {
-				authorityStr += authority.getAuthority() + "\n";
+				authorityStr += authority.getAuthority() + "<br/>\n";
 			}
 			authorityStr += "</td>\n";
 		}
