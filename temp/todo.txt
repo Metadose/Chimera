@@ -12,14 +12,16 @@ projedit
 = tasks
 ==== DONE
 
+= timeline
+invalid day index of timeline
+
 = project file
 ==== DONE
 
 = photos
 implement "edit description"
 
-= bugs
-invalid day index of timeline
+
 
 
 = todo
@@ -33,4 +35,3 @@ Custom progress/status fields, custom sd ang color.
 
 Prioritize sec grup, audit, nd basic pmsys functions
 
-Add more in salt md5 encryption (change password feature una, para di naka mag usab ug users)
