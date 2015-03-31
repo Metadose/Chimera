@@ -125,12 +125,12 @@ function logout(){
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-wrench"></i>
-                    <span>Settings</span>
+                    <span>My Account</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Update Profile</a></li>
-                    <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Change Password</a></li>
+                    <li><a href="${contextPath}/systemuser/changepassword"><i class="fa fa-angle-double-right"></i> Change Password</a></li>
                 </ul>
             </li>
             <c:if test="${authUser.superAdmin == true}">

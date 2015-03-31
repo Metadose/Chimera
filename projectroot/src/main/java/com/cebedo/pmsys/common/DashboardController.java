@@ -11,5 +11,4 @@ public class DashboardController {
 	public String view() {
 		return "dashboard";
 	}
-
 }

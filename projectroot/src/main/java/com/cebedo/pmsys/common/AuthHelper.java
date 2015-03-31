@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.common;
 
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -17,6 +18,9 @@ import com.cebedo.pmsys.team.model.Team;
 
 public class AuthHelper {
 
+	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
+	private static final String PASSWORD_SALT = "3edc4rfv5tgb";
+
 	/**
 	 * Get the authentication object from the context.
 	 * 
@@ -25,6 +29,16 @@ public class AuthHelper {
 	public AuthenticationToken getAuth() {
 		return (AuthenticationToken) SecurityContextHolder.getContext()
 				.getAuthentication();
+	}
+
+	public boolean isPasswordValid(String rawPassword, SystemUser user) {
+		return this.passwordEncoder.isPasswordValid(user.getPassword(),
+				rawPassword, user.getUsername() + PASSWORD_SALT);
+	}
+
+	public String encodePassword(String rawPassword, SystemUser user) {
+		return this.passwordEncoder.encodePassword(rawPassword,
+				user.getUsername() + PASSWORD_SALT);
 	}
 
 	public boolean notNullObjNotSuperAdmin(Object obj) {

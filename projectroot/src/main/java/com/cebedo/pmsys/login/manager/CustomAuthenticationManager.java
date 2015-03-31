@@ -10,7 +10,6 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +19,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
@@ -41,7 +41,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 	private LogHelper logHelper = new LogHelper();
 	private SystemUserService systemUserService;
 	private ServletContext servletContext;
-	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
+	private AuthHelper authHelper = new AuthHelper();
 
 	@Override
 	public void setServletContext(ServletContext context) {
@@ -70,12 +70,12 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 		// Compare passwords.
 		// Make sure to encode the password first before comparing.
-		if (passwordEncoder.isPasswordValid(user.getPassword(),
-				(String) auth.getCredentials(), user.getUsername()) == false) {
+		if (this.authHelper.isPasswordValid((String) auth.getCredentials(),
+				user) == false) {
 			String text = this.logHelper.generateLogMessage(ipAddress,
 					user.getCompany(), user, user.getStaff(), null,
 					"Invalid password.");
-			logger.error(text);
+			logger.warn(text);
 			throw new BadCredentialsException(text);
 		}
 

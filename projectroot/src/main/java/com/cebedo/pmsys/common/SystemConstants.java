@@ -18,6 +18,7 @@ public abstract class SystemConstants {
 	public static final String REQUEST_LIST = "list";
 	public static final String REQUEST_EDIT = "edit";
 	public static final String REQUEST_DELETE = "delete";
+	public static final String REQUEST_CHANGE_PASSWORD = "changepassword";
 	public static final String REQUEST_CREATE = "create";
 	public static final String REQUEST_UPDATE = "update";
 	public static final String REQUEST_MARK = "mark";
@@ -44,6 +45,7 @@ public abstract class SystemConstants {
 	public static final String NEW = "new";
 	public static final String FROM = "from";
 	public static final String ALL = "all";
+	public static final String EXECUTE = "execute";
 	public static final String FROM_PROJECT = FROM + "/" + Project.OBJECT_NAME;
 
 	public static final String REQUEST_ASSIGN_PROJECT = "assign/project";

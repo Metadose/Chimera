@@ -16,7 +16,7 @@ projedit
 ==== DONE
 
 = photos
-implement edit description
+implement "edit description"
 
 = bugs
 invalid day index of timeline
