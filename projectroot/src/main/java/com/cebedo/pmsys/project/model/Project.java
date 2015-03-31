@@ -144,6 +144,7 @@ public class Project implements Serializable {
 	/**
 	 * Project to Task many-to-many without extra columns.
 	 */
+	@OrderBy(Task.COLUMN_DATE_START)
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Task> getAssignedTasks() {
 		return assignedTasks;
@@ -189,6 +190,7 @@ public class Project implements Serializable {
 		this.files = files;
 	}
 
+	@OrderBy(Photo.COLUMN_PRIMARY_KEY)
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Photo> getPhotos() {
 		return photos;

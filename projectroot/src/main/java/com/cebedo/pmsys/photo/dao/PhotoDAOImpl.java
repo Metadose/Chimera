@@ -65,4 +65,11 @@ public class PhotoDAOImpl implements PhotoDAO {
 		return photoList;
 	}
 
+	@Override
+	public String getNameByID(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String result = this.daoHelper.getProjectionByID(session, Photo.class,
+				Photo.PROPERTY_ID, id, Photo.PROPERTY_NAME);
+		return result;
+	}
 }

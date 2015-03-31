@@ -26,6 +26,9 @@ public class Photo implements Serializable {
 	public static final String TABLE_NAME = "photos";
 	public static final String COLUMN_PRIMARY_KEY = "photo_id";
 
+	public static final String PROPERTY_ID = "id";
+	public static final String PROPERTY_NAME = "name";
+
 	private static final long serialVersionUID = 1L;
 
 	private long id;

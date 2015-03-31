@@ -178,11 +178,42 @@ public class PhotoController {
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
 	public ModelAndView delete(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Photo.COLUMN_PRIMARY_KEY) int id) {
+			@RequestParam(Photo.COLUMN_PRIMARY_KEY) long id,
+			RedirectAttributes redirectAttrs) {
+		String name = this.photoService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> photo <b>" + name
+				+ "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		this.photoService.delete(id);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);
+	}
+
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	public String editPhotoFromOrigin(
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id, Model model) {
+
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+
+		if (id == 0) {
+			model.addAttribute(ATTR_PHOTO, new Photo());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+
+		model.addAttribute(ATTR_PHOTO, this.photoService.getByID(id));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+
+		return JSP_EDIT;
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")

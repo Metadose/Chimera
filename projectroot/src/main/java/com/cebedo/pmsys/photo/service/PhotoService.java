@@ -28,4 +28,6 @@ public interface PhotoService {
 
 	public void deleteProjectProfile(long projectID);
 
+	public String getNameByID(long id);
+
 }

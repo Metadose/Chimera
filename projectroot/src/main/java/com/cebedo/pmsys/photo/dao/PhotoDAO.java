@@ -16,4 +16,6 @@ public interface PhotoDAO {
 
 	public List<Photo> list(Long companyID);
 
+	public String getNameByID(long id);
+
 }

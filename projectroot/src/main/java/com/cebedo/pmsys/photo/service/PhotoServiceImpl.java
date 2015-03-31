@@ -268,4 +268,10 @@ public class PhotoServiceImpl implements PhotoService {
 		Long companyID = auth.getCompany().getId();
 		return this.photoDAO.list(companyID);
 	}
+
+	@Override
+	@Transactional
+	public String getNameByID(long id) {
+		return this.photoDAO.getNameByID(id);
+	}
 }

@@ -306,12 +306,12 @@
 		                                            <tr>
 			                                        	<th>&nbsp;</th>
 			                                            <th>Status</th>
+			                                            <th>Start</th>
+			                                            <th>Duration</th>
 			                                            <th>Title</th>
 			                                            <th>Content</th>
 			                                            <th>Team</th>
 			                                            <th>Staff</th>
-			                                            <th>Start</th>
-			                                            <th>Duration</th>
 			                                        </tr>
                                         		</thead>
 		                                        <tbody>
@@ -372,6 +372,8 @@
 						                                            	</c:when>
 						                                            </c:choose>
 					                                            </td>
+					                                            <td>${task.dateStart}</td>
+					                                            <td>${task.duration}</td>
 					                                            <td>
 					                                            ${task.title}
 					                                            </td>
@@ -411,8 +413,6 @@
 					                                            		</c:when>
 					                                            	</c:choose>					                                            
 					                                            </td>
-					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.duration}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 	                                        		</c:if>
@@ -530,6 +530,12 @@
 									     		<c:forEach items="${project.photos}" var="photo">
 									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
+<%-- 														<form id="photoViewForm" action="${contextPath}/photo/edit/from/origin" method="post"> --%>
+<%-- 															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
+<!-- 															<input type="hidden" name="origin" value="project"/> -->
+<%-- 															<input type="hidden" name="originID" value="${project.id}"/> --%>
+<%-- 															<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/> --%>
+<!-- 														</form> -->
 														<form action="${contextPath}/photo/delete" method="post">
 															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 															<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
@@ -541,8 +547,9 @@
 															<c:set var="photoUploader" value="${photo.uploader}"/>
 															<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
 															<h6>${photoUploaderName}</h6>
-															<button class="btn btn-default btn-flat btn-sm" id="photoDeleteButton">Delete</button>
+															<button class="btn btn-default btn-flat btn-sm">Delete</button>
 														</form>
+<!-- 														<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('photoViewForm')">View</button> -->
 													</li>
 									     		</c:forEach>
 										     </ul>
@@ -550,7 +557,7 @@
        								</div>
        								</div>
 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								      <div class="modal-dialog">
+								      <div id="modal-dialog" class="modal-dialog modal-lg">
 								        <div class="modal-content">         
 								          <div class="modal-body">                
 								          </div>
@@ -875,8 +882,10 @@
 	        var index = $(this).attr('href');
 	        var src = $('ul.row li:nth-child('+ index +') img').attr('src');             
 	        $('.modal-body img').attr('src', src);
+            
 	        var newPrevIndex = parseInt(index) - 1; 
 	        var newNextIndex = parseInt(newPrevIndex) + 2; 
+	        
 	        if($(this).hasClass('previous')){               
 	            $(this).attr('href', newPrevIndex); 
 	            $('a.next').attr('href', newNextIndex);
@@ -884,19 +893,22 @@
 	            $(this).attr('href', newNextIndex); 
 	            $('a.previous').attr('href', newPrevIndex);
 	        }
+	        
 	        var total = $('ul.row li').length + 1; 
 	        // Hide next button.
 	        if(total === newNextIndex){
 	            $('a.next').hide();
 	        }else{
 	            $('a.next').show()
-	        }            
+	        }
+	        
 	        // Hide previous button.
 	        if(newPrevIndex === 0){
 	            $('a.previous').hide();
 	        }else{
 	            $('a.previous').show()
 	        }
+	        
 	        return false;
 	    });
 		
@@ -911,17 +923,18 @@
 			// Event handler for photos.
 			$('li img').on('click',function(){
                 var src = $(this).attr('src');
-                var img = '<img src="' + src + '" class="img-responsive"/>';
-                //start of new code new code
-                var index = $(this).parent('li').index();   
+                var img = '<img id="popupImage" src="' + src + '" class="img-responsive"/>';
+                var index = $(this).parent('li').index();
                 var html = '';
                 html += img;                
-                html += '<div style="clear:both;padding-top: 5px;display:block;">';
+                html += '<br/><div>';
+               
                 // Previous button.
                 html += '<a class="controls previous" href="' + (index) + '">';
                 html += '<button class="btn btn-default btn-flat btn-sm">Previous</button>';
                 html += '</a>';
                 html += '&nbsp;';
+               
                 // Next button.
                 html += '<a class="controls next" href="'+ (index+2) + '">';
                 html += '<button class="btn btn-default btn-flat btn-sm">Next</button>';

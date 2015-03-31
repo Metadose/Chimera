@@ -35,6 +35,7 @@ public class Task implements Serializable {
 	public static final String OBJECT_NAME = "task";
 
 	public static final String COLUMN_PRIMARY_KEY = "task_id";
+	public static final String COLUMN_DATE_START = "date_start";
 	public static final String COLUMN_STATUS = "status";
 
 	public static final String PROPERTY_ID = "id";

@@ -10,14 +10,13 @@ projedit
 ==== DONE
 
 = tasks
-order by startdate
+==== DONE
 
 = project file
 ==== DONE
 
 = photos
-butngan ug view nga button
-ang delete walay notifs after action
+implement edit description
 
 = bugs
 invalid day index of timeline

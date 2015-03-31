@@ -2,8 +2,9 @@
 gantt.config.columns = [
     {name:"text",       label:" ",  width:"*", tree:true },
     {name:"start_date", label:"Start", align: "center" },
-    {name:"duration",   label:"Man Days",   align: "center" },
-    {name:"add",        label:"",           width:44 }
+    {name:"duration",   label:"Man Days",   align: "center" }
+//    ,
+//    {name:"add",        label:"",           width:44 }
 ];
 
 // Text for the task.
