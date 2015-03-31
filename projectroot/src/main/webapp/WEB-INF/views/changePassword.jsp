@@ -30,13 +30,14 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Change Password
-	                <small>${user.username}</small>
+	                ${user.username}
+	                <small>Change Password</small>
 	            </h1>
 	        </section>
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">

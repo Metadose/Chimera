@@ -6,6 +6,8 @@ public class AlertBoxFactory {
 
 	public static AlertBoxFactory SUCCESS = new AlertBoxFactory(
 			SystemConstants.UI_STATUS_SUCCESS);
+	public static AlertBoxFactory ERROR = new AlertBoxFactory(
+			SystemConstants.UI_STATUS_DANGER);
 
 	private final String CONFIG_ALERT_STATUS = "ALERT_STATUS";
 	private final String CONFIG_ALERT_HEADER = "ALERT_HEADER";

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -76,7 +77,10 @@ public class SystemUserController {
 			@RequestParam(PARAM_OLD_PASS) String passwordOld,
 			@RequestParam(PARAM_OLD_PASS_RETYPE) String passwordOldRetype,
 			@RequestParam(PARAM_NEW_PASS) String passwordNew,
-			@RequestParam(SystemUser.COLUMN_PRIMARY_KEY) long userID) {
+			@RequestParam(SystemUser.COLUMN_PRIMARY_KEY) long userID,
+			Model model) {
+
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
 
 		// Check if the passwords typed are equal.
 		if (passwordOld.equals(passwordOldRetype)) {
@@ -89,15 +93,24 @@ public class SystemUserController {
 						passwordNew, user);
 				user.setPassword(encPassword);
 				this.systemUserService.update(user);
+				alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+				alertFactory.setMessage("Successfully changed your password.");
 			} else {
 				// Construct error alert. Password is not valid.
+				alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+				alertFactory
+						.setMessage("Incorrect password. Please try again.");
 			}
 		} else {
 			// Construct error alert. Old passwords are not equal.
+			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			alertFactory
+					.setMessage("The old passwords you entered were not the same. Please try again.");
 		}
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		// Redirect back to change pass page.
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-				+ SystemConstants.REQUEST_LIST;
+		return JSP_CHANGE_PASSWORD;
 	}
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
