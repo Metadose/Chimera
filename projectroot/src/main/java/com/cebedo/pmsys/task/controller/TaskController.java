@@ -345,14 +345,15 @@ public class TaskController {
 	}
 
 	/**
-	 * Mark the status based on param passed.
+	 * Mark the task status based on param passed. The method is GET since the
+	 * mark action is done via a href.
 	 * 
 	 * @param taskID
 	 * @param status
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_MARK, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_MARK, method = RequestMethod.GET)
 	public ModelAndView mark(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Task.COLUMN_STATUS) int status,
@@ -372,7 +373,8 @@ public class TaskController {
 	}
 
 	/**
-	 * Set the project task to the status specified.
+	 * Set the project task to the status specified. The method is GET since the
+	 * mark action is done via a href.
 	 * 
 	 * @param projectID
 	 * @param taskID
@@ -381,7 +383,7 @@ public class TaskController {
 	 */
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_MARK + "/"
-			+ Project.OBJECT_NAME, method = RequestMethod.POST)
+			+ Project.OBJECT_NAME, method = RequestMethod.GET)
 	public ModelAndView markProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,

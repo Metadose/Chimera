@@ -57,7 +57,7 @@
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
-		                                <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
+		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
                                 	</c:when>
@@ -327,11 +327,11 @@
 							                                                <span class="caret"></span>
 							                                            </button>
 							                                            <ul class="dropdown-menu">
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0">New</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1">Ongoing</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2">Completed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3">Failed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4">Cancelled</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
 <!-- 							                                                <li class="divider"></li> -->
 <!-- 							                                                <li><a href="#">Separated link</a></li> -->
 							                                            </ul>
@@ -425,8 +425,7 @@
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">
                                     	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-                                    	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project">
-                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project?${_csrf.parameterName}=${_csrf.token}">
 											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 											<label for="exampleInputFile">File Upload (20MB Max)</label>
 											<input type="file" id="file" name="file"/><br/>
@@ -516,8 +515,7 @@
                                 <div class="tab-pane" id="tab_4">
                                 	<div class="box box-default">
                                 	<div class="box-body">
-                                    <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project">
-                                    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project?${_csrf.parameterName}=${_csrf.token}">
 										<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
 										<label for="exampleInputFile">Upload Photo (20MB Max)</label>
 										<input type="file" id="file" name="file"/><br/>

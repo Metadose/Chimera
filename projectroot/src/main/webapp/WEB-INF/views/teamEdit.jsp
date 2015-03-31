@@ -47,7 +47,7 @@
                                 <li><a href="#tab_3" data-toggle="tab">Members</a></li>
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
-                                <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">

@@ -31,7 +31,7 @@
 					<div class="nav-tabs-custom">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#tab_list" data-toggle="tab">List</a></li>
-							<li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
+							<li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 						</ul>
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab_list">

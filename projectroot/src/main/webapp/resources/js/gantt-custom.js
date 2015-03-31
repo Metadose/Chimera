@@ -22,16 +22,6 @@ gantt.config.subscales = [
 	{unit:"day", step:1, date:"%j, %D" }
 ];
 
-// Code to call as a workaround over gantt bug where chart doesn't
-// render if placed in a tab.
-var ganttRendered = false;
-$("#tab_timeline-href").mouseout(function() {
-	if(!ganttRendered){
-		ganttRendered = true;
-		gantt.render();
-	}
-});
-
 //Returned string refers to a CSS declared above.
 gantt.templates.task_class = function(start, end, task){
 	if(task.status == 0){

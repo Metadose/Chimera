@@ -1,6 +1,12 @@
 // Store the currently selected tab in the hash value.
 $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 	var id = $(e.target).attr("href").substr(1);
+	
+	// Code to call as a workaround over gantt bug where chart doesn't
+	// render if placed in a tab.
+	if(id == "tab_timeline"){
+		gantt.render();
+	}
     window.name = id;
 });
 

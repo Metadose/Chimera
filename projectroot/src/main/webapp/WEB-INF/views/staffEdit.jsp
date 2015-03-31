@@ -54,7 +54,7 @@
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
-                                <li><a href="#tab_timeline" id="tab_timeline-href" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
