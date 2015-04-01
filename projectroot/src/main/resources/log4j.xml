@@ -12,43 +12,57 @@
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/error/error.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
 	<appender name="loginFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/login/login.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
 	<appender name="companyFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/company/company.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
 	<appender name="projectFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/project/project.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
 	<appender name="projectFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/project/project.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
 	<appender name="performanceFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/performance/performance.html" />
-	    <layout class= "com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
+	
+	<appender name="hdivFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/hdiv/hdiv.html" />
+	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
+	</appender>
+	
+	<!-- HDIV Logger -->
+	<logger name="org.hdiv.logs">
+		<level value="debug" />
+		<appender-ref ref="console" />
+		<appender-ref ref="hdivFile"/>
+	</logger>
 	
 	<!-- Performance Loggers -->
 	<logger name="com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor">

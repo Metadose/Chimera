@@ -259,7 +259,7 @@
 		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${member.id}" class="img-circle"/>
 		                                                			</c:when>
 		                                                			<c:when test="${empty member.thumbnailURL}">
-		                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
+		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
 		                                                			</c:when>
 			                                                		</c:choose>
 													            </div>

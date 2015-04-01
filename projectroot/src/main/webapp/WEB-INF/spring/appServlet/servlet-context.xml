@@ -6,11 +6,15 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:p="http://www.springframework.org/schema/p" 
     xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:hdiv="http://www.hdiv.org/schema/hdiv" 
     xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.hdiv.org/schema/hdiv
+		http://www.hdiv.org/schema/hdiv/hdiv.xsd
 		http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/context
@@ -19,6 +23,33 @@
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<!-- HDIV Config -->
+	<beans:bean id="hdivEditableValidator" class="org.hdiv.web.validator.EditableParameterValidator"/>
+	<mvc:annotation-driven validator="hdivEditableValidator"/>
+	
+	<hdiv:validation id="customValidation" componentType="text">
+	    <hdiv:acceptedPattern><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></hdiv:acceptedPattern>
+	</hdiv:validation>
+	
+	<hdiv:editableValidations registerDefaults="true">
+		<hdiv:validationRule url=".*" enableDefaults="true">customValidation</hdiv:validationRule>
+	</hdiv:editableValidations>
+	
+	<hdiv:config	
+		debugMode="false"
+		avoidValidationInUrlsWithoutParams="false"
+		avoidCookiesIntegrity="false"
+		avoidCookiesConfidentiality="false"
+		maxPagesPerSession="3"
+		errorPage="/fix"
+		excludedExtensions="css,png,gif,jpeg,jpg,js,woff"
+		strategy="memory"
+		confidentiality="true">
+		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/>
+		<hdiv:startPages>/auth/login</hdiv:startPages>
+	</hdiv:config>
+	
 		
 	<!-- Performance logging -->
 	<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor" />
@@ -287,10 +318,9 @@
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     
-    <beans:bean id="multipartResolver"
-        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-         <!-- setting maximum upload size -->
-        <beans:property name="maxUploadSize" value="20000000" />
-    </beans:bean>
+    <!-- HDIV multipart resolver -->
+    <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">
+	    <beans:property name="maxUploadSize" value="20000000" />
+	</beans:bean>
  
 </beans:beans>

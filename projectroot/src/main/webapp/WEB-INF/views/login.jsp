@@ -25,7 +25,7 @@
 <body class="bg-black">
         <div class="form-box" id="login-box">
             <div class="header">Log In</div>
-            <form action="${contextPath}/j_spring_security_check" method="post">
+            <form:form action="${contextPath}/j_spring_security_check" method="post">
               	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <div class="body bg-gray">
                     <div class="form-group">
@@ -45,7 +45,7 @@
 
                     <a href="register.html" class="text-center">Register a new membership</a>
                 </div>
-            </form>
+            </form:form>
 <!--             <div class="margin text-center"> -->
 <!--                 <span>Sign in using social networks</span> -->
 <!--                 <br/> -->

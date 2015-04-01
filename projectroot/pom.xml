@@ -13,6 +13,7 @@
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<hibernate.version>4.3.8.Final</hibernate.version>
+		<hdiv-version>2.1.9</hdiv-version>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -204,6 +205,31 @@
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
 		    <version>2.4</version>
+		</dependency>
+		
+		<!-- HDIV Web App Security -->
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-core</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
+		 
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-config</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
+		 
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-spring-mvc</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-jstl-taglibs-1.2</artifactId>
+		    <version>${hdiv-version}</version>
 		</dependency>
 	</dependencies>
     <build>

@@ -685,7 +685,7 @@
 		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${manager.id}" class="img-circle"/>
 		                                                			</c:when>
 		                                                			<c:when test="${empty manager.thumbnailURL}">
-		                                                				<img src="/pmsys/resources/img/avatar5.png" class="img-circle">
+		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
 		                                                			</c:when>
 			                                                		</c:choose>
 													            </div>
