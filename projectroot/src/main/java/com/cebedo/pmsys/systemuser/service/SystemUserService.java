@@ -6,6 +6,8 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public interface SystemUserService {
 
+	public void initRoot();
+
 	public List<SystemUser> list();
 
 	public void create(SystemUser user);

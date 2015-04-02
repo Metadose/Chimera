@@ -4,11 +4,15 @@
 package com.cebedo.pmsys.login.controller;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
+import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
 /**
  * Handles and retrieves the login or denied page depending on the URI template
@@ -17,33 +21,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/auth")
 public class LoginLogoutController {
 
-	protected static Logger logger = Logger.getLogger("controller");
+	protected static Logger logger = Logger
+			.getLogger(SystemConstants.LOGGER_LOGIN);
 	public static final String JSP_LOGIN = "login";
+	public static final String JSP_INIT = "init";
+	public static Boolean appInit = null;
+	private SystemConfigurationService configService;
+	private SystemUserService systemUserService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "systemUserService")
+	public void setSystemUserService(SystemUserService ps) {
+		this.systemUserService = ps;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "systemConfigurationService")
+	public void setFieldService(SystemConfigurationService ps) {
+		this.configService = ps;
+	}
 
 	/**
-	 * Handles and retrieves the login JSP page
+	 * Handles and retrieves the login JSP page.
 	 * 
 	 * @return the name of the JSP page
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String getLoginPage(
-			@RequestParam(value = "error", required = false) boolean error,
-			ModelMap model) {
-		logger.debug("Received request to show login page");
+	public String getLoginPage() {
+		// If no value, get value.
+		if (appInit == null) {
+			String valStr = this.configService
+					.getValueByName(SystemConstants.CONFIG_ROOT_INIT);
+			appInit = Boolean.valueOf(valStr);
 
-		// Add an error message to the model if login is unsuccessful
-		// The 'error' parameter is set to true based on the when the
-		// authentication has failed.
-		// We declared this under the defaultFailureUrl attribute inside the
-		// spring-security.xml
-
-		if (error == true) {
-			// Assign an error message
-			model.put("error",
-					"You have entered an invalid username or password!");
-		} else {
-			model.put("error", "");
+			if (appInit == null) {
+				// TODO Crash then log.
+			}
 		}
+
+		// If not yet init. Init it.
+		if (!appInit) {
+			this.systemUserService.initRoot();
+		}
+
+		// If init already.
 
 		return JSP_LOGIN;
 	}
@@ -56,9 +77,8 @@ public class LoginLogoutController {
 	 */
 	@RequestMapping(value = "/denied", method = RequestMethod.GET)
 	public String getDeniedPage() {
-		logger.debug("Received request to show denied page");
-
-		// This will resolve to /WEB-INF/jsp/deniedpage.jsp
+		// TODO
+		// logger.debug("Received request to show denied page");
 		return "deniedpage";
 	}
 }

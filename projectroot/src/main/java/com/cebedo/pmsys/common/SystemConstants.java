@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.common;
 
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public abstract class SystemConstants {
 
 	public static final String CONFIG_SYS_HOME = "SYS_HOME";
+	public static final String CONFIG_ROOT_INIT = "ROOT_INIT";
 
 	public static final String CONTROLLER_REDIRECT = "redirect:/";
 
@@ -79,6 +81,7 @@ public abstract class SystemConstants {
 	public static final String UI_STATUS_WARNING = "warning";
 
 	public static final String LOGGER_LOGIN = "login";
+	public static final String LOGGER_SYSTEM_USER = SystemUser.OBJECT_NAME;
 	public static final String LOGGER_ERROR = "error";
 	public static final String LOGGER_PERFORMANCE = "performance";
 }

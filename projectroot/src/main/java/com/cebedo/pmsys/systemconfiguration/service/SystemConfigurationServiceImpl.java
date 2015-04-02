@@ -78,4 +78,10 @@ public class SystemConfigurationServiceImpl implements
 		SystemConfiguration conf = this.systemConfigurationDAO.getByName(name);
 		return conf.getValue();
 	}
+
+	@Override
+	@Transactional
+	public SystemConfiguration getByName(String name) {
+		return this.systemConfigurationDAO.getByName(name);
+	}
 }

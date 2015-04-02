@@ -84,4 +84,10 @@ public class SystemConfigurationDAOImpl implements SystemConfigurationDAO {
 		return systemConfiguration;
 	}
 
+	@Override
+	public void merge(SystemConfiguration config) {
+		Session session = this.sessionFactory.getCurrentSession();
+		session.merge(config);
+	}
+
 }

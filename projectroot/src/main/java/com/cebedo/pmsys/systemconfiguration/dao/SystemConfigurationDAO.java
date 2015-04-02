@@ -20,4 +20,6 @@ public interface SystemConfigurationDAO {
 
 	public SystemConfiguration getByName(String name);
 
+	public void merge(SystemConfiguration config);
+
 }

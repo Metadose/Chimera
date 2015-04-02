@@ -16,6 +16,10 @@ public class LogHelper {
 
 	private FileHelper fileHelper = new FileHelper();
 
+	public String generateLogMessage(String message) {
+		return generateLogMessage(null, null, null, null, null, message);
+	}
+
 	/**
 	 * Generate a log message using the auth.
 	 * 
@@ -24,6 +28,9 @@ public class LogHelper {
 	 * @return
 	 */
 	public String generateLogMessage(AuthenticationToken auth, String message) {
+		if (auth == null) {
+			return generateLogMessage(message);
+		}
 		// IP address.
 		String ip = "<td>" + auth.getIpAddress() + "</td>\n";
 
@@ -63,7 +70,7 @@ public class LogHelper {
 			SystemUser user, Staff staff, Collection<GrantedAuthority> auths,
 			String message) {
 		// IP address.
-		String ip = "<td>" + ipAddr + "</td>\n";
+		String ip = "<td>" + (ipAddr == null ? "" : ipAddr) + "</td>\n";
 
 		// Company.
 		String companyStr = company == null ? "<td></td>\n" : "<td>"

@@ -89,6 +89,7 @@ public class SystemUserController {
 			// If the password passed is valid.
 			if (this.authHelper.isPasswordValid(passwordOld, user)) {
 
+				// TODO Move this inside the service class.
 				String encPassword = this.authHelper.encodePassword(
 						passwordNew, user);
 				user.setPassword(encPassword);

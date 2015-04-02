@@ -18,4 +18,6 @@ public interface SystemConfigurationService {
 
 	public String getValueByName(String name);
 
+	public SystemConfiguration getByName(String name);
+
 }

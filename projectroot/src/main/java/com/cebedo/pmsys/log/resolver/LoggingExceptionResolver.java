@@ -22,7 +22,12 @@ public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected void logException(Exception ex, HttpServletRequest request) {
-		AuthenticationToken auth = this.authHelper.getAuth();
+		AuthenticationToken auth = null;
+		try {
+			auth = this.authHelper.getAuth();
+		} catch (Exception e) {
+			;
+		}
 		String logStr = buildLogMessage(ex, request) + "<br/><br/>";
 
 		// URL.
