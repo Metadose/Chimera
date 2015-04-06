@@ -17,6 +17,8 @@ import com.cebedo.pmsys.security.securityaccess.dao.SecurityAccessDAO;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.dao.SecurityRoleDAO;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.staff.dao.StaffDAO;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.dao.SystemUserDAO;
@@ -27,6 +29,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	private AuthHelper authHelper = new AuthHelper();
 	private SystemUserDAO systemUserDAO;
+	private StaffDAO staffDAO;
 	private SecurityAccessDAO securityAccessDAO;
 	private SecurityRoleDAO securityRoleDAO;
 	private SystemConfigurationDAO systemConfigurationDAO;
@@ -39,6 +42,10 @@ public class SystemUserServiceImpl implements SystemUserService {
 	public void setSystemConfigurationDAO(
 			SystemConfigurationDAO systemConfigurationDAO) {
 		this.systemConfigurationDAO = systemConfigurationDAO;
+	}
+
+	public void setStaffDAO(StaffDAO staffDAO) {
+		this.staffDAO = staffDAO;
 	}
 
 	public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
@@ -95,10 +102,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 		this.systemUserDAO.create(systemUser);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
+		Staff staff = new Staff();
 		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			systemUser.setCompany(authCompany);
-			this.systemUserDAO.update(systemUser);
+			staff.setCompany(authCompany);
 		}
+		this.staffDAO.create(staff);
+		systemUser.setStaff(staff);
+		this.systemUserDAO.update(systemUser);
 	}
 
 	@Override

@@ -37,7 +37,7 @@
 	</hdiv:editableValidations>
 	
 	<hdiv:config	
-		debugMode="false"
+		debugMode="true"
 		avoidValidationInUrlsWithoutParams="false"
 		avoidCookiesIntegrity="false"
 		avoidCookiesConfidentiality="false"
@@ -292,6 +292,7 @@
     </beans:bean>
     <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
+        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="companyDAO" class="com.cebedo.pmsys.company.dao.CompanyDAOImpl">

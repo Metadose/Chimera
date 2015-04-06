@@ -4,11 +4,6 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <sec:authentication var="authUser" property="user"/>
 <sec:authentication var="authStaff" property="staff"/>
-<script type="text/javascript">
-function logout(){
-	document.getElementById('logoutForm').submit();
-}
-</script>
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -97,10 +92,10 @@ function logout(){
                 </a>
             </li>
             </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_SYSTEMUSER')">
+            <sec:authorize access="hasRole('ROLE_SYSTEMUSER_EDITOR')">
             <li>
                 <a href="${contextPath}/systemuser/list/">
-                    <i class="fa fa-user"></i> <span>Users</span>
+                    <i class="fa fa-male"></i> <span>Users</span>
                 </a>
             </li>
             </sec:authorize>
@@ -111,28 +106,6 @@ function logout(){
                 </a>
             </li>
             </c:if>
-<!--             <li class="treeview"> -->
-<!--                 <a href="#"> -->
-<!--                     <i class="fa fa-edit"></i> -->
-<!--                     <span>Fields</span> -->
-<!--                     <i class="fa fa-angle-left pull-right"></i> -->
-<!--                 </a> -->
-<!--                 <ul class="treeview-menu"> -->
-<!--                     <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Fields List</a></li> -->
-<!--                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Assign Fields</a></li> -->
-<!--                 </ul> -->
-<!--             </li> -->
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-wrench"></i>
-                    <span>My Account</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Update Profile</a></li>
-                    <li><a href="${contextPath}/systemuser/changepassword"><i class="fa fa-angle-double-right"></i> Change Password</a></li>
-                </ul>
-            </li>
             <c:if test="${authUser.superAdmin == true}">
             <li class="treeview">
                 <a href="#">
@@ -148,14 +121,6 @@ function logout(){
                 </ul>
             </li>
             </c:if>
-            <li>	
-            	<form id="logoutForm" action="${contextPath}/auth/logout" method="post">
-            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            	</form>
-                <a href="#" onclick="return logout();">
-                    <i class="fa fa-sign-out"></i> <span>Logout</span>
-                </a>
-            </li>
         </ul>
     </section>
     <!-- /.sidebar -->

@@ -98,7 +98,7 @@ public class Staff implements Serializable {
 		this.prefix = prefix;
 	}
 
-	@Column(name = "name_first", nullable = false, length = 32)
+	@Column(name = "name_first", length = 32)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -116,7 +116,7 @@ public class Staff implements Serializable {
 		this.middleName = middleName;
 	}
 
-	@Column(name = "name_last", nullable = false, length = 16)
+	@Column(name = "name_last", length = 16)
 	public String getLastName() {
 		return lastName;
 	}

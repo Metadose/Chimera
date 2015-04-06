@@ -1,4 +1,23 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authStaff" property="staff"/>
+<sec:authentication var="authUser" property="user"/>
+<c:choose>
+	<c:when test="${!empty authStaff}">
+		<c:set var="staffName" value="${authStaff.prefix} ${authStaff.firstName} ${authStaff.middleName} ${authStaff.lastName} ${authStaff.suffix}"/>
+		<c:set var="companyPosition" value="${authStaff.companyPosition}"/>
+	</c:when>
+	<c:when test="${empty authStaff}">
+		<c:set var="staffName" value="${authUser.username}"/>
+		<c:set var="companyPosition" value="(No Staff)"/>
+	</c:when>
+</c:choose>
+<script type="text/javascript">
+function logout(){
+	document.getElementById('logoutForm').submit();
+}
+</script>
 <!-- header logo: style can be found in header.less -->
 <header class="header">
     <a href="index.html" class="logo">
@@ -208,21 +227,28 @@
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="glyphicon glyphicon-user"></i>
-                        <span>Jane Doe <i class="caret"></i></span>
+            	 		<span>${staffName} <i class="caret"></i></span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header bg-light-blue">
-                            <img src="<c:url value="/resources/img/avatar2.png" />" class="img-circle" alt="User Image" />
+                        	<c:choose>
+							<c:when test="${!empty authStaff.thumbnailURL}">
+								<img src="${contextPath}/image/display/staff/profile/?staff_id=${authStaff.id}" class="img-circle" alt="User Image" />
+							</c:when>
+							<c:when test="${empty authStaff.thumbnailURL}">
+								<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
+							</c:when>
+							</c:choose>
                             <p>
-                                Jane Doe - Web Developer
+		            	 		${staffName} - ${companyPosition}
                                 <small>Member since Nov. 2012</small>
                             </p>
                         </li>
                         <!-- Menu Body -->
                         <li class="user-body">
                             <div class="col-xs-4 text-center">
-                                <a href="#">Followers</a>
+                                <a href="${contextPath}/systemuser/changepassword">Change Password</a>
                             </div>
                             <div class="col-xs-4 text-center">
                                 <a href="#">Sales</a>
@@ -237,7 +263,10 @@
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                            	<form id="logoutForm" action="${contextPath}/auth/logout" method="post">
+				            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				            	</form>
+                                <a href="#" onclick="return logout();" class="btn btn-default btn-flat">Logout</a>
                             </div>
                         </li>
                     </ul>

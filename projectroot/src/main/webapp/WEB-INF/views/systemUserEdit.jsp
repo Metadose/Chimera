@@ -35,6 +35,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -58,6 +59,8 @@
 				                                            <input type="text" class="form-control" name="username" value="${user.username}"/><br/>
 				                                            <label>Password</label>
 				                                            <input type="password" class="form-control" name="password" value="${user.password}"/><br/>
+				                                            <label>Re-type Password</label>
+				                                            <input type="password" class="form-control" name="password_retype" value="${user.password}"/><br/>
 				                                        </div>
 				                                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
 				                                    </form>

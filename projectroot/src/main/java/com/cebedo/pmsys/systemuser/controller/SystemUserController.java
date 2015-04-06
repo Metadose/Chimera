@@ -3,7 +3,6 @@ package com.cebedo.pmsys.systemuser.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.SystemConstants;
@@ -32,7 +32,6 @@ public class SystemUserController {
 	public static final String PARAM_OLD_PASS_RETYPE = "password_retype";
 	public static final String PARAM_NEW_PASS = "password_new";
 
-	private Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
 	private AuthHelper authHelper = new AuthHelper();
 	private SystemUserService systemUserService;
 
@@ -53,17 +52,51 @@ public class SystemUserController {
 
 	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser) {
+	public String create(
+			@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser,
+			@RequestParam(PARAM_OLD_PASS_RETYPE) String passwordRetype,
+			RedirectAttributes redirectAttrs) {
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
+
+		// If the passwords provided were not equal.
+		if (!systemUser.getPassword().equals(passwordRetype)) {
+			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			alertFactory
+					.setMessage("The passwords you entered were not the same.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+					+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
+		}
+
+		// If request is to create new user.
+		alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
 		if (systemUser.getId() == 0) {
+			// TODO Put this inside the service class.
 			String encPassword = this.authHelper.encodePassword(
 					systemUser.getPassword(), systemUser);
 			systemUser.setPassword(encPassword);
 			this.systemUserService.create(systemUser);
-		} else {
-			this.systemUserService.update(systemUser);
+
+			// Redirect back to list page.
+			alertFactory.setMessage("Successfully <b>created</b> user <b>"
+					+ systemUser.getUsername() + "</b>.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+					+ SystemConstants.REQUEST_LIST;
 		}
+
+		// If request is to update user.
+		this.systemUserService.update(systemUser);
+
+		// Redirect back to the edit page.
+		alertFactory.setMessage("Successfully <b>updated</b> user <b>"
+				+ systemUser.getUsername() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-				+ SystemConstants.REQUEST_LIST;
+				+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_CHANGE_PASSWORD })
