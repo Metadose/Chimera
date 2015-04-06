@@ -2,6 +2,7 @@ package com.cebedo.pmsys.login.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -65,9 +66,20 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			user = this.systemUserService.searchDatabase(auth.getName());
 		}
 		// If user does not exist.
+		// TODO Put alert boxes.
 		catch (Exception e) {
 			String text = this.logHelper.generateLogMessage(ipAddress, null,
 					null, null, null, "User does not exist: " + auth.getName());
+			logger.warn(text);
+			throw new BadCredentialsException(text);
+		}
+
+		// If the current date is already after the company's expiration.
+		if (new Date(System.currentTimeMillis()).after(user.getCompany()
+				.getDateExpiration())) {
+			String text = this.logHelper.generateLogMessage(ipAddress,
+					user.getCompany(), user, user.getStaff(), null,
+					"User company is expired.");
 			logger.warn(text);
 			throw new BadCredentialsException(text);
 		}
@@ -111,7 +123,6 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 				this.systemUserService.update(user, true);
 			}
 
-			// TODO Check if the user's company is expired.
 			AuthenticationToken token = new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user),
 					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
