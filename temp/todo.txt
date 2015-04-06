@@ -34,6 +34,12 @@ old object
 new object
 
 
+for every object:
+- csrf protection
+- audit service classes
+- log controller classes
+- security roles
+
 
 = todo
 secure jsp by escaping for xss

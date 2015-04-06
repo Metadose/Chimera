@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.project.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,9 +19,10 @@ import com.cebedo.pmsys.security.audit.model.AuditLog;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-	private AuthHelper authHelper = new AuthHelper();
 	private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
+	private AuthHelper authHelper = new AuthHelper();
 	private LogHelper logHelper = new LogHelper();
+
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
 	private AuditLogDAO auditLogDAO;
@@ -54,16 +54,11 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 
 		// Audit the action.
-		AuditLog audit = new AuditLog();
-		Date dateExecuted = new Date(System.currentTimeMillis());
-		audit.setDateExecuted(dateExecuted);
-		audit.setUser(auth.getUser());
+		AuditLog audit = new AuditLog(AuditLog.ACTION_CREATE);
 		audit.setCompany(auth.getCompany() == null ? project.getCompany()
 				: auth.getCompany());
-		audit.setAction(AuditLog.ACTION_CREATE);
 		audit.setObjectName(Project.OBJECT_NAME);
 		audit.setObjectID(project.getId());
-		audit.setObjectNewProperties(project.toString());
 		this.auditLogDAO.create(audit);
 	}
 
@@ -86,6 +81,14 @@ public class ProjectServiceImpl implements ProjectService {
 					"Not authorized to update project: " + project.getId()
 							+ " = " + project.getName()));
 		}
+
+		// Audit the action.
+		AuditLog audit = new AuditLog(AuditLog.ACTION_UPDATE);
+		audit.setCompany(auth.getCompany() == null ? company : auth
+				.getCompany());
+		audit.setObjectName(Project.OBJECT_NAME);
+		audit.setObjectID(project.getId());
+		this.auditLogDAO.create(audit);
 	}
 
 	@Override
@@ -139,6 +142,14 @@ public class ProjectServiceImpl implements ProjectService {
 					"Not authorized to delete project: " + id + " = "
 							+ project.getName()));
 		}
+
+		// Audit the action.
+		AuditLog audit = new AuditLog(AuditLog.ACTION_DELETE);
+		audit.setCompany(auth.getCompany() == null ? project.getCompany()
+				: auth.getCompany());
+		audit.setObjectName(Project.OBJECT_NAME);
+		audit.setObjectID(project.getId());
+		this.auditLogDAO.create(audit);
 	}
 
 	@Override

@@ -302,6 +302,9 @@
     <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
+        <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
+        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     

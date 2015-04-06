@@ -14,7 +14,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 @Entity
@@ -27,21 +29,40 @@ public class AuditLog implements Serializable {
 	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
 	public static final int ACTION_CREATE = 1;
-	public static final int ACTION_READ = 2;
-	public static final int ACTION_UPDATE = 3;
-	public static final int ACTION_DELETE = 4;
+	public static final int ACTION_UPDATE = 2;
+	public static final int ACTION_DELETE = 3;
+
+	private AuthHelper authHelper = new AuthHelper();
 
 	public static final String PROPERTY_ID = "id";
 
 	private long id;
 	private Date dateExecuted;
+	private String ipAddress;
 	private SystemUser user;
 	private Company company;
 	private int action;
 	private String objectName;
 	private long objectID;
-	private String objectOldProperties;
-	private String objectNewProperties;
+
+	public AuditLog() {
+		setDetails();
+	}
+
+	public AuditLog(int action) {
+		this.setAction(action);
+		setDetails();
+	}
+
+	private void setDetails() {
+		AuthenticationToken auth = this.authHelper.getAuth();
+		if (auth != null) {
+			Date dateExecuted = new Date(System.currentTimeMillis());
+			this.setIpAddress(auth.getIpAddress());
+			this.setDateExecuted(dateExecuted);
+			this.setUser(auth.getUser());
+		}
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,24 +122,6 @@ public class AuditLog implements Serializable {
 		this.objectID = objectID;
 	}
 
-	@Column(name = "object_properties_old")
-	public String getObjectOldProperties() {
-		return objectOldProperties;
-	}
-
-	public void setObjectOldProperties(String objectOldProperties) {
-		this.objectOldProperties = objectOldProperties;
-	}
-
-	@Column(name = "object_properties_new", nullable = false)
-	public String getObjectNewProperties() {
-		return objectNewProperties;
-	}
-
-	public void setObjectNewProperties(String objectNewProperties) {
-		this.objectNewProperties = objectNewProperties;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
 	public Company getCompany() {
@@ -127,6 +130,15 @@ public class AuditLog implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@Column(name = "ip_address", nullable = false, length = 15)
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 }
