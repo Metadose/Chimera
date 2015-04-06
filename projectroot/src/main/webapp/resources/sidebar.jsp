@@ -82,7 +82,7 @@
                 <a href="${contextPath}/team/list/">
                     <i class="fa fa-users"></i> <span>Teams</span>
 <!--                     <small class="badge pull-right bg-green">new</small> -->
-                </a>
+                </a> 
             </li>
             </sec:authorize>
             <sec:authorize access="hasRole('ACCESS_STAFF')">
