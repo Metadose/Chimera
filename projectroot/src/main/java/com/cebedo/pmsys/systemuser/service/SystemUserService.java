@@ -14,6 +14,8 @@ public interface SystemUserService {
 
 	public void update(SystemUser user);
 
+	public void update(SystemUser user, boolean systemOverride);
+
 	public void delete(long id);
 
 	public SystemUser getByID(long id);

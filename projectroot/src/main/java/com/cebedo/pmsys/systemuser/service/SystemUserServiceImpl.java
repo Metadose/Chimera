@@ -124,9 +124,17 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	@Override
 	@Transactional
-	public void update(SystemUser systemUser) {
-		if (this.authHelper.isActionAuthorized(systemUser)) {
-			this.systemUserDAO.update(systemUser);
+	public void update(SystemUser user) {
+		if (this.authHelper.isActionAuthorized(user)) {
+			this.systemUserDAO.update(user);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void update(SystemUser user, boolean systemOverride) {
+		if (systemOverride || this.authHelper.isActionAuthorized(user)) {
+			this.systemUserDAO.update(user);
 		}
 	}
 
@@ -154,4 +162,5 @@ public class SystemUserServiceImpl implements SystemUserService {
 	public SystemUser searchDatabase(String name) {
 		return this.systemUserDAO.searchDatabase(name);
 	}
+
 }

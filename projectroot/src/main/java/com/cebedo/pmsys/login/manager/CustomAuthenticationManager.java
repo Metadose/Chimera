@@ -39,9 +39,11 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 	private static Logger logger = Logger
 			.getLogger(SystemConstants.LOGGER_LOGIN);
 	private LogHelper logHelper = new LogHelper();
+	private AuthHelper authHelper = new AuthHelper();
+	private static final int MAX_LOGIN_ATTEMPT = 5;
+
 	private SystemUserService systemUserService;
 	private ServletContext servletContext;
-	private AuthHelper authHelper = new AuthHelper();
 
 	@Override
 	public void setServletContext(ServletContext context) {
@@ -61,9 +63,20 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			this.systemUserService = (SystemUserService) applicationContext
 					.getBean("systemUserService");
 			user = this.systemUserService.searchDatabase(auth.getName());
-		} catch (Exception e) {
+		}
+		// If user does not exist.
+		catch (Exception e) {
 			String text = this.logHelper.generateLogMessage(ipAddress, null,
 					null, null, null, "User does not exist: " + auth.getName());
+			logger.warn(text);
+			throw new BadCredentialsException(text);
+		}
+
+		// If user is locked.
+		if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
+			String text = this.logHelper.generateLogMessage(ipAddress,
+					user.getCompany(), user, user.getStaff(), null,
+					"User account is locked.");
 			logger.warn(text);
 			throw new BadCredentialsException(text);
 		}
@@ -72,6 +85,10 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// Make sure to encode the password first before comparing.
 		if (this.authHelper.isPasswordValid((String) auth.getCredentials(),
 				user) == false) {
+			// Add 1 to the user login attempts.
+			user.setLoginAttempts(user.getLoginAttempts() + 1);
+			this.systemUserService.update(user, true);
+
 			String text = this.logHelper.generateLogMessage(ipAddress,
 					user.getCompany(), user, user.getStaff(), null,
 					"Invalid password.");
@@ -89,6 +106,11 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			throw new BadCredentialsException(text);
 
 		} else {
+			if (user.getLoginAttempts() > 0) {
+				user.setLoginAttempts(0);
+				this.systemUserService.update(user, true);
+			}
+
 			// TODO Check if the user's company is expired.
 			AuthenticationToken token = new AuthenticationToken(auth.getName(),
 					auth.getCredentials(), getAuthorities(user),

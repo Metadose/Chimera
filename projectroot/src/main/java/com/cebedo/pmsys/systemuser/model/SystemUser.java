@@ -44,6 +44,7 @@ public class SystemUser implements Serializable {
 	private Set<SecurityAccess> securityAccess;
 	private Set<SecurityRole> securityRoles;
 	private Set<AuditLog> auditLogs;
+	private int loginAttempts;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -141,4 +142,12 @@ public class SystemUser implements Serializable {
 		this.auditLogs = auditLogs;
 	}
 
+	@Column(name = "login_attempts", nullable = false)
+	public int getLoginAttempts() {
+		return loginAttempts;
+	}
+
+	public void setLoginAttempts(int loginAttempts) {
+		this.loginAttempts = loginAttempts;
+	}
 }
