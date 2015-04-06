@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.project.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,6 +14,8 @@ import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
+import com.cebedo.pmsys.security.audit.model.AuditLog;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -22,6 +25,11 @@ public class ProjectServiceImpl implements ProjectService {
 	private LogHelper logHelper = new LogHelper();
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
+	private AuditLogDAO auditLogDAO;
+
+	public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
+		this.auditLogDAO = auditLogDAO;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -44,6 +52,19 @@ public class ProjectServiceImpl implements ProjectService {
 			project.setCompany(authCompany);
 			this.projectDAO.update(project);
 		}
+
+		// Audit the action.
+		AuditLog audit = new AuditLog();
+		Date dateExecuted = new Date(System.currentTimeMillis());
+		audit.setDateExecuted(dateExecuted);
+		audit.setUser(auth.getUser());
+		audit.setCompany(auth.getCompany() == null ? project.getCompany()
+				: auth.getCompany());
+		audit.setAction(AuditLog.ACTION_CREATE);
+		audit.setObjectName(Project.OBJECT_NAME);
+		audit.setObjectID(project.getId());
+		audit.setObjectNewProperties(project.toString());
+		this.auditLogDAO.create(audit);
 	}
 
 	@Override

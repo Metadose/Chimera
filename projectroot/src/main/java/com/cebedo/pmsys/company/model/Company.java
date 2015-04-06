@@ -18,6 +18,7 @@ import javax.persistence.TemporalType;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
+import com.cebedo.pmsys.security.audit.model.AuditLog;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
@@ -48,6 +49,7 @@ public class Company implements Serializable {
 	private Set<Task> tasks;
 	private Set<ProjectFile> files;
 	private Set<Photo> photos;
+	private Set<AuditLog> auditLogs;
 
 	public Company() {
 		;
@@ -176,6 +178,15 @@ public class Company implements Serializable {
 
 	public void setPhotos(Set<Photo> photos) {
 		this.photos = photos;
+	}
+
+	@OneToMany(mappedBy = "company")
+	public Set<AuditLog> getAuditLogs() {
+		return auditLogs;
+	}
+
+	public void setAuditLogs(Set<AuditLog> auditLogs) {
+		this.auditLogs = auditLogs;
 	}
 
 	public String toString() {

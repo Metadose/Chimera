@@ -190,6 +190,7 @@
                 <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
                 <beans:value>com.cebedo.pmsys.security.securityaccess.model.SecurityAccess</beans:value>
                 <beans:value>com.cebedo.pmsys.security.securityrole.model.SecurityRole</beans:value>
+                <beans:value>com.cebedo.pmsys.security.audit.model.AuditLog</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
             </beans:list>
@@ -209,6 +210,7 @@
     <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
+        <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">
@@ -287,6 +289,13 @@
 <!--         <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property> -->
 <!--     </beans:bean> -->
     
+    <beans:bean id="auditLogDAO" class="com.cebedo.pmsys.security.audit.dao.AuditLogDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="auditLogService" class="com.cebedo.pmsys.security.audit.service.AuditLogServiceImpl">
+        <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
+    </beans:bean>
+    
     <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -294,6 +303,7 @@
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
     </beans:bean>
+    
     
     <beans:bean id="companyDAO" class="com.cebedo.pmsys.company.dao.CompanyDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />

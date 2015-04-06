@@ -12,10 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.security.audit.model.AuditLog;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -41,6 +43,7 @@ public class SystemUser implements Serializable {
 	private boolean companyAdmin;
 	private Set<SecurityAccess> securityAccess;
 	private Set<SecurityRole> securityRoles;
+	private Set<AuditLog> auditLogs;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,6 +130,15 @@ public class SystemUser implements Serializable {
 
 	public void setSecurityRoles(Set<SecurityRole> securityRoles) {
 		this.securityRoles = securityRoles;
+	}
+
+	@OneToMany(mappedBy = "user")
+	public Set<AuditLog> getAuditLogs() {
+		return auditLogs;
+	}
+
+	public void setAuditLogs(Set<AuditLog> auditLogs) {
+		this.auditLogs = auditLogs;
 	}
 
 }
