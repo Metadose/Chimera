@@ -123,7 +123,7 @@
 			                                            <label>Location</label><br/>
 			                                            ${fn:escapeXml(project.location)}<br/><br/>
 			                                            <label>Notes</label><br/>
-			                                            ${fn:escapeXml(project.notes)}<br/><br/>
+			                                            ${project.notes}<br/><br/>
 			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit</button>
 			                                            </sec:authorize>

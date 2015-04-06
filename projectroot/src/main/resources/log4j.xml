@@ -50,19 +50,19 @@
 	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
 	</appender>
 	
-	<appender name="hdivFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/hdiv/hdiv.html" />
-	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/>
-	</appender>
+<!-- 	<appender name="hdivFile" class="org.apache.log4j.RollingFileAppender"> -->
+<!-- 	    <param name="maxFileSize" value="10MB" /> -->
+<!-- 	    <param name="maxBackupIndex" value="10" /> -->
+<!-- 	    <param name="file" value="C:/Program Files/VCC/PMSYS/system/logs/hdiv/hdiv.html" /> -->
+<!-- 	    <layout class="com.cebedo.pmsys.log.layout.CustomHTMLLayout"/> -->
+<!-- 	</appender> -->
 	
 	<!-- HDIV Logger -->
-	<logger name="org.hdiv.logs">
-		<level value="debug" />
-		<appender-ref ref="console" />
-		<appender-ref ref="hdivFile"/>
-	</logger>
+<!-- 	<logger name="org.hdiv.logs"> -->
+<!-- 		<level value="debug" /> -->
+<!-- 		<appender-ref ref="console" /> -->
+<!-- 		<appender-ref ref="hdivFile"/> -->
+<!-- 	</logger> -->
 	
 	<!-- Performance Loggers -->
 	<logger name="com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor">

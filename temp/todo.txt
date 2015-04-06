@@ -23,16 +23,6 @@ implement "edit description"
 
 
 
-= audit
-when did he do it
-who did it
-what did he do
-what object
-which object
-
-old object
-new object
-
 
 for every object:
 - csrf protection
