@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
@@ -40,7 +41,7 @@ public class SystemConfigurationController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_CONFIG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute(ATTR_SYSTEM_CONFIGURATION) SystemConfiguration systemConfiguration) {
@@ -53,7 +54,7 @@ public class SystemConfigurationController {
 				+ "/" + SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_CONFIG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(
@@ -63,7 +64,7 @@ public class SystemConfigurationController {
 				+ "/" + SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_CONFIG_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_CONFIG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 			+ SystemConfiguration.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemConfiguration(

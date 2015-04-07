@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
@@ -17,6 +16,7 @@ import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.model.StaffWrapper;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
 

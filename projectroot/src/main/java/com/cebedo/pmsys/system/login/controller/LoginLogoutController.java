@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.cebedo.pmsys.login.controller;
+package com.cebedo.pmsys.system.login.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

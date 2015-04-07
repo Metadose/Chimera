@@ -26,6 +26,7 @@ import com.cebedo.pmsys.common.ui.AlertBoxFactory;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
@@ -71,7 +72,7 @@ public class ProjectFileController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile,
@@ -101,7 +102,7 @@ public class ProjectFileController {
 	 * @param redirectAttrs
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.FROM_PROJECT, method = RequestMethod.POST)
 	public String deleteFromProject(
@@ -121,7 +122,7 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ ProjectFile.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id,
@@ -192,7 +193,7 @@ public class ProjectFileController {
 		return JSP_EDIT;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE_TO_PROJECT, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -304,7 +305,7 @@ public class ProjectFileController {
 
 	// TODO Create another role which is not a Project File Editor but can
 	// upload files.
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECTFILE_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_FILE, method = RequestMethod.POST)
 	public ModelAndView handleFileUpload(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -336,7 +337,7 @@ public class ProjectFileController {
 	 * @param description
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
 	public ModelAndView updateDescription(
 			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,

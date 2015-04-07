@@ -23,6 +23,7 @@ import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.controller.ProjectController;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
@@ -83,7 +84,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
 			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String createFromOrigin(@ModelAttribute(ATTR_TEAM) Team team,
@@ -106,7 +107,7 @@ public class TeamController {
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TEAM) Team team,
 			RedirectAttributes redirectAttrs) {
@@ -126,7 +127,7 @@ public class TeamController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
@@ -205,7 +206,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignProjectTeam(
@@ -239,7 +240,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignProjectTeam(
@@ -273,7 +274,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SystemConstants.ALL + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamsFromProject(
@@ -299,7 +300,7 @@ public class TeamController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjectTeams(
@@ -323,7 +324,7 @@ public class TeamController {
 	 * @param teamID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllMembers(

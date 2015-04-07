@@ -3,7 +3,6 @@ package com.cebedo.pmsys.common;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -12,6 +11,7 @@ import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.task.model.Task;

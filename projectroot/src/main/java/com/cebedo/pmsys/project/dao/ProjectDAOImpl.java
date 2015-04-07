@@ -118,8 +118,16 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public String getNameByID(long projectID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String result = this.daoHelper.getProjectionByID(session, Project.class,
-				Project.PROPERTY_ID, projectID, Project.PROPERTY_NAME);
+		String result = this.daoHelper.getProjectionByID(session,
+				Project.class, Project.PROPERTY_ID, projectID,
+				Project.PROPERTY_NAME);
 		return result;
+	}
+
+	@Override
+	public List<String> listNames() {
+		Session session = this.sessionFactory.getCurrentSession();
+		return this.daoHelper.getProjectionList(session, Project.class,
+				Project.PROPERTY_NAME);
 	}
 }

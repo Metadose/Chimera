@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.login.manager;
+package com.cebedo.pmsys.system.login.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,9 +23,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.common.SystemConstants;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -74,23 +74,25 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			throw new BadCredentialsException(text);
 		}
 
-		// If the current date is already after the company's expiration.
-		if (new Date(System.currentTimeMillis()).after(user.getCompany()
-				.getDateExpiration())) {
-			String text = this.logHelper.generateLogMessage(ipAddress,
-					user.getCompany(), user, user.getStaff(), null,
-					"User company is expired.");
-			logger.warn(text);
-			throw new BadCredentialsException(text);
-		}
+		if (!user.isSuperAdmin()) {
+			// If the current date is already after the company's expiration.
+			if (new Date(System.currentTimeMillis()).after(user.getCompany()
+					.getDateExpiration())) {
+				String text = this.logHelper.generateLogMessage(ipAddress,
+						user.getCompany(), user, user.getStaff(), null,
+						"User company is expired.");
+				logger.warn(text);
+				throw new BadCredentialsException(text);
+			}
 
-		// If user is locked.
-		if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
-			String text = this.logHelper.generateLogMessage(ipAddress,
-					user.getCompany(), user, user.getStaff(), null,
-					"User account is locked.");
-			logger.warn(text);
-			throw new BadCredentialsException(text);
+			// If user is locked.
+			if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
+				String text = this.logHelper.generateLogMessage(ipAddress,
+						user.getCompany(), user, user.getStaff(), null,
+						"User account is locked.");
+				logger.warn(text);
+				throw new BadCredentialsException(text);
+			}
 		}
 
 		// Compare passwords.

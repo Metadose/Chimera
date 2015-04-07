@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
 public class AuditLogServiceImpl implements AuditLogService {

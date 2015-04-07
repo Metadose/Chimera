@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.login.authentication;
+package com.cebedo.pmsys.system.login.authentication;
 
 import java.util.Collection;
 

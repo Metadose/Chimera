@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.common;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -54,6 +56,13 @@ public class DAOHelper {
 				.add(Restrictions.eq(restrictionID, objectID))
 				.setProjection(Property.forName(projectionName)).uniqueResult();
 		return result;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<String> getProjectionList(Session session, Class clazz,
+			String projectionName) {
+		return (List<String>) session.createCriteria(clazz)
+				.setProjection(Property.forName(projectionName)).list();
 	}
 
 }

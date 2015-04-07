@@ -13,10 +13,27 @@
 		<c:set var="companyPosition" value="(No Staff)"/>
 	</c:when>
 </c:choose>
+<c:import url="/resources/js-includes.jsp" />
 <script type="text/javascript">
 function logout(){
 	document.getElementById('logoutForm').submit();
 }
+
+$(document).ready(function() {
+	$('#searchField').autocomplete({
+		serviceUrl: '${contextPath}/search/',
+		paramName: "searchInput",
+		delimiter: ",",
+		transformResult: function(response) {
+			return {
+				// Must convert json to javascript object before process.
+				suggestions: $.map($.parseJSON(response), function(item) {
+					return { value: item.tagName, data: item.id };
+				})
+			};
+		}
+	});
+});
 </script>
 <!-- header logo: style can be found in header.less -->
 <header class="header">
@@ -33,8 +50,12 @@ function logout(){
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </a>
+        <div class="navbar-left" style="padding-top: 1%; padding-left: 3%; width: 50%">
+	       	<input type="text" id="searchField" name="search" class='form-control' placeholder="Search"/>
+        </div>
         <div class="navbar-right">
             <ul class="nav navbar-nav">
+            	
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

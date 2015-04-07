@@ -10,11 +10,11 @@ import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {

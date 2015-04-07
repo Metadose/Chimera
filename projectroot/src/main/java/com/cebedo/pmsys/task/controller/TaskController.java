@@ -22,6 +22,7 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
@@ -100,7 +101,7 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public String createWithProject(
@@ -136,7 +137,7 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TASK) Task task,
 			RedirectAttributes redirectAttrs) {
@@ -171,7 +172,7 @@ public class TaskController {
 	 * @param task
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
 			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
 	public String createFromOrigin(
@@ -205,7 +206,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME)
 	public String redirectAssignProject(
@@ -236,7 +237,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = {
 			SystemConstants.REQUEST_ASSIGN_PROJECT,
 			SystemConstants.REQUEST_ASSIGN_PROJECT + "/{"
@@ -271,7 +272,7 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
 	public String redirectAssignStaff(
@@ -293,7 +294,7 @@ public class TaskController {
 	 * @param redirectAttrs
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.NEW + "/" + Staff.OBJECT_NAME + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
@@ -326,7 +327,7 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) long id,
@@ -352,7 +353,7 @@ public class TaskController {
 	 * @param status
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_MARK, method = RequestMethod.GET)
 	public ModelAndView mark(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
@@ -381,7 +382,7 @@ public class TaskController {
 	 * @param status
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_MARK + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.GET)
 	public ModelAndView markProject(
@@ -497,7 +498,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaffTask(
@@ -525,7 +526,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTeamTask(
@@ -550,7 +551,7 @@ public class TaskController {
 	 * @param taskID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTeamTasks(
@@ -575,7 +576,7 @@ public class TaskController {
 	 * @param teamID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTeamTask(
@@ -603,7 +604,7 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignStaffTask(
@@ -628,7 +629,7 @@ public class TaskController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTaskByProject(
@@ -654,7 +655,7 @@ public class TaskController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTasksByProject(
@@ -680,7 +681,7 @@ public class TaskController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView deleteAllTasksByProject(
@@ -708,7 +709,7 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllStaffTasks(

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.security.securityrole.dao.SecurityRoleDAO;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
 public class SecurityRoleServiceImpl implements SecurityRoleService {

@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.log.layout;
+package com.cebedo.pmsys.system.log.layout;
 
 import java.text.SimpleDateFormat;
 
@@ -8,7 +8,7 @@ import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
-import com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor;
+import com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor;
 
 public class CustomHTMLLayout extends Layout {
 

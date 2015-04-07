@@ -24,6 +24,17 @@ public class SecurityRole implements Serializable {
 
 	public static final String PROPERTY_ID = "id";
 
+	public static final String ROLE_FIELD_EDITOR = "ROLE_FIELD_EDITOR";
+	public static final String ROLE_TASK_EDITOR = "ROLE_TASK_EDITOR";
+	public static final String ROLE_PROJECT_EDITOR = "ROLE_PROJECT_EDITOR";
+	public static final String ROLE_STAFF_EDITOR = "ROLE_STAFF_EDITOR";
+	public static final String ROLE_PHOTO_EDITOR = "ROLE_PHOTO_EDITOR";
+	public static final String ROLE_PROJECTFILE_EDITOR = "ROLE_PROJECTFILE_EDITOR";
+	public static final String ROLE_TEAM_EDITOR = "ROLE_TEAM_EDITOR";
+	public static final String ROLE_CONFIG_EDITOR = "ROLE_CONFIG_EDITOR";
+	public static final String ROLE_SYSTEMUSER_EDITOR = "ROLE_SYSTEMUSER_EDITOR";
+	public static final String ROLE_LOG_EDITOR = "ROLE_LOG_EDITOR";
+
 	private long id;
 	private String name;
 	private Set<SystemUser> users;

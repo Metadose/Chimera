@@ -65,8 +65,8 @@ public class TeamDAOImpl implements TeamDAO {
 	@SuppressWarnings("unchecked")
 	public List<Team> list(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Team> teamList = this.daoHelper.getSelectQueryFilterCompany(session,
-				Team.class.getName(), companyID).list();
+		List<Team> teamList = this.daoHelper.getSelectQueryFilterCompany(
+				session, Team.class.getName(), companyID).list();
 		return teamList;
 	}
 
@@ -144,8 +144,8 @@ public class TeamDAOImpl implements TeamDAO {
 	@Override
 	public List<Team> listWithTasks(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Team> teamList = this.daoHelper.getSelectQueryFilterCompany(session,
-				Team.class.getName(), companyID).list();
+		List<Team> teamList = this.daoHelper.getSelectQueryFilterCompany(
+				session, Team.class.getName(), companyID).list();
 		for (Team team : teamList) {
 			Hibernate.initialize(team.getTasks());
 		}
@@ -158,5 +158,12 @@ public class TeamDAOImpl implements TeamDAO {
 		String result = this.daoHelper.getProjectionByID(session, Team.class,
 				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
 		return result;
+	}
+
+	@Override
+	public List<String> listNames() {
+		Session session = this.sessionFactory.getCurrentSession();
+		return this.daoHelper.getProjectionList(session, Team.class,
+				Team.PROPERTY_NAME);
 	}
 }

@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.log.resolver;
+package com.cebedo.pmsys.system.log.resolver;
 
 import java.util.Enumeration;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.common.SystemConstants;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 

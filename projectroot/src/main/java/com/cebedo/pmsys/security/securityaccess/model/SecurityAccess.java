@@ -24,6 +24,18 @@ public class SecurityAccess implements Serializable {
 
 	public static final String PROPERTY_ID = "id";
 
+	public static final String ACCESS_COMPANY = "ACCESS_COMPANY";
+	public static final String ACCESS_FIELD = "ACCESS_FIELD";
+	public static final String ACCESS_PHOTO = "ACCESS_PHOTO";
+	public static final String ACCESS_PROJECT = "ACCESS_PROJECT";
+	public static final String ACCESS_PROJECTFILE = "ACCESS_PROJECTFILE";
+	public static final String ACCESS_STAFF = "ACCESS_STAFF";
+	public static final String ACCESS_TASK = "ACCESS_TASK";
+	public static final String ACCESS_TEAM = "ACCESS_TEAM";
+	public static final String ACCESS_SYSTEMUSER = "ACCESS_SYSTEMUSER";
+	public static final String ACCESS_CONFIG = "ACCESS_CONFIG";
+	public static final String ACCESS_LOG = "ACCESS_LOG";
+
 	private long id;
 	private String name;
 	private Set<SystemUser> users;

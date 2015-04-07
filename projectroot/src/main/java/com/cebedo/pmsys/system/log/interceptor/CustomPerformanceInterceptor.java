@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.log.interceptor;
+package com.cebedo.pmsys.system.log.interceptor;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;

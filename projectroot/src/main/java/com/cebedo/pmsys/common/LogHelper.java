@@ -8,8 +8,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public class LogHelper {

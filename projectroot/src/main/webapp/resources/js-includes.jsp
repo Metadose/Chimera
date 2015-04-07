@@ -3,6 +3,8 @@
 <script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/lib/bootstrap.min.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
+<script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
+
 <!-- Morris.js charts -->
 <script src="<c:url value="/resources/lib/raphael-min.js" />"></script>
 <%-- <script src="<c:url value="/resources/js/plugins/morris/morris.min.js" />"type="text/javascript"></script> --%>

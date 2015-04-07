@@ -265,4 +265,11 @@ public class TaskDAOImpl implements TaskDAO {
 		task.setProject(null);
 		session.update(task);
 	}
+
+	@Override
+	public List<String> listNames() {
+		Session session = this.sessionFactory.getCurrentSession();
+		return this.daoHelper.getProjectionList(session, Task.class,
+				Task.PROPERTY_TITLE);
+	}
 }

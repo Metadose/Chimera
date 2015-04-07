@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.log.controller;
+package com.cebedo.pmsys.system.log.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
@@ -46,7 +47,7 @@ public class LogController {
 		return sysHome;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_LOG_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_LOG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_LIST, method = RequestMethod.GET)
 	public String getLogList(Model model) {
 		String rootPath = getSysHome();
@@ -55,7 +56,7 @@ public class LogController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_LOG_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_LOG_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT, method = RequestMethod.POST)
 	public String editLog(@RequestParam(PARAM_INPUT_LOG) String logPath,
 			Model model) {

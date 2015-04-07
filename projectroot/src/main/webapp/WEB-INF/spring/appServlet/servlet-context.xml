@@ -53,14 +53,15 @@
 	
 		
 	<!-- Performance logging -->
-	<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.log.interceptor.CustomPerformanceInterceptor" />
+	<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor" />
     <aop:config>
-        <aop:pointcut id="allServiceMethods" expression="execution(* com.cebedo.pmsys.*.service.*.*(..))"/>
+        <aop:pointcut id="allServiceMethods"
+        	expression="execution(* com.cebedo.pmsys.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.*.service.*.*(..))"/>
         <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
     </aop:config>
 	
 	<!-- Exception logging -->
-	<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.log.resolver.LoggingExceptionResolver">
+	<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.system.log.resolver.LoggingExceptionResolver">
 	    <beans:property name="exceptionMappings">
 	        <beans:props>
 	            <beans:prop key="java.lang.Exception">/fix</beans:prop>
@@ -117,7 +118,7 @@
 	</security:http>
 	
  	<!--  Custom filter to deny unwanted users even though registered -->
- 	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.login.filter.BlacklistFilter" />
+ 	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.system.login.filter.BlacklistFilter" />
  	
  	<!-- Custom filter for username and password. The real customization is done in the customAthenticationManager -->
  	<beans:bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"
@@ -126,7 +127,7 @@
   		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
   		
 	<!-- Custom authentication manager. In order to authenticate, username and password must not be the same -->
-	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.login.manager.CustomAuthenticationManager" />
+	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.system.login.manager.CustomAuthenticationManager" />
  	
  	<!-- We just actually need to set the default failure url here -->
  	<beans:bean id="customAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
@@ -262,6 +263,13 @@
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="taskService" class="com.cebedo.pmsys.task.service.TaskServiceImpl">
+        <beans:property name="taskDAO" ref="taskDAO"></beans:property>
+        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
+        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="searchService" class="com.cebedo.pmsys.system.search.service.SearchServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>

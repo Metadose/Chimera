@@ -14,13 +14,13 @@ import com.cebedo.pmsys.common.FileHelper;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.photo.dao.PhotoDAO;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
 
 @Service

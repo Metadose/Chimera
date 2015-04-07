@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.common.ui.AlertBoxFactory;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -50,7 +51,7 @@ public class SystemUserController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser,
@@ -147,7 +148,7 @@ public class SystemUserController {
 		return JSP_CHANGE_PASSWORD;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id) {
@@ -156,7 +157,7 @@ public class SystemUserController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_SYSTEMUSER_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemUser(

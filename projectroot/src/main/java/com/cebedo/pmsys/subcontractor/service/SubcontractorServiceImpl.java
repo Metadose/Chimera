@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.company.model.Company;
-import com.cebedo.pmsys.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.subcontractor.dao.SubcontractorDAO;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
 public class SubcontractorServiceImpl implements SubcontractorService {

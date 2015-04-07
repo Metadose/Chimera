@@ -1,0 +1,46 @@
+package com.cebedo.pmsys.system.search.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.search.service.SearchService;
+
+@Controller
+@RequestMapping(SearchController.CONTROLLER_MAPPING)
+public class SearchController {
+
+	public static final String CONTROLLER_MAPPING = "search";
+	private static final String PARAM_SEARCH_INPUT = "searchInput";
+
+	private SearchService searchService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "searchService")
+	public void setSearchService(SearchService searchService) {
+		this.searchService = searchService;
+	}
+
+	@RequestMapping(value = { SystemConstants.REQUEST_ROOT })
+	public @ResponseBody List<String> search(
+			@RequestParam(PARAM_SEARCH_INPUT) String searchInput) {
+		List<String> result = new ArrayList<String>();
+		for (String name : this.searchService.getData()) {
+			if (name == null) {
+				continue;
+			}
+			if (name.contains(searchInput)) {
+				result.add(StringEscapeUtils.escapeXml(name));
+			}
+		}
+		return result;
+	}
+}

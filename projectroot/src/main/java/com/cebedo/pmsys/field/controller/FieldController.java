@@ -19,6 +19,7 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.task.model.Task;
@@ -59,7 +60,7 @@ public class FieldController {
 	 * @param taskID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignTask(
@@ -80,7 +81,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView assignProject(
 			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
@@ -109,7 +110,7 @@ public class FieldController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignStaff(
@@ -128,7 +129,7 @@ public class FieldController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllStaff(
@@ -145,7 +146,7 @@ public class FieldController {
 	 * @param taskID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Task.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllTasks(
@@ -163,7 +164,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
 	public ModelAndView unassignAllProjects(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -192,7 +193,7 @@ public class FieldController {
 	 * @param oldValue
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.ASSIGNED + "/" + Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedTaskField(
@@ -216,7 +217,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.ASSIGNED + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedProjectField(
@@ -253,7 +254,7 @@ public class FieldController {
 	 * @param oldValue
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.ASSIGNED + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView updateAssignedStaffField(
@@ -277,7 +278,7 @@ public class FieldController {
 	 * @param projectID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
 	public ModelAndView unassignProject(
 			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
@@ -308,7 +309,7 @@ public class FieldController {
 	 * @param value
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_TASK_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Task.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignTask(
@@ -331,7 +332,7 @@ public class FieldController {
 	 * @param value
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView unassignStaff(
@@ -345,7 +346,7 @@ public class FieldController {
 				+ staffID);
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_FIELD) Field field) {
 		if (field.getId() == 0) {
@@ -357,7 +358,7 @@ public class FieldController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_FIELD_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_FIELD_EDITOR + "')")
 	@RequestMapping(value = "/" + SystemConstants.REQUEST_DELETE + "/{"
 			+ Field.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
 	public String delete(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id) {

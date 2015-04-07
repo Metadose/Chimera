@@ -22,6 +22,7 @@ import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.photo.service.PhotoService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
+import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
@@ -65,7 +66,7 @@ public class PhotoController {
 	 * @return
 	 * @throws IOException
 	 */
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
 			+ SystemConstants.PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView deleteProjectProfile(
@@ -84,7 +85,7 @@ public class PhotoController {
 				+ "/" + projectID);
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_STAFF_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_STAFF_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadStaffProfile(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -102,7 +103,7 @@ public class PhotoController {
 				+ staffID);
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadProjectProfile(
 			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
@@ -120,7 +121,7 @@ public class PhotoController {
 				+ "/" + projectID);
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
 			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView uploadFileToProject(
@@ -155,7 +156,7 @@ public class PhotoController {
 		return JSP_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_PHOTO) Photo photo,
 			RedirectAttributes redirectAttrs) {
@@ -174,7 +175,7 @@ public class PhotoController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PROJECT_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
 	public ModelAndView delete(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
@@ -216,7 +217,7 @@ public class PhotoController {
 		return JSP_EDIT;
 	}
 
-	@PreAuthorize("hasRole('" + SystemConstants.ROLE_PHOTO_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PHOTO_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 			+ Photo.COLUMN_PRIMARY_KEY + "}")
 	public String editPhoto(@PathVariable(Photo.COLUMN_PRIMARY_KEY) int id,
