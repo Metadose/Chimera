@@ -13,6 +13,12 @@
 		<c:set var="companyPosition" value="(No Staff)"/>
 	</c:when>
 </c:choose>
+<style>
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:22px}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }
+</style>
 <c:import url="/resources/js-includes.jsp" />
 <script type="text/javascript">
 function logout(){
@@ -28,7 +34,7 @@ $(document).ready(function() {
 			return {
 				// Must convert json to javascript object before process.
 				suggestions: $.map($.parseJSON(response), function(item) {
-					return { value: item.tagName, data: item.id };
+					return { value: item.text, data: item.id };
 				})
 			};
 		}

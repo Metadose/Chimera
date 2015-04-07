@@ -3,7 +3,6 @@ package com.cebedo.pmsys.system.search.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.search.model.SearchResult;
 import com.cebedo.pmsys.system.search.service.SearchService;
 
 @Controller
@@ -30,15 +30,16 @@ public class SearchController {
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT })
-	public @ResponseBody List<String> search(
+	public @ResponseBody List<SearchResult> search(
 			@RequestParam(PARAM_SEARCH_INPUT) String searchInput) {
-		List<String> result = new ArrayList<String>();
-		for (String name : this.searchService.getData()) {
-			if (name == null) {
+		List<SearchResult> result = new ArrayList<SearchResult>();
+		for (SearchResult searchResult : this.searchService.getData()) {
+			if (searchResult == null || searchResult.getText().isEmpty()) {
 				continue;
 			}
-			if (name.contains(searchInput)) {
-				result.add(StringEscapeUtils.escapeXml(name));
+			String resultText = searchResult.getText();
+			if (resultText.contains(searchInput)) {
+				result.add(searchResult);
 			}
 		}
 		return result;

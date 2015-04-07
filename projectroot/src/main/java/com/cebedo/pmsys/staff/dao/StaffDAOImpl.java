@@ -221,11 +221,4 @@ public class StaffDAOImpl implements StaffDAO {
 				+ " " + staffName[3] + " " + staffName[4];
 		return output;
 	}
-
-	@Override
-	public List<String> listNames() {
-		Session session = this.sessionFactory.getCurrentSession();
-		return this.daoHelper.getProjectionList(session, Staff.class,
-				Staff.PROPERTY_FIRST_NAME);
-	}
 }

@@ -11,11 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
+import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.search.model.SearchResult;
 import com.cebedo.pmsys.task.dao.TaskDAO;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.dao.TeamDAO;
+import com.cebedo.pmsys.team.model.Team;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -44,38 +49,68 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	@Transactional
-	public List<String> getData() {
+	public List<SearchResult> getData() {
 		AuthenticationToken auth = this.authHelper.getAuth();
+		Long companyID = auth.isSuperAdmin() ? null : auth.getCompany().getId();
 		Collection<GrantedAuthority> authorities = auth.getAuthorities();
-		List<String> results = new ArrayList<String>();
+		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		// Search tasks.
+		// TODO Create a new method that can be cached. Or cache this method.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TASK))) {
-			List<String> nameList = this.taskDAO.listNames();
-			results.addAll(nameList);
+			List<Task> taskList = this.taskDAO.list(companyID);
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			for (Task task : taskList) {
+				SearchResult result = new SearchResult(task.getTitle(),
+						Task.OBJECT_NAME, String.valueOf(task.getId()),
+						Task.OBJECT_NAME + "-" + String.valueOf(task.getId()));
+				resultList.add(result);
+			}
+			results.addAll(resultList);
 		}
 
 		// Search projects.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
-			List<String> nameList = this.projectDAO.listNames();
-			results.addAll(nameList);
+			List<Project> list = this.projectDAO.list(companyID);
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			for (Project obj : list) {
+				SearchResult result = new SearchResult(obj.getName(),
+						Project.OBJECT_NAME, String.valueOf(obj.getId()),
+						Project.OBJECT_NAME + "-" + String.valueOf(obj.getId()));
+				resultList.add(result);
+			}
+			results.addAll(resultList);
 		}
 
 		// TODO Search staff.
 		// Cannot get full name of staff.
 		if (authorities.contains(new SimpleGrantedAuthority(
-				SecurityAccess.ACCESS_STAFF))) {
-			List<String> nameList = this.staffDAO.listNames();
-			results.addAll(nameList);
+				SecurityAccess.ACCESS_PROJECT))) {
+			List<Staff> list = this.staffDAO.list(companyID);
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			for (Staff obj : list) {
+				SearchResult result = new SearchResult(obj.getFullName(),
+						Staff.OBJECT_NAME, String.valueOf(obj.getId()),
+						Staff.OBJECT_NAME + "-" + String.valueOf(obj.getId()));
+				resultList.add(result);
+			}
+			results.addAll(resultList);
 		}
 
 		// Search teams.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TEAM))) {
-			List<String> nameList = this.teamDAO.listNames();
-			results.addAll(nameList);
+			List<Team> list = this.teamDAO.list(companyID);
+			List<SearchResult> resultList = new ArrayList<SearchResult>();
+			for (Team obj : list) {
+				SearchResult result = new SearchResult(obj.getName(),
+						Staff.OBJECT_NAME, String.valueOf(obj.getId()),
+						Staff.OBJECT_NAME + "-" + String.valueOf(obj.getId()));
+				resultList.add(result);
+			}
+			results.addAll(resultList);
 		}
 
 		return results;

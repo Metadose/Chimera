@@ -54,6 +54,4 @@ public interface TaskDAO {
 
 	public void unassignTaskByProject(long taskID, Project project);
 
-	public List<String> listNames();
-
 }

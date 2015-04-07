@@ -32,6 +32,4 @@ public interface TeamDAO {
 	public List<Team> listWithTasks(Long companyID);
 
 	public String getNameByID(long teamID);
-
-	public List<String> listNames();
 }

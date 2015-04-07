@@ -5,6 +5,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
@@ -63,6 +65,13 @@ public class DAOHelper {
 			String projectionName) {
 		return (List<String>) session.createCriteria(clazz)
 				.setProjection(Property.forName(projectionName)).list();
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Criteria getCriteriaWithProjectionList(Session session, Class clazz,
+			ProjectionList projList) {
+		return session.createCriteria(clazz).setProjection(
+				Projections.distinct(projList));
 	}
 
 }

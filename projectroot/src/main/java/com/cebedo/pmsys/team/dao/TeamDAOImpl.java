@@ -159,11 +159,4 @@ public class TeamDAOImpl implements TeamDAO {
 				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
 		return result;
 	}
-
-	@Override
-	public List<String> listNames() {
-		Session session = this.sessionFactory.getCurrentSession();
-		return this.daoHelper.getProjectionList(session, Team.class,
-				Team.PROPERTY_NAME);
-	}
 }

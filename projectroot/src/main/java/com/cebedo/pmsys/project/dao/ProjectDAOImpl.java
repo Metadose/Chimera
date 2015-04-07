@@ -3,9 +3,12 @@ package com.cebedo.pmsys.project.dao;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -122,12 +125,5 @@ public class ProjectDAOImpl implements ProjectDAO {
 				Project.class, Project.PROPERTY_ID, projectID,
 				Project.PROPERTY_NAME);
 		return result;
-	}
-
-	@Override
-	public List<String> listNames() {
-		Session session = this.sessionFactory.getCurrentSession();
-		return this.daoHelper.getProjectionList(session, Project.class,
-				Project.PROPERTY_NAME);
 	}
 }
