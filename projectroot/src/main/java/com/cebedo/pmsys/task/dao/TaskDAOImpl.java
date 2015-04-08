@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.DAOHelper;
@@ -264,5 +265,15 @@ public class TaskDAOImpl implements TaskDAO {
 		// Null the project and update.
 		task.setProject(null);
 		session.update(task);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Cacheable(value = "searchTaskCache", key = "#root.targetClass")
+	public List<Task> listFromCache(Long companyID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
+				session, Task.class.getName(), companyID).list();
+		return taskList;
 	}
 }

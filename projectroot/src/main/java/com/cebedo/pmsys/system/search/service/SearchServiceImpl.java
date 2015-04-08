@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = "searchDataCache", key = "#root.targetClass")
 	public List<SearchResult> getData() {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Long companyID = auth.isSuperAdmin() ? null : auth.getCompany().getId();
@@ -56,10 +58,9 @@ public class SearchServiceImpl implements SearchService {
 		List<SearchResult> results = new ArrayList<SearchResult>();
 
 		// Search tasks.
-		// TODO Create a new method that can be cached. Or cache this method.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TASK))) {
-			List<Task> taskList = this.taskDAO.list(companyID);
+			List<Task> taskList = this.taskDAO.listFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Task task : taskList) {
 				SearchResult result = new SearchResult(task.getTitle(),
@@ -73,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search projects.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
-			List<Project> list = this.projectDAO.list(companyID);
+			List<Project> list = this.projectDAO.listFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Project obj : list) {
 				SearchResult result = new SearchResult(obj.getName(),
@@ -88,7 +89,7 @@ public class SearchServiceImpl implements SearchService {
 		// Cannot get full name of staff.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
-			List<Staff> list = this.staffDAO.list(companyID);
+			List<Staff> list = this.staffDAO.listFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Staff obj : list) {
 				SearchResult result = new SearchResult(obj.getFullName(),
@@ -102,7 +103,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search teams.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TEAM))) {
-			List<Team> list = this.teamDAO.list(companyID);
+			List<Team> list = this.teamDAO.listFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Team obj : list) {
 				SearchResult result = new SearchResult(obj.getName(),
@@ -115,5 +116,4 @@ public class SearchServiceImpl implements SearchService {
 
 		return results;
 	}
-
 }

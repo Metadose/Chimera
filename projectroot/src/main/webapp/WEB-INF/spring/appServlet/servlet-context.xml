@@ -8,10 +8,13 @@
     xmlns:security="http://www.springframework.org/schema/security"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:cache="http://www.springframework.org/schema/cache"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
 		http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/context
@@ -20,6 +23,18 @@
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+		<!-- Enable Caching -->
+		<cache:annotation-driven />
+		
+		<!-- Configure caching repo -->
+		<beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+			<beans:property name="cacheManager" ref="ehcache"/>
+		</beans:bean>
+		<beans:bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+			<beans:property name="configLocation" value="/WEB-INF/spring/ehcache.xml"/>
+			<beans:property name="shared" value="true"/>
+		</beans:bean>
 		
 	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->
 	<!-- http://www.hdiv.org/schema/hdiv
@@ -93,6 +108,7 @@
 		
 		<!-- Only an authenticated user can view the dashboard and images -->
 		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/search/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/image/display/**" access="isAuthenticated()"/>
 		
 		<!-- These are just general access security, a finer security level resides in the Controller and JSP -->

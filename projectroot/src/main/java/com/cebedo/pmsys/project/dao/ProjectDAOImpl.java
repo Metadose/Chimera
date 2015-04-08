@@ -3,14 +3,12 @@ package com.cebedo.pmsys.project.dao;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.DAOHelper;
@@ -125,5 +123,15 @@ public class ProjectDAOImpl implements ProjectDAO {
 				Project.class, Project.PROPERTY_ID, projectID,
 				Project.PROPERTY_NAME);
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Cacheable(value = "searchProjectCache", key = "#root.targetClass")
+	public List<Project> listFromCache(Long companyID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Project> list = this.daoHelper.getSelectQueryFilterCompany(
+				session, Project.class.getName(), companyID).list();
+		return list;
 	}
 }

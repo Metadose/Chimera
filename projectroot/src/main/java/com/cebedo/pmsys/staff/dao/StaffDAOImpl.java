@@ -14,6 +14,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.DAOHelper;
@@ -220,5 +221,15 @@ public class StaffDAOImpl implements StaffDAO {
 		String output = staffName[0] + " " + staffName[1] + " " + staffName[2]
 				+ " " + staffName[3] + " " + staffName[4];
 		return output;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Cacheable(value = "searchStaffCache", key = "#root.targetClass")
+	public List<Staff> listFromCache(Long companyID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,
+				Staff.class.getName(), companyID).list();
+		return list;
 	}
 }

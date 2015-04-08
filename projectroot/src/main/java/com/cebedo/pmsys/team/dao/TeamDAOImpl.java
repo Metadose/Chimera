@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.common.DAOHelper;
@@ -158,5 +159,15 @@ public class TeamDAOImpl implements TeamDAO {
 		String result = this.daoHelper.getProjectionByID(session, Team.class,
 				Team.PROPERTY_ID, teamID, Team.PROPERTY_NAME);
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Cacheable(value = "searchTeamCache", key = "#root.targetClass")
+	public List<Team> listFromCache(Long companyID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> list = this.daoHelper.getSelectQueryFilterCompany(session,
+				Team.class.getName(), companyID).list();
+		return list;
 	}
 }

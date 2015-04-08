@@ -36,4 +36,6 @@ public interface StaffDAO {
 
 	public String getNameByID(long staffID);
 
+	public List<Staff> listFromCache(Long companyID);
+
 }
