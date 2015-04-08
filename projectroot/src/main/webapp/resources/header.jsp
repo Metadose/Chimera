@@ -19,7 +19,9 @@
 .autocomplete-selected { background: #F0F0F0; }
 .autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }
 </style>
-<c:import url="/resources/js-includes.jsp" />
+<script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
+<script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
+<script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
 <script type="text/javascript">
 function logout(){
 	document.getElementById('logoutForm').submit();
@@ -34,10 +36,26 @@ $(document).ready(function() {
 			return {
 				// Must convert json to javascript object before process.
 				suggestions: $.map($.parseJSON(response), function(item) {
-					return { value: item.text, data: item.id };
+					return { 
+						value: item.text,
+						href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
+						data: item.id
+					};
 				})
 			};
-		}
+		},
+		source: function(response) {
+			return $.map($.parseJSON(response), function(item) {
+				return { 
+					value: item.text,
+					href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
+					data: item.id
+				};
+			})
+		},
+		select: function(event, ui){ 
+            window.location.href = ui.item.href;
+        }
 	});
 });
 </script>

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -50,8 +49,8 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "searchDataCache", key = "#root.targetClass")
 	public List<SearchResult> getData() {
+		// TODO Cache this method.
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Long companyID = auth.isSuperAdmin() ? null : auth.getCompany().getId();
 		Collection<GrantedAuthority> authorities = auth.getAuthorities();
