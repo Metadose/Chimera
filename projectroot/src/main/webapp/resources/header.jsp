@@ -15,9 +15,9 @@
 </c:choose>
 <style>
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:22px}
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
 .autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }
+.autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
 </style>
 <script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
@@ -75,7 +75,14 @@ $(document).ready(function() {
             <span class="icon-bar"></span>
         </a>
         <div class="navbar-left" style="padding-top: 1%; padding-left: 3%; width: 50%">
-	       	<input type="text" id="searchField" name="search" class='form-control' placeholder="Search"/>
+        <div class="form-group input-group">
+            <input type="text" id="searchField" name="search" class='form-control' placeholder="Search"/>
+            <span class="input-group-btn">
+            	<button class="btn btn-flat btn-default" type="button" style="height: 140%; width: 140%;">
+            	<i class="fa fa-search"></i>
+            	</button>
+            </span>
+        </div>
         </div>
         <div class="navbar-right">
             <ul class="nav navbar-nav">

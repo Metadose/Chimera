@@ -127,7 +127,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchProjectCache", key = "#root.methodName")
+	@Cacheable(value = "searchProjectCache", key = "#root.targetClass")
 	public List<Project> listFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Project> list = this.daoHelper.getSelectQueryFilterCompany(
