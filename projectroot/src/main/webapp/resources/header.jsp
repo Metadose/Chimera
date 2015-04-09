@@ -13,52 +13,6 @@
 		<c:set var="companyPosition" value="(No Staff)"/>
 	</c:when>
 </c:choose>
-<style>
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
-</style>
-<script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
-<script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
-<script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
-<script type="text/javascript">
-function logout(){
-	document.getElementById('logoutForm').submit();
-}
-
-$(document).ready(function() {
-	$('#searchField').autocomplete({
-		serviceUrl: '${contextPath}/search/',
-		paramName: "searchInput",
-		delimiter: ",",
-		transformResult: function(response) {
-			return {
-				// Must convert json to javascript object before process.
-				suggestions: $.map($.parseJSON(response), function(item) {
-					return { 
-						value: item.text,
-						href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
-						data: item.id
-					};
-				})
-			};
-		},
-		source: function(response) {
-			return $.map($.parseJSON(response), function(item) {
-				return { 
-					value: item.text,
-					href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
-					data: item.id
-				};
-			})
-		},
-		select: function(event, ui){ 
-            window.location.href = ui.item.href;
-        }
-	});
-});
-</script>
 <!-- header logo: style can be found in header.less -->
 <header class="header">
     <a href="index.html" class="logo">
@@ -74,19 +28,9 @@ $(document).ready(function() {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </a>
-        <div class="navbar-left" style="padding-top: 1%; padding-left: 3%; width: 50%">
-        <div class="form-group input-group">
-            <input type="text" id="searchField" name="search" class='form-control' placeholder="Search"/>
-            <span class="input-group-btn">
-            	<button class="btn btn-flat btn-default" type="button" style="height: 140%; width: 140%;">
-            	<i class="fa fa-search"></i>
-            	</button>
-            </span>
-        </div>
-        </div>
         <div class="navbar-right">
             <ul class="nav navbar-nav">
-            	
+			    
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -4,6 +4,51 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <sec:authentication var="authUser" property="user"/>
 <sec:authentication var="authStaff" property="staff"/>
+<style>
+.autocomplete-suggestions { background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
+</style>
+<script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
+<script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
+<script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
+<script type="text/javascript">
+var source = [ { value: "www.foo.com",
+    label: "Spencer Kline"
+  },
+  { value: "www.example.com",
+    label: "James Bond"
+  }
+];
+
+function logout(){
+	document.getElementById('logoutForm').submit();
+}
+
+$(document).ready(function() {
+	$('#searchField').autocomplete({
+		serviceUrl: '${contextPath}/search/',
+		paramName: "searchInput",
+		delimiter: ",",
+		transformResult: function(response) {
+			return {
+				// Must convert json to javascript object before process.
+				suggestions: $.map($.parseJSON(response), function(item) {
+					return { 
+						value: item.text,
+						href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
+						data: item.id
+					};
+				})
+			};
+		},
+		onSelect: function (suggestion) {
+	        window.location.href = suggestion.href;
+	    }
+	});
+});
+</script>
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -34,15 +79,15 @@
             </div>
         </div>
         <!-- search form -->
-<!--         <form action="#" method="post" class="sidebar-form"> -->
-<%-- 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
-<!--             <div class="input-group"> -->
-<!--                 <input type="text" name="q" class="form-control" placeholder="Search..."/> -->
-<!--                 <span class="input-group-btn"> -->
-<!--                     <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button> -->
-<!--                 </span> -->
-<!--             </div> -->
-<!--         </form> -->
+        <form action="#" id="sidebar-search-form" method="post" class="sidebar-form">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <div class="input-group">
+                <input type="text" id="searchField" name="search" class='form-control' placeholder="Search..."/>
+                <span class="input-group-btn">
+                    <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </form>
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">

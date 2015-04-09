@@ -5,6 +5,7 @@
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:c="http://www.springframework.org/schema/c"
     xmlns:security="http://www.springframework.org/schema/security"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -13,10 +14,10 @@
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/cache
-		http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
 		http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx
@@ -24,27 +25,22 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
-		<!-- Spring Data Redis -->
-		<beans:bean id="jedisConnFactory" 
-		    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" 
-		    p:use-pool="true"/>
-		
-		<!-- Redis template definition -->
-		<beans:bean id="redisTemplate" 
-		    class="org.springframework.data.redis.core.RedisTemplate" 
-		    p:connection-factory-ref="jedisConnFactory"/>
-		
-		<!-- Enable Caching -->
-		<cache:annotation-driven />
-		
-		<!-- Configure caching repo -->
-		<beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-			<beans:property name="cacheManager" ref="ehcache"/>
-		</beans:bean>
-		<beans:bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-			<beans:property name="configLocation" value="/WEB-INF/spring/ehcache.xml"/>
-			<beans:property name="shared" value="true"/>
-		</beans:bean>
+	<!-- Spring Data Redis -->
+	<cache:annotation-driven />
+	<beans:bean id="jedisConnFactory" 
+	    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+	    p:host-name="localhost"
+       	p:port="6379"
+	    p:use-pool="true"/>
+	
+	<!-- Redis template definition and cache manager-->
+	<beans:bean id="redisTemplate" 
+	    class="org.springframework.data.redis.core.RedisTemplate" 
+	    p:connection-factory-ref="jedisConnFactory"/>
+	    
+    <beans:bean id="cacheManager"
+        class="org.springframework.data.redis.cache.RedisCacheManager"
+        c:template-ref="redisTemplate"/>
 		
 	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->
 	<!-- http://www.hdiv.org/schema/hdiv
