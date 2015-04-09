@@ -20,14 +20,6 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-var source = [ { value: "www.foo.com",
-    label: "Spencer Kline"
-  },
-  { value: "www.example.com",
-    label: "James Bond"
-  }
-];
-
 function logout(){
 	document.getElementById('logoutForm').submit();
 }
@@ -103,7 +95,7 @@ $(document).ready(function() {
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="active">
-                <a href="index.html">
+                <a href="${contextPath}/dashboard/">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
