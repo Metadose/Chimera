@@ -4,7 +4,9 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:jms="http://www.springframework.org/schema/jms"
     xmlns:c="http://www.springframework.org/schema/c"
     xmlns:security="http://www.springframework.org/schema/security"
     xmlns:aop="http://www.springframework.org/schema/aop"
@@ -20,10 +22,36 @@
 		http://www.springframework.org/schema/cache/spring-cache.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
+		http://activemq.apache.org/schema/core
+		http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<!-- ActiveMQ Configuration -->
+	<amq:connectionFactory id="amqConnectionFactory" brokerURL="${jms.url}" userName="${jms.username}" password="${jms.password}" />
+	
+	<!-- CachingConnectionFactory Definition, sessionCacheSize property is the number of sessions to cache -->
+	<!-- TODO Configure JMS ActiveMQ -->
+	<beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+	    <beans:constructor-arg ref="amqConnectionFactory" />
+	    <beans:property name="exceptionListener" ref="jmsExceptionListener" />
+	    <beans:property name="sessionCacheSize" value="100" />
+	</beans:bean>
+	
+	<!-- JmsTemplate Definition -->
+	<beans:bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	   <beans:constructor-arg ref="connectionFactory"/>
+	</beans:bean>
+	
+	<!-- Listener container definition using the jms namespace,
+		concurrency is the max number of concurrent listeners that can be started -->
+	<jms:listener-container concurrency="10" >
+	    <jms:listener id="QueueListener" destination="Queue.Name" ref="queueListener" />
+	</jms:listener-container>
 		
 	<!-- Spring Data Redis -->
 	<cache:annotation-driven />
