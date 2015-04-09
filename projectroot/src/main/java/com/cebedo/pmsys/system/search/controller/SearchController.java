@@ -38,7 +38,7 @@ public class SearchController {
 				continue;
 			}
 			String resultText = searchResult.getText();
-			if (resultText.contains(searchInput)) {
+			if (resultText.toLowerCase().contains(searchInput.toLowerCase())) {
 				result.add(searchResult);
 			}
 		}

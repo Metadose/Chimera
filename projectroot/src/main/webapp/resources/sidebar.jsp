@@ -7,13 +7,19 @@
 <style>
 .autocomplete-suggestions { background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
+.autocomplete-no-suggestion { display: block; text-align:center; font-size: medium; background: #F0F0F0; }
 .autocomplete-selected { background: #F0F0F0; }
 .autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
+.autocomplete-group strong { display: block; text-align:center; font-size: medium; background: #F0F0F0; }
 </style>
 <script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
 <script type="text/javascript">
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 var source = [ { value: "www.foo.com",
     label: "Spencer Kline"
   },
@@ -31,6 +37,11 @@ $(document).ready(function() {
 		serviceUrl: '${contextPath}/search/',
 		paramName: "searchInput",
 		delimiter: ",",
+		forceFixPosition: true,
+		showNoSuggestionNotice: true,
+		noSuggestionNotice: "<h5><i>No results</i></h5>",
+ 		minChars: 3,
+		groupBy: 'objectName',
 		transformResult: function(response) {
 			return {
 				// Must convert json to javascript object before process.
@@ -38,7 +49,7 @@ $(document).ready(function() {
 					return { 
 						value: item.text,
 						href: '${contextPath}/' + item.objectName + '/edit/' + item.objectID,
-						data: item.id
+						data: { objectName : item.objectName.capitalize(), id : item.id }
 					};
 				})
 			};

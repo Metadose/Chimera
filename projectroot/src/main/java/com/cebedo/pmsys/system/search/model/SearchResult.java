@@ -14,10 +14,10 @@ public class SearchResult {
 	}
 
 	public SearchResult(String text, String objName, String objID, String id) {
-		setText(StringEscapeUtils.escapeXml(text));
-		setObjectName(StringEscapeUtils.escapeXml(objName));
-		setObjectID(StringEscapeUtils.escapeXml(objID));
-		setId(StringEscapeUtils.escapeXml(id));
+		setText(StringEscapeUtils.escapeHtml(text));
+		setObjectName(StringEscapeUtils.escapeHtml(objName));
+		setObjectID(StringEscapeUtils.escapeHtml(objID));
+		setId(StringEscapeUtils.escapeHtml(id));
 	}
 
 	public String getId() {
