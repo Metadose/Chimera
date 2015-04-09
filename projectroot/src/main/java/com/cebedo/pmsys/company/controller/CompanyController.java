@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cebedo.pmsys.common.SystemConstants;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.company.service.CompanyService;
+import com.cebedo.pmsys.system.constants.SystemConstants;
 
 @Controller
 @RequestMapping(Company.OBJECT_NAME)

@@ -9,12 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthHelper;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.system.search.model.SearchResult;
 import com.cebedo.pmsys.task.dao.TaskDAO;
@@ -59,7 +59,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search tasks.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TASK))) {
-			List<Task> taskList = this.taskDAO.listFromCache(companyID);
+			List<Task> taskList = this.taskDAO.listTaskFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Task task : taskList) {
 				SearchResult result = new SearchResult(task.getTitle(),
@@ -73,7 +73,8 @@ public class SearchServiceImpl implements SearchService {
 		// Search projects.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
-			List<Project> list = this.projectDAO.listFromCache(companyID);
+			List<Project> list = this.projectDAO
+					.listProjectFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Project obj : list) {
 				SearchResult result = new SearchResult(obj.getName(),
@@ -88,7 +89,7 @@ public class SearchServiceImpl implements SearchService {
 		// Cannot get full name of staff.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
-			List<Staff> list = this.staffDAO.listFromCache(companyID);
+			List<Staff> list = this.staffDAO.listStaffFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Staff obj : list) {
 				SearchResult result = new SearchResult(obj.getFullName(),
@@ -102,7 +103,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search teams.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TEAM))) {
-			List<Team> list = this.teamDAO.listFromCache(companyID);
+			List<Team> list = this.teamDAO.listTeamFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Team obj : list) {
 				SearchResult result = new SearchResult(obj.getName(),

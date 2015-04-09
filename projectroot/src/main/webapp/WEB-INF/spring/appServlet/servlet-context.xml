@@ -24,6 +24,16 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
+		<!-- Spring Data Redis -->
+		<beans:bean id="jedisConnFactory" 
+		    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" 
+		    p:use-pool="true"/>
+		
+		<!-- Redis template definition -->
+		<beans:bean id="redisTemplate" 
+		    class="org.springframework.data.redis.core.RedisTemplate" 
+		    p:connection-factory-ref="jedisConnFactory"/>
+		
 		<!-- Enable Caching -->
 		<cache:annotation-driven />
 		

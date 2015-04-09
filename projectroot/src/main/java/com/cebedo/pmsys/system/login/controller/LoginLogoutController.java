@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 

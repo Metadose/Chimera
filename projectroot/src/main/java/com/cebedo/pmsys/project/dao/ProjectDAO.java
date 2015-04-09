@@ -24,6 +24,6 @@ public interface ProjectDAO {
 
 	public String getNameByID(long projectID);
 
-	public List<Project> listFromCache(Long companyID);
+	public List<Project> listProjectFromCache(Long companyID);
 
 }

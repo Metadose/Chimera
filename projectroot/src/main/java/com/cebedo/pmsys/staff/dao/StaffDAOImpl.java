@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.model.Team;
 
@@ -225,8 +225,8 @@ public class StaffDAOImpl implements StaffDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchStaffCache", key = "#root.targetClass")
-	public List<Staff> listFromCache(Long companyID) {
+	@Cacheable(value = "searchStaffCache", key = "#root.methodName")
+	public List<Staff> listStaffFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,
 				Staff.class.getName(), companyID).list();

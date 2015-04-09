@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.common.LogHelper;
-import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.constants.SystemConstants;
+import com.cebedo.pmsys.system.helper.AuthHelper;
+import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {

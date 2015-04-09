@@ -1,6 +1,6 @@
-package com.cebedo.pmsys.common.ui;
+package com.cebedo.pmsys.system.ui;
 
-import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.constants.SystemConstants;
 
 public class AlertBoxFactory {
 

@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.common;
+package com.cebedo.pmsys.system.helper;
 
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;

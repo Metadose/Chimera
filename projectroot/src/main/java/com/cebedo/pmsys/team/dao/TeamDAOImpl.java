@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.model.TeamAssignment;
 
@@ -163,8 +163,8 @@ public class TeamDAOImpl implements TeamDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchTeamCache", key = "#root.targetClass")
-	public List<Team> listFromCache(Long companyID) {
+	@Cacheable(value = "searchTeamCache", key = "#root.methodName")
+	public List<Team> listTeamFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Team> list = this.daoHelper.getSelectQueryFilterCompany(session,
 				Team.class.getName(), companyID).list();

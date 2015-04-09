@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cebedo.pmsys.common.SystemConstants;
+import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.search.model.SearchResult;
 import com.cebedo.pmsys.system.search.service.SearchService;
 

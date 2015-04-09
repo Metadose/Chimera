@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 import com.cebedo.pmsys.task.model.TaskStaffAssignment;
@@ -269,8 +269,8 @@ public class TaskDAOImpl implements TaskDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchTaskCache", key = "#root.targetClass")
-	public List<Task> listFromCache(Long companyID) {
+	@Cacheable(value = "searchTaskCache", key = "#root.methodName")
+	public List<Task> listTaskFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
 				session, Task.class.getName(), companyID).list();

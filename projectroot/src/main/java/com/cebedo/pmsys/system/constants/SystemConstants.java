@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.common;
+package com.cebedo.pmsys.system.constants;
 
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.systemuser.model.SystemUser;

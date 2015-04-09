@@ -8,8 +8,8 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 
 //@Repository
 public class SubcontractorDAOImpl implements SubcontractorDAO {

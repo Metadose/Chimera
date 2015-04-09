@@ -33,5 +33,5 @@ public interface TeamDAO {
 
 	public String getNameByID(long teamID);
 
-	public List<Team> listFromCache(Long companyID);
+	public List<Team> listTeamFromCache(Long companyID);
 }

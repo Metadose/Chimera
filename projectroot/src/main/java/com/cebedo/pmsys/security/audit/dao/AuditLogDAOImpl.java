@@ -6,8 +6,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 
 @Repository
 public class AuditLogDAOImpl implements AuditLogDAO {

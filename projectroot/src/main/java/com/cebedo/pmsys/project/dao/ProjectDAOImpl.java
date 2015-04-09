@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.common.DAOHelper;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.system.helper.DAOHelper;
 import com.cebedo.pmsys.task.model.Task;
 
 @Repository
@@ -127,8 +127,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchProjectCache", key = "#root.targetClass")
-	public List<Project> listFromCache(Long companyID) {
+	@Cacheable(value = "searchProjectCache", key = "#root.methodName")
+	public List<Project> listProjectFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Project> list = this.daoHelper.getSelectQueryFilterCompany(
 				session, Project.class.getName(), companyID).list();

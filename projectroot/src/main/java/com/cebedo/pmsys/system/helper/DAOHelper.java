@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.common;
+package com.cebedo.pmsys.system.helper;
 
 import java.util.List;
 

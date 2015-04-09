@@ -6,14 +6,14 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.common.AuthHelper;
-import com.cebedo.pmsys.common.LogHelper;
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
+import com.cebedo.pmsys.system.helper.AuthHelper;
+import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
