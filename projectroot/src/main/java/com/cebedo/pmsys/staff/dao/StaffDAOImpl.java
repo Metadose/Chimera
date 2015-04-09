@@ -225,7 +225,7 @@ public class StaffDAOImpl implements StaffDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchStaffCache", key = "#root.methodName")
+	@Cacheable(value = "searchStaffCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless="#result.isEmpty()")
 	public List<Staff> listStaffFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,

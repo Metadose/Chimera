@@ -163,7 +163,7 @@ public class TeamDAOImpl implements TeamDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchTeamCache", key = "#root.methodName")
+	@Cacheable(value = "searchTeamCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless="#result.isEmpty()")
 	public List<Team> listTeamFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Team> list = this.daoHelper.getSelectQueryFilterCompany(session,

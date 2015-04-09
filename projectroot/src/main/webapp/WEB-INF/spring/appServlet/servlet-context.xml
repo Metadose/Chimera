@@ -39,7 +39,7 @@
 	    p:connection-factory-ref="jedisConnFactory"/>
 	    
     <beans:bean id="cacheManager"
-        class="org.springframework.data.redis.cache.RedisCacheManager"
+        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
         c:template-ref="redisTemplate"/>
 		
 	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->

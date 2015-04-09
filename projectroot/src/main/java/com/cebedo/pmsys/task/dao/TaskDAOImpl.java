@@ -269,7 +269,7 @@ public class TaskDAOImpl implements TaskDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchTaskCache", key = "#root.methodName")
+	@Cacheable(value = "searchTaskCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless="#result.isEmpty()")
 	public List<Task> listTaskFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
