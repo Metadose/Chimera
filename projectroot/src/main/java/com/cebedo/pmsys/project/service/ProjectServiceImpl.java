@@ -13,8 +13,10 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
 import com.cebedo.pmsys.system.helper.AuthHelper;
+import com.cebedo.pmsys.system.helper.BeanHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.message.sender.QueueSender;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -22,6 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
 	private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
 	private AuthHelper authHelper = new AuthHelper();
 	private LogHelper logHelper = new LogHelper();
+	private BeanHelper beanHelper = new BeanHelper();
 
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
@@ -43,8 +46,9 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public void create(Project project) {
 		AuthenticationToken auth = this.authHelper.getAuth();
-		logger.info(this.logHelper.generateLogMessage(auth,
-				"Creating project: " + project.getName()));
+		String logText = this.logHelper.generateLogMessage(auth,
+				"Creating project: " + project.getName());
+		logger.info(logText);
 
 		this.projectDAO.create(project);
 		Company authCompany = auth.getCompany();
@@ -60,6 +64,11 @@ public class ProjectServiceImpl implements ProjectService {
 		audit.setObjectName(Project.OBJECT_NAME);
 		audit.setObjectID(project.getId());
 		this.auditLogDAO.create(audit);
+
+		// Send messages/notifications.
+		QueueSender sender = (QueueSender) this.beanHelper
+				.getBean(QueueSender.BEAN_NAME);
+		sender.send("notification.user-[userid].project.create", logText);
 	}
 
 	@Override

@@ -60,9 +60,6 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		WebAuthenticationDetails details = (WebAuthenticationDetails) auth
 				.getDetails();
 		String ipAddress = details.getRemoteAddress();
-		QueueSender sender = (QueueSender) this.beanHelper
-				.getBean(QueueSender.BEAN_NAME);
-		sender.send("This is a test");
 		try {
 			WebApplicationContext applicationContext = WebApplicationContextUtils
 					.getWebApplicationContext(servletContext);
@@ -87,6 +84,9 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 						user.getCompany(), user, user.getStaff(), null,
 						"User company is expired.");
 				logger.warn(text);
+				QueueSender sender = (QueueSender) this.beanHelper
+						.getBean(QueueSender.BEAN_NAME);
+				sender.send("system.company.expired", text);
 				throw new BadCredentialsException(text);
 			}
 
@@ -96,6 +96,9 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 						user.getCompany(), user, user.getStaff(), null,
 						"User account is locked.");
 				logger.warn(text);
+				QueueSender sender = (QueueSender) this.beanHelper
+						.getBean(QueueSender.BEAN_NAME);
+				sender.send("system.login.locked", text);
 				throw new BadCredentialsException(text);
 			}
 		}

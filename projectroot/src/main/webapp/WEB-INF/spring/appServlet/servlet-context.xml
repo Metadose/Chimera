@@ -46,7 +46,7 @@
  
     <!--  Default Destination Queue Definition-->
     <beans:bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <beans:constructor-arg index="0" value="queue.destination.default"/>
+        <beans:constructor-arg index="0" value="system.uncategorized.queue"/>
     </beans:bean>
  
     <!-- JmsTemplate Definition -->
