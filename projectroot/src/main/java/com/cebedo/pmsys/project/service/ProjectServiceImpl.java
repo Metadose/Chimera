@@ -16,7 +16,8 @@ import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.helper.BeanHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
-import com.cebedo.pmsys.system.message.sender.QueueSender;
+import com.cebedo.pmsys.system.message.receiver.MessageReceiver;
+import com.cebedo.pmsys.system.message.sender.MessageSender;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -65,10 +66,17 @@ public class ProjectServiceImpl implements ProjectService {
 		audit.setObjectID(project.getId());
 		this.auditLogDAO.create(audit);
 
-		// Send messages/notifications.
-		QueueSender sender = (QueueSender) this.beanHelper
-				.getBean(QueueSender.BEAN_NAME);
+		// TODO Send messages/notifications.
+		// OR use message brokers as instructions.
+		// LIKE send message to logger to log.
+		// AND auditor to audit.
+		MessageSender sender = (MessageSender) this.beanHelper
+				.getBean(MessageSender.BEAN_NAME);
 		sender.send("notification.user-[userid].project.create", logText);
+
+		MessageReceiver receiver = (MessageReceiver) this.beanHelper
+				.getBean(MessageReceiver.BEAN_NAME);
+		receiver.receive("notification.user-[userid].project.create");
 	}
 
 	@Override

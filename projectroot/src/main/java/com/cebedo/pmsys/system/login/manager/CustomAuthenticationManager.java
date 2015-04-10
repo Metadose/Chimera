@@ -27,7 +27,7 @@ import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.helper.BeanHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
-import com.cebedo.pmsys.system.message.sender.QueueSender;
+import com.cebedo.pmsys.system.message.sender.MessageSender;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -84,9 +84,11 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 						user.getCompany(), user, user.getStaff(), null,
 						"User company is expired.");
 				logger.warn(text);
-				QueueSender sender = (QueueSender) this.beanHelper
-						.getBean(QueueSender.BEAN_NAME);
-				sender.send("system.company.expired", text);
+				MessageSender sender = (MessageSender) this.beanHelper
+						.getBean(MessageSender.BEAN_NAME);
+				// TODO This would change the way we notify and log events.
+				// Use redis for messaging instead.
+				sender.send("notification.system.login.company.expired", text);
 				throw new BadCredentialsException(text);
 			}
 
@@ -96,9 +98,9 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 						user.getCompany(), user, user.getStaff(), null,
 						"User account is locked.");
 				logger.warn(text);
-				QueueSender sender = (QueueSender) this.beanHelper
-						.getBean(QueueSender.BEAN_NAME);
-				sender.send("system.login.locked", text);
+				MessageSender sender = (MessageSender) this.beanHelper
+						.getBean(MessageSender.BEAN_NAME);
+				sender.send("notification.system.login.user.locked", text);
 				throw new BadCredentialsException(text);
 			}
 		}

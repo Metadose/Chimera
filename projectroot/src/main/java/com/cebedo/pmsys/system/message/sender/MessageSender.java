@@ -3,12 +3,12 @@ package com.cebedo.pmsys.system.message.sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 
-public class QueueSender {
-	public final static String BEAN_NAME = "queueSender";
+public class MessageSender {
+	public final static String BEAN_NAME = "messageSender";
 	private final JmsTemplate jmsTemplate;
 
 	@Autowired
-	public QueueSender(final JmsTemplate jmsTemplate) {
+	public MessageSender(final JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
 	}
 
