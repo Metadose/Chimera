@@ -31,44 +31,52 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
-	<!-- ActiveMQ Configuration -->
-	<amq:connectionFactory id="amqConnectionFactory" brokerURL="${jms.url}" userName="${jms.username}" password="${jms.password}" />
+	<context:property-placeholder location="classpath:system.properties"/>
 	
-	<!-- CachingConnectionFactory Definition, sessionCacheSize property is the number of sessions to cache -->
-	<!-- TODO Configure JMS ActiveMQ -->
-	<beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-	    <beans:constructor-arg ref="amqConnectionFactory" />
-	    <beans:property name="exceptionListener" ref="jmsExceptionListener" />
-	    <beans:property name="sessionCacheSize" value="100" />
-	</beans:bean>
-	
-	<!-- JmsTemplate Definition -->
-	<beans:bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-	   <beans:constructor-arg ref="connectionFactory"/>
-	</beans:bean>
-	
-	<!-- Listener container definition using the jms namespace,
-		concurrency is the max number of concurrent listeners that can be started -->
-	<jms:listener-container concurrency="10" >
-	    <jms:listener id="QueueListener" destination="Queue.Name" ref="queueListener" />
-	</jms:listener-container>
+	<!-- Activemq connection factory -->
+    <beans:bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <beans:constructor-arg index="0" value="${amq.broker.url.tcp}"/>
+    </beans:bean>
+ 
+    <!-- ConnectionFactory Definition -->
+    <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"
+    	p:sessionCacheSize="10">
+        <beans:constructor-arg ref="amqConnectionFactory" />
+    </beans:bean>
+ 
+    <!--  Default Destination Queue Definition-->
+    <beans:bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <beans:constructor-arg index="0" value="queue.destination.default"/>
+    </beans:bean>
+ 
+    <!-- JmsTemplate Definition -->
+    <beans:bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <beans:property name="connectionFactory" ref="connectionFactory" />
+        <beans:property name="defaultDestination" ref="defaultDestination" />
+    </beans:bean>
+ 
+    <!-- Message Sender Definition -->
+    <beans:bean id="queueSender" class="com.cebedo.pmsys.system.message.sender.QueueSender">
+        <beans:constructor-arg index="0" ref="jmsTemplate" />
+    </beans:bean>
+    
 		
 	<!-- Spring Data Redis -->
 	<cache:annotation-driven />
-	<beans:bean id="jedisConnFactory" 
-	    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-	    p:host-name="localhost"
-       	p:port="6379"
-	    p:use-pool="true"/>
-	
-	<!-- Redis template definition and cache manager-->
-	<beans:bean id="redisTemplate" 
-	    class="org.springframework.data.redis.core.RedisTemplate" 
-	    p:connection-factory-ref="jedisConnFactory"/>
-	    
-    <beans:bean id="cacheManager"
-        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
-        c:template-ref="redisTemplate"/>
+		<beans:bean id="jedisConnFactory" 
+		    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		    p:host-name="${redis.host}"
+	       	p:port="${redis.port}"
+		    p:use-pool="true"/>
+		
+		<!-- Redis template definition and cache manager-->
+		<beans:bean id="redisTemplate" 
+		    class="org.springframework.data.redis.core.RedisTemplate" 
+		    p:connection-factory-ref="jedisConnFactory"/>
+		    
+	    <beans:bean id="cacheManager"
+	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
+	        c:template-ref="redisTemplate"/>
 		
 	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->
 	<!-- http://www.hdiv.org/schema/hdiv
@@ -100,25 +108,25 @@
 <!-- 		<hdiv:startPages>/auth/login</hdiv:startPages> -->
 <!-- 	</hdiv:config> -->
 	
+	<!-- Advanced logging -->
+		<!-- Performance logging -->
+		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor" />
+	    <aop:config>
+	        <aop:pointcut id="allServiceMethods"
+	        	expression="execution(* com.cebedo.pmsys.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.*.service.*.*(..))"/>
+	        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
+	    </aop:config>
 		
-	<!-- Performance logging -->
-	<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor" />
-    <aop:config>
-        <aop:pointcut id="allServiceMethods"
-        	expression="execution(* com.cebedo.pmsys.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.*.service.*.*(..))"/>
-        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
-    </aop:config>
-	
-	<!-- Exception logging -->
-	<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.system.log.resolver.LoggingExceptionResolver">
-	    <beans:property name="exceptionMappings">
-	        <beans:props>
-	            <beans:prop key="java.lang.Exception">/fix</beans:prop>
-	        </beans:props>
-	    </beans:property>
-	    <beans:property name="defaultErrorView" value="/fix" />
-	    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
-	</beans:bean>
+		<!-- Exception logging -->
+		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.system.log.resolver.LoggingExceptionResolver">
+		    <beans:property name="exceptionMappings">
+		        <beans:props>
+		            <beans:prop key="java.lang.Exception">/fix</beans:prop>
+		        </beans:props>
+		    </beans:property>
+		    <beans:property name="defaultErrorView" value="/fix" />
+		    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
+		</beans:bean>
  
  	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
@@ -220,11 +228,10 @@
  
     <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
         destroy-method="close">
-        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <beans:property name="url"
-            value="jdbc:mysql://localhost:3306/test" />
-        <beans:property name="username" value="root" />
-        <beans:property name="password" value="" />
+        <beans:property name="driverClassName" value="${jdbc.driverClassName}" />
+        <beans:property name="url" value="${jdbc.url}" />
+        <beans:property name="username" value="${jdbc.username}" />
+        <beans:property name="password" value="${jdbc.password}" />
     </beans:bean>
  
     <!-- Hibernate 4 SessionFactory Bean definition -->
@@ -405,7 +412,8 @@
 <!--     <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver"> -->
 <!-- 	    <beans:property name="maxUploadSize" value="20000000" /> -->
 <!-- 	</beans:bean> -->
-	
+
+	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.system.helper.ApplicationContextProvider"></beans:bean>
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <beans:property name="maxUploadSize" value="20000000" />
     </beans:bean>

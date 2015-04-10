@@ -24,8 +24,10 @@ import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
+import com.cebedo.pmsys.system.helper.BeanHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.message.sender.QueueSender;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
@@ -41,6 +43,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			.getLogger(SystemConstants.LOGGER_LOGIN);
 	private LogHelper logHelper = new LogHelper();
 	private AuthHelper authHelper = new AuthHelper();
+	private BeanHelper beanHelper = new BeanHelper();
 	private static final int MAX_LOGIN_ATTEMPT = 5;
 
 	private SystemUserService systemUserService;
@@ -57,7 +60,9 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		WebAuthenticationDetails details = (WebAuthenticationDetails) auth
 				.getDetails();
 		String ipAddress = details.getRemoteAddress();
-
+		QueueSender sender = (QueueSender) this.beanHelper
+				.getBean(QueueSender.BEAN_NAME);
+		sender.send("This is a test");
 		try {
 			WebApplicationContext applicationContext = WebApplicationContextUtils
 					.getWebApplicationContext(servletContext);

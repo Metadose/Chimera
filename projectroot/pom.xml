@@ -15,6 +15,8 @@
 		<hibernate.version>4.3.8.Final</hibernate.version>
 		<hdiv-version>2.1.9</hdiv-version>
 		<jackson.version>1.9.13</jackson.version>
+		<active-mq>5.7.0</active-mq>
+		<active-mq-pool>5.11.1</active-mq-pool>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -52,6 +54,25 @@
 		  <groupId>org.springframework.security</groupId>
 		  <artifactId>spring-security-taglibs</artifactId>
 		  <version>3.2.6.RELEASE</version>
+		</dependency>
+		
+		<!-- ActiveMQ -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>${active-mq}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-pool</artifactId>
+			<version>${active-mq-pool}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.2</version>
 		</dependency>
 		
 		<!-- Spring Data -->
