@@ -59,6 +59,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search tasks.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TASK))) {
+			// TODO Evict cache when update is made on tasks.
 			List<Task> taskList = this.taskDAO.listTaskFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Task task : taskList) {
@@ -89,6 +90,7 @@ public class SearchServiceImpl implements SearchService {
 		// Cannot get full name of staff.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_PROJECT))) {
+			// TODO Evict cache when update is made on staff.
 			List<Staff> list = this.staffDAO.listStaffFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Staff obj : list) {
@@ -103,6 +105,7 @@ public class SearchServiceImpl implements SearchService {
 		// Search teams.
 		if (authorities.contains(new SimpleGrantedAuthority(
 				SecurityAccess.ACCESS_TEAM))) {
+			// TODO Evict cache when update is made on team.
 			List<Team> list = this.teamDAO.listTeamFromCache(companyID);
 			List<SearchResult> resultList = new ArrayList<SearchResult>();
 			for (Team obj : list) {
