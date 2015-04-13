@@ -41,10 +41,10 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
-			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
-			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithTasks"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithAllCollections"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".list"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void create(Project project) {
 		// Send messages/notifications.
 		// Use message brokers as instructions.
@@ -69,13 +69,14 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-			@CacheEvict(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#project.getId())"),
-			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
-			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#project.getId())"),
-			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
-			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#project.getId())"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
-			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithTasks"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithAllCollections"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".list"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".getNameByID", key = "#project.getId()"),
+			@CacheEvict(value = Project.OBJECT_NAME
+					+ ".getByIDWithAllCollections", key = "#project.getId()"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".getByID", key = "#project.getId()"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void update(Project project) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 
@@ -102,7 +103,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")", unless = "#result.isEmpty()")
+	@Cacheable(value = Project.OBJECT_NAME + ".list", unless = "#result.isEmpty()")
 	public List<Project> list() {
 		AuthenticationToken token = this.authHelper.getAuth();
 
@@ -120,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#id)")
+	@Cacheable(value = Project.OBJECT_NAME + ".getByID", key = "#id")
 	public Project getByID(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
@@ -140,13 +141,14 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-			@CacheEvict(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#id)"),
-			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
-			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#id)"),
-			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
-			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#id)"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
-			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
+			@CacheEvict(value = Project.OBJECT_NAME + ".getNameByID", key = "#id"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithTasks"),
+			@CacheEvict(value = Project.OBJECT_NAME
+					+ ".getByIDWithAllCollections", key = "#id"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".listWithAllCollections"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".getByID", key = "#id"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".list"),
+			@CacheEvict(value = Project.OBJECT_NAME + ".search", allEntries = true) })
 	public void delete(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
@@ -166,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")", unless = "#result.isEmpty()")
+	@Cacheable(value = Project.OBJECT_NAME + ".listWithAllCollections")
 	public List<Project> listWithAllCollections() {
 		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
@@ -183,7 +185,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#id)")
+	@Cacheable(value = Project.OBJECT_NAME + ".getByIDWithAllCollections", key = "#id")
 	public Project getByIDWithAllCollections(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByIDWithAllCollections(id);
@@ -202,7 +204,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")", unless = "#result.isEmpty()")
+	@Cacheable(value = Project.OBJECT_NAME + ".listWithTasks")
 	public List<Project> listWithTasks() {
 		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
@@ -220,7 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
-	@Cacheable(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#projectID)", unless = "#result.isEmpty()")
+	@Cacheable(value = Project.OBJECT_NAME + ".getNameByID", key = "#projectID", unless = "#result.isEmpty()")
 	public String getNameByID(long projectID) {
 		AuthenticationToken token = this.authHelper.getAuth();
 		String name = this.projectDAO.getNameByID(projectID);

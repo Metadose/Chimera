@@ -127,7 +127,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Cacheable(value = "searchProjectCache", key = "#companyID != null ? #companyID : 0", unless = "#result.isEmpty()")
+	@Cacheable(value = Project.OBJECT_NAME + ".search", key = "#companyID != null ? #companyID : 0", unless = "#result.isEmpty()")
 	public List<Project> listProjectFromCache(Long companyID) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Project> list = this.daoHelper.getSelectQueryFilterCompany(
