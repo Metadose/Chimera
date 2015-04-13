@@ -36,6 +36,14 @@
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
 	
+	
+	
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- ACTIVEMQ ************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
 	<!-- Activemq connection factory -->
     <beans:bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <beans:constructor-arg index="0" value="${amq.broker.url.tcp}"/>
@@ -78,7 +86,13 @@
 	</jms:listener-container>
 	  
     
-		
+    
+    
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- REDIS ***************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
 	<!-- Spring Data Redis -->
 	<cache:annotation-driven />
 		<beans:bean id="jedisConnFactory" 
@@ -95,6 +109,15 @@
 	    <beans:bean id="cacheManager"
 	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
 	        c:template-ref="redisTemplate"/>
+	        
+	        
+	        
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- HDIV ****************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
 		
 	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->
 	<!-- http://www.hdiv.org/schema/hdiv
@@ -126,6 +149,14 @@
 <!-- 		<hdiv:startPages>/auth/login</hdiv:startPages> -->
 <!-- 	</hdiv:config> -->
 	
+	
+	
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- LOGGING *************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
 	<!-- Advanced logging -->
 		<!-- Performance logging -->
 		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor" />
@@ -146,6 +177,14 @@
 		    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
 		</beans:bean>
  
+ 
+ 
+ 
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+ 	<!-- SPRING SECURITY ******************************************* -->
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
  	<!-- This is where we configure Spring-Security  -->
 	<security:http auto-config="false" use-expressions="true" access-denied-page="/auth/denied"
 			entry-point-ref="authenticationEntryPoint" >
@@ -226,9 +265,15 @@
 	 	
  	<security:global-method-security pre-post-annotations="enabled" />
  
-    <!-- DispatcherServlet Context: defines this servlet's request-processing 
-        infrastructure -->
  
+ 
+ 
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+ 	<!-- OTHER CONFIGS ********************************************* -->
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+    <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
     <!-- Enables the Spring MVC @Controller programming model -->
     <annotation-driven />
  
