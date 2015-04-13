@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.search.model.SearchResult;
 import com.cebedo.pmsys.system.search.service.SearchService;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping(SearchController.CONTROLLER_MAPPING)
@@ -30,7 +31,7 @@ public class SearchController {
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT })
-	public @ResponseBody List<SearchResult> search(
+	public @ResponseBody String search(
 			@RequestParam(PARAM_SEARCH_INPUT) String searchInput) {
 		List<SearchResult> result = new ArrayList<SearchResult>();
 		for (SearchResult searchResult : this.searchService.getData()) {
@@ -42,6 +43,7 @@ public class SearchController {
 				result.add(searchResult);
 			}
 		}
-		return result;
+		Gson gson = new Gson();
+		return gson.toJson(result);
 	}
 }

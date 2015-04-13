@@ -17,6 +17,7 @@
 		<jackson.version>1.9.13</jackson.version>
 		<active-mq>5.7.0</active-mq>
 		<active-mq-pool>5.11.1</active-mq-pool>
+		<gson>2.3.1</gson>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -190,6 +191,14 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- GSON -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson}</version>
+		</dependency>
+				
 		
 		<!-- Spring ORM support -->
 		<dependency>

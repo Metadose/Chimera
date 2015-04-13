@@ -43,7 +43,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Caching(evict = {
 			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
 			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
+			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void create(Project project) {
 		// Send messages/notifications.
 		// Use message brokers as instructions.
@@ -73,7 +74,8 @@ public class ProjectServiceImpl implements ProjectService {
 			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#project.getId())"),
 			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
 			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#project.getId())"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
+			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void update(Project project) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 
@@ -143,7 +145,8 @@ public class ProjectServiceImpl implements ProjectService {
 			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#id)"),
 			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
 			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#id)"),
-			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")"),
+			@CacheEvict(value = "searchProjectCache", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void delete(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
