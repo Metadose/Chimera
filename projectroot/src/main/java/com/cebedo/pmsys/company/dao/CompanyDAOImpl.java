@@ -80,10 +80,15 @@ public class CompanyDAOImpl implements CompanyDAO {
 		return Long.parseLong(resultStr);
 	}
 
+	@SuppressWarnings("finally")
 	@Override
 	public Company getCompanyByObjID(String objTable, String objKeyCol,
 			long objID) {
-		long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
-		return (Company) getByID(companyID);
+		try {
+			long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
+			return (Company) getByID(companyID);
+		} finally {
+			return null;
+		}
 	}
 }

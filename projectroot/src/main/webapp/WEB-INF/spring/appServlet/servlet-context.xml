@@ -32,6 +32,9 @@
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
 	<context:property-placeholder location="classpath:system.properties"/>
+	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.security.audit.dao.AuditLogDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 	
 	<!-- Activemq connection factory -->
     <beans:bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -59,17 +62,21 @@
     <beans:bean id="messageSender" class="com.cebedo.pmsys.system.message.sender.MessageSender">
         <beans:constructor-arg index="0" ref="jmsTemplate" />
     </beans:bean>
-    <beans:bean id="messageReceiver" class="com.cebedo.pmsys.system.message.receiver.MessageReceiver">
-        <beans:constructor-arg index="0" ref="jmsTemplate" />
-    </beans:bean>
-
+    
 	<beans:bean id="messageListener" class="com.cebedo.pmsys.system.message.listener.MessageListenerImpl"/>
-	  <jms:listener-container
+	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.system.message.listener.AuditMessageListener">
+		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
+	</beans:bean>
+	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.system.message.listener.LogMessageListener"/>
+    <jms:listener-container
 	      container-type="default"
 	      connection-factory="connectionFactory"
-	      acknowledge="auto">
+	      acknowledge="transacted">
 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
-	  </jms:listener-container>
+	    <jms:listener destination="system.service.post.audit" ref="auditMessageListener" method="onMessage" />
+	    <jms:listener destination="system.service.post.log" ref="logMessageListener" method="onMessage" />
+	</jms:listener-container>
+	  
     
 		
 	<!-- Spring Data Redis -->
@@ -291,7 +298,6 @@
     <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
-        <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">
@@ -377,9 +383,6 @@
 <!--         <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property> -->
 <!--     </beans:bean> -->
     
-    <beans:bean id="auditLogDAO" class="com.cebedo.pmsys.security.audit.dao.AuditLogDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
     <beans:bean id="auditLogService" class="com.cebedo.pmsys.security.audit.service.AuditLogServiceImpl">
         <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>

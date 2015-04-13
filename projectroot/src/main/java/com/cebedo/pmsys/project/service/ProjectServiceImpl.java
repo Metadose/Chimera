@@ -3,6 +3,9 @@ package com.cebedo.pmsys.project.service;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,14 +13,11 @@ import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
-import com.cebedo.pmsys.security.audit.dao.AuditLogDAO;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
 import com.cebedo.pmsys.system.helper.AuthHelper;
-import com.cebedo.pmsys.system.helper.BeanHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
+import com.cebedo.pmsys.system.helper.MessageHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
-import com.cebedo.pmsys.system.message.receiver.MessageReceiver;
-import com.cebedo.pmsys.system.message.sender.MessageSender;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -25,15 +25,10 @@ public class ProjectServiceImpl implements ProjectService {
 	private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
 	private AuthHelper authHelper = new AuthHelper();
 	private LogHelper logHelper = new LogHelper();
-	private BeanHelper beanHelper = new BeanHelper();
+	private MessageHelper messageHelper = new MessageHelper();
 
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
-	private AuditLogDAO auditLogDAO;
-
-	public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
-		this.auditLogDAO = auditLogDAO;
-	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -45,71 +40,67 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Caching(evict = {
+			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
+			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
 	public void create(Project project) {
-		AuthenticationToken auth = this.authHelper.getAuth();
-		String logText = this.logHelper.generateLogMessage(auth,
+		// Send messages/notifications.
+		// Use message brokers as instructions.
+		// LIKE send message to logger to log.
+		// AND auditor to audit.
+		// Fire up the message so that it would go parallel with the service
+		// below.
+		this.messageHelper.constructAndSendMessageMap(project,
+				AuditLog.ACTION_CREATE,
 				"Creating project: " + project.getName());
-		logger.info(logText);
 
+		// Do service.
+		AuthenticationToken auth = this.authHelper.getAuth();
 		this.projectDAO.create(project);
 		Company authCompany = auth.getCompany();
 		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			project.setCompany(authCompany);
 			this.projectDAO.update(project);
 		}
-
-		// Audit the action.
-		AuditLog audit = new AuditLog(AuditLog.ACTION_CREATE);
-		audit.setCompany(auth.getCompany() == null ? project.getCompany()
-				: auth.getCompany());
-		audit.setObjectName(Project.OBJECT_NAME);
-		audit.setObjectID(project.getId());
-		this.auditLogDAO.create(audit);
-
-		// TODO Send messages/notifications.
-		// OR use message brokers as instructions.
-		// LIKE send message to logger to log.
-		// AND auditor to audit.
-		MessageSender sender = (MessageSender) this.beanHelper
-				.getBean(MessageSender.BEAN_NAME);
-		sender.send("notification.user-[userid].project.create", logText);
-
-		MessageReceiver receiver = (MessageReceiver) this.beanHelper
-				.getBean(MessageReceiver.BEAN_NAME);
-		receiver.receive("notification.user-[userid].project.create");
 	}
 
 	@Override
 	@Transactional
+	@Caching(evict = {
+			@CacheEvict(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#project.getId())"),
+			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
+			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#project.getId())"),
+			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
+			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#project.getId())"),
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
 	public void update(Project project) {
-		Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
-				Project.COLUMN_PRIMARY_KEY, project.getId());
-		project.setCompany(company);
 		AuthenticationToken auth = this.authHelper.getAuth();
 
 		if (this.authHelper.isActionAuthorized(project)) {
-			logger.info(this.logHelper.generateLogMessage(
-					auth,
+			// Audit and log.
+			this.messageHelper.constructAndSendMessageMap(
+					project,
+					AuditLog.ACTION_UPDATE,
 					"Updating project: " + project.getId() + " = "
-							+ project.getName()));
+							+ project.getName());
+
+			// Actual service.
+			Company company = this.companyDAO.getCompanyByObjID(
+					Project.TABLE_NAME, Project.COLUMN_PRIMARY_KEY,
+					project.getId());
+			project.setCompany(company);
 			this.projectDAO.update(project);
 		} else {
 			logger.warn(this.logHelper.generateLogMessage(auth,
 					"Not authorized to update project: " + project.getId()
 							+ " = " + project.getName()));
 		}
-
-		// Audit the action.
-		AuditLog audit = new AuditLog(AuditLog.ACTION_UPDATE);
-		audit.setCompany(auth.getCompany() == null ? company : auth
-				.getCompany());
-		audit.setObjectName(Project.OBJECT_NAME);
-		audit.setObjectID(project.getId());
-		this.auditLogDAO.create(audit);
 	}
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")", unless = "#result.isEmpty()")
 	public List<Project> list() {
 		AuthenticationToken token = this.authHelper.getAuth();
 
@@ -127,6 +118,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#id)")
 	public Project getByID(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
@@ -145,13 +137,21 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Caching(evict = {
+			@CacheEvict(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#id)"),
+			@CacheEvict(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")"),
+			@CacheEvict(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#id)"),
+			@CacheEvict(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")"),
+			@CacheEvict(value = "projectGetByIDCache", key = "#root.targetClass.getName().concat(\"-getByID-\").concat(#id)"),
+			@CacheEvict(value = "projectListCache", key = "#root.targetClass.getName().concat(\"-list-\")") })
 	public void delete(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
 
 		if (this.authHelper.isActionAuthorized(project)) {
-			logger.info(this.logHelper.generateLogMessage(auth,
-					"Deleting project: " + id + " = " + project.getName()));
+			this.messageHelper.constructAndSendMessageMap(project,
+					AuditLog.ACTION_DELETE, "Deleting project: " + id + " = "
+							+ project.getName());
 			this.projectDAO.delete(id);
 		} else {
 			logger.warn(this.logHelper.generateLogMessage(
@@ -159,18 +159,11 @@ public class ProjectServiceImpl implements ProjectService {
 					"Not authorized to delete project: " + id + " = "
 							+ project.getName()));
 		}
-
-		// Audit the action.
-		AuditLog audit = new AuditLog(AuditLog.ACTION_DELETE);
-		audit.setCompany(auth.getCompany() == null ? project.getCompany()
-				: auth.getCompany());
-		audit.setObjectName(Project.OBJECT_NAME);
-		audit.setObjectID(project.getId());
-		this.auditLogDAO.create(audit);
 	}
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectListWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-listWithAllCollections-\")", unless = "#result.isEmpty()")
 	public List<Project> listWithAllCollections() {
 		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
@@ -187,6 +180,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectGetByIDWithAllCollectionsCache", key = "#root.targetClass.getName().concat(\"-getByIDWithAllCollections-\").concat(#id)")
 	public Project getByIDWithAllCollections(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByIDWithAllCollections(id);
@@ -205,6 +199,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectListWithTasksCache", key = "#root.targetClass.getName().concat(\"-listWithTasks-\")", unless = "#result.isEmpty()")
 	public List<Project> listWithTasks() {
 		AuthenticationToken token = this.authHelper.getAuth();
 		if (token.isSuperAdmin()) {
@@ -222,6 +217,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = "projectGetNameByIDCache", key = "#root.targetClass.getName().concat(\"-getNameByID-\").concat(#projectID)", unless = "#result.isEmpty()")
 	public String getNameByID(long projectID) {
 		AuthenticationToken token = this.authHelper.getAuth();
 		String name = this.projectDAO.getNameByID(projectID);

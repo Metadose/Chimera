@@ -46,6 +46,14 @@ public class SystemUser implements Serializable {
 	private Set<AuditLog> auditLogs;
 	private int loginAttempts;
 
+	public SystemUser() {
+		;
+	}
+
+	public SystemUser(long userID) {
+		this.id = userID;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)

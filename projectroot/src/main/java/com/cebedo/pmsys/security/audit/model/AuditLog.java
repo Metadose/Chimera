@@ -54,12 +54,30 @@ public class AuditLog implements Serializable {
 		setDetails();
 	}
 
+	public AuditLog(int action, AuthenticationToken auth) {
+		this.setAction(action);
+		Date dateExecuted = new Date(System.currentTimeMillis());
+		this.setDateExecuted(dateExecuted);
+		if (auth != null) {
+			this.setIpAddress(auth.getIpAddress());
+			this.setUser(auth.getUser());
+		}
+	}
+
+	public AuditLog(int action, SystemUser usr, String ipAddr) {
+		this.setAction(action);
+		this.setUser(usr);
+		Date dateExecuted = new Date(System.currentTimeMillis());
+		this.setDateExecuted(dateExecuted);
+		this.setIpAddress(ipAddr);
+	}
+
 	private void setDetails() {
 		AuthenticationToken auth = this.authHelper.getAuth();
+		Date dateExecuted = new Date(System.currentTimeMillis());
+		this.setDateExecuted(dateExecuted);
 		if (auth != null) {
-			Date dateExecuted = new Date(System.currentTimeMillis());
 			this.setIpAddress(auth.getIpAddress());
-			this.setDateExecuted(dateExecuted);
 			this.setUser(auth.getUser());
 		}
 	}

@@ -7,6 +7,12 @@ import javax.jms.TextMessage;
 
 public class MessageListenerImpl implements MessageListener {
 
+	public static final String KEY_USER_ID = "userID";
+	public static final String KEY_USER_IP_ADDR = "ipAddr";
+
+	/**
+	 * TODO Handle event when message is sent to a default destination.
+	 */
 	public void onMessage(Message message) {
 		if (message instanceof TextMessage) {
 			try {
