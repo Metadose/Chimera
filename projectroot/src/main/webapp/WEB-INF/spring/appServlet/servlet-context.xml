@@ -35,6 +35,30 @@
 	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.security.audit.dao.AuditLogDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    
+    
+    
+    
+    <!-- *********************************************************** -->
+    <!-- *********************************************************** -->
+    <!-- MAILER **************************************************** -->
+    <!-- *********************************************************** -->
+    <!-- *********************************************************** -->
+    <beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<beans:property name="host" value="smtp.gmail.com" />
+		<beans:property name="port" value="587" />
+		<beans:property name="username" value="${gmail.username}" />
+		<beans:property name="password" value="${gmail.password}" />
+		<beans:property name="javaMailProperties">
+		   <beans:props>
+       	      <beans:prop key="mail.smtp.auth">true</beans:prop>
+       	      <beans:prop key="mail.smtp.starttls.enable">true</beans:prop>
+       	   </beans:props>
+		</beans:property>
+	</beans:bean>
+	<beans:bean id="mailer" class="com.cebedo.pmsys.system.mail.mailer.Mailer">
+		<beans:property name="mailSender" ref="mailSender" />
+	</beans:bean>
 	
 	
 	
@@ -72,6 +96,7 @@
     </beans:bean>
     
 	<beans:bean id="messageListener" class="com.cebedo.pmsys.system.message.listener.MessageListenerImpl"/>
+	<beans:bean id="mailMessageListener" class="com.cebedo.pmsys.system.message.listener.MailMessageListener"/>
 	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.system.message.listener.AuditMessageListener">
 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
 	</beans:bean>
@@ -83,6 +108,7 @@
 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
 	    <jms:listener destination="system.service.post.audit" ref="auditMessageListener" method="onMessage" />
 	    <jms:listener destination="system.service.post.log" ref="logMessageListener" method="onMessage" />
+	    <jms:listener destination="system.mail.send" ref="mailMessageListener" method="onMessage" />
 	</jms:listener-container>
 	  
     

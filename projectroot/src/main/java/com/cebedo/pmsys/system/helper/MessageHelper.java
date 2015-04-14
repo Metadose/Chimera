@@ -11,6 +11,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.system.message.listener.AuditMessageListener;
 import com.cebedo.pmsys.system.message.listener.LogMessageListener;
+import com.cebedo.pmsys.system.message.listener.MailMessageListener;
 import com.cebedo.pmsys.system.message.listener.MessageListenerImpl;
 import com.cebedo.pmsys.system.message.sender.MessageSender;
 
@@ -53,7 +54,8 @@ public class MessageHelper {
 		MessageSender sender = (MessageSender) this.beanHelper
 				.getBean(MessageSender.BEAN_NAME);
 		Queue dest = new ActiveMQQueue(AuditMessageListener.MESSAGE_DESTINATION
-				+ "," + LogMessageListener.MESSAGE_DESTINATION);
+				+ "," + LogMessageListener.MESSAGE_DESTINATION + ","
+				+ MailMessageListener.MESSAGE_DESTINATION);
 		sender.send(dest, messageMap);
 	}
 

@@ -18,6 +18,8 @@
 		<active-mq>5.7.0</active-mq>
 		<active-mq-pool>5.11.1</active-mq-pool>
 		<gson>2.3.1</gson>
+		<java-mail-api>1.5.2</java-mail-api>
+		<java-mail>1.4.7</java-mail>		
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -74,6 +76,18 @@
 			<groupId>org.apache.xbean</groupId>
 			<artifactId>xbean-spring</artifactId>
 			<version>4.2</version>
+		</dependency>
+		
+		<!-- Java Mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>${java-mail-api}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${java-mail}</version>
 		</dependency>
 		
 		<!-- Spring Data -->
