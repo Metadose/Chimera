@@ -87,13 +87,11 @@
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<br/>
 		                   									<div class="form-group">
-		                   										<form:form commandName="photo"
-		                   												id="uploadPhotoForm"
+		                   										<form:form id="uploadPhotoForm"
 																		action="${contextPath}/photo/upload/project/profile"
 																		method="post"
 																		enctype="multipart/form-data">
-		                   											<fieldset>	
-		                   											<form:input type="hidden" value="${project.id}" path="id"/>
+		                   											<input type="hidden" value="${project.id}" name="id"/>
 			                   										<table>
 			                   											<tr>
 			                   												<td>
@@ -107,7 +105,6 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-			                   										</fieldset>
 			                   										<button class="btn btn-default btn-flat btn-sm">Upload222</button>
 						                                        </form:form>
 						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
@@ -138,23 +135,24 @@
 			                                        </c:if>
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
-                  										<form:form id="detailsForm" modelAttribute="project" method="post" action="${contextPath}/project/create">
-				                                        	<form:input type="hidden" path="id" value="${project.id}"/>
+                  										<form:form id="detailsForm"
+                  											commandName="project"
+                  											method="post"
+                  											action="${contextPath}/project/create">
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name" value="${fn:escapeXml(project.name)}"/><br/>
 				                                            <label>Status</label>
-				                                            <select class="form-control" id="project_status" name="status">
-						                                    	<option value="0">New</option>
-						                                    	<option value="1">Ongoing</option>
-						                                    	<option value="2">Completed</option>
-						                                    	<option value="3">Failed</option>
-						                                    	<option value="4">Cancelled</option>
-				                                            </select><br/>
+				                                            <form:select class="form-control" id="project_status" path="status">
+						                                    	<form:option value="0" label="New"/>
+						                                    	<form:option value="1" label="Ongoing"/>
+						                                    	<form:option value="2" label="Completed"/>
+						                                    	<form:option value="3" label="Failed"/>
+						                                    	<form:option value="4" label="Cancelled"/>
+				                                            </form:select><br/>
 				                                            <label>Location</label>
 				                                            <form:input type="text" class="form-control" path="location" value="${fn:escapeXml(project.location)}"/><br/>
 				                                            <label>Notes</label>
 				                                            <form:input type="text" class="form-control" path="notes" value="${fn:escapeXml(project.notes)}"/><br/>
-				                                            <button class="btn btn-default btn-flat btn-sm">Update222</button>
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
@@ -924,7 +922,7 @@
 			$("#teams-table").dataTable();
 			$("#tasks-table").dataTable();
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#project_status").val("${fn:escapeXml(project.status)}");
+// 			$("#project_status").val("${fn:escapeXml(project.status)}");
 			
 			// Event handler for photos.
 			$('li img').on('click',function(){

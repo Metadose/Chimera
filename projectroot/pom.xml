@@ -19,7 +19,9 @@
 		<active-mq-pool>5.11.1</active-mq-pool>
 		<gson>2.3.1</gson>
 		<java-mail-api>1.5.2</java-mail-api>
-		<java-mail>1.4.7</java-mail>		
+		<java-mail>1.4.7</java-mail>
+		<javax-valid>1.1.0.Final</javax-valid>
+		<hibernate-valid>5.1.3.Final</hibernate-valid>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -322,23 +324,32 @@
 		    <artifactId>hdiv-core</artifactId>
 		    <version>${hdiv-version}</version>
 		</dependency>
-		 
 		<dependency>
 		    <groupId>org.hdiv</groupId>
 		    <artifactId>hdiv-config</artifactId>
 		    <version>${hdiv-version}</version>
 		</dependency>
-		 
 		<dependency>
 		    <groupId>org.hdiv</groupId>
 		    <artifactId>hdiv-spring-mvc</artifactId>
 		    <version>${hdiv-version}</version>
 		</dependency>
-		
 		<dependency>
 		    <groupId>org.hdiv</groupId>
 		    <artifactId>hdiv-jstl-taglibs-1.2</artifactId>
 		    <version>${hdiv-version}</version>
+		</dependency>
+		
+		<!-- Javax Validation HDIV Required -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax-valid}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-valid}</version>
 		</dependency>
 	</dependencies>
     <build>
