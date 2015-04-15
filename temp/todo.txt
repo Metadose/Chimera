@@ -44,3 +44,36 @@ Custom progress/status fields, custom sd ang color.
 
 Prioritize sec grup, audit, nd basic pmsys functions
 
+
+
+
+
+
+==
+proj list
+** gant guba (di mu load auto)
+get - view proj - ok
+get - create proj - ok
+post - delete - ok
+
+==
+proj edit
+** gant guba (di mu-load auto)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

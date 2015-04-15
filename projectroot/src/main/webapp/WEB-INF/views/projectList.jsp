@@ -31,7 +31,7 @@
 					${uiParamAlert}
 					<!-- Custom Tabs -->
 					<div class="nav-tabs-custom">
-						<ul class="nav nav-tabs">
+						<ul class="nav nav-tabs" id="navigatorTab">
 							<li class="active"><a href="#tab_list" data-toggle="tab">List</a></li>
 							<li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 						</ul>
@@ -150,16 +150,19 @@
 	</div>
 	
 	<!-- Generate the data to be used by the gantt. -->
+	<!-- Crashes if project has no task -->
 	<c:set var="ganttData" value="'data':["/>
     <c:if test="${!empty projectList}">
     	<c:forEach items="${projectList}" var="project">
-    		<c:set var="projectRow" value="{id:'${project.id}', duration:0, text:'${fn:escapeXml(project.name)}', open: true},"/>
+    		<c:if test="${!empty project.assignedTasks}">
+    		<c:set var="projectRow" value="{id:'${project.id}', text:'${fn:escapeXml(project.name)}', open: true},"/>
     		<c:set var="ganttData" value="${ganttData}${projectRow}"/>
     		<c:forEach var="task" items="${project.assignedTasks}">
 	    		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
 	    		<c:set var="taskRow" value="{id:'${task.id}-${project.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${project.id}'},"/>
 	    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
 	    	</c:forEach>
+	    	</c:if>
     	</c:forEach>
     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
     </c:if>

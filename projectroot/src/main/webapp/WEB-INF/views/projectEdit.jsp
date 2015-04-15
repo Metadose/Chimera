@@ -825,17 +825,15 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 
-	<c:if test="${project.id != 0}">
+	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
 	<!-- Generate the data to be used by the gantt. -->
 	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', open: true, duration:0},"/>
-    <c:if test="${!empty project.assignedTasks}">
     	<c:forEach var="task" items="${project.assignedTasks}">
     		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
     		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${project.id}'},"/>
     		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
     	</c:forEach>
     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
-    </c:if>
     <c:set var="ganttEnd" value="]"/>
    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
