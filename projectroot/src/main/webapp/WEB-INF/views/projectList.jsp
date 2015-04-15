@@ -70,7 +70,6 @@
 				                                								</a>&nbsp;
 																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																				<form:form action="${contextPath}/project/delete/${project.id}" method="post">
-																					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																				</form:form>
 																				</sec:authorize>

@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -86,9 +87,13 @@
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<br/>
 		                   									<div class="form-group">
-		                   										<form id="uploadPhotoForm" action="${contextPath}/photo/upload/project/profile" method="post" enctype="multipart/form-data">	
-		                   											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		                   											<input type="hidden" value="${project.id}" id="project_id" name="project_id"/>
+		                   										<form:form commandName="photo"
+		                   												id="uploadPhotoForm"
+																		action="${contextPath}/photo/upload/project/profile"
+																		method="post"
+																		enctype="multipart/form-data">
+		                   											<fieldset>	
+		                   											<form:input type="hidden" value="${project.id}" path="id"/>
 			                   										<table>
 			                   											<tr>
 			                   												<td>
@@ -102,7 +107,9 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-						                                        </form>
+			                   										</fieldset>
+			                   										<button class="btn btn-default btn-flat btn-sm">Upload222</button>
+						                                        </form:form>
 						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
 						                                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 						                                        </form>
@@ -131,33 +138,33 @@
 			                                        </c:if>
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
-                  										<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create">
-                  										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			                                        	<input type="hidden" name="id" value="${project.id}"/>
-			                                            <label>Name</label>
-			                                            <input type="text" class="form-control" name="name" value="${fn:escapeXml(project.name)}"/><br/>
-			                                            <label>Status</label>
-			                                            <select class="form-control" id="project_status" name="status">
-					                                    	<option value="0">New</option>
-					                                    	<option value="1">Ongoing</option>
-					                                    	<option value="2">Completed</option>
-					                                    	<option value="3">Failed</option>
-					                                    	<option value="4">Cancelled</option>
-			                                            </select><br/>
-			                                            <label>Location</label>
-			                                            <input type="text" class="form-control" name="location" value="${fn:escapeXml(project.location)}"/><br/>
-			                                            <label>Notes</label>
-			                                            <input type="text" class="form-control" name="notes" value="${fn:escapeXml(project.notes)}"/><br/>
-			                                    	</form>
+                  										<form:form id="detailsForm" modelAttribute="project" method="post" action="${contextPath}/project/create">
+				                                        	<form:input type="hidden" path="id" value="${project.id}"/>
+				                                            <label>Name</label>
+				                                            <form:input type="text" class="form-control" path="name" value="${fn:escapeXml(project.name)}"/><br/>
+				                                            <label>Status</label>
+				                                            <select class="form-control" id="project_status" name="status">
+						                                    	<option value="0">New</option>
+						                                    	<option value="1">Ongoing</option>
+						                                    	<option value="2">Completed</option>
+						                                    	<option value="3">Failed</option>
+						                                    	<option value="4">Cancelled</option>
+				                                            </select><br/>
+				                                            <label>Location</label>
+				                                            <form:input type="text" class="form-control" path="location" value="${fn:escapeXml(project.location)}"/><br/>
+				                                            <label>Notes</label>
+				                                            <form:input type="text" class="form-control" path="notes" value="${fn:escapeXml(project.notes)}"/><br/>
+				                                            <button class="btn btn-default btn-flat btn-sm">Update222</button>
+				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/project/delete/${project.id}">
+		                                            		<form:form action="${contextPath}/project/delete/${project.id}" method="post">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Project</button>
-															</a>
+		                                            		</form:form>
 		                                            	</c:when>
 		                                            </c:choose>
 		                                            <br/>
@@ -199,7 +206,7 @@
                												<c:set var="formStyle" value="padding-bottom: 40px"/>
 	           												<div class="form-group" id="fieldsDivEditor">
 	           													<c:if test="${!empty projectFields}">
-		               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
+		               												<c:forEach var="field" items="${projectFields}" varStatus="loop">
 		           														<c:if test="${loop.last}">
 		           															<c:set var="formStyle" value="padding-bottom: 18px"/>
 		           														</c:if>
@@ -845,6 +852,7 @@
 			gantt.init("gantt-chart");
 		    gantt.parse(tasks);
 		 	
+		    // TODO.
 		    // On load of the page: switch to the currently selected tab.
 		    var hash = window.name;
 		    $('#myTab').find("[href='#"+ hash +"']").tab('show');

@@ -156,21 +156,27 @@
 		<hdiv:acceptedPattern><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></hdiv:acceptedPattern>
 	</hdiv:validation>
 	
-	<hdiv:editableValidations registerDefaults="true">
-		<hdiv:validationRule url="/secure/.*"></hdiv:validationRule>
+	<hdiv:editableValidations>
 		<hdiv:validationRule url=".*" enableDefaults="false">safeText</hdiv:validationRule>
 	</hdiv:editableValidations>
 	
+<!-- 	<hdiv:config -->
+<!-- 		debugMode="true" -->
+<!-- 		avoidValidationInUrlsWithoutParams="false" -->
+<!-- 		avoidCookiesIntegrity="false" -->
+<!-- 		avoidCookiesConfidentiality="false" -->
+<!-- 		errorPage="/fix" -->
+<!-- 		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map" -->
+<!-- 		randomName="true" -->
+<!-- 		strategy="cipher" -->
+<!-- 		confidentiality="true"> -->
+	
 	<hdiv:config
 		debugMode="true"
-		avoidValidationInUrlsWithoutParams="false"
-		avoidCookiesIntegrity="false"
-		avoidCookiesConfidentiality="false"
-		maxPagesPerSession="3"
 		errorPage="/fix"
 		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map"
-		strategy="memory"
-		confidentiality="true">
+		randomName="true"
+		strategy="cipher">
 		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/>
 		
 		<!-- Controller calls that do not have validation -->
