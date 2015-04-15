@@ -209,7 +209,7 @@
 		               												<c:forEach var="field" items="${projectFields}" varStatus="loop">
 		           														<c:if test="${loop.last}">
 		           															<c:set var="formStyle" value="padding-bottom: 18px"/>
-		           														</c:if>
+		           										 				</c:if>
 		           														<div style="${formStyle}">
 		           														<form id="field_update_${fieldFormID}" method="post" action="${contextPath}/field/update/assigned/project">
 		           															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
