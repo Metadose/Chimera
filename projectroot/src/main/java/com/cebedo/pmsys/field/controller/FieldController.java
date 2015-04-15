@@ -10,22 +10,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.field.model.Field;
-import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
+import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
 @Controller
+@SessionAttributes(Field.OBJECT_NAME)
 @RequestMapping(Field.OBJECT_NAME)
 public class FieldController {
 
@@ -82,21 +84,21 @@ public class FieldController {
 	 * @return
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Project.OBJECT_NAME, method = RequestMethod.POST)
 	public ModelAndView assignProject(
-			@ModelAttribute(ATTR_FIELD) FieldAssignment fieldAssignment,
-			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
+			@ModelAttribute(ATTR_FIELD) FieldAssignmentBean faBean,
 			RedirectAttributes redirectAttrs) {
-
+		long fieldID = faBean.getFieldID();
+		long projectID = faBean.getProjectID();
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory
-				.setMessage("Successfully <b>added</b> extra information <b>"
-						+ fieldAssignment.getLabel() + "</b>.");
+		// alertFactory
+		// .setMessage("Successfully <b>added</b> extra information <b>"
+		// + fieldAssignment.getLabel() + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 
-		this.fieldService.assignProject(fieldAssignment, fieldID, projectID);
+		// this.fieldService.assignProject(fieldAssignment, fieldID, projectID);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);

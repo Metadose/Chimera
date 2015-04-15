@@ -87,11 +87,13 @@
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<br/>
 		                   									<div class="form-group">
+		                   										<!-- TODO -->
 		                   										<form:form id="uploadPhotoForm"
-																		action="${contextPath}/photo/upload/project/profile"
-																		method="post"
-																		enctype="multipart/form-data">
-		                   											<input type="hidden" value="${project.id}" name="id"/>
+	                   												commandName="photo"
+																	action="${contextPath}/photo/upload/project/profile"
+																	method="post"
+																	enctype="multipart/form-data">
+<%-- 																	<form:hidden path="projectID"/> --%>
 			                   										<table>
 			                   											<tr>
 			                   												<td>
@@ -105,7 +107,6 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-			                   										<button class="btn btn-default btn-flat btn-sm">Upload222</button>
 						                                        </form:form>
 						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
 						                                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -140,7 +141,7 @@
                   											method="post"
                   											action="${contextPath}/project/create">
 				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name" value="${fn:escapeXml(project.name)}"/><br/>
+				                                            <form:input type="text" class="form-control" path="name"/><br/>
 				                                            <label>Status</label>
 				                                            <form:select class="form-control" id="project_status" path="status">
 						                                    	<form:option value="0" label="New"/>
@@ -150,9 +151,9 @@
 						                                    	<form:option value="4" label="Cancelled"/>
 				                                            </form:select><br/>
 				                                            <label>Location</label>
-				                                            <form:input type="text" class="form-control" path="location" value="${fn:escapeXml(project.location)}"/><br/>
+				                                            <form:input type="text" class="form-control" path="location"/><br/>
 				                                            <label>Notes</label>
-				                                            <form:input type="text" class="form-control" path="notes" value="${fn:escapeXml(project.notes)}"/><br/>
+				                                            <form:input type="text" class="form-control" path="notes"/><br/>
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
@@ -245,15 +246,23 @@
 																	<br/>
 																</c:if>
 																<h4>Add More Information</h4>
-																<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/project">
-																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																	<input type="hidden" name="project_id" value="${project.id}"/>
-																	<input type="hidden" name="field_id" value="1"/>
-																	<label>Label</label><br/>
-																	<input type="text" name="label" id="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."><br/>
+																<form:form commandName="field"
+																	id="fieldsForm" 
+																	method="post" 
+																	action="${contextPath}/field/assign/project">
+																	
+<%-- 																	<form:hidden path="projectID" value="${project.id}"/> --%>
+<%-- 																	<form:hidden path="fieldID" value="1"/> --%>
+																	
+<!-- 																	<label>Label</label><br/> -->
+																	<form:input type="text" path="label" id="label" class="form-control"
+ 																	placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."/><br/>
+																	
 																	<label>Information</label><br/>
-																	<textarea class="form-control" rows="3" id="value" name="value" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">${fn:escapeXml(field.value)}</textarea>
-																</form>
+																	<form:textarea class="form-control"
+ 																	rows="3" id="value" path="value"
+ 																	placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc..."></form:textarea>
+																</form:form>
 																<br/>
 		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
 		                                           				<c:if test="${!empty projectFields}">

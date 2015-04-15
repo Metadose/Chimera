@@ -2,6 +2,8 @@ package com.cebedo.pmsys.photo.controller;
 
 import java.io.IOException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +25,7 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.bean.MultipartBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
@@ -106,11 +109,12 @@ public class PhotoController {
 	}
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_PROJECT_PROFILE, method = RequestMethod.POST)
-	public ModelAndView uploadProjectProfile(
-			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID)
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
+			+ Project.OBJECT_NAME + "/" + SystemConstants.PROFILE, method = RequestMethod.POST)
+	public ModelAndView uploadProjectProfile(@Valid MultipartBean mBean)
 			throws IOException {
+		MultipartFile file = mBean.getFile();
+		long projectID = mBean.getProjectID();
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
