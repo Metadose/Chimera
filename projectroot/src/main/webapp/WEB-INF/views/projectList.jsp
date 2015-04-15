@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -41,7 +42,8 @@
 										<div class="box">
 												<div class="box-body table-responsive">
 													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-				                                	<a href="${contextPath}/project/edit/0">
+													<c:url var="urlCreateProject" value="/project/edit/0"/>
+				                                	<a href="${urlCreateProject}">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
 				                                	</a>
 				                                	<br/><br/>
@@ -62,15 +64,15 @@
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-																				<form action="${contextPath}/project/edit/${project.id}" method="post">
-																					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						                                            			<c:url var="urlEditProject" value="/project/edit/${project.id}"/>
+				                                								<a href="${urlEditProject}">
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
-																				</form>&nbsp;
+				                                								</a>&nbsp;
 																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																				<form action="${contextPath}/project/delete/${project.id}" method="post">
+																				<form:form action="${contextPath}/project/delete/${project.id}" method="post">
 																					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																				</form>
+																				</form:form>
 																				</sec:authorize>
 																			</center>
 																		</td>

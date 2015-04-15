@@ -317,29 +317,29 @@
 		</dependency>
 		
 		<!-- HDIV Web App Security -->
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.hdiv</groupId> -->
-<!-- 		    <artifactId>hdiv-core</artifactId> -->
-<!-- 		    <version>${hdiv-version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-core</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
 		 
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.hdiv</groupId> -->
-<!-- 		    <artifactId>hdiv-config</artifactId> -->
-<!-- 		    <version>${hdiv-version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-config</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
 		 
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.hdiv</groupId> -->
-<!-- 		    <artifactId>hdiv-spring-mvc</artifactId> -->
-<!-- 		    <version>${hdiv-version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-spring-mvc</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.hdiv</groupId> -->
-<!-- 		    <artifactId>hdiv-jstl-taglibs-1.2</artifactId> -->
-<!-- 		    <version>${hdiv-version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.hdiv</groupId>
+		    <artifactId>hdiv-jstl-taglibs-1.2</artifactId>
+		    <version>${hdiv-version}</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>

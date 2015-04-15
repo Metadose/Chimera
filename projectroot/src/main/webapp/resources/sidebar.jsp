@@ -12,9 +12,7 @@
 .autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
 .autocomplete-group strong { display: block; text-align:center; font-size: medium; background: #F0F0F0; }
 </style>
-<script src="<c:url value="/resources/lib/jquery.min.js" />"></script>
-<script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script>
-<script src="<c:url value="/resources/lib/jquery.autocomplete.min.js" />"></script>
+<c:import url="/resources/js-includes.jsp" />
 <script type="text/javascript">
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -95,27 +93,31 @@ $(document).ready(function() {
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="active">
-                <a href="${contextPath}/dashboard/">
+            	<c:url var="urlDashboard" value="/dashboard/"/>
+                <a href="${urlDashboard}">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
             <sec:authorize access="hasRole('ACCESS_PROJECT')">
             <li>
-                <a href="${contextPath}/project/list/">
+            	<c:url var="urlProjectList" value="/project/list/"/>
+                <a href="${urlProjectList}">
                     <i class="fa fa-folder"></i> <span>Projects</span>
                 </a>
             </li>
             </sec:authorize>
             <sec:authorize access="hasRole('ACCESS_PROJECTFILE')">
             <li>
-                <a href="${contextPath}/projectfile/list/">
+            	<c:url var="urlProjFileList" value="/projectfile/list/"/>
+                <a href="${urlProjFileList}">
                     <i class="fa fa-file"></i> <span>Files</span>
                 </a>
             </li>
             </sec:authorize>
             <sec:authorize access="hasRole('ACCESS_TASK')">
             <li>
-                <a href="${contextPath}/task/list/">
+            	<c:url var="urlTaskList" value="/task/list/"/>
+                <a href="${urlTaskList}">
                     <i class="fa fa-tasks"></i> <span>Tasks</span>
                 </a>
             </li>
@@ -127,7 +129,8 @@ $(document).ready(function() {
 <!--             </li> -->
 			<sec:authorize access="hasRole('ACCESS_TEAM')">
             <li>
-                <a href="${contextPath}/team/list/">
+            	<c:url var="urlTeamList" value="/team/list/"/>
+                <a href="${urlTeamList}">
                     <i class="fa fa-users"></i> <span>Teams</span>
 <!--                     <small class="badge pull-right bg-green">new</small> -->
                 </a> 
@@ -135,21 +138,24 @@ $(document).ready(function() {
             </sec:authorize>
             <sec:authorize access="hasRole('ACCESS_STAFF')">
             <li>
-                <a href="${contextPath}/staff/list/">
+            	<c:url var="urlStaffList" value="/staff/list/"/>
+                <a href="${urlStaffList}">
                     <i class="fa fa-user"></i> <span>Staff</span>
                 </a>
             </li>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_SYSTEMUSER_EDITOR')">
             <li>
-                <a href="${contextPath}/systemuser/list/">
+            	<c:url var="urlSystemUserList" value="/systemuser/list/"/>
+                <a href="${urlSystemUserList}">
                     <i class="fa fa-male"></i> <span>Users</span>
                 </a>
             </li>
             </sec:authorize>
             <c:if test="${authUser.superAdmin == true}">
             <li>
-                <a href="${contextPath}/field/list/">
+            	<c:url var="urlFieldList" value="/field/list/"/>
+                <a href="${urlFieldList}">
                     <i class="fa fa-list"></i> <span>Fields</span>
                 </a>
             </li>
@@ -162,10 +168,16 @@ $(document).ready(function() {
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="${contextPath}/company/list/"><i class="fa fa-angle-double-right"></i> Companies</a></li>
-                    <li><a href="${contextPath}/log/list"><i class="fa fa-angle-double-right"></i> Logs</a></li>
+                	<c:url var="urlCompanyList" value="/company/list/"/>
+                    <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
+                    
+                    <c:url var="urlLogList" value="/log/list"/>
+                    <li><a href="${urlLogList}"><i class="fa fa-angle-double-right"></i> Logs</a></li>
+                    
                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Licenses</a></li>
-                    <li><a href="${contextPath}/config/list"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
+                    
+                    <c:url var="urlConfigList" value="/config/list"/>
+                    <li><a href="${urlConfigList}"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
                 </ul>
             </li>
             </c:if>

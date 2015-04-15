@@ -14,7 +14,10 @@ import com.cebedo.pmsys.system.mail.mailer.Mailer;
 
 public class MailMessageListener implements MessageListener {
 
-	public final static String MESSAGE_DESTINATION = "system.mail.send";
+	public static final String MESSAGE_DESTINATION = "system.mail.send";
+	public static final String KEY_MAIL_TO = "mailTo";
+	public static final String KEY_MAIL_SUBJECT = "mailSubject";
+	public static final String KEY_MAIL_TEXT = "mailText";
 
 	@Override
 	@Transactional
@@ -23,11 +26,13 @@ public class MailMessageListener implements MessageListener {
 			Map<String, Object> messageMap;
 			try {
 				messageMap = ((ActiveMQMapMessage) message).getContentMap();
+				String to = String.valueOf(messageMap.get(KEY_MAIL_TO));
+				String subj = String.valueOf(messageMap.get(KEY_MAIL_SUBJECT));
+				String text = String.valueOf(messageMap.get(KEY_MAIL_TEXT));
 				BeanHelper beanHelper = new BeanHelper();
-				Mailer mm = (Mailer) beanHelper.getBean("mailer");
-				mm.sendMail("configure.this@system.properties",
-						"cebedo.vii@gmail.com", "Testing123",
-						"Testing only \n\n Hello Spring Email Sender");
+				Mailer mailer = (Mailer) beanHelper.getBean(Mailer.BEAN_NAME);
+				mailer.sendMail("configure.this@system.properties", to, subj,
+						text);
 			} catch (JMSException e) {
 				e.printStackTrace();
 			}

@@ -41,9 +41,9 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":list"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true),
 			@CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void create(Project project) {
 		// Send messages/notifications.
@@ -69,12 +69,12 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	@Caching(evict = {
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":list"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true),
 			@CacheEvict(value = Project.OBJECT_NAME + ":getNameByID", key = "#project.getId()"),
 			@CacheEvict(value = Project.OBJECT_NAME
-					+ ".getByIDWithAllCollections", key = "#project.getId()"),
+					+ ":getByIDWithAllCollections", key = "#project.getId()"),
 			@CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#project.getId()"),
 			@CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
 	public void update(Project project) {
@@ -138,17 +138,21 @@ public class ProjectServiceImpl implements ProjectService {
 		return new Project();
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#companyID == null ? 0 : #companyID")
+	public void resetSearchEntries(Long companyID) {
+		// Intentionally blank.
+	}
+
 	@Override
 	@Transactional
 	@Caching(evict = {
 			@CacheEvict(value = Project.OBJECT_NAME + ":getNameByID", key = "#id"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks"),
 			@CacheEvict(value = Project.OBJECT_NAME
-					+ ".getByIDWithAllCollections", key = "#id"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections"),
+					+ ":getByIDWithAllCollections", key = "#id"),
 			@CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#id"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":list"),
-			@CacheEvict(value = Project.OBJECT_NAME + ":search", allEntries = true) })
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
 	public void delete(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Project project = this.projectDAO.getByID(id);
@@ -164,6 +168,16 @@ public class ProjectServiceImpl implements ProjectService {
 					"Not authorized to delete project: " + id + " = "
 							+ project.getName()));
 		}
+
+		Long companyID = null;
+		if (auth.getCompany() == null) {
+			if (project.getCompany() != null) {
+				companyID = project.getCompany().getId();
+			}
+		} else {
+			companyID = auth.getCompany().getId();
+		}
+		resetSearchEntries(companyID);
 	}
 
 	@Override

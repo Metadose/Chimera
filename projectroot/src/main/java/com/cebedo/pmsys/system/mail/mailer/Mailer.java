@@ -4,6 +4,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
 public class Mailer {
+	public static final String BEAN_NAME = "mailer";
 	private MailSender mailSender;
 
 	public void setMailSender(MailSender mailSender) {

@@ -11,6 +11,7 @@
     xmlns:security="http://www.springframework.org/schema/security"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:hdiv="http://www.hdiv.org/schema/hdiv"
     xmlns:cache="http://www.springframework.org/schema/cache"
     xsi:schemaLocation="http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -24,6 +25,8 @@
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://activemq.apache.org/schema/core
 		http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+		http://www.hdiv.org/schema/hdiv
+		http://www.hdiv.org/schema/hdiv/hdiv.xsd
 		http://www.springframework.org/schema/jms
 		http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
 		http://www.springframework.org/schema/tx
@@ -144,36 +147,37 @@
 	<!-- HDIV ****************************************************** -->
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
-		
-	<!-- xmlns:hdiv="http://www.hdiv.org/schema/hdiv"  -->
-	<!-- http://www.hdiv.org/schema/hdiv
-		http://www.hdiv.org/schema/hdiv/hdiv.xsd -->
-		
 	<!-- HDIV Config -->
-<!-- 	<beans:bean id="hdivEditableValidator" class="org.hdiv.web.validator.EditableParameterValidator"/> -->
-<!-- 	<mvc:annotation-driven validator="hdivEditableValidator"/> -->
+	<beans:bean id="hdivEditableValidator" class="org.hdiv.web.validator.EditableParameterValidator"/>
+	<mvc:annotation-driven validator="hdivEditableValidator"/>
 	
-<!-- 	<hdiv:validation id="customValidation" componentType="text"> -->
-<!-- 	    <hdiv:acceptedPattern><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></hdiv:acceptedPattern> -->
-<!-- 	</hdiv:validation> -->
+	<!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
+	<hdiv:validation id="safeText">
+		<hdiv:acceptedPattern><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></hdiv:acceptedPattern>
+	</hdiv:validation>
 	
-<!-- 	<hdiv:editableValidations registerDefaults="true"> -->
-<!-- 		<hdiv:validationRule url=".*" enableDefaults="true">customValidation</hdiv:validationRule> -->
-<!-- 	</hdiv:editableValidations> -->
+	<hdiv:editableValidations registerDefaults="true">
+		<hdiv:validationRule url="/secure/.*"></hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">safeText</hdiv:validationRule>
+	</hdiv:editableValidations>
 	
-<!-- 	<hdiv:config	 -->
-<!-- 		debugMode="true" -->
-<!-- 		avoidValidationInUrlsWithoutParams="false" -->
-<!-- 		avoidCookiesIntegrity="false" -->
-<!-- 		avoidCookiesConfidentiality="false" -->
-<!-- 		maxPagesPerSession="3" -->
-<!-- 		errorPage="/fix" -->
-<!-- 		excludedExtensions="css,png,gif,jpeg,jpg,js,woff" -->
-<!-- 		strategy="memory" -->
-<!-- 		confidentiality="true"> -->
-<!-- 		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/> -->
-<!-- 		<hdiv:startPages>/auth/login</hdiv:startPages> -->
-<!-- 	</hdiv:config> -->
+	<hdiv:config
+		debugMode="true"
+		avoidValidationInUrlsWithoutParams="false"
+		avoidCookiesIntegrity="false"
+		avoidCookiesConfidentiality="false"
+		maxPagesPerSession="3"
+		errorPage="/fix"
+		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map"
+		strategy="memory"
+		confidentiality="true">
+		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/>
+		
+		<!-- Controller calls that do not have validation -->
+		<hdiv:startPages>/</hdiv:startPages>
+		<hdiv:startPages method="get">/auth/denied,/fix,/,/auth/login,/auth/logout,/dashboard/,/image/display/project/profile/,/pmsys/image/display/staff/profile/</hdiv:startPages>
+		<hdiv:startPages method="post">/j_spring_security_check</hdiv:startPages>
+	</hdiv:config>
 	
 	
 	
@@ -216,7 +220,8 @@
 			entry-point-ref="authenticationEntryPoint" >
 		
 		<!-- CSRF Protection -->
-		<security:csrf/>
+		<!-- Turned this off, protection is already redundant since HDIV also has CSRF protection. -->
+		<!-- <security:csrf/> -->
 		
 		<!--  -->
 		<security:headers>
@@ -256,14 +261,15 @@
 	
 		<security:custom-filter ref="blacklistFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
 		<security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
+		<security:custom-filter after="SECURITY_CONTEXT_FILTER" ref="hdivFilter" />
 	</security:http>
 	
- 	<!--  Custom filter to deny unwanted users even though registered -->
+	<!-- Custom filters -->
+	<beans:bean id="hdivFilter" class="org.hdiv.filter.ValidatorFilter" />
  	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.system.login.filter.BlacklistFilter" />
- 	
- 	<!-- Custom filter for username and password. The real customization is done in the customAthenticationManager -->
  	<beans:bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"
   		p:authenticationManager-ref="customAuthenticationManager"
+  		p:postOnly="true"
   		p:authenticationFailureHandler-ref="customAuthenticationFailureHandler"
   		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
   		
@@ -492,15 +498,15 @@
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.system.helper.ApplicationContextProvider"></beans:bean>
     
     <!-- HDIV multipart resolver -->
-<!--     <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver"> -->
-<!-- 	    <beans:property name="maxUploadSize" value="20000000" /> -->
-<!-- 	</beans:bean> -->
+    <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">
+	    <beans:property name="maxUploadSize" value="20000000" />
+	</beans:bean>
 
-	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.system.helper.ApplicationContextProvider"></beans:bean>
-	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <beans:property name="maxUploadSize" value="20000000" />
-    </beans:bean>
+<!-- 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!--         <beans:property name="maxUploadSize" value="20000000" /> -->
+<!--     </beans:bean> -->
  
 </beans:beans>

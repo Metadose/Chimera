@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -24,7 +23,8 @@
 <body class="bg-black">
         <div class="form-box" id="login-box">
             <div class="header">Log In</div>
-            <form:form action="${contextPath}/j_spring_security_check" method="post">
+            <form action="${contextPath}/j_spring_security_check" method="POST">	
+            	<fieldset>
                 <div class="body bg-gray">
                     <div class="form-group">
                         <input type="text" name="j_username" id="j_username" class="form-control" placeholder="Username"/>
@@ -43,7 +43,9 @@
 
                     <a href="register.html" class="text-center">Register a new membership</a>
                 </div>
-            </form:form>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </fieldset>
+            </form>
 <!--             <div class="margin text-center"> -->
 <!--                 <span>Sign in using social networks</span> -->
 <!--                 <br/> -->
