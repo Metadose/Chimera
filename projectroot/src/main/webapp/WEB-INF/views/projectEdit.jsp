@@ -101,7 +101,7 @@
 			                   												</td>
 			                   												<td>
 			                   													&nbsp;&nbsp;
-			                   												</td>
+			                   												</td> 
 			                   												<td>
 			                   													<input type="file" id="file" name="file"/>
 			                   												</td>
