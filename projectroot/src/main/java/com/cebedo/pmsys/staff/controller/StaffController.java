@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,6 +32,7 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
+@SessionAttributes(value = { StaffController.ATTR_STAFF }, types = { Staff.class })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
@@ -74,6 +76,7 @@ public class StaffController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_STAFF) Staff staff) {
+		// TODO Add ui notifications.
 		if (staff.getId() == 0) {
 			this.staffService.create(staff);
 		} else {
@@ -115,8 +118,18 @@ public class StaffController {
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-			+ Staff.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
-	public String delete(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id) {
+			+ Staff.OBJECT_NAME + "}", method = RequestMethod.POST)
+	public String delete(@PathVariable(Staff.OBJECT_NAME) long id,
+			RedirectAttributes redirectAttrs) {
+
+		Staff staff = this.staffService.getByID(id);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> staff <b>"
+				+ staff.getFullName() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
 		this.staffService.delete(id);
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
 				+ SystemConstants.REQUEST_LIST;

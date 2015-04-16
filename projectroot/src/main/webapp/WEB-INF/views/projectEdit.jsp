@@ -574,13 +574,10 @@
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/staff/edit/from/origin">
-		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		                                    			<input type="hidden" name="staff_id" value="0"/>
-		                                    			<input type="hidden" name="origin" value="project"/>
-		                                    			<input type="hidden" name="originID" value="${project.id}"/>
+		                                    			<c:url var="urlCreateStaff" value="/project/staff/edit/0"/>
+		                                    			<a href="${urlCreateStaff}">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
-					                                    </form>
+		                                    			</a>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;

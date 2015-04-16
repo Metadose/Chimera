@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -25,6 +26,7 @@
 	         <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -40,7 +42,8 @@
 					<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 					                                </div><!-- /.box-header -->
 					                                <div class="box-body table-responsive">
-					                                	<a href="${contextPath}/staff/edit/0">
+					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
+					                                	<a href="${urlCreateStaff}">
 					                                		<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 					                                	<br/><br/>
@@ -61,12 +64,13 @@
 							                                            <tr>
 							                                            	<td>
 							                                            		<center>
-																					<a href="${contextPath}/staff/edit/${staff.id}">
+							                                            			<c:url var="urlEditStaff" value="/staff/edit/${staff.id}"/>
+																					<a href="${urlEditStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">View</button>
 																					</a>
-																					<a href="${contextPath}/staff/delete/${staff.id}">
+																					<form:form action="${contextPath}/staff/delete/${staff.id}">
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																					</a>
+																					</form:form>
 																				</center>
 																			</td>
 							                                                <td>

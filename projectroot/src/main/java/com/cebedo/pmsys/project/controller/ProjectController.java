@@ -52,6 +52,7 @@ public class ProjectController {
 	public static final String ATTR_PROJECT = Project.OBJECT_NAME;
 	public static final String ATTR_FIELD = Field.OBJECT_NAME;
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
+	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
 
 	public static final String PARAM_FILE = "file";
 
@@ -172,6 +173,33 @@ public class ProjectController {
 		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
+	}
+
+	@RequestMapping(value = Staff.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String editStaff(
+			@PathVariable(Staff.OBJECT_NAME) long staffID,
+			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
+			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			Model model) {
+		// Add origin details.
+		model.addAttribute(SystemConstants.ORIGIN, origin);
+		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+
+		// If new, create it.
+		if (staffID == 0) {
+			model.addAttribute(ATTR_STAFF, new Staff());
+			model.addAttribute(SystemConstants.ATTR_ACTION,
+					SystemConstants.ACTION_CREATE);
+			return JSP_EDIT;
+		}
+
+		// Else if not new, edit it.
+		model.addAttribute(ATTR_STAFF,
+				this.staffService.getWithAllCollectionsByID(staffID));
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_EDIT);
+		return JSP_EDIT;
 	}
 
 	/**

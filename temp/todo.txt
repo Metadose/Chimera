@@ -60,11 +60,12 @@ Prioritize sec grup, audit, nd basic pmsys functions
 
 
 
-==
+==project *******************************************************************************
 
 =list
 * view proj - ok
 * create proj - ok
+* create actual proj - ok
 * delete - ok
 
 =timeline
@@ -86,8 +87,47 @@ proj edit
 * update more info - ok
 * remove all info - ok
 
+=managers
+
+
+
 =timeline
 gant guba (di mu-load auto)
+
+
+
+
+
+
+==staff *******************************************************************************
+
+=list
+view staff
+* create staff - ok
+create actual staff
+delete staff
+
+=timeline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -104,32 +105,37 @@
 				                                    <c:if test="${!empty origin && !empty originID}">
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/origin"/>
 				                                    </c:if>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
-                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                   									<form:form modelAttribute="staff" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
 				                                        	<c:if test="${!empty origin && !empty originID}">
 						                                    	<input type="hidden" name="origin" value="${origin}"/>
 						                                    	<input type="hidden" name="originID" value="${originID}"/>
 						                                    </c:if>
-				                                        	<input type="hidden" name="id" value="${staff.id}"/>
 				                                            <label>Prefix</label>
-				                                            <input type="text" class="form-control" name="prefix" value="${staff.prefix}"/><br/>
+				                                            <form:input type="text" class="form-control" path="prefix"/><br/>
+				                                            
 				                                            <label>First</label>
-				                                            <input type="text" class="form-control" name="firstName" value="${staff.firstName}"/><br/>
+				                                            <form:input type="text" class="form-control" path="firstName"/><br/>
+				                                            
 				                                            <label>Middle</label>
-				                                            <input type="text" class="form-control" name="middleName" value="${staff.middleName}"/><br/>
+				                                            <form:input type="text" class="form-control" path="middleName"/><br/>
+				                                            
 				                                            <label>Last</label>
-				                                            <input type="text" class="form-control" name="lastName" value="${staff.lastName}"/><br/>
+				                                            <form:input type="text" class="form-control" path="lastName"/><br/>
+				                                            
 				                                            <label>Suffix</label>
-				                                            <input type="text" class="form-control" name="suffix" value="${staff.suffix}"/><br/>
+				                                            <form:input type="text" class="form-control" path="suffix"/><br/>
+				                                            
 				                                            <label>Position</label>
-				                                            <input type="text" class="form-control" name="companyPosition" value="${staff.companyPosition}"/><br/>
+				                                            <form:input type="text" class="form-control" path="companyPosition"/><br/>
+				                                            
 				                                            <label>E-Mail</label>
-				                                            <input type="text" class="form-control" name="email" value="${staff.email}"/><br/>
+				                                            <form:input type="text" class="form-control" path="email"/><br/>
+				                                            
 				                                            <label>Contact Number</label>
-				                                            <input type="text" class="form-control" name="contactNumber" value="${staff.contactNumber}"/><br/>
+				                                            <form:input type="text" class="form-control" path="contactNumber"/><br/>
 				                                        </div>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
 		                                            	<c:when test="${staff.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
