@@ -2,6 +2,7 @@ package com.cebedo.pmsys.field.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +78,7 @@ public class FieldServiceImpl implements FieldService {
 		return this.fieldDAO.listWithAllCollections();
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void assignProject(FieldAssignment fieldAssignment, long fieldID,

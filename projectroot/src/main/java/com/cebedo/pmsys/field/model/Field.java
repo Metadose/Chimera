@@ -36,6 +36,14 @@ public class Field implements Serializable {
 	private Set<TaskFieldAssignment> tasks;
 	private Set<StaffFieldAssignment> staffFieldAssignments;
 
+	public Field() {
+		;
+	}
+
+	public Field(long fieldID) {
+		setId(fieldID);
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = true)

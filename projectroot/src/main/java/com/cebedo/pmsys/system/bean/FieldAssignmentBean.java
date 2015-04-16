@@ -7,6 +7,15 @@ public class FieldAssignmentBean {
 	private String label;
 	private String value;
 
+	public FieldAssignmentBean() {
+		;
+	}
+
+	public FieldAssignmentBean(int id, int fID) {
+		setProjectID(fID);
+		setFieldID(fID);
+	}
+
 	public long getProjectID() {
 		return projectID;
 	}

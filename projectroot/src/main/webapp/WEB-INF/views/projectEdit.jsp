@@ -137,7 +137,7 @@
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
                   										<form:form id="detailsForm"
-                  											commandName="project"
+                  											modelAttribute="project"
                   											method="post"
                   											action="${contextPath}/project/create">
 				                                            <label>Name</label>
@@ -246,15 +246,12 @@
 																	<br/>
 																</c:if>
 																<h4>Add More Information</h4>
-																<form:form commandName="field"
+																<form:form modelAttribute="field"
 																	id="fieldsForm" 
 																	method="post" 
-																	action="${contextPath}/field/assign/project">
+																	action="${contextPath}/project/assign/field">
 																	
-<%-- 																	<form:hidden path="projectID" value="${project.id}"/> --%>
-<%-- 																	<form:hidden path="fieldID" value="1"/> --%>
-																	
-<!-- 																	<label>Label</label><br/> -->
+																	<label>Label</label><br/>
 																	<form:input type="text" path="label" id="label" class="form-control"
  																	placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."/><br/>
 																	
@@ -262,6 +259,7 @@
 																	<form:textarea class="form-control"
  																	rows="3" id="value" path="value"
  																	placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc..."></form:textarea>
+																
 																</form:form>
 																<br/>
 		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
