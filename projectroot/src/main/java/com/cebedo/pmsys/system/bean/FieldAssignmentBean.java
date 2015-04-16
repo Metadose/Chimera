@@ -11,9 +11,17 @@ public class FieldAssignmentBean {
 		;
 	}
 
-	public FieldAssignmentBean(int id, int fID) {
-		setProjectID(fID);
+	public FieldAssignmentBean(long id, long fID) {
+		setProjectID(id);
 		setFieldID(fID);
+	}
+
+	public FieldAssignmentBean(long projectID, long fieldID, String label,
+			String value) {
+		setProjectID(projectID);
+		setFieldID(fieldID);
+		setLabel(label);
+		setValue(value);
 	}
 
 	public long getProjectID() {

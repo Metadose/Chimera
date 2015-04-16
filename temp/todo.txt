@@ -49,22 +49,45 @@ Prioritize sec grup, audit, nd basic pmsys functions
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 ==
-proj list
-** gant guba (di mu load auto)
-get - view proj - ok
-get - create proj - ok
-post - delete - ok
+
+=list
+* view proj - ok
+* create proj - ok
+* delete - ok
+
+=timeline
+gant guba (di mu load auto)
+
+
 
 ==
 proj edit
-** gant guba (di mu-load auto)
-
-post - delete - ok
 
 
+=details
+* delete project - ok
+* update project - ok
+* add more information - ok
+* upload prof pic - ok
+* delete prof pic - ok
+* remove more info - ok
+* update more info - ok
+* remove all info - ok
 
-
+=timeline
+gant guba (di mu-load auto)
 
 
 

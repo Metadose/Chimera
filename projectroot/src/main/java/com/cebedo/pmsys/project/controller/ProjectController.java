@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.project.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -14,14 +15,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.photo.model.Photo;
+import com.cebedo.pmsys.photo.service.PhotoService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
@@ -37,21 +43,34 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
-@SessionAttributes(value = { Project.OBJECT_NAME }, types = { Project.class })
+@SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD }, types = {
+		Project.class, FieldAssignmentBean.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
 	public static final String ATTR_LIST = "projectList";
 	public static final String ATTR_PROJECT = Project.OBJECT_NAME;
 	public static final String ATTR_FIELD = Field.OBJECT_NAME;
+	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
+
+	public static final String PARAM_FILE = "file";
+
 	public static final String JSP_LIST = "projectList";
 	public static final String JSP_EDIT = "projectEdit";
+	public static final String JSP_EDIT_FIELD = "assignedFieldEdit";
 
 	private AuthHelper authHelper = new AuthHelper();
 	private ProjectService projectService;
 	private StaffService staffService;
 	private TeamService teamService;
 	private FieldService fieldService;
+	private PhotoService photoService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "photoService")
+	public void setPhotoService(PhotoService ps) {
+		this.photoService = ps;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "fieldService")
@@ -117,6 +136,109 @@ public class ProjectController {
 	}
 
 	/**
+	 * Update existing project fields.
+	 * 
+	 * @param session
+	 * @param fieldIdentifiers
+	 * @param status
+	 * @param model
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = Field.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
+	public String updateField(HttpSession session,
+			@Valid FieldAssignmentBean newFaBean, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
+
+		// Old values.
+		FieldAssignmentBean faBean = (FieldAssignmentBean) session
+				.getAttribute(ATTR_FIELD);
+
+		// Do service.
+		this.fieldService.updateAssignedProjectField(faBean.getProjectID(),
+				faBean.getFieldID(), faBean.getLabel(), faBean.getValue(),
+				newFaBean.getLabel(), newFaBean.getValue());
+
+		// Create ui notifs.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>updated</b> extra information <b>"
+						+ newFaBean.getLabel() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Clear session and redirect.
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
+	}
+
+	/**
+	 * Unassign a field from a project.
+	 * 
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = Field.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
+	public String deleteProjectField(HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
+
+		// Fetch bean from session.
+		FieldAssignmentBean faBean = (FieldAssignmentBean) session
+				.getAttribute(ATTR_FIELD);
+
+		// Construct ui notifs.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>deleted</b> extra information <b>"
+						+ faBean.getLabel() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Do service.
+		// Clear session attrs then redirect.
+		this.fieldService.unassignProject(faBean.getFieldID(),
+				faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
+	}
+
+	/**
+	 * Getter. Opening the edit page of a project field.
+	 * 
+	 * @param id
+	 * @param redirectAttrs
+	 * @param status
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = Field.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_EDIT + "/{" + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String editField(HttpSession session,
+			@PathVariable(Field.OBJECT_NAME) String fieldIdentifiers,
+			Model model) {
+
+		// Get project id.
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+		long fieldID = Long.valueOf(fieldIdentifiers.split("-")[0]);
+		String label = fieldIdentifiers.split("-")[1];
+		String value = fieldIdentifiers.split("-")[2];
+
+		// Set to model attribute "field".
+		model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID,
+				fieldID, label, value));
+
+		return Field.OBJECT_NAME + "/" + JSP_EDIT_FIELD;
+	}
+
+	/**
 	 * Delete a project.
 	 * 
 	 * @param id
@@ -142,6 +264,102 @@ public class ProjectController {
 		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 				+ SystemConstants.REQUEST_LIST;
+	}
+
+	/**
+	 * Delete a project's profile picture.
+	 * 
+	 * @param projectID
+	 * @return
+	 * @throws IOException
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.PROFILE + "/"
+			+ SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
+	public ModelAndView deleteProjectProfile(HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs)
+			throws IOException {
+		// Get project id.
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		// Do service.
+		// Construct ui notification.
+		this.photoService.deleteProjectProfile(projectID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>deleted</b> the <b>profile picture</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Clear session var.
+		// Then return.
+		status.setComplete();
+		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+				+ "/" + projectID);
+	}
+
+	/**
+	 * Upload a project profile pic.
+	 * 
+	 * @param mBean
+	 * @return
+	 * @throws IOException
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.PROFILE + "/"
+			+ SystemConstants.REQUEST_UPLOAD, method = RequestMethod.POST)
+	public String uploadProfile(HttpSession session,
+			@RequestParam(PARAM_FILE) MultipartFile file, SessionStatus status)
+			throws IOException {
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		// If file is not empty.
+		if (!file.isEmpty()) {
+			this.photoService.uploadProjectProfile(file, projectID);
+		} else {
+			// TODO Handle this scenario.
+		}
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Unassign all fields of a project.
+	 * 
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Field.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public String unassignAllFields(HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
+
+		// Get project ID.
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		// Construct notification.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>removed all</b> extra information.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Do service and clear session vars.
+		// Then return.
+		this.fieldService.unassignAllProjects(projectID);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
 	}
 
 	/**

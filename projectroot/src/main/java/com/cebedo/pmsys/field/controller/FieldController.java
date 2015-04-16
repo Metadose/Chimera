@@ -11,16 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
-import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffFieldAssignment;
 import com.cebedo.pmsys.system.constants.SystemConstants;
-import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.model.TaskFieldAssignment;
 
@@ -128,31 +125,6 @@ public class FieldController {
 	}
 
 	/**
-	 * Unassign all fields of a project.
-	 * 
-	 * @param fieldID
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllProjects(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			RedirectAttributes redirectAttrs) {
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory
-				.setMessage("Successfully <b>removed all</b> extra information.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		this.fieldService.unassignAllProjects(projectID);
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
-	/**
 	 * Update a currently assigned Task field.
 	 * 
 	 * @param fieldID
@@ -181,39 +153,6 @@ public class FieldController {
 	}
 
 	/**
-	 * Update an assigned project field.
-	 * 
-	 * @param fieldID
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
-			+ SystemConstants.ASSIGNED + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView updateAssignedProjectField(
-			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Field.COLUMN_LABEL) String label,
-			@RequestParam(Field.COLUMN_VALUE) String value,
-			@RequestParam("old_" + Field.COLUMN_LABEL) String oldLabel,
-			@RequestParam("old_" + Field.COLUMN_VALUE) String oldValue,
-			RedirectAttributes redirectAttrs) {
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory
-				.setMessage("Successfully <b>updated</b> extra information <b>"
-						+ label + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		this.fieldService.updateAssignedProjectField(projectID, fieldID,
-				oldLabel, oldValue, label, value);
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
-	/**
 	 * Update an existing staff field.
 	 * 
 	 * @param fieldID
@@ -239,35 +178,6 @@ public class FieldController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);
-	}
-
-	/**
-	 * Unassign a field from a project.
-	 * 
-	 * @param fieldID
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT, method = RequestMethod.POST)
-	public ModelAndView unassignProject(
-			@RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Field.COLUMN_LABEL) String label,
-			@RequestParam(Field.COLUMN_VALUE) String value,
-			RedirectAttributes redirectAttrs) {
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory
-				.setMessage("Successfully <b>removed</b> extra information <b>"
-						+ label + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		this.fieldService.unassignProject(fieldID, projectID, label, value);
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	/**

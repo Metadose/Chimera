@@ -90,19 +90,22 @@ public class FieldServiceImpl implements FieldService {
 		this.fieldDAO.assignProject(fieldAssignment);
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
-	public void unassignProject(long fieldID, long projID, String label,
+	public void unassignProject(long fieldID, long projectID, String label,
 			String value) {
-		this.fieldDAO.unassignProject(fieldID, projID, label, value);
+		this.fieldDAO.unassignProject(fieldID, projectID, label, value);
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void unassignAllProjects(long projectID) {
 		this.fieldDAO.unassignAllProjects(projectID);
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void updateAssignedProjectField(long projectID, long fieldID,

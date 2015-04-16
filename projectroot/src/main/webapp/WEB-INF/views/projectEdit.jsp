@@ -87,13 +87,11 @@
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<br/>
 		                   									<div class="form-group">
-		                   										<!-- TODO -->
 		                   										<form:form id="uploadPhotoForm"
 	                   												commandName="photo"
-																	action="${contextPath}/photo/upload/project/profile"
+																	action="${contextPath}/project/profile/upload/"
 																	method="post"
 																	enctype="multipart/form-data">
-<%-- 																	<form:hidden path="projectID"/> --%>
 			                   										<table>
 			                   											<tr>
 			                   												<td>
@@ -108,27 +106,35 @@
 			                   											</tr>
 			                   										</table>
 						                                        </form:form>
-						                                        <form id="deletePhotoForm" action="${contextPath}/photo/delete/project/profile/?project_id=${project.id}" method="post">
-						                                        	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-						                                        </form>
+						                                        <form:form id="deletePhotoForm"
+						                                        	action="${contextPath}/project/profile/delete"
+						                                        	method="post">
+						                                        </form:form>
 						                                        <br/>
 						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-default btn-flat btn-sm">Upload</button>
+						                                        <c:if test="${!empty project.thumbnailURL}">
 						                                        <button onclick="submitForm('deletePhotoForm')" class="btn btn-default btn-flat btn-sm">Delete Photo</button>
+						                                        </c:if>
 						                                    </div>
 						                                    </sec:authorize>
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
 				                                    <c:if test="${project.id != 0}">
+				                                    <!-- Read only Output -->
 				                                    <div class="form-group" id="detailsDivViewer">
 			                                            <label>Name</label><br/>
-			                                            ${fn:escapeXml(project.name)}<br/><br/>
+			                                            <c:out value="${project.name}"/><br/><br/>
+			                                            
 			                                            <label>Status</label><br/>
-			                                            ${fn:escapeXml(project.status)}<br/><br/>
+			                                            <c:out value="${project.status}"/><br/><br/>
+			                                            
 			                                            <label>Location</label><br/>
-			                                            ${fn:escapeXml(project.location)}<br/><br/>
+			                                            <c:out value="${project.location}"/><br/><br/>
+			                                            
 			                                            <label>Notes</label><br/>
-			                                            ${project.notes}<br/><br/>
+			                                            <c:out value="${project.notes}"/><br/><br/>
+			                                            
 			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit</button>
 			                                            </sec:authorize>
@@ -136,12 +142,16 @@
 			                                        </c:if>
 				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
+			                                        
+			                                        	<!-- Update form Input -->
                   										<form:form id="detailsForm"
                   											modelAttribute="project"
                   											method="post"
                   											action="${contextPath}/project/create">
+				                                            
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            
 				                                            <label>Status</label>
 				                                            <form:select class="form-control" id="project_status" path="status">
 						                                    	<form:option value="0" label="New"/>
@@ -150,10 +160,13 @@
 						                                    	<form:option value="3" label="Failed"/>
 						                                    	<form:option value="4" label="Cancelled"/>
 				                                            </form:select><br/>
+				                                            
 				                                            <label>Location</label>
 				                                            <form:input type="text" class="form-control" path="location"/><br/>
+				                                            
 				                                            <label>Notes</label>
 				                                            <form:input type="text" class="form-control" path="notes"/><br/>
+				                                            
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
@@ -186,89 +199,56 @@
                    								<div class="box-body">
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
-               												<c:set var="fieldFormID" value="${0}"/>
                												
                    											<c:if test="${!empty projectFields}">
    															<div class="form-group" id="fieldsDivViewer">
 	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
-		       															<label>${fn:escapeXml(field.label)}</label><br/>
-		       															${fn:escapeXml(field.value)}<br/>
-		       															<br/>
+	               													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-${field.label}-${field.value}"/>
+		                                								<a href="${urlEditProjectField}">
+						                                            	<button class="btn btn-default btn-flat btn-sm">Edit</button>
+	               														</a>
+						                                            </sec:authorize>
+               														<!-- More Information Output -->
+	       															<label><c:out value="${field.label}"/></label>&nbsp;<c:out value="${field.value}"/>
+	       															<br/>
 																</c:forEach>
+       															<br/>
 																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-					                                            	<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivViewer, fieldsDivEditor)">Edit</button>
-					                                            </sec:authorize>
+																	<form:form role="form"
+																		name="fieldsUnassignForm"
+																		id="fieldsUnassignForm"
+																		method="post"
+																		action="${contextPath}/project/unassign/field/all">
+																		<button class="btn btn-default btn-flat btn-sm">Remove All</button>
+																	</form:form>
+																</sec:authorize>
    															</div>
    															</c:if>
-   															
-           													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-               												<c:set var="formStyle" value="padding-bottom: 40px"/>
-	           												<div class="form-group" id="fieldsDivEditor">
-	           													<c:if test="${!empty projectFields}">
-		               												<c:forEach var="field" items="${projectFields}" varStatus="loop">
-		           														<c:if test="${loop.last}">
-		           															<c:set var="formStyle" value="padding-bottom: 18px"/>
-		           										 				</c:if>
-		           														<div style="${formStyle}">
-		           														<form id="field_update_${fieldFormID}" method="post" action="${contextPath}/field/update/assigned/project">
-		           															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																			<input type="hidden" name="project_id" value="${project.id}"/>
-																			<input type="hidden" name="field_id" value="${field.field.id}"/>
-																			<input type="hidden" id="old_label" name="old_label" value="${fn:escapeXml(field.label)}"/>
-																			<input type="hidden" id="old_value" name="old_value" value="${fn:escapeXml(field.value)}"/>
-			       															<input type="text" class="form-control" id="label" name="label" value="${fn:escapeXml(field.label)}"><br/>
-			       															<textarea class="form-control" rows="3" id="value" name="value">${fn:escapeXml(field.value)}</textarea><br/>
-																		</form>
-		               													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/project">
-		               														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																			<input type="hidden" name="project_id" value="${project.id}"/>
-																			<input type="hidden" name="field_id" value="${field.field.id}"/>
-			       															<input type="hidden" name="label" value="${fn:escapeXml(field.label)}">
-			       															<input type="hidden" name="value" value="${fn:escapeXml(field.value)}">
-																		</form>
-		       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_update_${fieldFormID}')">Update</button>&nbsp;
-		       															<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Remove</button>
-		       															</div>
-																		<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
-																	</c:forEach>
-																	<c:choose>
-																		<c:when test="${!empty projectFields}">
-																			<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																			<form role="form" name="fieldsUnassignForm" id="fieldsUnassignForm" method="post" action="${contextPath}/field/unassign/project/all">
-																				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																				<input type="hidden" name="project_id" value="${project.id}"/>
-																				<button class="btn btn-default btn-flat btn-sm">Remove All</button>
-																			</form>
-																			</sec:authorize>
-																		</c:when>
-																	</c:choose>
-																	<br/>
-																	<br/>
-																</c:if>
-																<h4>Add More Information</h4>
-																<form:form modelAttribute="field"
-																	id="fieldsForm" 
-																	method="post" 
-																	action="${contextPath}/project/assign/field">
-																	
-																	<label>Label</label><br/>
-																	<form:input type="text" path="label" id="label" class="form-control"
- 																	placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."/><br/>
-																	
-																	<label>Information</label><br/>
-																	<form:textarea class="form-control"
- 																	rows="3" id="value" path="value"
- 																	placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc..."></form:textarea>
+   															<c:if test="${empty projectFields}">
+   																No extra information added.
+   																<br/>Use the form below to add more information.
+   																<br/>
+   															</c:if>
+   															<br/>
+   															<h4>Add More Information</h4>
+															<form:form modelAttribute="field"
+																id="fieldsForm" 
+																method="post" 
+																action="${contextPath}/project/assign/field">
 																
-																</form:form>
-																<br/>
-		                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
-		                                           				<c:if test="${!empty projectFields}">
-		                                           				<br/>
-																<button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(fieldsDivEditor, fieldsDivViewer)">Done Editing</button>
-																</c:if>
-															</div>
-															</sec:authorize>
+																<label>Label</label><br/>
+																<form:input type="text" path="label" id="label" class="form-control"
+																	placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."/><br/>
+																
+																<label>Information</label><br/>
+																<form:textarea class="form-control"
+																	rows="3" id="value" path="value"
+																	placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc..."></form:textarea>
+															
+															</form:form>
+															<br/>
+	                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
 			                                        </div>
                    								</div>
                    							</div>

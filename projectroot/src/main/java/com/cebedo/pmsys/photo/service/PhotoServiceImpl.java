@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +67,14 @@ public class PhotoServiceImpl implements PhotoService {
 		return sysHome;
 	}
 
+	@Caching(evict = {
+			@CacheEvict(value = Project.OBJECT_NAME + ":getNameByID", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME
+					+ ":getByIDWithAllCollections", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
 	@Override
 	@Transactional
 	public void deleteProjectProfile(long projectID) {
@@ -126,6 +136,14 @@ public class PhotoServiceImpl implements PhotoService {
 	/**
 	 * Upload a profile picture for the project.
 	 */
+	@Caching(evict = {
+			@CacheEvict(value = Project.OBJECT_NAME + ":getNameByID", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME
+					+ ":getByIDWithAllCollections", key = "#projectID"),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
+			@CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
 	@Override
 	@Transactional
 	public void uploadProjectProfile(MultipartFile file, long projectID)
@@ -166,8 +184,13 @@ public class PhotoServiceImpl implements PhotoService {
 							.getOriginalFilename());
 		}
 
+		// Delete old photo.
 		// Upload and
 		// Update the project entry.
+		String oldPhoto = proj.getThumbnailURL();
+		File oldPhotoObj = new File(oldPhoto);
+		oldPhotoObj.delete();
+
 		proj.setThumbnailURL(fileLocation);
 		this.fileHelper.fileUpload(file, fileLocation);
 		this.projectDAO.update(proj);

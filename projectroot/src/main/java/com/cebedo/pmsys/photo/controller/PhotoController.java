@@ -2,8 +2,6 @@ package com.cebedo.pmsys.photo.controller;
 
 import java.io.IOException;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +23,6 @@ import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
-import com.cebedo.pmsys.system.bean.MultipartBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
@@ -64,32 +61,6 @@ public class PhotoController {
 		this.configService = ps;
 	}
 
-	/**
-	 * Delete a project's profile picture.
-	 * 
-	 * @param projectID
-	 * @return
-	 * @throws IOException
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
-			+ SystemConstants.PROJECT_PROFILE, method = RequestMethod.POST)
-	public ModelAndView deleteProjectProfile(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			RedirectAttributes redirectAttrs) throws IOException {
-		this.photoService.deleteProjectProfile(projectID);
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory
-				.setMessage("Successfully <b>deleted</b> the <b>profile picture</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD_TO_STAFF_PROFILE, method = RequestMethod.POST)
 	public ModelAndView uploadStaffProfile(
@@ -106,25 +77,6 @@ public class PhotoController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ staffID);
-	}
-
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
-			+ Project.OBJECT_NAME + "/" + SystemConstants.PROFILE, method = RequestMethod.POST)
-	public ModelAndView uploadProjectProfile(@Valid MultipartBean mBean)
-			throws IOException {
-		MultipartFile file = mBean.getFile();
-		long projectID = mBean.getProjectID();
-
-		// If file is not empty.
-		if (!file.isEmpty()) {
-			this.photoService.uploadProjectProfile(file, projectID);
-		} else {
-			// TODO Handle this scenario.
-		}
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
