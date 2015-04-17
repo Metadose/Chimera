@@ -24,7 +24,6 @@ import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
-import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
@@ -127,10 +126,11 @@ public class StaffController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
+			+ SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{"
+			+ SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
 	public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
-			@RequestParam(value = SystemConstants.ORIGIN) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID,
+			@PathVariable(value = SystemConstants.ORIGIN) String origin,
+			@PathVariable(value = SystemConstants.ORIGIN_ID) String originID,
 			RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (staff.getId() == 0) {
@@ -219,12 +219,13 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Staff.OBJECT_NAME + "}/" + SystemConstants.FROM + "/{"
+			+ SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.GET)
 	public String editStaffFromOrigin(
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			@PathVariable(Staff.OBJECT_NAME) long staffID,
+			@PathVariable(value = SystemConstants.ORIGIN) String origin,
+			@PathVariable(value = SystemConstants.ORIGIN_ID) long originID,
 			Model model) {
 		// Add origin details.
 		model.addAttribute(SystemConstants.ORIGIN, origin);
@@ -321,35 +322,6 @@ public class StaffController {
 				alertFactory.generateHTML());
 
 		this.staffService.unassignProjectManager(projectID, staffID);
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
-	/**
-	 * Assign a staff to a project.
-	 * 
-	 * @param projectID
-	 * @param staffID
-	 * @param position
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN_PROJECT, method = RequestMethod.POST)
-	public ModelAndView assignProjectManager(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-			@RequestParam(ManagerAssignment.COLUMN_PROJECT_POSITION) String position,
-			RedirectAttributes redirectAttrs) {
-
-		String staffName = this.staffService.getNameByID(staffID);
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>assigned " + staffName
-				+ "</b> as <b>" + position + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		this.staffService.assignProjectManager(projectID, staffID, position);
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
 				+ "/" + projectID);

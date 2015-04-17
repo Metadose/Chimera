@@ -104,14 +104,10 @@
 				                                    </c:if>
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
 				                                    <c:if test="${!empty origin && !empty originID}">
-				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/origin"/>
+				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/${origin}/${originID}"/>
 				                                    </c:if>
                    									<form:form modelAttribute="staff" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
-				                                        	<c:if test="${!empty origin && !empty originID}">
-						                                    	<input type="hidden" name="origin" value="${origin}"/>
-						                                    	<input type="hidden" name="originID" value="${originID}"/>
-						                                    </c:if>
 				                                            <label>Prefix</label>
 				                                            <form:input type="text" class="form-control" path="prefix"/><br/>
 				                                            

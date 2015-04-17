@@ -34,6 +34,7 @@ import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
+import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -52,6 +53,7 @@ public class ProjectController {
 	public static final String ATTR_FIELD = Field.OBJECT_NAME;
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
+	public static final String ATTR_STAFF_POSITION = "staffPosition";
 
 	public static final String PARAM_FILE = "file";
 
@@ -103,6 +105,57 @@ public class ProjectController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_LIST);
 		return JSP_LIST;
+	}
+
+	/**
+	 * Assign a staff to a project.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param staffAssignment
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public String assignStaff(
+			HttpSession session,
+			SessionStatus status,
+			@ModelAttribute(ATTR_STAFF_POSITION) StaffAssignmentBean staffAssignment,
+			RedirectAttributes redirectAttrs) {
+
+		Project project = (Project) session.getAttribute(ATTR_PROJECT);
+
+		// Error handling if staff was not set properly.
+		if (project == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
+					+ "/" + SystemConstants.REQUEST_LIST;
+		}
+
+		long staffID = staffAssignment.getStaffID();
+		String position = staffAssignment.getPosition();
+
+		// Fetch staff name, construct ui notifs.
+		String staffName = this.staffService.getNameByID(staffID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned " + staffName
+				+ "</b> as <b>" + position + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Do service, clear session.
+		// Then redirect.
+		this.staffService.assignProjectManager(project.getId(), staffID,
+				position);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
 	}
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
@@ -431,6 +484,12 @@ public class ProjectController {
 		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	}
+
+	@ModelAttribute(ATTR_STAFF_POSITION)
+	public StaffAssignmentBean getStaffAssignmentBean(HttpSession session,
+			Model model) {
+		return new StaffAssignmentBean();
 	}
 
 	/**

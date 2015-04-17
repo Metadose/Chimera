@@ -88,8 +88,9 @@ proj edit
 * remove all info - ok
 
 =managers
-
-
+* create new staff link - ok
+* create new staff actual action - ok
+assign
 
 =timeline
 gant guba (di mu-load auto)

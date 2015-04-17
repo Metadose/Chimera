@@ -574,7 +574,7 @@
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
-		                                    			<c:url var="urlCreateStaff" value="/project/staff/edit/0"/>
+		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 		                                    			<a href="${urlCreateStaff}">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 		                                    			</a>
@@ -586,30 +586,34 @@
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
-		                                    		<form role="form" method="post" action="${contextPath}/staff/assign/project">
-		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		                                    		<form:form
+		                                    		modelAttribute="staffPosition" 
+		                                    		method="post"
+		                                    		action="${contextPath}/project/assign/staff">
 		                                    		<td>
-		                                    			<select class="form-control" name="staff_id">
+		                                    			<form:select class="form-control" path="staffID">
                                     						<c:forEach items="${staffList}" var="staff">
                                     							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-                                    							<option value="${staff.id}">${staffName}</option>
+                                    							<form:option value="${staff.id}" label="${staffName}"/>
                                     						</c:forEach>
-		                                    			</select>
+		                                    			</form:select>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<input placeholder="Example: Project Manager, Leader, etc..." type="text" class="form-control" name="project_position"/>
+		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..."
+		                                    				type="text"
+															class="form-control"
+															path="position"/>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
-		                                    		</form>
+		                                    		</form:form>
 		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;
