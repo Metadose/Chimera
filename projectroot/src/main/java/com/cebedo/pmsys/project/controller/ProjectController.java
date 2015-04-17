@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -108,7 +107,7 @@ public class ProjectController {
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@Valid Project project,
+	public String create(@ModelAttribute(ATTR_PROJECT) Project project,
 			RedirectAttributes redirectAttrs, SessionStatus status) {
 
 		// Used for notification purposes.
@@ -149,8 +148,8 @@ public class ProjectController {
 	@RequestMapping(value = Field.OBJECT_NAME + "/"
 			+ SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
 	public String updateField(HttpSession session,
-			@Valid FieldAssignmentBean newFaBean, SessionStatus status,
-			RedirectAttributes redirectAttrs) {
+			@ModelAttribute(ATTR_FIELD) FieldAssignmentBean newFaBean,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 
 		// Old values.
 		FieldAssignmentBean faBean = (FieldAssignmentBean) session

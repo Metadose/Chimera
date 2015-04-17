@@ -68,7 +68,7 @@
 																					<a href="${urlEditStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">View</button>
 																					</a>
-																					<form:form action="${contextPath}/staff/delete/${staff.id}">
+																					<form:form action="${contextPath}/staff/delete/${staff.id}" method="post">
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																					</form:form>
 																				</center>

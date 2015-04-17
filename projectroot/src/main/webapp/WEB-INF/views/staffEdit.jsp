@@ -48,6 +48,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -142,9 +143,9 @@
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/staff/delete/${staff.id}">
+		                                            		<form:form action="${contextPath}/staff/delete" method="post">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Staff</button>
-															</a>
+		                                            		</form:form>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>

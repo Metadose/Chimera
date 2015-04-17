@@ -102,13 +102,14 @@ gant guba (di mu-load auto)
 ==staff *******************************************************************************
 
 =list
-view staff
+* view staff - ok
 * create staff - ok
-create actual staff
+* create actual staff - ok
 delete staff
 
 =timeline
-
+* delete staff - ok
+* update staff - ok
 
 
 

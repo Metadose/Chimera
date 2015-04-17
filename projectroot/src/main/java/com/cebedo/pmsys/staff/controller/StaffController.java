@@ -2,6 +2,8 @@ package com.cebedo.pmsys.staff.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -73,17 +76,46 @@ public class StaffController {
 		return JSP_LIST;
 	}
 
+	/**
+	 * Commit function that would create/update staff.
+	 * 
+	 * @param staff
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_STAFF) Staff staff) {
-		// TODO Add ui notifications.
+	public String create(@ModelAttribute(ATTR_STAFF) Staff staff,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		// Add ui notifications.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+
+		// Create staff.
 		if (staff.getId() == 0) {
 			this.staffService.create(staff);
-		} else {
-			this.staffService.update(staff);
+			alertFactory.setMessage("Successfully <b>created</b> staff <b>"
+					+ staff.getFullName() + "</b>.");
+
+			// Add redirs attrs.
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
+					+ SystemConstants.REQUEST_LIST;
 		}
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
-				+ SystemConstants.REQUEST_LIST;
+		// Update staff.
+		else {
+			this.staffService.update(staff);
+			alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
+					+ staff.getFullName() + "</b>.");
+
+			// Add redirs attrs.
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
+					+ SystemConstants.REQUEST_EDIT + "/" + staff.getId();
+		}
 	}
 
 	/**
@@ -116,6 +148,13 @@ public class StaffController {
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
 
+	/**
+	 * Delete coming from the staff list page.
+	 * 
+	 * @param id
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
 			+ Staff.OBJECT_NAME + "}", method = RequestMethod.POST)
@@ -131,6 +170,43 @@ public class StaffController {
 				alertFactory.generateHTML());
 
 		this.staffService.delete(id);
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
+				+ SystemConstants.REQUEST_LIST;
+	}
+
+	/**
+	 * Delete coming from the staff edit page.
+	 * 
+	 * @param status
+	 * @param session
+	 * @param redirectAttrs
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
+	public String delete(SessionStatus status, HttpSession session,
+			RedirectAttributes redirectAttrs) {
+
+		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+		if (staff == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>delete</b> staff. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
+					+ SystemConstants.REQUEST_LIST;
+		}
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> staff <b>"
+				+ staff.getFullName() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		this.staffService.delete(staff.getId());
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
