@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Task ${action}</title>
-	<c:import url="/resources/css-includes.jsp" />
+	
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -405,7 +405,7 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	<c:import url="/resources/js-includes.jsp" />
+	
 	<!-- InputMask -->
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>

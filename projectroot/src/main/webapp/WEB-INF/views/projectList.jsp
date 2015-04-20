@@ -9,7 +9,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Project ${action}</title>
-	<c:import url="/resources/css-includes.jsp" />
+	
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 </head>
@@ -169,7 +169,7 @@
    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
 	
 	<!-- Javascript components -->
-   	<c:import url="/resources/js-includes.jsp" />
+   	
 	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>

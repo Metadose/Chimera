@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Page not found</title>
-        <c:import url="/resources/css-includes.jsp" />
+        
     </head>
     <body class="skin-blue">
     	<c:import url="/resources/header.jsp" />
@@ -53,6 +53,6 @@
                 </section><!-- /.content -->
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
-        <c:import url="/resources/js-includes.jsp" />
+        
     </body>
 </html>

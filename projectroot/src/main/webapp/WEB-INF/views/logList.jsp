@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Log Manager</title>
-	<c:import url="/resources/css-includes.jsp" />
+	
 	<link href="<c:url value="/resources/lib/jstree/src/themes/default/style.css" />"rel="stylesheet" type="text/css" />
 </head>
 <body class="skin-blue">
@@ -41,7 +41,7 @@
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		<input type="hidden" id="input_log_address" name="input_log_address" value=""/>
 	</form>
-	<c:import url="/resources/js-includes.jsp" />
+	
 	<script src="<c:url value="/resources/lib/jstree/dist/jstree.min.js" />"></script>
 	<script type="text/javascript">
 		var data = ${logList};

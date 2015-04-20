@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>System Configuration ${action}</title>
-	<c:import url="/resources/css-includes.jsp" />
+	
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -87,7 +87,7 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	<c:import url="/resources/js-includes.jsp" />
+	
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();

@@ -6,7 +6,7 @@
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>System Configuration ${action}</title>
-		<c:import url="/resources/css-includes.jsp" />
+		
 	</head>
     <body class="skin-blue">
         <!-- header logo: style can be found in header.less -->
@@ -243,7 +243,7 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
         
-        <c:import url="/resources/js-includes.jsp" />
+        
         <!-- Bootstrap WYSIHTML5 -->
         <script src="${contextPath}/resources/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
         <!-- iCheck -->
