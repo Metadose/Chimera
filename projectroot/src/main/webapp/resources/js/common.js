@@ -1,15 +1,3 @@
-// Used by list pages.
-// Onclick of tab_timeline.
-$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
-	// Code to call as a workaround over gantt bug where chart doesn't
-	// render if placed in a tab.
-	if(id == "tab_timeline"){
-		gantt.render();
-	}
-});
-
-
-// Used by edit pages.
 // Store the currently selected tab in the hash value.
 $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 	var id = $(e.target).attr("href").substr(1);
