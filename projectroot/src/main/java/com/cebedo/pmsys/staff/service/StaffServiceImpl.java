@@ -3,6 +3,9 @@ package com.cebedo.pmsys.staff.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +13,8 @@ import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.projectfile.model.ProjectFile;
+import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -28,6 +33,13 @@ public class StaffServiceImpl implements StaffService {
 	private ProjectDAO projectDAO;
 	private TeamDAO teamDAO;
 	private CompanyDAO companyDAO;
+	private ProjectFileService projectFileService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectFileService")
+	public void setProjectFileService(ProjectFileService ps) {
+		this.projectFileService = ps;
+	}
 
 	public void setCompanyDAO(CompanyDAO companyDAO) {
 		this.companyDAO = companyDAO;
@@ -89,6 +101,20 @@ public class StaffServiceImpl implements StaffService {
 	public void delete(long id) {
 		Staff stf = this.staffDAO.getByID(id);
 		if (this.authHelper.isActionAuthorized(stf)) {
+			// Check if the staff has any project files.
+			Hibernate.initialize(stf.getFiles());
+			for (ProjectFile file : stf.getFiles()) {
+
+				// If not owned by a project, delete it.
+				if (file.getProject() == null) {
+					this.projectFileService.delete(file.getId());
+					continue;
+				}
+				// If the file is owned by a project,
+				// remove it's association with the staff.
+				file.setUploader(null);
+				this.projectFileService.update(file);
+			}
 			this.staffDAO.delete(id);
 		}
 	}

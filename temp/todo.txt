@@ -106,7 +106,7 @@ gant guba (di mu-load auto)
 * view staff - ok
 * create staff - ok
 * create actual staff - ok
-delete staff
+* delete staff - ok
 
 =timeline
 * delete staff - ok
