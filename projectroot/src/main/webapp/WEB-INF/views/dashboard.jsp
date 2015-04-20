@@ -4,7 +4,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Dashboard</title>
-	<c:import url="/resources/css-includes.jsp" />
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
