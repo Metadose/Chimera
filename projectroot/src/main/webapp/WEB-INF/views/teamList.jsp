@@ -28,6 +28,7 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<!-- Custom Tabs -->
+					${uiParamAlert}
 					<div class="nav-tabs-custom">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#tab_list" data-toggle="tab">List</a></li>
@@ -43,7 +44,8 @@
 												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">	
 													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-				                                	<a href="${contextPath}/team/edit/0">
+													<c:url var="urlCreateTeam" value="/team/edit/0"/>
+				                                	<a href="${urlCreateTeam}">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Team</button>
 				                                	</a>
 				                                	<br/><br/>
@@ -62,11 +64,13 @@
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-																				<a href="${contextPath}/team/edit/${team.id}">
+						                                            			<c:url var="urlEditTeam" value="/team/edit/${team.id}"/>
+																				<a href="${urlEditTeam}">
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
 																				</a>
 																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																				<a href="${contextPath}/team/delete/${team.id}">
+																				<c:url var="urlDeleteTeam" value="/team/delete/${team.id}"/>
+																				<a href="${urlDeleteTeam}">
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																				</a>
 																				</sec:authorize>

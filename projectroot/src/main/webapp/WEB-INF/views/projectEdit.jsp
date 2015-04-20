@@ -88,7 +88,7 @@
 		                   									<br/>
 		                   									<div class="form-group">
 		                   										<form:form id="uploadPhotoForm"
-	                   												commandName="photo"
+	                   												modelAttribute="photo"
 																	action="${contextPath}/project/profile/upload/"
 																	method="post"
 																	enctype="multipart/form-data">
@@ -105,15 +105,14 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-						                                        </form:form>
-						                                        <form:form id="deletePhotoForm"
-						                                        	action="${contextPath}/project/profile/delete"
-						                                        	method="post">
+							                                        <button class="btn btn-default btn-flat btn-sm">Upload</button>
 						                                        </form:form>
 						                                        <br/>
-						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-default btn-flat btn-sm">Upload</button>
 						                                        <c:if test="${!empty project.thumbnailURL}">
-						                                        <button onclick="submitForm('deletePhotoForm')" class="btn btn-default btn-flat btn-sm">Delete Photo</button>
+						                                        <c:url var="urlProjectProfileDelete" value="/project/profile/delete"/>
+                                								<a href="${urlProjectProfileDelete}">
+						                                        <button class="btn btn-default btn-flat btn-sm">Delete Photo</button>
+          														</a>
 						                                        </c:if>
 						                                    </div>
 						                                    </sec:authorize>
@@ -174,9 +173,10 @@
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<form:form action="${contextPath}/project/delete/${project.id}" method="post">
+		                                            		<c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
+                               								<a href="${urlProjectDelete}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Project</button>
-		                                            		</form:form>
+       														</a>
 		                                            	</c:when>
 		                                            </c:choose>
 		                                            <br/>
@@ -215,13 +215,10 @@
 																</c:forEach>
        															<br/>
 																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																	<form:form role="form"
-																		name="fieldsUnassignForm"
-																		id="fieldsUnassignForm"
-																		method="post"
-																		action="${contextPath}/project/unassign/field/all">
+																	<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
+		                               								<a href="${urlProjectUnassignFieldAll}">
 																		<button class="btn btn-default btn-flat btn-sm">Remove All</button>
-																	</form:form>
+		       														</a>
 																</sec:authorize>
    															</div>
    															</c:if>
@@ -620,9 +617,10 @@
 		                                    		</td>
 		                                    		<c:if test="${!empty project.managerAssignments}">
 		                                    		<td>
-		                                    			<form:form method="post" action="${contextPath}/project/unassign/staff/all">
+               											<c:url var="urlProjectUnassignStaffAll" value="/project/unassign/staff/all"/>
+		                                    			<a href="${urlProjectUnassignStaffAll}">
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-               											</form:form>
+		                                    			</a>
 		                                    		</td>
 		                                    		</c:if>
 		                                    		<c:set var="displayBreakManager" value="${true}"/>
@@ -697,13 +695,10 @@
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/team/edit/from/origin">
-		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		                                    			<input type="hidden" name="team_id" value="0"/>
-		                                    			<input type="hidden" name="origin" value="project"/>
-		                                    			<input type="hidden" name="originID" value="${project.id}"/>
+		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/project/${project.id}"/>
+		                                    			<a href="${urlCreateTeam}">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
-					                                    </form>
+		                                    			</a>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
@@ -737,11 +732,10 @@
 		                                    		</td>
 		                                    		<c:if test="${!empty project.assignedTeams}">
 		                                    		<td>
-		                                    			<form role="form" method="post" action="${contextPath}/team/unassign/project/all">
-		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-              												<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+              											<c:url value="/project/unassign/team/all" var="urlUnassignTeamAll"/>
+					                                    <a href="${urlUnassignTeamAll}">
               												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-              											</form>
+					                                    </a>
 		                                    		</td>
 		                                    		</c:if>
 		                                    		<c:set var="displayBreakTeam" value="${true}"/>
@@ -766,22 +760,15 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<form method="post" action="${contextPath}/team/edit/from/origin">
-			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-					                                    			<input type="hidden" name="team_id" value="${team.id}"/>
-					                                    			<input type="hidden" name="origin" value="project"/>
-					                                    			<input type="hidden" name="originID" value="${project.id}"/>
+			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/>
+			                                            			<a href="${urlViewTeam}">
 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-								                                    </form>
+			                                            			</a>
 								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																	<form role="form" method="post" action="${contextPath}/team/unassign/project">
-																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	                   													<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
-	                   													<input type="hidden" name="origin" value="project"/>
-		                                    							<input type="hidden" name="originID" value="${project.id}"/>
+								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/>
+								                                    <a href="${urlUnassignTeam}">
 	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-	                   												</form>
+								                                    </a>
 	                   												</sec:authorize>
 																</center>
 															</td>

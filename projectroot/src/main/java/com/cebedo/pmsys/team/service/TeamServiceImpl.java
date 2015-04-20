@@ -3,6 +3,7 @@ package com.cebedo.pmsys.team.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,6 +104,7 @@ public class TeamServiceImpl implements TeamService {
 		}
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void unassignProjectTeam(long projectID, long teamID) {
@@ -114,6 +116,7 @@ public class TeamServiceImpl implements TeamService {
 		}
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void unassignAllProjectTeams(long projectID) {

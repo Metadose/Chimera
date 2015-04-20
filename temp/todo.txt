@@ -66,23 +66,21 @@ Prioritize sec grup, audit, nd basic pmsys functions
 * view proj - ok
 * create proj - ok
 * create actual proj - ok
-* delete - ok
+* delete - ok /////////////////////////////////////////////////////////////////////////
 
 =timeline
-gant guba (di mu load auto)
+* gant guba (di mu load auto) - ok
 
 
-
-==
-proj edit
+################# proj edit
 
 
 =details
 * delete project - ok
 * update project - ok
 * add more information - ok
-* upload prof pic - ok
-* delete prof pic - ok
+* upload prof pic - ok /////////////////////////////////////////////////////////////////////////
+* delete prof pic - ok /////////////////////////////////////////////////////////////////////////
 * remove more info - ok
 * update more info - ok
 * remove all info - ok
@@ -96,12 +94,17 @@ assign
 * unassign - ok
 * unassign all - ok
 
+=teams
+* create new link - ok
+* create new actual action - ok
+assign (also has problem after assigning, then immediately updating. spits out INVALID_EDITABLE_VALUE)
+* view - ok
+* view then update - ok
+* unassign - ok
+* unassign all - ok
+
 =timeline
-gant guba (di mu-load auto)
-
-
-
-
+* gant guba (di mu-load auto) - ok
 
 
 ==staff *******************************************************************************
@@ -112,17 +115,23 @@ gant guba (di mu-load auto)
 * create actual staff - ok
 * delete staff - ok
 
-=timeline
+=edit
 * delete staff - ok
 * update staff - ok
 
 
 
 
+==team *******************************************************************************
+=list
+* create team link - ok
+* create actual team - ok
+* view team link - ok
+* delete team link - ok
 
-
-
-
+=edit
+* delete team - ok
+* update team - ok
 
 
 

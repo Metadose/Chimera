@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,6 +33,7 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
+@SessionAttributes(value = TeamController.ATTR_TEAM, types = Team.class)
 @RequestMapping(Team.OBJECT_NAME)
 public class TeamController {
 
@@ -86,10 +89,12 @@ public class TeamController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
-	public String createFromOrigin(@ModelAttribute(ATTR_TEAM) Team team,
-			@RequestParam(value = SystemConstants.ORIGIN) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID) String originID,
+			+ SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{"
+			+ SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
+	public String createFromOrigin(SessionStatus status,
+			@ModelAttribute(ATTR_TEAM) Team team,
+			@PathVariable(value = SystemConstants.ORIGIN) String origin,
+			@PathVariable(value = SystemConstants.ORIGIN_ID) String originID,
 			RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
@@ -100,9 +105,18 @@ public class TeamController {
 			alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
 					+ team.getName() + "</b>.");
 			this.teamService.update(team);
+
+			// Update all associated project.
+			for (Project project : team.getProjects()) {
+				if (project == null) {
+					continue;
+				}
+				this.projectService.clearProjectCache(project.getId());
+			}
 		}
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
 	}
@@ -110,7 +124,7 @@ public class TeamController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TEAM) Team team,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
 			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
@@ -123,15 +137,16 @@ public class TeamController {
 		}
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Team.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
 	public String delete(@PathVariable(Team.COLUMN_PRIMARY_KEY) int id,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 		String teamName = this.teamService.getNameByID(id);
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		alertFactory.setMessage("Successfully <b>deleted<b/> team <b>"
@@ -140,17 +155,17 @@ public class TeamController {
 				alertFactory.generateHTML());
 
 		this.teamService.delete(id);
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
 
-	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
-	public String editTeamFromOrigin(
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long id,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			Model model) {
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Team.OBJECT_NAME + "}/" + SystemConstants.FROM + "/{"
+			+ SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}")
+	public String editTeamFromOrigin(@PathVariable(Team.OBJECT_NAME) long id,
+			@PathVariable(SystemConstants.ORIGIN) String origin,
+			@PathVariable(SystemConstants.ORIGIN_ID) long originID, Model model) {
 
 		// Add origin details.
 		model.addAttribute(SystemConstants.ORIGIN, origin);
@@ -235,40 +250,6 @@ public class TeamController {
 	}
 
 	/**
-	 * Unassign team from a project.
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-			+ Project.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView unassignProjectTeam(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			RedirectAttributes redirectAttrs) {
-		String teamName = this.teamService.getNameByID(teamID);
-		this.teamService.unassignProjectTeam(projectID, teamID);
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>unassigned<b/> team <b>"
-				+ teamName + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		if (!origin.isEmpty()) {
-			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
-					+ originID);
-		}
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
-	/**
 	 * Delete all team assignments of the specified team.
 	 * 
 	 * @param projectID
@@ -292,30 +273,6 @@ public class TeamController {
 		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 				+ Team.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 				+ teamID);
-	}
-
-	/**
-	 * Unassign all teams inside a project.
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllProjectTeams(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			RedirectAttributes redirectAttrs) {
-		this.teamService.unassignAllProjectTeams(projectID);
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	/**

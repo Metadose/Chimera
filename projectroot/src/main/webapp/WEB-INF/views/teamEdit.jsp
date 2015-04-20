@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -60,20 +61,14 @@
                    								<div class="box-body">
                    									<c:set var="detailsFormURL" value="${contextPath}/team/create"/>
 				                                    <c:if test="${!empty origin && !empty originID}">
-				                                    	<c:set var="detailsFormURL" value="${contextPath}/team/create/from/origin"/>
+				                                    	<c:set var="detailsFormURL" value="${contextPath}/team/create/from/${origin}/${originID}"/>
 				                                    </c:if>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
-                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                   										<c:if test="${!empty origin && !empty originID}">
-				                                    	<input type="hidden" name="origin" value="${origin}"/>
-				                                    	<input type="hidden" name="originID" value="${originID}"/>
-					                                    </c:if>
+                   									<form:form modelAttribute="team" name="detailsForm" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="id" value="${team.id}"/>
 				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" name="name" value="${team.name}"/><br/>
+				                                            <form:input type="text" class="form-control" path="name"/><br/>
 				                                        </div>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
 		                                            	<c:when test="${team.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
@@ -81,7 +76,8 @@
 		                                            	<c:when test="${team.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
-		                                            		<a href="${contextPath}/team/delete/${team.id}">
+		                                            		<c:url var="urlTeamDelete" value="/team/delete/${team.id}"/>
+		                                            		<a href="${urlTeamDelete}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Team</button>
 															</a>
 															</sec:authorize>

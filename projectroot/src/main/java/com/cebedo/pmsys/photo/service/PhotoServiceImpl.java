@@ -188,9 +188,10 @@ public class PhotoServiceImpl implements PhotoService {
 		// Upload and
 		// Update the project entry.
 		String oldPhoto = proj.getThumbnailURL();
-		File oldPhotoObj = new File(oldPhoto);
-		oldPhotoObj.delete();
-
+		if (oldPhoto != null && !oldPhoto.isEmpty()) {
+			File oldPhotoObj = new File(oldPhoto);
+			oldPhotoObj.delete();
+		}
 		proj.setThumbnailURL(fileLocation);
 		this.fileHelper.fileUpload(file, fileLocation);
 		this.projectDAO.update(proj);

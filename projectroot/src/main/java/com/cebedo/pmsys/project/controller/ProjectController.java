@@ -115,7 +115,7 @@ public class ProjectController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
 	public String unassignAllProjectManagers(HttpSession session,
 			SessionStatus status, RedirectAttributes redirectAttrs) {
 		Project project = (Project) session.getAttribute(ATTR_PROJECT);
@@ -308,6 +308,63 @@ public class ProjectController {
 				+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
 	}
 
+	/**
+	 * Unassign team from a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/{" + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String unassignProjectTeam(HttpSession session,
+			SessionStatus status, @PathVariable(Team.OBJECT_NAME) long teamID,
+			RedirectAttributes redirectAttrs) {
+
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		String teamName = this.teamService.getNameByID(teamID);
+		this.teamService.unassignProjectTeam(projectID, teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned<b/> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Unassign all teams inside a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
+	public String unassignAllProjectTeams(HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		this.teamService.unassignAllProjectTeams(projectID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
 	@RequestMapping(value = Staff.OBJECT_NAME + "/"
 			+ SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
 	public String editStaff(
@@ -409,7 +466,7 @@ public class ProjectController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-			+ Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+			+ Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
 	public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			RedirectAttributes redirectAttrs, SessionStatus status) {
 		// Alert result.
@@ -436,7 +493,7 @@ public class ProjectController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.PROFILE + "/"
-			+ SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
+			+ SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
 	public ModelAndView deleteProjectProfile(HttpSession session,
 			SessionStatus status, RedirectAttributes redirectAttrs)
 			throws IOException {
@@ -499,7 +556,7 @@ public class ProjectController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-			+ Field.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+			+ Field.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
 	public String unassignAllFields(HttpSession session, SessionStatus status,
 			RedirectAttributes redirectAttrs) {
 

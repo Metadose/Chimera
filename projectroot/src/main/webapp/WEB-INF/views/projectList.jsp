@@ -69,9 +69,10 @@
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
 				                                								</a>&nbsp;
 																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																				<form:form action="${contextPath}/project/delete/${project.id}" method="post">
+																				<c:url var="urlDeleteProject" value="/project/delete/${project.id}"/>
+				                                								<a href="${urlDeleteProject}">
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																				</form:form>
+				                                								</a>
 																				</sec:authorize>
 																			</center>
 																		</td>
