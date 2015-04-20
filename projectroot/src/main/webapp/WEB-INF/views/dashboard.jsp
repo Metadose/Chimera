@@ -11,6 +11,5 @@
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 	</div>	
-	<c:import url="/resources/js-includes.jsp" />	
 </body>
 </html>

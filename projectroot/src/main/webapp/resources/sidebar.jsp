@@ -12,7 +12,6 @@
 .autocomplete-suggestions strong { font-weight: bold; color: #3c8dbc; }
 .autocomplete-group strong { display: block; text-align:center; font-size: medium; background: #F0F0F0; }
 </style>
-<c:import url="/resources/js-includes.jsp" />
 <script type="text/javascript">
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);

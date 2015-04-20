@@ -14,6 +14,7 @@
 	</c:when>
 </c:choose>
 <!-- header logo: style can be found in header.less -->
+<c:import url="/resources/js-includes.jsp" />
 <header class="header">
     <a href="index.html" class="logo">
         <!-- Add the class icon to your logo image or logo icon to add the margining -->
