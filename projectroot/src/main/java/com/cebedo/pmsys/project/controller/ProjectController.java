@@ -108,6 +108,49 @@ public class ProjectController {
 	}
 
 	/**
+	 * Unassign a staff from a project.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param position
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String unassignProjectManager(HttpSession session,
+			SessionStatus status,
+			@PathVariable(Staff.OBJECT_NAME) long staffID,
+			RedirectAttributes redirectAttrs) {
+
+		Project project = (Project) session.getAttribute(ATTR_PROJECT);
+
+		// Error handling if staff was not set properly.
+		if (project == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
+					+ "/" + SystemConstants.REQUEST_LIST;
+		}
+		long projectID = project.getId();
+		String staffName = this.staffService.getNameByID(staffID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned " + staffName
+				+ "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		this.staffService.unassignProjectManager(projectID, staffID);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
 	 * Assign a staff to a project.
 	 * 
 	 * @param projectID
@@ -118,7 +161,7 @@ public class ProjectController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
-	public String assignStaff(
+	public String assignProjectManager(
 			HttpSession session,
 			SessionStatus status,
 			@ModelAttribute(ATTR_STAFF_POSITION) StaffAssignmentBean staffAssignment,

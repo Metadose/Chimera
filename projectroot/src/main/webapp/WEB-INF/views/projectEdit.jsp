@@ -661,12 +661,10 @@
 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
 								                                    </form>
 	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																	<form name="unassignStaffForm" id="unassignStaffForm" method="post" action="${contextPath}/staff/unassign/project">
-																		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																		<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-																		<input type="hidden" id="staff_id" name="staff_id" value="${manager.id}"/>
+	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
+	                   												<a href="${urlUnassignStaff}">
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-	                   												</form>
+	                   												</a>
 	                   												</sec:authorize>
 																</center>
 															</td>

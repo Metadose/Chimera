@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -139,6 +140,7 @@ public class StaffServiceImpl implements StaffService {
 		return this.staffDAO.listWithAllCollections(token.getCompany().getId());
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void assignProjectManager(long projectID, long staffID,
@@ -160,6 +162,7 @@ public class StaffServiceImpl implements StaffService {
 		this.staffDAO.assignProjectManager(assignment);
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void unassignProjectManager(long projectID, long staffID) {
