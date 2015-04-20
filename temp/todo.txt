@@ -91,10 +91,10 @@ proj edit
 * create new staff link - ok
 * create new staff actual action - ok
 assign
-view
-view then update
-* unassign
-unassign all
+* view - ok
+* view then update - ok
+* unassign - ok
+* unassign all - ok
 
 =timeline
 gant guba (di mu-load auto)

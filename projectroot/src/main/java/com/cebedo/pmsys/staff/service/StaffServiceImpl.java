@@ -176,6 +176,7 @@ public class StaffServiceImpl implements StaffService {
 		this.staffDAO.unassignProjectManager(projectID, staffID);
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void unassignAllProjectManagers(long projectID) {
@@ -256,5 +257,4 @@ public class StaffServiceImpl implements StaffService {
 	public String getNameByID(long staffID) {
 		return this.staffDAO.getNameByID(staffID);
 	}
-
 }

@@ -108,6 +108,44 @@ public class ProjectController {
 	}
 
 	/**
+	 * Unassign all staff from a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
+	public String unassignAllProjectManagers(HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		Project project = (Project) session.getAttribute(ATTR_PROJECT);
+
+		// Error handling if staff was not set properly.
+		if (project == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
+					+ "/" + SystemConstants.REQUEST_LIST;
+		}
+
+		long projectID = project.getId();
+		this.staffService.unassignAllProjectManagers(projectID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
 	 * Unassign a staff from a project.
 	 * 
 	 * @param projectID

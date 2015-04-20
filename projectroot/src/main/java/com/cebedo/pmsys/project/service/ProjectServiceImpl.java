@@ -244,4 +244,11 @@ public class ProjectServiceImpl implements ProjectService {
 				"Getting name of project: " + projectID + " = " + name));
 		return name;
 	}
+
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
+	@Override
+	@Transactional
+	public void clearProjectCache(long projectID) {
+		;
+	}
 }

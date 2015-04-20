@@ -22,8 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
-import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
@@ -46,6 +47,13 @@ public class StaffController {
 	private StaffService staffService;
 	private TeamService teamService;
 	private FieldService fieldService;
+	private ProjectService projectService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectService")
+	public void setProjectService(ProjectService s) {
+		this.projectService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "fieldService")
@@ -131,7 +139,7 @@ public class StaffController {
 	public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
 			@PathVariable(value = SystemConstants.ORIGIN) String origin,
 			@PathVariable(value = SystemConstants.ORIGIN_ID) String originID,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (staff.getId() == 0) {
 			alertFactory.setMessage("Successfully <b>created</b> staff <b>"
@@ -140,8 +148,19 @@ public class StaffController {
 		} else {
 			alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
 					+ staff.getFullName() + "</b>.");
+
 			this.staffService.update(staff);
+
+			// Update all associated project.
+			for (ManagerAssignment assignment : staff.getAssignedManagers()) {
+				if (assignment.getProject() == null) {
+					continue;
+				}
+				this.projectService.clearProjectCache(assignment.getProject()
+						.getId());
+			}
 		}
+		status.setComplete();
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
@@ -274,29 +293,6 @@ public class StaffController {
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
-	}
-
-	/**
-	 * Unassign all staff from a project.
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN_PROJECT_ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllProjectManagers(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			RedirectAttributes redirectAttrs) {
-		this.staffService.unassignAllProjectManagers(projectID);
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	/**

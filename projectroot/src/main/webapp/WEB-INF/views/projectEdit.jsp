@@ -620,11 +620,9 @@
 		                                    		</td>
 		                                    		<c:if test="${!empty project.managerAssignments}">
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/staff/unassign/project/all">
-		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+		                                    			<form:form method="post" action="${contextPath}/project/unassign/staff/all">
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-               											</form>
+               											</form:form>
 		                                    		</td>
 		                                    		</c:if>
 		                                    		<c:set var="displayBreakManager" value="${true}"/>
@@ -653,13 +651,10 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<form method="post" action="${contextPath}/staff/edit/from/origin">
-			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-					                                    			<input type="hidden" name="staff_id" value="${manager.id}"/>
-					                                    			<input type="hidden" name="origin" value="project"/>
-					                                    			<input type="hidden" name="originID" value="${project.id}"/>
+			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" />
+			                                            			<a href="${urlViewStaff}">
 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-								                                    </form>
+			                                            			</a>
 	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
 	                   												<a href="${urlUnassignStaff}">

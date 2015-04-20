@@ -24,4 +24,6 @@ public interface ProjectService {
 
 	public String getNameByID(long projectID);
 
+	public void clearProjectCache(long projectID);
+
 }
