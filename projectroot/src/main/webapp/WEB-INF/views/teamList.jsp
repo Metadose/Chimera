@@ -43,7 +43,7 @@
 				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">	
-													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+													<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 													<c:url var="urlCreateTeam" value="/team/edit/0"/>
 				                                	<a href="${urlCreateTeam}">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Team</button>
@@ -121,6 +121,7 @@
 	<c:set var="ganttData" value="'data':["/>
     <c:if test="${!empty teamList}">
     	<c:forEach items="${teamList}" var="team">
+    		<c:if test="${!empty team.tasks}">
     		<c:set var="row" value="{id:'${team.id}', duration:0, text:'${fn:escapeXml(team.name)}', open: true},"/>
     		<c:set var="ganttData" value="${ganttData}${row}"/>
     		<c:forEach var="task" items="${team.tasks}">
@@ -128,6 +129,7 @@
 	    		<c:set var="taskRow" value="{id:'${task.id}-${team.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${team.id}'},"/>
 	    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
 	    	</c:forEach>
+	    	</c:if>
     	</c:forEach>
     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
     </c:if>

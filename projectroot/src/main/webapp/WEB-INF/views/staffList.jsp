@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -42,11 +43,13 @@
 					<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 					                                </div><!-- /.box-header -->
 					                                <div class="box-body table-responsive">
+					                                	<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
 					                                	<a href="${urlCreateStaff}">
 					                                		<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 					                                	<br/><br/>
+					                                	</sec:authorize>
 					                                    <table id="example-1" class="table table-bordered table-striped">
 					                                        <thead>
 					                                            <tr>
@@ -68,9 +71,12 @@
 																					<a href="${urlEditStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">View</button>
 																					</a>
-																					<form:form action="${contextPath}/staff/delete/${staff.id}" method="post">
+																					<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
+																					<c:url var="urlDeleteStaff" value="/staff/delete/${staff.id}"/>
+																					<a href="${urlDeleteStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																					</form:form>
+																					</a>
+																					</sec:authorize>
 																				</center>
 																			</td>
 							                                                <td>
@@ -137,6 +143,7 @@
 	<c:set var="ganttData" value="'data':["/>
     <c:if test="${!empty staffList}">
     	<c:forEach items="${staffList}" var="staff">
+    		<c:if test="${!empty staff.tasks}">
     		<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
     		<c:set var="staffRow" value="{id:'${staff.id}', duration:0, text:'${fn:escapeXml(staffName)}', open: true},"/>
     		<c:set var="ganttData" value="${ganttData}${staffRow}"/>
@@ -145,6 +152,7 @@
 	    		<c:set var="taskRow" value="{id:'${task.id}-${staff.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${staff.id}'},"/>
 	    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
 	    	</c:forEach>
+	    	</c:if>
     	</c:forEach>
     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
     </c:if>

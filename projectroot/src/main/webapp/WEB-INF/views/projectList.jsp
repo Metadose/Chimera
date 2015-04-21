@@ -67,7 +67,7 @@
 						                                            			<c:url var="urlEditProject" value="/project/edit/${project.id}"/>
 				                                								<a href="${urlEditProject}">
 																					<button class="btn btn-default btn-flat btn-sm">View</button>
-				                                								</a>&nbsp;
+				                                								</a>
 																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																				<c:url var="urlDeleteProject" value="/project/delete/${project.id}"/>
 				                                								<a href="${urlDeleteProject}">

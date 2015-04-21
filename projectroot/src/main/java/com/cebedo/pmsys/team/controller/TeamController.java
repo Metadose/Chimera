@@ -130,16 +130,20 @@ public class TeamController {
 			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
 					+ team.getName() + "</b>.");
 			this.teamService.create(team);
-		} else {
-			alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
-					+ team.getName() + "</b>.");
-			this.teamService.update(team);
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
+					+ SystemConstants.REQUEST_LIST;
 		}
+		alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
+				+ team.getName() + "</b>.");
+		this.teamService.update(team);
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
 		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
-				+ SystemConstants.REQUEST_LIST;
+				+ SystemConstants.REQUEST_EDIT + "/" + team.getId();
 	}
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")

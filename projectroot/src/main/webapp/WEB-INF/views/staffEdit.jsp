@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -102,6 +103,7 @@
                    									</div>
 				                                    <br/>
 				                                    </c:if>
+				                                    <sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
 				                                    <c:if test="${!empty origin && !empty originID}">
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/${origin}/${originID}"/>
@@ -144,6 +146,7 @@
 		                                            		</form:form>
 		                                            	</c:when>
 		                                            </c:choose>
+		                                            </sec:authorize>
                    								</div>
                    							</div>
                    						</div>

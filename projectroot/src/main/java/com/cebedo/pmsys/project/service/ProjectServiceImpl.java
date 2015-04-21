@@ -138,11 +138,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return new Project();
 	}
 
-	@CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#companyID == null ? 0 : #companyID")
-	public void resetSearchEntries(Long companyID) {
-		// Intentionally blank.
-	}
-
 	@Override
 	@Transactional
 	@Caching(evict = {
@@ -168,16 +163,6 @@ public class ProjectServiceImpl implements ProjectService {
 					"Not authorized to delete project: " + id + " = "
 							+ project.getName()));
 		}
-
-		Long companyID = null;
-		if (auth.getCompany() == null) {
-			if (project.getCompany() != null) {
-				companyID = project.getCompany().getId();
-			}
-		} else {
-			companyID = auth.getCompany().getId();
-		}
-		resetSearchEntries(companyID);
 	}
 
 	@Override
@@ -249,6 +234,13 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public void clearProjectCache(long projectID) {
+		;
+	}
+
+	@CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#companyID == null ? 0 : #companyID")
+	@Override
+	@Transactional
+	public void clearSearchCache(Long companyID) {
 		;
 	}
 }

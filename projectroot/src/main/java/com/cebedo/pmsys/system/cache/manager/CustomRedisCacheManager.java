@@ -75,7 +75,7 @@ public class CustomRedisCacheManager extends
 	private boolean dynamic = true;
 
 	// 0 - never expire
-	private long defaultExpiration = 0;
+	private long defaultExpiration = 600;
 	private Map<String, Long> expires = null;
 
 	private Set<String> configuredCacheNames;

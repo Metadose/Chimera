@@ -111,18 +111,16 @@ public class StaffController {
 					+ SystemConstants.REQUEST_LIST;
 		}
 		// Update staff.
-		else {
-			this.staffService.update(staff);
-			alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
-					+ staff.getFullName() + "</b>.");
+		this.staffService.update(staff);
+		alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
+				+ staff.getFullName() + "</b>.");
 
-			// Add redirs attrs.
-			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-					alertFactory.generateHTML());
-			status.setComplete();
-			return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
-					+ SystemConstants.REQUEST_EDIT + "/" + staff.getId();
-		}
+		// Add redirs attrs.
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + staff.getId();
 	}
 
 	/**
@@ -176,9 +174,9 @@ public class StaffController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-			+ Staff.OBJECT_NAME + "}", method = RequestMethod.POST)
+			+ Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
 	public String delete(@PathVariable(Staff.OBJECT_NAME) long id,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 
 		Staff staff = this.staffService.getByID(id);
 
@@ -189,6 +187,7 @@ public class StaffController {
 				alertFactory.generateHTML());
 
 		this.staffService.delete(id);
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}
@@ -273,7 +272,6 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}")
 	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,

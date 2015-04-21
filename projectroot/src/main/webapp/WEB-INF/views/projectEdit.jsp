@@ -107,7 +107,6 @@
 			                   										</table>
 							                                        <button class="btn btn-default btn-flat btn-sm">Upload</button>
 						                                        </form:form>
-						                                        <br/>
 						                                        <c:if test="${!empty project.thumbnailURL}">
 						                                        <c:url var="urlProjectProfileDelete" value="/project/profile/delete"/>
                                 								<a href="${urlProjectProfileDelete}">
@@ -224,9 +223,9 @@
    															</c:if>
    															<c:if test="${empty projectFields}">
    																No extra information added.
-   																<br/>Use the form below to add more information.
    																<br/>
    															</c:if>
+   															<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
    															<br/>
    															<h4>Add More Information</h4>
 															<form:form modelAttribute="field"
@@ -246,6 +245,7 @@
 															</form:form>
 															<br/>
 	                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
+	                                           				</sec:authorize>
 			                                        </div>
                    								</div>
                    							</div>

@@ -26,4 +26,6 @@ public interface ProjectService {
 
 	public void clearProjectCache(long projectID);
 
+	public void clearSearchCache(Long companyID);
+
 }

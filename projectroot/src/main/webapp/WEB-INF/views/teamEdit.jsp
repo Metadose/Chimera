@@ -41,6 +41,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -59,6 +60,7 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
+                   									<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
                    									<c:set var="detailsFormURL" value="${contextPath}/team/create"/>
 				                                    <c:if test="${!empty origin && !empty originID}">
 				                                    	<c:set var="detailsFormURL" value="${contextPath}/team/create/from/${origin}/${originID}"/>
@@ -75,14 +77,13 @@
 		                                            	</c:when>
 		                                            	<c:when test="${team.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                            		<c:url var="urlTeamDelete" value="/team/delete/${team.id}"/>
 		                                            		<a href="${urlTeamDelete}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Team</button>
 															</a>
-															</sec:authorize>
 		                                            	</c:when>
 		                                            </c:choose>
+		                                            </sec:authorize>
                    								</div>
                    							</div>
                    						</div>

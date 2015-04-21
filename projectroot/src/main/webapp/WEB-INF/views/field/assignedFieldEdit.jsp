@@ -59,13 +59,11 @@
 				                                            <form:input type="text" class="form-control" path="value"/><br/>
 				                                        </div>
 				                                    </form:form>
-			                                    	<sec:authorize access="hasRole('ROLE_FIELD_EDITOR')">
                                             		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
                                             		<c:url var="urlDeleteField" value="/project/field/delete" />
                                             		<a href="${urlDeleteField}">
 														<button class="btn btn-default btn-flat btn-sm">Remove This Field</button>
 													</a>
-	                                            	</sec:authorize>
                    								</div>
                    							</div>
                    						</div>

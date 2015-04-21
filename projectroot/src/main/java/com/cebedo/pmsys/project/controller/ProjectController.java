@@ -37,14 +37,16 @@ import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
+import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
-@SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD }, types = {
-		Project.class, FieldAssignmentBean.class })
+@SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
+		"old" + ProjectController.ATTR_FIELD }, types = { Project.class,
+		FieldAssignmentBean.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -254,6 +256,7 @@ public class ProjectController {
 			this.projectService.create(project);
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 					alertFactory.generateHTML());
+			status.setComplete();
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 					+ SystemConstants.REQUEST_LIST;
 		}
@@ -287,7 +290,7 @@ public class ProjectController {
 
 		// Old values.
 		FieldAssignmentBean faBean = (FieldAssignmentBean) session
-				.getAttribute(ATTR_FIELD);
+				.getAttribute("old" + ATTR_FIELD);
 
 		// Do service.
 		this.fieldService.updateAssignedProjectField(faBean.getProjectID(),
@@ -452,6 +455,8 @@ public class ProjectController {
 		// Set to model attribute "field".
 		model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID,
 				fieldID, label, value));
+		session.setAttribute("old" + ATTR_FIELD, new FieldAssignmentBean(
+				projectID, fieldID, label, value));
 
 		return Field.OBJECT_NAME + "/" + JSP_EDIT_FIELD;
 	}
@@ -476,6 +481,19 @@ public class ProjectController {
 				+ projectName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
+
+		// Reset search entries in cache.
+		AuthenticationToken auth = this.authHelper.getAuth();
+		Project project = this.projectService.getByID(id);
+		Long companyID = null;
+		if (auth.getCompany() == null) {
+			if (project.getCompany() != null) {
+				companyID = project.getCompany().getId();
+			}
+		} else {
+			companyID = auth.getCompany().getId();
+		}
+		this.projectService.clearSearchCache(companyID);
 
 		// TODO Cleanup also the SYS_HOME.
 		this.projectService.delete(id);
