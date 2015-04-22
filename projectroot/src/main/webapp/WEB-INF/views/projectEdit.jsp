@@ -707,25 +707,21 @@
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty teamList}">
-		                                    		<form role="form" method="post" action="${contextPath}/team/assign/project">
-		                                    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		                                    		<form:form modelAttribute="teamAssignment" method="post" action="${contextPath}/project/assign/team">
 		                                    		<td>
-		                                    			<select class="form-control" name="team_id">
+		                                    			<form:select class="form-control" path="teamID">
                                     						<c:forEach items="${teamList}" var="team">
                                     							<option value="${team.id}">${team.name}</option>
                                     						</c:forEach>
-		                                    			</select>
+		                                    			</form:select>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
 		                                    		<td>
-		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
-		                                    			<input type="hidden" name="origin" value="project"/>
-		                                    			<input type="hidden" name="originID" value="${project.id}"/>
 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</td>
-		                                    		</form>
+		                                    		</form:form>
 		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;

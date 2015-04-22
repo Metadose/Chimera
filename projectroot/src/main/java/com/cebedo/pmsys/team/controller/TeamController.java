@@ -220,40 +220,6 @@ public class TeamController {
 	}
 
 	/**
-	 * Assign team to a project.
-	 * 
-	 * @param projectID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-			+ Project.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView assignProjectTeam(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			RedirectAttributes redirectAttrs) {
-		String teamName = this.teamService.getNameByID(teamID);
-		this.teamService.assignProjectTeam(projectID, teamID);
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>assigned<b/> team <b>"
-				+ teamName + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		if (!origin.isEmpty()) {
-			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
-					+ originID);
-		}
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
-	/**
 	 * Delete all team assignments of the specified team.
 	 * 
 	 * @param projectID

@@ -90,6 +90,7 @@ public class TeamServiceImpl implements TeamService {
 		return this.teamDAO.list(token.getCompany().getId());
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
 	public void assignProjectTeam(long projectID, long teamID) {

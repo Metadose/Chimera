@@ -35,6 +35,7 @@ import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
+import com.cebedo.pmsys.system.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
@@ -56,6 +57,7 @@ public class ProjectController {
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
 	public static final String ATTR_STAFF_POSITION = "staffPosition";
+	public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
 
 	public static final String PARAM_FILE = "file";
 
@@ -333,6 +335,36 @@ public class ProjectController {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		alertFactory.setMessage("Successfully <b>unassigned<b/> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Assign team to a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Team.OBJECT_NAME, method = RequestMethod.POST)
+	public String assignProjectTeam(
+			@ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
+		long teamID = taBean.getTeamID();
+		Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+		long projectID = proj.getId();
+
+		String teamName = this.teamService.getNameByID(teamID);
+		this.teamService.assignProjectTeam(projectID, teamID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>assigned<b/> team <b>"
 				+ teamName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
@@ -642,12 +674,6 @@ public class ProjectController {
 				+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
 	}
 
-	@ModelAttribute(ATTR_STAFF_POSITION)
-	public StaffAssignmentBean getStaffAssignmentBean(HttpSession session,
-			Model model) {
-		return new StaffAssignmentBean();
-	}
-
 	/**
 	 * Open an existing/new project page.
 	 * 
@@ -684,11 +710,25 @@ public class ProjectController {
 		List<Staff> staffList = this.staffService.listUnassignedInProject(
 				companyID, proj);
 		model.addAttribute(StaffController.ATTR_LIST, staffList);
+		if (staffList.size() > 0) {
+			Staff staff = staffList.get(0);
+			String position = "";
+			long sampleID = staff.getId();
+			StaffAssignmentBean saBean = new StaffAssignmentBean(sampleID,
+					position);
+			model.addAttribute(ATTR_STAFF_POSITION, saBean);
+		}
 
 		// Get list of teams.
 		List<Team> teamList = this.teamService.listUnassignedInProject(
 				companyID, proj);
 		model.addAttribute(TeamController.ATTR_LIST, teamList);
+		if (teamList.size() > 0) {
+			Team team = teamList.get(0);
+			long sampleID = team.getId();
+			TeamAssignmentBean taBean = new TeamAssignmentBean(sampleID);
+			model.addAttribute(ATTR_TEAM_ASSIGNMENT, taBean);
+		}
 
 		// Add the type of action.
 		model.addAttribute(SystemConstants.ATTR_ACTION,

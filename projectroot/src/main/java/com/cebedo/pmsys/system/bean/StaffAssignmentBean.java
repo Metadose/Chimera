@@ -5,6 +5,15 @@ public class StaffAssignmentBean {
 	private long staffID;
 	private String position;
 
+	public StaffAssignmentBean() {
+		;
+	}
+
+	public StaffAssignmentBean(long sampleID, String pos) {
+		setStaffID(sampleID);
+		setPosition(pos);
+	}
+
 	public long getStaffID() {
 		return staffID;
 	}
