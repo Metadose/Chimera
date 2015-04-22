@@ -6,8 +6,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.system.helper.DAOHelper;
@@ -19,8 +17,6 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 @Repository
 public class SystemUserDAOImpl implements SystemUserDAO {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SystemUserDAOImpl.class);
 	private DAOHelper daoHelper = new DAOHelper();
 	private SessionFactory sessionFactory;
 
@@ -42,16 +38,13 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 		// Search user based on the parameters.
 		for (SystemUser dbUser : users) {
 			if (dbUser.getUsername().equals(username) == true) {
-				logger.debug("User found");
 				Hibernate.initialize(dbUser.getStaff());
 				Hibernate.initialize(dbUser.getSecurityAccess());
 				Hibernate.initialize(dbUser.getSecurityRoles());
 				return dbUser;
 			}
 		}
-
-		logger.error("User does not exist!");
-		throw new RuntimeException("User does not exist!");
+		throw new RuntimeException("User does not exist.");
 	}
 
 	/**

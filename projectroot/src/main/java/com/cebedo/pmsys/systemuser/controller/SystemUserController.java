@@ -200,7 +200,8 @@ public class SystemUserController {
 			return JSP_EDIT;
 		}
 		SystemUser resultUser = this.systemUserService.getByID(id);
-		resultUser.setCompanyID(resultUser.getCompany().getId());
+		resultUser.setCompanyID(resultUser.getCompany() == null ? null
+				: resultUser.getCompany().getId());
 		model.addAttribute(ATTR_SYSTEM_USER, resultUser);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);

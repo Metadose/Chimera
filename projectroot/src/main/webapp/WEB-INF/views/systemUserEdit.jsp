@@ -61,9 +61,10 @@
 				                                            <label>Password</label>
 				                                            <form:password class="form-control" path="password"/><br/>
 				                                            <label>Re-type Password</label>
-				                                            <form:password class="form-control" path="retypePassword"/><br/>
+				                                            <form:password class="form-control" path="retypePassword"/>
 				                                            
 				                                            <c:if test="${authUser.superAdmin == true}">
+				                                            <br/>
 				                                            <label>Super Admin</label>
 				                                            <form:checkbox class="form-control" path="superAdmin"/><br/>
 				                                            <label>Company Admin</label>
