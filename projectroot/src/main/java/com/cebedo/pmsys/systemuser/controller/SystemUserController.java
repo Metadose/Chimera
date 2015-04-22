@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.company.service.CompanyService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
@@ -20,11 +24,13 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
 @Controller
+@SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER }, types = { SystemUser.class })
 @RequestMapping(SystemUser.OBJECT_NAME)
 public class SystemUserController {
 
 	public static final String ATTR_LIST = "systemUserList";
 	public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
+	public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
 	public static final String JSP_LIST = "systemUserList";
 	public static final String JSP_EDIT = "systemUserEdit";
 	public static final String JSP_CHANGE_PASSWORD = "changePassword";
@@ -35,6 +41,13 @@ public class SystemUserController {
 
 	private AuthHelper authHelper = new AuthHelper();
 	private SystemUserService systemUserService;
+	private CompanyService companyService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "companyService")
+	public void setCompanyService(CompanyService ps) {
+		this.companyService = ps;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "systemUserService")
@@ -55,17 +68,18 @@ public class SystemUserController {
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser,
-			@RequestParam(PARAM_OLD_PASS_RETYPE) String passwordRetype,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+
 		AlertBoxFactory alertFactory = new AlertBoxFactory();
 
 		// If the passwords provided were not equal.
-		if (!systemUser.getPassword().equals(passwordRetype)) {
+		if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
 			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
 			alertFactory
 					.setMessage("The passwords you entered were not the same.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 					alertFactory.generateHTML());
+			status.setComplete();
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
 					+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
 		}
@@ -73,19 +87,31 @@ public class SystemUserController {
 		// If request is to create new user.
 		alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
 		if (systemUser.getId() == 0) {
-			// TODO Put this inside the service class.
-			String encPassword = this.authHelper.encodePassword(
-					systemUser.getPassword(), systemUser);
-			systemUser.setPassword(encPassword);
-			this.systemUserService.create(systemUser);
+			try {
+				@SuppressWarnings("unused")
+				SystemUser user = this.systemUserService
+						.searchDatabase(systemUser.getUsername());
+				alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+				alertFactory
+						.setMessage("<b>Username</b> provided is <b>no longer available</b>. Please pick a different one.");
+				redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+						alertFactory.generateHTML());
+				status.setComplete();
+				return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER
+						+ "/" + SystemConstants.REQUEST_EDIT + "/"
+						+ systemUser.getId();
+			} catch (Exception e) {
+				this.systemUserService.create(systemUser);
 
-			// Redirect back to list page.
-			alertFactory.setMessage("Successfully <b>created</b> user <b>"
-					+ systemUser.getUsername() + "</b>.");
-			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-					alertFactory.generateHTML());
-			return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-					+ SystemConstants.REQUEST_LIST;
+				// Redirect back to list page.
+				alertFactory.setMessage("Successfully <b>created</b> user <b>"
+						+ systemUser.getUsername() + "</b>.");
+				redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+						alertFactory.generateHTML());
+				status.setComplete();
+				return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER
+						+ "/" + SystemConstants.REQUEST_LIST;
+			}
 		}
 
 		// If request is to update user.
@@ -96,6 +122,7 @@ public class SystemUserController {
 				+ systemUser.getUsername() + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
 	}
@@ -162,13 +189,19 @@ public class SystemUserController {
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemUser(
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
+		if (this.authHelper.getAuth().isSuperAdmin()) {
+			model.addAttribute(ATTR_COMPANY_LIST, this.companyService.list());
+		}
+
 		if (id == 0) {
 			model.addAttribute(ATTR_SYSTEM_USER, new SystemUser());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
-		model.addAttribute(ATTR_SYSTEM_USER, this.systemUserService.getByID(id));
+		SystemUser resultUser = this.systemUserService.getByID(id);
+		resultUser.setCompanyID(resultUser.getCompany().getId());
+		model.addAttribute(ATTR_SYSTEM_USER, resultUser);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;

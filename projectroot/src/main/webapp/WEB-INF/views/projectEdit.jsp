@@ -709,11 +709,7 @@
 		                                    		<c:if test="${!empty teamList}">
 		                                    		<form:form modelAttribute="teamAssignment" method="post" action="${contextPath}/project/assign/team">
 		                                    		<td>
-		                                    			<form:select class="form-control" path="teamID">
-                                    						<c:forEach items="${teamList}" var="team">
-                                    							<option value="${team.id}">${team.name}</option>
-                                    						</c:forEach>
-		                                    			</form:select>
+		                                    			<form:select class="form-control" path="teamID" items="${teamList}" itemLabel="name" itemValue="id"/>
 		                                    		</td>
 		                                    		<td>
 		                                    			&nbsp;

@@ -1,5 +1,8 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -28,7 +31,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${user.name}
+	                ${systemuser.username}
 	                <small>${action} User</small>
 	            </h1>
 	        </section>
@@ -51,23 +54,31 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<form method="post" name="detailsForm" action="${contextPath}/systemuser/create">
-                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                   									<form:form modelAttribute="systemuser" method="post" id="detailsForm" action="${contextPath}/systemuser/create">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="user_id" value="${user.id}"/>
 				                                            <label>Username</label>
-				                                            <input type="text" class="form-control" name="username" value="${user.username}"/><br/>
+				                                            <form:input type="text" class="form-control" path="username"/><br/>
 				                                            <label>Password</label>
-				                                            <input type="password" class="form-control" name="password" value="${user.password}"/><br/>
+				                                            <form:password class="form-control" path="password"/><br/>
 				                                            <label>Re-type Password</label>
-				                                            <input type="password" class="form-control" name="password_retype" value="${user.password}"/><br/>
+				                                            <form:password class="form-control" path="retypePassword"/><br/>
+				                                            
+				                                            <c:if test="${authUser.superAdmin == true}">
+				                                            <label>Super Admin</label>
+				                                            <form:checkbox class="form-control" path="superAdmin"/><br/>
+				                                            <label>Company Admin</label>
+				                                            <form:checkbox class="form-control" path="companyAdmin"/><br/>
+				                                            <form:select path="companyID" items="${companyList}" itemValue="id" itemLabel="name"/>
+				                                            </c:if>
 				                                        </div>
-				                                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
-		                                            	<c:when test="${user.id > 0}">
+				                                    	<c:when test="${systemuser.id == 0}">
+				                                        <button class="btn btn-default btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Create</button>
+				                                    	</c:when>
+		                                            	<c:when test="${systemuser.id > 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/systemuser/delete/${user.id}">
+		                                            		<a href="${contextPath}/systemuser/delete/${systemuser.id}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This User</button>
 															</a>
 		                                            	</c:when>
@@ -84,7 +95,6 @@
             </section><!-- /.content -->
         </aside>
 	</div>
-	
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();

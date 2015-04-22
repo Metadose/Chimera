@@ -28,7 +28,8 @@
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<a href="${contextPath}/systemuser/edit/0">
+                                	<c:url value="/systemuser/edit/0" var="urlCreateUser"/>
+                                	<a href="${urlCreateUser}">
                                 		<button class="btn btn-default btn-flat btn-sm">Create User</button>
                                 	</a>
                                 	<br/><br/>
@@ -46,7 +47,8 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/systemuser/edit/${systemUser.id}">
+		                                            			<c:url value="/systemuser/edit/${systemUser.id}" var="urlViewUser"/>
+																<a href="${urlViewUser}">
 																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</a>
 																<a href="${contextPath}/systemuser/delete/${systemUser.id}">

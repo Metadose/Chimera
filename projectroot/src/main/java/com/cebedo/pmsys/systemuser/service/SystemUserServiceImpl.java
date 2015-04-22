@@ -99,11 +99,27 @@ public class SystemUserServiceImpl implements SystemUserService {
 	@Override
 	@Transactional
 	public void create(SystemUser systemUser) {
+		String encPassword = this.authHelper.encodePassword(
+				systemUser.getPassword(), systemUser);
+		systemUser.setPassword(encPassword);
+
 		this.systemUserDAO.create(systemUser);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
 		Staff staff = new Staff();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
+
+		// If it's already carrying a company ID,
+		// use it.
+		if (systemUser.getCompanyID() != null
+				&& systemUser.getCompany() == null) {
+			Company company = new Company(systemUser.getCompanyID());
+			systemUser.setCompany(company);
+			staff.setCompany(company);
+		}
+		// Else, get it somewhere else.
+		// If I'm not a super admin, use my company.
+		// Else, leave the object alone.
+		else if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
 			systemUser.setCompany(authCompany);
 			staff.setCompany(authCompany);
 		}
@@ -125,6 +141,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	@Override
 	@Transactional
 	public void update(SystemUser user) {
+		String encPassword = this.authHelper.encodePassword(user.getPassword(),
+				user);
+		user.setPassword(encPassword);
 		if (this.authHelper.isActionAuthorized(user)) {
 			this.systemUserDAO.update(user);
 		}

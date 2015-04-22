@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
@@ -37,9 +38,11 @@ public class SystemUser implements Serializable {
 	private long id;
 	private String username;
 	private String password;
+	private String retypePassword;
 	private Staff staff;
 	private boolean superAdmin;
 	private Company company;
+	private Long companyID;
 	private boolean companyAdmin;
 	private Set<SecurityAccess> securityAccess;
 	private Set<SecurityRole> securityRoles;
@@ -157,5 +160,23 @@ public class SystemUser implements Serializable {
 
 	public void setLoginAttempts(int loginAttempts) {
 		this.loginAttempts = loginAttempts;
+	}
+
+	@Transient
+	public String getRetypePassword() {
+		return retypePassword;
+	}
+
+	public void setRetypePassword(String retypePassword) {
+		this.retypePassword = retypePassword;
+	}
+
+	@Transient
+	public Long getCompanyID() {
+		return companyID;
+	}
+
+	public void setCompanyID(Long companyID) {
+		this.companyID = companyID;
 	}
 }

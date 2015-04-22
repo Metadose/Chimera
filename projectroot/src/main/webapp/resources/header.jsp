@@ -261,10 +261,8 @@
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                            	<form id="logoutForm" action="${contextPath}/auth/logout" method="post">
-				            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-				            	</form>
-                                <a href="#" onclick="return logout();" class="btn btn-default btn-flat">Logout</a>
+				            	<c:url var="urlLogout" value="/auth/logout"/> 
+                                <a href="${urlLogout}" onclick="return logout();" class="btn btn-default btn-flat">Logout</a>
                             </div>
                         </li>
                     </ul>
