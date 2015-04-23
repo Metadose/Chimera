@@ -16,6 +16,31 @@ public class StaffWrapper {
 		return staff;
 	}
 
+	/**
+	 * Remove staff items without names.
+	 * 
+	 * @param wrappedStaffList
+	 * @return
+	 */
+	public static List<StaffWrapper> removeEmptyNames(
+			List<StaffWrapper> wrappedStaffList) {
+		int i = 0;
+		List<Integer> toRemove = new ArrayList<Integer>();
+		for (StaffWrapper wrappedStaff : wrappedStaffList) {
+			Staff wrpStf = wrappedStaff.getStaff();
+			if (wrpStf.getFullName().isEmpty()) {
+				toRemove.add(i);
+			}
+			i++;
+		}
+		int removedIndices = 0;
+		for (int index : toRemove) {
+			wrappedStaffList.remove(index - removedIndices);
+			removedIndices++;
+		}
+		return wrappedStaffList;
+	}
+
 	public static List<StaffWrapper> wrap(List<Staff> staffList) {
 		List<StaffWrapper> wrappedList = new ArrayList<StaffWrapper>();
 		for (Staff staff : staffList) {

@@ -35,6 +35,31 @@ public class TeamWrapper {
 		return team.hashCode();
 	}
 
+	/**
+	 * Remove team items without names.
+	 * 
+	 * @param wrappedTeamList
+	 * @return
+	 */
+	public static List<TeamWrapper> removeEmptyNames(
+			List<TeamWrapper> wrappedTeamList) {
+		int i = 0;
+		List<Integer> toRemove = new ArrayList<Integer>();
+		for (TeamWrapper wrappedTeam : wrappedTeamList) {
+			Team wrp = wrappedTeam.getTeam();
+			if (wrp.getName() == null || wrp.getName().isEmpty()) {
+				toRemove.add(i);
+			}
+			i++;
+		}
+		int removedIndices = 0;
+		for (int index : toRemove) {
+			wrappedTeamList.remove(index - removedIndices);
+			removedIndices++;
+		}
+		return wrappedTeamList;
+	}
+
 	public static List<Team> unwrap(List<TeamWrapper> wrappedTeamList) {
 		List<Team> unwrappedList = new ArrayList<Team>();
 		for (TeamWrapper wrappedTeam : wrappedTeamList) {

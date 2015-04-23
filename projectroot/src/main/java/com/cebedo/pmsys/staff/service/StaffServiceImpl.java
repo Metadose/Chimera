@@ -247,7 +247,8 @@ public class StaffServiceImpl implements StaffService {
 			List<StaffWrapper> assignedStaffList = StaffWrapper.wrap(project
 					.getManagerAssignments());
 			wrappedStaffList.removeAll(assignedStaffList);
-			return StaffWrapper.unwrap(wrappedStaffList);
+			return StaffWrapper.unwrap(StaffWrapper
+					.removeEmptyNames(wrappedStaffList));
 		}
 		return new ArrayList<Staff>();
 	}
