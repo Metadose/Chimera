@@ -56,6 +56,14 @@ public class Task implements Serializable {
 
 	// private Set<Subcontractor> subcontractor;
 
+	public Task() {
+		;
+	}
+
+	public Task(Project proj) {
+		setProject(proj);
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)

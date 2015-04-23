@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,6 +34,7 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
+@SessionAttributes(value = { TaskController.ATTR_TASK }, types = { Task.class })
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 
@@ -196,34 +198,6 @@ public class TaskController {
 				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
-	}
-
-	/**
-	 * User assigns a new task for a project.<br>
-	 * Called when user clicks a create button from the edit project page.
-	 * 
-	 * @param projectID
-	 * @param model
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME)
-	public String redirectAssignProject(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			Model model) {
-
-		// Redirect to an edit page with an empty task object
-		// And project ID.
-		model.addAttribute(ATTR_TASK, new Task());
-		model.addAttribute(Project.COLUMN_PRIMARY_KEY, projectID);
-		model.addAttribute(SystemConstants.ORIGIN, origin);
-		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
-		model.addAttribute(SystemConstants.ATTR_ACTION,
-				SystemConstants.ACTION_ASSIGN);
-		return JSP_EDIT;
 	}
 
 	/**

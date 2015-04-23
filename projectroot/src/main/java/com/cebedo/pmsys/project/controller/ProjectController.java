@@ -40,6 +40,8 @@ import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
+import com.cebedo.pmsys.task.controller.TaskController;
+import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
@@ -56,6 +58,7 @@ public class ProjectController {
 	public static final String ATTR_FIELD = Field.OBJECT_NAME;
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
+	public static final String ATTR_TASK = Task.OBJECT_NAME;
 	public static final String ATTR_STAFF_POSITION = "staffPosition";
 	public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
 
@@ -672,6 +675,31 @@ public class ProjectController {
 		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	}
+
+	/**
+	 * User assigns a new task for a project.<br>
+	 * Called when user clicks a create button from the edit project page.
+	 * 
+	 * @param projectID
+	 * @param model
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Task.OBJECT_NAME)
+	public String redirectAssignProject(Model model, HttpSession session) {
+		Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+		// Redirect to an edit page with an empty task object
+		// And project ID.
+		model.addAttribute(ATTR_TASK, new Task(proj));
+		model.addAttribute(SystemConstants.ORIGIN, Project.OBJECT_NAME);
+		model.addAttribute(SystemConstants.ORIGIN_ID, proj.getId());
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_ASSIGN);
+
+		return TaskController.JSP_EDIT;
 	}
 
 	/**

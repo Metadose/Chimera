@@ -28,6 +28,7 @@
 	        <section class="content">
 			<div class="row">
 				<div class="col-xs-12">
+					${uiParamAlert}
 					<!-- Custom Tabs -->
 					<div class="nav-tabs-custom">
 						<ul class="nav nav-tabs">
@@ -44,7 +45,8 @@
 												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">
 													<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
-				                                	<a href="${contextPath}/task/edit/0">
+													<c:url value="/task/edit/0" var="urlCreateTask"/>
+				                                	<a href="${urlCreateTask}">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
 				                                	</a>
 				                                	<br/><br/>

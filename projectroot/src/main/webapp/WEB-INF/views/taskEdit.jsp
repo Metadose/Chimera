@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -38,6 +39,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -53,41 +55,35 @@
                    									<c:if test="${!empty origin && !empty originID}">
                    										<c:set var="formAction" value="${contextPath}/task/create/${origin}"/>
                    									</c:if>
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${formAction}">
-                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                   									<form:form modelAttribute="task" role="form" name="detailsForm" id="detailsForm" method="post" action="${formAction}">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="id" value="${task.id}"/>
-				                                        	<c:if test="${!empty task.project.id}">
-				                                        	<input type="hidden" name="project_id" value="${task.project.id}"/>
-				                                        	</c:if>
-				                                        	<input type="hidden" name="origin" value="${origin}"/>
-				                                        	<input type="hidden" name="originID" value="${originID}"/>
 				                                        	<label>Status</label>
-				                                            <select class="form-control" id="task_status" name="status">
-						                                    	<option value="0">New</option>
-						                                    	<option value="1">Ongoing</option>
-						                                    	<option value="2">Completed</option>
-						                                    	<option value="3">Failed</option>
-						                                    	<option value="4">Cancelled</option>
-				                                            </select><br/>
+				                                            <form:select class="form-control" id="task_status" path="status">
+						                                    	<form:option value="0" label="New"/>
+						                                    	<form:option value="1" label="Ongoing"/>
+						                                    	<form:option value="2" label="Completed"/>
+						                                    	<form:option value="3" label="Failed"/>
+						                                    	<form:option value="4" label="Cancelled"/>
+				                                            </form:select><br/>
 				                                            <label>Title</label>
-				                                            <input type="text" class="form-control" name="title" value="${task.title}"/><br/>
+				                                            <form:input type="text" class="form-control" path="title"/><br/>
 				                                            
 				                                            <label>Content</label>
-				                                            <input type="text" class="form-control" name="content" value="${task.content}"/><br/>
+				                                            <form:input type="text" class="form-control" path="content"/><br/>
 				                                            
 				                                            <label>Start</label>
 					                                        <div class="input-group">
 					                                            <div class="input-group-addon">
 					                                                <i class="fa fa-calendar"></i>
 					                                            </div>
-					                                            <input type="text" id="date-mask" class="form-control" name="dateStart" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask" value="${task.dateStart}"/>
+<%-- 					                                            <form:input type="text" id="date-mask" class="form-control" path="dateStart" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask/> --%>
+					                                            <form:input type="text" id="date-mask" class="form-control" path="dateStart"/>
 					                                        </div>
 					                                        <br/>
 					                                        <label>Duration (Man Days)</label>
-				                                            <input type="text" class="form-control" name="duration" value="${task.duration}"/><br/>
+				                                            <form:input type="text" class="form-control" path="duration"/><br/>
 				                                        </div>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
 		                                            	<c:when test="${task.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
