@@ -2,6 +2,7 @@ package com.cebedo.pmsys.task.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
 		this.taskDAO = taskDAO;
 	}
 
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#task.getProject().getId()", condition = "#task.getProject() != null")
 	@Override
 	@Transactional
 	public void create(Task task) {

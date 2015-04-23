@@ -53,7 +53,7 @@
                    								<div class="box-body">
                    									<c:set var="formAction" value="${contextPath}/task/create"/>
                    									<c:if test="${!empty origin && !empty originID}">
-                   										<c:set var="formAction" value="${contextPath}/task/create/${origin}"/>
+                   										<c:set var="formAction" value="${contextPath}/task/create/from/${origin}/${originID}"/>
                    									</c:if>
                    									<form:form modelAttribute="task" role="form" name="detailsForm" id="detailsForm" method="post" action="${formAction}">
 				                                        <div class="form-group">

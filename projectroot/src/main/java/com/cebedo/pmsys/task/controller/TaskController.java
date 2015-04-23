@@ -2,6 +2,8 @@ package com.cebedo.pmsys.task.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.project.controller.ProjectController;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
@@ -142,7 +146,7 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
 	public String create(@ModelAttribute(ATTR_TASK) Task task,
-			RedirectAttributes redirectAttrs) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 
@@ -151,6 +155,7 @@ public class TaskController {
 		// Else, update.
 		if (task.getId() == 0) {
 			this.taskService.create(task);
+			status.setComplete();
 			alertFactory.setMessage("Successfully <b>created</b> task <b>"
 					+ task.getTitle() + "</b>.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -159,6 +164,7 @@ public class TaskController {
 					+ SystemConstants.REQUEST_LIST;
 		} else {
 			this.taskService.merge(task);
+			status.setComplete();
 			alertFactory.setMessage("Successfully <b>updated</b> task <b>"
 					+ task.getTitle() + "</b>.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -176,21 +182,24 @@ public class TaskController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN, method = RequestMethod.POST)
-	public String createFromOrigin(
-			@ModelAttribute(ATTR_TASK) Task task,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
+			+ SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{"
+			+ SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
+	public String createFromOrigin(@ModelAttribute(ATTR_TASK) Task task,
+			SessionStatus status,
+			@PathVariable(SystemConstants.ORIGIN) String origin,
+			@PathVariable(SystemConstants.ORIGIN_ID) long originID,
 			RedirectAttributes redirectAttrs) {
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 
 		if (task.getId() == 0) {
 			this.taskService.create(task);
+			status.setComplete();
 			alertFactory.setMessage("Successfully <b>created</b> task <b>"
 					+ task.getTitle() + "</b>.");
 		} else {
 			this.taskService.merge(task);
+			status.setComplete();
 			alertFactory.setMessage("Successfully <b>updated</b> task <b>"
 					+ task.getTitle() + "</b>.");
 		}
@@ -380,6 +389,32 @@ public class TaskController {
 	}
 
 	/**
+	 * User assigns a new task for a project.<br>
+	 * Called when user clicks a create button from the edit project page.
+	 * 
+	 * @param projectID
+	 * @param model
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+			+ SystemConstants.FROM + "/" + Project.OBJECT_NAME)
+	public String redirectAssignProject(Model model, HttpSession session) {
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+
+		// Redirect to an edit page with an empty task object
+		// And project ID.
+		model.addAttribute(ATTR_TASK, new Task(proj));
+		model.addAttribute(SystemConstants.ORIGIN, Project.OBJECT_NAME);
+		model.addAttribute(SystemConstants.ORIGIN_ID, proj.getId());
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_ASSIGN);
+
+		return TaskController.JSP_EDIT;
+	}
+
+	/**
 	 * Open a page with appropriate values from a project object.<br>
 	 * May be a Create Page or Edit Page. TODO Add method-level security.
 	 * 
@@ -387,15 +422,15 @@ public class TaskController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-			+ SystemConstants.FROM + "/" + SystemConstants.ORIGIN)
+	@RequestMapping(value = SystemConstants.ACTION_EDIT + "/{"
+			+ Task.OBJECT_NAME + "}/" + SystemConstants.FROM + "/{"
+			+ SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.GET)
 	public String editTaskFromOrigin(
-			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			Model model) {
+			@PathVariable(Task.OBJECT_NAME) long taskID,
+			@PathVariable(SystemConstants.ORIGIN) String origin,
+			@PathVariable(SystemConstants.ORIGIN_ID) long originID, Model model) {
 
-		// TODO Optimize by getting only name and id.
+		// TODO Faster performance by getting only name and id.
 		// Get list of teams for the selector.
 		List<Team> teamList = this.teamService.list();
 		List<Staff> staffList = this.staffService.list();
@@ -408,6 +443,8 @@ public class TaskController {
 		model.addAttribute(SystemConstants.ORIGIN, origin);
 		model.addAttribute(SystemConstants.ORIGIN_ID, originID);
 
+		// TODO Merge this block if condition with function
+		// redirectAssignProject.
 		// If ID is zero,
 		// Open a page with empty values, ready to create.
 		if (taskID == 0) {

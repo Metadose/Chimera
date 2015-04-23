@@ -267,13 +267,10 @@
 		                                	<table>
 		                                    	<tr>
 		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/task/assign/from/project">
-		                                    			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-		                                    			<input type="hidden" name="project_id" value="${project.id}"/>
-		                                    			<input type="hidden" name="origin" value="project"/>
-		                                    			<input type="hidden" name="originID" value="${project.id}"/>
+		                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
+		                                    			<a href="${urlAddTask}">
 				                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
-					                                    </form>
+		                                    			</a>
 		                                    		</td>
 		                                    		<c:if test="${!empty project.assignedTasks}">
 		                                    		<td>
@@ -326,13 +323,10 @@
 							                                            </ul>
 							                                        </div>
 							                                        </sec:authorize>
-					                                            	<form method="post" action="${contextPath}/task/edit/from/origin">
-					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
-					                                            	<input type="hidden" name="origin" value="project"/>
-					                                            	<input type="hidden" name="originID" value="${project.id}"/>
+							                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
+							                                        <a href="${urlViewTask}">
 					                                            	<button class="btn btn-default btn-flat btn-sm">View</button>
-					                                            	</form> 
+							                                        </a>
 					                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 					                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
 					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
