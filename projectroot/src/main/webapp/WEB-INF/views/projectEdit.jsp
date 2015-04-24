@@ -57,7 +57,7 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
-                                		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
+<!--                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li> -->
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
@@ -260,7 +260,7 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-                                <div class="tab-pane" id="tab_2">
+                                <%-- <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
                                     		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
@@ -403,11 +403,10 @@
 			                                </table>
 		                                </div><!-- /.box-body -->
 		                            </div>
-                                </div><!-- /.tab-pane -->
+                                </div><!-- /.tab-pane --> --%>
                                 <div class="tab-pane" id="tab_3">
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">
-                                    	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                                     	<form:form id="uploadProjectFileForm"
 											modelAttribute="projectfile"
 											action="${contextPath}/project/upload/projectfile"
@@ -422,7 +421,6 @@
 												<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
                                         </form:form>
 	                                    <br/>
-	                                    </sec:authorize>
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
 	                                            <tr>
@@ -508,7 +506,7 @@
 												rows="3" id="description" path="description"
 												placeholder="Example: Image of project progress..."></form:textarea><br/>
 											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
-                                       </form:form>
+                                    </form:form>
                                     <br/>
                                     <c:if test="${!empty project.photos}">
                                     	<br/>
@@ -525,9 +523,15 @@
 														<h6>${photoUploaderName}</h6>
 														
 														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/>
+														<a href="#">
+															<button class="btn btn-default btn-flat btn-sm">View</button>
+														</a>
+														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/>
 														<a href="${urlDeletePhoto}">
 															<button class="btn btn-default btn-flat btn-sm">Delete</button>
 														</a>
+														</sec:authorize>
 													</li>
 									     		</c:forEach>
 										     </ul>

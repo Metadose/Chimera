@@ -258,7 +258,6 @@ public class ProjectFileController {
 	 * @param description
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
 			+ SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{"
 			+ SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)

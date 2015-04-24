@@ -702,7 +702,6 @@ public class ProjectController {
 	 * @return
 	 * @throws IOException
 	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
 			+ ProjectFile.OBJECT_NAME, method = RequestMethod.POST)
 	public String uploadFileToProject(
@@ -786,7 +785,6 @@ public class ProjectController {
 	 * @return
 	 * @throws IOException
 	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
 			+ Photo.OBJECT_NAME, method = RequestMethod.POST)
 	public String uploadPhotoToProject(
@@ -802,6 +800,7 @@ public class ProjectController {
 
 		AlertBoxFactory alertFactory = new AlertBoxFactory();
 
+		// TODO Limit only uploads to known extensions of an image.
 		// If file is not empty.
 		if (!file.isEmpty()) {
 			alertFactory = this.photoService.create(file, projectID,
