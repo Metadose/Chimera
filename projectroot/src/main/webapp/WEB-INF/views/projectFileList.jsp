@@ -23,6 +23,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <div class="box">
                                 <div class="box-header">
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
@@ -58,7 +59,8 @@
 			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
 			                                            		</form>
-																<a href="${contextPath}/projectfile/edit/${file.id}">
+			                                            		<c:url value="/projectfile/edit/${file.id}" var="urlViewProjectFile"/>
+																<a href="${urlViewProjectFile}">
 																	<button class="btn btn-default btn-flat btn-sm">View Details</button>
 																</a>
 																<a href="${contextPath}/projectfile/delete/${file.id}">

@@ -152,10 +152,6 @@
 	<mvc:annotation-driven validator="hdivEditableValidator"/>
 	
 	<!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
-	<hdiv:validation id="safeText">
-		<hdiv:acceptedPattern><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></hdiv:acceptedPattern>
-		<hdiv:rejectedPattern><![CDATA[(\s|\S)*(--)(\s|\S)*]]></hdiv:rejectedPattern>
-	</hdiv:validation>
 	<hdiv:validation id="SQLInjection">
 		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%27)|(')|(%3D)|(=)|(/)|(%2F)|(")|((%22)|(-|%2D){2})|(%23)|(%3B)|(;))+(\s|\S)*]]></hdiv:rejectedPattern>
 	</hdiv:validation>
@@ -179,7 +175,6 @@
 	</hdiv:validation>
 	
 	<hdiv:editableValidations>
-		<hdiv:validationRule url=".*" enableDefaults="false">safeText</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">SQLInjection</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">execCommand</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">unauthorizedChars</hdiv:validationRule>

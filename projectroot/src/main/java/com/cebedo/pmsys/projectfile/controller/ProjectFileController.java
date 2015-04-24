@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
@@ -29,6 +33,7 @@ import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationService;
 
 @Controller
+@SessionAttributes(value = { ProjectFileController.ATTR_PROJECTFILE }, types = { ProjectFile.class })
 @RequestMapping(ProjectFile.OBJECT_NAME)
 public class ProjectFileController {
 
@@ -39,6 +44,7 @@ public class ProjectFileController {
 
 	private ProjectFileService projectFileService;
 	private SystemConfigurationService configService;
+	private ProjectService projectService;
 	private String sysHome;
 
 	public String getSysHome() {
@@ -47,6 +53,12 @@ public class ProjectFileController {
 					.getValueByName(SystemConstants.CONFIG_SYS_HOME);
 		}
 		return sysHome;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectService")
+	public void setProjectService(ProjectService s) {
+		this.projectService = s;
 	}
 
 	@Autowired(required = true)
@@ -93,10 +105,17 @@ public class ProjectFileController {
 				+ SystemConstants.REQUEST_LIST;
 	}
 
+	/**
+	 * Delete a file.
+	 * 
+	 * @param id
+	 * @param redirectAttrs
+	 * @return
+	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECTFILE_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-			+ ProjectFile.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
-	public String delete(@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id,
+			+ ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String delete(@PathVariable(ProjectFile.OBJECT_NAME) int id,
 			RedirectAttributes redirectAttrs) {
 
 		String fileName = this.projectFileService.getNameByID(id);
@@ -148,9 +167,9 @@ public class ProjectFileController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ ProjectFile.COLUMN_PRIMARY_KEY + "}")
+			+ ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
 	public String editProjectFile(
-			@PathVariable(ProjectFile.COLUMN_PRIMARY_KEY) int id, Model model) {
+			@PathVariable(ProjectFile.OBJECT_NAME) int id, Model model) {
 		if (id == 0) {
 			model.addAttribute(ATTR_PROJECTFILE, new ProjectFile());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
@@ -233,6 +252,44 @@ public class ProjectFileController {
 	}
 
 	/**
+	 * Update a description of a file from origin.
+	 * 
+	 * @param fileID
+	 * @param description
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UPDATE + "/"
+			+ SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{"
+			+ SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
+	public String updateProjectFileFromOrigin(
+			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile pFile,
+			@PathVariable(SystemConstants.ORIGIN) String origin,
+			@PathVariable(SystemConstants.ORIGIN_ID) long originID,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		long fileID = pFile.getId();
+		String description = pFile.getDescription();
+
+		this.projectFileService.updateDescription(fileID, description);
+
+		// If the origin is from a project, clear the cache of that project.
+		if (origin.equals(Project.OBJECT_NAME)) {
+			this.projectService.clearProjectCache(originID);
+		}
+
+		String fileName = this.projectFileService.getNameByID(fileID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory
+				.setMessage("Successfully <b>updated description</b> of file <b>"
+						+ fileName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + originID;
+	}
+
+	/**
 	 * Update a description of a file.
 	 * 
 	 * @param fileID
@@ -241,12 +298,11 @@ public class ProjectFileController {
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
-	public ModelAndView updateDescription(
-			@RequestParam(ProjectFile.COLUMN_PRIMARY_KEY) long fileID,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
-			@RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-			@RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-			RedirectAttributes redirectAttrs) {
+	public String updateProjectFile(
+			@ModelAttribute(ATTR_PROJECTFILE) ProjectFile pFile,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		long fileID = pFile.getId();
+		String description = pFile.getDescription();
 
 		this.projectFileService.updateDescription(fileID, description);
 		String fileName = this.projectFileService.getNameByID(fileID);
@@ -256,13 +312,8 @@ public class ProjectFileController {
 						+ fileName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
-
-		if (!(origin == null || originID == 0)) {
-			return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-					+ origin + "/" + SystemConstants.REQUEST_EDIT + "/"
-					+ originID);
-		}
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ ProjectFile.OBJECT_NAME + "/" + SystemConstants.REQUEST_LIST);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ProjectFile.OBJECT_NAME
+				+ "/" + SystemConstants.REQUEST_EDIT + "/" + fileID;
 	}
 }

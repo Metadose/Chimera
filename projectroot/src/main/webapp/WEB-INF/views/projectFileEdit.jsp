@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -35,6 +36,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -58,32 +60,35 @@
 				                                            </form>
 		                                            	</c:when>
 		                                            	<c:when test="${projectfile.id > 0}">
+<%-- 		                                            	   /projectfile/edit/${file.id}/from/project/${project.id} --%>
+															<c:set value="${contextPath}/projectfile/update" var="urlProjectFileUpdate"/>
+															<c:if test="${!empty origin && !empty originID}">
+																<c:set value="${contextPath}/projectfile/update/from/${origin}/${originID}" var="urlProjectFileUpdate"/>
+															</c:if>
+					                                        <div class="form-group">
+					                                            <form:form role="form"
+					                                            	modelAttribute="projectfile" 
+					                                            	name="fileForm" id="fileForm"
+																	method="post"
+																	action="${urlProjectFileUpdate}">
+						                                            <label>Description</label>
+						                                            <form:textarea class="form-control"
+																		rows="3" id="description" path="description"
+																		placeholder="Example: Reference spreadsheet file..."></form:textarea>
+					                                            </form:form>
+					                                        </div>
+					                                        
 		                                            		<c:set var="staff" value="${projectfile.uploader}"/>
 			                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-					                                        <div class="form-group">
-					                                            <label>Name</label>
-					                                            <input type="text" disabled class="form-control" name="name" value="${projectfile.name}"/><br/>
-					                                            <form role="form" name="fileForm" id="fileForm" method="post" action="${contextPath}/projectfile/update">
-					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-						                                            <label>Description</label>
-						                                            <c:if test="${!empty origin && !empty originID}">
-						                                            <input type="hidden" name="origin" value="${origin}"/>
-				                                        			<input type="hidden" name="originID" value="${originID}"/>
-						                                            </c:if>
-						                                            <input type="hidden" name="projectfile_id" value="${projectfile.id}"/>
-						                                            <input type="text" class="form-control" name="description" value="${projectfile.description}"/><br/>
-					                                            </form>
-					                                            <label>Size</label>
-					                                            <input type="text" disabled class="form-control" name="size" value="${projectfile.size}"/><br/>
-					                                            <label>Project</label>
-					                                            <input type="text" disabled class="form-control" name="project" value="${projectfile.project.name}"/><br/>
-					                                            <label>Uploader</label>
-					                                            <input type="text" disabled class="form-control" name="uploader" value="${staffName}"/><br/>
-					                                            <label>Date Uploaded</label>
-					                                            <input type="text" disabled class="form-control" name="dateUploaded" value="${projectfile.dateUploaded}"/><br/>
-					                                        </div>
+				                                            <label>Name ${projectfile.name}</label>
+					                                        <label>Size ${projectfile.size}</label><br/>
+				                                            <label>Project ${projectfile.project.name}</label><br/>
+				                                            <label>Uploader ${staffName}</label><br/>
+				                                            <label>Date Uploaded ${projectfile.dateUploaded}</label><br/>
+				                                            
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Update</button>
-		                                            		<a href="${contextPath}/projectfile/delete/${projectfile.id}">
+		                                            		<c:url value="/projectfile/delete/${projectfile.id}" var="urlDeleteProjectfile"/>
+		                                            		<a href="${urlDeleteProjectfile}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This File</button>
 															</a>
 		                                            	</c:when>

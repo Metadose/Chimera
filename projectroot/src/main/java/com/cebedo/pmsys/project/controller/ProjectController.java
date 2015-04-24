@@ -777,7 +777,8 @@ public class ProjectController {
 	}
 
 	/**
-	 * Delete a project file.
+	 * Delete a project file. TODO Make this general, create "From Origin"
+	 * version.
 	 * 
 	 * @param id
 	 * @param projectID
