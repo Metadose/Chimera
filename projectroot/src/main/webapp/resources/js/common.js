@@ -8,6 +8,9 @@ $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 		gantt.render();
 	}
     window.name = id;
+    
+    // TODO Some href links, if equal to #, scrolls to top.
+    return false;
 });
 
 // Toggle display of two divs.

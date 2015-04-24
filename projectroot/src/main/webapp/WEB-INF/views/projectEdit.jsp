@@ -546,9 +546,17 @@
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="box box-default">
 		                                <div class="box-body">
-		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
-<!-- 		                                <div id="gantt-chart" class="box-body table-responsive"> -->
-		                                </div><!-- /.box-body -->
+		                                <c:choose>
+		                                	<c:when test="${!empty project.assignedTasks}">
+				                                <div id="gantt-chart" style='width:1000px; height:400px;'>
+				                                </div><!-- /.box-body -->
+		                                	</c:when>
+		                                	<c:when test="${empty project.assignedTasks}">
+		                                		<div id="gantt-chart" style='width:1000px; height:400px;'>
+		                                			No tasks for this project.
+				                                </div><!-- /.box-body -->
+		                                	</c:when>
+		                                </c:choose>
 		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
