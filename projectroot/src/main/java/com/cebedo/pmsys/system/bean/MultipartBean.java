@@ -6,6 +6,23 @@ public class MultipartBean {
 
 	private MultipartFile file;
 	private long projectID;
+	private String description;
+
+	public MultipartBean() {
+		;
+	}
+
+	public MultipartBean(int id) {
+		setProjectID(id);
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public MultipartFile getFile() {
 		return file;

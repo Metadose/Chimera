@@ -408,14 +408,19 @@
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">
                                     	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-                                    	<form enctype="multipart/form-data" method="post" action="${contextPath}/projectfile/upload/file/project?${_csrf.parameterName}=${_csrf.token}">
-											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-											<label for="exampleInputFile">File Upload (20MB Max)</label>
-											<input type="file" id="file" name="file"/><br/>
-											<label>Description</label>
-											<input type="text" class="form-control" id="description" name="description"/><br/>
-											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
-										</form>
+                                    	<form:form id="uploadProjectFileForm"
+											modelAttribute="projectfile"
+											action="${contextPath}/project/projectfile/upload"
+											method="post"
+											enctype="multipart/form-data">
+	         									<label for="exampleInputFile">File Upload (20MB Max)</label>
+												<form:input type="file" id="file" path="file"/><br/>
+												<label>Description</label>
+												<form:textarea class="form-control"
+													rows="3" id="description" path="description"
+													placeholder="Example: Reference spreadsheet file..."></form:textarea><br/>
+												<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
+                                        </form:form>
 	                                    <br/>
 	                                    </sec:authorize>
 	                                    <table id="example-1" class="table table-bordered table-striped">
@@ -438,26 +443,19 @@
 	                                        			<tr>
 			                                            	<td>
 			                                            		<center>
-			                                            		<form action="${contextPath}/projectfile/download/from/project/" method="post">
-			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			                                            			<input type="hidden" name="project_id" value="${project.id}"/>
-			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
+			                                            		<c:url value="/project/download/projectfile/${file.id}" var="urlDownloadProjectfile"/>
+			                                            		<a href="${urlDownloadProjectfile}">
 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
-			                                            		</form>
-			                                            		<form action="${contextPath}/projectfile/edit/from/origin" method="post">
-			                                            			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			                                            			<input type="hidden" name="origin" value="project"/>
-			                                            			<input type="hidden" name="originID" value="${project.id}"/>
-			                                            			<input type="hidden" name="projectfile_id" value="${file.id}"/>
+			                                            		</a>
+			                                            		<c:url value="/projectfile/edit/${file.id}/from/project/${project.id}" var="urlViewProjectfile"/>
+			                                            		<a href="${urlViewProjectfile}">
 			                                            			<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            		</form>
+			                                            		</a>
 			                                            		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																<form name="deleteFileForm" id="deleteFileForm" method="post" action="${contextPath}/projectfile/delete/from/project/">
-																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																	<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-																	<input type="hidden" id="projectfile_id" name="projectfile_id" value="${file.id}"/>
+			                                            		<c:url value="/project/delete/projectfile/${file.id}" var="urlDeleteProjectfile"/>
+			                                            		<a href="${urlDeleteProjectfile}">
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																</form>
+			                                            		</a>
 																</sec:authorize>
 																</center>
 															</td>
@@ -577,34 +575,34 @@
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
-		                                    		<form:form
-		                                    		modelAttribute="staffPosition" 
-		                                    		method="post"
-		                                    		action="${contextPath}/project/assign/staff">
-		                                    		<td>
-		                                    			<form:select class="form-control" path="staffID">
-                                    						<c:forEach items="${staffList}" var="staff">
-                                    							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-                                    							<form:option value="${staff.id}" label="${staffName}"/>
-                                    						</c:forEach>
-		                                    			</form:select>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..."
-		                                    				type="text"
-															class="form-control"
-															path="position"/>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-														<button class="btn btn-default btn-flat btn-sm">Assign</button>
-		                                    		</td>
-		                                    		</form:form>
+ 		                                    		<form:form 
+ 		                                    		modelAttribute="staffPosition"  
+ 		                                    		method="post" 
+ 		                                    		action="${contextPath}/project/assign/staff"> 
+ 		                                    			<td>
+ 		                                    			<form:select class="form-control" path="staffID"> 
+                                     						<c:forEach items="${staffList}" var="staff"> 
+                                     							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/> 
+                                     							<form:option value="${staff.id}" label="${staffName}"/> 
+                                     						</c:forEach> 
+ 		                                    			</form:select> 
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    				&nbsp;
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..." 
+ 		                                    				type="text" 
+ 															class="form-control" 
+ 															path="position"/>
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    				&nbsp;
+ 		                                    			</td>
+ 														<td>
+ 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+ 		                                    			</td> 
+ 		                                    		</form:form> 
 		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;

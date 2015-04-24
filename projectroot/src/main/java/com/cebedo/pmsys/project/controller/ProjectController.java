@@ -1,10 +1,14 @@
 package com.cebedo.pmsys.project.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,11 +33,14 @@ import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.photo.service.PhotoService;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
+import com.cebedo.pmsys.projectfile.model.ProjectFile;
+import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
+import com.cebedo.pmsys.system.bean.MultipartBean;
 import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.system.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
@@ -47,8 +54,9 @@ import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
-		"old" + ProjectController.ATTR_FIELD }, types = { Project.class,
-		FieldAssignmentBean.class })
+		"old" + ProjectController.ATTR_FIELD,
+		ProjectController.ATTR_PROJECT_FILE }, types = { Project.class,
+		FieldAssignmentBean.class, ProjectFile.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -58,6 +66,7 @@ public class ProjectController {
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
 	public static final String ATTR_TASK = Task.OBJECT_NAME;
+	public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
 	public static final String ATTR_STAFF_POSITION = "staffPosition";
 	public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
 
@@ -73,6 +82,13 @@ public class ProjectController {
 	private TeamService teamService;
 	private FieldService fieldService;
 	private PhotoService photoService;
+	private ProjectFileService projectFileService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "projectFileService")
+	public void setProjectFileService(ProjectFileService ps) {
+		this.projectFileService = ps;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "photoService")
@@ -336,7 +352,7 @@ public class ProjectController {
 		this.teamService.unassignProjectTeam(projectID, teamID);
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>unassigned<b/> team <b>"
+		alertFactory.setMessage("Successfully <b>unassigned</b> team <b>"
 				+ teamName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
@@ -366,7 +382,7 @@ public class ProjectController {
 		this.teamService.assignProjectTeam(projectID, teamID);
 
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>assigned<b/> team <b>"
+		alertFactory.setMessage("Successfully <b>assigned</b> team <b>"
 				+ teamName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
@@ -677,6 +693,123 @@ public class ProjectController {
 	}
 
 	/**
+	 * Upload a file to a project.
+	 * 
+	 * @param file
+	 * @param projectID
+	 * @param description
+	 * @param redirectAttrs
+	 * @return
+	 * @throws IOException
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = ProjectFile.OBJECT_NAME + "/"
+			+ SystemConstants.REQUEST_UPLOAD, method = RequestMethod.POST)
+	public String uploadFileToProject(
+			@ModelAttribute(ATTR_PROJECT_FILE) MultipartBean mpBean,
+			SessionStatus status, HttpSession session,
+			RedirectAttributes redirectAttrs) throws IOException {
+
+		MultipartFile file = mpBean.getFile();
+		String description = mpBean.getDescription();
+		long projectID = mpBean.getProjectID();
+
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
+		// If file is not empty.
+		if (!file.isEmpty()) {
+			// Upload then evict cache.
+			this.projectFileService.create(file, projectID, description);
+			alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+			alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
+					+ file.getOriginalFilename() + "</b>.");
+		} else {
+			alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			alertFactory.setMessage("Failed to <b>upload</b> empty file <b>"
+					+ file.getOriginalFilename() + "</b>.");
+		}
+		status.setComplete();
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Download a file from Project. TODO Need work on security url here.
+	 * 
+	 * @param projectID
+	 * @param fileID
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/"
+			+ ProjectFile.OBJECT_NAME + "/{" + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public void downloadFileFromProject(
+			@PathVariable(ProjectFile.OBJECT_NAME) long fileID,
+			HttpServletResponse response) {
+
+		File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
+		// AlertBoxFactory alertFactory = new AlertBoxFactory();
+		try {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_INFO);
+			// alertFactory.setMessage("<b>Downloading</b> file <b>"
+			// + actualFile.getName() + "</b>.");
+
+			FileInputStream iStream = new FileInputStream(actualFile);
+			response.setContentType("application/octet-stream");
+			response.setContentLength((int) actualFile.length());
+			response.setHeader("Content-Disposition", "attachment; filename=\""
+					+ actualFile.getName() + "\"");
+			IOUtils.copy(iStream, response.getOutputStream());
+			response.flushBuffer();
+		} catch (Exception e) {
+			// alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+			// alertFactory.setMessage("Failed to <b>download</b> file <b>"
+			// + actualFile.getName() + "</b>.");
+			e.printStackTrace();
+		}
+
+		// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		// alertFactory.generateHTML());
+		//
+		// return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME +
+		// "/"
+		// + SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Delete a project file.
+	 * 
+	 * @param id
+	 * @param projectID
+	 * @param redirectAttrs
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
+			+ ProjectFile.OBJECT_NAME + "/{" + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String deleteProjectfile(
+			@PathVariable(ProjectFile.OBJECT_NAME) int id, HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+
+		Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+		String fileName = this.projectFileService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> file <b>"
+				+ fileName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Delete, then
+		// Evict cache.
+		this.projectFileService.delete(id);
+		this.projectService.clearProjectCache(proj.getId());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	}
+
+	/**
 	 * Open an existing/new project page.
 	 * 
 	 * @param id
@@ -688,8 +821,9 @@ public class ProjectController {
 	public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 			Model model) {
 
-		// Model for the "Add More Information".
+		// Model for forms.
 		model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
+		model.addAttribute(ATTR_PROJECT_FILE, new MultipartBean(id));
 
 		// If ID is zero, create new.
 		if (id == 0) {
@@ -709,17 +843,19 @@ public class ProjectController {
 		model.addAttribute(FieldController.ATTR_LIST, fieldList);
 
 		// Get list of staff members for manager assignments.
+		// TODO Staff position HDIV problem.
 		List<Staff> staffList = this.staffService.listUnassignedInProject(
 				companyID, proj);
 		model.addAttribute(StaffController.ATTR_LIST, staffList);
-		if (staffList.size() > 0) {
-			Staff staff = staffList.get(0);
-			String position = "";
-			long sampleID = staff.getId();
-			StaffAssignmentBean saBean = new StaffAssignmentBean(sampleID,
-					position);
-			model.addAttribute(ATTR_STAFF_POSITION, saBean);
-		}
+		// if (staffList.size() > 0) {
+		// Staff staff = staffList.get(0);
+		// String position = "";
+		// long sampleID = staff.getId();
+		// StaffAssignmentBean saBean = new StaffAssignmentBean(sampleID,
+		// position);
+		// model.addAttribute(ATTR_STAFF_POSITION, saBean);
+		// }
+		model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
 
 		// Get list of teams.
 		List<Team> teamList = this.teamService.listUnassignedInProject(

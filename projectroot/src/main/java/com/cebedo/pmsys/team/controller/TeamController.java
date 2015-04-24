@@ -98,11 +98,11 @@ public class TeamController {
 			RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
-			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
+			alertFactory.setMessage("Successfully <b>created</b> team <b>"
 					+ team.getName() + "</b>.");
 			this.teamService.create(team);
 		} else {
-			alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
+			alertFactory.setMessage("Successfully <b>updated</b> team <b>"
 					+ team.getName() + "</b>.");
 			this.teamService.update(team);
 
@@ -127,7 +127,7 @@ public class TeamController {
 			SessionStatus status, RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (team.getId() == 0) {
-			alertFactory.setMessage("Successfully <b>created<b/> team <b>"
+			alertFactory.setMessage("Successfully <b>created</b> team <b>"
 					+ team.getName() + "</b>.");
 			this.teamService.create(team);
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -136,7 +136,7 @@ public class TeamController {
 			return SystemConstants.CONTROLLER_REDIRECT + ATTR_TEAM + "/"
 					+ SystemConstants.REQUEST_LIST;
 		}
-		alertFactory.setMessage("Successfully <b>updated<b/> team <b>"
+		alertFactory.setMessage("Successfully <b>updated</b> team <b>"
 				+ team.getName() + "</b>.");
 		this.teamService.update(team);
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -153,7 +153,7 @@ public class TeamController {
 			SessionStatus status, RedirectAttributes redirectAttrs) {
 		String teamName = this.teamService.getNameByID(id);
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>deleted<b/> team <b>"
+		alertFactory.setMessage("Successfully <b>deleted</b> team <b>"
 				+ teamName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
