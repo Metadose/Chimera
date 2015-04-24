@@ -6,11 +6,12 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.photo.model.Photo;
+import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 
 public interface PhotoService {
 
-	public void create(MultipartFile file, long projectID, String description)
-			throws IOException;
+	public AlertBoxFactory create(MultipartFile file, long projectID,
+			String description) throws IOException;
 
 	public Photo getByID(long id);
 

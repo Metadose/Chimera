@@ -88,8 +88,8 @@
 		                   									<br/>
 		                   									<div class="form-group">
 		                   										<form:form id="uploadPhotoForm"
-	                   												modelAttribute="photo"
-																	action="${contextPath}/project/profile/upload/"
+	                   												modelAttribute="profilePhoto"
+																	action="${contextPath}/project/upload/profile"
 																	method="post"
 																	enctype="multipart/form-data">
 			                   										<table>
@@ -410,7 +410,7 @@
                                     	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
                                     	<form:form id="uploadProjectFileForm"
 											modelAttribute="projectfile"
-											action="${contextPath}/project/projectfile/upload"
+											action="${contextPath}/project/upload/projectfile"
 											method="post"
 											enctype="multipart/form-data">
 	         									<label for="exampleInputFile">File Upload (20MB Max)</label>
@@ -496,14 +496,19 @@
                                 <div class="tab-pane" id="tab_4">
                                 	<div class="box box-default">
                                 	<div class="box-body">
-                                    <form enctype="multipart/form-data" method="post" action="${contextPath}/photo/upload/project?${_csrf.parameterName}=${_csrf.token}">
-										<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-										<label for="exampleInputFile">Upload Photo (20MB Max)</label>
-										<input type="file" id="file" name="file"/><br/>
-										<label>Description</label>
-										<input type="text" class="form-control" id="description" name="description"/><br/>
-										<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
-									</form>
+                                	<form:form id="uploadProjectFileForm"
+										modelAttribute="photo"
+										action="${contextPath}/project/upload/photo"
+										method="post"
+										enctype="multipart/form-data">
+         									<label for="exampleInputFile">Upload Photo (20MB Max)</label>
+											<form:input type="file" id="file" path="file"/><br/>
+											<label>Description</label>
+											<form:textarea class="form-control"
+												rows="3" id="description" path="description"
+												placeholder="Example: Image of project progress..."></form:textarea><br/>
+											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
+                                       </form:form>
                                     <br/>
                                     <c:if test="${!empty project.photos}">
                                     	<br/>
@@ -511,26 +516,18 @@
 									     		<c:forEach items="${project.photos}" var="photo">
 									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
 														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
-<%-- 														<form id="photoViewForm" action="${contextPath}/photo/edit/from/origin" method="post"> --%>
-<%-- 															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
-<!-- 															<input type="hidden" name="origin" value="project"/> -->
-<%-- 															<input type="hidden" name="originID" value="${project.id}"/> --%>
-<%-- 															<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/> --%>
-<!-- 														</form> -->
-														<form action="${contextPath}/photo/delete" method="post">
-															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-															<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-															<input type="hidden" id="photo_id" name="photo_id" value="${photo.id}"/>
-															<h6>${photo.name}</h6>
-															<h6>${photo.description}</h6>
-															<br/>
-															<h6>Uploaded ${photo.dateUploaded}</h6>
-															<c:set var="photoUploader" value="${photo.uploader}"/>
-															<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
-															<h6>${photoUploaderName}</h6>
+														<h6>${photo.name}</h6>
+														<h6>${photo.description}</h6>
+														<br/>
+														<h6>Uploaded ${photo.dateUploaded}</h6>
+														<c:set var="photoUploader" value="${photo.uploader}"/>
+														<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
+														<h6>${photoUploaderName}</h6>
+														
+														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/>
+														<a href="${urlDeletePhoto}">
 															<button class="btn btn-default btn-flat btn-sm">Delete</button>
-														</form>
-<!-- 														<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('photoViewForm')">View</button> -->
+														</a>
 													</li>
 									     		</c:forEach>
 										     </ul>

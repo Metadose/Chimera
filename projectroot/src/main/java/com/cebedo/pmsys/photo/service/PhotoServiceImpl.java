@@ -23,6 +23,7 @@ import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.helper.FileHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAO;
 
 @Service
@@ -200,14 +201,21 @@ public class PhotoServiceImpl implements PhotoService {
 	/**
 	 * Insert a photo to the project.
 	 */
+	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
 	@Override
 	@Transactional
-	public void create(MultipartFile file, long projectID, String description)
-			throws IOException {
+	public AlertBoxFactory create(MultipartFile file, long projectID,
+			String description) throws IOException {
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
+
 		// If not authorized, return.
 		Project proj = this.projectDAO.getByID(projectID);
 		if (!this.authHelper.isActionAuthorized(proj)) {
-			return;
+			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("You are <b>not authorized</b> to <b>upload</b> a file to project <b>"
+							+ proj.getName() + "</b>.");
+			return alertFactory;
 		}
 
 		AuthenticationToken auth = this.authHelper.getAuth();
@@ -234,6 +242,15 @@ public class PhotoServiceImpl implements PhotoService {
 							.getSimpleName(), file.getOriginalFilename());
 		}
 
+		File fileTest = new File(fileLocation);
+		if (fileTest.exists()) {
+			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory.setMessage("<b>" + file.getOriginalFilename()
+					+ " already exists</b> in project <b>" + proj.getName()
+					+ "</b>.");
+			return alertFactory;
+		}
+
 		// Fetch some details and set.
 		long size = file.getSize();
 		Date dateUploaded = new Date(System.currentTimeMillis());
@@ -244,6 +261,11 @@ public class PhotoServiceImpl implements PhotoService {
 		// Do the actual upload.
 		this.fileHelper.fileUpload(file, fileLocation);
 		this.photoDAO.create(photo);
+
+		alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>uploaded</b> the photo <b>"
+				+ file.getOriginalFilename() + "</b>.");
+		return alertFactory;
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.photo.service.PhotoService;
-import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -79,32 +78,6 @@ public class PhotoController {
 				+ staffID);
 	}
 
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
-			+ Project.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView uploadFileToProject(
-			@RequestParam(ProjectFile.PARAM_FILE) MultipartFile file,
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
-			RedirectAttributes redirectAttrs) throws IOException {
-
-		// If file is not empty.
-		if (!file.isEmpty()) {
-			this.photoService.create(file, projectID, description);
-		} else {
-			// TODO Handle this scenario.
-		}
-
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>uploaded</b> the photo <b>"
-				+ file.getOriginalFilename() + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
-	}
-
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listPhotos(Model model) {
@@ -131,24 +104,6 @@ public class PhotoController {
 				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_PHOTO + "/"
 				+ SystemConstants.REQUEST_LIST;
-	}
-
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
-	public ModelAndView delete(
-			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-			@RequestParam(Photo.COLUMN_PRIMARY_KEY) long id,
-			RedirectAttributes redirectAttrs) {
-		String name = this.photoService.getNameByID(id);
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>deleted</b> photo <b>" + name
-				+ "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-		this.photoService.delete(id);
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-				+ "/" + projectID);
 	}
 
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"

@@ -595,8 +595,8 @@ public class ProjectController {
 	 * @throws IOException
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.PROFILE + "/"
-			+ SystemConstants.REQUEST_UPLOAD, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
+			+ SystemConstants.PROFILE, method = RequestMethod.POST)
 	public String uploadProfile(HttpSession session,
 			@RequestParam(PARAM_FILE) MultipartFile file, SessionStatus status)
 			throws IOException {
@@ -703,8 +703,8 @@ public class ProjectController {
 	 * @throws IOException
 	 */
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-	@RequestMapping(value = ProjectFile.OBJECT_NAME + "/"
-			+ SystemConstants.REQUEST_UPLOAD, method = RequestMethod.POST)
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
+			+ ProjectFile.OBJECT_NAME, method = RequestMethod.POST)
 	public String uploadFileToProject(
 			@ModelAttribute(ATTR_PROJECT_FILE) MultipartBean mpBean,
 			SessionStatus status, HttpSession session,
@@ -777,6 +777,80 @@ public class ProjectController {
 	}
 
 	/**
+	 * Upload a photo to a project.
+	 * 
+	 * @param file
+	 * @param projectID
+	 * @param description
+	 * @param redirectAttrs
+	 * @return
+	 * @throws IOException
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
+			+ Photo.OBJECT_NAME, method = RequestMethod.POST)
+	public String uploadPhotoToProject(
+			@ModelAttribute(ATTR_PHOTO) MultipartBean mpBean,
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) throws IOException {
+
+		Project proj = (Project) session
+				.getAttribute(ProjectController.ATTR_PROJECT);
+		MultipartFile file = mpBean.getFile();
+		String description = mpBean.getDescription();
+		long projectID = proj.getId();
+
+		AlertBoxFactory alertFactory = new AlertBoxFactory();
+
+		// If file is not empty.
+		if (!file.isEmpty()) {
+			alertFactory = this.photoService.create(file, projectID,
+					description);
+		} else {
+			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory
+					.setMessage("You cannot <b>upload</b> an <b>empty</b> photo.");
+		}
+
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	}
+
+	/**
+	 * Delete a photo from a project.
+	 * 
+	 * @param projectID
+	 * @param id
+	 * @param redirectAttrs
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
+			+ Photo.OBJECT_NAME + "/{" + Photo.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String deletePhoto(@PathVariable(Photo.OBJECT_NAME) long id,
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
+
+		Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+		String name = this.photoService.getNameByID(id);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>deleted</b> photo <b>" + name
+				+ "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		this.photoService.delete(id);
+		this.projectService.clearProjectCache(proj.getId());
+
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	}
+
+	/**
 	 * Delete a project file. TODO Make this general, create "From Origin"
 	 * version.
 	 * 
@@ -825,6 +899,7 @@ public class ProjectController {
 		// Model for forms.
 		model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
 		model.addAttribute(ATTR_PROJECT_FILE, new MultipartBean(id));
+		model.addAttribute(ATTR_PHOTO, new MultipartBean(id));
 
 		// If ID is zero, create new.
 		if (id == 0) {
