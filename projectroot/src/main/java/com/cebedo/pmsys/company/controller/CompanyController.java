@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.company.service.CompanyService;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 
 @Controller
+@SessionAttributes(value = { CompanyController.ATTR_COMPANY }, types = { Company.class })
 @RequestMapping(Company.OBJECT_NAME)
 public class CompanyController {
 
@@ -49,18 +53,27 @@ public class CompanyController {
 	 * @return
 	 */
 	@RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-	public String create(@ModelAttribute(ATTR_COMPANY) Company company) {
+	public String create(@ModelAttribute(ATTR_COMPANY) Company company,
+			RedirectAttributes redirectAttrs, SessionStatus status) {
 		// TODO This has a bug.
 		// Fix your client-side JSP forms to handle dates.
+		String uiAlert = "";
 		if (company.getId() == 0) {
 			logger.info("Creating company: " + company.toString());
-			this.companyService.create(company);
-		} else {
-			logger.info("Updating company: " + company.toString());
-			this.companyService.update(company);
+			uiAlert = this.companyService.create(company);
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					uiAlert);
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
+					+ SystemConstants.REQUEST_LIST;
 		}
+		logger.info("Updating company: " + company.toString());
+		uiAlert = this.companyService.update(company);
+		redirectAttrs
+				.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, uiAlert);
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
-				+ SystemConstants.REQUEST_LIST;
+				+ SystemConstants.REQUEST_EDIT + "/" + company.getId();
 	}
 
 	/**
@@ -70,10 +83,14 @@ public class CompanyController {
 	 * @return
 	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/{"
-			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
-	public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id) {
+			+ Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.GET)
+	public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
+			RedirectAttributes redirectAttrs, SessionStatus status) {
 		logger.info("Deleting company: " + id);
-		this.companyService.delete(id);
+		String uiAlert = this.companyService.delete(id);
+		redirectAttrs
+				.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, uiAlert);
+		status.setComplete();
 		return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
 				+ SystemConstants.REQUEST_LIST;
 	}

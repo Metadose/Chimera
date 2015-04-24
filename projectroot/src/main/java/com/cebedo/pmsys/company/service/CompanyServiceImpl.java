@@ -10,6 +10,7 @@ import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -23,8 +24,20 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	@Transactional
-	public void create(Company company) {
-		this.companyDAO.create(company);
+	public String create(Company company) {
+		AuthenticationToken auth = this.authHelper.getAuth();
+
+		String result = "";
+
+		if (auth.isSuperAdmin()) {
+			this.companyDAO.create(company);
+			result = AlertBoxFactory.SUCCESS.generateCreate(
+					Company.OBJECT_NAME, company.getName());
+		} else {
+			result = AlertBoxFactory.FAILED.generateCreate(Company.OBJECT_NAME,
+					company.getName());
+		}
+		return result;
 	}
 
 	@Override
@@ -35,14 +48,37 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	@Transactional
-	public void update(Company company) {
-		this.companyDAO.update(company);
+	public String update(Company company) {
+		AuthenticationToken auth = this.authHelper.getAuth();
+
+		String result = "";
+
+		if (auth.isSuperAdmin()) {
+			this.companyDAO.update(company);
+			result = AlertBoxFactory.SUCCESS.generateUpdate(
+					Company.OBJECT_NAME, company.getName());
+		} else {
+			result = AlertBoxFactory.FAILED.generateUpdate(Company.OBJECT_NAME,
+					company.getName());
+		}
+		return result;
 	}
 
 	@Override
 	@Transactional
-	public void delete(long id) {
-		this.companyDAO.delete(id);
+	public String delete(long id) {
+		String result = "";
+		AuthenticationToken auth = this.authHelper.getAuth();
+		Company company = this.companyDAO.getByID(id);
+		if (auth.isSuperAdmin()) {
+			this.companyDAO.delete(id);
+			result = AlertBoxFactory.SUCCESS.generateDelete(
+					Company.OBJECT_NAME, company.getName());
+		} else {
+			result = AlertBoxFactory.FAILED.generateDelete(Company.OBJECT_NAME,
+					company.getName());
+		}
+		return result;
 	}
 
 	@Override

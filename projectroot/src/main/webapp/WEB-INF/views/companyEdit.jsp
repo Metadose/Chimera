@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -35,6 +36,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -42,33 +44,30 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
-                   									<form role="form" method="post" action="${contextPath}/company/create/">
-                   										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                   									<form:form modelAttribute="company" id="companyForm" role="form" method="post" action="${contextPath}/company/create/">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" name="company_id" value="${company.id}"/>
 				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" name="name" value="${company.name}"/><br/>
+				                                            <form:input type="text" class="form-control" path="name"/><br/>
 				                                            <label>Description</label>
-				                                            <input type="text" class="form-control" name="description" value="${company.description}"/><br/>
+				                                            <form:input type="text" class="form-control" path="description"/><br/>
 			                                                <label>Date Started</label>
-			                                                <input type="text" class="form-control" name="date_started" value="${company.dateStarted}"/><br/>
+			                                                <form:input type="text" class="form-control" path="dateStarted"/><br/>
 			                                                <label>Date Expiration</label>
-			                                                <input type="text" class="form-control" name="date_expiration" value="${company.dateExpiration}"/><br/>
+			                                                <form:input type="text" class="form-control" path="dateExpiration"/><br/>
 				                                        </div>
-				                                        <button class="btn btn-default btn-flat btn-sm">Create</button>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
+				                                    	<c:when test="${company.id == 0}">
+				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Create</button>
+				                                    	</c:when>
 		                                            	<c:when test="${company.id > 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/company/delete/${company.id}">
+		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Update</button>
+		                                            		<c:url value="/company/delete/${company.id}" var="urlDeleteCompany"/>
+		                                            		<a href="${urlDeleteCompany}">
 																<button class="btn btn-default btn-flat btn-sm">Delete This Company</button>
 															</a>
 		                                            	</c:when>

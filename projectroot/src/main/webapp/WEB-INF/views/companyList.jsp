@@ -22,12 +22,14 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	${uiParamAlert}
                         <div class="box">
                                 <div class="box-header">
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<a href="${contextPath}/company/edit/0">
+                                	<c:url value="/company/edit/0" var="urlCreateCompany"/>
+                                	<a href="${urlCreateCompany}">
                                 		<button class="btn btn-default btn-flat btn-sm">Create Company</button>
                                 	</a>
                                 	<br/><br/>
@@ -48,10 +50,12 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/company/edit/${company.id}">
+		                                            			<c:url value="/company/edit/${company.id}" var="urlEditCompany"/>
+																<a href="${urlEditCompany}">
 																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</a>
-																<a href="${contextPath}/company/delete/${company.id}">
+																<c:url value="/company/delete/${company.id}" var="urlDeleteCompany"/>
+																<a href="${urlDeleteCompany}">
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</a>
 															</center>

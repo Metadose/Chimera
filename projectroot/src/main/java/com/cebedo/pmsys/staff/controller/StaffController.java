@@ -207,7 +207,7 @@ public class StaffController {
 
 		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 		if (staff == null) {
-			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("Error occured when you tried to <b>delete</b> staff. Please try again.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,

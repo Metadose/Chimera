@@ -211,7 +211,7 @@ public class PhotoServiceImpl implements PhotoService {
 		// If not authorized, return.
 		Project proj = this.projectDAO.getByID(projectID);
 		if (!this.authHelper.isActionAuthorized(proj)) {
-			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("You are <b>not authorized</b> to <b>upload</b> a file to project <b>"
 							+ proj.getName() + "</b>.");
@@ -244,7 +244,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 		File fileTest = new File(fileLocation);
 		if (fileTest.exists()) {
-			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory = AlertBoxFactory.FAILED;
 			alertFactory.setMessage("<b>" + file.getOriginalFilename()
 					+ " already exists</b> in project <b>" + proj.getName()
 					+ "</b>.");

@@ -152,9 +152,20 @@
 	<mvc:annotation-driven validator="hdivEditableValidator"/>
 	
 	<!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
-	<hdiv:validation id="SQLInjection">
+	
+	<!-- HDIVSQLInjection is having problems with date inputs -->
+	<!-- https://github.com/seenukarthi/hdiv-org/blob/master/hdiv-web-spring-mvc-3.0.4/src/main/webapp/WEB-INF/hdiv-validations.xml -->
+	<hdiv:validation id="HDIVSQLInjection">
 		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%27)|(')|(%3D)|(=)|(/)|(%2F)|(")|((%22)|(-|%2D){2})|(%23)|(%3B)|(;))+(\s|\S)*]]></hdiv:rejectedPattern>
 	</hdiv:validation>
+	<!-- http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks -->
+	<hdiv:validation id="SymantecTypicalSQLInjection">
+		<hdiv:rejectedPattern><![CDATA[/\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/ix]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="SymantecUNIONSQLInjection">
+		<hdiv:rejectedPattern><![CDATA[/((\%27)|(\'))union/ix]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	
 	<hdiv:validation id="execCommand">
 		<hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
 	</hdiv:validation>
@@ -175,7 +186,8 @@
 	</hdiv:validation>
 	
 	<hdiv:editableValidations>
-		<hdiv:validationRule url=".*" enableDefaults="false">SQLInjection</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">SymantecTypicalSQLInjection</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">SymantecUNIONSQLInjection</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">execCommand</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">unauthorizedChars</hdiv:validationRule>
 		<hdiv:validationRule url=".*" enableDefaults="false">simpleXSS</hdiv:validationRule>

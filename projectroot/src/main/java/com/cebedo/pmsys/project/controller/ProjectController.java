@@ -144,7 +144,7 @@ public class ProjectController {
 
 		// Error handling if staff was not set properly.
 		if (project == null) {
-			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -187,7 +187,7 @@ public class ProjectController {
 
 		// Error handling if staff was not set properly.
 		if (project == null) {
-			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -231,7 +231,7 @@ public class ProjectController {
 
 		// Error handling if staff was not set properly.
 		if (project == null) {
-			AlertBoxFactory alertFactory = AlertBoxFactory.ERROR;
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -807,7 +807,7 @@ public class ProjectController {
 			alertFactory = this.photoService.create(file, projectID,
 					description);
 		} else {
-			alertFactory = AlertBoxFactory.ERROR;
+			alertFactory = AlertBoxFactory.FAILED;
 			alertFactory
 					.setMessage("You cannot <b>upload</b> an <b>empty</b> photo.");
 		}
