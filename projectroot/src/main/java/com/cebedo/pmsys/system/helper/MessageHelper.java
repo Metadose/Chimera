@@ -27,11 +27,11 @@ public class MessageHelper {
 		messageMap.put(MessageListenerImpl.KEY_USER_ID, auth.getUser().getId());
 		messageMap.put(MessageListenerImpl.KEY_USER_IP_ADDR,
 				auth.getIpAddress());
-
-		// Audit.
 		messageMap.put(AuditMessageListener.KEY_COMPANY,
 				auth.getCompany() == null ? project.getCompany() == null ? null
 						: project.getCompany() : auth.getCompany());
+
+		// Audit.
 		messageMap.put(AuditMessageListener.KEY_AUDIT_ACTION, auditAction);
 		messageMap.put(AuditMessageListener.KEY_AUDIT_OBJECT_NAME,
 				Project.OBJECT_NAME);
@@ -46,16 +46,21 @@ public class MessageHelper {
 		return messageMap;
 	}
 
-	public void constructAndSendMessageMap(Project project, int auditAction,
+	/**
+	 * Responsible for all post-service notifications.<br>
+	 * Logging, auditing, notification, emailing.
+	 * 
+	 * @param project
+	 * @param auditAction
+	 * @param logText
+	 */
+	public void constructSendMessage(Project project, int auditAction,
 			String logText) {
 		Map<String, Object> messageMap = constructMessageMap(project,
 				auditAction, logText);
 		MessageSender sender = (MessageSender) this.beanHelper
 				.getBean(MessageSender.BEAN_NAME);
-		// Queue dest = new
-		// ActiveMQQueue(AuditMessageListener.MESSAGE_DESTINATION
-		// + "," + LogMessageListener.MESSAGE_DESTINATION + ","
-		// + MailMessageListener.MESSAGE_DESTINATION);
+
 		Queue dest = new ActiveMQQueue(AuditMessageListener.MESSAGE_DESTINATION
 				+ "," + LogMessageListener.MESSAGE_DESTINATION);
 		sender.send(dest, messageMap);

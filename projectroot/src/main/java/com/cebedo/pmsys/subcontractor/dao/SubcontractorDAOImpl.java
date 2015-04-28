@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.cebedo.pmsys.subcontractor.model.Subcontractor;
 import com.cebedo.pmsys.system.helper.DAOHelper;
 
-//@Repository
+//@ZSetRepository
 public class SubcontractorDAOImpl implements SubcontractorDAO {
 
 	private static final Logger logger = LoggerFactory

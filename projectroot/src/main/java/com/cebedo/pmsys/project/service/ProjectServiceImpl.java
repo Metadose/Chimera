@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.project.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.company.dao.CompanyDAO;
 import com.cebedo.pmsys.company.model.Company;
+import com.cebedo.pmsys.notification.domain.Notification;
+import com.cebedo.pmsys.notification.repository.NotificationZSetRepo;
 import com.cebedo.pmsys.project.dao.ProjectDAO;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.security.audit.model.AuditLog;
@@ -29,6 +32,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private ProjectDAO projectDAO;
 	private CompanyDAO companyDAO;
+	private NotificationZSetRepo notificationZSetRepo;
+
+	public void setNotificationZSetRepo(
+			NotificationZSetRepo notificationZSetRepo) {
+		this.notificationZSetRepo = notificationZSetRepo;
+	}
 
 	public void setProjectDAO(ProjectDAO projectDAO) {
 		this.projectDAO = projectDAO;
@@ -52,12 +61,21 @@ public class ProjectServiceImpl implements ProjectService {
 		// AND auditor to audit.
 		// Fire up the message so that it would go parallel with the service
 		// below.
-		this.messageHelper.constructAndSendMessageMap(project,
+		AuthenticationToken auth = this.authHelper.getAuth();
+
+		Notification notification = new Notification("Test Content", auth
+				.getUser().getId());
+
+		String notifTxt = auth.getStaff() == null ? auth.getUser()
+				.getUsername() : auth.getStaff().getFullName()
+				+ " created a new project " + project.getName();
+
+		this.notificationZSetRepo.add(notification);
+		this.messageHelper.constructSendMessage(project,
 				AuditLog.ACTION_CREATE,
 				"Creating project: " + project.getName());
 
 		// Do service.
-		AuthenticationToken auth = this.authHelper.getAuth();
 		this.projectDAO.create(project);
 		Company authCompany = auth.getCompany();
 		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
@@ -82,7 +100,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		if (this.authHelper.isActionAuthorized(project)) {
 			// Audit and log.
-			this.messageHelper.constructAndSendMessageMap(
+			this.messageHelper.constructSendMessage(
 					project,
 					AuditLog.ACTION_UPDATE,
 					"Updating project: " + project.getId() + " = "
@@ -153,7 +171,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = this.projectDAO.getByID(id);
 
 		if (this.authHelper.isActionAuthorized(project)) {
-			this.messageHelper.constructAndSendMessageMap(project,
+			this.messageHelper.constructSendMessage(project,
 					AuditLog.ACTION_DELETE, "Deleting project: " + id + " = "
 							+ project.getName());
 			this.projectDAO.delete(id);
@@ -187,6 +205,12 @@ public class ProjectServiceImpl implements ProjectService {
 	@Cacheable(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#id")
 	public Project getByIDWithAllCollections(long id) {
 		AuthenticationToken auth = this.authHelper.getAuth();
+
+		// TODO 86400000 is 24 hours.
+		Set<Notification> notifs = this.notificationZSetRepo.rangeByScore(
+				Notification.constructKey(auth.getUser().getId(), false),
+				System.currentTimeMillis() - 86400000,
+				System.currentTimeMillis());
 		Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 		if (this.authHelper.isActionAuthorized(project)) {

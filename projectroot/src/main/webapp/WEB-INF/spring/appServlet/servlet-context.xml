@@ -417,6 +417,7 @@
     <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
+        <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
     
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">
@@ -486,6 +487,14 @@
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
+    </beans:bean>
+    
+    <!-- Redis object Notification -->
+    <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.notification.repository.NotificationZSetRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="notificationService" class="com.cebedo.pmsys.notification.service.NotificationServiceImpl">
+        <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
     
     <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAOImpl">
