@@ -18,7 +18,7 @@ public class MessageZSetRepo implements ZSetRepository<Message> {
 	@Override
 	public void add(Message obj) {
 		this.redisTemplate.opsForZSet().add(obj.getKey(), obj,
-				obj.getTimestamp());
+				obj.getTimestamp().getTime());
 	}
 
 	@Override
