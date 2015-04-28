@@ -37,7 +37,7 @@ public class MailMessageListener implements MessageListener {
 				e.printStackTrace();
 			}
 		} else {
-			throw new IllegalArgumentException("Message must be of type Map");
+			throw new IllegalArgumentException("MessageThread must be of type Map");
 		}
 	}
 

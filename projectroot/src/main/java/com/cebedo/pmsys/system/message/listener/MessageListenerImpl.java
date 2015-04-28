@@ -22,7 +22,7 @@ public class MessageListenerImpl implements MessageListener {
 			}
 		} else {
 			throw new IllegalArgumentException(
-					"Message must be of type TextMessage");
+					"MessageThread must be of type TextMessage");
 		}
 	}
 }

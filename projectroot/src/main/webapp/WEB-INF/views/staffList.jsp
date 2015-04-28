@@ -77,6 +77,10 @@
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																					</a>
 																					</sec:authorize>
+																					<c:url var="urlSendMessage" value="/message/compose/${staff.getUser().getId()}"/>
+																					<a href="${urlSendMessage}">
+																						<button class="btn btn-default btn-flat btn-sm">Message</button>
+																					</a>
 																				</center>
 																			</td>
 							                                                <td>

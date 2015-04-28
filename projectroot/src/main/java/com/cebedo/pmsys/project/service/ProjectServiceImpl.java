@@ -63,12 +63,12 @@ public class ProjectServiceImpl implements ProjectService {
 		// below.
 		AuthenticationToken auth = this.authHelper.getAuth();
 
-		Notification notification = new Notification("Test Content", auth
-				.getUser().getId());
-
 		String notifTxt = auth.getStaff() == null ? auth.getUser()
 				.getUsername() : auth.getStaff().getFullName()
 				+ " created a new project " + project.getName();
+
+		Notification notification = new Notification("Test Content", auth
+				.getUser().getId());
 
 		this.notificationZSetRepo.add(notification);
 		this.messageHelper.constructSendMessage(project,
