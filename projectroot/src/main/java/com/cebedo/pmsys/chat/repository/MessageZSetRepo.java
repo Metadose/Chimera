@@ -1,10 +1,10 @@
-package com.cebedo.pmsys.message.repository;
+package com.cebedo.pmsys.chat.repository;
 
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.message.domain.Message;
+import com.cebedo.pmsys.chat.domain.Message;
 import com.cebedo.pmsys.system.redis.repository.ZSetRepository;
 
 public class MessageZSetRepo implements ZSetRepository<Message> {

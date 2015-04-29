@@ -1,8 +1,8 @@
-package com.cebedo.pmsys.message.service;
+package com.cebedo.pmsys.chat.service;
 
 import java.util.Set;
 
-import com.cebedo.pmsys.message.domain.Message;
+import com.cebedo.pmsys.chat.domain.Message;
 
 public interface MessageService {
 

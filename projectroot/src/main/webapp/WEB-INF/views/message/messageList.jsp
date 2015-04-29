@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authUser" property="user"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -46,49 +47,44 @@
                                             <!-- Navigation - folders-->
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
-                                                    <li class="header">Folders</li>
-                                                    <li class="active"><a href="#"><table>
+<!--                                                     <li class="header">Folders</li> -->
+<!--                                                     TODO Implement "active" <li class="active"><a href="#"><table> -->
+													<c:forEach items="${conversations}" var="conversation">
+													<c:forEach items="${conversation.contributors}" var="contributor">
+													<c:if test="${contributor.id != authUser.id}">
+													<c:url value="/message/view/${contributor.id}" var="urlViewMessage"/>
+                                                    <li><a href="${urlViewMessage}"><table>
 													<tr>
 														<td>
 														<div class="user-panel">
-															<div class="pull-left image">
-																<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
+															<div>
+																<c:choose>
+	                                                			<c:when test="${!empty contributor.staff.thumbnailURL}">
+	                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${contributor.staff.id}" class="img-circle"/>
+	                                                			</c:when>
+	                                                			<c:when test="${empty contributor.staff.thumbnailURL}">
+	                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
+	                                                			</c:when>
+		                                                		</c:choose>
 															</div>
 														</div>
 														</td>
 														<td>
-															Testing asdasdasd
+															<c:choose>
+			                                                <c:when test="${empty contributor.staff.getFullName()}">
+			                                                	${contributor.username}
+			                                                </c:when>
+			                                                <c:when test="${!empty contributor.staff.getFullName()}">
+				                                                ${contributor.staff.getFullName()}
+			                                                </c:when>
+			                                                </c:choose>
 														</td>
 													</tr>
 													</table></a></li>
-													<li><a href="#"><table>
-													<tr>
-														<td>
-                                                    	<div class="user-panel">
-															<div class="pull-left image">
-																<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
-															</div>
-														</div>
-														</td>
-														<td>
-															acxzc asd2e32
-														</td>
-													</tr>
-													</table></a></li>
-													<li><a href="#"><table>
-													<tr>
-														<td>
-                                                    	<div class="user-panel">
-															<div class="pull-left image">
-																<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
-															</div>
-														</div>
-														</td>
-														<td>
-															334 adaf1234
-														</td>
-													</tr>
-													</table></a></li>
+													</c:if>
+													</c:forEach>
+													</c:forEach>
+													
 <!--                                                     <li><a href="#"><i class="fa fa-pencil-square-o"></i> Drafts</a></li> -->
 <!--                                                     <li><a href="#"><i class="fa fa-mail-forward"></i> Sent</a></li> -->
 <!--                                                     <li><a href="#"><i class="fa fa-star"></i> Starred</a></li> -->
@@ -131,7 +127,14 @@
 					                                        <p class="message">
 					                                            <a href="#" class="name">
 					                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.timestamp}</small>
-					                                                ${message.sender.staff.getFullName()}
+					                                                <c:choose>
+					                                                <c:when test="${empty message.sender.staff.getFullName()}">
+					                                                	${message.sender.username}
+					                                                </c:when>
+					                                                <c:when test="${!empty message.sender.staff.getFullName()}">
+						                                                ${message.sender.staff.getFullName()}
+					                                                </c:when>
+					                                                </c:choose>
 					                                            </a>
 					                                            ${message.content}
 					                                        </p>
@@ -139,19 +142,25 @@
 					                                	</c:forEach>
 					                                </div><!-- /.chat -->
 					                                <div class="box-footer">
-					                                    <div class="input-group">
 					                                    	
 			                                    	<form:form modelAttribute="message"
 														id="detailsForm"
 														method="post"
 														action="${contextPath}/message/send">
-				                                        <form:input class="form-control" placeholder="Type message..." path="content"/>
-				                                        <div class="input-group-btn" style="padding-left: 1%;">
-				                                            <button class="btn btn-flat btn-default"><i class="fa fa-paper-plane"></i></button>
-				                                        </div>
+														<table style="width: 100%">
+															<tr>
+															<td style="width: 100%">
+					                                        <form:input class="form-control" placeholder="Type message..." path="content"/>
+															</td>
+															<td style="padding-left: 1%; vertical-align: top">
+					                                        <div class="input-group-btn" style="padding-left: 1%;">
+					                                            <button class="btn btn-flat btn-default"><i class="fa fa-paper-plane"></i>&nbsp;Send</button>
+					                                        </div>
+															</td>
+															</tr>
+														</table>
 				                                    </form:form>
 					                                    	
-					                                    </div>
 					                                </div>
 					                            </div><!-- /.box (chat box) -->
                                             </div><!-- /.table-responsive -->

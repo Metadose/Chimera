@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.message.controller;
+package com.cebedo.pmsys.chat.controller;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.cebedo.pmsys.message.domain.Message;
-import com.cebedo.pmsys.message.repository.MessageZSetRepo;
+import com.cebedo.pmsys.chat.domain.Conversation;
+import com.cebedo.pmsys.chat.domain.Message;
+import com.cebedo.pmsys.chat.service.ConversationService;
+import com.cebedo.pmsys.chat.service.MessageService;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
@@ -29,8 +31,15 @@ public class MessageController {
 	public static final String CONTROLLER_MAPPING = "message";
 	public static final String JSP_LIST = "messageList";
 	private AuthHelper authHelper = new AuthHelper();
-	private MessageZSetRepo messageZSetRepo;
+	private MessageService messageService;
 	private SystemUserService systemUserService;
+	private ConversationService conversationService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "conversationService")
+	public void setConversationService(ConversationService s) {
+		this.conversationService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "systemUserService")
@@ -39,9 +48,9 @@ public class MessageController {
 	}
 
 	@Autowired
-	@Qualifier(value = "messageZSetRepo")
-	public void setMessageZSetRepo(MessageZSetRepo messageZSetRepo) {
-		this.messageZSetRepo = messageZSetRepo;
+	@Qualifier(value = "messageService")
+	public void setMessageService(MessageService s) {
+		this.messageService = s;
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT })
@@ -54,28 +63,36 @@ public class MessageController {
 			@ModelAttribute(Message.OBJECT_NAME) Message message,
 			SessionStatus status) {
 		message.setTimestamp(new Timestamp(System.currentTimeMillis()));
-		this.messageZSetRepo.add(message);
+		this.messageService.add(message);
 		status.setComplete();
-		return SystemConstants.SYSTEM + "/" + JSP_LIST;
+		return SystemConstants.CONTROLLER_REDIRECT + Message.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_VIEW + "/"
+				+ message.getRecipient().getId();
 	}
 
 	@RequestMapping(value = { SystemConstants.REQUEST_VIEW + "/{"
 			+ SystemUser.OBJECT_NAME + "}" }, method = RequestMethod.GET)
-	public String openMessages(
+	public String viewMessages(
 			@PathVariable(SystemUser.OBJECT_NAME) long recipientID, Model model) {
 
+		SystemUser user = this.authHelper.getAuth().getUser();
+
 		// Get messages for the last 24 hours.
-		Set<Message> messages = this.messageZSetRepo.rangeByScore(
-				Message.constructKey(recipientID, false),
+		Set<Message> messages = this.messageService.rangeByScore(
+				Message.constructKey(recipientID, user.getId()),
 				System.currentTimeMillis() - 86400000,
 				System.currentTimeMillis());
 
 		Message newMessage = new Message();
-		newMessage.setSender(this.authHelper.getAuth().getUser());
+		newMessage.setSender(user);
 		newMessage.setRead(false);
 		newMessage.setRecipient(this.systemUserService.getByID(recipientID));
 
+		Set<Conversation> conversations = this.conversationService
+				.members(Conversation.constructKey(user.getId()));
+
 		model.addAttribute("messages", messages);
+		model.addAttribute("conversations", conversations);
 		model.addAttribute(Message.OBJECT_NAME, newMessage);
 
 		return Message.OBJECT_NAME + "/" + JSP_LIST;

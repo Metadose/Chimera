@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.message.domain;
+package com.cebedo.pmsys.chat.domain;
 
 import java.util.Date;
 
@@ -57,14 +57,31 @@ public class Message implements IDomainObject {
 		this.read = read;
 	}
 
-	public static String constructKey(long userID, boolean read) {
-		return OBJECT_KEY + ":recipient:" + userID + ":read:" + read;
+	public static String constructKey(long recipientID, long senderID) {
+		// Key: message:1.4
+		String key = OBJECT_KEY + ":";
+
+		if (recipientID <= senderID) {
+			key += recipientID + "." + senderID;
+		} else if (recipientID > senderID) {
+			key += senderID + "." + recipientID;
+		}
+		return key;
 	}
 
 	@Override
 	public String getKey() {
-		return OBJECT_KEY + ":recipient:" + getRecipient().getId() + ":read:"
-				+ isRead();
+		// Key: message:1.4
+		String key = OBJECT_KEY + ":";
+		long recipientID = getRecipient().getId();
+		long senderID = getSender().getId();
+
+		if (recipientID <= senderID) {
+			key += recipientID + "." + senderID;
+		} else if (recipientID > senderID) {
+			key += senderID + "." + recipientID;
+		}
+		return key;
 	}
 
 }

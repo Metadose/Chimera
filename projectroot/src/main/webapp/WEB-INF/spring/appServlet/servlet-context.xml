@@ -496,11 +496,18 @@
     <beans:bean id="notificationService" class="com.cebedo.pmsys.notification.service.NotificationServiceImpl">
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.message.repository.MessageZSetRepo">
+    <beans:bean id="conversationSetRepo" class="com.cebedo.pmsys.chat.repository.ConversationSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="messageService" class="com.cebedo.pmsys.message.service.MessageServiceImpl">
+    <beans:bean id="conversationService" class="com.cebedo.pmsys.chat.service.ConversationServiceImpl">
+        <beans:property name="conversationSetRepo" ref="conversationSetRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.chat.repository.MessageZSetRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="messageService" class="com.cebedo.pmsys.chat.service.MessageServiceImpl">
         <beans:property name="messageZSetRepo" ref="messageZSetRepo"></beans:property>
+        <beans:property name="conversationSetRepo" ref="conversationSetRepo"></beans:property>
     </beans:bean>
     
     <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAOImpl">
