@@ -125,7 +125,15 @@
 					                                    <div class="item">
 					                                        <img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
 					                                        <p class="message">
-					                                            <a href="#" class="name">
+					                                        	<c:choose>
+				                                                <c:when test="${!empty message.sender.staff.id}">
+				                                                	<c:url value="/staff/edit/${message.sender.staff.id}" var="urlReference"/>
+				                                                </c:when>
+				                                                <c:when test="${empty message.sender.staff.id}">
+					                                                <c:url value="/systemuser/edit/${message.sender.id}" var="urlReference"/>
+				                                                </c:when>
+				                                                </c:choose>
+					                                            <a href="${urlReference}" class="name">
 					                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.timestamp}</small>
 					                                                <c:choose>
 					                                                <c:when test="${empty message.sender.staff.getFullName()}">
