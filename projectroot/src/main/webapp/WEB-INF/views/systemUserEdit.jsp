@@ -46,7 +46,24 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<h2 class="page-header">Information</h2>
+                                	<c:choose>
+                                		<c:when test="${!empty systemuser.staff}">
+	                                	<h2 class="page-header">
+	                                	<c:url value="/staff/edit/${systemuser.staff.id}/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
+	                                	<a href="${urlViewStaff}">
+	                                	<button class="btn btn-default btn-flat btn-sm">View Staff</button>
+	                                	</a>
+										</h2>
+                                		</c:when>
+                                		<c:when test="${empty systemuser.staff}">
+                                		<h2 class="page-header">
+	                                	<c:url value="/staff/edit/0/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
+	                                	<a href="${urlViewStaff}">
+	                                	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+	                                	</a>
+										</h2>
+                                		</c:when>
+                                	</c:choose>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
@@ -69,7 +86,9 @@
 				                                            <form:checkbox class="form-control" path="superAdmin"/><br/>
 				                                            <label>Company Admin</label>
 				                                            <form:checkbox class="form-control" path="companyAdmin"/><br/>
-				                                            <form:select path="companyID" items="${companyList}" itemValue="id" itemLabel="name"/>
+				                                            <label>Company</label>
+				                                            <form:input type="text" class="form-control" path="companyID"/><br/>
+<%-- 				                                            <form:select path="companyID" items="${companyList}" itemValue="id" itemLabel="name"/> --%>
 				                                            </c:if>
 				                                        </div>
 				                                    </form:form>

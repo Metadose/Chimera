@@ -69,7 +69,7 @@ $(document).ready(function() {
             	 	<c:when test="${!empty authStaff}">
             	 		<c:set var="staffName" value="${authStaff.prefix} ${authStaff.firstName} ${authStaff.middleName} ${authStaff.lastName} ${authStaff.suffix}"/>
             	 		<p>Hello, ${staffName}</p>
-            	 		<h6>${authStaff.companyPosition}</h6>
+            	 		<h6>(${authUser.username})</h6>
             	 	</c:when>
             	 	<c:when test="${empty authStaff}">
             	 		<p>Hello, ${authUser.username}</p>

@@ -23,6 +23,8 @@ import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.model.StaffWrapper;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
+import com.cebedo.pmsys.systemuser.dao.SystemUserDAO;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.team.dao.TeamDAO;
 import com.cebedo.pmsys.team.model.Team;
 
@@ -34,7 +36,12 @@ public class StaffServiceImpl implements StaffService {
 	private ProjectDAO projectDAO;
 	private TeamDAO teamDAO;
 	private CompanyDAO companyDAO;
+	private SystemUserDAO systemUserDAO;
 	private ProjectFileService projectFileService;
+
+	public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
+		this.systemUserDAO = systemUserDAO;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "projectFileService")
@@ -257,5 +264,39 @@ public class StaffServiceImpl implements StaffService {
 	@Transactional
 	public String getNameByID(long staffID) {
 		return this.staffDAO.getNameByID(staffID);
+	}
+
+	@Override
+	@Transactional
+	public void createFromOrigin(Staff staff, String origin, String originID) {
+		if (origin.equals(SystemUser.OBJECT_NAME)) {
+			SystemUser user = this.systemUserDAO.getByID(Long
+					.parseLong(originID));
+
+			// Get the company from the user.
+			// Update the staff.
+			staff.setCompany(user.getCompany());
+			this.staffDAO.create(staff);
+
+			// If coming from the system user,
+			// attach relationship with user.
+			user.setStaff(staff);
+			this.systemUserDAO.update(user);
+			return;
+		}
+
+		// Create the staff first since to attach it's relationship
+		// with the company.
+		this.staffDAO.create(staff);
+
+		// Update it afterwards.
+		AuthenticationToken auth = this.authHelper.getAuth();
+		Company authCompany = auth.getCompany();
+
+		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
+			staff.setCompany(authCompany);
+			this.staffDAO.update(staff);
+		}
+
 	}
 }

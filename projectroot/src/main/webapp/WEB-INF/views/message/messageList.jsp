@@ -72,10 +72,10 @@
 														<td>
 															<c:choose>
 			                                                <c:when test="${empty contributor.staff.getFullName()}">
-			                                                	${contributor.username}
+			                                                	(${contributor.username})
 			                                                </c:when>
 			                                                <c:when test="${!empty contributor.staff.getFullName()}">
-				                                                ${contributor.staff.getFullName()}
+				                                                ${contributor.staff.getFullName()} (${contributor.username})
 			                                                </c:when>
 			                                                </c:choose>
 														</td>
@@ -123,7 +123,14 @@
 					                                	<c:forEach items="${messages}" var="message">
 					                                    <!-- chat item -->
 					                                    <div class="item">
-					                                        <img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
+					                                    	<c:choose>
+                                                			<c:when test="${!empty message.sender.staff.thumbnailURL}">
+                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${message.sender.staff.id}" class="img-circle"/>
+                                                			</c:when>
+                                                			<c:when test="${empty message.sender.staff.thumbnailURL}">
+                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
+                                                			</c:when>
+	                                                		</c:choose>
 					                                        <p class="message">
 					                                        	<c:choose>
 				                                                <c:when test="${!empty message.sender.staff.id}">
@@ -137,10 +144,10 @@
 					                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.timestamp}</small>
 					                                                <c:choose>
 					                                                <c:when test="${empty message.sender.staff.getFullName()}">
-					                                                	${message.sender.username}
+					                                                	(${message.sender.username})
 					                                                </c:when>
 					                                                <c:when test="${!empty message.sender.staff.getFullName()}">
-						                                                ${message.sender.staff.getFullName()}
+						                                                ${message.sender.staff.getFullName()} (${message.sender.username})
 					                                                </c:when>
 					                                                </c:choose>
 					                                            </a>

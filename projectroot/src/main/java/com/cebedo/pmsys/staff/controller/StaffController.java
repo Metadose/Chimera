@@ -140,9 +140,10 @@ public class StaffController {
 			SessionStatus status, RedirectAttributes redirectAttrs) {
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		if (staff.getId() == 0) {
+			this.staffService.createFromOrigin(staff, origin, originID);
+
 			alertFactory.setMessage("Successfully <b>created</b> staff <b>"
 					+ staff.getFullName() + "</b>.");
-			this.staffService.create(staff);
 		} else {
 			alertFactory.setMessage("Successfully <b>updated</b> staff <b>"
 					+ staff.getFullName() + "</b>.");
@@ -251,7 +252,8 @@ public class StaffController {
 
 		// If new, create it.
 		if (staffID == 0) {
-			model.addAttribute(ATTR_STAFF, new Staff());
+			Staff stf = new Staff();
+			model.addAttribute(ATTR_STAFF, stf);
 			model.addAttribute(SystemConstants.ATTR_ACTION,
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;

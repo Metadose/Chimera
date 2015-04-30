@@ -41,4 +41,6 @@ public interface StaffService {
 
 	public String getNameByID(long staffID);
 
+	public void createFromOrigin(Staff staff, String origin, String originID);
+
 }

@@ -39,6 +39,8 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Staff</th>
+                                                <th>Company</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -58,6 +60,8 @@
 														</td>
 														<td>${systemUser.id}</td>
 		                                                <td>${systemUser.username}</td>
+		                                                <td>${systemUser.staff.getFullName()}</td>
+		                                                <td>${systemUser.company.name}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -67,6 +71,8 @@
                                             	<th>&nbsp;</th>
                                             	<th>#</th>
                                                 <th>Name</th>
+                                                <th>Staff</th>
+                                                <th>Company</th>
                                             </tr>
                                         </tfoot>
                                     </table>
