@@ -13,6 +13,7 @@ public class Message implements IDomainObject {
 
 	private SystemUser sender;
 	private SystemUser recipient;
+	private long recipientID;
 	private Date timestamp;
 	private String content;
 	private boolean read;
@@ -55,6 +56,14 @@ public class Message implements IDomainObject {
 
 	public void setRead(boolean read) {
 		this.read = read;
+	}
+
+	public long getRecipientID() {
+		return recipientID;
+	}
+
+	public void setRecipientID(long recipientID) {
+		this.recipientID = recipientID;
 	}
 
 	public static String constructKey(long recipientID, long senderID) {

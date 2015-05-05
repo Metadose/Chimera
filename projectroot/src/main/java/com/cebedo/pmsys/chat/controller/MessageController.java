@@ -1,8 +1,7 @@
 package com.cebedo.pmsys.chat.controller;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import com.cebedo.pmsys.chat.domain.Conversation;
 import com.cebedo.pmsys.chat.domain.Message;
 import com.cebedo.pmsys.chat.service.ConversationService;
 import com.cebedo.pmsys.chat.service.MessageService;
+import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
@@ -36,11 +36,18 @@ public class MessageController {
 	private MessageService messageService;
 	private SystemUserService systemUserService;
 	private ConversationService conversationService;
+	private StaffService staffService;
 
 	@Autowired(required = true)
 	@Qualifier(value = "conversationService")
 	public void setConversationService(ConversationService s) {
 		this.conversationService = s;
+	}
+
+	@Autowired
+	@Qualifier(value = "staffService")
+	public void setStaffService(StaffService ps) {
+		this.staffService = ps;
 	}
 
 	@Autowired(required = true)
@@ -71,6 +78,15 @@ public class MessageController {
 	public String sendMessage(
 			@ModelAttribute(Message.OBJECT_NAME) Message message,
 			SessionStatus status) {
+
+		// If the recipient is null,
+		// then user must have sent this message from
+		// an empty form.
+		if (message.getRecipient() == null) {
+			SystemUser recipient = this.systemUserService.getByID(
+					message.getRecipientID(), true);
+			message.setRecipient(recipient);
+		}
 		message.setTimestamp(new Timestamp(System.currentTimeMillis()));
 		this.messageService.add(message);
 		status.setComplete();
@@ -92,27 +108,33 @@ public class MessageController {
 	public String viewMessages(
 			@PathVariable(SystemUser.OBJECT_NAME) long recipientID, Model model) {
 
+		// Get user and create empty containers.
 		SystemUser user = this.authHelper.getAuth().getUser();
-		SystemUser recipient = this.systemUserService
-				.getByID(recipientID, true);
-		// Get messages since the beginning of time.
-		Set<Message> messages = this.messageService.rangeByScore(
-				Message.constructKey(recipientID, user.getId()), 0,
-				System.currentTimeMillis());
-
+		Set<Message> messages = new HashSet<Message>();
 		Message newMessage = new Message();
 		newMessage.setSender(user);
 		newMessage.setRead(false);
-		newMessage.setRecipient(recipient);
 
-		// Get the chat messages based on contributors.
-		List<SystemUser> contributors = new ArrayList<SystemUser>();
-		contributors.add(user);
-		contributors.add(recipient);
+		// If user has clicked to see all messages.
+		if (recipientID != 0) {
+			// If user has a specific user.
+			// Get the user and
+			// get messages from that user
+			// since the beginning of time.
+			SystemUser recipient = this.systemUserService.getByID(recipientID,
+					true);
+			newMessage.setRecipient(recipient);
+			messages = this.messageService.rangeByScore(
+					Message.constructKey(recipientID, user.getId()), 0,
+					System.currentTimeMillis());
+		}
+
+		// Get the chat messages based on user.
 		Set<Conversation> conversations = this.conversationService
 				.getAllConversations(user);
-
 		model.addAttribute("messages", messages);
+		model.addAttribute("staffList", this.staffService.list(user
+				.getCompany() == null ? null : user.getCompany().getId()));
 		model.addAttribute("conversations", conversations);
 		model.addAttribute(Message.OBJECT_NAME, newMessage);
 

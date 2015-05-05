@@ -4,6 +4,26 @@
 <sec:authentication var="authUser" property="user"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<c:choose>
+<c:when test="${empty message.sender.staff.getFullName()}">
+	<c:set value="(${message.sender.username})" var="senderDisplayName"/>
+</c:when>
+<c:when test="${!empty message.sender.staff.getFullName()}">
+ 	<c:set value="${message.sender.staff.getFullName()} (${message.sender.username})" var="senderDisplayName"/>
+</c:when>
+</c:choose>
+
+<c:choose>
+<c:when test="${empty message.recipient}">
+ 	<c:set value="New Chat" var="recipientDisplayName"/>
+</c:when>
+<c:when test="${empty message.recipient.staff.getFullName()}">
+	<c:set value="(${message.recipient.username})" var="recipientDisplayName"/>
+</c:when>
+<c:when test="${!empty message.recipient.staff.getFullName()}">
+ 	<c:set value="${message.recipient.staff.getFullName()} (${message.recipient.username})" var="recipientDisplayName"/>
+</c:when>
+</c:choose>
 <html>
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -21,11 +41,12 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
-                <section class="content-header no-margin">
-                    <h1 class="text-center">
-                        Mailbox
-                    </h1>
-                </section>
+                <section class="content-header">
+		            <h1>
+		                Mailbox
+		                <small>List of messages</small>
+		            </h1>
+		        </section>
 
                 <!-- Main content -->
                 <section class="content">
@@ -38,12 +59,14 @@
                                         <div class="col-md-3 col-sm-4">
                                             <!-- BOXES are complex enough to move the .box-header around.
                                                  This is an example of having the box header within the box body -->
-                                            <div class="box-header">
-                                                <i class="fa fa-inbox"></i>
-                                                <h3 class="box-title">INBOX</h3>
-                                            </div>
+<!--                                             <div class="box-header"> -->
+<!--                                                 <i class="fa fa-inbox"></i> -->
+<!--                                                 <h3 class="box-title">INBOX</h3> -->
+<!--                                             </div> -->
                                             <!-- compose message btn -->
-                                            <a class="btn btn-block btn-flat btn-default" data-toggle="modal" data-target="#compose-modal"><i class="fa fa-pencil"></i> Compose Message</a>
+<!--                                             <a class="btn btn-block btn-flat btn-default" data-toggle="modal" data-target="#compose-modal"><i class="fa fa-pencil"></i> Compose Message</a> -->
+											<c:url value="/message/view/0" var="urlComposeMessage"/>
+                                            <a class="btn btn-block btn-flat btn-default" href="${urlComposeMessage}"><i class="fa fa-pencil"></i> Compose Message</a>
                                             <!-- Navigation - folders-->
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
@@ -111,7 +134,7 @@
 					                            <div class="box box-default">
 					                                <div class="box-header">
 					                                    <i class="fa fa-comments-o"></i>
-					                                    <h3 class="box-title">Chat</h3>
+					                                    <h3 class="box-title">${recipientDisplayName}</h3>
 <!-- 					                                    <div class="box-tools pull-right" data-toggle="tooltip" title="Status"> -->
 <!-- 					                                        <div class="btn-group" data-toggle="btn-toggle" > -->
 <!-- 					                                            <button type="button" class="btn btn-default btn-sm active"><i class="fa fa-square text-green"></i></button> -->
@@ -143,13 +166,14 @@
 					                                            <a href="${urlReference}" class="name">
 					                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> ${message.timestamp}</small>
 					                                                <c:choose>
-					                                                <c:when test="${empty message.sender.staff.getFullName()}">
-					                                                	(${message.sender.username})
-					                                                </c:when>
-					                                                <c:when test="${!empty message.sender.staff.getFullName()}">
-						                                                ${message.sender.staff.getFullName()} (${message.sender.username})
-					                                                </c:when>
-					                                                </c:choose>
+																	<c:when test="${empty message.sender.staff.getFullName()}">
+																		<c:set value="(${message.sender.username})" var="currentDisplayName"/>
+																	</c:when>
+																	<c:when test="${!empty message.sender.staff.getFullName()}">
+																	 	<c:set value="${message.sender.staff.getFullName()} (${message.sender.username})" var="currentDisplayName"/>
+																	</c:when>
+																	</c:choose>
+																	${currentDisplayName}
 					                                            </a>
 					                                            ${message.content}
 					                                        </p>
@@ -163,12 +187,27 @@
 														method="post"
 														action="${contextPath}/message/send">
 														<table style="width: 100%">
+															<c:if test="${empty message.recipient}">
 															<tr>
 															<td style="width: 100%">
-					                                        <form:input class="form-control" placeholder="Type message..." path="content"/>
+					                                        <form:select class="form-control" path="recipientID"> 
+	                                     						<c:forEach items="${staffList}" var="staff"> 
+	                                     							<c:if test="${staff.user.id != message.sender.id && !empty staff.getFullName() && !empty staff.user}">
+	                                     							<form:option value="${staff.user.id}" label="${staff.getFullName()} (${staff.user.username})"/> 
+	                                     							</c:if>
+	                                     						</c:forEach> 
+	 		                                    			</form:select> 
 															</td>
-															<td style="padding-left: 1%; vertical-align: top">
-					                                        <div class="input-group-btn" style="padding-left: 1%;">
+															</tr>
+															</c:if>
+															
+															<tr>
+															<td style="width: 100%">
+					                                        <form:textarea class="form-control"
+																	rows="3" path="content"
+																	placeholder="Type message..."></form:textarea>
+															<br/>
+					                                        <div class="input-group-btn">
 					                                            <button class="btn btn-flat btn-default"><i class="fa fa-paper-plane"></i>&nbsp;Send</button>
 					                                        </div>
 															</td>
@@ -182,13 +221,13 @@
                                         </div><!-- /.col (RIGHT) -->
                                     </div><!-- /.row -->
                                 </div><!-- /.box-body -->
-                                <div class="box-footer clearfix">
-                                    <div class="pull-right">
-                                        <small>Showing 1-12/1,240</small>
-                                        <button class="btn btn-xs btn-flat btn-default"><i class="fa fa-caret-left"></i></button>
-                                        <button class="btn btn-xs btn-flat btn-default"><i class="fa fa-caret-right"></i></button>
-                                    </div>
-                                </div><!-- box-footer -->
+<!--                                 <div class="box-footer clearfix"> -->
+<!--                                     <div class="pull-right"> -->
+<!--                                         <small>Showing 1-12/1,240</small> -->
+<!--                                         <button class="btn btn-xs btn-flat btn-default"><i class="fa fa-caret-left"></i></button> -->
+<!--                                         <button class="btn btn-xs btn-flat btn-default"><i class="fa fa-caret-right"></i></button> -->
+<!--                                     </div> -->
+<!--                                 </div>box-footer -->
                             </div><!-- /.box -->
                         </div><!-- /.col (MAIN) -->
                     </div>
