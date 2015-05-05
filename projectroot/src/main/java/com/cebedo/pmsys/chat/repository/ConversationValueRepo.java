@@ -22,6 +22,11 @@ public class ConversationValueRepo implements ValueRepository<Conversation> {
 	}
 
 	@Override
+	public void setIfAbsent(Conversation obj) {
+		this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
+	}
+
+	@Override
 	public Conversation get(String key) {
 		return this.redisTemplate.opsForValue().get(key);
 	}

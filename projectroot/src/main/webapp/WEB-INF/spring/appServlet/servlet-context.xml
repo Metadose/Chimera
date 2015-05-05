@@ -133,14 +133,19 @@
 		<!-- Redis template definition and cache manager-->
 		<beans:bean id="redisTemplate" 
 		    class="org.springframework.data.redis.core.RedisTemplate" 
-		    p:connection-factory-ref="jedisConnFactory"/>
+		    p:connection-factory-ref="jedisConnFactory"
+		    p:keySerializer-ref="stringRedisSerializer"
+		    p:hashKeySerializer-ref="stringRedisSerializer"/>
 		    
 	    <beans:bean id="cacheManager"
 	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
 	        c:template-ref="redisTemplate"/>
 	        
+		<beans:bean id="stringRedisSerializer" 
+		    class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
 	        
 	        
+	
 	
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->

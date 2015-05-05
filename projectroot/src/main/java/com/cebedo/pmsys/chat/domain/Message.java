@@ -58,28 +58,28 @@ public class Message implements IDomainObject {
 	}
 
 	public static String constructKey(long recipientID, long senderID) {
-		// Key: message:1.4
-		String key = OBJECT_KEY + ":";
+		// Key: message:object:.1.4.
+		String key = OBJECT_KEY + ":object:";
 
 		if (recipientID <= senderID) {
-			key += recipientID + "." + senderID;
+			key += "." + recipientID + "." + senderID + ".";
 		} else if (recipientID > senderID) {
-			key += senderID + "." + recipientID;
+			key += "." + senderID + "." + recipientID + ".";
 		}
 		return key;
 	}
 
 	@Override
 	public String getKey() {
-		// Key: message:1.4
-		String key = OBJECT_KEY + ":";
+		// Key: message:object:.1.4.
+		String key = OBJECT_KEY + ":object:";
 		long recipientID = getRecipient().getId();
 		long senderID = getSender().getId();
 
 		if (recipientID <= senderID) {
-			key += recipientID + "." + senderID;
+			key += "." + recipientID + "." + senderID + ".";
 		} else if (recipientID > senderID) {
-			key += senderID + "." + recipientID;
+			key += "." + senderID + "." + recipientID + ".";
 		}
 		return key;
 	}

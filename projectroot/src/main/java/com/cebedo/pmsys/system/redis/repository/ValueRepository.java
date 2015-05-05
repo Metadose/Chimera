@@ -8,6 +8,8 @@ public interface ValueRepository<V extends IDomainObject> {
 
 	void set(V obj);
 
+	void setIfAbsent(V obj);
+
 	V get(String key);
 
 	Set<String> keys(String pattern);
