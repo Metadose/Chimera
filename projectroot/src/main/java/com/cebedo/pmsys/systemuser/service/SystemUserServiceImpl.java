@@ -130,12 +130,18 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	@Override
 	@Transactional
-	public SystemUser getByID(long id) {
+	public SystemUser getByID(long id, boolean override) {
 		SystemUser obj = this.systemUserDAO.getByID(id);
-		if (this.authHelper.isActionAuthorized(obj)) {
+		if (override || this.authHelper.isActionAuthorized(obj)) {
 			return obj;
 		}
 		return new SystemUser();
+	}
+
+	@Override
+	@Transactional
+	public SystemUser getByID(long id) {
+		return getByID(id, false);
 	}
 
 	@Override

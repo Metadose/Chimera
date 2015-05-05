@@ -93,7 +93,8 @@ public class MessageController {
 			@PathVariable(SystemUser.OBJECT_NAME) long recipientID, Model model) {
 
 		SystemUser user = this.authHelper.getAuth().getUser();
-		SystemUser recipient = this.systemUserService.getByID(recipientID);
+		SystemUser recipient = this.systemUserService
+				.getByID(recipientID, true);
 		// Get messages since the beginning of time.
 		Set<Message> messages = this.messageService.rangeByScore(
 				Message.constructKey(recipientID, user.getId()), 0,

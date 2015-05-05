@@ -134,19 +134,40 @@
 		<beans:bean id="redisTemplate" 
 		    class="org.springframework.data.redis.core.RedisTemplate" 
 		    p:connection-factory-ref="jedisConnFactory"
-		    p:keySerializer-ref="stringRedisSerializer"
-		    p:hashKeySerializer-ref="stringRedisSerializer"/>
+		    p:keySerializer-ref="redisSerializer"/>
 		    
-	    <beans:bean id="cacheManager"
-	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
-	        c:template-ref="redisTemplate"/>
-	        
-		<beans:bean id="stringRedisSerializer" 
+		<beans:bean id="redisSerializer" 
 		    class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
 	        
 	        
 	
 	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- REDIS CACHE *********************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- Spring Data Redis -->
+	<cache:annotation-driven />
+		<beans:bean id="jedisConnFactoryCache" 
+		    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		    p:host-name="${redis.host}"
+	       	p:port="${redis.port}"
+		    p:use-pool="true"/>
+		
+		<!-- Redis template definition and cache manager-->
+		<!-- Separate redis template since cached objects have a different key serialization -->
+		<beans:bean id="redisTemplateCache" 
+		    class="org.springframework.data.redis.core.RedisTemplate" 
+		    p:connection-factory-ref="jedisConnFactoryCache"/>
+		    
+	    <beans:bean id="cacheManager"
+	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
+	        c:template-ref="redisTemplateCache"/>
+	        
+		    
+		    
+		    
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
 	<!-- HDIV ****************************************************** -->
