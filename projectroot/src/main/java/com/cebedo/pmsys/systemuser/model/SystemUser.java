@@ -179,4 +179,8 @@ public class SystemUser implements Serializable {
 	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
 	}
+
+	public String toString() {
+		return String.valueOf(this.id);
+	}
 }

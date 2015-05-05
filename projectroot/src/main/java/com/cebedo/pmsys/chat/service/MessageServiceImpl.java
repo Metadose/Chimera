@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.chat.domain.Conversation;
 import com.cebedo.pmsys.chat.domain.Message;
-import com.cebedo.pmsys.chat.repository.ConversationSetRepo;
+import com.cebedo.pmsys.chat.repository.ConversationValueRepo;
 import com.cebedo.pmsys.chat.repository.MessageZSetRepo;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
@@ -17,10 +17,11 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 public class MessageServiceImpl implements MessageService {
 
 	private MessageZSetRepo messageZSetRepo;
-	private ConversationSetRepo conversationSetRepo;
+	private ConversationValueRepo conversationValueRepo;
 
-	public void setConversationSetRepo(ConversationSetRepo conversationSetRepo) {
-		this.conversationSetRepo = conversationSetRepo;
+	public void setConversationValueRepo(
+			ConversationValueRepo conversationValueRepo) {
+		this.conversationValueRepo = conversationValueRepo;
 	}
 
 	public void setMessageZSetRepo(MessageZSetRepo messageZSetRepo) {
@@ -36,7 +37,7 @@ public class MessageServiceImpl implements MessageService {
 		contributors.add(obj.getRecipient());
 		contributors.add(obj.getSender());
 		converse.setContributors(contributors);
-		this.conversationSetRepo.add(converse);
+		this.conversationValueRepo.set(converse);
 	}
 
 	@Transactional

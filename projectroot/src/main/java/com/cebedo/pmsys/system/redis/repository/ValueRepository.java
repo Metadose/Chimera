@@ -2,15 +2,14 @@ package com.cebedo.pmsys.system.redis.repository;
 
 import java.util.Set;
 
-import com.cebedo.pmsys.notification.domain.Notification;
 import com.cebedo.pmsys.system.redis.domain.IDomainObject;
 
 public interface ValueRepository<V extends IDomainObject> {
 
-	void add(V obj);
+	void set(V obj);
 
-	Set<Notification> rangeByScore(String key, long min, long max);
+	V get(String key);
 
-	void removeRangeByScore(String key, long min, long max);
+	Set<String> keys(String pattern);
 
 }

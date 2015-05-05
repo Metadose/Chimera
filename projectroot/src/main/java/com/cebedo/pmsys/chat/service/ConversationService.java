@@ -3,11 +3,16 @@ package com.cebedo.pmsys.chat.service;
 import java.util.Set;
 
 import com.cebedo.pmsys.chat.domain.Conversation;
+import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public interface ConversationService {
 
-	public void add(Conversation obj);
+	public void set(Conversation obj);
 
-	public Set<Conversation> members(String key);
+	public Conversation get(String key);
+
+	public Set<String> keys(String pattern);
+
+	public Set<Conversation> getAllConversations(SystemUser user);
 
 }

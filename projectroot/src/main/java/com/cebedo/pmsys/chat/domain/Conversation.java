@@ -1,8 +1,9 @@
 package com.cebedo.pmsys.chat.domain;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.redis.domain.IDomainObject;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
@@ -19,20 +20,51 @@ public class Conversation implements IDomainObject {
 		this.contributors = contributors;
 	}
 
-	public static String constructKey(long userID) {
-		String key = "user:" + userID + ":" + Message.OBJECT_NAME
-				+ ":conversations";
+	/**
+	 * Key: message:conversation:.1.234.56.
+	 * 
+	 * @param contribs
+	 * @return
+	 */
+	public static String constructKey(List<SystemUser> contribs) {
+		Collections.sort(contribs, new Comparator<SystemUser>() {
+			@Override
+			public int compare(SystemUser aObj, SystemUser bObj) {
+				long a = aObj.getId();
+				long b = bObj.getId();
+				return a < b ? -1 : a > b ? 1 : 0;
+			}
+		});
+		String keyPart = ".";
+		for (SystemUser contributor : contribs) {
+			keyPart += contributor.getId() + ".";
+		}
+		String key = Message.OBJECT_NAME + ":conversation:" + keyPart;
 		return key;
 	}
 
+	private void sortContributors() {
+		Collections.sort(this.contributors, new Comparator<SystemUser>() {
+			@Override
+			public int compare(SystemUser aObj, SystemUser bObj) {
+				long a = aObj.getId();
+				long b = bObj.getId();
+				return a < b ? -1 : a > b ? 1 : 0;
+			}
+		});
+	}
+
+	/**
+	 * Key: message:conversation:.1.234.56.
+	 */
 	@Override
 	public String getKey() {
-		// Message Key: message:1.4
-		// This Key: user:131:message:conversations
-		// This will be a (list of (list of contributors)).
-		long userID = new AuthHelper().getAuth().getUser().getId();
-		String key = "user:" + userID + ":" + Message.OBJECT_NAME
-				+ ":conversations";
+		sortContributors();
+		String keyPart = ".";
+		for (SystemUser contributor : this.contributors) {
+			keyPart += contributor.getId() + ".";
+		}
+		String key = Message.OBJECT_NAME + ":conversation:" + keyPart;
 		return key;
 	}
 

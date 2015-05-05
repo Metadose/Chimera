@@ -1,6 +1,8 @@
 package com.cebedo.pmsys.chat.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,13 @@ public class MessageController {
 		return SystemConstants.SYSTEM + "/" + JSP_LIST;
 	}
 
+	/**
+	 * Send a chat message to a user.
+	 * 
+	 * @param message
+	 * @param status
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_SEND }, method = RequestMethod.POST)
 	public String sendMessage(
 			@ModelAttribute(Message.OBJECT_NAME) Message message,
@@ -70,26 +79,37 @@ public class MessageController {
 				+ message.getRecipient().getId();
 	}
 
+	/**
+	 * Opens a page with list of conversations and list of messages of the
+	 * chosen conversation.
+	 * 
+	 * @param recipientID
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_VIEW + "/{"
 			+ SystemUser.OBJECT_NAME + "}" }, method = RequestMethod.GET)
 	public String viewMessages(
 			@PathVariable(SystemUser.OBJECT_NAME) long recipientID, Model model) {
 
 		SystemUser user = this.authHelper.getAuth().getUser();
-
-		// Get messages for the last 24 hours.
+		SystemUser recipient = this.systemUserService.getByID(recipientID);
+		// Get messages since the beginning of time.
 		Set<Message> messages = this.messageService.rangeByScore(
-				Message.constructKey(recipientID, user.getId()),
-				System.currentTimeMillis() - 86400000,
+				Message.constructKey(recipientID, user.getId()), 0,
 				System.currentTimeMillis());
 
 		Message newMessage = new Message();
 		newMessage.setSender(user);
 		newMessage.setRead(false);
-		newMessage.setRecipient(this.systemUserService.getByID(recipientID));
+		newMessage.setRecipient(recipient);
 
+		// Get the chat messages based on contributors.
+		List<SystemUser> contributors = new ArrayList<SystemUser>();
+		contributors.add(user);
+		contributors.add(recipient);
 		Set<Conversation> conversations = this.conversationService
-				.members(Conversation.constructKey(user.getId()));
+				.getAllConversations(user);
 
 		model.addAttribute("messages", messages);
 		model.addAttribute("conversations", conversations);
@@ -98,6 +118,13 @@ public class MessageController {
 		return Message.OBJECT_NAME + "/" + JSP_LIST;
 	}
 
+	/**
+	 * Open a page where user can compose message to be sent.
+	 * 
+	 * @param recipientID
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_COMPOSE + "/{"
 			+ SystemUser.OBJECT_NAME + "}" }, method = RequestMethod.GET)
 	public String composeMessage(

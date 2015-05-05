@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -77,7 +78,7 @@
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																					</a>
 																					</sec:authorize>
-																					<c:if test="${!empty staff.getUser().getId()}">
+																					<c:if test="${!empty staff.getUser().getId() && staff.getUser().getId() != authUser.id}">
 																					<c:url var="urlSendMessage" value="/message/view/${staff.getUser().getId()}"/>
 																					<a href="${urlSendMessage}">
 																						<button class="btn btn-default btn-flat btn-sm">Message</button>
