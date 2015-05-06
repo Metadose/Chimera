@@ -91,4 +91,15 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 		Hibernate.initialize(user.getStaff());
 		return user;
 	}
+
+	@Override
+	public SystemUser getWithSecurityByID(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(
+				id));
+		Hibernate.initialize(user.getStaff());
+		Hibernate.initialize(user.getSecurityAccess());
+		Hibernate.initialize(user.getSecurityRoles());
+		return user;
+	}
 }

@@ -77,8 +77,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 			rootUser.setPassword(this.authHelper.encodePassword(ROOT_PASSWORD,
 					rootUser));
 			rootUser.setSuperAdmin(true);
-			List<SecurityAccess> allAccess = this.securityAccessDAO.list(null);
-			List<SecurityRole> allRoles = this.securityRoleDAO.list(null);
+			List<SecurityAccess> allAccess = this.securityAccessDAO.list();
+			List<SecurityRole> allRoles = this.securityRoleDAO.list();
 			rootUser.setSecurityAccess(new HashSet<SecurityAccess>(allAccess));
 			rootUser.setSecurityRoles(new HashSet<SecurityRole>(allRoles));
 
@@ -136,6 +136,16 @@ public class SystemUserServiceImpl implements SystemUserService {
 	public SystemUser getByID(long id, boolean override) {
 		SystemUser obj = this.systemUserDAO.getByID(id);
 		if (override || this.authHelper.isActionAuthorized(obj)) {
+			return obj;
+		}
+		return new SystemUser();
+	}
+
+	@Override
+	@Transactional
+	public SystemUser getWithSecurityByID(long id) {
+		SystemUser obj = this.systemUserDAO.getWithSecurityByID(id);
+		if (this.authHelper.isActionAuthorized(obj)) {
 			return obj;
 		}
 		return new SystemUser();

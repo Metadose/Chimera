@@ -238,7 +238,8 @@
 		errorPage="/fix"
 		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map"
 		randomName="true"
-		strategy="cipher">
+		strategy="cipher"
+		confidentiality="false">
 		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/>
 		
 		<!-- Controller calls that do not have validation -->

@@ -58,11 +58,11 @@ public class SecurityAccessDAOImpl implements SecurityAccessDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SecurityAccess> list(Long companyID) {
+	public List<SecurityAccess> list() {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SecurityAccess> securityAccessList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
-						SecurityAccess.class.getName(), companyID).list();
+						SecurityAccess.class.getName(), null).list();
 		return securityAccessList;
 	}
 

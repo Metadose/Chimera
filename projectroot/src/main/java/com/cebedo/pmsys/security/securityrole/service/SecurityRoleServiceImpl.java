@@ -56,10 +56,6 @@ public class SecurityRoleServiceImpl implements SecurityRoleService {
 	@Override
 	@Transactional
 	public List<SecurityRole> list() {
-		AuthenticationToken token = this.authHelper.getAuth();
-		if (token.isSuperAdmin()) {
-			return this.securityRoleDAO.list(null);
-		}
-		return this.securityRoleDAO.list(token.getCompany().getId());
+		return this.securityRoleDAO.list();
 	}
 }

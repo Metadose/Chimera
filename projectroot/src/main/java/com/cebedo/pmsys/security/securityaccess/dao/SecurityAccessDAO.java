@@ -14,6 +14,6 @@ public interface SecurityAccessDAO {
 
 	public void delete(long id);
 
-	public List<SecurityAccess> list(Long companyID);
+	public List<SecurityAccess> list();
 
 }

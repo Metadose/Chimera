@@ -18,4 +18,6 @@ public interface SystemUserDAO {
 
 	public SystemUser getByID(long id);
 
+	public SystemUser getWithSecurityByID(long id);
+
 }

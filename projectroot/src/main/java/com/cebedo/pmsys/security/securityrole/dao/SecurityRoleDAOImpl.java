@@ -58,11 +58,11 @@ public class SecurityRoleDAOImpl implements SecurityRoleDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SecurityRole> list(Long companyID) {
+	public List<SecurityRole> list() {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SecurityRole> securityRoleList = this.daoHelper
 				.getSelectQueryFilterCompany(session,
-						SecurityRole.class.getName(), companyID).list();
+						SecurityRole.class.getName(), null).list();
 		return securityRoleList;
 	}
 

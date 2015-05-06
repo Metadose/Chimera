@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.security.securityaccess.dao.SecurityAccessDAO;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.system.helper.AuthHelper;
-import com.cebedo.pmsys.system.login.authentication.AuthenticationToken;
 
 @Service
 public class SecurityAccessServiceImpl implements SecurityAccessService {
@@ -56,10 +55,6 @@ public class SecurityAccessServiceImpl implements SecurityAccessService {
 	@Override
 	@Transactional
 	public List<SecurityAccess> list() {
-		AuthenticationToken token = this.authHelper.getAuth();
-		if (token.isSuperAdmin()) {
-			return this.securityAccessDAO.list(null);
-		}
-		return this.securityAccessDAO.list(token.getCompany().getId());
+		return this.securityAccessDAO.list();
 	}
 }

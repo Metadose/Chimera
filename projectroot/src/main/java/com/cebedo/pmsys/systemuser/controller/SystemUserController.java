@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.company.service.CompanyService;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
+import com.cebedo.pmsys.security.securityaccess.service.SecurityAccessService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.security.securityrole.service.SecurityRoleService;
 import com.cebedo.pmsys.system.bean.UserSecAccessBean;
 import com.cebedo.pmsys.system.bean.UserSecRoleBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
@@ -52,6 +54,20 @@ public class SystemUserController {
 	private AuthHelper authHelper = new AuthHelper();
 	private SystemUserService systemUserService;
 	private CompanyService companyService;
+	private SecurityAccessService securityAccessService;
+	private SecurityRoleService securityRoleService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "securityAccessService")
+	public void setSecurityAccessService(SecurityAccessService s) {
+		this.securityAccessService = s;
+	}
+
+	@Autowired(required = true)
+	@Qualifier(value = "securityRoleService")
+	public void setSecurityRoleService(SecurityRoleService s) {
+		this.securityRoleService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "companyService")
@@ -78,14 +94,15 @@ public class SystemUserController {
 			+ SecurityAccess.OBJECT_NAME }, method = RequestMethod.POST)
 	public String assignSecurityAccess(
 			@ModelAttribute(ATTR_SEC_ACCESS) UserSecAccessBean secAccBean,
-			HttpSession session, SessionStatus status, Model model) {
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
 		this.systemUserService.assignSecurityAccess(user, secAccBean);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate(
 						SecurityAccess.OBJECT_NAME,
 						"ASSIGN " + secAccBean.toString()));
@@ -107,14 +124,15 @@ public class SystemUserController {
 			+ SecurityRole.OBJECT_NAME }, method = RequestMethod.POST)
 	public String assignSecurityRole(
 			@ModelAttribute(ATTR_SEC_ROLE) UserSecRoleBean secRoleBean,
-			HttpSession session, SessionStatus status, Model model) {
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
 		this.systemUserService.assignSecurityRole(user, secRoleBean);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate(
 						SecurityAccess.OBJECT_NAME,
 						"ASSIGN " + secRoleBean.toString()));
@@ -137,7 +155,8 @@ public class SystemUserController {
 			+ "}" }, method = RequestMethod.GET)
 	public String unassignSecurityAccess(
 			@PathVariable(SecurityAccess.OBJECT_NAME) long secAccID,
-			HttpSession session, SessionStatus status, Model model) {
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		// And unassign the access from the user.
@@ -145,7 +164,7 @@ public class SystemUserController {
 		this.systemUserService.unassignSecurityAccess(user, secAccID);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate(
 						SecurityAccess.OBJECT_NAME, "UNASSIGN " + secAccID));
 		status.setComplete();
@@ -166,7 +185,8 @@ public class SystemUserController {
 			+ SecurityRole.OBJECT_NAME + "/{" + SecurityRole.OBJECT_NAME + "}" }, method = RequestMethod.GET)
 	public String unassignSecurityRole(
 			@PathVariable(SecurityRole.OBJECT_NAME) long secRoleID,
-			HttpSession session, SessionStatus status, Model model) {
+			HttpSession session, SessionStatus status,
+			RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		// And unassign the role from the user.
@@ -174,7 +194,7 @@ public class SystemUserController {
 		this.systemUserService.unassignSecurityRole(user, secRoleID);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS
 						.generateCreate(SecurityAccess.OBJECT_NAME,
 								"UNASSIGN role" + secRoleID));
@@ -195,7 +215,7 @@ public class SystemUserController {
 	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SecurityAccess.OBJECT_NAME + "/" + SystemConstants.ALL }, method = RequestMethod.GET)
 	public String unassignAllSecurityAccess(HttpSession session,
-			SessionStatus status, Model model) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		// Unassign all the access from the user.
@@ -203,7 +223,7 @@ public class SystemUserController {
 		this.systemUserService.unassignAllSecurityAccess(user);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate(
 						SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
 		status.setComplete();
@@ -223,7 +243,7 @@ public class SystemUserController {
 	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SecurityRole.OBJECT_NAME + "/" + SystemConstants.ALL }, method = RequestMethod.GET)
 	public String unassignAllSecurityRoles(HttpSession session,
-			SessionStatus status, Model model) {
+			SessionStatus status, RedirectAttributes redirectAttrs) {
 
 		// Get the user.
 		// Unassign all the access from the user.
@@ -231,7 +251,7 @@ public class SystemUserController {
 		this.systemUserService.unassignAllSecurityRoles(user);
 
 		// FIXME Fix this notification.
-		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate(
 						SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
 		status.setComplete();
@@ -376,12 +396,9 @@ public class SystemUserController {
 
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
+			+ SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
 	public String editSystemUser(
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
-
-		model.addAttribute(ATTR_SEC_ACCESS, new UserSecAccessBean(id));
-		model.addAttribute(ATTR_SEC_ROLE, new UserSecRoleBean(id));
 
 		// Only super admins can change company,
 		// view list of all companies.
@@ -398,14 +415,18 @@ public class SystemUserController {
 			return JSP_EDIT;
 		}
 
-		SystemUser resultUser = this.systemUserService.getByID(id);
+		SystemUser resultUser = this.systemUserService.getWithSecurityByID(id);
 		// FIXME Why do this?
 		resultUser.setCompanyID(resultUser.getCompany() == null ? null
 				: resultUser.getCompany().getId());
+
+		model.addAttribute("accessList", this.securityAccessService.list());
+		model.addAttribute("roleList", this.securityRoleService.list());
+		model.addAttribute(ATTR_SEC_ACCESS, new UserSecAccessBean(id));
+		model.addAttribute(ATTR_SEC_ROLE, new UserSecRoleBean(id));
 		model.addAttribute(ATTR_SYSTEM_USER, resultUser);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;
 	}
-
 }

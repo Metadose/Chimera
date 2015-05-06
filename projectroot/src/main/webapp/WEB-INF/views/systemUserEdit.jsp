@@ -41,9 +41,9 @@
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
-                            <ul class="nav nav-tabs">
+                            <ul class="nav nav-tabs" id="myTab">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <li class="active"><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
+                                <li><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -109,8 +109,8 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane active" id="#tab_data_access">
-                                	<div class="box">
+                                <div class="tab-pane" id="tab_data_access">
+                                	<div class="box box-default">
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
@@ -125,103 +125,63 @@
 <!-- 		                                    			&nbsp; -->
 <!-- 		                                    		</td> -->
 <%-- 		                                    		</sec:authorize> --%>
-		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                    		<c:if test="${!empty staffList}">
  		                                    		<form:form 
- 		                                    		modelAttribute="staffPosition"  
+ 		                                    		modelAttribute="securityaccess"  
  		                                    		method="post" 
- 		                                    		action="${contextPath}/project/assign/staff"> 
+ 		                                    		action="${contextPath}/systemuser/assign/securityaccess"> 
  		                                    			<td>
- 		                                    			<form:select class="form-control" path="staffID"> 
-                                     						<c:forEach items="${staffList}" var="staff"> 
-                                     							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/> 
-                                     							<form:option value="${staff.id}" label="${staffName}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select> 
+ 		                                    			<form:select class="form-control" path="securityAccessID" items="${accessList}" itemLabel="name" itemValue="id"/>
+<%--  		                                    			<form:select class="form-control" path="securityAccessID"> --%>
+<%--                                      						<c:forEach items="${accessList}" var="access">   --%>
+<%--                                      							<form:option value="${access.id}" label="${access.name}"/>  --%>
+<%--                                      						</c:forEach>  --%>
+<%--  		                                    			</form:select>  --%>
  		                                    			</td>
  		                                    			<td>
- 		                                    				&nbsp;
- 		                                    			</td>
- 		                                    			<td>
- 		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..." 
- 		                                    				type="text" 
- 															class="form-control" 
- 															path="position"/>
- 		                                    			</td>
- 		                                    			<td>
- 		                                    				&nbsp;
- 		                                    			</td>
+			                                    			&nbsp;
+			                                    		</td>
  														<td>
  														<button class="btn btn-default btn-flat btn-sm">Assign</button>
  		                                    			</td> 
  		                                    		</form:form> 
-		                                    		</c:if>
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
-		                                    		<c:if test="${!empty project.managerAssignments}">
 		                                    		<td>
-               											<c:url var="urlProjectUnassignStaffAll" value="/project/unassign/staff/all"/>
-		                                    			<a href="${urlProjectUnassignStaffAll}">
+               											<c:url var="urlUnassignAllSecAccess" value="/systemuser/unassign/securityaccess/all"/>
+		                                    			<a href="${urlUnassignAllSecAccess}">
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 		                                    			</a>
 		                                    		</td>
-		                                    		</c:if>
-		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table>
-		                                    <table id="managers-table" class="table table-bordered table-striped">
+		                                    <table id="dataaccess-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
-		                                                <th>Photo</th>
-		                                                <th>Full Name</th>
-		                                                <th>Position</th>
-		                                                <th>E-Mail</th>
-		                                                <th>Contact Number</th>
+		                                                <th>ID</th>
+		                                                <th>Name</th>
 		                                            </tr>
                                         		</thead>
 		                                        <tbody>
-			                                        <c:set var="managerAssignments" value="${project.managerAssignments}"/>
-				                                	<c:if test="${!empty managerAssignments}">
-				                                		<c:forEach items="${managerAssignments}" var="assignment">
-			                                			<c:set var="manager" value="${assignment.manager}"/>
+			                                		<c:forEach items="${systemuser.securityAccess}" var="access">
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" />
-			                                            			<a href="${urlViewStaff}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            			</a>
-	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
-	                   												<a href="${urlUnassignStaff}">
+<%-- 			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" /> --%>
+<%-- 			                                            			<a href="${urlViewStaff}"> --%>
+<!-- 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button> -->
+<!-- 			                                            			</a> -->
+	                   												<c:url var="urlUnassignUserAccess" value="/systemuser/unassign/securityaccess/${access.id}"/>
+	                   												<a href="${urlUnassignUserAccess}">
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 	                   												</a>
-	                   												</sec:authorize>
 																</center>
 															</td>
-			                                                <td>
-			                                                	<div class="user-panel">
-													            <div class="pull-left image">
-													                <c:choose>
-		                                                			<c:when test="${!empty manager.thumbnailURL}">
-		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${manager.id}" class="img-circle"/>
-		                                                			</c:when>
-		                                                			<c:when test="${empty manager.thumbnailURL}">
-		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
-		                                                			</c:when>
-			                                                		</c:choose>
-													            </div>
-														        </div>
-			                                                </td>
-			                                                <td>${manager.prefix} ${manager.firstName} ${manager.middleName} ${manager.lastName} ${manager.suffix}</td>
-			                                                <td>${manager.companyPosition}</td>
-			                                                <td>${manager.email}</td>
-			                                                <td>${manager.contactNumber}</td>
+			                                                <td>${access.id}</td>
+			                                                <td>${access.name}</td>
 			                                            </tr>
 		                                            </c:forEach>
-	                                        		</c:if>
 			                                    </tbody>
 			                                </table>
 		                                </div><!-- /.box-body -->
@@ -238,6 +198,10 @@
 		function submitForm(id) {
 			$('#'+id).submit();
 		}
+		
+		$(document).ready(function() {
+			$("#dataaccess-table").dataTable();
+	    });
 	</script>
 </body>
 </html>

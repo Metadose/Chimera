@@ -22,6 +22,8 @@ public interface SystemUserService {
 
 	public SystemUser getByID(long id);
 
+	public SystemUser getWithSecurityByID(long id);
+
 	public SystemUser getByID(long id, boolean override);
 
 	public SystemUser searchDatabase(String name);
