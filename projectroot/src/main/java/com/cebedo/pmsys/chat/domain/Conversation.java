@@ -11,6 +11,15 @@ public class Conversation implements IDomainObject {
 
 	private static final long serialVersionUID = 1L;
 	private List<SystemUser> contributors;
+	private boolean read;
+
+	public boolean isRead() {
+		return read;
+	}
+
+	public void setRead(boolean read) {
+		this.read = read;
+	}
 
 	public List<SystemUser> getContributors() {
 		return contributors;
@@ -21,12 +30,12 @@ public class Conversation implements IDomainObject {
 	}
 
 	/**
-	 * Key: message:conversation:.1.234.56.
+	 * Key: message:conversation:read:true:id:.1.234.56.
 	 * 
 	 * @param contribs
 	 * @return
 	 */
-	public static String constructKey(List<SystemUser> contribs) {
+	public static String constructKey(List<SystemUser> contribs, boolean rd) {
 		Collections.sort(contribs, new Comparator<SystemUser>() {
 			@Override
 			public int compare(SystemUser aObj, SystemUser bObj) {
@@ -39,7 +48,8 @@ public class Conversation implements IDomainObject {
 		for (SystemUser contributor : contribs) {
 			keyPart += contributor.getId() + ".";
 		}
-		String key = Message.OBJECT_NAME + ":conversation:" + keyPart;
+		String key = Message.OBJECT_NAME + ":conversation:read:" + rd + ":id:"
+				+ keyPart;
 		return key;
 	}
 
@@ -64,7 +74,8 @@ public class Conversation implements IDomainObject {
 		for (SystemUser contributor : this.contributors) {
 			keyPart += contributor.getId() + ".";
 		}
-		String key = Message.OBJECT_NAME + ":conversation:" + keyPart;
+		String key = Message.OBJECT_NAME + ":conversation:read:" + isRead()
+				+ ":id:" + keyPart;
 		return key;
 	}
 

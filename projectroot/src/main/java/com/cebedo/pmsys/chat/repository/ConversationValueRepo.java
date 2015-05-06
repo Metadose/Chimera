@@ -17,6 +17,11 @@ public class ConversationValueRepo implements ValueRepository<Conversation> {
 	}
 
 	@Override
+	public void rename(Conversation obj, String newKey) {
+		this.redisTemplate.rename(obj.getKey(), newKey);
+	}
+
+	@Override
 	public void set(Conversation obj) {
 		this.redisTemplate.opsForValue().set(obj.getKey(), obj);
 	}

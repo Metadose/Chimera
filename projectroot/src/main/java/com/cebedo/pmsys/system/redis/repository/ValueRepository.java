@@ -6,6 +6,8 @@ import com.cebedo.pmsys.system.redis.domain.IDomainObject;
 
 public interface ValueRepository<V extends IDomainObject> {
 
+	void rename(V obj, String newKey);
+
 	void set(V obj);
 
 	void setIfAbsent(V obj);

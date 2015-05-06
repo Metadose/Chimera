@@ -37,6 +37,7 @@ public class MessageServiceImpl implements MessageService {
 		contributors.add(obj.getRecipient());
 		contributors.add(obj.getSender());
 		converse.setContributors(contributors);
+		converse.setRead(false);
 		this.conversationValueRepo.setIfAbsent(converse);
 	}
 

@@ -22,6 +22,24 @@ public class ConversationServiceImpl implements ConversationService {
 
 	@Transactional
 	@Override
+	public void markRead(Conversation obj) {
+		// If object is read, not need to mark it.
+		if (!obj.isRead()) {
+
+			// Else, rename it.
+			String readKey = Conversation.constructKey(obj.getContributors(),
+					true);
+			this.conversationValueRepo.rename(obj, readKey);
+
+			// Using the new renamed key,
+			// update the object.
+			obj.setRead(true);
+			this.conversationValueRepo.set(obj);
+		}
+	}
+
+	@Transactional
+	@Override
 	public void set(Conversation obj) {
 		this.conversationValueRepo.set(obj);
 	}
@@ -44,7 +62,8 @@ public class ConversationServiceImpl implements ConversationService {
 	@Transactional
 	@Override
 	public Set<Conversation> getAllConversations(SystemUser user) {
-		String pattern = Message.OBJECT_NAME + ":conversation:*."
+		// message:conversation:read:true:id:.1.234.56.
+		String pattern = Message.OBJECT_NAME + ":conversation:read:*:id:*."
 				+ user.getId() + ".*";
 		Set<String> keys = this.conversationValueRepo.keys(pattern);
 		Set<Conversation> conversations = new HashSet<Conversation>();

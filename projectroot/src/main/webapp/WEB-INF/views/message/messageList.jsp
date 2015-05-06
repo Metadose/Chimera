@@ -93,6 +93,9 @@
 														</div>
 														</td>
 														<td>
+															<c:if test="${!conversation.read}">
+															UNREADDDD
+															</c:if>
 															<c:choose>
 			                                                <c:when test="${empty contributor.staff.getFullName()}">
 			                                                	(${contributor.username})

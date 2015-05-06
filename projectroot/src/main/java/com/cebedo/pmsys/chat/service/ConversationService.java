@@ -7,6 +7,8 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public interface ConversationService {
 
+	public void markRead(Conversation obj);
+
 	public void set(Conversation obj);
 
 	public Conversation get(String key);

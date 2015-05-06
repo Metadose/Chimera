@@ -1,7 +1,9 @@
 package com.cebedo.pmsys.chat.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,9 +117,8 @@ public class MessageController {
 		newMessage.setSender(user);
 		newMessage.setRead(false);
 
-		// If user has clicked to see all messages.
+		// If user has a specific user.
 		if (recipientID != 0) {
-			// If user has a specific user.
 			// Get the user and
 			// get messages from that user
 			// since the beginning of time.
@@ -127,6 +128,20 @@ public class MessageController {
 			messages = this.messageService.rangeByScore(
 					Message.constructKey(recipientID, user.getId()), 0,
 					System.currentTimeMillis());
+
+			// Mark this specific conversation as read.
+			List<SystemUser> contribs = new ArrayList<SystemUser>();
+			contribs.add(user);
+			contribs.add(recipient);
+			Conversation conversation = this.conversationService
+					.get(Conversation.constructKey(contribs, false));
+			if (conversation != null) {
+				// FIXME After conversation is created,
+				// conversation is automatically read,
+				// system can't know if a specific person has read
+				// the message.
+				this.conversationService.markRead(conversation);
+			}
 		}
 
 		// Get the chat messages based on user.
