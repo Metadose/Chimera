@@ -131,7 +131,7 @@
  		                                    		method="post" 
  		                                    		action="${contextPath}/systemuser/assign/securityaccess"> 
  		                                    			<td>
- 		                                    			<form:select class="form-control" path="securityAccessID" items="${accessList}" itemLabel="name" itemValue="id"/>
+ 		                                    			<form:select class="form-control" path="securityAccessID" items="${accessList}" itemLabel="label" itemValue="id"/>
 <%--  		                                    			<form:select class="form-control" path="securityAccessID"> --%>
 <%--                                      						<c:forEach items="${accessList}" var="access">   --%>
 <%--                                      							<form:option value="${access.id}" label="${access.name}"/>  --%>
@@ -181,7 +181,7 @@
 																</center>
 															</td>
 			                                                <td>${access.id}</td>
-			                                                <td>${access.name}</td>
+			                                                <td>${access.label}</td>
 			                                            </tr>
 		                                            </c:forEach>
 			                                    </tbody>
@@ -210,7 +210,7 @@
  		                                    		method="post" 
  		                                    		action="${contextPath}/systemuser/assign/securityrole"> 
  		                                    			<td>
- 		                                    			<form:select class="form-control" path="securityRoleID" items="${roleList}" itemLabel="name" itemValue="id"/>
+ 		                                    			<form:select class="form-control" path="securityRoleID" items="${roleList}" itemLabel="label" itemValue="id"/>
  		                                    			</td>
  		                                    			<td>
 			                                    			&nbsp;
@@ -251,7 +251,7 @@
 																</center>
 															</td>
 			                                                <td>${role.id}</td>
-			                                                <td>${role.name}</td>
+			                                                <td>${role.label}</td>
 			                                            </tr>
 		                                            </c:forEach>
 			                                    </tbody>

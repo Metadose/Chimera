@@ -38,6 +38,7 @@ public class SecurityAccess implements Serializable {
 
 	private long id;
 	private String name;
+	private String label;
 	private Set<SystemUser> users;
 
 	@Id
@@ -58,6 +59,15 @@ public class SecurityAccess implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Column(name = "label", nullable = false, length = 32)
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	@ManyToMany(mappedBy = "securityAccess")
