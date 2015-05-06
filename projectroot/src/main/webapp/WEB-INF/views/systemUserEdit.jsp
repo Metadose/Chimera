@@ -43,6 +43,7 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <li class="active"><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -107,6 +108,124 @@
                    							</div>
                    						</div>
               						</div>
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane active" id="#tab_data_access">
+                                	<div class="box">
+		                                <div class="box-body table-responsive">
+		                                	<table>
+		                                    	<tr>
+<%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
+<!-- 		                                    		<td> -->
+<%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
+<%-- 		                                    			<a href="${urlCreateStaff}"> --%>
+<!-- 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button> -->
+<!-- 		                                    			</a> -->
+<!-- 		                                    		</td> -->
+<!-- 		                                    		<td> -->
+<!-- 		                                    			&nbsp; -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		</sec:authorize> --%>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+		                                    		<c:if test="${!empty staffList}">
+ 		                                    		<form:form 
+ 		                                    		modelAttribute="staffPosition"  
+ 		                                    		method="post" 
+ 		                                    		action="${contextPath}/project/assign/staff"> 
+ 		                                    			<td>
+ 		                                    			<form:select class="form-control" path="staffID"> 
+                                     						<c:forEach items="${staffList}" var="staff"> 
+                                     							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/> 
+                                     							<form:option value="${staff.id}" label="${staffName}"/> 
+                                     						</c:forEach> 
+ 		                                    			</form:select> 
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    				&nbsp;
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..." 
+ 		                                    				type="text" 
+ 															class="form-control" 
+ 															path="position"/>
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    				&nbsp;
+ 		                                    			</td>
+ 														<td>
+ 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+ 		                                    			</td> 
+ 		                                    		</form:form> 
+		                                    		</c:if>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<c:if test="${!empty project.managerAssignments}">
+		                                    		<td>
+               											<c:url var="urlProjectUnassignStaffAll" value="/project/unassign/staff/all"/>
+		                                    			<a href="${urlProjectUnassignStaffAll}">
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+		                                    			</a>
+		                                    		</td>
+		                                    		</c:if>
+		                                    		</sec:authorize>
+		                                    	</tr>
+		                                    </table>
+		                                    <table id="managers-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                                <th>Photo</th>
+		                                                <th>Full Name</th>
+		                                                <th>Position</th>
+		                                                <th>E-Mail</th>
+		                                                <th>Contact Number</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="managerAssignments" value="${project.managerAssignments}"/>
+				                                	<c:if test="${!empty managerAssignments}">
+				                                		<c:forEach items="${managerAssignments}" var="assignment">
+			                                			<c:set var="manager" value="${assignment.manager}"/>
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" />
+			                                            			<a href="${urlViewStaff}">
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            			</a>
+	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
+	                   												<a href="${urlUnassignStaff}">
+																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+	                   												</a>
+	                   												</sec:authorize>
+																</center>
+															</td>
+			                                                <td>
+			                                                	<div class="user-panel">
+													            <div class="pull-left image">
+													                <c:choose>
+		                                                			<c:when test="${!empty manager.thumbnailURL}">
+		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${manager.id}" class="img-circle"/>
+		                                                			</c:when>
+		                                                			<c:when test="${empty manager.thumbnailURL}">
+		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
+		                                                			</c:when>
+			                                                		</c:choose>
+													            </div>
+														        </div>
+			                                                </td>
+			                                                <td>${manager.prefix} ${manager.firstName} ${manager.middleName} ${manager.lastName} ${manager.suffix}</td>
+			                                                <td>${manager.companyPosition}</td>
+			                                                <td>${manager.email}</td>
+			                                                <td>${manager.contactNumber}</td>
+			                                            </tr>
+		                                            </c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->

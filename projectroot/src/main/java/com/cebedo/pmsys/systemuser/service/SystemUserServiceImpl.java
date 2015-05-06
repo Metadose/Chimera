@@ -2,6 +2,7 @@ package com.cebedo.pmsys.systemuser.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.cebedo.pmsys.security.securityrole.dao.SecurityRoleDAO;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.bean.UserSecAccessBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
@@ -186,6 +188,58 @@ public class SystemUserServiceImpl implements SystemUserService {
 	@Transactional
 	public SystemUser searchDatabase(String name) {
 		return this.systemUserDAO.searchDatabase(name);
+	}
+
+	@Override
+	@Transactional
+	public void assignSecurityAccess(SystemUser user,
+			UserSecAccessBean secAccBean) {
+		Set<SecurityAccess> secAccList = user.getSecurityAccess();
+
+		// Update the list of access.
+		SecurityAccess secAcc = this.securityAccessDAO.getByID(secAccBean
+				.getSecurityAccessID());
+		secAccList.add(secAcc);
+		user.setSecurityAccess(secAccList);
+
+		// Update the user object.
+		this.systemUserDAO.update(user);
+	}
+
+	@Override
+	@Transactional
+	public void unassignSecurityAccess(SystemUser user, long secAccID) {
+		Set<SecurityAccess> secAccList = user.getSecurityAccess();
+
+		// Loop through each current access.
+		SecurityAccess accessToRemove = null;
+		for (SecurityAccess access : secAccList) {
+
+			// If an access is equal to access to remove.
+			if (access.getId() == secAccID) {
+				accessToRemove = access;
+				break;
+			}
+		}
+
+		// Remove here since can't remove while loop through list.
+		if (accessToRemove != null) {
+			secAccList.remove(accessToRemove);
+		}
+
+		// Update the list and the user obj.
+		user.setSecurityAccess(secAccList);
+		this.systemUserDAO.update(user);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllSecurityAccess(SystemUser user) {
+		// Update the list of access.
+		user.setSecurityAccess(null);
+
+		// Update the user object.
+		this.systemUserDAO.update(user);
 	}
 
 }

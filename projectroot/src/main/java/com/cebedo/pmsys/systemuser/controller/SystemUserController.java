@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.systemuser.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.company.service.CompanyService;
+import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
+import com.cebedo.pmsys.system.bean.UserSecAccessBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -24,11 +28,14 @@ import com.cebedo.pmsys.systemuser.model.SystemUser;
 import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
 @Controller
-@SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER }, types = { SystemUser.class })
+@SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER,
+		SystemUserController.ATTR_SEC_ACCESS }, types = { SystemUser.class,
+		UserSecAccessBean.class })
 @RequestMapping(SystemUser.OBJECT_NAME)
 public class SystemUserController {
 
 	public static final String ATTR_LIST = "systemUserList";
+	public static final String ATTR_SEC_ACCESS = SecurityAccess.OBJECT_NAME;
 	public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
 	public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
 	public static final String JSP_LIST = "systemUserList";
@@ -55,6 +62,96 @@ public class SystemUserController {
 		this.systemUserService = ps;
 	}
 
+	/**
+	 * Assign a security access to a user.
+	 * 
+	 * @param secAccBean
+	 * @param session
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
+			+ SecurityAccess.OBJECT_NAME }, method = RequestMethod.POST)
+	public String assignSecurityAccess(
+			@ModelAttribute(ATTR_SEC_ACCESS) UserSecAccessBean secAccBean,
+			HttpSession session, SessionStatus status, Model model) {
+
+		// Get the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.assignSecurityAccess(user, secAccBean);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate(
+						SecurityAccess.OBJECT_NAME,
+						"ASSIGN " + secAccBean.toString()));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
+	 * Unassign a security access from a user.
+	 * 
+	 * @param secAccID
+	 * @param session
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SecurityAccess.OBJECT_NAME + "/{" + SecurityAccess.OBJECT_NAME
+			+ "}" }, method = RequestMethod.GET)
+	public String unassignSecurityAccess(
+			@PathVariable(SecurityAccess.OBJECT_NAME) long secAccID,
+			HttpSession session, SessionStatus status, Model model) {
+
+		// Get the user.
+		// And unassign the access from the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.unassignSecurityAccess(user, secAccID);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate(
+						SecurityAccess.OBJECT_NAME, "UNASSIGN " + secAccID));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
+	 * Unassign all security access assigned to the user.
+	 * 
+	 * @param session
+	 * @param status
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SecurityAccess.OBJECT_NAME + "/" + SystemConstants.ALL }, method = RequestMethod.GET)
+	public String unassignAllSecurityAccess(HttpSession session,
+			SessionStatus status, Model model) {
+
+		// Get the user.
+		// Unassign all the access from the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.unassignAllSecurityAccess(user);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate(
+						SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
+	 * List all system users.
+	 * 
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 			SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
 	public String listSystemUsers(Model model) {
@@ -189,6 +286,9 @@ public class SystemUserController {
 			+ SystemUser.COLUMN_PRIMARY_KEY + "}")
 	public String editSystemUser(
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
+
+		model.addAttribute(ATTR_SEC_ACCESS, new UserSecAccessBean(id));
+
 		if (this.authHelper.getAuth().isSuperAdmin()) {
 			model.addAttribute(ATTR_COMPANY_LIST, this.companyService.list());
 		}
