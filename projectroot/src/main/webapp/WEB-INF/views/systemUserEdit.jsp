@@ -44,6 +44,7 @@
                             <ul class="nav nav-tabs" id="myTab">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <li><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
+                                <li><a href="#tab_authority" data-toggle="tab">Authority</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -155,6 +156,7 @@
 		                                    		</td>
 		                                    	</tr>
 		                                    </table>
+		                                    <br/>
 		                                    <table id="dataaccess-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
@@ -187,6 +189,76 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_authority">
+                                	<div class="box box-default">
+		                                <div class="box-body table-responsive">
+		                                	<table>
+		                                    	<tr>
+<%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
+<!-- 		                                    		<td> -->
+<%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
+<%-- 		                                    			<a href="${urlCreateStaff}"> --%>
+<!-- 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button> -->
+<!-- 		                                    			</a> -->
+<!-- 		                                    		</td> -->
+<!-- 		                                    		<td> -->
+<!-- 		                                    			&nbsp; -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		</sec:authorize> --%>
+ 		                                    		<form:form 
+ 		                                    		modelAttribute="securityrole"  
+ 		                                    		method="post" 
+ 		                                    		action="${contextPath}/systemuser/assign/securityrole"> 
+ 		                                    			<td>
+ 		                                    			<form:select class="form-control" path="securityRoleID" items="${roleList}" itemLabel="name" itemValue="id"/>
+ 		                                    			</td>
+ 		                                    			<td>
+			                                    			&nbsp;
+			                                    		</td>
+ 														<td>
+ 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+ 		                                    			</td> 
+ 		                                    		</form:form> 
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+               											<c:url var="urlUnassignAllSecRole" value="/systemuser/unassign/securityrole/all"/>
+		                                    			<a href="${urlUnassignAllSecRole}">
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+		                                    			</a>
+		                                    		</td>
+		                                    	</tr>
+		                                    </table>
+		                                    <br/>
+		                                    <table id="authority-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                                <th>ID</th>
+		                                                <th>Name</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                		<c:forEach items="${systemuser.securityRoles}" var="role">
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+	                   												<c:url var="urlUnassignUserRole" value="/systemuser/unassign/securityrole/${role.id}"/>
+	                   												<a href="${urlUnassignUserRole}">
+																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+	                   												</a>
+																</center>
+															</td>
+			                                                <td>${role.id}</td>
+			                                                <td>${role.name}</td>
+			                                            </tr>
+		                                            </c:forEach>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
@@ -201,6 +273,7 @@
 		
 		$(document).ready(function() {
 			$("#dataaccess-table").dataTable();
+			$("#authority-table").dataTable();
 	    });
 	</script>
 </body>
