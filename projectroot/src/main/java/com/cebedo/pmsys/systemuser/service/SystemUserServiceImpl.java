@@ -16,6 +16,7 @@ import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.dao.StaffDAO;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.system.bean.UserSecAccessBean;
+import com.cebedo.pmsys.system.bean.UserSecRoleBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.helper.LogHelper;
@@ -208,6 +209,21 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	@Override
 	@Transactional
+	public void assignSecurityRole(SystemUser user, UserSecRoleBean secRoleBean) {
+		Set<SecurityRole> secRoleList = user.getSecurityRoles();
+
+		// Update the list.
+		SecurityRole secRole = this.securityRoleDAO.getByID(secRoleBean
+				.getSecurityRoleID());
+		secRoleList.add(secRole);
+		user.setSecurityRoles(secRoleList);
+
+		// Update the user object.
+		this.systemUserDAO.update(user);
+	}
+
+	@Override
+	@Transactional
 	public void unassignSecurityAccess(SystemUser user, long secAccID) {
 		Set<SecurityAccess> secAccList = user.getSecurityAccess();
 
@@ -234,9 +250,45 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	@Override
 	@Transactional
+	public void unassignSecurityRole(SystemUser user, long secRoleID) {
+		Set<SecurityRole> secRoleList = user.getSecurityRoles();
+
+		// Loop through each current role.
+		SecurityRole roleToRemove = null;
+		for (SecurityRole role : secRoleList) {
+
+			// If an access is equal to access to remove.
+			if (role.getId() == secRoleID) {
+				roleToRemove = role;
+				break;
+			}
+		}
+
+		// Remove here since can't remove while loop through list.
+		if (roleToRemove != null) {
+			secRoleList.remove(roleToRemove);
+		}
+
+		// Update the list and the user obj.
+		user.setSecurityRoles(secRoleList);
+		this.systemUserDAO.update(user);
+	}
+
+	@Override
+	@Transactional
 	public void unassignAllSecurityAccess(SystemUser user) {
 		// Update the list of access.
 		user.setSecurityAccess(null);
+
+		// Update the user object.
+		this.systemUserDAO.update(user);
+	}
+
+	@Override
+	@Transactional
+	public void unassignAllSecurityRoles(SystemUser user) {
+		// Update the list of roles.
+		user.setSecurityRoles(null);
 
 		// Update the user object.
 		this.systemUserDAO.update(user);

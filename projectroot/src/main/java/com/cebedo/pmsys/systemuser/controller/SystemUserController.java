@@ -21,6 +21,7 @@ import com.cebedo.pmsys.company.service.CompanyService;
 import com.cebedo.pmsys.security.securityaccess.model.SecurityAccess;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.system.bean.UserSecAccessBean;
+import com.cebedo.pmsys.system.bean.UserSecRoleBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -29,13 +30,15 @@ import com.cebedo.pmsys.systemuser.service.SystemUserService;
 
 @Controller
 @SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER,
-		SystemUserController.ATTR_SEC_ACCESS }, types = { SystemUser.class,
-		UserSecAccessBean.class })
+		SystemUserController.ATTR_SEC_ACCESS,
+		SystemUserController.ATTR_SEC_ROLE }, types = { SystemUser.class,
+		UserSecAccessBean.class, UserSecRoleBean.class })
 @RequestMapping(SystemUser.OBJECT_NAME)
 public class SystemUserController {
 
 	public static final String ATTR_LIST = "systemUserList";
 	public static final String ATTR_SEC_ACCESS = SecurityAccess.OBJECT_NAME;
+	public static final String ATTR_SEC_ROLE = SecurityRole.OBJECT_NAME;
 	public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
 	public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
 	public static final String JSP_LIST = "systemUserList";
@@ -70,6 +73,7 @@ public class SystemUserController {
 	 * @param status
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
 			+ SecurityAccess.OBJECT_NAME }, method = RequestMethod.POST)
 	public String assignSecurityAccess(
@@ -91,6 +95,35 @@ public class SystemUserController {
 	}
 
 	/**
+	 * Assign a security role to a user.
+	 * 
+	 * @param secAccBean
+	 * @param session
+	 * @param status
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
+	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
+			+ SecurityRole.OBJECT_NAME }, method = RequestMethod.POST)
+	public String assignSecurityRole(
+			@ModelAttribute(ATTR_SEC_ROLE) UserSecRoleBean secRoleBean,
+			HttpSession session, SessionStatus status, Model model) {
+
+		// Get the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.assignSecurityRole(user, secRoleBean);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate(
+						SecurityAccess.OBJECT_NAME,
+						"ASSIGN " + secRoleBean.toString()));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
 	 * Unassign a security access from a user.
 	 * 
 	 * @param secAccID
@@ -98,6 +131,7 @@ public class SystemUserController {
 	 * @param status
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SecurityAccess.OBJECT_NAME + "/{" + SecurityAccess.OBJECT_NAME
 			+ "}" }, method = RequestMethod.GET)
@@ -120,6 +154,36 @@ public class SystemUserController {
 	}
 
 	/**
+	 * Unassign a security role from a user.
+	 * 
+	 * @param secRoleID
+	 * @param session
+	 * @param status
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
+	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SecurityRole.OBJECT_NAME + "/{" + SecurityRole.OBJECT_NAME + "}" }, method = RequestMethod.GET)
+	public String unassignSecurityRole(
+			@PathVariable(SecurityRole.OBJECT_NAME) long secRoleID,
+			HttpSession session, SessionStatus status, Model model) {
+
+		// Get the user.
+		// And unassign the role from the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.unassignSecurityRole(user, secRoleID);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS
+						.generateCreate(SecurityAccess.OBJECT_NAME,
+								"UNASSIGN role" + secRoleID));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
 	 * Unassign all security access assigned to the user.
 	 * 
 	 * @param session
@@ -127,6 +191,7 @@ public class SystemUserController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
 			+ SecurityAccess.OBJECT_NAME + "/" + SystemConstants.ALL }, method = RequestMethod.GET)
 	public String unassignAllSecurityAccess(HttpSession session,
@@ -136,6 +201,34 @@ public class SystemUserController {
 		// Unassign all the access from the user.
 		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
 		this.systemUserService.unassignAllSecurityAccess(user);
+
+		// FIXME Fix this notification.
+		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate(
+						SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + user.getId();
+	}
+
+	/**
+	 * Unassign all security roles assigned to the user.
+	 * 
+	 * @param session
+	 * @param status
+	 * @param model
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_SYSTEMUSER_EDITOR + "')")
+	@RequestMapping(value = { SystemConstants.REQUEST_UNASSIGN + "/"
+			+ SecurityRole.OBJECT_NAME + "/" + SystemConstants.ALL }, method = RequestMethod.GET)
+	public String unassignAllSecurityRoles(HttpSession session,
+			SessionStatus status, Model model) {
+
+		// Get the user.
+		// Unassign all the access from the user.
+		SystemUser user = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
+		this.systemUserService.unassignAllSecurityRoles(user);
 
 		// FIXME Fix this notification.
 		model.addAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -288,18 +381,25 @@ public class SystemUserController {
 			@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
 
 		model.addAttribute(ATTR_SEC_ACCESS, new UserSecAccessBean(id));
+		model.addAttribute(ATTR_SEC_ROLE, new UserSecRoleBean(id));
 
+		// Only super admins can change company,
+		// view list of all companies.
 		if (this.authHelper.getAuth().isSuperAdmin()) {
 			model.addAttribute(ATTR_COMPANY_LIST, this.companyService.list());
 		}
 
+		// If id is zero,
+		// return with an empty object.
 		if (id == 0) {
 			model.addAttribute(ATTR_SYSTEM_USER, new SystemUser());
 			model.addAttribute(SystemConstants.ATTR_ACTION,
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
+
 		SystemUser resultUser = this.systemUserService.getByID(id);
+		// FIXME Why do this?
 		resultUser.setCompanyID(resultUser.getCompany() == null ? null
 				: resultUser.getCompany().getId());
 		model.addAttribute(ATTR_SYSTEM_USER, resultUser);

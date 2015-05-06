@@ -3,6 +3,7 @@ package com.cebedo.pmsys.systemuser.service;
 import java.util.List;
 
 import com.cebedo.pmsys.system.bean.UserSecAccessBean;
+import com.cebedo.pmsys.system.bean.UserSecRoleBean;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
 public interface SystemUserService {
@@ -30,6 +31,12 @@ public interface SystemUserService {
 
 	public void unassignSecurityAccess(SystemUser user, long secAccID);
 
+	public void unassignSecurityRole(SystemUser user, long secRoleID);
+
 	public void unassignAllSecurityAccess(SystemUser user);
+
+	public void unassignAllSecurityRoles(SystemUser user);
+
+	public void assignSecurityRole(SystemUser user, UserSecRoleBean secRoleBean);
 
 }
