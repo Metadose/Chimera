@@ -51,6 +51,7 @@ public class Task implements Serializable {
 	private Set<Staff> staff;
 	private Set<Team> teams;
 	private int status;
+	@Deprecated
 	private Set<TaskFieldAssignment> fields;
 	private Company company;
 
@@ -151,11 +152,13 @@ public class Task implements Serializable {
 		this.status = status;
 	}
 
+	@Deprecated
 	@OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".task", cascade = CascadeType.REMOVE)
 	public Set<TaskFieldAssignment> getFields() {
 		return fields;
 	}
 
+	@Deprecated
 	public void setFields(Set<TaskFieldAssignment> fields) {
 		this.fields = fields;
 	}
