@@ -180,6 +180,10 @@ public class TaskServiceImpl implements TaskService {
 		}
 	}
 
+	/**
+	 * Unassign a staff from a task. TODO Pass actual objects rather than ID's
+	 * only.
+	 */
 	@Override
 	@Transactional
 	public void unassignStaffTask(long taskID, long staffID) {

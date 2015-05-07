@@ -472,6 +472,87 @@ public class TaskController {
 	}
 
 	/**
+	 * Unassign all staff from a task.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
+	public String unassignAllProjectManagers(HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+
+		// Error handling if staff was not set properly.
+		if (task == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+					+ SystemConstants.REQUEST_LIST;
+		}
+
+		long taskID = task.getId();
+		this.taskService.unassignAllStaffTasks(taskID);
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + taskID;
+	}
+
+	/**
+	 * Unassign a staff from a task.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param position
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Staff.OBJECT_NAME + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String unassignProjectManager(HttpSession session,
+			SessionStatus status,
+			@PathVariable(Staff.OBJECT_NAME) long staffID,
+			RedirectAttributes redirectAttrs) {
+
+		// Get the object from the session.
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+
+		// Error handling if staff was not set properly.
+		if (task == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+					+ SystemConstants.REQUEST_LIST;
+		}
+
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("TOODOO Successfully <b>unassigned "
+				+ task.getTitle() + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		this.taskService.unassignStaffTask(task.getId(), staffID);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + task.getId();
+	}
+
+	/**
 	 * Assign a staff to a task.
 	 * 
 	 * @param projectID
