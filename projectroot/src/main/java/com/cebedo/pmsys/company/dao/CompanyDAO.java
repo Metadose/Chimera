@@ -16,9 +16,27 @@ public interface CompanyDAO {
 
 	public List<Company> list(Long companyID);
 
+	/**
+	 * Use session attributes rather than using this function.
+	 * 
+	 * @param objTable
+	 * @param objKeyCol
+	 * @param objID
+	 * @return
+	 */
+	@Deprecated
 	public long getCompanyIDByObjID(String objTable, String objKeyCol,
 			long objID);
 
+	/**
+	 * Use session attributes rather than using this function.
+	 * 
+	 * @param objTable
+	 * @param objKeyCol
+	 * @param objID
+	 * @return
+	 */
+	@Deprecated
 	public Company getCompanyByObjID(String objTable, String objKeyCol,
 			long objID);
 

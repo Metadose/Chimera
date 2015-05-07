@@ -102,15 +102,16 @@ public class SystemUserServiceImpl implements SystemUserService {
 	@Override
 	@Transactional
 	public void create(SystemUser systemUser) {
+
+		// Encrpyt password.
 		String encPassword = this.authHelper.encodePassword(
 				systemUser.getPassword(), systemUser);
 		systemUser.setPassword(encPassword);
 
-		this.systemUserDAO.create(systemUser);
-		AuthenticationToken auth = this.authHelper.getAuth();
-		Company authCompany = auth.getCompany();
+		// Construct the staff of the user.
 		Staff staff = new Staff();
 
+		// Set the user company.
 		// If it's already carrying a company ID,
 		// use it.
 		if (systemUser.getCompanyID() != null
@@ -118,15 +119,20 @@ public class SystemUserServiceImpl implements SystemUserService {
 			Company company = new Company(systemUser.getCompanyID());
 			systemUser.setCompany(company);
 			staff.setCompany(company);
-		}
-		// Else, get it somewhere else.
-		// If I'm not a super admin, use my company.
-		// Else, leave the object alone.
-		else if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
+		} else {
+			// Else, get it somewhere else.
+			AuthenticationToken auth = this.authHelper.getAuth();
+			Company authCompany = auth.getCompany();
 			systemUser.setCompany(authCompany);
 			staff.setCompany(authCompany);
 		}
+
+		// Create the user and staff.
+		// Create the objects first.
+		this.systemUserDAO.create(systemUser);
 		this.staffDAO.create(staff);
+
+		// Then link them together.
 		systemUser.setStaff(staff);
 		this.systemUserDAO.update(systemUser);
 	}

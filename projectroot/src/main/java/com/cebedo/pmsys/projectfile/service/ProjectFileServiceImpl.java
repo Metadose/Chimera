@@ -95,14 +95,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 		// Do actual upload.
 		this.fileHelper.fileUpload(file, fileLocation);
-		this.projectFileDAO.create(projectFile);
-
-		// Update the entry for company details.
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			projectFile.setCompany(authCompany);
-			this.projectFileDAO.update(projectFile);
-		}
+		projectFile.setCompany(authCompany);
+		this.projectFileDAO.create(projectFile);
 	}
 
 	@CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
@@ -146,14 +141,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 		// Do actual upload.
 		this.fileHelper.fileUpload(file, fileLocation);
-		this.projectFileDAO.create(projectFile);
-
-		// Update the entry for company details.
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			projectFile.setCompany(authCompany);
-			this.projectFileDAO.update(projectFile);
-		}
+		projectFile.setCompany(authCompany);
+		this.projectFileDAO.create(projectFile);
 	}
 
 	@Override

@@ -472,6 +472,55 @@ public class TaskController {
 	}
 
 	/**
+	 * Assign a staff to a task.
+	 * 
+	 * @param projectID
+	 * @param staffID
+	 * @param staffAssignment
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
+	public String assignStaff(
+			HttpSession session,
+			SessionStatus status,
+			@ModelAttribute(ATTR_STAFF_ASSIGNMENT) StaffAssignmentBean staffAssignment,
+			RedirectAttributes redirectAttrs) {
+
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+
+		// Error handling if staff was not set properly.
+		if (task == null) {
+			AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+			alertFactory
+					.setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					alertFactory.generateHTML());
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+					+ SystemConstants.REQUEST_LIST;
+		}
+
+		// Fetch staff name, construct ui notifs.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+
+		// FIXME
+		alertFactory.setMessage("TODOOOOO Successfully <b>assigned "
+				+ task.getTitle() + "</b> as <b></b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		// Do service, clear session.
+		// Then redirect.
+		this.taskService.assignStaffTask(task.getId(),
+				staffAssignment.getStaffID());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + task.getId();
+	}
+
+	/**
 	 * Open a page with appropriate values.<br>
 	 * May be a Create Page or Edit Page.
 	 * 
@@ -522,26 +571,26 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
-	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView assignStaffTask(
-			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-			RedirectAttributes redirectAttrs) {
-		this.taskService.assignStaffTask(taskID, staffID);
-
-		String taskTitle = this.taskService.getTitleByID(taskID);
-		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
-				+ taskTitle + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-				alertFactory.generateHTML());
-
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
-				+ taskID);
-	}
+	// @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
+	// @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+	// + Staff.OBJECT_NAME, method = RequestMethod.POST)
+	// public ModelAndView assignStaffTask(
+	// @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+	// @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
+	// RedirectAttributes redirectAttrs) {
+	// this.taskService.assignStaffTask(taskID, staffID);
+	//
+	// String taskTitle = this.taskService.getTitleByID(taskID);
+	// AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	// alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
+	// + taskTitle + "</b>.");
+	// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	// alertFactory.generateHTML());
+	//
+	// return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
+	// + Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
+	// + taskID);
+	// }
 
 	/**
 	 * Assign a new task to a team.

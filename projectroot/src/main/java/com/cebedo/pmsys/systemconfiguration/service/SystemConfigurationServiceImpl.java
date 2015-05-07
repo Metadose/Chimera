@@ -26,13 +26,10 @@ public class SystemConfigurationServiceImpl implements
 	@Override
 	@Transactional
 	public void create(SystemConfiguration systemConfiguration) {
-		this.systemConfigurationDAO.create(systemConfiguration);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			systemConfiguration.setCompany(authCompany);
-			this.systemConfigurationDAO.update(systemConfiguration);
-		}
+		systemConfiguration.setCompany(authCompany);
+		this.systemConfigurationDAO.create(systemConfiguration);
 	}
 
 	@Override

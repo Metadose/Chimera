@@ -76,12 +76,9 @@ public class ProjectServiceImpl implements ProjectService {
 				"Creating project: " + project.getName());
 
 		// Do service.
-		this.projectDAO.create(project);
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			project.setCompany(authCompany);
-			this.projectDAO.update(project);
-		}
+		project.setCompany(authCompany);
+		this.projectDAO.create(project);
 	}
 
 	@Override

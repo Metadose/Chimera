@@ -49,13 +49,10 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	@Transactional
 	public void create(Task task) {
-		this.taskDAO.create(task);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			task.setCompany(authCompany);
-			this.taskDAO.update(task);
-		}
+		task.setCompany(authCompany);
+		this.taskDAO.create(task);
 	}
 
 	@Override
@@ -218,14 +215,10 @@ public class TaskServiceImpl implements TaskService {
 		Project proj = this.projectDAO.getByID(projectID);
 		if (this.authHelper.isActionAuthorized(proj)) {
 			task.setProject(proj);
-			this.taskDAO.create(task);
-
 			AuthenticationToken auth = this.authHelper.getAuth();
 			Company authCompany = auth.getCompany();
-			if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-				task.setCompany(authCompany);
-				this.taskDAO.update(task);
-			}
+			task.setCompany(authCompany);
+			this.taskDAO.create(task);
 		}
 	}
 

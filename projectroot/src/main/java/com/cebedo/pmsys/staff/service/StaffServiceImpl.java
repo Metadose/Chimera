@@ -70,16 +70,10 @@ public class StaffServiceImpl implements StaffService {
 	public void create(Staff staff) {
 		// Create the staff first since to attach it's relationship
 		// with the company.
-		this.staffDAO.create(staff);
-
-		// Update it afterwards.
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			staff.setCompany(authCompany);
-			this.staffDAO.update(staff);
-		}
+		staff.setCompany(authCompany);
+		this.staffDAO.create(staff);
 	}
 
 	@Override
@@ -95,10 +89,6 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	@Transactional
 	public void update(Staff staff) {
-		Company company = this.companyDAO.getCompanyByObjID(Staff.TABLE_NAME,
-				Staff.COLUMN_PRIMARY_KEY, staff.getId());
-		staff.setCompany(company);
-
 		if (this.authHelper.isActionAuthorized(staff)) {
 			this.staffDAO.update(staff);
 		}
@@ -273,30 +263,29 @@ public class StaffServiceImpl implements StaffService {
 			SystemUser user = this.systemUserDAO.getByID(Long
 					.parseLong(originID));
 
-			// Get the company from the user.
-			// Update the staff.
-			staff.setCompany(user.getCompany());
-			this.staffDAO.create(staff);
+			if (user == null) {
+				staff.setCompany(this.authHelper.getAuth().getCompany());
+				this.staffDAO.create(staff);
+			} else {
+				// Get the company from the user.
+				// Update the staff.
+				staff.setCompany(user.getCompany());
+				this.staffDAO.create(staff);
 
-			// If coming from the system user,
-			// attach relationship with user.
-			user.setStaff(staff);
-			this.systemUserDAO.update(user);
+				// If coming from the system user,
+				// attach relationship with user.
+				user.setStaff(staff);
+				this.systemUserDAO.update(user);
+			}
+
 			return;
 		}
 
 		// Create the staff first since to attach it's relationship
 		// with the company.
-		this.staffDAO.create(staff);
-
-		// Update it afterwards.
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			staff.setCompany(authCompany);
-			this.staffDAO.update(staff);
-		}
-
+		staff.setCompany(authCompany);
+		this.staffDAO.create(staff);
 	}
 }

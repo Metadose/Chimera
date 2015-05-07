@@ -41,13 +41,10 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	@Transactional
 	public void create(Team team) {
-		this.teamDAO.create(team);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			team.setCompany(authCompany);
-			this.teamDAO.update(team);
-		}
+		team.setCompany(authCompany);
+		this.teamDAO.create(team);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.cebedo.pmsys.system.helper;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.projectfile.model.ProjectFile;
@@ -42,13 +43,6 @@ public class AuthHelper {
 				user.getUsername() + PASSWORD_SALT);
 	}
 
-	public boolean notNullObjNotSuperAdmin(Object obj) {
-		if (!(obj == null || getAuth().isSuperAdmin())) {
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * Is this operation on the project table authorized?
 	 * 
@@ -57,6 +51,8 @@ public class AuthHelper {
 	 */
 	public boolean isActionAuthorized(Project proj) {
 		AuthenticationToken auth = getAuth();
+		Company projCom = proj.getCompany();
+		Company authCom = auth.getCompany();
 
 		// If the auth is a super admin,
 		// action is good.
@@ -65,7 +61,7 @@ public class AuthHelper {
 		}
 		// If not, check if the user has the same company with
 		// the returned user.
-		else if (proj.getCompany().getId() == auth.getCompany().getId()) {
+		else if (projCom.getId() == authCom.getId()) {
 			return true;
 		}
 		return false;

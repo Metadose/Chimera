@@ -24,13 +24,10 @@ public class SubcontractorServiceImpl implements SubcontractorService {
 	@Override
 	@Transactional
 	public void create(Subcontractor subcontractor) {
-		this.subcontractorDAO.create(subcontractor);
 		AuthenticationToken auth = this.authHelper.getAuth();
 		Company authCompany = auth.getCompany();
-		if (this.authHelper.notNullObjNotSuperAdmin(authCompany)) {
-			subcontractor.setCompany(authCompany);
-			this.subcontractorDAO.update(subcontractor);
-		}
+		subcontractor.setCompany(authCompany);
+		this.subcontractorDAO.create(subcontractor);
 	}
 
 	@Override
