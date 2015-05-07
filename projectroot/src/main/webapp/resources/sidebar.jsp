@@ -105,36 +105,6 @@ $(document).ready(function() {
                 </a>
             </li>
             </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_PROJECTFILE')">
-            <li>
-            	<c:url var="urlProjFileList" value="/projectfile/list/"/>
-                <a href="${urlProjFileList}">
-                    <i class="fa fa-file"></i> <span>Files</span>
-                </a>
-            </li>
-            </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_TASK')">
-            <li>
-            	<c:url var="urlTaskList" value="/task/list/"/>
-                <a href="${urlTaskList}">
-                    <i class="fa fa-tasks"></i> <span>Tasks</span>
-                </a>
-            </li>
-            </sec:authorize>
-<!--             <li> -->
-<!--                 <a href="pages/calendar.html"> -->
-<!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->
-<!--                 </a> -->
-<!--             </li> -->
-			<sec:authorize access="hasRole('ACCESS_TEAM')">
-            <li>
-            	<c:url var="urlTeamList" value="/team/list/"/>
-                <a href="${urlTeamList}">
-                    <i class="fa fa-users"></i> <span>Teams</span>
-<!--                     <small class="badge pull-right bg-green">new</small> -->
-                </a> 
-            </li>
-            </sec:authorize>
             <sec:authorize access="hasRole('ACCESS_STAFF')">
             <li>
             	<c:url var="urlStaffList" value="/staff/list/"/>
@@ -151,6 +121,36 @@ $(document).ready(function() {
                 </a>
             </li>
             </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_TEAM')">
+            <li>
+            	<c:url var="urlTeamList" value="/team/list/"/>
+                <a href="${urlTeamList}">
+                    <i class="fa fa-users"></i> <span>Teams</span>
+<!--                     <small class="badge pull-right bg-green">new</small> -->
+                </a> 
+            </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_TASK')">
+            <li>
+            	<c:url var="urlTaskList" value="/task/list/"/>
+                <a href="${urlTaskList}">
+                    <i class="fa fa-tasks"></i> <span>Tasks</span>
+                </a>
+            </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ACCESS_PROJECTFILE')">
+            <li>
+            	<c:url var="urlProjFileList" value="/projectfile/list/"/>
+                <a href="${urlProjFileList}">
+                    <i class="fa fa-file"></i> <span>Files</span>
+                </a>
+            </li>
+            </sec:authorize>
+<!--             <li> -->
+<!--                 <a href="pages/calendar.html"> -->
+<!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->
+<!--                 </a> -->
+<!--             </li> -->
             <c:if test="${authUser.superAdmin == true}">
             <li>
             	<c:url var="urlFieldList" value="/field/list/"/>

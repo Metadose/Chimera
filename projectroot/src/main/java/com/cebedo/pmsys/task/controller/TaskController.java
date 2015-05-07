@@ -19,6 +19,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.company.model.Company;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
@@ -29,7 +30,9 @@ import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
+import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
+import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.task.model.Task;
 import com.cebedo.pmsys.task.service.TaskService;
@@ -38,17 +41,22 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
-@SessionAttributes(value = { TaskController.ATTR_TASK }, types = { Task.class })
+@SessionAttributes(value = { TaskController.ATTR_TASK,
+		TaskController.ATTR_STAFF_ASSIGNMENT }, types = { Task.class,
+		StaffAssignmentBean.class })
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 
 	public static final String ATTR_LIST = "taskList";
 	public static final String ATTR_TASK = Task.OBJECT_NAME;
+	public static final String ATTR_STAFF_ASSIGNMENT = "staffAssignment";
 	public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
 	public static final String ATTR_ASSIGN_STAFF_ID = "assignStaffID";
 
 	public static final String JSP_LIST = "taskList";
 	public static final String JSP_EDIT = "taskEdit";
+
+	private AuthHelper authHelper = new AuthHelper();
 
 	private TaskService taskService;
 	private TeamService teamService;
@@ -477,11 +485,10 @@ public class TaskController {
 			Model model) {
 		// TODO Optimize by getting only name and id.
 		// Get list of teams for the selector.
+		// FIXME Team and field list? Do we need this?
 		List<Team> teamList = this.teamService.list();
-		List<Staff> staffList = this.staffService.list();
 		List<Field> fieldList = this.fieldService.list();
 		model.addAttribute(TeamController.JSP_LIST, teamList);
-		model.addAttribute(StaffController.JSP_LIST, staffList);
 		model.addAttribute(FieldController.JSP_LIST, fieldList);
 
 		// If ID is zero,
@@ -495,6 +502,12 @@ public class TaskController {
 
 		// Else, get the object from DB
 		// then populate the fields in JSP.
+		Company co = this.authHelper.getAuth().getCompany();
+		List<Staff> staffList = this.staffService.list(co == null ? null : co
+				.getId());
+		model.addAttribute(StaffController.JSP_LIST, staffList);
+		model.addAttribute("staffAssignment",
+				new StaffAssignmentBean().setTaskID(id));
 		model.addAttribute(ATTR_TASK,
 				this.taskService.getByIDWithAllCollections(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,

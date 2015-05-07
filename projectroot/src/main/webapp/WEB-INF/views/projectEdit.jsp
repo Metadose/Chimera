@@ -57,7 +57,7 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
-<!--                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li> -->
+                                		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
@@ -260,7 +260,7 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-                                <%-- <div class="tab-pane" id="tab_2">
+                                <div class="tab-pane" id="tab_2">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
                                     		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
@@ -403,7 +403,7 @@
 			                                </table>
 		                                </div><!-- /.box-body -->
 		                            </div>
-                                </div><!-- /.tab-pane --> --%>
+                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">

@@ -1,8 +1,10 @@
 package com.cebedo.pmsys.system.bean;
 
+
 public class StaffAssignmentBean {
 
 	private long staffID;
+	private long taskID;
 	private String position;
 
 	public StaffAssignmentBean() {
@@ -28,6 +30,15 @@ public class StaffAssignmentBean {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public long getTaskID() {
+		return taskID;
+	}
+
+	public StaffAssignmentBean setTaskID(long taskID) {
+		this.taskID = taskID;
+		return this;
 	}
 
 }
