@@ -31,6 +31,7 @@ import com.cebedo.pmsys.staff.controller.StaffController;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.StaffAssignmentBean;
+import com.cebedo.pmsys.system.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.AuthHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -42,14 +43,16 @@ import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
 @SessionAttributes(value = { TaskController.ATTR_TASK,
-		TaskController.ATTR_STAFF_ASSIGNMENT }, types = { Task.class,
-		StaffAssignmentBean.class })
+		TaskController.ATTR_STAFF_ASSIGNMENT,
+		TaskController.ATTR_TEAM_ASSIGNMENT }, types = { Task.class,
+		StaffAssignmentBean.class, TeamAssignmentBean.class })
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 
 	public static final String ATTR_LIST = "taskList";
 	public static final String ATTR_TASK = Task.OBJECT_NAME;
 	public static final String ATTR_STAFF_ASSIGNMENT = "staffAssignment";
+	public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
 	public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
 	public static final String ATTR_ASSIGN_STAFF_ID = "assignStaffID";
 
@@ -285,11 +288,12 @@ public class TaskController {
 	 * @param redirectAttrs
 	 * @return
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/"
 			+ SystemConstants.NEW + "/" + Staff.OBJECT_NAME + "/{"
 			+ Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
-	public ModelAndView assignStaff(@ModelAttribute(ATTR_TASK) Task task,
+	public ModelAndView assignTaskToStaff(@ModelAttribute(ATTR_TASK) Task task,
 			@PathVariable(Staff.COLUMN_PRIMARY_KEY) int staffID,
 			RedirectAttributes redirectAttrs) {
 
@@ -480,7 +484,7 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
-	public String unassignAllProjectManagers(HttpSession session,
+	public String unassignAllTaskStaff(HttpSession session,
 			SessionStatus status, RedirectAttributes redirectAttrs) {
 		Task task = (Task) session.getAttribute(ATTR_TASK);
 
@@ -510,6 +514,36 @@ public class TaskController {
 	}
 
 	/**
+	 * Unassign all teams inside a task.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
+	public String unassignAllTaskTeams(HttpSession session,
+			SessionStatus status, RedirectAttributes redirectAttrs) {
+
+		// Get IDs.
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+		long taskID = task.getId();
+
+		// Do service.
+		this.taskService.unassignAllTeamsInTask(taskID);
+
+		// Construct response.
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + taskID;
+	}
+
+	/**
 	 * Unassign a staff from a task.
 	 * 
 	 * @param projectID
@@ -520,8 +554,7 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-	public String unassignProjectManager(HttpSession session,
-			SessionStatus status,
+	public String unassignTaskStaff(HttpSession session, SessionStatus status,
 			@PathVariable(Staff.OBJECT_NAME) long staffID,
 			RedirectAttributes redirectAttrs) {
 
@@ -553,6 +586,38 @@ public class TaskController {
 	}
 
 	/**
+	 * Unassign team from a project.
+	 * 
+	 * @param projectID
+	 * @return
+	 */
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
+	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+			+ Team.OBJECT_NAME + "/{" + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
+	public String unassignTaskTeam(HttpSession session, SessionStatus status,
+			@PathVariable(Team.OBJECT_NAME) long teamID,
+			RedirectAttributes redirectAttrs) {
+
+		// Get the IDs.
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+		long taskID = task.getId();
+
+		// Do service.
+		this.taskService.unassignTeamTask(taskID, teamID);
+
+		// Construct response.
+		String teamName = this.teamService.getNameByID(teamID);
+		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+		alertFactory.setMessage("Successfully <b>unassigned</b> team <b>"
+				+ teamName + "</b>.");
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				alertFactory.generateHTML());
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + taskID;
+	}
+
+	/**
 	 * Assign a staff to a task.
 	 * 
 	 * @param projectID
@@ -563,7 +628,7 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
-	public String assignStaff(
+	public String assignTaskStaff(
 			HttpSession session,
 			SessionStatus status,
 			@ModelAttribute(ATTR_STAFF_ASSIGNMENT) StaffAssignmentBean staffAssignment,
@@ -616,9 +681,7 @@ public class TaskController {
 		// TODO Optimize by getting only name and id.
 		// Get list of teams for the selector.
 		// FIXME Team and field list? Do we need this?
-		List<Team> teamList = this.teamService.list();
 		List<Field> fieldList = this.fieldService.list();
-		model.addAttribute(TeamController.JSP_LIST, teamList);
 		model.addAttribute(FieldController.JSP_LIST, fieldList);
 
 		// If ID is zero,
@@ -633,11 +696,16 @@ public class TaskController {
 		// Else, get the object from DB
 		// then populate the fields in JSP.
 		Company co = this.authHelper.getAuth().getCompany();
-		List<Staff> staffList = this.staffService.list(co == null ? null : co
-				.getId());
+		Long coID = co == null ? null : co.getId();
+
+		// FIXME List unassigned teams/staff,
+		// don't list them all.
+		List<Team> teamList = this.teamService.list(coID);
+		List<Staff> staffList = this.staffService.list(coID);
+		model.addAttribute(TeamController.JSP_LIST, teamList);
 		model.addAttribute(StaffController.JSP_LIST, staffList);
-		model.addAttribute("staffAssignment",
-				new StaffAssignmentBean().setTaskID(id));
+		model.addAttribute(ATTR_STAFF_ASSIGNMENT, new StaffAssignmentBean());
+		model.addAttribute(ATTR_TEAM_ASSIGNMENT, new TeamAssignmentBean());
 		model.addAttribute(ATTR_TASK,
 				this.taskService.getByIDWithAllCollections(id));
 		model.addAttribute(SystemConstants.ATTR_ACTION,
@@ -646,57 +714,36 @@ public class TaskController {
 	}
 
 	/**
-	 * Assign a new task to a staff.
+	 * Assign team to a project.
 	 * 
-	 * @param taskID
-	 * @param staffID
+	 * @param projectID
 	 * @return
 	 */
-	// @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
-	// @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-	// + Staff.OBJECT_NAME, method = RequestMethod.POST)
-	// public ModelAndView assignStaffTask(
-	// @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	// @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-	// RedirectAttributes redirectAttrs) {
-	// this.taskService.assignStaffTask(taskID, staffID);
-	//
-	// String taskTitle = this.taskService.getTitleByID(taskID);
-	// AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	// alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
-	// + taskTitle + "</b>.");
-	// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-	// alertFactory.generateHTML());
-	//
-	// return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-	// + Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
-	// + taskID);
-	// }
-
-	/**
-	 * Assign a new task to a team.
-	 * 
-	 * @param taskID
-	 * @param staffID
-	 * @return
-	 */
-	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
+	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView assignTeamTask(
-			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
+	public String assignTaskTeam(
+			@ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
+			HttpSession session, SessionStatus status,
 			RedirectAttributes redirectAttrs) {
+		// Get the IDs.
+		Task task = (Task) session.getAttribute(ATTR_TASK);
+		long teamID = taBean.getTeamID();
+		long taskID = task.getId();
+
+		// Do the service.
 		this.taskService.assignTeamTask(taskID, teamID);
-		String taskTitle = this.taskService.getTitleByID(taskID);
+
+		// Construct response.
+		String teamName = this.teamService.getNameByID(teamID);
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-		alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
-				+ taskTitle + "</b>.");
+		alertFactory.setMessage("Successfully <b>assigned</b> team <b>"
+				+ teamName + "</b>.");
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				alertFactory.generateHTML());
-		return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-				+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
-				+ taskID);
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + taskID;
 	}
 
 	/**
@@ -705,13 +752,14 @@ public class TaskController {
 	 * @param taskID
 	 * @return
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllTeamTasks(
+	public ModelAndView unassignAllTaskTeams(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			RedirectAttributes redirectAttrs) {
-		this.taskService.unassignAllTeamTasks(taskID);
+		this.taskService.unassignAllTeamsInTask(taskID);
 		String taskTitle = this.taskService.getTitleByID(taskID);
 		AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 		alertFactory.setMessage("Successfully <b>unassigned " + taskTitle
@@ -730,10 +778,11 @@ public class TaskController {
 	 * @param teamID
 	 * @return
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Team.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView unassignTeamTask(
+	public ModelAndView unassignTaskFromTeam(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
 			RedirectAttributes redirectAttrs) {
@@ -758,10 +807,11 @@ public class TaskController {
 	 * @param staffID
 	 * @return
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME, method = RequestMethod.POST)
-	public ModelAndView unassignStaffTask(
+	public ModelAndView unassignTaskFromStaff(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 			@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
 			RedirectAttributes redirectAttrs) {
@@ -812,7 +862,7 @@ public class TaskController {
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Project.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllTasksByProject(
+	public ModelAndView unassignAllTasksInProject(
 			@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignAllTasksByProject(projectID);
@@ -863,10 +913,11 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
 	@RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
 			+ Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
-	public ModelAndView unassignAllStaffTasks(
+	public ModelAndView unassignAllTaskStaff(
 			@RequestParam(Task.COLUMN_PRIMARY_KEY) long id,
 			RedirectAttributes redirectAttrs) {
 		this.taskService.unassignAllStaffTasks(id);

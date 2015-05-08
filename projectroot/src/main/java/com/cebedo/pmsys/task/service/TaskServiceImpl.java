@@ -173,7 +173,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	@Transactional
-	public void unassignAllTeamTasks(long taskID) {
+	public void unassignAllTeamsInTask(long taskID) {
 		Task task = this.taskDAO.getByID(taskID);
 		if (this.authHelper.isActionAuthorized(task)) {
 			this.taskDAO.unassignAllTeamTasks(taskID);

@@ -28,7 +28,12 @@ public interface TaskService {
 
 	public void unassignTeamTask(long taskID, long teamID);
 
-	public void unassignAllTeamTasks(long taskID);
+	/**
+	 * Unassign all teams in a given task.
+	 * 
+	 * @param taskID
+	 */
+	public void unassignAllTeamsInTask(long taskID);
 
 	/**
 	 * Unassign a staff from a task.

@@ -3,6 +3,7 @@ package com.cebedo.pmsys.system.bean;
 public class TeamAssignmentBean {
 
 	private long teamID;
+	private long taskID;
 
 	public TeamAssignmentBean() {
 		;
@@ -18,6 +19,15 @@ public class TeamAssignmentBean {
 
 	public void setTeamID(long teamID) {
 		this.teamID = teamID;
+	}
+
+	public long getTaskID() {
+		return taskID;
+	}
+
+	public TeamAssignmentBean setTaskID(long taskID) {
+		this.taskID = taskID;
+		return this;
 	}
 
 }

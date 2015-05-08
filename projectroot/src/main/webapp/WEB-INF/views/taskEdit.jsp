@@ -146,8 +146,8 @@
 		                                    		</td>
 		                                    		<c:if test="${!empty task.staff}">
 		                                    		<td>
-               											<c:url var="urlProjectUnassignStaffAll" value="/task/unassign/staff/all"/>
-		                                    			<a href="${urlProjectUnassignStaffAll}">
+               											<c:url var="urlTaskUnassignStaffAll" value="/task/unassign/staff/all"/>
+		                                    			<a href="${urlTaskUnassignStaffAll}">
                 											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
 		                                    			</a>
 		                                    		</td>
@@ -208,6 +208,91 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_assigned_teams">
+                                	<div class="box">
+		                                <div class="box-body table-responsive">
+		                                	<table>
+		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
+		                                    		<td>
+		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/task/${task.id}"/>
+		                                    			<a href="${urlCreateTeam}">
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
+		                                    			</a>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		</sec:authorize>
+		                                    		<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
+		                                    		<c:if test="${!empty teamList}">
+ 		                                    		<form:form 
+ 		                                    		modelAttribute="teamAssignment"  
+ 		                                    		method="post" 
+ 		                                    		action="${contextPath}/task/assign/team"> 
+ 		                                    			<td>
+ 		                                    			<form:select class="form-control" path="teamID"> 
+                                     						<c:forEach items="${teamList}" var="team"> 
+                                     							<form:option value="${team.id}" label="${team.name}"/> 
+                                     						</c:forEach> 
+ 		                                    			</form:select> 
+ 		                                    			</td>
+ 		                                    			<td>
+ 		                                    				&nbsp;
+ 		                                    			</td>
+ 														<td>
+ 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+ 		                                    			</td> 
+ 		                                    		</form:form> 
+		                                    		</c:if>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<c:if test="${!empty task.teams}">
+		                                    		<td>
+               											<c:url var="urlTaskUnassignTeamAll" value="/task/unassign/team/all"/>
+		                                    			<a href="${urlTaskUnassignTeamAll}">
+                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+		                                    			</a>
+		                                    		</td>
+		                                    		</c:if>
+		                                    		</sec:authorize>
+		                                    	</tr>
+		                                    </table>
+		                                    <table id="teams-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                                <th>#</th>
+		                                                <th>Name</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                		<c:forEach items="${task.teams}" var="team">
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/task/${task.id}" />
+			                                            			<a href="${urlViewTeam}">
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            			</a>
+	                   												<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
+	                   												<c:url var="urlUnassignTeam" value="/task/unassign/team/${team.id}"/>
+	                   												<a href="${urlUnassignTeam}">
+																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+	                   												</a>
+	                   												</sec:authorize>
+																</center>
+															</td>
+			                                                <td>${team.id}</td>
+			                                                <td>${team.name}</td>
+			                                            </tr>
+		                                            </c:forEach>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
@@ -243,6 +328,7 @@
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task_status").val("${task.status}");
 			$("#staff-table").dataTable();
+			$("#teams-table").dataTable();
 	    });
 	</script>
 </body>
