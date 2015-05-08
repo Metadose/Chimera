@@ -58,6 +58,7 @@
                                 <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -127,6 +128,9 @@
 				                                            
 				                                            <label>Position</label>
 				                                            <form:input type="text" class="form-control" path="companyPosition"/><br/>
+				                                            
+				                                            <label>Salary (Daily)</label>
+				                                            <form:input type="text" class="form-control" path="wage"/><br/>
 				                                            
 				                                            <label>E-Mail</label>
 				                                            <form:input type="text" class="form-control" path="email"/><br/>
@@ -547,6 +551,45 @@
 		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_payroll">
+                                	<div class="box">
+		                                <div class="box-body table-responsive">
+		                                	<c:url value="/staff/edit/attendance/0/0" var="urlAddAttendance"/>	
+		                               		<a href="${urlAddAttendance}">
+		                                		<button class="btn btn-default btn-flat btn-sm">Add Attendance</button>
+		                                	</a><br/><br/>
+		                                    <table id="attendance-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                    		<tr>
+			                                        	<th>&nbsp;</th>
+			                                            <th>Date</th>
+			                                            <th>Status</th>
+			                                            <th>Salary</th>
+			                                        </tr>
+		                                    	</thead>
+		                                        <tbody>
+                                        		<c:forEach items="${attendanceList}" var="attendance">
+                                        			<tr>
+                                        				<td>
+                                        					<c:url value="/staff/edit/attendance/${attendance.timestamp.getTime()}/${attendance.status.id()}" var="urlViewAttendance"/>
+					                                        <a href="${urlViewAttendance}">
+			                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            	</a>
+			                                            	<c:url value="/staff/delete/attendance/${attendance.timestamp.getTime()}/${attendance.status.id()}" var="urlDeleteAttendance"/>
+			                                            	<a href="${urlDeleteAttendance}">
+			                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+			                                            	</a>
+                                        				</td>
+			                                            <td>${attendance.timestamp}</td>
+			                                            <td>${attendance.status}</td>
+			                                            <td>${attendance.wage}</td>
+			                                        </tr>
+                                        		</c:forEach>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
                                 </c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
@@ -601,6 +644,7 @@
 			$("#example-1").dataTable();
 			$("#project-table").dataTable();
 			$("#task-table").dataTable();
+			$("#attendance-table").dataTable();
 	    });
 	</script>
 </body>

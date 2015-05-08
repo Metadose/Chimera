@@ -1,6 +1,8 @@
 package com.cebedo.pmsys.staff.controller;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.payroll.domain.Attendance;
+import com.cebedo.pmsys.payroll.domain.Status;
+import com.cebedo.pmsys.payroll.service.PayrollService;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
@@ -35,12 +40,16 @@ import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
 
 @Controller
-@SessionAttributes(value = { StaffController.ATTR_STAFF }, types = { Staff.class })
+@SessionAttributes(value = { StaffController.ATTR_STAFF,
+		StaffController.ATTR_ATTENDANCE }, types = { Staff.class,
+		Attendance.class })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
 	public static final String ATTR_LIST = "staffList";
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
+	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
+	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
 	public static final String JSP_LIST = "staffList";
 	public static final String JSP_EDIT = "staffEdit";
 
@@ -48,6 +57,13 @@ public class StaffController {
 	private TeamService teamService;
 	private FieldService fieldService;
 	private ProjectService projectService;
+	private PayrollService payrollService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "payrollService")
+	public void setPayrollService(PayrollService s) {
+		this.payrollService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "projectService")
@@ -164,6 +180,61 @@ public class StaffController {
 				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
+	}
+
+	/**
+	 * Add an attendance.
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
+			+ Attendance.OBJECT_NAME }, method = RequestMethod.POST)
+	public String addAttendance(
+			@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
+			RedirectAttributes redirectAttrs, SessionStatus status) {
+
+		// Get staff from session.
+		Staff staff = attendance.getStaff();
+
+		// Do service.
+		this.payrollService.set(attendance);
+
+		// TODO
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/" + staff.getId();
+	}
+
+	/**
+	 * Open a page to create or edit an attendance.
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/"
+			+ Attendance.OBJECT_NAME + "/{" + Attendance.OBJECT_NAME
+			+ "}/{status}" }, method = RequestMethod.GET)
+	public String editAttendance(
+			@PathVariable(Attendance.OBJECT_NAME) long timestamp,
+			@PathVariable("status") int status, HttpSession session, Model model) {
+
+		// Get staff from session.
+		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+
+		// Construct bean.
+		Attendance attendance = new Attendance();
+		if (timestamp == 0) {
+			attendance = new Attendance(staff);
+		} else {
+			// TODO Make function for this in service.
+			attendance = this.payrollService.get(staff, Status.of(status),
+					new Date(timestamp));
+		}
+
+		// Attach bean to model.
+		model.addAttribute(ATTR_ATTENDANCE, attendance);
+		return Attendance.OBJECT_NAME + "/" + Attendance.JSP_EDIT;
 	}
 
 	/**
@@ -288,8 +359,13 @@ public class StaffController {
 					SystemConstants.ACTION_CREATE);
 			return JSP_EDIT;
 		}
-		model.addAttribute(ATTR_STAFF,
-				this.staffService.getWithAllCollectionsByID(id));
+		Staff staff = this.staffService.getWithAllCollectionsByID(id);
+
+		// TODO Change since the beginning of time.
+		Set<Attendance> attendanceList = this.payrollService
+				.rangeStaffAttendance(staff, 0, System.currentTimeMillis());
+		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
+		model.addAttribute(ATTR_STAFF, staff);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
 		return JSP_EDIT;

@@ -60,6 +60,7 @@ public class Staff implements Serializable {
 	private Set<StaffFieldAssignment> fieldAssignments;
 	private Company company;
 	private SystemUser user;
+	private double wage;
 
 	public Staff() {
 		;
@@ -168,6 +169,15 @@ public class Staff implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	@Column(name = "wage")
+	public double getWage() {
+		return wage;
+	}
+
+	public void setWage(double wage) {
+		this.wage = wage;
 	}
 
 	@Column(name = "contact_number", length = 32)
