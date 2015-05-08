@@ -568,7 +568,21 @@
                                 	<div class="box box-default">
 		                                <div class="box-body">
 		                                <div id="payroll" style='width:1000px; height:400px;'>
-		                                ${teamPayrollMap}
+		                                <c:forEach items="${teamPayrollMap}" var="team">
+		                                	${team.key.name}
+		                                	<br/>
+		                                	<c:forEach items="${team.value}" var="staffWage">
+		                                		---- ${staffWage.key.getFullName()} = ${staffWage.value}<br/>
+		                                	</c:forEach>
+		                                </c:forEach>
+		                                <br/>
+		                                <c:forEach items="${managerPayrollMap}" var="managerWage">
+		                                	${managerWage.key.getFullName()}
+		                                	<br/>
+		                                	<c:forEach items="${team.value}" var="staffWage">
+		                                		---- ${staffWage.key.getFullName()} = ${staffWage.value}<br/>
+		                                	</c:forEach>
+		                                </c:forEach>
 		                                <br/>
 		                                <br/>
 		                                ${managerPayrollMap}

@@ -930,25 +930,55 @@ public class ProjectController {
 		Date max = new Date(System.currentTimeMillis());
 
 		// Payroll maps.
-		Map<Team, Map<Staff, Double>> teamPayrollMap = new HashMap<Team, Map<Staff, Double>>();
-		Map<ManagerAssignment, Double> managerPayrollMap = new HashMap<ManagerAssignment, Double>();
+		Map<Team, Map<Staff, String>> teamPayrollMap = new HashMap<Team, Map<Staff, String>>();
+		Map<ManagerAssignment, String> managerPayrollMap = new HashMap<ManagerAssignment, String>();
 
 		// Wage for teams.
+		Map<Long, String> computedMap = new HashMap<Long, String>();
+
+		// Loop through all the teams.
 		for (Team team : proj.getAssignedTeams()) {
-			Map<Staff, Double> staffPayrollMap = new HashMap<Staff, Double>();
+			Map<Staff, String> staffPayrollMap = new HashMap<Staff, String>();
+
 			for (Staff member : team.getMembers()) {
-				staffPayrollMap.put(member, this.payrollService
-						.getTotalWageOfStaffInRange(member, min, max));
+				long memberID = member.getId();
+
+				// If a staff has already been computed before,
+				// don't compute again.
+				if (computedMap.containsKey(memberID)) {
+					staffPayrollMap.put(member,
+							"Check " + computedMap.get(memberID));
+					continue;
+				}
+
+				// Add to map
+				// and add to computed list.
+				staffPayrollMap.put(member, String.valueOf(this.payrollService
+						.getTotalWageOfStaffInRange(member, min, max)));
+				computedMap.put(memberID, "Team " + team.getName());
 			}
+
+			// Add to team list.
 			teamPayrollMap.put(team, staffPayrollMap);
 		}
 
 		// Wage for managers.
 		for (ManagerAssignment assignment : proj.getManagerAssignments()) {
-			managerPayrollMap.put(
-					assignment,
-					this.payrollService.getTotalWageOfStaffInRange(
-							assignment.getManager(), min, max));
+			Staff manager = assignment.getManager();
+			long managerID = manager.getId();
+			// If a staff has already been computed before,
+			// don't compute again.
+			if (computedMap.containsKey(managerID)) {
+				managerPayrollMap.put(assignment,
+						"Check " + computedMap.get(managerID));
+				continue;
+			}
+
+			// Get wage then add to map.
+			managerPayrollMap.put(assignment, String
+					.valueOf(this.payrollService.getTotalWageOfStaffInRange(
+							manager, min, max)));
+			computedMap.put(managerID, assignment.getProjectPosition());
 		}
 
 		Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj

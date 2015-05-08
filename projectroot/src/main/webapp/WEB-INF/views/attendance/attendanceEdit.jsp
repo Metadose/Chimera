@@ -59,8 +59,10 @@
 				                                        	</c:if>
 				                                            <label>Status</label>
 				                                            <form:input type="text" class="form-control" path="statusID"/><br/>
+				                                            <c:if test="${!empty attendance.timestamp}">
 				                                            <label>Salary</label>
 				                                            <form:input type="text" class="form-control" path="wage"/><br/>
+				                                            </c:if>
 				                                        </div>
 	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Submit TODO</button>
 				                                    </form:form>

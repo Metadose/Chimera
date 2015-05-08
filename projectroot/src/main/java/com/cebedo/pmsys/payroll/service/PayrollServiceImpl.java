@@ -34,7 +34,8 @@ public class PayrollServiceImpl implements PayrollService {
 			attendance.setStatus(Status.of(attendance.getStatusID()));
 		}
 		if (attendance.getWage() == 0) {
-			attendance.setWage(getWage(attendance.getStaff(), status));
+			attendance.setWage(getWage(attendance.getStaff(),
+					attendance.getStatus()));
 		}
 		this.attendanceValueRepo.set(attendance);
 	}
