@@ -581,7 +581,7 @@
 			                                            	</a>
                                         				</td>
 			                                            <td>${attendance.timestamp}</td>
-			                                            <td>${attendance.status}</td>
+			                                            <td>${attendance.status.value()}</td>
 			                                            <td>${attendance.wage}</td>
 			                                        </tr>
                                         		</c:forEach>

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.system.helper.DAOHelper;
 import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.team.model.Team;
 
 @Repository
 public class ProjectDAOImpl implements ProjectDAO {
@@ -86,7 +87,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 		Session session = this.sessionFactory.getCurrentSession();
 		Project project = (Project) session.load(Project.class, new Long(id));
 		Hibernate.initialize(project.getManagerAssignments());
-		Hibernate.initialize(project.getAssignedTeams());
 		Hibernate.initialize(project.getAssignedFields());
 		Hibernate.initialize(project.getFiles());
 		Hibernate.initialize(project.getPhotos());
@@ -98,6 +98,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 		for (Task task : assignedTasks) {
 			Hibernate.initialize(task.getTeams());
 			Hibernate.initialize(task.getStaff());
+		}
+		Set<Team> teams = project.getAssignedTeams();
+		Hibernate.initialize(teams);
+		for (Team team : teams) {
+			Hibernate.initialize(team.getMembers());
 		}
 		logger.info("[Get by ID] Project: " + project);
 		return project;

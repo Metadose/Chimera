@@ -3,7 +3,10 @@ package com.cebedo.pmsys.project.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,6 +32,7 @@ import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.model.FieldAssignment;
 import com.cebedo.pmsys.field.service.FieldService;
+import com.cebedo.pmsys.payroll.service.PayrollService;
 import com.cebedo.pmsys.photo.model.Photo;
 import com.cebedo.pmsys.photo.service.PhotoService;
 import com.cebedo.pmsys.project.model.Project;
@@ -37,6 +41,7 @@ import com.cebedo.pmsys.projectfile.model.ProjectFile;
 import com.cebedo.pmsys.projectfile.service.ProjectFileService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.controller.StaffController;
+import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.FieldAssignmentBean;
@@ -62,6 +67,8 @@ public class ProjectController {
 
 	public static final String ATTR_LIST = "projectList";
 	public static final String ATTR_PROJECT = Project.OBJECT_NAME;
+	public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
+	public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
 	public static final String ATTR_FIELD = Field.OBJECT_NAME;
 	public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
@@ -83,6 +90,13 @@ public class ProjectController {
 	private FieldService fieldService;
 	private PhotoService photoService;
 	private ProjectFileService projectFileService;
+	private PayrollService payrollService;
+
+	@Autowired(required = true)
+	@Qualifier(value = "payrollService")
+	public void setPayrollService(PayrollService s) {
+		this.payrollService = s;
+	}
 
 	@Autowired(required = true)
 	@Qualifier(value = "projectFileService")
@@ -909,9 +923,39 @@ public class ProjectController {
 		}
 
 		Project proj = this.projectService.getByIDWithAllCollections(id);
+
+		// TODO Speed up performance!
+		// FIXME
+		Date min = new Date(0);
+		Date max = new Date(System.currentTimeMillis());
+
+		// Payroll maps.
+		Map<Team, Map<Staff, Double>> teamPayrollMap = new HashMap<Team, Map<Staff, Double>>();
+		Map<ManagerAssignment, Double> managerPayrollMap = new HashMap<ManagerAssignment, Double>();
+
+		// Wage for teams.
+		for (Team team : proj.getAssignedTeams()) {
+			Map<Staff, Double> staffPayrollMap = new HashMap<Staff, Double>();
+			for (Staff member : team.getMembers()) {
+				staffPayrollMap.put(member, this.payrollService
+						.getTotalWageOfStaffInRange(member, min, max));
+			}
+			teamPayrollMap.put(team, staffPayrollMap);
+		}
+
+		// Wage for managers.
+		for (ManagerAssignment assignment : proj.getManagerAssignments()) {
+			managerPayrollMap.put(
+					assignment,
+					this.payrollService.getTotalWageOfStaffInRange(
+							assignment.getManager(), min, max));
+		}
+
 		Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
 				.getCompany().getId();
 		model.addAttribute(ATTR_PROJECT, proj);
+		model.addAttribute(ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
+		model.addAttribute(ATTR_PAYROLL_MAP_MANAGER, managerPayrollMap);
 
 		// Get list of fields.
 		List<Field> fieldList = this.fieldService.list();

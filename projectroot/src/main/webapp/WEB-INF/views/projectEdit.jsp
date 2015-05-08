@@ -60,7 +60,7 @@
                                 		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
-		                                <li><a href="#tab_4" data-toggle="tab">Photos</a></li>
+		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 	</c:when>
                                 </c:choose>
                             </ul>
@@ -561,6 +561,18 @@
 				                                </div><!-- /.box-body -->
 		                                	</c:when>
 		                                </c:choose>
+		                                </div>
+		                            </div>
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_payroll">
+                                	<div class="box box-default">
+		                                <div class="box-body">
+		                                <div id="payroll" style='width:1000px; height:400px;'>
+		                                ${teamPayrollMap}
+		                                <br/>
+		                                <br/>
+		                                ${managerPayrollMap}
+		                                </div><!-- /.box-body -->
 		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
