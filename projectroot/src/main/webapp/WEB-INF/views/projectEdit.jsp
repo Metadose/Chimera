@@ -568,24 +568,37 @@
                                 	<div class="box box-default">
 		                                <div class="box-body">
 		                                <div id="payroll" style='width:1000px; height:400px;'>
-		                                <c:forEach items="${teamPayrollMap}" var="team">
-		                                	${team.key.name}
+		                                
+<!-- 		                                Loop through -->
+<!-- 		                                Map<Team, Map<Staff, String>> teamPayrollMap = new HashMap<Team, Map<Staff, String>>(); -->
+		                                
+		                                <c:forEach items="${teamPayrollMap}" var="teamPayroll">
+		                                
+		                                	<c:set value="${teamPayroll.key}" var="team"/>
+		                                	<c:set value="${teamPayroll.value}" var="teamMemberWageMap"/>
+		                                	
+		                                	${team.name}
 		                                	<br/>
-		                                	<c:forEach items="${team.value}" var="staffWage">
-		                                		---- ${staffWage.key.getFullName()} = ${staffWage.value}<br/>
+		                                	<c:forEach items="${teamMemberWageMap}" var="teamMemberWageItem">
+		                                		<c:set value="${teamMemberWageItem.key}" var="staff"/>
+		                                		<c:set value="${teamMemberWageItem.value}" var="wage"/>
+		                                	
+		                                		---- ${staff.getFullName()} = ${wage}<br/>
 		                                	</c:forEach>
 		                                </c:forEach>
+		                                
 		                                <br/>
-		                                <c:forEach items="${managerPayrollMap}" var="managerWage">
-		                                	${managerWage.key.getFullName()}
-		                                	<br/>
-		                                	<c:forEach items="${team.value}" var="staffWage">
-		                                		---- ${staffWage.key.getFullName()} = ${staffWage.value}<br/>
-		                                	</c:forEach>
+<!-- 										Map<ManagerAssignment, String> managerPayrollMap = new HashMap<ManagerAssignment, String>(); -->
+		                                <c:forEach items="${managerPayrollMap}" var="managerPayroll">
+		                                
+		                                	<c:set value="${managerPayroll.key}" var="managerAssignment"/>
+		                                	<c:set value="${managerAssignment.manager}" var="staff"/>
+		                                	<c:set value="${managerPayroll.value}" var="wage"/>
+		                                	
+		                                	---- ${staff.getFullName()} = ${wage}<br/>
 		                                </c:forEach>
 		                                <br/>
 		                                <br/>
-		                                ${managerPayrollMap}
 		                                </div><!-- /.box-body -->
 		                                </div>
 		                            </div>

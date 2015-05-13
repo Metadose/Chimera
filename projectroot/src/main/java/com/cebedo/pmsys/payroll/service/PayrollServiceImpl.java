@@ -13,6 +13,7 @@ import com.cebedo.pmsys.payroll.domain.Attendance;
 import com.cebedo.pmsys.payroll.domain.Status;
 import com.cebedo.pmsys.payroll.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.project.model.Project;
+import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.team.model.Team;
@@ -21,6 +22,11 @@ import com.cebedo.pmsys.team.model.Team;
 public class PayrollServiceImpl implements PayrollService {
 
 	private AttendanceValueRepo attendanceValueRepo;
+	private ProjectService projectService;
+
+	public void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
 
 	public void setAttendanceZSetRepo(AttendanceValueRepo r) {
 		this.attendanceValueRepo = r;
@@ -47,6 +53,15 @@ public class PayrollServiceImpl implements PayrollService {
 		double wage = getWage(staff, status);
 		attendance.setWage(wage);
 		this.attendanceValueRepo.set(attendance);
+
+		// Clear all cache associated with this staff.
+		Set<ManagerAssignment> manAssigns = staff.getAssignedManagers();
+		if (!manAssigns.isEmpty()) {
+			for (ManagerAssignment assignment : manAssigns) {
+				this.projectService.clearProjectCache(assignment.getProject()
+						.getId());
+			}
+		}
 	}
 
 	@Override
@@ -154,6 +169,7 @@ public class PayrollServiceImpl implements PayrollService {
 			Attendance attn = this.attendanceValueRepo.get(key);
 
 			// TODO Optimize this.
+			// Leverage on the Date object. Don't use Timestamp millis.
 			long timestamp = attn.getTimestamp().getTime();
 			if (timestamp <= max && timestamp >= min) {
 				attnSet.add(attn);

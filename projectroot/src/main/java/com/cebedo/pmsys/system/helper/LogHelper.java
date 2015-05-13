@@ -119,7 +119,8 @@ public class LogHelper {
 	}
 
 	/**
-	 * Generate a tree json data for the logs.
+	 * Generate a tree json data for the logs. TODO Use GSON to generate JSON
+	 * like "String json = new Gson().toJson(logBeanInstance, LogBean.class);"
 	 * 
 	 * @return
 	 */

@@ -5,6 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+<c:set var="staffWage" value="${staff.wage}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -13,6 +14,8 @@
 	
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+	
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -29,6 +32,8 @@
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
+	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
+	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
@@ -59,6 +64,7 @@
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
                                 <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
+                                <li><a href="#tab_attendance-cal" data-toggle="tab">Attendance</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -551,6 +557,13 @@
 		                                </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_attendance-cal">
+                                	<div class="box box-default">
+		                                <div class="box-body">
+		                                	<div id='calendar'></div>
+		                                </div>
+		                            </div>
+                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
@@ -599,6 +612,42 @@
         </aside>
 	</div>
 	
+	<div id="myModal" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">Confirmation</h4>
+	            </div>
+	            <div class="modal-body">
+	                <p>Do you want to save changes you made to document before closing?</p>
+	                <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
+	                
+	                <form:form
+	                	modelAttribute="attendance"
+						id="attendanceForm"
+						method="post"
+						action="${contextPath}/staff/add/attendance">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <form:input type="text" class="form-control" id="modalDate" path="timestamp"/><br/>
+                            <label>Status</label>
+                            <form:input type="text" class="form-control" path="statusID"/><br/>
+                            <label>Salary</label>
+                            <form:input type="text" class="form-control" id="modalWage" path="wage"/><br/>
+                        </div>
+                    </form:form>
+	                
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn flat btn-default" data-dismiss="modal">Close</button>
+	                <button type="button" onclick="submitForm('attendanceForm')" class="btn flat btn-default">Save changes</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	
 	<c:if test="${staff.id != 0 && !empty staff.tasks}">
@@ -622,6 +671,11 @@
 	</script>
    	</c:if>
    	
+   	<!-- InputMask -->
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
+   	
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();
@@ -641,10 +695,30 @@
 		}
 		
 		$(document).ready(function() {
+			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#example-1").dataTable();
 			$("#project-table").dataTable();
 			$("#task-table").dataTable();
 			$("#attendance-table").dataTable();
+			
+			var eventsJSON = ${calendarJSON};
+			var staffWage = ${staffWage};
+			
+			$('#calendar').fullCalendar({
+				events: eventsJSON,
+				dayClick: function(date, jsEvent, view) {
+					$("#modalDate").val(date.format());
+					$("#modalWage").val(staffWage);
+					$("#myModal").modal('show');
+			    },
+			    eventClick: function(calEvent, jsEvent, view) {
+
+			        alert('Event: ' + calEvent.title);
+			        // change the border color just for fun
+			        $(this).css('border-color', 'red');
+
+			    }
+		    });
 	    });
 	</script>
 </body>

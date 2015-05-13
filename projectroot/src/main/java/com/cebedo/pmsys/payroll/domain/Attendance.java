@@ -3,6 +3,7 @@ package com.cebedo.pmsys.payroll.domain;
 import java.util.Date;
 
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.system.redis.domain.IDomainObject;
 import com.cebedo.pmsys.systemuser.model.SystemUser;
 
@@ -87,9 +88,11 @@ public class Attendance implements IDomainObject {
 		SystemUser user = staff.getUser();
 		long userID = user == null ? 0 : user.getId();
 		long staffID = staff.getId();
+
+		String date = DateHelper.formatDate(tstamp, "yyyy.MM.dd");
+
 		String key = "user:" + userID + ":staff:" + staffID
-				+ ":payroll:attendance:timestamp:" + tstamp.getTime()
-				+ ":status:*";
+				+ ":payroll:attendance:date:" + date + ":status:*";
 		return key;
 	}
 
@@ -98,7 +101,7 @@ public class Attendance implements IDomainObject {
 		long userID = user == null ? 0 : user.getId();
 		long staffID = staff.getId();
 		String key = "user:" + userID + ":staff:" + staffID
-				+ ":payroll:attendance:timestamp:*:status:*";
+				+ ":payroll:attendance:date:*:status:*";
 		return key;
 	}
 
@@ -106,24 +109,30 @@ public class Attendance implements IDomainObject {
 		SystemUser user = staff.getUser();
 		long userID = user == null ? 0 : user.getId();
 		long staffID = staff.getId();
+
+		String date = DateHelper.formatDate(timestamp, "yyyy.MM.dd");
+
 		String key = "user:" + userID + ":staff:" + staffID
-				+ ":payroll:attendance:timestamp:" + timestamp.getTime()
-				+ ":status:" + status.id();
+				+ ":payroll:attendance:date:" + date + ":status:" + status.id();
 		return key;
 	}
 
 	/**
 	 * Key sample:
-	 * user:2123:staff:1123:payroll:attendance:timestamp:12345:status:123
+	 * user:2123:staff:1123:payroll:attendance:timestamp:12345:status:123<br>
+	 * user:2123:staff:1123:payroll:attendance:date:2015.03.15:status:123<br>
 	 */
 	@Override
 	public String getKey() {
 		SystemUser user = this.staff.getUser();
 		long userID = user == null ? 0 : user.getId();
 		long staffID = this.staff.getId();
+		Date myDate = getTimestamp();
+		String date = DateHelper.formatDate(myDate, "yyyy.MM.dd");
+
 		String key = "user:" + userID + ":staff:" + staffID
-				+ ":payroll:attendance:timestamp:" + getTimestamp().getTime()
-				+ ":status:" + getStatus().id();
+				+ ":payroll:attendance:date:" + date + ":status:"
+				+ getStatus().id();
 		return key;
 	}
 }

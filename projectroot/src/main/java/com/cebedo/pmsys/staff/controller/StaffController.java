@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.staff.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -33,11 +34,14 @@ import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
+import com.cebedo.pmsys.system.bean.CalendarEventBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
+import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
 import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
+import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(value = { StaffController.ATTR_STAFF,
@@ -49,6 +53,7 @@ public class StaffController {
 	public static final String ATTR_LIST = "staffList";
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
 	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
+	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
 	public static final String JSP_LIST = "staffList";
 	public static final String JSP_EDIT = "staffEdit";
@@ -364,6 +369,23 @@ public class StaffController {
 		// TODO Change since the beginning of time.
 		Set<Attendance> attendanceList = this.payrollService
 				.rangeStaffAttendance(staff, 0, System.currentTimeMillis());
+
+		// Construct calendar events.
+		List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
+		for (Attendance attendance : attendanceList) {
+			CalendarEventBean event = new CalendarEventBean();
+
+			Date myDate = attendance.getTimestamp();
+			String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+			event.setStart(start);
+			event.setTitle(attendance.getStatus().name());
+			event.setId(start);
+			calendarEvents.add(event);
+		}
+		String calendarJSON = new Gson()
+				.toJson(calendarEvents, ArrayList.class);
+		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
+		model.addAttribute(ATTR_CALENDAR_JSON, calendarJSON);
 		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 		model.addAttribute(ATTR_STAFF, staff);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
