@@ -371,15 +371,18 @@ public class StaffController {
 				.rangeStaffAttendance(staff, 0, System.currentTimeMillis());
 
 		// Construct calendar events.
+		// TODO Put this somewhere else.
 		List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
 		for (Attendance attendance : attendanceList) {
 			CalendarEventBean event = new CalendarEventBean();
 
 			Date myDate = attendance.getTimestamp();
+			Status attnStat = attendance.getStatus();
 			String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
 			event.setStart(start);
-			event.setTitle(attendance.getStatus().name());
+			event.setTitle(attnStat.name());
 			event.setId(start);
+			event.setClassName(attnStat.css());
 			calendarEvents.add(event);
 		}
 		String calendarJSON = new Gson()

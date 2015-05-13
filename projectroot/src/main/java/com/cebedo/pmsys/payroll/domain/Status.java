@@ -1,19 +1,22 @@
 package com.cebedo.pmsys.payroll.domain;
 
 public enum Status {
-	PRESENT(1, "Present"), ABSENT(2, "Absent"), LATE(3, "Late"), LEAVE(4,
-			"Leave"), HALFDAY(5, "Half-day"), OVERTIME(6, "Overtime");
+	PRESENT(1, "Present", "btn-success"), ABSENT(2, "Absent", "btn-danger"), LATE(
+			3, "Late", "btn-warning"), LEAVE(4, "Leave", "btn-default"), HALFDAY(
+			5, "Half-day", "btn-info"), OVERTIME(6, "Overtime", "btn-success");
 
 	String label;
 	int id;
+	String css;
 
 	Status(int idn) {
 		this.id = idn;
 	}
 
-	Status(int idn, String lbl) {
+	Status(int idn, String lbl, String cssClass) {
 		this.label = lbl;
 		this.id = idn;
+		this.css = cssClass;
 	}
 
 	public static Status of(int idn) {
@@ -42,7 +45,12 @@ public enum Status {
 		return this.label;
 	}
 
+	public String css() {
+		return this.css;
+	}
+
 	public int id() {
 		return this.id;
 	}
+
 }

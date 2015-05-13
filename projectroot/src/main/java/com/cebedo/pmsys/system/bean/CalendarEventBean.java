@@ -5,6 +5,15 @@ public class CalendarEventBean {
 	private String id;
 	private String title;
 	private String start;
+	private String className;
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
 	public String getId() {
 		return id;
