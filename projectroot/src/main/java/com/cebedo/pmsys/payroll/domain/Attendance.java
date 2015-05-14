@@ -71,6 +71,10 @@ public class Attendance implements IDomainObject {
 		return timestamp;
 	}
 
+	public String getFormattedDateString(String pattern) {
+		return DateHelper.formatDate(this.timestamp, pattern);
+	}
+
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}

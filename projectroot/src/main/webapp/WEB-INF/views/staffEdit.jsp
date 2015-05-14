@@ -591,8 +591,8 @@
 								                            <label id="massWageLabel">Salary</label>
 								                            <form:input type="text" class="form-control" id="massWageValue" path="wage"/>
 								                            <br id="massWageBreak"/>
-								                            <label>Include Weekends</label>
-								                            <form:checkbox class="form-control" path="includeWeekends"/>
+								                            <label id="includeWeekendsLabel">Include Weekends</label>
+								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
 								                        </div>
 								                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
 								                    </form:form>
@@ -604,14 +604,9 @@
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
-		                                	<c:url value="/staff/edit/attendance/0/0" var="urlAddAttendance"/>	
-		                               		<a href="${urlAddAttendance}">
-		                                		<button class="btn btn-default btn-flat btn-sm">Add Attendance</button>
-		                                	</a><br/><br/>
 		                                    <table id="attendance-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                    		<tr>
-			                                        	<th>&nbsp;</th>
 			                                            <th>Date</th>
 			                                            <th>Status</th>
 			                                            <th>Salary</th>
@@ -620,18 +615,16 @@
 		                                        <tbody>
                                         		<c:forEach items="${attendanceList}" var="attendance">
                                         			<tr>
-                                        				<td>
-                                        					<c:url value="/staff/edit/attendance/${attendance.timestamp.getTime()}/${attendance.status.id()}" var="urlViewAttendance"/>
-					                                        <a href="${urlViewAttendance}">
-			                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            	</a>
-			                                            	<c:url value="/staff/delete/attendance/${attendance.timestamp.getTime()}/${attendance.status.id()}" var="urlDeleteAttendance"/>
-			                                            	<a href="${urlDeleteAttendance}">
-			                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-			                                            	</a>
-                                        				</td>
-			                                            <td>${attendance.timestamp}</td>
-			                                            <td>${attendance.status.value()}</td>
+			                                            <td>${attendance.getFormattedDateString("yyyy-MM-dd")}</td>
+			                                            <c:choose>
+			                                            	<c:when test="${attendance.status.id() == 6}">
+				                                            <c:set value="border: 1px solid red" var="spanBorder"/>
+			                                            	</c:when>
+			                                            	<c:when test="${attendance.status.id() != 6}">
+				                                            <c:set value="" var="spanBorder"/>
+			                                            	</c:when>
+			                                            </c:choose>
+			                                            <td><span style="${spanBorder}" class="label ${attendance.status.css()}">${attendance.status}</span></td>
 			                                            <td>${attendance.wage}</td>
 			                                        </tr>
                                         		</c:forEach>
@@ -748,7 +741,7 @@
 			$('#attendanceStatus').on('change', function() {
 				// If selected value is ABSENT.
 				// Hide the salary field.
-				if(this.value == 2) {
+				if(this.value == 2 || this.value == -1) {
 					$('#modalWage').hide();
 					$('#modalWageLabel').hide();
 					$('#modalWageBreak').hide();
@@ -762,7 +755,7 @@
 			$('#massStatusValue').on('change', function() {
 				// If selected value is ABSENT.
 				// Hide the salary field.
-				if(this.value == 2) {
+				if(this.value == 2 || this.value == -1) {
 					$('#massWageValue').hide();
 					$('#massWageLabel').hide();
 					$('#massWageBreak').hide();
@@ -788,7 +781,7 @@
 					var statusValue = calEvent.attendanceStatus;
 					$('#attendanceStatus').val(statusValue);
 					
-					if(statusValue == 2) {
+					if(statusValue == 2 || this.value == -1) {
 						$('#modalWage').hide();
 						$('#modalWageLabel').hide();
 						$('#modalWageBreak').hide();

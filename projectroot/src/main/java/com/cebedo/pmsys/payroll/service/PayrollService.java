@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.payroll.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import com.cebedo.pmsys.payroll.domain.Attendance;
@@ -24,6 +25,8 @@ public interface PayrollService {
 	public void set(Staff staff, Status status, Date timestamp);
 
 	public Attendance get(Staff staff, Status status, Date timestamp);
+
+	public List<Attendance> getAllAttendance(Staff staff);
 
 	/**
 	 * Get attendances of a staff in a range of time.

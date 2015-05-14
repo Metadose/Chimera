@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.payroll.repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +51,11 @@ public class AttendanceValueRepo implements ValueRepository<Attendance> {
 	@Override
 	public void multiSet(Map<String, Attendance> m) {
 		this.redisTemplate.opsForValue().multiSet(m);
+	}
+
+	@Override
+	public List<Attendance> multiGet(Collection<String> keys) {
+		return this.redisTemplate.opsForValue().multiGet(keys);
 	}
 
 }

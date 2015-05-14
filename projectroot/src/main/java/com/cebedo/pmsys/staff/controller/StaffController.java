@@ -3,7 +3,6 @@ package com.cebedo.pmsys.staff.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -412,8 +411,8 @@ public class StaffController {
 		Staff staff = this.staffService.getWithAllCollectionsByID(id);
 
 		// TODO Change since the beginning of time.
-		Set<Attendance> attendanceList = this.payrollService
-				.rangeStaffAttendance(staff, 0, System.currentTimeMillis());
+		List<Attendance> attendanceList = this.payrollService
+				.getAllAttendance(staff);
 
 		// Construct calendar events.
 		// TODO Put this somewhere else.

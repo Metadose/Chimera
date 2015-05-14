@@ -8,7 +8,8 @@ import java.util.Map;
 public enum Status {
 	PRESENT(1, "Present", "btn-success"), ABSENT(2, "Absent", "btn-danger"), LATE(
 			3, "Late", "btn-warning"), LEAVE(4, "Leave", "btn-default"), HALFDAY(
-			5, "Half-day", "btn-info"), OVERTIME(6, "Overtime", "btn-success");
+			5, "Half-day", "btn-info"), OVERTIME(6, "Overtime", "btn-success"), DELETE(
+			-1, "Delete", "");
 
 	String label;
 	int id;
@@ -53,8 +54,11 @@ public enum Status {
 
 		} else if (idn == OVERTIME.id()) {
 			return OVERTIME;
+
+		} else if (idn == DELETE.id()) {
+			return DELETE;
 		}
-		return ABSENT;
+		return DELETE;
 	}
 
 	public String value() {

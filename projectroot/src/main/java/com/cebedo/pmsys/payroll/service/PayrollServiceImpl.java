@@ -45,6 +45,10 @@ public class PayrollServiceImpl implements PayrollService {
 			attendance.setStatus(Status.of(attendance.getStatusID()));
 			status = attendance.getStatus();
 		}
+		if (status == Status.DELETE) {
+			deleteAllInDate(attendance);
+			return;
+		}
 		if (status == Status.ABSENT && attendance.getWage() > 0) {
 			attendance.setWage(0);
 		}
@@ -232,27 +236,38 @@ public class PayrollServiceImpl implements PayrollService {
 		Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
 		for (Date date : dates) {
 			Attendance attendance = new Attendance(staff, status, date, wage);
-			deleteAllInDate(attendance);
 
 			// Check if date is a weekend.
 			int dayOfWeek = DateHelper.getDayOfWeek(date);
+			boolean isWeekend = dayOfWeek == Calendar.SATURDAY
+					|| dayOfWeek == Calendar.SUNDAY;
 
-			// If include weekend and is weekend, add.
-			if (includeWeekends
-					&& (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY)) {
-				keyAttendanceMap.put(attendance.getKey(), attendance);
-			}
-			// If NOT include weekend and is weekend, dont add.
-			else if (!includeWeekends
-					&& (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY)) {
+			// If status is delete.
+			if (status == Status.DELETE) {
+				if (!includeWeekends && isWeekend) {
+					continue;
+				}
+				deleteAllInDate(attendance);
 				continue;
 			}
-			// On other situations.
-			else {
-				keyAttendanceMap.put(attendance.getKey(), attendance);
+
+			deleteAllInDate(attendance);
+			if (!includeWeekends && isWeekend) {
+				continue;
 			}
+			keyAttendanceMap.put(attendance.getKey(), attendance);
 		}
-		this.attendanceValueRepo.multiSet(keyAttendanceMap);
+		if (status != Status.DELETE) {
+			this.attendanceValueRepo.multiSet(keyAttendanceMap);
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<Attendance> getAllAttendance(Staff staff) {
+		Set<String> keys = this.attendanceValueRepo.keys(Attendance
+				.constructKey(staff));
+		return this.attendanceValueRepo.multiGet(keys);
 	}
 
 }

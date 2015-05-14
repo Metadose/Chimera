@@ -22,4 +22,6 @@ public interface ValueRepository<V extends IDomainObject> {
 
 	Set<String> keys(String pattern);
 
+	Collection<V> multiGet(Collection<String> keys);
+
 }

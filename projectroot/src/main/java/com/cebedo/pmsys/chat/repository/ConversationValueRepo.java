@@ -53,4 +53,9 @@ public class ConversationValueRepo implements ValueRepository<Conversation> {
 		this.redisTemplate.opsForValue().multiSet(m);
 	}
 
+	@Override
+	public Collection<Conversation> multiGet(Collection<String> keys) {
+		return this.redisTemplate.opsForValue().multiGet(keys);
+	}
+
 }
