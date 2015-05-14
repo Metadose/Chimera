@@ -11,6 +11,7 @@ public class AttendanceMass {
 	private Date endDate;
 	private int statusID;
 	private double wage;
+	private boolean includeWeekends;
 
 	public AttendanceMass() {
 		;
@@ -19,6 +20,14 @@ public class AttendanceMass {
 	public AttendanceMass(Staff stf) {
 		setStaff(stf);
 		setWage(stf.getWage());
+	}
+
+	public boolean isIncludeWeekends() {
+		return includeWeekends;
+	}
+
+	public void setIncludeWeekends(boolean includeWeekends) {
+		this.includeWeekends = includeWeekends;
 	}
 
 	public Staff getStaff() {

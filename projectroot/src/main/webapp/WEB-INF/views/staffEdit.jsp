@@ -581,15 +581,18 @@
 								                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/><br/>
 								                            <label>End Date</label>
 								                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/><br/>
-								                            <label>Status</label>
-								                            <form:select class="form-control" id="massAttendanceStatus" path="statusID"> 
+								                            <label id="massStatusLabel">Status</label>
+								                            <form:select class="form-control" id="massStatusValue" path="statusID"> 
 								           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
 								           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
 								           						</c:forEach>
 								                 			</form:select>
-								                 			<br/>
-								                            <label>Salary</label>
-								                            <form:input type="text" class="form-control" id="massAttendanceWage" path="wage"/>
+								                 			<br id="massStatusBreak"/>
+								                            <label id="massWageLabel">Salary</label>
+								                            <form:input type="text" class="form-control" id="massWageValue" path="wage"/>
+								                            <br id="massWageBreak"/>
+								                            <label>Include Weekends</label>
+								                            <form:checkbox class="form-control" path="includeWeekends"/>
 								                        </div>
 								                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
 								                    </form:form>
@@ -753,6 +756,20 @@
 					$('#modalWage').show();
 					$('#modalWageLabel').show();
 					$('#modalWageBreak').show();
+				}
+			});
+			
+			$('#massStatusValue').on('change', function() {
+				// If selected value is ABSENT.
+				// Hide the salary field.
+				if(this.value == 2) {
+					$('#massWageValue').hide();
+					$('#massWageLabel').hide();
+					$('#massWageBreak').hide();
+				} else {
+					$('#massWageValue').show();
+					$('#massWageLabel').show();
+					$('#massWageBreak').show();
 				}
 			});
 			

@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.payroll.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -218,9 +219,13 @@ public class PayrollServiceImpl implements PayrollService {
 	public void multiSet(AttendanceMass attendanceMass) {
 		Staff staff = attendanceMass.getStaff();
 		Status status = Status.of(attendanceMass.getStatusID());
+		if (status == Status.ABSENT) {
+			attendanceMass.setWage(0);
+		}
 		double wage = attendanceMass.getWage();
 
 		// Iterate through all dates.
+		boolean includeWeekends = attendanceMass.isIncludeWeekends();
 		Date startDate = attendanceMass.getStartDate();
 		Date endDate = attendanceMass.getEndDate();
 		List<Date> dates = DateHelper.getDatesBetweenDates(startDate, endDate);
@@ -228,7 +233,24 @@ public class PayrollServiceImpl implements PayrollService {
 		for (Date date : dates) {
 			Attendance attendance = new Attendance(staff, status, date, wage);
 			deleteAllInDate(attendance);
-			keyAttendanceMap.put(attendance.getKey(), attendance);
+
+			// Check if date is a weekend.
+			int dayOfWeek = DateHelper.getDayOfWeek(date);
+
+			// If include weekend and is weekend, add.
+			if (includeWeekends
+					&& (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY)) {
+				keyAttendanceMap.put(attendance.getKey(), attendance);
+			}
+			// If NOT include weekend and is weekend, dont add.
+			else if (!includeWeekends
+					&& (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY)) {
+				continue;
+			}
+			// On other situations.
+			else {
+				keyAttendanceMap.put(attendance.getKey(), attendance);
+			}
 		}
 		this.attendanceValueRepo.multiSet(keyAttendanceMap);
 	}

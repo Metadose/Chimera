@@ -39,7 +39,14 @@ public class DateHelper {
 			dates.add(result);
 			calendar.add(Calendar.DATE, 1);
 		}
+		dates.add(enddate);
 		return dates;
+	}
+
+	public static int getDayOfWeek(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		return c.get(Calendar.DAY_OF_WEEK);
 	}
 
 }
