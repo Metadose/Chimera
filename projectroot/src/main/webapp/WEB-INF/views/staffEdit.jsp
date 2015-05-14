@@ -558,11 +558,45 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_attendance-cal">
-                                	<div class="box box-default">
-		                                <div class="box-body">
-		                                	<div id='calendar'></div>
-		                                </div>
-		                            </div>
+                                	<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-body">
+                   									<div id='calendar'></div>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+              						<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-body">
+                   									<form:form
+									                	modelAttribute="massAttendance"
+														id="massAttendanceForm"
+														method="post"
+														action="${contextPath}/staff/add/attendance/mass">
+								                        <div class="form-group">
+								                            <label>Start Date</label>
+								                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/><br/>
+								                            <label>End Date</label>
+								                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/><br/>
+								                            <label>Status</label>
+								                            <form:select class="form-control" id="massAttendanceStatus" path="statusID"> 
+								           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
+								           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+								                 			<br/>
+								                            <label>Salary</label>
+								                            <form:input type="text" class="form-control" id="massAttendanceWage" path="wage"/>
+								                        </div>
+								                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
+								                    </form:form>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
@@ -697,6 +731,8 @@
 		}
 		
 		$(document).ready(function() {
+			$("#massStartDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
+			$("#massEndDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#example-1").dataTable();
 			$("#project-table").dataTable();

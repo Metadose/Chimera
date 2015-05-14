@@ -2,20 +2,24 @@ package com.cebedo.pmsys.payroll.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.payroll.domain.Attendance;
+import com.cebedo.pmsys.payroll.domain.AttendanceMass;
 import com.cebedo.pmsys.payroll.domain.Status;
 import com.cebedo.pmsys.payroll.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
 import com.cebedo.pmsys.staff.model.Staff;
+import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.team.model.Team;
 
 @Service
@@ -47,11 +51,21 @@ public class PayrollServiceImpl implements PayrollService {
 			attendance.setWage(getWage(attendance.getStaff(), status));
 		}
 		// Delete all previously declared attendance in this date.
+		deleteAllInDate(attendance);
+		this.attendanceValueRepo.set(attendance);
+	}
+
+	/**
+	 * Delete all previously declared attendance in this date.
+	 * 
+	 * @param attendance
+	 */
+	public void deleteAllInDate(Attendance attendance) {
+		// Delete all previously declared attendance in this date.
 		String key = Attendance.constructKey(attendance.getStaff(),
 				attendance.getTimestamp());
 		Set<String> keys = this.attendanceValueRepo.keys(key);
 		this.attendanceValueRepo.delete(keys);
-		this.attendanceValueRepo.set(attendance);
 	}
 
 	@Override
@@ -197,6 +211,26 @@ public class PayrollServiceImpl implements PayrollService {
 	public Attendance get(Staff staff, Status status, Date timestamp) {
 		return this.attendanceValueRepo.get(Attendance.constructKey(staff,
 				timestamp, status));
+	}
+
+	@Override
+	@Transactional
+	public void multiSet(AttendanceMass attendanceMass) {
+		Staff staff = attendanceMass.getStaff();
+		Status status = Status.of(attendanceMass.getStatusID());
+		double wage = attendanceMass.getWage();
+
+		// Iterate through all dates.
+		Date startDate = attendanceMass.getStartDate();
+		Date endDate = attendanceMass.getEndDate();
+		List<Date> dates = DateHelper.getDatesBetweenDates(startDate, endDate);
+		Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
+		for (Date date : dates) {
+			Attendance attendance = new Attendance(staff, status, date, wage);
+			deleteAllInDate(attendance);
+			keyAttendanceMap.put(attendance.getKey(), attendance);
+		}
+		this.attendanceValueRepo.multiSet(keyAttendanceMap);
 	}
 
 }

@@ -49,6 +49,7 @@ public abstract class SystemConstants {
 	public static final String ASSIGNED = "assigned";
 	public static final String SYSTEM = "system";
 	public static final String NEW = "new";
+	public static final String MASS = "mass";
 	public static final String FROM = "from";
 	public static final String PROFILE = "profile";
 	public static final String ALL = "all";

@@ -26,6 +26,7 @@ import com.cebedo.pmsys.field.controller.FieldController;
 import com.cebedo.pmsys.field.model.Field;
 import com.cebedo.pmsys.field.service.FieldService;
 import com.cebedo.pmsys.payroll.domain.Attendance;
+import com.cebedo.pmsys.payroll.domain.AttendanceMass;
 import com.cebedo.pmsys.payroll.domain.Status;
 import com.cebedo.pmsys.payroll.service.PayrollService;
 import com.cebedo.pmsys.project.service.ProjectService;
@@ -45,8 +46,8 @@ import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(value = { StaffController.ATTR_STAFF,
-		StaffController.ATTR_ATTENDANCE }, types = { Staff.class,
-		Attendance.class })
+		StaffController.ATTR_ATTENDANCE, StaffController.ATTR_ATTENDANCE_MASS }, types = {
+		Staff.class, Attendance.class, AttendanceMass.class })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
@@ -56,6 +57,7 @@ public class StaffController {
 	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
+	public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 	public static final String JSP_LIST = "staffList";
 	public static final String JSP_EDIT = "staffEdit";
 
@@ -186,6 +188,48 @@ public class StaffController {
 				alertFactory.generateHTML());
 		return SystemConstants.CONTROLLER_REDIRECT + origin + "/"
 				+ SystemConstants.REQUEST_EDIT + "/" + originID;
+	}
+
+	/**
+	 * Add an attendance in mass.
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
+			+ Attendance.OBJECT_NAME + "/" + SystemConstants.MASS }, method = RequestMethod.POST)
+	public String addAttendanceMass(
+			@ModelAttribute(ATTR_ATTENDANCE_MASS) AttendanceMass attendanceMass,
+			RedirectAttributes redirectAttrs, SessionStatus status,
+			HttpSession session) {
+
+		// FIXME Should not get object from session.
+		// Staff is already added in editStaff function.
+		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+		attendanceMass.setStaff(staff);
+
+		// If start date is > end date.
+		Date startDate = attendanceMass.getStartDate();
+		Date endDate = attendanceMass.getEndDate();
+		if (startDate.after(endDate)) {
+			// TODO
+			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+					AlertBoxFactory.FAILED.generateCreate("test", "TODO"));
+			status.setComplete();
+			return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME
+					+ "/" + SystemConstants.REQUEST_EDIT + "/"
+					+ attendanceMass.getStaff().getId();
+		}
+
+		// Do service.
+		this.payrollService.multiSet(attendanceMass);
+
+		// TODO
+		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
+		status.setComplete();
+		return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
+				+ SystemConstants.REQUEST_EDIT + "/"
+				+ attendanceMass.getStaff().getId();
 	}
 
 	/**
@@ -396,6 +440,7 @@ public class StaffController {
 				.toJson(calendarEvents, ArrayList.class);
 		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 				Status.getAllStatusInMap());
+		model.addAttribute(ATTR_ATTENDANCE_MASS, new AttendanceMass(staff));
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
 		model.addAttribute(ATTR_CALENDAR_JSON, calendarJSON);
 		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);

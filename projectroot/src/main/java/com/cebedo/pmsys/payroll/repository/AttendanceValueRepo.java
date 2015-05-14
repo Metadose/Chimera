@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.payroll.repository;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,6 +45,11 @@ public class AttendanceValueRepo implements ValueRepository<Attendance> {
 	@Override
 	public Set<String> keys(String pattern) {
 		return this.redisTemplate.opsForValue().getOperations().keys(pattern);
+	}
+
+	@Override
+	public void multiSet(Map<String, Attendance> m) {
+		this.redisTemplate.opsForValue().multiSet(m);
 	}
 
 }

@@ -44,6 +44,13 @@ public class Attendance implements IDomainObject {
 		setTimestamp(tstamp);
 	}
 
+	public Attendance(Staff stf, Status stat, Date tstamp, double w) {
+		setStaff(stf);
+		setStatus(stat);
+		setTimestamp(tstamp);
+		setWage(w);
+	}
+
 	public int getStatusID() {
 		return statusID;
 	}

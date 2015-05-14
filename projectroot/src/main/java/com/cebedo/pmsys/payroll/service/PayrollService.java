@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.cebedo.pmsys.payroll.domain.Attendance;
+import com.cebedo.pmsys.payroll.domain.AttendanceMass;
 import com.cebedo.pmsys.payroll.domain.Status;
 import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.staff.model.Staff;
@@ -63,4 +64,6 @@ public interface PayrollService {
 	 * @return
 	 */
 	public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max);
+
+	public void multiSet(AttendanceMass attendanceMass);
 }
