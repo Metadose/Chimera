@@ -38,11 +38,19 @@ public class PayrollServiceImpl implements PayrollService {
 		Status status = attendance.getStatus();
 		if (status == null) {
 			attendance.setStatus(Status.of(attendance.getStatusID()));
+			status = attendance.getStatus();
 		}
-		if (attendance.getWage() == 0) {
-			attendance.setWage(getWage(attendance.getStaff(),
-					attendance.getStatus()));
+		if (status == Status.ABSENT && attendance.getWage() > 0) {
+			attendance.setWage(0);
 		}
+		if (status != Status.ABSENT && attendance.getWage() == 0) {
+			attendance.setWage(getWage(attendance.getStaff(), status));
+		}
+		// Delete all previously declared attendance in this date.
+		String key = Attendance.constructKey(attendance.getStaff(),
+				attendance.getTimestamp());
+		Set<String> keys = this.attendanceValueRepo.keys(key);
+		this.attendanceValueRepo.delete(keys);
 		this.attendanceValueRepo.set(attendance);
 	}
 

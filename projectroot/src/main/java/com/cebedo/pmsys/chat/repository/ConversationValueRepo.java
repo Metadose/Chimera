@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.chat.repository;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,6 +40,11 @@ public class ConversationValueRepo implements ValueRepository<Conversation> {
 	@Override
 	public Set<String> keys(String pattern) {
 		return this.redisTemplate.opsForValue().getOperations().keys(pattern);
+	}
+
+	@Override
+	public void delete(Collection<String> keys) {
+		this.redisTemplate.delete(keys);
 	}
 
 }

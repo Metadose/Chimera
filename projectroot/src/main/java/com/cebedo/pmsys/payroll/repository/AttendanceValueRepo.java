@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.payroll.repository;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,6 +19,11 @@ public class AttendanceValueRepo implements ValueRepository<Attendance> {
 	@Override
 	public void rename(Attendance obj, String newKey) {
 		this.redisTemplate.rename(obj.getKey(), newKey);
+	}
+
+	@Override
+	public void delete(Collection<String> keys) {
+		this.redisTemplate.delete(keys);
 	}
 
 	@Override

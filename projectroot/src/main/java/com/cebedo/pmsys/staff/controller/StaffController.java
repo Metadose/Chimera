@@ -54,6 +54,7 @@ public class StaffController {
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
 	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
 	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
+	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
 	public static final String JSP_LIST = "staffList";
 	public static final String JSP_EDIT = "staffEdit";
@@ -383,10 +384,18 @@ public class StaffController {
 			event.setTitle(attnStat.name());
 			event.setId(start);
 			event.setClassName(attnStat.css());
+			event.setAttendanceStatus(String.valueOf(attendance.getStatus()
+					.id()));
+			event.setAttendanceWage(String.valueOf(attendance.getWage()));
+			if (attnStat == Status.OVERTIME) {
+				event.setBorderColor("Red");
+			}
 			calendarEvents.add(event);
 		}
 		String calendarJSON = new Gson()
 				.toJson(calendarEvents, ArrayList.class);
+		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
+				Status.getAllStatusInMap());
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
 		model.addAttribute(ATTR_CALENDAR_JSON, calendarJSON);
 		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);

@@ -617,12 +617,9 @@
 	        <div class="modal-content">
 	            <div class="modal-header">
 	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                <h4 class="modal-title">Confirmation</h4>
+	                <h4 class="modal-title">Attendance</h4>
 	            </div>
 	            <div class="modal-body">
-	                <p>Do you want to save changes you made to document before closing?</p>
-	                <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
-	                
 	                <form:form
 	                	modelAttribute="attendance"
 						id="attendanceForm"
@@ -632,16 +629,21 @@
                             <label>Date</label>
                             <form:input type="text" class="form-control" id="modalDate" path="timestamp"/><br/>
                             <label>Status</label>
-                            <form:input type="text" class="form-control" path="statusID"/><br/>
-                            <label>Salary</label>
+<!--                             List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>(); -->
+                            <form:select class="form-control" id="attendanceStatus" path="statusID"> 
+           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
+           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
+           						</c:forEach>
+                 			</form:select>
+                 			<br id="modalWageBreak"/>
+                            <label id="modalWageLabel">Salary</label>
                             <form:input type="text" class="form-control" id="modalWage" path="wage"/><br/>
                         </div>
                     </form:form>
-	                
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn flat btn-default" data-dismiss="modal">Close</button>
-	                <button type="button" onclick="submitForm('attendanceForm')" class="btn flat btn-default">Save changes</button>
+	            	<button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal">Close</button>
+	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-default btn-flat btn-sm">Update</button>
 	            </div>
 	        </div>
 	    </div>
@@ -704,6 +706,20 @@
 			var eventsJSON = ${calendarJSON};
 			var staffWage = ${staffWage};
 			
+			$('#attendanceStatus').on('change', function() {
+				// If selected value is ABSENT.
+				// Hide the salary field.
+				if(this.value == 2) {
+					$('#modalWage').hide();
+					$('#modalWageLabel').hide();
+					$('#modalWageBreak').hide();
+				} else {
+					$('#modalWage').show();
+					$('#modalWageLabel').show();
+					$('#modalWageBreak').show();
+				}
+			});
+			
 			$('#calendar').fullCalendar({
 				events: eventsJSON,
 				dayClick: function(date, jsEvent, view) {
@@ -712,11 +728,23 @@
 					$("#myModal").modal('show');
 			    },
 			    eventClick: function(calEvent, jsEvent, view) {
-
-			        alert('Event: ' + calEvent.title);
-			        // change the border color just for fun
-			        $(this).css('border-color', 'red');
-
+			    	$("#modalDate").val(calEvent.start.format());
+					$("#modalWage").val(staffWage);
+					$("#myModal").modal('show');
+					
+					var statusValue = calEvent.attendanceStatus;
+					$('#attendanceStatus').val(statusValue);
+					
+					if(statusValue == 2) {
+						$('#modalWage').hide();
+						$('#modalWageLabel').hide();
+						$('#modalWageBreak').hide();
+					} else {
+						$('#modalWage').val(calEvent.attendanceWage);
+						$('#modalWage').show();
+						$('#modalWageLabel').show();
+						$('#modalWageBreak').show();
+					}
 			    }
 		    });
 	    });

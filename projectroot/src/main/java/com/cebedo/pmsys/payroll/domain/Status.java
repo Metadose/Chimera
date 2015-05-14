@@ -1,5 +1,10 @@
 package com.cebedo.pmsys.payroll.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public enum Status {
 	PRESENT(1, "Present", "btn-success"), ABSENT(2, "Absent", "btn-danger"), LATE(
 			3, "Late", "btn-warning"), LEAVE(4, "Leave", "btn-default"), HALFDAY(
@@ -17,6 +22,17 @@ public enum Status {
 		this.label = lbl;
 		this.id = idn;
 		this.css = cssClass;
+	}
+
+	public static List<Map<String, String>> getAllStatusInMap() {
+		List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>();
+		for (Status stat : Status.class.getEnumConstants()) {
+			Map<String, String> thisStatus = new HashMap<String, String>();
+			thisStatus.put("id", String.valueOf(stat.id()));
+			thisStatus.put("label", stat.label());
+			statusMap.add(thisStatus);
+		}
+		return statusMap;
 	}
 
 	public static Status of(int idn) {
@@ -47,6 +63,10 @@ public enum Status {
 
 	public String css() {
 		return this.css;
+	}
+
+	public String label() {
+		return this.label;
 	}
 
 	public int id() {
