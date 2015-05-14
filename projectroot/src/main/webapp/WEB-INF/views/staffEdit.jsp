@@ -604,6 +604,7 @@
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+		                                	Total: ${payrollTotalWage}
 		                                    <table id="attendance-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                    		<tr>

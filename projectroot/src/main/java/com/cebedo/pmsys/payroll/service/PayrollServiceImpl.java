@@ -2,6 +2,7 @@ package com.cebedo.pmsys.payroll.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -172,6 +173,17 @@ public class PayrollServiceImpl implements PayrollService {
 
 	@Transactional
 	@Override
+	public double getTotalWageFromAttendance(Collection<Attendance> attendances) {
+		// Get total wage of all attendances.
+		double totalWage = 0;
+		for (Attendance attd : attendances) {
+			totalWage += attd.getWage();
+		}
+		return totalWage;
+	}
+
+	@Transactional
+	@Override
 	public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max) {
 
 		// Get all the attendances.
@@ -179,11 +191,7 @@ public class PayrollServiceImpl implements PayrollService {
 				.rangeStaffAttendance(staff, min, max);
 
 		// Get total wage of all attendances.
-		double totalWage = 0;
-		for (Attendance attd : attendances) {
-			totalWage += attd.getWage();
-		}
-		return totalWage;
+		return getTotalWageFromAttendance(attendances);
 	}
 
 	@Override

@@ -57,6 +57,7 @@ public class StaffController {
 	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
 	public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
+	public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
 	public static final String JSP_LIST = "staffList";
 	public static final String JSP_EDIT = "staffEdit";
 
@@ -413,6 +414,8 @@ public class StaffController {
 		// TODO Change since the beginning of time.
 		List<Attendance> attendanceList = this.payrollService
 				.getAllAttendance(staff);
+		double totalWage = this.payrollService
+				.getTotalWageFromAttendance(attendanceList);
 
 		// Construct calendar events.
 		// TODO Put this somewhere else.
@@ -435,10 +438,13 @@ public class StaffController {
 			}
 			calendarEvents.add(event);
 		}
+
+		// Add attributes to model.
 		String calendarJSON = new Gson()
 				.toJson(calendarEvents, ArrayList.class);
 		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 				Status.getAllStatusInMap());
+		model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, totalWage);
 		model.addAttribute(ATTR_ATTENDANCE_MASS, new AttendanceMass(staff));
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
 		model.addAttribute(ATTR_CALENDAR_JSON, calendarJSON);

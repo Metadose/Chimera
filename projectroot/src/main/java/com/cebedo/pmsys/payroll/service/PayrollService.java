@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.payroll.service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -67,6 +68,8 @@ public interface PayrollService {
 	 * @return
 	 */
 	public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max);
+
+	public double getTotalWageFromAttendance(Collection<Attendance> attendances);
 
 	public void multiSet(AttendanceMass attendanceMass);
 }
