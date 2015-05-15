@@ -1,8 +1,13 @@
 package com.cebedo.pmsys.staff.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,6 +40,7 @@ import com.cebedo.pmsys.staff.model.Staff;
 import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.CalendarEventBean;
+import com.cebedo.pmsys.system.bean.DateRangeBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -45,8 +51,11 @@ import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(value = { StaffController.ATTR_STAFF,
-		StaffController.ATTR_ATTENDANCE, StaffController.ATTR_ATTENDANCE_MASS }, types = {
-		Staff.class, Attendance.class, AttendanceMass.class })
+		StaffController.ATTR_ATTENDANCE, StaffController.ATTR_ATTENDANCE_MASS,
+		StaffController.ATTR_CALENDAR_MIN_DATE,
+		StaffController.ATTR_CALENDAR_MAX_DATE,
+		StaffController.ATTR_CALENDAR_MIN_DATE_STR }, types = { Staff.class,
+		Attendance.class, AttendanceMass.class, })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
@@ -55,6 +64,10 @@ public class StaffController {
 	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
 	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
+	public static final String ATTR_CALENDAR_MIN_DATE_STR = "minDateStr";
+	public static final String ATTR_CALENDAR_MIN_DATE = "minDate";
+	public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
+	public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
 	public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 	public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
@@ -199,22 +212,20 @@ public class StaffController {
 			+ Attendance.OBJECT_NAME + "/" + SystemConstants.MASS }, method = RequestMethod.POST)
 	public String addAttendanceMass(
 			@ModelAttribute(ATTR_ATTENDANCE_MASS) AttendanceMass attendanceMass,
-			RedirectAttributes redirectAttrs, SessionStatus status,
-			HttpSession session) {
-
-		// FIXME Should not get object from session.
-		// Staff is already added in editStaff function.
-		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
-		attendanceMass.setStaff(staff);
+			RedirectAttributes redirectAttrs, HttpSession session, Model model,
+			SessionStatus status) {
 
 		// If start date is > end date.
 		Date startDate = attendanceMass.getStartDate();
 		Date endDate = attendanceMass.getEndDate();
+
 		if (startDate.after(endDate)) {
 			// TODO
 			redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 					AlertBoxFactory.FAILED.generateCreate("test", "TODO"));
-			status.setComplete();
+			// Dont set completed.
+			// Otherwise, min and max dates will be deleted in session.
+			// status.setComplete();
 			return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME
 					+ "/" + SystemConstants.REQUEST_EDIT + "/"
 					+ attendanceMass.getStaff().getId();
@@ -226,10 +237,8 @@ public class StaffController {
 		// TODO
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-		status.setComplete();
-		return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-				+ SystemConstants.REQUEST_EDIT + "/"
-				+ attendanceMass.getStaff().getId();
+
+		return editStaffWithMinDate(model, session, status);
 	}
 
 	/**
@@ -241,10 +250,8 @@ public class StaffController {
 			+ Attendance.OBJECT_NAME }, method = RequestMethod.POST)
 	public String addAttendance(
 			@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
-			RedirectAttributes redirectAttrs, SessionStatus status) {
-
-		// Get staff from session.
-		Staff staff = attendance.getStaff();
+			RedirectAttributes redirectAttrs, HttpSession session, Model model,
+			SessionStatus status) {
 
 		// Do service.
 		this.payrollService.set(attendance);
@@ -252,9 +259,7 @@ public class StaffController {
 		// TODO
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-		status.setComplete();
-		return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-				+ SystemConstants.REQUEST_EDIT + "/" + staff.getId();
+		return editStaffWithMinDate(model, session, status);
 	}
 
 	/**
@@ -395,30 +400,52 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-			+ Staff.COLUMN_PRIMARY_KEY + "}")
-	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
-			Model model) {
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+			+ SystemConstants.RANGE)
+	public String editStaffRangeDates(
+			@ModelAttribute(ATTR_CALENDAR_RANGE_DATES) DateRangeBean rangeDates,
+			HttpSession session, Model model) {
+		// Get prelim objects.
 		List<Team> teamList = this.teamService.list();
 		List<Field> fields = this.fieldService.list();
 		model.addAttribute(TeamController.JSP_LIST, teamList);
 		model.addAttribute(FieldController.JSP_LIST, fields);
-		if (id == 0) {
-			model.addAttribute(ATTR_STAFF, new Staff());
-			model.addAttribute(SystemConstants.ATTR_ACTION,
-					SystemConstants.ACTION_CREATE);
-			return JSP_EDIT;
-		}
-		Staff staff = this.staffService.getWithAllCollectionsByID(id);
+		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 
-		// TODO Change since the beginning of time.
-		List<Attendance> attendanceList = this.payrollService
-				.getAllAttendance(staff);
-		double totalWage = this.payrollService
-				.getTotalWageFromAttendance(attendanceList);
+		// Get the start and end date from the bean.
+		Date min = rangeDates.getStartDate();
+		Date max = rangeDates.getEndDate();
 
-		// Construct calendar events.
-		// TODO Put this somewhere else.
+		// Given min and max, get range of attendances.
+		// Get wage given attendances.
+		String minDateStr = DateHelper.formatDate(min, "yyyy-MM-dd");
+
+		// Add attributes to model.
+		setModelAttributes(model, staff, min, max, minDateStr);
+		return JSP_EDIT;
+	}
+
+	/**
+	 * Forward to an edit page with an empty staff.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	public String editEmptyStaff(Model model) {
+		model.addAttribute(ATTR_STAFF, new Staff());
+		model.addAttribute(SystemConstants.ATTR_ACTION,
+				SystemConstants.ACTION_CREATE);
+		return JSP_EDIT;
+	}
+
+	/**
+	 * Get corresponding calendar events given a set of attendances.
+	 * 
+	 * @param attendanceList
+	 * @return
+	 */
+	private List<CalendarEventBean> getCalendarEvents(
+			Set<Attendance> attendanceList) {
 		List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
 		for (Attendance attendance : attendanceList) {
 			CalendarEventBean event = new CalendarEventBean();
@@ -438,21 +465,141 @@ public class StaffController {
 			}
 			calendarEvents.add(event);
 		}
+		return calendarEvents;
+	}
 
-		// Add attributes to model.
-		String calendarJSON = new Gson()
-				.toJson(calendarEvents, ArrayList.class);
+	/**
+	 * Get calendar min and max dates from session.
+	 * 
+	 * @param session
+	 * @return
+	 */
+	private Map<String, Date> getCalendarRangeDates(HttpSession session) {
+		Date min = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
+		Date max = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
+
+		if (min == null) {
+			Calendar cal = Calendar.getInstance();
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH); // Zero-based.
+			min = new GregorianCalendar(year, month, 1).getTime();
+
+			// Based on minimum, get max days in current month.
+			// Given max days, create max object.
+			cal.setTime(min);
+			int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			max = new GregorianCalendar(year, month, maxDays).getTime();
+		}
+		Map<String, Date> datePair = new HashMap<String, Date>();
+		datePair.put(ATTR_CALENDAR_MIN_DATE, min);
+		datePair.put(ATTR_CALENDAR_MAX_DATE, max);
+		return datePair;
+	}
+
+	/**
+	 * Open a view page where the user can edit the staff.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	private String editStaffWithMinDate(Model model, HttpSession session,
+			SessionStatus status) {
+
+		// TODO Check if where this is used.
+		// If not used, delete.
+		model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
+		model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
+
+		// Get staff object.
+		// Get the current year and month.
+		// This will be minimum.
+		Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+		Date minDate = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
+		Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
+		String minDateStr = (String) session
+				.getAttribute(ATTR_CALENDAR_MIN_DATE_STR);
+
+		// Set model attributes.
+		setModelAttributes(model, staff, minDate, maxDate, minDateStr);
+		status.setComplete();
+		return JSP_EDIT;
+	}
+
+	/**
+	 * Open a view page where the user can edit the staff.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+			+ Staff.COLUMN_PRIMARY_KEY + "}")
+	public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id,
+			Model model, HttpSession session) {
+
+		// TODO Check if where this is used.
+		// If not used, delete.
+		model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
+		model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
+
+		// If action is to create new staff.
+		if (id == 0) {
+			return editEmptyStaff(model);
+		}
+
+		// Get staff object.
+		// Get the current year and month.
+		// This will be minimum.
+		Staff staff = this.staffService.getWithAllCollectionsByID(id);
+		Map<String, Date> datePair = getCalendarRangeDates(session);
+		Date min = datePair.get(ATTR_CALENDAR_MIN_DATE);
+		Date max = datePair.get(ATTR_CALENDAR_MAX_DATE);
+
+		// Set model attributes.
+		setModelAttributes(model, staff, min, max, null);
+		return JSP_EDIT;
+	}
+
+	/**
+	 * Set model attributes before forwarding to JSP.
+	 * 
+	 * @param model
+	 * @param staff
+	 * @param min
+	 * @param max
+	 * @param minDateStr
+	 */
+	private void setModelAttributes(Model model, Staff staff, Date min,
+			Date max, String minDateStr) {
+		// Given min and max, get range of attendances.
+		// Get wage given attendances.
+		Set<Attendance> attendanceList = this.payrollService
+				.rangeStaffAttendance(staff, min, max);
+		List<CalendarEventBean> calendarEvents = getCalendarEvents(attendanceList);
+
+		// Given min and max, get range of attendances.
+		// Get wage given attendances.
+		double totalWage = this.payrollService
+				.getTotalWageFromAttendance(attendanceList);
+
 		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 				Status.getAllStatusInMap());
+		model.addAttribute(ATTR_CALENDAR_MIN_DATE_STR,
+				minDateStr == null ? DateHelper.formatDate(min, "yyyy-MM-dd")
+						: minDateStr);
+		model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
+		model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
+		model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
 		model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, totalWage);
 		model.addAttribute(ATTR_ATTENDANCE_MASS, new AttendanceMass(staff));
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
-		model.addAttribute(ATTR_CALENDAR_JSON, calendarJSON);
+		model.addAttribute(ATTR_CALENDAR_JSON,
+				new Gson().toJson(calendarEvents, ArrayList.class));
 		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 		model.addAttribute(ATTR_STAFF, staff);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
 				SystemConstants.ACTION_EDIT);
-		return JSP_EDIT;
 	}
 
 	/**

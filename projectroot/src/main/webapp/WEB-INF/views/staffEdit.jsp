@@ -562,6 +562,33 @@
                    						<div class="col-xs-12">
                    							<div class="box box-default">
                    								<div class="box-body">
+                   									<form:form
+									                	modelAttribute="rangeDate"
+														id="rangeDateForm"
+														method="post"
+														action="${contextPath}/staff/edit/range">
+														<table>
+														<tr>
+															<td>
+								                            <label>Start Date</label>
+								                            <form:input type="text" class="form-control date-mask" path="startDate"/>
+															</td>
+															<td>
+															&nbsp;
+															</td>
+															<td>
+								                            <label>End Date</label>
+								                            <form:input type="text" class="form-control date-mask" path="endDate"/>
+															</td>
+															<td>
+															&nbsp;
+															</td>
+															<td style="vertical-align: bottom; padding-bottom: 1%">
+									                        <button class="btn btn-default btn-flat btn-sm" id="rangeDateButton">Load Data</button>
+															</td>
+														</tr>
+														</table>
+								                    </form:form><br/>
                    									<div id='calendar'></div>
                    								</div>
                    							</div>
@@ -604,6 +631,33 @@
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+		                                	<form:form
+							                	modelAttribute="rangeDate"
+												id="rangeDateForm"
+												method="post"
+												action="${contextPath}/staff/edit/range">
+												<table>
+												<tr>
+													<td>
+						                            <label>Start Date</label>
+						                            <form:input type="text" class="form-control date-mask" path="startDate"/>
+													</td>
+													<td>
+													&nbsp;
+													</td>
+													<td>
+						                            <label>End Date</label>
+						                            <form:input type="text" class="form-control date-mask" path="endDate"/>
+													</td>
+													<td>
+													&nbsp;
+													</td>
+													<td style="vertical-align: bottom; padding-bottom: 1%">
+							                        <button class="btn btn-default btn-flat btn-sm" id="rangeDateButton">Load Data</button>
+													</td>
+												</tr>
+												</table>
+						                    </form:form><br/>
 		                                	Total: ${payrollTotalWage}
 		                                    <table id="attendance-table" class="table table-bordered table-striped">
 		                                    	<thead>
@@ -731,6 +785,7 @@
 			$("#massStartDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#massEndDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
+			$(".date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#example-1").dataTable();
 			$("#project-table").dataTable();
 			$("#task-table").dataTable();
@@ -794,6 +849,9 @@
 					}
 			    }
 		    });
+			var dateAsVal = '${minDateStr}';
+			var minDate = moment(dateAsVal);
+			$('#calendar').fullCalendar('gotoDate', minDate);
 	    });
 	</script>
 </body>
