@@ -890,22 +890,25 @@
 	
 	<c:if test="${staff.id != 0 && !empty staff.tasks}">
 	<!-- Generate the data to be used by the gantt. -->
-	<c:set var="ganttData" value="'data':[{id:'${staff.id}', text:'${fn:escapeXml(staffName)}', open: true, duration:0},"/>
-    	<c:forEach var="task" items="${staff.tasks}">
-    		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
-    		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${staff.id}'},"/>
-    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
-    	</c:forEach>
-    	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
-    <c:set var="ganttEnd" value="]"/>
-   	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
+<%-- 	<c:set var="ganttData" value="'data':[{id:'${staff.id}', text:'${fn:escapeXml(staffName)}', open: true, duration:0},"/> --%>
+<%--     	<c:forEach var="task" items="${staff.tasks}"> --%>
+<%--     		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/> --%>
+<%--     		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${staff.id}'},"/> --%>
+<%--     		<c:set var="ganttData" value="${ganttData}${taskRow}"/> --%>
+<%--     	</c:forEach> --%>
+<%--     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/> --%>
+<%--     <c:set var="ganttEnd" value="]"/> --%>
+<%--    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/> --%>
+   	
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
 	<script type="text/javascript">
-	    var tasks = ${ganttData};
+	    var ganttJSON = ${ganttJSON};
+	    var tasks = {'data': ganttJSON};
 		gantt.init("gantt-chart");
 	    gantt.parse(tasks);
+	    gantt.sort("start_date");
 	</script>
    	</c:if>
    	

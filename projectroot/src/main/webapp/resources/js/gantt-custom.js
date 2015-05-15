@@ -17,6 +17,7 @@ gantt.templates.task_text = function(start, end, task){
 gantt.config.scale_unit = "month";
 gantt.config.date_scale = "%F, %Y";
 gantt.config.scale_height = 50;
+gantt.config.sort = true;
 gantt.config.readonly = true;
 gantt.config.subscales = [
 	{unit:"day", step:1, date:"%j, %D" }

@@ -33,6 +33,7 @@ import com.cebedo.pmsys.payroll.domain.Attendance;
 import com.cebedo.pmsys.payroll.domain.AttendanceMass;
 import com.cebedo.pmsys.payroll.domain.Status;
 import com.cebedo.pmsys.payroll.service.PayrollService;
+import com.cebedo.pmsys.project.model.Project;
 import com.cebedo.pmsys.project.service.ProjectService;
 import com.cebedo.pmsys.security.securityrole.model.SecurityRole;
 import com.cebedo.pmsys.staff.model.ManagerAssignment;
@@ -41,6 +42,7 @@ import com.cebedo.pmsys.staff.model.StaffTeamAssignment;
 import com.cebedo.pmsys.staff.service.StaffService;
 import com.cebedo.pmsys.system.bean.CalendarEventBean;
 import com.cebedo.pmsys.system.bean.DateRangeBean;
+import com.cebedo.pmsys.system.bean.TaskGanttBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
@@ -68,6 +70,8 @@ public class StaffController {
 	public static final String JSP_EDIT = "staffEdit";
 
 	public static final String ATTR_TASK_STATUS_MAP = "taskStatusMap";
+
+	public static final String ATTR_GANTT_JSON = "ganttJSON";
 
 	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
@@ -636,7 +640,53 @@ public class StaffController {
 				.getTotalWageFromAttendance(attendanceList);
 
 		// Get summary of tasks.
-		Map<TaskStatus, Integer> taskStatusMap = getTaskStatusMap(staff);
+		// Get gantt-data.
+		Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
+		List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
+
+		// Add myself.
+		TaskGanttBean myGanttBean = new TaskGanttBean();
+		myGanttBean.setId(Staff.OBJECT_NAME + "-" + staff.getId());
+		myGanttBean.setText("[STAFF] " + staff.getFullName());
+		myGanttBean.setOpen(true);
+		myGanttBean.setDuration(0);
+		ganttBeanList.add(myGanttBean);
+
+		// Get the gantt parent data.
+		for (ManagerAssignment assigns : staff.getAssignedManagers()) {
+			Project proj = assigns.getProject();
+			TaskGanttBean ganttBean = new TaskGanttBean();
+			ganttBean.setId(Project.OBJECT_NAME + "-" + proj.getId());
+			ganttBean.setText("[PROJECT] " + proj.getName());
+			ganttBean.setOpen(true);
+			ganttBean.setDuration(0);
+			ganttBeanList.add(ganttBean);
+		}
+
+		// Get the tasks (children) of each parent.
+		// TODO Sort.
+		for (Task task : staff.getTasks()) {
+			int taskStatusInt = task.getStatus();
+			TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
+			Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
+					: taskStatusMap.get(taskStatus) + 1;
+			taskStatusMap.put(taskStatus, statCount);
+
+			// Get the data for the gantt chart.
+			TaskGanttBean ganttBean = new TaskGanttBean();
+			ganttBean.setId(Task.OBJECT_NAME + "-" + task.getId());
+			ganttBean.setStatus(taskStatusInt);
+			ganttBean.setText(task.getTitle());
+			ganttBean.setContent(task.getContent());
+			ganttBean.setStart_date(DateHelper.formatDate(task.getDateStart(),
+					"dd-MM-yyyy"));
+			ganttBean.setOpen(true);
+			ganttBean.setDuration(task.getDuration());
+			Project proj = task.getProject();
+			ganttBean.setParent(proj == null ? Staff.OBJECT_NAME + "-"
+					+ staff.getId() : Project.OBJECT_NAME + "-" + proj.getId());
+			ganttBeanList.add(ganttBean);
+		}
 
 		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 				Status.getAllStatusInMap());
@@ -653,6 +703,8 @@ public class StaffController {
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
 		model.addAttribute(ATTR_CALENDAR_JSON,
 				new Gson().toJson(calendarEvents, ArrayList.class));
+		model.addAttribute(ATTR_GANTT_JSON,
+				new Gson().toJson(ganttBeanList, ArrayList.class));
 		model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 		model.addAttribute(ATTR_STAFF, staff);
 		model.addAttribute(SystemConstants.ATTR_ACTION,
