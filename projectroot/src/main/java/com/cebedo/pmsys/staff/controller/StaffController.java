@@ -69,6 +69,7 @@ public class StaffController {
 	public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
 	public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
+	public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
 	public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 	public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
 	public static final String JSP_LIST = "staffList";
@@ -238,7 +239,7 @@ public class StaffController {
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
 
-		return editStaffWithMinDate(model, session, status);
+		return editStaffWithMinDate(model, session);
 	}
 
 	/**
@@ -259,7 +260,7 @@ public class StaffController {
 		// TODO
 		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 				AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-		return editStaffWithMinDate(model, session, status);
+		return editStaffWithMinDate(model, session);
 	}
 
 	/**
@@ -503,8 +504,7 @@ public class StaffController {
 	 * @param model
 	 * @return
 	 */
-	private String editStaffWithMinDate(Model model, HttpSession session,
-			SessionStatus status) {
+	private String editStaffWithMinDate(Model model, HttpSession session) {
 
 		// TODO Check if where this is used.
 		// If not used, delete.
@@ -522,7 +522,6 @@ public class StaffController {
 
 		// Set model attributes.
 		setModelAttributes(model, staff, minDate, maxDate, minDateStr);
-		status.setComplete();
 		return JSP_EDIT;
 	}
 
@@ -576,7 +575,36 @@ public class StaffController {
 		// Get wage given attendances.
 		Set<Attendance> attendanceList = this.payrollService
 				.rangeStaffAttendance(staff, min, max);
-		List<CalendarEventBean> calendarEvents = getCalendarEvents(attendanceList);
+
+		// Get calendar events.
+		// And count number per status.
+		List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
+		Map<Status, Integer> attendanceStatusMap = new HashMap<Status, Integer>();
+
+		for (Attendance attendance : attendanceList) {
+
+			Date myDate = attendance.getTimestamp();
+			String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+			Status attnStat = attendance.getStatus();
+
+			// Get and set status count.
+			Integer statCount = attendanceStatusMap.get(attnStat) == null ? 1
+					: attendanceStatusMap.get(attnStat) + 1;
+			attendanceStatusMap.put(attnStat, statCount);
+
+			CalendarEventBean event = new CalendarEventBean();
+			event.setStart(start);
+			event.setTitle(attnStat.name());
+			event.setId(start);
+			event.setClassName(attnStat.css());
+			event.setAttendanceStatus(String.valueOf(attendance.getStatus()
+					.id()));
+			event.setAttendanceWage(String.valueOf(attendance.getWage()));
+			if (attnStat == Status.OVERTIME) {
+				event.setBorderColor("Red");
+			}
+			calendarEvents.add(event);
+		}
 
 		// Given min and max, get range of attendances.
 		// Get wage given attendances.
@@ -592,6 +620,7 @@ public class StaffController {
 		model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 		model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
 		model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, totalWage);
+		model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, attendanceStatusMap);
 		model.addAttribute(ATTR_ATTENDANCE_MASS, new AttendanceMass(staff));
 		model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
 		model.addAttribute(ATTR_CALENDAR_JSON,

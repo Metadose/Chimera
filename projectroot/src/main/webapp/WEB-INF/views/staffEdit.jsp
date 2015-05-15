@@ -6,6 +6,8 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 <c:set var="staffWage" value="${staff.wage}"/>
+<fmt:formatDate pattern="yyyy/MM/dd" value="${minDate}" var="minDateText"/>
+<fmt:formatDate pattern="yyyy/MM/dd" value="${maxDate}" var="maxDateText"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -60,9 +62,8 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:if test="${staff.id != 0}">
-                                <li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 <li><a href="#tab_attendance-cal" data-toggle="tab">Attendance</a></li>
                                 </c:if>
@@ -444,124 +445,146 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_2">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">	
-		                               		<a href="${contextPath}/task/assign/staff/${staff.id}">
-		                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
-		                                	</a><br/><br/>
-		                                    <table id="task-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                    		<tr>
-			                                        	<th>&nbsp;</th>
-			                                            <th>Status</th>
-			                                            <th>Content</th>
-			                                            <th>Project</th>
-			                                            <th>Team</th>
-			                                            <th>Start</th>
-			                                            <th>Duration</th>
-			                                        </tr>
-		                                    	</thead>
-		                                        <tbody>
-			                                        <c:set var="taskList" value="${staff.tasks}"/>
-				                                	<c:if test="${!empty taskList}">
-		                                        		<c:forEach items="${taskList}" var="task">
-		                                        			<tr>
-		                                        				<td>
-		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-							                                                Mark As&nbsp;
-							                                                <span class="caret"></span>
-							                                            </button>
-							                                            <ul class="dropdown-menu">
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
-							                                            </ul>
-							                                        </div>
-							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
-					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-					                                            	</a>
-		                                        				</td>
-					                                            <td style="vertical-align: middle;">
-					                                            	<c:choose>
-					                                            	<c:when test="${task.status == 0}">
-					                                            		<span class="label label-info">New</span>
-					                                            	</c:when>
-					                                            	<c:when test="${task.status == 1}">
-					                                            		<span class="label label-primary">Ongoing</span>
-					                                            	</c:when>
-					                                            	<c:when test="${task.status == 2}">
-					                                            		<span class="label label-success">Completed</span>
-					                                            	</c:when>
-					                                            	<c:when test="${task.status == 3}">
-					                                            		<span class="label label-danger">Failed</span>
-					                                            	</c:when>
-					                                            	<c:when test="${task.status == 4}">
-					                                            		<h6>Cancelled</h6>
-					                                            	</c:when>
-						                                            </c:choose>
-					                                            </td>
-					                                            <td>${task.content}</td>
-					                                            <td>
-					                                            	<c:choose>
-				                                            		<c:when test="${!empty task.project}">
-				                                            			<a href="${contextPath}/project/edit/from/staff/?${task.project.id}">
-						                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-						                                            	</a>
-						                                            	${task.project.name}
-						                                            	<br/>
-				                                            		</c:when>
-				                                            		<c:when test="${empty task.project}">
-				                                            			<h5>No project assigned.</h5>
-				                                            		</c:when>
-					                                            	</c:choose>					                                            
-					                                            </td>
-					                                            <td>
-					                                            	<c:choose>
-				                                            		<c:when test="${!empty task.teams}">
-				                                            			<c:forEach items="${task.teams}" var="taskTeam">
-				                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-						                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-						                                            	</a>
-						                                            	${taskTeam.name}
-						                                            	<br/>
-				                                            			</c:forEach>
-				                                            		</c:when>
-				                                            		<c:when test="${empty task.teams}">
-				                                            			<h5>No team assigned.</h5>
-				                                            		</c:when>
-					                                            	</c:choose>
-					                                            </td>
-					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.duration}</td>
-					                                        </tr>
-		                                        		</c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
-                                	<div class="box box-default">
-		                                <div class="box-body">
-		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
-<!-- 		                                <div id="gantt-chart" class="box-body table-responsive"> -->
-		                                </div><!-- /.box-body -->
-		                                </div>
-		                            </div>
+                                	<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Timeline</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<c:if test="${!empty staff.tasks}">
+				                                	<div id="gantt-chart" style='width:1000px; height:400px;'>
+					                                </div><!-- /.box-body -->
+					                                </c:if>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+              						<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   							<div class="box-header">
+                   								<table>
+                   								<tr>
+                   								<td><h3 class="box-title">Tasks</h3></td>
+                   								<td>
+                   								<a href="${contextPath}/task/assign/staff/${staff.id}">
+			                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
+			                                	</a>
+                   								</td>
+                   								</tr>
+                   								</table>
+               								</div>
+               								<div class="box-body">
+			                                    <table id="task-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                    		<tr>
+				                                        	<th>&nbsp;</th>
+				                                            <th>Status</th>
+				                                            <th>Title</th>
+				                                            <th>Content</th>
+				                                            <th>Project</th>
+				                                            <th>Team</th>
+				                                            <th>Start</th>
+				                                            <th>Duration</th>
+				                                        </tr>
+			                                    	</thead>
+			                                        <tbody>
+				                                        <c:set var="taskList" value="${staff.tasks}"/>
+					                                	<c:if test="${!empty taskList}">
+			                                        		<c:forEach items="${taskList}" var="task">
+			                                        			<tr>
+			                                        				<td>
+			                                        					<div class="btn-group">
+								                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+								                                                Mark As&nbsp;
+								                                                <span class="caret"></span>
+								                                            </button>
+								                                            <ul class="dropdown-menu">
+								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
+								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
+								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
+								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
+								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
+								                                            </ul>
+								                                        </div>
+								                                        <a href="${contextPath}/task/edit/${task.id}">
+						                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+						                                            	</a>
+						                                            	<a href="${contextPath}/task/delete/${task.id}">
+						                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+						                                            	</a>
+			                                        				</td>
+						                                            <td style="vertical-align: middle;">
+						                                            	<c:choose>
+						                                            	<c:when test="${task.status == 0}">
+						                                            		<span class="label label-info">New</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 1}">
+						                                            		<span class="label label-primary">Ongoing</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 2}">
+						                                            		<span class="label label-success">Completed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 3}">
+						                                            		<span class="label label-danger">Failed</span>
+						                                            	</c:when>
+						                                            	<c:when test="${task.status == 4}">
+						                                            		<h6>Cancelled</h6>
+						                                            	</c:when>
+							                                            </c:choose>
+						                                            </td>
+						                                            <td>${task.title}</td>
+						                                            <td>${task.content}</td>
+						                                            <td>
+						                                            	<c:choose>
+					                                            		<c:when test="${!empty task.project}">
+					                                            			<a href="${contextPath}/project/edit/from/staff/?${task.project.id}">
+							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${task.project.name}
+							                                            	<br/>
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.project}">
+					                                            			<h5>No project assigned.</h5>
+					                                            		</c:when>
+						                                            	</c:choose>					                                            
+						                                            </td>
+						                                            <td>
+						                                            	<c:choose>
+					                                            		<c:when test="${!empty task.teams}">
+					                                            			<c:forEach items="${task.teams}" var="taskTeam">
+					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
+							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+							                                            	</a>
+							                                            	${taskTeam.name}
+							                                            	<br/>
+					                                            			</c:forEach>
+					                                            		</c:when>
+					                                            		<c:when test="${empty task.teams}">
+					                                            			<h5>No team assigned.</h5>
+					                                            		</c:when>
+						                                            	</c:choose>
+						                                            </td>
+						                                            <td>${task.dateStart}</td>
+						                                            <td>${task.duration}</td>
+						                                        </tr>
+			                                        		</c:forEach>
+		                                        		</c:if>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+			                                </div>
+                   						</div>
+              						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_attendance-cal">
                                 	<div class="row">
                    						<div class="col-xs-12">
                    							<div class="box box-default">
                    								<div class="box-body">
+                   									Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.<br/><br/>
                    									<form:form
 									                	modelAttribute="rangeDate"
 														id="rangeDateForm"
@@ -571,14 +594,24 @@
 														<tr>
 															<td>
 								                            <label>Start Date</label>
-								                            <form:input type="text" class="form-control date-mask" path="startDate"/>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" path="startDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
 															</td>
 															<td>
 															&nbsp;
 															</td>
 															<td>
 								                            <label>End Date</label>
-								                            <form:input type="text" class="form-control date-mask" path="endDate"/>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" path="endDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
 															</td>
 															<td>
 															&nbsp;
@@ -597,6 +630,9 @@
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Date Range Editor</h3>
+                   								</div>
                    								<div class="box-body">
                    									<form:form
 									                	modelAttribute="massAttendance"
@@ -605,9 +641,22 @@
 														action="${contextPath}/staff/add/attendance/mass">
 								                        <div class="form-group">
 								                            <label>Start Date</label>
-								                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/><br/>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+								                            <br/>
 								                            <label>End Date</label>
-								                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/><br/>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+								                            <br/>
+								                            
 								                            <label id="massStatusLabel">Status</label>
 								                            <form:select class="form-control" id="massStatusValue" path="statusID"> 
 								           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
@@ -626,11 +675,64 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Summary</h3>
+                   								</div>
+                   								<div class="box-body">
+<!--      Map<Status, Integer> attendanceStatusMap = new HashMap<Status, Integer>(); -->
+												<table>
+													<tr>
+														<td>Data start:</td>
+														<td>&nbsp;&nbsp;</td>
+														<td><b>${minDateText}</b></td>
+													</tr>
+													<tr>
+														<td>Data end:</td>
+														<td>&nbsp;&nbsp;</td>
+														<td><b>${maxDateText}</b></td>
+													</tr>
+												</table><br/>												
+												<table id="status-table" class="table table-bordered table-striped">
+												<thead>
+		                                    		<tr>
+			                                            <th>Status</th>
+			                                            <th>Number</th>
+			                                        </tr>
+		                                    	</thead>
+												<tbody>
+												<c:forEach items="${attendanceStatusMap}" var="attendanceStatusEntry">
+												<c:set value="${attendanceStatusEntry.key}" var="entryKey"/>
+												<c:set value="${attendanceStatusEntry.value}" var="entryValue"/>
+													<tr>
+														<td>
+															<c:choose>
+				                                            	<c:when test="${entryKey.id() == 6}">
+					                                            <c:set value="border: 1px solid red" var="spanBorder"/>
+				                                            	</c:when>
+				                                            	<c:when test="${entryKey.id() != 6}">
+					                                            <c:set value="" var="spanBorder"/>
+				                                            	</c:when>
+				                                            </c:choose>
+				                                            <span style="${spanBorder}" class="label ${entryKey.css()}">${entryKey}</span>
+														</td>
+														<td>
+															${entryValue}
+														</td>
+													</tr>
+												</c:forEach>
+												</tbody>
+												</table>
+                   								</div>
+                   							</div>
+                   						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
+		                                	Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.<br/><br/>
 		                                	<form:form
 							                	modelAttribute="rangeDate"
 												id="rangeDateForm"
@@ -640,14 +742,24 @@
 												<tr>
 													<td>
 						                            <label>Start Date</label>
-						                            <form:input type="text" class="form-control date-mask" path="startDate"/>
+						                            <div class='input-group date date-picker'>
+							                            <form:input type="text" class="form-control" path="startDate"/>
+									                    <span class="input-group-addon">
+									                        <span class="glyphicon glyphicon-calendar"></span>
+									                    </span>
+									                </div>
 													</td>
 													<td>
 													&nbsp;
 													</td>
 													<td>
 						                            <label>End Date</label>
-						                            <form:input type="text" class="form-control date-mask" path="endDate"/>
+						                            <div class='input-group date date-picker'>
+							                            <form:input type="text" class="form-control" path="endDate"/>
+									                    <span class="input-group-addon">
+									                        <span class="glyphicon glyphicon-calendar"></span>
+									                    </span>
+									                </div>
 													</td>
 													<td>
 													&nbsp;
@@ -658,7 +770,6 @@
 												</tr>
 												</table>
 						                    </form:form><br/>
-		                                	Total: ${payrollTotalWage}
 		                                    <table id="attendance-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                    		<tr>
@@ -685,6 +796,10 @@
                                         		</c:forEach>
 			                                    </tbody>
 			                                </table>
+			                                <div class="pull-right">
+		                                	<h2>Total <b><u>${payrollTotalWage}</u></b></h2>
+		                                	from <b>${minDateText}</b> to <b>${maxDateText}</b>.
+		                                	</div>
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
@@ -712,7 +827,9 @@
 						action="${contextPath}/staff/add/attendance">
                         <div class="form-group">
                             <label>Date</label>
-                            <form:input type="text" class="form-control" id="modalDate" path="timestamp"/><br/>
+                            <form:input type="text" disabled="true" class="form-control" id="modalDate" path="timestamp"/>
+                            
+                            <br/>
                             <label>Status</label>
 <!--                             List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>(); -->
                             <form:select class="form-control" id="attendanceStatus" path="statusID"> 
@@ -758,11 +875,6 @@
 	</script>
    	</c:if>
    	
-   	<!-- InputMask -->
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
-    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
-   	
 	<script>
 		function submitForm(id) {
 			$('#'+id).submit();
@@ -782,11 +894,11 @@
 		}
 		
 		$(document).ready(function() {
-			$("#massStartDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#massEndDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$(".date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			$("#example-1").dataTable();
+			$('.date-picker').datepicker({
+			    format: 'yyyy/mm/dd'
+			})
+			
+// 			$("#status-table").dataTable();
 			$("#project-table").dataTable();
 			$("#task-table").dataTable();
 			$("#attendance-table").dataTable();

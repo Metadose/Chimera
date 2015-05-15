@@ -3,8 +3,6 @@ gantt.config.columns = [
     {name:"text",       label:" ",  width:"*", tree:true },
     {name:"start_date", label:"Start", align: "center" },
     {name:"duration",   label:"Man Days",   align: "center" }
-//    ,
-//    {name:"add",        label:"",           width:44 }
 ];
 
 // Text for the task.
@@ -19,6 +17,7 @@ gantt.templates.task_text = function(start, end, task){
 gantt.config.scale_unit = "month";
 gantt.config.date_scale = "%F, %Y";
 gantt.config.scale_height = 50;
+gantt.config.readonly = true;
 gantt.config.subscales = [
 	{unit:"day", step:1, date:"%j, %D" }
 ];
