@@ -21,6 +21,10 @@ body {
 a {
   color: #353535;
 }
+a.general-link {
+  color: #353535;
+  text-decoration: underline;
+}
 a:hover,
 a:active,
 a:focus {

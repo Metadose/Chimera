@@ -555,10 +555,9 @@
 						                                            	<c:choose>
 					                                            		<c:when test="${!empty task.teams}">
 					                                            			<c:forEach items="${task.teams}" var="taskTeam">
-					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
+					                                            			<a class="general-link" href="${contextPath}/team/edit/${taskTeam.id}">
 							                                            	${taskTeam.name}
+							                                            	</a>
 							                                            	<br/>
 					                                            			</c:forEach>
 					                                            		</c:when>
@@ -889,17 +888,6 @@
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	
 	<c:if test="${staff.id != 0 && !empty staff.tasks}">
-	<!-- Generate the data to be used by the gantt. -->
-<%-- 	<c:set var="ganttData" value="'data':[{id:'${staff.id}', text:'${fn:escapeXml(staffName)}', open: true, duration:0},"/> --%>
-<%--     	<c:forEach var="task" items="${staff.tasks}"> --%>
-<%--     		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/> --%>
-<%--     		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${staff.id}'},"/> --%>
-<%--     		<c:set var="ganttData" value="${ganttData}${taskRow}"/> --%>
-<%--     	</c:forEach> --%>
-<%--     	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/> --%>
-<%--     <c:set var="ganttEnd" value="]"/> --%>
-<%--    	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/> --%>
-   	
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
