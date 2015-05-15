@@ -44,6 +44,8 @@ import com.cebedo.pmsys.system.bean.DateRangeBean;
 import com.cebedo.pmsys.system.constants.SystemConstants;
 import com.cebedo.pmsys.system.helper.DateHelper;
 import com.cebedo.pmsys.system.ui.AlertBoxFactory;
+import com.cebedo.pmsys.task.model.Task;
+import com.cebedo.pmsys.task.model.TaskStatus;
 import com.cebedo.pmsys.team.controller.TeamController;
 import com.cebedo.pmsys.team.model.Team;
 import com.cebedo.pmsys.team.service.TeamService;
@@ -61,19 +63,23 @@ public class StaffController {
 
 	public static final String ATTR_LIST = "staffList";
 	public static final String ATTR_STAFF = Staff.OBJECT_NAME;
-	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
+	public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
+	public static final String JSP_LIST = "staffList";
+	public static final String JSP_EDIT = "staffEdit";
+
+	public static final String ATTR_TASK_STATUS_MAP = "taskStatusMap";
+
 	public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 	public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
 	public static final String ATTR_CALENDAR_MIN_DATE_STR = "minDateStr";
 	public static final String ATTR_CALENDAR_MIN_DATE = "minDate";
 	public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
 	public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
+
 	public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
+	public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
 	public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
 	public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
-	public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
-	public static final String JSP_LIST = "staffList";
-	public static final String JSP_EDIT = "staffEdit";
 
 	private StaffService staffService;
 	private TeamService teamService;
@@ -561,6 +567,23 @@ public class StaffController {
 	}
 
 	/**
+	 * Get summary of tasks to count.
+	 * 
+	 * @param staff
+	 * @return
+	 */
+	private Map<TaskStatus, Integer> getTaskStatusMap(Staff staff) {
+		Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
+		for (Task task : staff.getTasks()) {
+			TaskStatus taskStatus = TaskStatus.of(task.getStatus());
+			Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
+					: taskStatusMap.get(taskStatus) + 1;
+			taskStatusMap.put(taskStatus, statCount);
+		}
+		return taskStatusMap;
+	}
+
+	/**
 	 * Set model attributes before forwarding to JSP.
 	 * 
 	 * @param model
@@ -571,6 +594,7 @@ public class StaffController {
 	 */
 	private void setModelAttributes(Model model, Staff staff, Date min,
 			Date max, String minDateStr) {
+
 		// Given min and max, get range of attendances.
 		// Get wage given attendances.
 		Set<Attendance> attendanceList = this.payrollService
@@ -611,6 +635,9 @@ public class StaffController {
 		double totalWage = this.payrollService
 				.getTotalWageFromAttendance(attendanceList);
 
+		// Get summary of tasks.
+		Map<TaskStatus, Integer> taskStatusMap = getTaskStatusMap(staff);
+
 		model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 				Status.getAllStatusInMap());
 		model.addAttribute(ATTR_CALENDAR_MIN_DATE_STR,
@@ -619,6 +646,7 @@ public class StaffController {
 		model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
 		model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 		model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
+		model.addAttribute(ATTR_TASK_STATUS_MAP, taskStatusMap);
 		model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, totalWage);
 		model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, attendanceStatusMap);
 		model.addAttribute(ATTR_ATTENDANCE_MASS, new AttendanceMass(staff));

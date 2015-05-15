@@ -63,9 +63,9 @@
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 <li><a href="#tab_attendance-cal" data-toggle="tab">Attendance</a></li>
+                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -576,6 +576,40 @@
 				                                </table>
 			                                </div><!-- /.box-body -->
 			                                </div>
+                   						</div>
+              						</div>
+              						<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Summary</h3>
+                   								</div>
+                   								<div class="box-body">
+<!--      Map<TaskStatus, Integer> taskStatusMap = getTaskStatusMap(staff); -->
+												<table id="task-status-table" class="table table-bordered table-striped">
+												<thead>
+		                                    		<tr>
+			                                            <th>Status</th>
+			                                            <th>Number</th>
+			                                        </tr>
+		                                    	</thead>
+												<tbody>
+												<c:forEach items="${taskStatusMap}" var="statusEntry">
+												<c:set value="${statusEntry.key}" var="entryKey"/>
+												<c:set value="${statusEntry.value}" var="entryValue"/>
+													<tr>
+														<td>
+				                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+														</td>
+														<td>
+															${entryValue}
+														</td>
+													</tr>
+												</c:forEach>
+												</tbody>
+												</table>
+                   								</div>
+                   							</div>
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
