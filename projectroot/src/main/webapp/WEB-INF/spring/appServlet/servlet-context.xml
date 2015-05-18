@@ -35,7 +35,7 @@
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
 	<context:property-placeholder location="classpath:system.properties"/>
-	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.security.audit.dao.AuditLogDAOImpl">
+	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.dao.AuditLogDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     
@@ -59,7 +59,7 @@
        	   </beans:props>
 		</beans:property>
 	</beans:bean>
-	<beans:bean id="mailer" class="com.cebedo.pmsys.system.mail.mailer.Mailer">
+	<beans:bean id="mailer" class="com.cebedo.pmsys.service.Mailer">
 		<beans:property name="mailSender" ref="mailSender" />
 	</beans:bean>
 	
@@ -94,16 +94,16 @@
     </beans:bean>
  
     <!-- Message Sender/Listener Definition -->
-    <beans:bean id="messageSender" class="com.cebedo.pmsys.system.message.sender.MessageSender">
+    <beans:bean id="messageSender" class="com.cebedo.pmsys.sender.MessageSender">
         <beans:constructor-arg index="0" ref="jmsTemplate" />
     </beans:bean>
     
-	<beans:bean id="messageListener" class="com.cebedo.pmsys.system.message.listener.MessageListenerImpl"/>
-	<beans:bean id="mailMessageListener" class="com.cebedo.pmsys.system.message.listener.MailMessageListener"/>
-	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.system.message.listener.AuditMessageListener">
+	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.MessageListenerImpl"/>
+	<beans:bean id="mailMessageListener" class="com.cebedo.pmsys.listener.MailMessageListener"/>
+	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListener">
 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
 	</beans:bean>
-	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.system.message.listener.LogMessageListener"/>
+	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListener"/>
     <jms:listener-container
 	      container-type="default"
 	      connection-factory="connectionFactory"
@@ -162,7 +162,7 @@
 		    p:connection-factory-ref="jedisConnFactoryCache"/>
 		    
 	    <beans:bean id="cacheManager"
-	        class="com.cebedo.pmsys.system.cache.manager.CustomRedisCacheManager"
+	        class="com.cebedo.pmsys.manager.CustomRedisCacheManager"
 	        c:template-ref="redisTemplateCache"/>
 	        
 		    
@@ -258,7 +258,7 @@
 	<!-- *********************************************************** -->
 	<!-- Advanced logging -->
 		<!-- Performance logging -->
-		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.system.log.interceptor.CustomPerformanceInterceptor" />
+		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor" />
 	    <aop:config>
 	        <aop:pointcut id="allServiceMethods"
 	        	expression="execution(* com.cebedo.pmsys.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.service.*.*(..)) OR execution(* com.cebedo.pmsys.*.*.*.service.*.*(..))"/>
@@ -266,7 +266,7 @@
 	    </aop:config>
 		
 		<!-- Exception logging -->
-		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.system.log.resolver.LoggingExceptionResolver">
+		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.resolver.LoggingExceptionResolver">
 		    <beans:property name="exceptionMappings">
 		        <beans:props>
 		            <beans:prop key="java.lang.Exception">/fix</beans:prop>
@@ -335,7 +335,7 @@
 	
 	<!-- Custom filters -->
 	<beans:bean id="hdivFilter" class="org.hdiv.filter.ValidatorFilter" />
- 	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.system.login.filter.BlacklistFilter" />
+ 	<beans:bean id="blacklistFilter" class="com.cebedo.pmsys.filter.BlacklistFilter" />
  	<beans:bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"
   		p:authenticationManager-ref="customAuthenticationManager"
   		p:postOnly="true"
@@ -343,7 +343,7 @@
   		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
   		
 	<!-- Custom authentication manager. In order to authenticate, username and password must not be the same -->
-	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.system.login.manager.CustomAuthenticationManager" />
+	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.manager.CustomAuthenticationManager" />
  	
  	<!-- We just actually need to set the default failure url here -->
  	<beans:bean id="customAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
@@ -404,29 +404,29 @@
         <beans:property name="dataSource" ref="dataSource" />
         <beans:property name="annotatedClasses">
             <beans:list>
-                <beans:value>com.cebedo.pmsys.project.model.Project</beans:value>
-                <beans:value>com.cebedo.pmsys.field.model.Field</beans:value>
-                <beans:value>com.cebedo.pmsys.field.model.FieldAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.staff.model.Staff</beans:value>
-                <beans:value>com.cebedo.pmsys.staff.model.ManagerAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.staff.model.StaffTeamAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.staff.model.StaffFieldAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.team.model.Team</beans:value>
-                <beans:value>com.cebedo.pmsys.team.model.TeamAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.task.model.Task</beans:value>
-                <beans:value>com.cebedo.pmsys.projectfile.model.ProjectFile</beans:value>
-                <beans:value>com.cebedo.pmsys.systemconfiguration.model.SystemConfiguration</beans:value>
-                <beans:value>com.cebedo.pmsys.photo.model.Photo</beans:value>
-                <beans:value>com.cebedo.pmsys.task.model.TaskTeamAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.task.model.TaskStaffAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.task.model.TaskFieldAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.systemuser.model.SystemUser</beans:value>
-                <beans:value>com.cebedo.pmsys.company.model.Company</beans:value>
-                <beans:value>com.cebedo.pmsys.security.securityaccess.model.SecurityAccess</beans:value>
-                <beans:value>com.cebedo.pmsys.security.securityrole.model.SecurityRole</beans:value>
-                <beans:value>com.cebedo.pmsys.security.audit.model.AuditLog</beans:value>
-<!--                 <beans:value>com.cebedo.pmsys.subcontractor.model.Subcontractor</beans:value> -->
-<!--                 <beans:value>com.cebedo.pmsys.cashflow.expense.model.Expense</beans:value> -->
+                <beans:value>com.cebedo.pmsys.model.Project</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Field</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.FieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Staff</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.ManagerAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.StaffTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.StaffFieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Team</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.TeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Task</beans:value>
+                <beans:value>com.cebedo.pmsys.model.ProjectFile</beans:value>
+                <beans:value>com.cebedo.pmsys.model.SystemConfiguration</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Photo</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.TaskTeamAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.TaskStaffAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.assignment.TaskFieldAssignment</beans:value>
+                <beans:value>com.cebedo.pmsys.model.SystemUser</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Company</beans:value>
+                <beans:value>com.cebedo.pmsys.model.SecurityAccess</beans:value>
+                <beans:value>com.cebedo.pmsys.model.SecurityRole</beans:value>
+                <beans:value>com.cebedo.pmsys.model.AuditLog</beans:value>
+<!--                 <beans:value>com.cebedo.pmsys.model.Subcontractor</beans:value> -->
+<!--                 <beans:value>com.cebedo.pmsys.model.Expense</beans:value> -->
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -438,19 +438,19 @@
         </beans:property>
     </beans:bean>
      
-    <beans:bean id="projectDAO" class="com.cebedo.pmsys.project.dao.ProjectDAOImpl">
+    <beans:bean id="projectDAO" class="com.cebedo.pmsys.dao.ProjectDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="projectService" class="com.cebedo.pmsys.project.service.ProjectServiceImpl">
+    <beans:bean id="projectService" class="com.cebedo.pmsys.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
     
-    <beans:bean id="staffDAO" class="com.cebedo.pmsys.staff.dao.StaffDAOImpl">
+    <beans:bean id="staffDAO" class="com.cebedo.pmsys.dao.StaffDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="staffService" class="com.cebedo.pmsys.staff.service.StaffServiceImpl">
+    <beans:bean id="staffService" class="com.cebedo.pmsys.service.StaffServiceImpl">
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
@@ -458,116 +458,116 @@
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="teamDAO" class="com.cebedo.pmsys.team.dao.TeamDAOImpl">
+    <beans:bean id="teamDAO" class="com.cebedo.pmsys.dao.TeamDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="teamService" class="com.cebedo.pmsys.team.service.TeamServiceImpl">
+    <beans:bean id="teamService" class="com.cebedo.pmsys.service.TeamServiceImpl">
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.security.securityaccess.dao.SecurityAccessDAOImpl">
+    <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.dao.SecurityAccessDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.security.securityaccess.service.SecurityAccessServiceImpl">
+    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.service.SecurityAccessServiceImpl">
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.security.securityrole.dao.SecurityRoleDAOImpl">
+    <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.dao.SecurityRoleDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.security.securityrole.service.SecurityRoleServiceImpl">
+    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.service.SecurityRoleServiceImpl">
         <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="taskDAO" class="com.cebedo.pmsys.task.dao.TaskDAOImpl">
+    <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.TaskDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="taskService" class="com.cebedo.pmsys.task.service.TaskServiceImpl">
+    <beans:bean id="taskService" class="com.cebedo.pmsys.service.TaskServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="searchService" class="com.cebedo.pmsys.system.search.service.SearchServiceImpl">
+    <beans:bean id="searchService" class="com.cebedo.pmsys.service.SearchServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="fieldDAO" class="com.cebedo.pmsys.field.dao.FieldDAOImpl">
+    <beans:bean id="fieldDAO" class="com.cebedo.pmsys.dao.FieldDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="fieldService" class="com.cebedo.pmsys.field.service.FieldServiceImpl">
+    <beans:bean id="fieldService" class="com.cebedo.pmsys.service.FieldServiceImpl">
         <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.projectfile.dao.ProjectFileDAOImpl">
+    <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.dao.ProjectFileDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="projectFileService" class="com.cebedo.pmsys.projectfile.service.ProjectFileServiceImpl">
+    <beans:bean id="projectFileService" class="com.cebedo.pmsys.service.ProjectFileServiceImpl">
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     <!-- Redis object Notification -->
-    <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.notification.repository.NotificationZSetRepo">
+    <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.repository.NotificationZSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="notificationService" class="com.cebedo.pmsys.notification.service.NotificationServiceImpl">
+    <beans:bean id="notificationService" class="com.cebedo.pmsys.service.NotificationServiceImpl">
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="conversationValueRepo" class="com.cebedo.pmsys.chat.repository.ConversationValueRepo">
+    <beans:bean id="conversationValueRepo" class="com.cebedo.pmsys.repository.ConversationValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="conversationService" class="com.cebedo.pmsys.chat.service.ConversationServiceImpl">
+    <beans:bean id="conversationService" class="com.cebedo.pmsys.service.ConversationServiceImpl">
         <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.chat.repository.MessageZSetRepo">
+    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.repository.MessageZSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="messageService" class="com.cebedo.pmsys.chat.service.MessageServiceImpl">
+    <beans:bean id="messageService" class="com.cebedo.pmsys.service.MessageServiceImpl">
         <beans:property name="messageZSetRepo" ref="messageZSetRepo"></beans:property>
         <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
     </beans:bean>
     
-    <beans:bean id="attendanceZSetRepo" class="com.cebedo.pmsys.payroll.repository.AttendanceValueRepo">
+    <beans:bean id="attendanceZSetRepo" class="com.cebedo.pmsys.repository.AttendanceValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="payrollService" class="com.cebedo.pmsys.payroll.service.PayrollServiceImpl">
+    <beans:bean id="payrollService" class="com.cebedo.pmsys.service.PayrollServiceImpl">
         <beans:property name="attendanceZSetRepo" ref="attendanceZSetRepo"></beans:property>
         <beans:property name="projectService" ref="projectService"></beans:property>
     </beans:bean>
     
-    <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.systemconfiguration.dao.SystemConfigurationDAOImpl">
+    <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.dao.SystemConfigurationDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.systemconfiguration.service.SystemConfigurationServiceImpl">
+    <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.service.SystemConfigurationServiceImpl">
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
-<!--     <beans:bean id="subcontractorDAO" class="com.cebedo.pmsys.subcontractor.dao.SubcontractorDAOImpl"> -->
+<!--     <beans:bean id="subcontractorDAO" class="com.cebedo.pmsys.dao.SubcontractorDAOImpl"> -->
 <!--         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" /> -->
 <!--     </beans:bean> -->
-<!--     <beans:bean id="subcontractorService" class="com.cebedo.pmsys.subcontractor.service.SubcontractorServiceImpl"> -->
+<!--     <beans:bean id="subcontractorService" class="com.cebedo.pmsys.service.SubcontractorServiceImpl"> -->
 <!--         <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property> -->
 <!--     </beans:bean> -->
     
-    <beans:bean id="auditLogService" class="com.cebedo.pmsys.security.audit.service.AuditLogServiceImpl">
+    <beans:bean id="auditLogService" class="com.cebedo.pmsys.service.AuditLogServiceImpl">
         <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.systemuser.dao.SystemUserDAOImpl">
+    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.dao.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="systemUserService" class="com.cebedo.pmsys.systemuser.service.SystemUserServiceImpl">
+    <beans:bean id="systemUserService" class="com.cebedo.pmsys.service.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
@@ -575,17 +575,17 @@
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="companyDAO" class="com.cebedo.pmsys.company.dao.CompanyDAOImpl">
+    <beans:bean id="companyDAO" class="com.cebedo.pmsys.dao.CompanyDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="companyService" class="com.cebedo.pmsys.company.service.CompanyServiceImpl">
+    <beans:bean id="companyService" class="com.cebedo.pmsys.service.CompanyServiceImpl">
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="photoDAO" class="com.cebedo.pmsys.photo.dao.PhotoDAOImpl">
+    <beans:bean id="photoDAO" class="com.cebedo.pmsys.dao.PhotoDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="photoService" class="com.cebedo.pmsys.photo.service.PhotoServiceImpl">
+    <beans:bean id="photoService" class="com.cebedo.pmsys.service.PhotoServiceImpl">
         <beans:property name="photoDAO" ref="photoDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
@@ -598,7 +598,7 @@
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.system.helper.ApplicationContextProvider"></beans:bean>
+	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.helper.ApplicationContextProvider"></beans:bean>
     
     <!-- HDIV multipart resolver -->
     <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">

@@ -53,7 +53,7 @@
 	<!-- Java level XSS Protection -->
 <!-- 	<filter> -->
 <!-- 	    <filter-name>XSS</filter-name> -->
-<!-- 	    <filter-class>com.cebedo.pmsys.security.xss.XSSFilter</filter-class> -->
+<!-- 	    <filter-class>com.cebedo.pmsys.filter.XSSFilter</filter-class> -->
 <!-- 	</filter> -->
 <!-- 	<filter-mapping> -->
 <!-- 	    <filter-name>XSS</filter-name> -->
