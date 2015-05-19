@@ -339,7 +339,7 @@
 		    <artifactId>hdiv-jstl-taglibs-1.2</artifactId>
 		    <version>${hdiv-version}</version>
 		</dependency>
-		
+		 
 		<!-- Javax Validation HDIV Required -->
 		<dependency>
 			<groupId>javax.validation</groupId>
