@@ -316,7 +316,7 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.version}</version>
-		</dependency>
+		</dependency> 
 		
 		<!-- HDIV Web App Security -->
 		<dependency>
