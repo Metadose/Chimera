@@ -43,8 +43,10 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <c:if test="${systemuser.id != 0}">
                                 <li><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
                                 <li><a href="#tab_authority" data-toggle="tab">Authority</a></li>
+                                </c:if>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -89,8 +91,8 @@
 				                                            <label>Company Admin</label>
 				                                            <form:checkbox class="form-control" path="companyAdmin"/><br/>
 				                                            <label>Company</label>
-				                                            <form:input type="text" class="form-control" path="companyID"/><br/>
-<%-- 				                                            <form:select path="companyID" items="${companyList}" itemValue="id" itemLabel="name"/> --%>
+				                                            <form:select path="companyID" class="form-control" items="${companyList}" itemValue="id" itemLabel="name"/>
+				                                            <br/>
 				                                            </c:if>
 				                                        </div>
 				                                    </form:form>
@@ -110,6 +112,7 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
+                                <c:if test="${systemuser.id != 0}">
                                 <div class="tab-pane" id="tab_data_access">
                                 	<div class="box box-default">
 		                                <div class="box-body table-responsive">
@@ -259,6 +262,7 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                </c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
