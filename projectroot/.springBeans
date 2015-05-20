@@ -9,8 +9,11 @@
 	<configs>
 	</configs>
 	<autoconfigs>
+		<config>src/main/webapp/WEB-INF/spring/logging.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/cache.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/hdiv.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml</config>
-		<config>src/main/webapp/WEB-INF/spring/root-context.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/mailer.xml</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

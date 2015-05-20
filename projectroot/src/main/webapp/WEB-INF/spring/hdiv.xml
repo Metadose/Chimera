@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:hdiv="http://www.hdiv.org/schema/hdiv"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://activemq.apache.org/schema/core
+		http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+		http://www.hdiv.org/schema/hdiv
+		http://www.hdiv.org/schema/hdiv/hdiv.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<context:property-placeholder location="classpath:system.properties"/>
+	
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- HDIV ****************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- HDIV Config -->
+	<beans:bean id="hdivEditableValidator" class="org.hdiv.web.validator.EditableParameterValidator"/>
+	<mvc:annotation-driven validator="hdivEditableValidator"/>
+	
+	<!-- Accepted pattern within the application for all editable parameters (generated from textbox and textarea) -->
+	
+	<!-- HDIVSQLInjection is having problems with date inputs -->
+	<!-- https://github.com/seenukarthi/hdiv-org/blob/master/hdiv-web-spring-mvc-3.0.4/src/main/webapp/WEB-INF/hdiv-validations.xml -->
+	<hdiv:validation id="HDIVSQLInjection">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%27)|(')|(%3D)|(=)|(/)|(%2F)|(")|((%22)|(-|%2D){2})|(%23)|(%3B)|(;))+(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<!-- http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks -->
+	<hdiv:validation id="SymantecTypicalSQLInjection">
+		<hdiv:rejectedPattern><![CDATA[/\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/ix]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="SymantecUNIONSQLInjection">
+		<hdiv:rejectedPattern><![CDATA[/((\%27)|(\'))union/ix]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	
+	<hdiv:validation id="execCommand">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="unauthorizedChars">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%23)|#|&|(%26))(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="simpleXSS">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%3C)|<)((%2F)|/)*[a-z0-9%]+((%3E)|>)(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="imageXSS">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%3C)|<)((%69)|i|I|(%49))((%6D)|m|M|(%4D))((%67)|g|G|(%47))[^\n]+((%3E)|>)(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="scriptXSS">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%73)|s)(\s)*((%63)|c)(\s)*((%72)|r)(\s)*((%69)|i)(\s)*((%70)|p)(\s)*((%74)|t)(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	<hdiv:validation id="evalXSS">
+		<hdiv:rejectedPattern><![CDATA[(\s|\S)*((%65)|e)(\s)*((%76)|v)(\s)*((%61)|a)(\s)*((%6C)|l)(\s|\S)*]]></hdiv:rejectedPattern>
+	</hdiv:validation>
+	
+	<hdiv:editableValidations>
+		<hdiv:validationRule url=".*" enableDefaults="false">SymantecTypicalSQLInjection</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">SymantecUNIONSQLInjection</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">execCommand</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">unauthorizedChars</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">simpleXSS</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">imageXSS</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">scriptXSS</hdiv:validationRule>
+		<hdiv:validationRule url=".*" enableDefaults="false">evalXSS</hdiv:validationRule>
+	</hdiv:editableValidations>
+	
+	<hdiv:config
+		debugMode="true"
+		errorPage="/fix"
+		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map"
+		randomName="true"
+		strategy="cipher"
+		confidentiality="false">
+		<hdiv:sessionExpired loginPage="/auth/login" homePage="/"/>
+		
+		<!-- Controller calls that do not have validation -->
+		<hdiv:startPages>/</hdiv:startPages>
+		<hdiv:startPages method="get">/auth/denied,/fix,/,/auth/login,/dashboard/,/image/display/,/image/display/project/profile/,/image/display/staff/profile/</hdiv:startPages>
+		<hdiv:startPages method="post">/j_spring_security_check</hdiv:startPages>
+	</hdiv:config>
+	
+	
+	<!-- HDIV multipart resolver -->
+    <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">
+	    <beans:property name="maxUploadSize" value="20000000" />
+	</beans:bean>
+	
+</beans:beans>

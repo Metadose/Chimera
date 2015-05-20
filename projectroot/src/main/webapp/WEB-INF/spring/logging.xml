@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:hdiv="http://www.hdiv.org/schema/hdiv"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://activemq.apache.org/schema/core
+		http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+		http://www.hdiv.org/schema/hdiv
+		http://www.hdiv.org/schema/hdiv/hdiv.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<context:property-placeholder location="classpath:system.properties"/>
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- LOGGING *************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+		<!-- Performance logging -->
+		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor" />
+	    <aop:config>
+	        <aop:pointcut id="allServiceMethods"
+	        	expression="execution(* com.cebedo.pmsys.service.*.*(..))"/>
+	        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
+	    </aop:config>
+		
+		<!-- Exception logging -->
+		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.resolver.LoggingExceptionResolver">
+		    <beans:property name="exceptionMappings">
+		        <beans:props>
+		            <beans:prop key="java.lang.Exception">/fix</beans:prop>
+		        </beans:props>
+		    </beans:property>
+		    <beans:property name="defaultErrorView" value="/fix" />
+		    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
+		</beans:bean>
+</beans:beans>
