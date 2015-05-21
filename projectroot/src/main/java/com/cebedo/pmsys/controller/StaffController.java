@@ -36,6 +36,7 @@ import com.cebedo.pmsys.enums.Status;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Field;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
@@ -649,26 +650,26 @@ public class StaffController {
 	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
 
 	// Add myself.
-	TaskGanttBean myGanttBean = new TaskGanttBean();
-	myGanttBean.setId(Staff.OBJECT_NAME + "-" + staff.getId());
-	myGanttBean.setText("[STAFF] " + staff.getFullName());
-	myGanttBean.setOpen(true);
-	myGanttBean.setDuration(0);
+	TaskGanttBean myGanttBean = new TaskGanttBean(staff);
 	ganttBeanList.add(myGanttBean);
 
 	// Get the gantt parent data.
 	for (ManagerAssignment assigns : staff.getAssignedManagers()) {
+
+	    // Add all projects.
 	    Project proj = assigns.getProject();
-	    TaskGanttBean ganttBean = new TaskGanttBean();
-	    ganttBean.setId(Project.OBJECT_NAME + "-" + proj.getId());
-	    ganttBean.setText("[PROJECT] " + proj.getName());
-	    ganttBean.setOpen(true);
-	    ganttBean.setDuration(0);
-	    ganttBeanList.add(ganttBean);
+	    TaskGanttBean projectBean = new TaskGanttBean(proj, myGanttBean);
+	    ganttBeanList.add(projectBean);
+
+	    // For each milestone in this project, add.
+	    for (Milestone milestone : proj.getMilestones()) {
+		TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
+			projectBean);
+		ganttBeanList.add(milestoneBean);
+	    }
 	}
 
 	// Get the tasks (children) of each parent.
-	// TODO Sort.
 	for (Task task : staff.getTasks()) {
 	    int taskStatusInt = task.getStatus();
 	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
@@ -677,18 +678,19 @@ public class StaffController {
 	    taskStatusMap.put(taskStatus, statCount);
 
 	    // Get the data for the gantt chart.
-	    TaskGanttBean ganttBean = new TaskGanttBean();
-	    ganttBean.setId(Task.OBJECT_NAME + "-" + task.getId());
-	    ganttBean.setStatus(taskStatusInt);
-	    ganttBean.setText(task.getTitle());
-	    ganttBean.setContent(task.getContent());
-	    ganttBean.setStart_date(DateHelper.formatDate(task.getDateStart(),
-		    "dd-MM-yyyy"));
-	    ganttBean.setOpen(true);
-	    ganttBean.setDuration(task.getDuration());
+	    // Get the parent of this task.
+	    String parentId = "";
 	    Project proj = task.getProject();
-	    ganttBean.setParent(proj == null ? Staff.OBJECT_NAME + "-"
-		    + staff.getId() : Project.OBJECT_NAME + "-" + proj.getId());
+	    if (task.getMilestone() != null) {
+		parentId = Milestone.OBJECT_NAME + "-"
+			+ task.getMilestone().getId();
+	    } else if (proj != null) {
+		parentId = Project.OBJECT_NAME + "-" + proj.getId();
+	    } else {
+		parentId = Staff.OBJECT_NAME + "-" + staff.getId();
+	    }
+
+	    TaskGanttBean ganttBean = new TaskGanttBean(task, parentId);
 	    ganttBeanList.add(ganttBean);
 	}
 

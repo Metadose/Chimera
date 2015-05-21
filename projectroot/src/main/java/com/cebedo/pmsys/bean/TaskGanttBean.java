@@ -3,6 +3,7 @@ package com.cebedo.pmsys.bean;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 
 public class TaskGanttBean {
@@ -55,6 +56,41 @@ public class TaskGanttBean {
 	setType("Task");
 	setColor("#f0ad4e");
 	setTextColor("#fff");
+    }
+
+    public TaskGanttBean(Staff staff) {
+	setId(Staff.OBJECT_NAME + "-" + staff.getId());
+	setText(staff.getFullName());
+	setOpen(true);
+	setDuration(0);
+	setType("Staff");
+	setColor("#5bc0de");
+	setTextColor("#fff");
+    }
+
+    public TaskGanttBean(Task task, String parent) {
+	setId(Task.OBJECT_NAME + "-" + task.getId());
+	setStatus(task.getStatus());
+	setText(task.getTitle());
+	setContent(task.getContent());
+	setStart_date(DateHelper.formatDate(task.getDateStart(), "dd-MM-yyyy"));
+	setOpen(true);
+	setDuration(task.getDuration());
+	setParent(parent);
+	setType("Task");
+	setColor("#f0ad4e");
+	setTextColor("#fff");
+    }
+
+    public TaskGanttBean(Project proj, TaskGanttBean parent) {
+	setId(Project.OBJECT_NAME + "-" + proj.getId());
+	setText(proj.getName());
+	setOpen(true);
+	setDuration(0);
+	setType("Project");
+	setColor("#5cb85c");
+	setTextColor("#fff");
+	setParent(parent.getId());
     }
 
     public String getId() {

@@ -29,207 +29,209 @@ import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 @Repository
 public class StaffDAOImpl implements StaffDAO {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(StaffDAOImpl.class);
-	private DAOHelper daoHelper = new DAOHelper();
-	private SessionFactory sessionFactory;
+    private static final Logger logger = LoggerFactory
+	    .getLogger(StaffDAOImpl.class);
+    private DAOHelper daoHelper = new DAOHelper();
+    private SessionFactory sessionFactory;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+    public void setSessionFactory(SessionFactory sessionFactory) {
+	this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    public void create(Staff staff) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.persist(staff);
+	logger.info("[Create] Staff: " + staff);
+    }
+
+    @Override
+    public Staff getByID(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session,
+		Staff.class, Staff.PROPERTY_ID, id).uniqueResult();
+	return staff;
+    }
+
+    @Override
+    public Staff getWithAllCollectionsByID(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Staff staff = (Staff) session.load(Staff.class, new Long(id));
+	Hibernate.initialize(staff.getTeams());
+	Hibernate.initialize(staff.getFieldAssignments());
+
+	Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
+	for (ManagerAssignment assignment : managerAssignment) {
+	    Project proj = assignment.getProject();
+	    Hibernate.initialize(proj);
+	    Hibernate.initialize(proj.getMilestones());
+	    Hibernate.initialize(assignment.getManager());
 	}
 
-	@Override
-	public void create(Staff staff) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(staff);
-		logger.info("[Create] Staff: " + staff);
+	Set<Task> taskList = staff.getTasks();
+	for (Task task : taskList) {
+	    Hibernate.initialize(task.getTeams());
+	    Hibernate.initialize(task.getProject());
+	    Hibernate.initialize(task.getStaff());
+	    logger.info("[List] Task: " + task);
+	}
+	return staff;
+    }
+
+    @Override
+    public void update(Staff staff) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.update(staff);
+	logger.info("[Update] Staff:" + staff);
+    }
+
+    @Override
+    public void delete(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Staff staff = (Staff) session.load(Staff.class, new Long(id));
+	if (staff != null) {
+	    session.delete(staff);
+	}
+	logger.info("[Delete] Staff: " + staff);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Staff> list(Long companyID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String hql = "FROM " + Staff.class.getName();
+	if (companyID != null) {
+	    hql += " WHERE ";
+	    hql += Company.COLUMN_PRIMARY_KEY + "=:"
+		    + Company.COLUMN_PRIMARY_KEY;
 	}
 
-	@Override
-	public Staff getByID(long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session,
-				Staff.class, Staff.PROPERTY_ID, id).uniqueResult();
-		return staff;
+	Query query = session.createQuery(hql);
+	if (companyID != null) {
+	    query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
 	}
 
-	@Override
-	public Staff getWithAllCollectionsByID(long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Staff staff = (Staff) session.load(Staff.class, new Long(id));
-		Hibernate.initialize(staff.getTeams());
-		Hibernate.initialize(staff.getFieldAssignments());
+	List<Staff> staffList = query.list();
+	return staffList;
+    }
 
-		Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
-		for (ManagerAssignment assignment : managerAssignment) {
-			Hibernate.initialize(assignment.getProject());
-			Hibernate.initialize(assignment.getManager());
-		}
-
-		Set<Task> taskList = staff.getTasks();
-		for (Task task : taskList) {
-			Hibernate.initialize(task.getTeams());
-			Hibernate.initialize(task.getProject());
-			Hibernate.initialize(task.getStaff());
-			logger.info("[List] Task: " + task);
-		}
-		return staff;
+    /**
+     * Get the list of all staff members, filter by a specific company. If no
+     * company is supplied, get all staff members.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Staff> listWithAllCollections(Long companyID) {
+	// Setup the query.
+	Session session = this.sessionFactory.getCurrentSession();
+	String hql = "FROM " + Staff.class.getName();
+	if (companyID != null) {
+	    hql += " WHERE ";
+	    hql += Company.COLUMN_PRIMARY_KEY + "=:"
+		    + Company.COLUMN_PRIMARY_KEY;
 	}
 
-	@Override
-	public void update(Staff staff) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.update(staff);
-		logger.info("[Update] Staff:" + staff);
+	// Set params.
+	Query query = session.createQuery(hql);
+	if (companyID != null) {
+	    query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
 	}
 
-	@Override
-	public void delete(long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Staff staff = (Staff) session.load(Staff.class, new Long(id));
-		if (staff != null) {
-			session.delete(staff);
-		}
-		logger.info("[Delete] Staff: " + staff);
+	List<Staff> staffList = query.list();
+	for (Staff staff : staffList) {
+	    Hibernate.initialize(staff.getAssignedManagers());
+	    Hibernate.initialize(staff.getTasks());
+	    Hibernate.initialize(staff.getFieldAssignments());
 	}
+	return staffList;
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<Staff> list(Long companyID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "FROM " + Staff.class.getName();
-		if (companyID != null) {
-			hql += " WHERE ";
-			hql += Company.COLUMN_PRIMARY_KEY + "=:"
-					+ Company.COLUMN_PRIMARY_KEY;
-		}
+    @Override
+    public void assignProjectManager(ManagerAssignment assignment) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.persist(assignment);
+	logger.info("[Create] Manager: " + assignment);
+    }
 
-		Query query = session.createQuery(hql);
-		if (companyID != null) {
-			query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
-		}
+    @Override
+    public void unassignProjectManager(long projectID, long staffID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	SQLQuery query = session.createSQLQuery("DELETE FROM "
+		+ ManagerAssignment.TABLE_NAME + " WHERE "
+		+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
+		+ Staff.COLUMN_PRIMARY_KEY + " = " + staffID);
+	query.executeUpdate();
+    }
 
-		List<Staff> staffList = query.list();
-		return staffList;
-	}
+    @Override
+    public void unassignAllProjectManagers(long projectID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	SQLQuery query = session.createSQLQuery("DELETE FROM "
+		+ ManagerAssignment.TABLE_NAME + " WHERE "
+		+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
+	query.executeUpdate();
+    }
 
-	/**
-	 * Get the list of all staff members, filter by a specific company. If no
-	 * company is supplied, get all staff members.
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Staff> listWithAllCollections(Long companyID) {
-		// Setup the query.
-		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "FROM " + Staff.class.getName();
-		if (companyID != null) {
-			hql += " WHERE ";
-			hql += Company.COLUMN_PRIMARY_KEY + "=:"
-					+ Company.COLUMN_PRIMARY_KEY;
-		}
+    @Override
+    public void unassignTeam(long teamID, long staffID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
+	// Rather than ObjectAssignment.COLUMN_NAME.
+	Query query = session.createQuery("DELETE FROM "
+		+ StaffTeamAssignment.class.getName() + " WHERE "
+		+ Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY
+		+ " AND " + Staff.COLUMN_PRIMARY_KEY + "=:"
+		+ Staff.COLUMN_PRIMARY_KEY);
+	query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
+	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+	query.executeUpdate();
+    }
 
-		// Set params.
-		Query query = session.createQuery(hql);
-		if (companyID != null) {
-			query.setParameter(Company.COLUMN_PRIMARY_KEY, companyID);
-		}
+    @Override
+    public void unassignAllTeams(long staffID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Query query = session.createQuery("DELETE FROM "
+		+ StaffTeamAssignment.class.getName() + " WHERE "
+		+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
+	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
+	query.executeUpdate();
+    }
 
-		List<Staff> staffList = query.list();
-		for (Staff staff : staffList) {
-			Hibernate.initialize(staff.getAssignedManagers());
-			Hibernate.initialize(staff.getTasks());
-			Hibernate.initialize(staff.getFieldAssignments());
-		}
-		return staffList;
-	}
+    @Override
+    public void assignTeam(StaffTeamAssignment stAssign) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.persist(stAssign);
+    }
 
-	@Override
-	public void assignProjectManager(ManagerAssignment assignment) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(assignment);
-		logger.info("[Create] Manager: " + assignment);
-	}
+    @Override
+    public String getNameByID(long staffID) {
+	Session session = this.sessionFactory.getCurrentSession();
 
-	@Override
-	public void unassignProjectManager(long projectID, long staffID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		SQLQuery query = session.createSQLQuery("DELETE FROM "
-				+ ManagerAssignment.TABLE_NAME + " WHERE "
-				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
-				+ Staff.COLUMN_PRIMARY_KEY + " = " + staffID);
-		query.executeUpdate();
-	}
+	// Create a criteria for the staff.
+	Criteria criteria = session.createCriteria(Staff.class).add(
+		Restrictions.eq(Staff.PROPERTY_ID, staffID));
 
-	@Override
-	public void unassignAllProjectManagers(long projectID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		SQLQuery query = session.createSQLQuery("DELETE FROM "
-				+ ManagerAssignment.TABLE_NAME + " WHERE "
-				+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
-		query.executeUpdate();
-	}
+	// Set all projections.
+	ProjectionList projList = Projections.projectionList();
+	projList.add(Projections.property(Staff.PROPERTY_PREFIX));
+	projList.add(Projections.property(Staff.PROPERTY_FIRST_NAME));
+	projList.add(Projections.property(Staff.PROPERTY_MIDDLE_NAME));
+	projList.add(Projections.property(Staff.PROPERTY_LAST_NAME));
+	projList.add(Projections.property(Staff.PROPERTY_SUFFIX));
 
-	@Override
-	public void unassignTeam(long teamID, long staffID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
-		// Rather than ObjectAssignment.COLUMN_NAME.
-		Query query = session.createQuery("DELETE FROM "
-				+ StaffTeamAssignment.class.getName() + " WHERE "
-				+ Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY
-				+ " AND " + Staff.COLUMN_PRIMARY_KEY + "=:"
-				+ Staff.COLUMN_PRIMARY_KEY);
-		query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
-		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
-		query.executeUpdate();
-	}
+	// Assign projection criteria.
+	criteria.setProjection(Projections.distinct(projList));
+	Object[] staffName = (Object[]) criteria.uniqueResult();
+	String output = staffName[0] + " " + staffName[1] + " " + staffName[2]
+		+ " " + staffName[3] + " " + staffName[4];
+	return output;
+    }
 
-	@Override
-	public void unassignAllTeams(long staffID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("DELETE FROM "
-				+ StaffTeamAssignment.class.getName() + " WHERE "
-				+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
-		query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
-		query.executeUpdate();
-	}
-
-	@Override
-	public void assignTeam(StaffTeamAssignment stAssign) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(stAssign);
-	}
-
-	@Override
-	public String getNameByID(long staffID) {
-		Session session = this.sessionFactory.getCurrentSession();
-
-		// Create a criteria for the staff.
-		Criteria criteria = session.createCriteria(Staff.class).add(
-				Restrictions.eq(Staff.PROPERTY_ID, staffID));
-
-		// Set all projections.
-		ProjectionList projList = Projections.projectionList();
-		projList.add(Projections.property(Staff.PROPERTY_PREFIX));
-		projList.add(Projections.property(Staff.PROPERTY_FIRST_NAME));
-		projList.add(Projections.property(Staff.PROPERTY_MIDDLE_NAME));
-		projList.add(Projections.property(Staff.PROPERTY_LAST_NAME));
-		projList.add(Projections.property(Staff.PROPERTY_SUFFIX));
-
-		// Assign projection criteria.
-		criteria.setProjection(Projections.distinct(projList));
-		Object[] staffName = (Object[]) criteria.uniqueResult();
-		String output = staffName[0] + " " + staffName[1] + " " + staffName[2]
-				+ " " + staffName[3] + " " + staffName[4];
-		return output;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	@Cacheable(value = "searchStaffCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless="#result.isEmpty()")
-	public List<Staff> listStaffFromCache(Long companyID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,
-				Staff.class.getName(), companyID).list();
-		return list;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    @Cacheable(value = "searchStaffCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless = "#result.isEmpty()")
+    public List<Staff> listStaffFromCache(Long companyID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,
+		Staff.class.getName(), companyID).list();
+	return list;
+    }
 }
