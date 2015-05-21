@@ -15,65 +15,66 @@ import javax.persistence.Table;
 @Table(name = SecurityRole.TABLE_NAME)
 public class SecurityRole implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	public static final String OBJECT_NAME = "securityrole";
-	public static final String TABLE_NAME = "security_roles";
-	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
+    private static final long serialVersionUID = 1L;
+    public static final String OBJECT_NAME = "securityrole";
+    public static final String TABLE_NAME = "security_roles";
+    public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
-	public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_ID = "id";
 
-	public static final String ROLE_FIELD_EDITOR = "ROLE_FIELD_EDITOR";
-	public static final String ROLE_TASK_EDITOR = "ROLE_TASK_EDITOR";
-	public static final String ROLE_PROJECT_EDITOR = "ROLE_PROJECT_EDITOR";
-	public static final String ROLE_STAFF_EDITOR = "ROLE_STAFF_EDITOR";
-	public static final String ROLE_PHOTO_EDITOR = "ROLE_PHOTO_EDITOR";
-	public static final String ROLE_PROJECTFILE_EDITOR = "ROLE_PROJECTFILE_EDITOR";
-	public static final String ROLE_TEAM_EDITOR = "ROLE_TEAM_EDITOR";
-	public static final String ROLE_CONFIG_EDITOR = "ROLE_CONFIG_EDITOR";
-	public static final String ROLE_SYSTEMUSER_EDITOR = "ROLE_SYSTEMUSER_EDITOR";
-	public static final String ROLE_LOG_EDITOR = "ROLE_LOG_EDITOR";
+    public static final String ROLE_FIELD_EDITOR = "ROLE_FIELD_EDITOR";
+    public static final String ROLE_TASK_EDITOR = "ROLE_TASK_EDITOR";
+    public static final String ROLE_PROJECT_EDITOR = "ROLE_PROJECT_EDITOR";
+    public static final String ROLE_STAFF_EDITOR = "ROLE_STAFF_EDITOR";
+    public static final String ROLE_PHOTO_EDITOR = "ROLE_PHOTO_EDITOR";
+    public static final String ROLE_PROJECTFILE_EDITOR = "ROLE_PROJECTFILE_EDITOR";
+    public static final String ROLE_TEAM_EDITOR = "ROLE_TEAM_EDITOR";
+    public static final String ROLE_CONFIG_EDITOR = "ROLE_CONFIG_EDITOR";
+    public static final String ROLE_SYSTEMUSER_EDITOR = "ROLE_SYSTEMUSER_EDITOR";
+    public static final String ROLE_LOG_EDITOR = "ROLE_LOG_EDITOR";
+    public static final String ROLE_MILESTONE_EDITOR = "ROLE_MILESTONE_EDITOR";
 
-	private long id;
-	private String name;
-	private String label;
-	private Set<SystemUser> users;
+    private long id;
+    private String name;
+    private String label;
+    private Set<SystemUser> users;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+    public long getId() {
+	return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+	this.id = id;
+    }
 
-	@Column(name = "name", nullable = false, length = 32)
-	public String getName() {
-		return name;
-	}
+    @Column(name = "name", nullable = false, length = 32)
+    public String getName() {
+	return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+	this.name = name;
+    }
 
-	@Column(name = "label", nullable = false, length = 32)
-	public String getLabel() {
-		return label;
-	}
+    @Column(name = "label", nullable = false, length = 32)
+    public String getLabel() {
+	return label;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+	this.label = label;
+    }
 
-	@ManyToMany(mappedBy = "securityRoles")
-	public Set<SystemUser> getUsers() {
-		return users;
-	}
+    @ManyToMany(mappedBy = "securityRoles")
+    public Set<SystemUser> getUsers() {
+	return users;
+    }
 
-	public void setUsers(Set<SystemUser> users) {
-		this.users = users;
-	}
+    public void setUsers(Set<SystemUser> users) {
+	this.users = users;
+    }
 
 }

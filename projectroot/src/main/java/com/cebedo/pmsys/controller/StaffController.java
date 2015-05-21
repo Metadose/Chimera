@@ -64,8 +64,8 @@ public class StaffController {
     public static final String ATTR_LIST = "staffList";
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
-    public static final String JSP_LIST = "staffList";
-    public static final String JSP_EDIT = "staffEdit";
+    public static final String JSP_LIST = Staff.OBJECT_NAME + "/staffList";
+    public static final String JSP_EDIT = Staff.OBJECT_NAME + "/staffEdit";
 
     public static final String ATTR_TASK_STATUS_MAP = "taskStatusMap";
 
