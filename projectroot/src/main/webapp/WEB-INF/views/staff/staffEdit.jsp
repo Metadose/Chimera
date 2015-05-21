@@ -589,7 +589,7 @@
 												<thead>
 		                                    		<tr>
 			                                            <th>Status</th>
-			                                            <th>Number</th>
+			                                            <th>Count</th>
 			                                        </tr>
 		                                    	</thead>
 												<tbody>
@@ -672,7 +672,7 @@
 												<thead>
 		                                    		<tr>
 			                                            <th>Status</th>
-			                                            <th>Number</th>
+			                                            <th>Count</th>
 			                                        </tr>
 		                                    	</thead>
 												<tbody>
@@ -861,7 +861,7 @@
 												<thead>
 		                                    		<tr>
 			                                            <th>Status</th>
-			                                            <th>Number</th>
+			                                            <th>Count</th>
 			                                            <th>Total</th>
 			                                        </tr>
 		                                    	</thead>

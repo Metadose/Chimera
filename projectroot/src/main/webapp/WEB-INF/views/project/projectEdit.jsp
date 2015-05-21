@@ -57,7 +57,6 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
-                                		<li><a href="#tab_2" data-toggle="tab">Tasks</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
@@ -260,150 +259,6 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-                                <div class="tab-pane" id="tab_2">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">
-                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                	<table>
-		                                    	<tr>
-		                                    		<td>
-		                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
-		                                    			<a href="${urlAddTask}">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		<c:if test="${!empty project.assignedTasks}">
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-		                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
-		                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-               											</form>
-		                                    		</td>
-		                                    		</c:if>
-		                                    	</tr>
-		                                    </table><br/>
-                                    		</sec:authorize>
-		                                    <table id="tasks-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-			                                        	<th>&nbsp;</th>
-			                                            <th>Status</th>
-			                                            <th>Start</th>
-			                                            <th>Duration</th>
-			                                            <th>Title</th>
-			                                            <th>Content</th>
-			                                            <th>Team</th>
-			                                            <th>Staff</th>
-			                                        </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                        <c:set var="taskList" value="${project.assignedTasks}"/>
-				                                	<c:if test="${!empty taskList}">
-		                                        		<c:forEach items="${taskList}" var="task">
-		                                        			<tr>
-		                                        				<td>
-		                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-							                                                Mark As&nbsp;
-							                                                <span class="caret"></span>
-							                                            </button>
-							                                            <ul class="dropdown-menu">
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
-<!-- 							                                                <li class="divider"></li> -->
-<!-- 							                                                <li><a href="#">Separated link</a></li> -->
-							                                            </ul>
-							                                        </div>
-							                                        </sec:authorize>
-							                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
-							                                        <a href="${urlViewTask}">
-					                                            	<button class="btn btn-default btn-flat btn-sm">View</button>
-							                                        </a>
-					                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-					                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
-					                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-					                                            	<input type="hidden" name="task_id" value="${task.id}"/>
-					                                            	<input type="hidden" name="project_id" value="${project.id}"/>
-					                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-					                                            	</form> 
-					                                            	</sec:authorize>
-		                                        				</td>
-					                                            <td style="vertical-align: middle;">
-					                                            	<c:choose>
-						                                            	<c:when test="${task.status == 0}">
-						                                            		<span class="label label-info">New</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 1}">
-						                                            		<span class="label label-primary">Ongoing</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 2}">
-						                                            		<span class="label label-success">Completed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 3}">
-						                                            		<span class="label label-danger">Failed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 4}">
-						                                            		<h6>Cancelled</h6>
-						                                            	</c:when>
-						                                            </c:choose>
-					                                            </td>
-					                                            <td>${task.dateStart}</td>
-					                                            <td>${task.duration}</td>
-					                                            <td>
-					                                            ${task.title}
-					                                            </td>
-					                                            <td>
-					                                            ${task.content}
-					                                            </td>
-					                                            <td>
-					                                            	<c:choose>
-					                                            		<c:when test="${!empty task.teams}">
-					                                            			<c:forEach items="${task.teams}" var="taskTeam">
-					                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
-							                                            	${taskTeam.name}
-							                                            	<br/>
-					                                            			</c:forEach>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.teams}">
-					                                            			No team assigned.
-					                                            		</c:when>
-					                                            	</c:choose>
-					                                            </td>
-					                                            <td>
-					                                            	<c:choose>
-					                                            		<c:when test="${!empty task.staff}">
-					                                            			<c:forEach items="${task.staff}" var="taskStaff">
-					                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-					                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
-							                                            	${taskStaffName}
-							                                            	<br/>
-					                                            			</c:forEach>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.staff}">
-					                                            			No manager assigned.
-					                                            		</c:when>
-					                                            	</c:choose>					                                            
-					                                            </td>
-					                                        </tr>
-		                                        		</c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
                                 	<div class="box box-default">
                                     <div class="box-body table-responsive">
@@ -548,21 +403,266 @@
 								    </div><!-- /.modal -->
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
-                                	<div class="box box-default">
-		                                <div class="box-body">
-		                                <c:choose>
-		                                	<c:when test="${!empty project.assignedTasks}">
-				                                <div id="gantt-chart" style='width:1000px; height:400px;'>
-				                                </div><!-- /.box-body -->
-		                                	</c:when>
-		                                	<c:when test="${empty project.assignedTasks}">
-		                                		<div id="gantt-chart" style='width:1000px; height:400px;'>
-		                                			No tasks for this project.
-				                                </div><!-- /.box-body -->
-		                                	</c:when>
-		                                </c:choose>
-		                                </div>
+                                	<div class="row">
+                   						<div class="col-xs-12">
+              								<div class="box-header">
+              									<h3 class="box-title">Timeline</h3>
+              								</div>
+		                                	<div class="box box-default">
+				                                <div class="box-body">
+				                                <c:choose>
+				                                	<c:when test="${!empty project.assignedTasks}">
+						                                <div id="gantt-chart" style='width:1000px; height:400px;'>
+						                                </div><!-- /.box-body -->
+				                                	</c:when>
+				                                	<c:when test="${empty project.assignedTasks}">
+				                                		<div id="gantt-chart" style='width:1000px; height:400px;'>
+				                                			No tasks for this project.
+						                                </div><!-- /.box-body -->
+				                                	</c:when>
+				                                </c:choose>
+				                                </div>
+				                            </div>
+			                            </div>
 		                            </div>
+		                            <div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Milestones</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<button class="btn btn-default btn-flat btn-sm" id="createMilestone">Create Milestone</button>
+                   									<br/>
+                   									<br/>
+                   									<table id="milestones-table" class="table table-bordered table-striped">
+              										<thead>
+              											<tr>
+              											<th>&nbsp;</th>
+              											<th>Milestone</th>
+              											<th>Progress</th>
+              											</tr>
+              										</thead>
+              										<tbody>
+              											<tr>
+              											<td>view button, delete</td>
+              											<td>name</td>
+              											<td>progress data</td>
+              											</tr>
+              										</tbody>
+                   									</table>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Summary</h3>
+                   								</div>
+                   								<div class="box-body">
+                   								
+                   								<table id="timeline-details-summary-table" class="table table-bordered table-striped">
+												<thead>
+		                                    		<tr>
+			                                            <th>Detail</th>
+			                                            <th>Data</th>
+			                                        </tr>
+		                                    	</thead>
+												<tbody>
+													<tr>
+														<td>Total tasks (under project)</td>
+														<td>How many?</td>
+													</tr>
+													<tr>
+														<td>tasks assigned to a milestone</td>
+														<td>How many?</td>
+													</tr>
+													<tr>
+														<td>milestones</td>
+														<td>How many?</td>
+													</tr>
+													<tr>
+														<td>completed milestones</td>
+														<td>How many?</td>
+													</tr>
+													<tr>
+														<td>ongoing milestones</td>
+														<td>How many?</td>
+													</tr>
+													<tr>
+														<td>not yet started</td>
+														<td>How many?</td>
+													</tr>
+												</tbody>
+												</table>
+                   								<br/>
+												<table id="task-summary-table" class="table table-bordered table-striped">
+												<thead>
+		                                    		<tr>
+			                                            <th>Status</th>
+			                                            <th>Count</th>
+			                                        </tr>
+		                                    	</thead>
+												<tbody>
+													<tr>
+														<td>name of task Status</td>
+														<td>How many?</td>
+													</tr>
+												</tbody>
+												</table>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+		                            <div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Tasks</h3>
+                   								</div>
+                   								<div class="box-body">
+			                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+					                                	<table>
+					                                    	<tr>
+					                                    		<td>
+					                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
+					                                    			<a href="${urlAddTask}">
+							                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
+					                                    			</a>
+					                                    		</td>
+					                                    		<c:if test="${!empty project.assignedTasks}">
+					                                    		<td>
+					                                    			&nbsp;
+					                                    		</td>
+					                                    		<td>
+					                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
+					                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+			                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+			               											</form>
+					                                    		</td>
+					                                    		</c:if>
+					                                    	</tr>
+					                                    </table><br/>
+			                                    		</sec:authorize>
+					                                    <table id="tasks-table" class="table table-bordered table-striped">
+					                                    	<thead>
+					                                            <tr>
+						                                        	<th>&nbsp;</th>
+						                                            <th>Status</th>
+						                                            <th>Start</th>
+						                                            <th>Duration</th>
+						                                            <th>Title</th>
+						                                            <th>Content</th>
+						                                            <th>Team</th>
+						                                            <th>Staff</th>
+						                                        </tr>
+			                                        		</thead>
+					                                        <tbody>
+						                                        <c:set var="taskList" value="${project.assignedTasks}"/>
+							                                	<c:if test="${!empty taskList}">
+					                                        		<c:forEach items="${taskList}" var="task">
+					                                        			<tr>
+					                                        				<td>
+					                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+					                                        					<div class="btn-group">
+										                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+										                                                Mark As&nbsp;
+										                                                <span class="caret"></span>
+										                                            </button>
+										                                            <ul class="dropdown-menu">
+										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
+										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
+										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
+										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
+										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
+			<!-- 							                                                <li class="divider"></li> -->
+			<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+										                                            </ul>
+										                                        </div>
+										                                        </sec:authorize>
+										                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
+										                                        <a href="${urlViewTask}">
+								                                            	<button class="btn btn-default btn-flat btn-sm">View</button>
+										                                        </a>
+								                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+								                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
+								                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+								                                            	<input type="hidden" name="task_id" value="${task.id}"/>
+								                                            	<input type="hidden" name="project_id" value="${project.id}"/>
+								                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+								                                            	</form> 
+								                                            	</sec:authorize>
+					                                        				</td>
+								                                            <td style="vertical-align: middle;">
+								                                            	<c:choose>
+									                                            	<c:when test="${task.status == 0}">
+									                                            		<span class="label label-info">New</span>
+									                                            	</c:when>
+									                                            	<c:when test="${task.status == 1}">
+									                                            		<span class="label label-primary">Ongoing</span>
+									                                            	</c:when>
+									                                            	<c:when test="${task.status == 2}">
+									                                            		<span class="label label-success">Completed</span>
+									                                            	</c:when>
+									                                            	<c:when test="${task.status == 3}">
+									                                            		<span class="label label-danger">Failed</span>
+									                                            	</c:when>
+									                                            	<c:when test="${task.status == 4}">
+									                                            		<h6>Cancelled</h6>
+									                                            	</c:when>
+									                                            </c:choose>
+								                                            </td>
+								                                            <td>${task.dateStart}</td>
+								                                            <td>${task.duration}</td>
+								                                            <td>
+								                                            ${task.title}
+								                                            </td>
+								                                            <td>
+								                                            ${task.content}
+								                                            </td>
+								                                            <td>
+								                                            	<c:choose>
+								                                            		<c:when test="${!empty task.teams}">
+								                                            			<c:forEach items="${task.teams}" var="taskTeam">
+								                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
+										                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+										                                            	</a>
+										                                            	${taskTeam.name}
+										                                            	<br/>
+								                                            			</c:forEach>
+								                                            		</c:when>
+								                                            		<c:when test="${empty task.teams}">
+								                                            			No team assigned.
+								                                            		</c:when>
+								                                            	</c:choose>
+								                                            </td>
+								                                            <td>
+								                                            	<c:choose>
+								                                            		<c:when test="${!empty task.staff}">
+								                                            			<c:forEach items="${task.staff}" var="taskStaff">
+								                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+								                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
+										                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
+										                                            	</a>
+										                                            	${taskStaffName}
+										                                            	<br/>
+								                                            			</c:forEach>
+								                                            		</c:when>
+								                                            		<c:when test="${empty task.staff}">
+								                                            			No manager assigned.
+								                                            		</c:when>
+								                                            	</c:choose>					                                            
+								                                            </td>
+								                                        </tr>
+					                                        		</c:forEach>
+				                                        		</c:if>
+						                                    </tbody>
+						                                </table>
+					                                </div><!-- /.box-body -->
+					                            </div>
+				                           	</div>
+			                           	</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box box-default">
@@ -824,31 +924,23 @@
         </aside>
 	</div>
 	
-	
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
-	<!-- Generate the data to be used by the gantt. -->
-	<c:set var="ganttData" value="'data':[{id:'${project.id}', text:'${fn:escapeXml(project.name)}', open: true, duration:0},"/>
-    	<c:forEach var="task" items="${project.assignedTasks}">
-    		<fmt:formatDate pattern="dd-MM-yyyy" value="${task.dateStart}" var="taskDateStart"/>
-    		<c:set var="taskRow" value="{id:'${task.id}', status:${task.status}, text:'${fn:escapeXml(task.title)}', content:'${fn:escapeXml(task.content)}', start_date:'${taskDateStart}', open: true, duration:${task.duration}, parent:'${project.id}'},"/>
-    		<c:set var="ganttData" value="${ganttData}${taskRow}"/>
-    	</c:forEach>
-    	<c:set var="ganttData" value="${fn:substring(ganttData, 0, fn:length(ganttData)-1)}"/>
-    <c:set var="ganttEnd" value="]"/>
-   	<c:set var="ganttData" value="{${ganttData}${ganttEnd}}"/>
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+    <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
 	<script type="text/javascript">
 	    $(document).ready(function() {
-	    	var tasks = ${ganttData};
+	    	var ganttJSON = ${ganttJSON};
+		    var tasks = {'data': ganttJSON};
 			gantt.init("gantt-chart");
 		    gantt.parse(tasks);
+		    gantt.sort("start_date");
 		 	
 		    // TODO.
 		    // On load of the page: switch to the currently selected tab.

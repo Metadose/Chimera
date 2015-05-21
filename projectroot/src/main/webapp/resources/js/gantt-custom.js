@@ -1,8 +1,27 @@
+// Tooltip.
+gantt.templates.tooltip_text = function(start, end, task){
+	var startStr = start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
+	var endStr = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate();
+	
+	var template = "";
+	template += "<b>"+task.type+" "+task.text+"</b><br/>";
+	template += "<br/><b>Duration:</b> "+ task.duration;
+	template += "<br/><b>Start Date:</b> "+ startStr;
+	template += "<br/><b>End Date:</b> "+ endStr;
+	
+	// If undefined, then don't display.
+	if(task.content !== undefined) {
+		template += "<br/><br/>" + task.content;
+	}
+    return template;
+};
+
 // Column configurations.
 gantt.config.columns = [
-    {name:"text",       label:" ",  width:"*", tree:true },
-    {name:"start_date", label:"Start", align: "center" },
-    {name:"duration",   label:"Man Days",   align: "center" }
+    {name:"text",       label:" ",  width:"200", tree:true },
+    {name:"type",       label:"Type",  align: "center" },
+    {name:"start_date", label:"Start", width:"100", align: "center" },
+    {name:"duration",   label:"Man Days", width:"80",  align: "center" }
 ];
 
 // Text for the task.
@@ -12,6 +31,8 @@ gantt.templates.task_text = function(start, end, task){
 	}
 	return "<b>"+task.text+"</b>";
 };
+
+gantt.config.grid_width = 450;
 
 // Setting the gantt scale to monthly.
 gantt.config.scale_unit = "month";
