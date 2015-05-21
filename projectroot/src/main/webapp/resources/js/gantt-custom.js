@@ -4,7 +4,7 @@ gantt.templates.tooltip_text = function(start, end, task){
 	var endStr = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate();
 	
 	var template = "";
-	template += "<b>"+task.type+" "+task.text+"</b><br/>";
+	template += "<b>("+task.type+") "+task.text+"</b><br/>";
 	template += "<br/><b>Duration:</b> "+ task.duration;
 	template += "<br/><b>Start Date:</b> "+ startStr;
 	template += "<br/><b>End Date:</b> "+ endStr;

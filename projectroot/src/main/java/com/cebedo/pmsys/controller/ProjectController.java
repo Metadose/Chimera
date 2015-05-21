@@ -35,6 +35,7 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TaskGanttBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Milestone;
@@ -986,9 +987,19 @@ public class ProjectController {
 	// Construct JSON data for the gantt chart.
 	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
 
+	// Summary table map.
+	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
+	summaryMap.put("Total Tasks", proj.getAssignedTasks().size());
+	summaryMap.put("Total Milestones", proj.getMilestones().size());
+
 	// Add myself.
 	TaskGanttBean myGanttBean = new TaskGanttBean(proj);
 	ganttBeanList.add(myGanttBean);
+
+	// Count all milestone statuses.
+	int msNys = 0;
+	int msOngoing = 0;
+	int msDone = 0;
 
 	// Add all milestones and included tasks.
 	for (Milestone milestone : proj.getMilestones()) {
@@ -997,12 +1008,52 @@ public class ProjectController {
 	    ganttBeanList.add(milestoneBean);
 
 	    // Actual adding of tasks under this milestone.
+	    int tasksNew = 0;
+	    int tasksOngoing = 0;
+	    int tasksEndState = 0;
 	    for (Task taskInMilestone : milestone.getTasks()) {
 		TaskGanttBean ganttBean = new TaskGanttBean(taskInMilestone,
 			milestoneBean);
 		ganttBeanList.add(ganttBean);
+
+		// Check if task is New, Ongoing, or neither (end state).
+		int taskStatusId = taskInMilestone.getStatus();
+		if (taskStatusId == TaskStatus.NEW.id()) {
+		    tasksNew++;
+		} else if (taskStatusId == TaskStatus.ONGOING.id()) {
+		    tasksOngoing++;
+		} else {
+		    tasksEndState++;
+		}
 	    }
+
+	    // If number of tasks is equal to
+	    // number of end state, milestone is finished.
+	    int tasksInMilestone = milestone.getTasks().size();
+	    if (tasksInMilestone == tasksEndState) {
+		msDone++;
+	    } else if (tasksInMilestone == tasksNew) {
+		// Else if task size == new, then milestone is not yet started.
+		msNys++;
+	    } else {
+		// Else, it's still ongoing.
+		msOngoing++;
+	    }
+
+	    // Get number of tasks assigned to milestones.
+	    summaryMap
+		    .put("Total Tasks Assigned to Milestones",
+			    summaryMap
+				    .get("Total Tasks Assigned to Milestones") == null ? 1
+				    : summaryMap
+					    .get("Total Tasks Assigned to Milestones")
+					    + milestone.getTasks().size());
 	}
+
+	// Add collected data.
+	summaryMap.put("Total Milestones (New)", msNys);
+	summaryMap.put("Total Milestones (Ongoing)", msOngoing);
+	summaryMap.put("Total Milestones (Done)", msDone);
 
 	// Get the gantt parent data.
 	// All tasks without a milestone.
