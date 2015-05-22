@@ -323,18 +323,22 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Gson().toJson(ganttBeanList, ArrayList.class);
     }
 
+    /**
+     * Get summary of milestone data.
+     */
     @Override
     @Transactional
-    public Map<String, Integer> getTimelineSummaryMap(Project proj) {
-	String keyTotalTasks = "Total Tasks";
-	String keyTotalMilestones = "Total Milestones";
-	String keyTotalTasksAssigned = "Total Tasks Assigned to Milestones";
-	String keyTotalMsNew = "Total Milestones (New)";
-	String keyTotalMsOngoing = "Total Milestones (Ongoing)";
-	String keyTotalMsDone = "Total Milestones (Done)";
+    public Map<String, Object> getMilestoneSummaryMap(Project proj) {
+	String keyTotalTasks = ProjectController.KEY_SUMMARY_TOTAL_TASKS;
+	String keyTotalMilestones = ProjectController.KEY_SUMMARY_TOTAL_MILESTONES;
+	String keyTotalTasksAssigned = ProjectController.KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES;
+	String keyTotalMsNew = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_NEW;
+	String keyTotalMsOngoing = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_ONGOING;
+	String keyTotalMsDone = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_DONE;
 
 	// Summary table map.
 	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
+	Map<Milestone, Map<String, Integer>> milestoneCountMap = new HashMap<Milestone, Map<String, Integer>>();
 	summaryMap.put(keyTotalTasks, proj.getAssignedTasks().size());
 	summaryMap.put(keyTotalMilestones, proj.getMilestones().size());
 
@@ -347,6 +351,7 @@ public class ProjectServiceImpl implements ProjectService {
 	for (Milestone milestone : proj.getMilestones()) {
 
 	    // Actual adding of tasks under this milestone.
+	    Map<String, Integer> milestoneStatusMap = new HashMap<String, Integer>();
 	    int tasksNew = 0;
 	    int tasksOngoing = 0;
 	    int tasksEndState = 0;
@@ -363,6 +368,13 @@ public class ProjectServiceImpl implements ProjectService {
 		    tasksEndState++;
 		}
 	    }
+
+	    // Add collected data for milestone status and
+	    // corresponding count.
+	    milestoneStatusMap.put("New", tasksNew);
+	    milestoneStatusMap.put("Ongoing", tasksOngoing);
+	    milestoneStatusMap.put("Done", tasksEndState);
+	    milestoneCountMap.put(milestone, milestoneStatusMap);
 
 	    // If number of tasks is equal to
 	    // number of end state, milestone is finished.
@@ -389,7 +401,15 @@ public class ProjectServiceImpl implements ProjectService {
 	summaryMap.put(keyTotalMsOngoing, msOngoing);
 	summaryMap.put(keyTotalMsDone, msDone);
 
-	return summaryMap;
+	// Organize the two maps, before returning.
+	Map<String, Object> milestoneSummaryMap = new HashMap<String, Object>();
+	milestoneSummaryMap.put(
+		ProjectController.ATTR_TIMELINE_MILESTONE_SUMMARY_MAP,
+		milestoneCountMap);
+	milestoneSummaryMap.put(ProjectController.ATTR_TIMELINE_SUMMARY_MAP,
+		summaryMap);
+
+	return milestoneSummaryMap;
     }
 
     /**
@@ -463,5 +483,30 @@ public class ProjectServiceImpl implements ProjectService {
 		managerPayrollMap);
 
 	return payrollMaps;
+    }
+
+    /**
+     * Get task status and count map.
+     * 
+     * @param staff
+     * @return
+     */
+    @Transactional
+    @Override
+    public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj) {
+	// Get summary of tasks.
+	// For each task status, count how many.
+	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
+
+	// Get the tasks (children) of each parent.
+	for (Task task : proj.getAssignedTasks()) {
+	    int taskStatusInt = task.getStatus();
+	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
+	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
+		    : taskStatusMap.get(taskStatus) + 1;
+	    taskStatusMap.put(taskStatus, statCount);
+	}
+
+	return taskStatusMap;
     }
 }

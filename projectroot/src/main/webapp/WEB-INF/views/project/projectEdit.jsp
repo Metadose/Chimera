@@ -425,7 +425,7 @@
 				                            </div>
 			                            </div>
 		                            </div>
-		                            <div class="row">
+                                	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
@@ -440,74 +440,94 @@
               											<tr>
               											<th>&nbsp;</th>
               											<th>Milestone</th>
-              											<th>Progress</th>
+              											<th>Status</th>
+              											<th>New Task</th>
+              											<th>Ongoing Task</th>
+              											<th>Done Task</th>
               											</tr>
               										</thead>
               										<tbody>
-              											<tr>
-              											<td>view button, delete</td>
-              											<td>name</td>
-              											<td>progress data</td>
-              											</tr>
-              										</tbody>
+														<tr>
+															<td>
+															<button class="btn btn-default btn-flat btn-sm">View</button>
+															<button class="btn btn-default btn-flat btn-sm">Delete</button>
+															</td>
+														<c:forEach items="${milestoneSummary}" var="milestoneMap">
+														<c:set value="${milestoneMap.key}" var="milestone"/>
+					                                	<c:set value="${milestoneMap.value}" var="msCount"/>
+															<td>${milestone.name}</td>
+															<td>---</td>
+															<td>${msCount.get("New")}</td>
+															<td>${msCount.get("Ongoing")}</td>
+															<td>${msCount.get("Done")}</td>
+														</c:forEach>
+														</tr>
+													</tbody>
                    									</table>
+                   									<br/>
+                   									<table id="milestone-summary-table" class="table table-bordered table-striped">
+													<thead>
+			                                    		<tr>
+				                                            <th>Detail</th>
+				                                            <th>Data</th>
+				                                        </tr>
+			                                    	</thead>
+													<tbody>
+														<tr>
+															<td>Total Tasks Assigned to Milestones</td>
+															<td>${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}</td>
+														</tr>
+														<tr>
+															<td>Total Milestones</td>
+															<td>${timelineSummaryMap.get("Total Milestones")}</td>
+														</tr>
+														<tr>
+															<td>Total Milestones (New)</td>
+															<td>${timelineSummaryMap.get("Total Milestones (New)")}</td>
+														</tr>
+														<tr>
+															<td>Total Milestones (Ongoing)</td>
+															<td>${timelineSummaryMap.get("Total Milestones (Ongoing)")}</td>
+														</tr>
+														<tr>
+															<td>Total Milestones (Done)</td>
+															<td>${timelineSummaryMap.get("Total Milestones (Done)")}</td>
+														</tr>
+													</tbody>
+													</table>
                    								</div>
                    							</div>
                    						</div>
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Summary</h3>
+                   									<h3 class="box-title">Summary of Tasks</h3>
                    								</div>
                    								<div class="box-body">
                    								
-                   								<table id="timeline-details-summary-table" class="table table-bordered table-striped">
+                   								<b>Total Tasks:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
+                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
+                   								
+												<table id="task-status-table" class="table table-bordered table-striped">
 												<thead>
 		                                    		<tr>
-			                                            <th>Detail</th>
-			                                            <th>Data</th>
-			                                        </tr>
-		                                    	</thead>
-												<tbody>
-													<tr>
-														<td>Total tasks (under project)</td>
-														<td>How many?</td>
-													</tr>
-													<tr>
-														<td>tasks assigned to a milestone</td>
-														<td>How many?</td>
-													</tr>
-													<tr>
-														<td>milestones</td>
-														<td>How many?</td>
-													</tr>
-													<tr>
-														<td>completed milestones</td>
-														<td>How many?</td>
-													</tr>
-													<tr>
-														<td>ongoing milestones</td>
-														<td>How many?</td>
-													</tr>
-													<tr>
-														<td>not yet started</td>
-														<td>How many?</td>
-													</tr>
-												</tbody>
-												</table>
-                   								<br/>
-												<table id="task-summary-table" class="table table-bordered table-striped">
-												<thead>
-		                                    		<tr>
-			                                            <th>Status</th>
+			                                            <th>Task Status</th>
 			                                            <th>Count</th>
 			                                        </tr>
 		                                    	</thead>
 												<tbody>
+												<c:forEach items="${taskStatusMap}" var="statusEntry">
+												<c:set value="${statusEntry.key}" var="entryKey"/>
+												<c:set value="${statusEntry.value}" var="entryValue"/>
 													<tr>
-														<td>name of task Status</td>
-														<td>How many?</td>
+														<td>
+				                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+														</td>
+														<td>
+															${entryValue}
+														</td>
 													</tr>
+												</c:forEach>
 												</tbody>
 												</table>
                    								</div>

@@ -33,6 +33,7 @@ import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Field;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.ProjectFile;
@@ -71,9 +72,18 @@ public class ProjectController {
     public static final String ATTR_FILE = "file";
 
     public static final String ATTR_GANTT_JSON = "ganttJSON";
+    public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
+    public static final String ATTR_TIMELINE_MILESTONE_SUMMARY_MAP = "milestoneSummary";
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
     public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
     public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
+
+    public static final String KEY_SUMMARY_TOTAL_TASKS = "Total Tasks";
+    public static final String KEY_SUMMARY_TOTAL_MILESTONES = "Total Milestones";
+    public static final String KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES = "Total Tasks Assigned to Milestones";
+    public static final String KEY_SUMMARY_TOTAL_MILESTONE_NEW = "Total Milestones (New)";
+    public static final String KEY_SUMMARY_TOTAL_MILESTONE_ONGOING = "Total Milestones (Ongoing)";
+    public static final String KEY_SUMMARY_TOTAL_MILESTONE_DONE = "Total Milestones (Done)";
 
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
@@ -894,7 +904,6 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 	    + Project.COLUMN_PRIMARY_KEY + "}")
     public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
@@ -914,7 +923,18 @@ public class ProjectController {
 	}
 
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+	setModelAttributes(proj, model);
+	return JSP_EDIT;
+    }
 
+    /**
+     * Set attributes before forwarding back to JSP.
+     * 
+     * @param proj
+     * @param model
+     */
+    @SuppressWarnings("unchecked")
+    private void setModelAttributes(Project proj, Model model) {
 	// Get list of fields.
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
@@ -957,13 +977,24 @@ public class ProjectController {
 	model.addAttribute(ATTR_GANTT_JSON,
 		this.projectService.getGanttJSON(proj));
 
+	// Timeline taks status and count map.
 	// Summary map found in timeline tab.
-	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP,
-		this.projectService.getTimelineSummaryMap(proj));
+	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP,
+		this.projectService.getTaskStatusCountMap(proj));
+
+	// Summary of per milestones.
+	// Summary of timeline on all milestones.
+	Map<String, Object> milestoneSummaryMap = this.projectService
+		.getMilestoneSummaryMap(proj);
+	Map<Milestone, Map<String, Integer>> milestoneCountMap = (Map<Milestone, Map<String, Integer>>) milestoneSummaryMap
+		.get(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP);
+	Map<String, Integer> summaryMap = (Map<String, Integer>) milestoneSummaryMap
+		.get(ATTR_TIMELINE_SUMMARY_MAP);
+	model.addAttribute(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP,
+		milestoneCountMap);
+	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
 
 	model.addAttribute(SystemConstants.ATTR_ACTION,
 		SystemConstants.ACTION_EDIT);
-
-	return JSP_EDIT;
     }
 }
