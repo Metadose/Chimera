@@ -285,8 +285,8 @@ public class StaffController {
 	    attendance = new Attendance(staff);
 	} else {
 	    // TODO Make function for this in service.
-	    attendance = this.payrollService.get(staff, AttendanceStatus.of(status),
-		    new Date(timestamp));
+	    attendance = this.payrollService.get(staff,
+		    AttendanceStatus.of(status), new Date(timestamp));
 	}
 
 	// Attach bean to model.

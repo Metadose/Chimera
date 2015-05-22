@@ -64,7 +64,6 @@
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
                                 <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
-                                <li><a href="#tab_attendance-cal" data-toggle="tab">Attendance</a></li>
                                 <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 </c:if>
                             </ul>
@@ -612,196 +611,19 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_attendance-cal">
-                                	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Data Range</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.<br/><br/>
-				                                	<form:form
-									                	modelAttribute="rangeDate"
-														id="rangeDateForm"
-														method="post"
-														action="${contextPath}/staff/edit/range">
-														<table>
-														<tr>
-															<td>
-								                            <label>Start Date</label>
-								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="startDate"/>
-											                    <span class="input-group-addon">
-											                        <span class="glyphicon glyphicon-calendar"></span>
-											                    </span>
-											                </div>
-															</td>
-															<td>
-															&nbsp;
-															</td>
-															<td>
-								                            <label>End Date</label>
-								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="endDate"/>
-											                    <span class="input-group-addon">
-											                        <span class="glyphicon glyphicon-calendar"></span>
-											                    </span>
-											                </div>
-															</td>
-															<td>
-															&nbsp;
-															</td>
-															<td style="vertical-align: bottom; padding-bottom: 1%">
-									                        <button class="btn btn-default btn-flat btn-sm" id="rangeDateButton">Load Data</button>
-															</td>
-														</tr>
-														</table>
-								                    </form:form>
-                   								</div>
-                   							</div>
-                   						</div>
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Summary</h3>
-                   								</div>
-                   								<div class="box-body">
-<!--      Map<Status, Integer> attendanceStatusMap = new HashMap<Status, Integer>(); -->
-												<table id="status-table" class="table table-bordered table-striped">
-												<thead>
-		                                    		<tr>
-			                                            <th>Status</th>
-			                                            <th>Count</th>
-			                                        </tr>
-		                                    	</thead>
-												<tbody>
-												<c:forEach items="${attendanceStatusMap}" var="attendanceStatusEntry">
-												<c:set value="${attendanceStatusEntry.key}" var="entryKey"/>
-												<c:set value="${attendanceStatusEntry.value}" var="entryValue"/>
-													<tr>
-														<td>
-															<c:choose>
-				                                            	<c:when test="${entryKey.id() == 6}">
-					                                            <c:set value="border: 1px solid red" var="spanBorder"/>
-				                                            	</c:when>
-				                                            	<c:when test="${entryKey.id() != 6}">
-					                                            <c:set value="" var="spanBorder"/>
-				                                            	</c:when>
-				                                            </c:choose>
-				                                            <span style="${spanBorder}" class="label ${entryKey.css()}">${entryKey}</span>
-														</td>
-														<td>
-															<fmt:formatNumber type="number" 
-															maxFractionDigits="0" 
-															value="${entryValue.get(\"statusCount\")}" />
-														</td>
-													</tr>
-												</c:forEach>
-												</tbody>
-												</table>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
+                                <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
                    						<div class="col-xs-12">
                    							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Attendance</h3>
+                   								</div>
                    								<div class="box-body">
-                   									Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.<br/><br/>
-                   									<form:form
-									                	modelAttribute="rangeDate"
-														id="rangeDateForm"
-														method="post"
-														action="${contextPath}/staff/edit/range">
-														<table>
-														<tr>
-															<td>
-								                            <label>Start Date</label>
-								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="startDate"/>
-											                    <span class="input-group-addon">
-											                        <span class="glyphicon glyphicon-calendar"></span>
-											                    </span>
-											                </div>
-															</td>
-															<td>
-															&nbsp;
-															</td>
-															<td>
-								                            <label>End Date</label>
-								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="endDate"/>
-											                    <span class="input-group-addon">
-											                        <span class="glyphicon glyphicon-calendar"></span>
-											                    </span>
-											                </div>
-															</td>
-															<td>
-															&nbsp;
-															</td>
-															<td style="vertical-align: bottom; padding-bottom: 1%">
-									                        <button class="btn btn-default btn-flat btn-sm" id="rangeDateButton">Load Data</button>
-															</td>
-														</tr>
-														</table>
-								                    </form:form><br/>
                    									<div id='calendar'></div>
                    								</div>
                    							</div>
                    						</div>
               						</div>
-              						<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Mass Attendance Editor</h3>
-                   								</div>
-                   								<div class="box-body">
-												<form:form
-								                	modelAttribute="massAttendance"
-													id="massAttendanceForm"
-													method="post"
-													action="${contextPath}/staff/add/attendance/mass">
-							                        <div class="form-group">
-							                            <label>Start Date</label>
-							                            <div class='input-group date date-picker'>
-								                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/>
-										                    <span class="input-group-addon">
-										                        <span class="glyphicon glyphicon-calendar"></span>
-										                    </span>
-										                </div>
-							                            <br/>
-							                            <label>End Date</label>
-							                            <div class='input-group date date-picker'>
-								                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/>
-										                    <span class="input-group-addon">
-										                        <span class="glyphicon glyphicon-calendar"></span>
-										                    </span>
-										                </div>
-							                            <br/>
-							                            
-							                            <label id="massStatusLabel">Status</label>
-							                            <form:select class="form-control" id="massStatusValue" path="statusID"> 
-							           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
-							           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
-							           						</c:forEach>
-							                 			</form:select>
-							                 			<br id="massStatusBreak"/>
-							                            <label id="massWageLabel">Salary</label>
-							                            <form:input type="text" class="form-control" id="massWageValue" path="wage"/>
-							                            <br id="massWageBreak"/>
-							                            <label id="includeWeekendsLabel">Include Weekends</label>
-							                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
-							                        </div>
-							                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
-							                    </form:form>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-default">
@@ -846,6 +668,47 @@
 															</td>
 														</tr>
 														</table>
+								                    </form:form><br/><br/>
+								                    <div class="box-header">
+		                   								<h3 class="box-title" style="padding-left: 0px;">Mass Attendance Editor</h3>
+	                   								</div>
+								                    <form:form
+									                	modelAttribute="massAttendance"
+														id="massAttendanceForm"
+														method="post"
+														action="${contextPath}/staff/add/attendance/mass">
+								                        <div class="form-group">
+								                            <label>Start Date</label>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+								                            <br/>
+								                            <label>End Date</label>
+								                            <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+								                            <br/>
+								                            
+								                            <label id="massStatusLabel">Status</label>
+								                            <form:select class="form-control" id="massStatusValue" path="statusID"> 
+								           						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
+								           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+								                 			<br id="massStatusBreak"/>
+								                            <label id="massWageLabel">Salary</label>
+								                            <form:input type="text" class="form-control" id="massWageValue" path="wage"/>
+								                            <br id="massWageBreak"/>
+								                            <label id="includeWeekendsLabel">Include Weekends</label>
+								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
+								                        </div>
+								                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
 								                    </form:form>
                    								</div>
                    							</div>
@@ -910,6 +773,9 @@
               						<div class="row">
                    						<div class="col-xs-12">
                    							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Breakdown</h3>
+                   								</div>
                    								<div class="box-body">
 				                                    <table id="attendance-table" class="table table-bordered table-striped">
 				                                    	<thead>
@@ -970,7 +836,7 @@
 						action="${contextPath}/staff/add/attendance">
                         <div class="form-group">
                             <label>Date</label>
-                            <form:input type="text" disabled="true" class="form-control" id="modalDate" path="timestamp"/>
+                            <form:input type="text" class="form-control" id="modalDate" path="timestamp"/>
                             
                             <br/>
                             <label>Status</label>
@@ -1001,6 +867,11 @@
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
    	<script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+	
+	<!-- InputMask -->
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+    <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	
 	<script type="text/javascript">
 	    var ganttJSON = ${ganttJSON};
@@ -1033,6 +904,7 @@
 			$('.date-picker').datepicker({
 			    format: 'yyyy/mm/dd'
 			})
+			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			
 // 			$("#status-table").dataTable();
 			$("#project-table").dataTable();
@@ -1071,6 +943,7 @@
 			});
 			
 			$('#calendar').fullCalendar({
+				height: 450,
 				events: eventsJSON,
 				dayClick: function(date, jsEvent, view) {
 					$("#modalDate").val(date.format());

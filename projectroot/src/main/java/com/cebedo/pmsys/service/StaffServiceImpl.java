@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -364,8 +365,7 @@ public class StaffServiceImpl implements StaffService {
 
 	    // For each milestone in this project, add.
 	    for (Milestone milestone : proj.getMilestones()) {
-		GanttBean milestoneBean = new GanttBean(milestone,
-			projectBean);
+		GanttBean milestoneBean = new GanttBean(milestone, projectBean);
 		ganttBeanList.add(milestoneBean);
 	    }
 	}
@@ -404,6 +404,7 @@ public class StaffServiceImpl implements StaffService {
 	// Get summary of tasks.
 	// For each task status, count how many.
 	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
+	Map<TaskStatus, Integer> taskStatusMapSorted = new LinkedHashMap<TaskStatus, Integer>();
 
 	// Get the tasks (children) of each parent.
 	for (Task task : staff.getTasks()) {
@@ -414,7 +415,14 @@ public class StaffServiceImpl implements StaffService {
 	    taskStatusMap.put(taskStatus, statCount);
 	}
 
-	return taskStatusMap;
+	// If status count is null,
+	// Add it as zero.
+	for (TaskStatus status : TaskStatus.class.getEnumConstants()) {
+	    Integer count = taskStatusMap.get(status);
+	    taskStatusMapSorted.put(status, count == null ? 0 : count);
+	}
+
+	return taskStatusMapSorted;
     }
 
     /**
@@ -433,6 +441,7 @@ public class StaffServiceImpl implements StaffService {
 
 	// And count number per status.
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();
+	Map<AttendanceStatus, Map<String, Double>> attendanceStatusSorted = new LinkedHashMap<AttendanceStatus, Map<String, Double>>();
 
 	for (Attendance attendance : attendanceList) {
 
@@ -443,10 +452,30 @@ public class StaffServiceImpl implements StaffService {
 		    : attendanceStatusMap.get(attnStat).get(statusCount) + 1;
 	    Map<String, Double> breakdown = new HashMap<String, Double>();
 	    breakdown.put(statusCount, statCount);
-	    breakdown.put(equivalentWage, statCount * staff.getWage());
+	    breakdown.put(
+		    equivalentWage,
+		    attnStat == AttendanceStatus.ABSENT ? 0 : statCount
+			    * staff.getWage());
 	    attendanceStatusMap.put(attnStat, breakdown);
 	}
 
-	return attendanceStatusMap;
+	// If status count is null,
+	// Add it as zero.
+	for (AttendanceStatus status : AttendanceStatus.class
+		.getEnumConstants()) {
+	    if (status == AttendanceStatus.DELETE) {
+		continue;
+	    }
+	    Map<String, Double> breakdown = attendanceStatusMap.get(status);
+	    if (breakdown == null) {
+		breakdown = new HashMap<String, Double>();
+		breakdown.put(statusCount, (double) 0);
+		breakdown.put(equivalentWage, (double) 0);
+		attendanceStatusSorted.put(status, breakdown);
+	    }
+	    attendanceStatusSorted.put(status, breakdown);
+	}
+
+	return attendanceStatusSorted;
     }
 }
