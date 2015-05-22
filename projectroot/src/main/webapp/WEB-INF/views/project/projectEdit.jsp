@@ -456,7 +456,10 @@
 														<c:set value="${milestoneMap.key}" var="milestone"/>
 					                                	<c:set value="${milestoneMap.value}" var="msCount"/>
 															<td>${milestone.name}</td>
-															<td>---</td>
+															<td>
+															<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
+															<span class="label ${css}">${msCount.get("Status")}</span>
+															</td>
 															<td>${msCount.get("New")}</td>
 															<td>${msCount.get("Ongoing")}</td>
 															<td>${msCount.get("Done")}</td>
@@ -465,36 +468,35 @@
 													</tbody>
                    									</table>
                    									<br/>
-                   									<table id="milestone-summary-table" class="table table-bordered table-striped">
+													<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
+													<b>Total Milestones:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
+													<b>Breakdown</b> of Total Milestones by Milestone Status:<br/><br/>
+													<table id="milestone-breakdown-table" class="table table-bordered table-striped">
 													<thead>
 			                                    		<tr>
-				                                            <th>Detail</th>
-				                                            <th>Data</th>
+				                                            <th>Milestone Status</th>
+				                                            <th>Count</th>
 				                                        </tr>
 			                                    	</thead>
 													<tbody>
 														<tr>
-															<td>Total Tasks Assigned to Milestones</td>
-															<td>${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}</td>
-														</tr>
-														<tr>
-															<td>Total Milestones</td>
-															<td>${timelineSummaryMap.get("Total Milestones")}</td>
-														</tr>
-														<tr>
-															<td>Total Milestones (New)</td>
+															<c:set value="${idToMilestoneMap.get(\"New\").css()}" var="css"></c:set>
+															<td><span class="label ${css}">${idToMilestoneMap.get("New")}</span></td>
 															<td>${timelineSummaryMap.get("Total Milestones (New)")}</td>
 														</tr>
 														<tr>
-															<td>Total Milestones (Ongoing)</td>
+															<c:set value="${idToMilestoneMap.get(\"Ongoing\").css()}" var="css"></c:set>
+															<td><span class="label ${css}">${idToMilestoneMap.get("Ongoing")}</span></td>
 															<td>${timelineSummaryMap.get("Total Milestones (Ongoing)")}</td>
 														</tr>
 														<tr>
-															<td>Total Milestones (Done)</td>
+															<c:set value="${idToMilestoneMap.get(\"Done\").css()}" var="css"></c:set>
+															<td><span class="label ${css}">${idToMilestoneMap.get("Done")}</span></td>
 															<td>${timelineSummaryMap.get("Total Milestones (Done)")}</td>
 														</tr>
 													</tbody>
 													</table>
+													
                    								</div>
                    							</div>
                    						</div>

@@ -31,6 +31,7 @@ import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Milestone;
@@ -77,6 +78,8 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
     public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
     public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
+
+    public static final String ATTR_MAP_ID_TO_MILESTONE = "idToMilestoneMap";
 
     public static final String KEY_SUMMARY_TOTAL_TASKS = "Total Tasks";
     public static final String KEY_SUMMARY_TOTAL_MILESTONES = "Total Milestones";
@@ -984,15 +987,18 @@ public class ProjectController {
 
 	// Summary of per milestones.
 	// Summary of timeline on all milestones.
+	// Add map of id to milestone enum.
 	Map<String, Object> milestoneSummaryMap = this.projectService
 		.getMilestoneSummaryMap(proj);
-	Map<Milestone, Map<String, Integer>> milestoneCountMap = (Map<Milestone, Map<String, Integer>>) milestoneSummaryMap
+	Map<Milestone, Map<String, Object>> milestoneCountMap = (Map<Milestone, Map<String, Object>>) milestoneSummaryMap
 		.get(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP);
 	Map<String, Integer> summaryMap = (Map<String, Integer>) milestoneSummaryMap
 		.get(ATTR_TIMELINE_SUMMARY_MAP);
 	model.addAttribute(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP,
 		milestoneCountMap);
 	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
+	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE,
+		MilestoneStatus.getIdToStatusMap());
 
 	model.addAttribute(SystemConstants.ATTR_ACTION,
 		SystemConstants.ACTION_EDIT);

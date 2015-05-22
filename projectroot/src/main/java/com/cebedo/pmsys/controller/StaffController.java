@@ -29,7 +29,7 @@ import com.cebedo.pmsys.bean.DateRangeBean;
 import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.SecurityRole;
@@ -285,7 +285,7 @@ public class StaffController {
 	    attendance = new Attendance(staff);
 	} else {
 	    // TODO Make function for this in service.
-	    attendance = this.payrollService.get(staff, Status.of(status),
+	    attendance = this.payrollService.get(staff, AttendanceStatus.of(status),
 		    new Date(timestamp));
 	}
 
@@ -559,7 +559,7 @@ public class StaffController {
 
 	// Get attendance status map based on enum.
 	model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
-		Status.getAllStatusInMap());
+		AttendanceStatus.getAllStatusInMap());
 
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.

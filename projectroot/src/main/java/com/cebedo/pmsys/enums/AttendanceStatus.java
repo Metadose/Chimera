@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum Status {
+public enum AttendanceStatus {
 	PRESENT(1, "Present", "btn-success"), ABSENT(2, "Absent", "btn-danger"), LATE(
 			3, "Late", "btn-warning"), LEAVE(4, "Leave", "btn-primary"), HALFDAY(
 			5, "Half-day", "btn-info"), OVERTIME(6, "Overtime", "btn-success"), DELETE(
@@ -15,11 +15,11 @@ public enum Status {
 	int id;
 	String css;
 
-	Status(int idn) {
+	AttendanceStatus(int idn) {
 		this.id = idn;
 	}
 
-	Status(int idn, String lbl, String cssClass) {
+	AttendanceStatus(int idn, String lbl, String cssClass) {
 		this.label = lbl;
 		this.id = idn;
 		this.css = cssClass;
@@ -27,7 +27,7 @@ public enum Status {
 
 	public static List<Map<String, String>> getAllStatusInMap() {
 		List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>();
-		for (Status stat : Status.class.getEnumConstants()) {
+		for (AttendanceStatus stat : AttendanceStatus.class.getEnumConstants()) {
 			Map<String, String> thisStatus = new HashMap<String, String>();
 			thisStatus.put("id", String.valueOf(stat.id()));
 			thisStatus.put("label", stat.label());
@@ -36,7 +36,7 @@ public enum Status {
 		return statusMap;
 	}
 
-	public static Status of(int idn) {
+	public static AttendanceStatus of(int idn) {
 		if (idn == PRESENT.id()) {
 			return PRESENT;
 

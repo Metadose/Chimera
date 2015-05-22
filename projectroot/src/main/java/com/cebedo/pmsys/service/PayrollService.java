@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Team;
@@ -19,13 +19,13 @@ public interface PayrollService {
 	 * 
 	 * @param obj
 	 */
-	public void set(Staff staff, Status status);
+	public void set(Staff staff, AttendanceStatus status);
 
 	public void set(Attendance attendance);
 
-	public void set(Staff staff, Status status, Date timestamp);
+	public void set(Staff staff, AttendanceStatus status, Date timestamp);
 
-	public Attendance get(Staff staff, Status status, Date timestamp);
+	public Attendance get(Staff staff, AttendanceStatus status, Date timestamp);
 
 	public List<Attendance> getAllAttendance(Staff staff);
 

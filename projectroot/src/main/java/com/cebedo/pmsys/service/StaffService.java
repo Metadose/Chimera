@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -54,7 +54,7 @@ public interface StaffService {
 
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Staff staff);
 
-    public Map<Status, Map<String, Double>> getAttendanceStatusCountMap(
+    public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
 	    Staff staff, Set<Attendance> attendanceList);
 
 }

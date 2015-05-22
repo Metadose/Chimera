@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -40,19 +40,19 @@ public class PayrollServiceImpl implements PayrollService {
 	@Override
 	@Transactional
 	public void set(Attendance attendance) {
-		Status status = attendance.getStatus();
+		AttendanceStatus status = attendance.getStatus();
 		if (status == null) {
-			attendance.setStatus(Status.of(attendance.getStatusID()));
+			attendance.setStatus(AttendanceStatus.of(attendance.getStatusID()));
 			status = attendance.getStatus();
 		}
-		if (status == Status.DELETE) {
+		if (status == AttendanceStatus.DELETE) {
 			deleteAllInDate(attendance);
 			return;
 		}
-		if (status == Status.ABSENT && attendance.getWage() > 0) {
+		if (status == AttendanceStatus.ABSENT && attendance.getWage() > 0) {
 			attendance.setWage(0);
 		}
-		if (status != Status.ABSENT && attendance.getWage() == 0) {
+		if (status != AttendanceStatus.ABSENT && attendance.getWage() == 0) {
 			attendance.setWage(getWage(attendance.getStaff(), status));
 		}
 		// Delete all previously declared attendance in this date.
@@ -75,7 +75,7 @@ public class PayrollServiceImpl implements PayrollService {
 
 	@Override
 	@Transactional
-	public void set(Staff staff, Status status) {
+	public void set(Staff staff, AttendanceStatus status) {
 		Attendance attendance = new Attendance(staff, status);
 		double wage = getWage(staff, status);
 		attendance.setWage(wage);
@@ -93,29 +93,29 @@ public class PayrollServiceImpl implements PayrollService {
 
 	@Override
 	@Transactional
-	public void set(Staff staff, Status status, Date timestamp) {
+	public void set(Staff staff, AttendanceStatus status, Date timestamp) {
 		Attendance attendance = new Attendance(staff, status, timestamp);
 		double wage = getWage(staff, status);
 		attendance.setWage(wage);
 		this.attendanceValueRepo.set(attendance);
 	}
 
-	private double getWage(Staff staff, Status status) {
+	private double getWage(Staff staff, AttendanceStatus status) {
 		double wage = 0;
 
-		if (status == Status.PRESENT) {
+		if (status == AttendanceStatus.PRESENT) {
 			wage = staff.getWage();
 
-		} else if (status == Status.LEAVE) {
+		} else if (status == AttendanceStatus.LEAVE) {
 			wage = staff.getWage();
 
-		} else if (status == Status.LATE) {
+		} else if (status == AttendanceStatus.LATE) {
 			wage = staff.getWage();
 
-		} else if (status == Status.ABSENT) {
+		} else if (status == AttendanceStatus.ABSENT) {
 			wage = 0;
 
-		} else if (status == Status.HALFDAY) {
+		} else if (status == AttendanceStatus.HALFDAY) {
 			wage = staff.getWage() / 2;
 		}
 		return wage;
@@ -220,7 +220,7 @@ public class PayrollServiceImpl implements PayrollService {
 
 	@Override
 	@Transactional
-	public Attendance get(Staff staff, Status status, Date timestamp) {
+	public Attendance get(Staff staff, AttendanceStatus status, Date timestamp) {
 		return this.attendanceValueRepo.get(Attendance.constructKey(staff,
 				timestamp, status));
 	}
@@ -229,8 +229,8 @@ public class PayrollServiceImpl implements PayrollService {
 	@Transactional
 	public void multiSet(MassAttendanceBean attendanceMass) {
 		Staff staff = attendanceMass.getStaff();
-		Status status = Status.of(attendanceMass.getStatusID());
-		if (status == Status.ABSENT) {
+		AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
+		if (status == AttendanceStatus.ABSENT) {
 			attendanceMass.setWage(0);
 		}
 		double wage = attendanceMass.getWage();
@@ -250,7 +250,7 @@ public class PayrollServiceImpl implements PayrollService {
 					|| dayOfWeek == Calendar.SUNDAY;
 
 			// If status is delete.
-			if (status == Status.DELETE) {
+			if (status == AttendanceStatus.DELETE) {
 				if (!includeWeekends && isWeekend) {
 					continue;
 				}
@@ -264,7 +264,7 @@ public class PayrollServiceImpl implements PayrollService {
 			}
 			keyAttendanceMap.put(attendance.getKey(), attendance);
 		}
-		if (status != Status.DELETE) {
+		if (status != AttendanceStatus.DELETE) {
 			this.attendanceValueRepo.multiSet(keyAttendanceMap);
 		}
 	}

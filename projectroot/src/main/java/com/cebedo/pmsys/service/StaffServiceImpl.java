@@ -22,7 +22,7 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DateHelper;
@@ -318,7 +318,7 @@ public class StaffServiceImpl implements StaffService {
 
 	    Date myDate = attendance.getTimestamp();
 	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
-	    Status attnStat = attendance.getStatus();
+	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Construct the event bean for this attendance.
 	    CalendarEventBean event = new CalendarEventBean();
@@ -329,7 +329,7 @@ public class StaffServiceImpl implements StaffService {
 	    event.setAttendanceStatus(String.valueOf(attendance.getStatus()
 		    .id()));
 	    event.setAttendanceWage(String.valueOf(attendance.getWage()));
-	    if (attnStat == Status.OVERTIME) {
+	    if (attnStat == AttendanceStatus.OVERTIME) {
 		event.setBorderColor("Red");
 	    }
 	    calendarEvents.add(event);
@@ -426,17 +426,17 @@ public class StaffServiceImpl implements StaffService {
      */
     @Transactional
     @Override
-    public Map<Status, Map<String, Double>> getAttendanceStatusCountMap(
+    public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
 	    Staff staff, Set<Attendance> attendanceList) {
 	String statusCount = "statusCount";
 	String equivalentWage = "equivalentWage";
 
 	// And count number per status.
-	Map<Status, Map<String, Double>> attendanceStatusMap = new HashMap<Status, Map<String, Double>>();
+	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();
 
 	for (Attendance attendance : attendanceList) {
 
-	    Status attnStat = attendance.getStatus();
+	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Get and set status count.
 	    Double statCount = attendanceStatusMap.get(attnStat) == null ? 1

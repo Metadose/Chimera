@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.LogHelper;
@@ -338,7 +340,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Summary table map.
 	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
-	Map<Milestone, Map<String, Integer>> milestoneCountMap = new HashMap<Milestone, Map<String, Integer>>();
+	Map<Milestone, Map<String, Object>> milestoneCountMap = new HashMap<Milestone, Map<String, Object>>();
 	summaryMap.put(keyTotalTasks, proj.getAssignedTasks().size());
 	summaryMap.put(keyTotalMilestones, proj.getMilestones().size());
 
@@ -351,7 +353,7 @@ public class ProjectServiceImpl implements ProjectService {
 	for (Milestone milestone : proj.getMilestones()) {
 
 	    // Actual adding of tasks under this milestone.
-	    Map<String, Integer> milestoneStatusMap = new HashMap<String, Integer>();
+	    Map<String, Object> milestoneStatusMap = new HashMap<String, Object>();
 	    int tasksNew = 0;
 	    int tasksOngoing = 0;
 	    int tasksEndState = 0;
@@ -369,25 +371,33 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	    }
 
-	    // Add collected data for milestone status and
-	    // corresponding count.
-	    milestoneStatusMap.put("New", tasksNew);
-	    milestoneStatusMap.put("Ongoing", tasksOngoing);
-	    milestoneStatusMap.put("Done", tasksEndState);
-	    milestoneCountMap.put(milestone, milestoneStatusMap);
+	    // Status of this milestone.
+	    MilestoneStatus msStatus;
 
 	    // If number of tasks is equal to
 	    // number of end state, milestone is finished.
 	    int tasksInMilestone = milestone.getTasks().size();
 	    if (tasksInMilestone == tasksEndState) {
 		msDone++;
+		msStatus = MilestoneStatus.DONE;
 	    } else if (tasksInMilestone == tasksNew) {
 		// Else if task size == new, then milestone is not yet started.
 		msNys++;
+		msStatus = MilestoneStatus.NEW;
 	    } else {
 		// Else, it's still ongoing.
 		msOngoing++;
+		msStatus = MilestoneStatus.ONGOING;
 	    }
+
+	    // Add collected data for milestone status and
+	    // corresponding count.
+	    milestoneStatusMap.put("Status", msStatus);
+	    milestoneStatusMap.put(MilestoneStatus.NEW.label(), tasksNew);
+	    milestoneStatusMap.put(MilestoneStatus.ONGOING.label(),
+		    tasksOngoing);
+	    milestoneStatusMap.put(MilestoneStatus.DONE.label(), tasksEndState);
+	    milestoneCountMap.put(milestone, milestoneStatusMap);
 
 	    // Get number of tasks assigned to milestones.
 	    summaryMap.put(keyTotalTasksAssigned,
@@ -497,6 +507,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Get summary of tasks.
 	// For each task status, count how many.
 	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
+	Map<TaskStatus, Integer> taskStatusMapSorted = new LinkedHashMap<TaskStatus, Integer>();
 
 	// Get the tasks (children) of each parent.
 	for (Task task : proj.getAssignedTasks()) {
@@ -507,6 +518,13 @@ public class ProjectServiceImpl implements ProjectService {
 	    taskStatusMap.put(taskStatus, statCount);
 	}
 
-	return taskStatusMap;
+	// If status count is null,
+	// Add it as zero.
+	for (TaskStatus status : TaskStatus.class.getEnumConstants()) {
+	    Integer count = taskStatusMap.get(status);
+	    taskStatusMapSorted.put(status, count == null ? 0 : count);
+	}
+
+	return taskStatusMapSorted;
     }
 }

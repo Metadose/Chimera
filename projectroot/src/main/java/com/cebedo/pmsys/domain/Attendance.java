@@ -2,7 +2,7 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Date;
 
-import com.cebedo.pmsys.enums.Status;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
@@ -15,7 +15,7 @@ public class Attendance implements IDomainObject {
 	private static final long serialVersionUID = 1L;
 	private Staff staff;
 	private Date timestamp;
-	private Status status;
+	private AttendanceStatus status;
 	private int statusID;
 	private double wage;
 
@@ -27,7 +27,7 @@ public class Attendance implements IDomainObject {
 		setStaff(stf);
 	}
 
-	public Attendance(Staff stf, Status stat) {
+	public Attendance(Staff stf, AttendanceStatus stat) {
 		setStaff(stf);
 		setStatus(stat);
 		setTimestamp(new Date(System.currentTimeMillis()));
@@ -38,13 +38,13 @@ public class Attendance implements IDomainObject {
 		setTimestamp(tstamp);
 	}
 
-	public Attendance(Staff stf, Status stat, Date tstamp) {
+	public Attendance(Staff stf, AttendanceStatus stat, Date tstamp) {
 		setStaff(stf);
 		setStatus(stat);
 		setTimestamp(tstamp);
 	}
 
-	public Attendance(Staff stf, Status stat, Date tstamp, double w) {
+	public Attendance(Staff stf, AttendanceStatus stat, Date tstamp, double w) {
 		setStaff(stf);
 		setStatus(stat);
 		setTimestamp(tstamp);
@@ -79,11 +79,11 @@ public class Attendance implements IDomainObject {
 		this.timestamp = timestamp;
 	}
 
-	public Status getStatus() {
+	public AttendanceStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(AttendanceStatus status) {
 		this.status = status;
 	}
 
@@ -116,7 +116,7 @@ public class Attendance implements IDomainObject {
 		return key;
 	}
 
-	public static String constructKey(Staff staff, Date timestamp, Status status) {
+	public static String constructKey(Staff staff, Date timestamp, AttendanceStatus status) {
 		SystemUser user = staff.getUser();
 		long userID = user == null ? 0 : user.getId();
 		long staffID = staff.getId();
