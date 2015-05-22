@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
-import com.cebedo.pmsys.bean.TaskGanttBean;
+import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -348,10 +348,10 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public String getGanttJSON(Staff staff) {
 	// Get gantt-data.
-	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
+	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
 
 	// Add myself.
-	TaskGanttBean myGanttBean = new TaskGanttBean(staff);
+	GanttBean myGanttBean = new GanttBean(staff);
 	ganttBeanList.add(myGanttBean);
 
 	// Get the gantt parent data.
@@ -359,12 +359,12 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Add all projects.
 	    Project proj = assigns.getProject();
-	    TaskGanttBean projectBean = new TaskGanttBean(proj, myGanttBean);
+	    GanttBean projectBean = new GanttBean(proj, myGanttBean);
 	    ganttBeanList.add(projectBean);
 
 	    // For each milestone in this project, add.
 	    for (Milestone milestone : proj.getMilestones()) {
-		TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
+		GanttBean milestoneBean = new GanttBean(milestone,
 			projectBean);
 		ganttBeanList.add(milestoneBean);
 	    }
@@ -385,7 +385,7 @@ public class StaffServiceImpl implements StaffService {
 		parentId = Staff.OBJECT_NAME + "-" + staff.getId();
 	    }
 
-	    TaskGanttBean ganttBean = new TaskGanttBean(task, parentId);
+	    GanttBean ganttBean = new GanttBean(task, parentId);
 	    ganttBeanList.add(ganttBean);
 	}
 

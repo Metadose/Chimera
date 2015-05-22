@@ -15,7 +15,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.bean.TaskGanttBean;
+import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -292,20 +292,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public String getGanttJSON(Project proj) {
 	// Construct JSON data for the gantt chart.
-	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
+	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
 
 	// Add myself.
-	TaskGanttBean myGanttBean = new TaskGanttBean(proj);
+	GanttBean myGanttBean = new GanttBean(proj);
 	ganttBeanList.add(myGanttBean);
 
 	// Add all milestones and included tasks.
 	for (Milestone milestone : proj.getMilestones()) {
-	    TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
+	    GanttBean milestoneBean = new GanttBean(milestone,
 		    myGanttBean);
 	    ganttBeanList.add(milestoneBean);
 
 	    for (Task taskInMilestone : milestone.getTasks()) {
-		TaskGanttBean ganttBean = new TaskGanttBean(taskInMilestone,
+		GanttBean ganttBean = new GanttBean(taskInMilestone,
 			milestoneBean);
 		ganttBeanList.add(ganttBean);
 	    }
@@ -317,7 +317,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add only tasks without a milestone.
 	    if (task.getMilestone() == null) {
-		TaskGanttBean ganttBean = new TaskGanttBean(task, myGanttBean);
+		GanttBean ganttBean = new GanttBean(task, myGanttBean);
 		ganttBeanList.add(ganttBean);
 	    }
 	}

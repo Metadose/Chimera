@@ -42,7 +42,7 @@
 	            			${fn:escapeXml(project.name)}
 	            		</c:when>
 	            	</c:choose>
-	                <small>${action} Project</small>
+	                <small>${action} Project <a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a> </small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -631,7 +631,7 @@
 									                                            		<span class="label label-danger">Failed</span>
 									                                            	</c:when>
 									                                            	<c:when test="${task.status == 4}">
-									                                            		<h6>Cancelled</h6>
+									                                            		<span class="label btn-warning">Cancelled</span>
 									                                            	</c:when>
 									                                            </c:choose>
 								                                            </td>
