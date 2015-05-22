@@ -282,6 +282,7 @@
     <beans:bean id="projectService" class="com.cebedo.pmsys.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
+        <beans:property name="payrollService" ref="payrollService"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
     

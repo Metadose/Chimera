@@ -1,6 +1,10 @@
 package com.cebedo.pmsys.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -10,17 +14,26 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.TaskGanttBean;
+import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.NotificationZSetRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.google.gson.Gson;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -33,6 +46,11 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
     private NotificationZSetRepo notificationZSetRepo;
+    private PayrollService payrollService;
+
+    public void setPayrollService(PayrollService s) {
+	this.payrollService = s;
+    }
 
     public void setNotificationZSetRepo(
 	    NotificationZSetRepo notificationZSetRepo) {
@@ -263,5 +281,187 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public void clearSearchCache(Long companyID) {
 	;
+    }
+
+    /**
+     * Construct a JSON to be used by the Gantt dhtmlx.
+     */
+    @Override
+    @Transactional
+    public String getGanttJSON(Project proj) {
+	// Construct JSON data for the gantt chart.
+	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
+
+	// Add myself.
+	TaskGanttBean myGanttBean = new TaskGanttBean(proj);
+	ganttBeanList.add(myGanttBean);
+
+	// Add all milestones and included tasks.
+	for (Milestone milestone : proj.getMilestones()) {
+	    TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
+		    myGanttBean);
+	    ganttBeanList.add(milestoneBean);
+
+	    for (Task taskInMilestone : milestone.getTasks()) {
+		TaskGanttBean ganttBean = new TaskGanttBean(taskInMilestone,
+			milestoneBean);
+		ganttBeanList.add(ganttBean);
+	    }
+	}
+
+	// Get the gantt parent data.
+	// All tasks without a milestone.
+	for (Task task : proj.getAssignedTasks()) {
+
+	    // Add only tasks without a milestone.
+	    if (task.getMilestone() == null) {
+		TaskGanttBean ganttBean = new TaskGanttBean(task, myGanttBean);
+		ganttBeanList.add(ganttBean);
+	    }
+	}
+
+	return new Gson().toJson(ganttBeanList, ArrayList.class);
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Integer> getTimelineSummaryMap(Project proj) {
+	String keyTotalTasks = "Total Tasks";
+	String keyTotalMilestones = "Total Milestones";
+	String keyTotalTasksAssigned = "Total Tasks Assigned to Milestones";
+	String keyTotalMsNew = "Total Milestones (New)";
+	String keyTotalMsOngoing = "Total Milestones (Ongoing)";
+	String keyTotalMsDone = "Total Milestones (Done)";
+
+	// Summary table map.
+	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
+	summaryMap.put(keyTotalTasks, proj.getAssignedTasks().size());
+	summaryMap.put(keyTotalMilestones, proj.getMilestones().size());
+
+	// Count all milestone statuses.
+	int msNys = 0;
+	int msOngoing = 0;
+	int msDone = 0;
+
+	// Add all milestones and included tasks.
+	for (Milestone milestone : proj.getMilestones()) {
+
+	    // Actual adding of tasks under this milestone.
+	    int tasksNew = 0;
+	    int tasksOngoing = 0;
+	    int tasksEndState = 0;
+
+	    for (Task taskInMilestone : milestone.getTasks()) {
+
+		// Check if task is New, Ongoing, or neither (end state).
+		int taskStatusId = taskInMilestone.getStatus();
+		if (taskStatusId == TaskStatus.NEW.id()) {
+		    tasksNew++;
+		} else if (taskStatusId == TaskStatus.ONGOING.id()) {
+		    tasksOngoing++;
+		} else {
+		    tasksEndState++;
+		}
+	    }
+
+	    // If number of tasks is equal to
+	    // number of end state, milestone is finished.
+	    int tasksInMilestone = milestone.getTasks().size();
+	    if (tasksInMilestone == tasksEndState) {
+		msDone++;
+	    } else if (tasksInMilestone == tasksNew) {
+		// Else if task size == new, then milestone is not yet started.
+		msNys++;
+	    } else {
+		// Else, it's still ongoing.
+		msOngoing++;
+	    }
+
+	    // Get number of tasks assigned to milestones.
+	    summaryMap.put(keyTotalTasksAssigned,
+		    summaryMap.get(keyTotalTasksAssigned) == null ? 1
+			    : summaryMap.get(keyTotalTasksAssigned)
+				    + milestone.getTasks().size());
+	}
+
+	// Add collected data.
+	summaryMap.put(keyTotalMsNew, msNys);
+	summaryMap.put(keyTotalMsOngoing, msOngoing);
+	summaryMap.put(keyTotalMsDone, msDone);
+
+	return summaryMap;
+    }
+
+    /**
+     * Get map of payrolls.
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> getPayrollMap(Project proj) {
+	Map<String, Object> payrollMaps = new HashMap<String, Object>();
+
+	// TODO Speed up performance!
+	// FIXME Since beginning of time 'til now.
+	Date min = new Date(0);
+	Date max = new Date(System.currentTimeMillis());
+
+	// Payroll maps.
+	Map<Team, Map<Staff, String>> teamPayrollMap = new HashMap<Team, Map<Staff, String>>();
+	Map<ManagerAssignment, String> managerPayrollMap = new HashMap<ManagerAssignment, String>();
+
+	// Wage for teams.
+	Map<Long, String> computedMap = new HashMap<Long, String>();
+
+	// Loop through all the teams.
+	for (Team team : proj.getAssignedTeams()) {
+	    Map<Staff, String> staffPayrollMap = new HashMap<Staff, String>();
+
+	    for (Staff member : team.getMembers()) {
+		long memberID = member.getId();
+
+		// If a staff has already been computed before,
+		// don't compute again.
+		if (computedMap.containsKey(memberID)) {
+		    staffPayrollMap.put(member,
+			    "Check " + computedMap.get(memberID));
+		    continue;
+		}
+
+		// Add to map
+		// and add to computed list.
+		staffPayrollMap.put(member, String.valueOf(this.payrollService
+			.getTotalWageOfStaffInRange(member, min, max)));
+		computedMap.put(memberID, "Team " + team.getName());
+	    }
+
+	    // Add to team list.
+	    teamPayrollMap.put(team, staffPayrollMap);
+	}
+
+	// Wage for managers.
+	for (ManagerAssignment assignment : proj.getManagerAssignments()) {
+	    Staff manager = assignment.getManager();
+	    long managerID = manager.getId();
+	    // If a staff has already been computed before,
+	    // don't compute again.
+	    if (computedMap.containsKey(managerID)) {
+		managerPayrollMap.put(assignment,
+			"Check " + computedMap.get(managerID));
+		continue;
+	    }
+
+	    // Get wage then add to map.
+	    managerPayrollMap.put(assignment, String
+		    .valueOf(this.payrollService.getTotalWageOfStaffInRange(
+			    manager, min, max)));
+	    computedMap.put(managerID, assignment.getProjectPosition());
+	}
+
+	payrollMaps
+		.put(ProjectController.ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
+	payrollMaps.put(ProjectController.ATTR_PAYROLL_MAP_MANAGER,
+		managerPayrollMap);
+
+	return payrollMaps;
     }
 }

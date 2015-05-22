@@ -3,9 +3,6 @@ package com.cebedo.pmsys.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,13 +29,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
-import com.cebedo.pmsys.bean.TaskGanttBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
-import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Field;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.ProjectFile;
@@ -49,7 +43,6 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.PayrollService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectService;
@@ -57,7 +50,6 @@ import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
-import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
@@ -69,8 +61,6 @@ public class ProjectController {
 
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
-    public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
-    public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
@@ -78,13 +68,17 @@ public class ProjectController {
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
-    public static final String ATTR_GANTT_JSON = "ganttJSON";
+    public static final String ATTR_FILE = "file";
 
-    public static final String PARAM_FILE = "file";
+    public static final String ATTR_GANTT_JSON = "ganttJSON";
+    public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
+    public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
+    public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
 
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
-    public static final String JSP_EDIT_FIELD = "assignedFieldEdit";
+    public static final String JSP_EDIT_FIELD = Field.OBJECT_NAME
+	    + "/assignedFieldEdit";
 
     private AuthHelper authHelper = new AuthHelper();
     private ProjectService projectService;
@@ -93,13 +87,6 @@ public class ProjectController {
     private FieldService fieldService;
     private PhotoService photoService;
     private ProjectFileService projectFileService;
-    private PayrollService payrollService;
-
-    @Autowired(required = true)
-    @Qualifier(value = "payrollService")
-    public void setPayrollService(PayrollService s) {
-	this.payrollService = s;
-    }
 
     @Autowired(required = true)
     @Qualifier(value = "projectFileService")
@@ -615,7 +602,7 @@ public class ProjectController {
     @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
 	    + SystemConstants.PROFILE, method = RequestMethod.POST)
     public String uploadProfile(HttpSession session,
-	    @RequestParam(PARAM_FILE) MultipartFile file, SessionStatus status)
+	    @RequestParam(ATTR_FILE) MultipartFile file, SessionStatus status)
 	    throws IOException {
 	Project proj = (Project) session
 		.getAttribute(ProjectController.ATTR_PROJECT);
@@ -907,6 +894,7 @@ public class ProjectController {
      * @param model
      * @return
      */
+    @SuppressWarnings("unchecked")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 	    + Project.COLUMN_PRIMARY_KEY + "}")
     public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
@@ -927,145 +915,6 @@ public class ProjectController {
 
 	Project proj = this.projectService.getByIDWithAllCollections(id);
 
-	// TODO Speed up performance!
-	// FIXME Since beginning of time 'til now.
-	Date min = new Date(0);
-	Date max = new Date(System.currentTimeMillis());
-
-	// Payroll maps.
-	Map<Team, Map<Staff, String>> teamPayrollMap = new HashMap<Team, Map<Staff, String>>();
-	Map<ManagerAssignment, String> managerPayrollMap = new HashMap<ManagerAssignment, String>();
-
-	// Wage for teams.
-	Map<Long, String> computedMap = new HashMap<Long, String>();
-
-	// Loop through all the teams.
-	for (Team team : proj.getAssignedTeams()) {
-	    Map<Staff, String> staffPayrollMap = new HashMap<Staff, String>();
-
-	    for (Staff member : team.getMembers()) {
-		long memberID = member.getId();
-
-		// If a staff has already been computed before,
-		// don't compute again.
-		if (computedMap.containsKey(memberID)) {
-		    staffPayrollMap.put(member,
-			    "Check " + computedMap.get(memberID));
-		    continue;
-		}
-
-		// Add to map
-		// and add to computed list.
-		staffPayrollMap.put(member, String.valueOf(this.payrollService
-			.getTotalWageOfStaffInRange(member, min, max)));
-		computedMap.put(memberID, "Team " + team.getName());
-	    }
-
-	    // Add to team list.
-	    teamPayrollMap.put(team, staffPayrollMap);
-	}
-
-	// Wage for managers.
-	for (ManagerAssignment assignment : proj.getManagerAssignments()) {
-	    Staff manager = assignment.getManager();
-	    long managerID = manager.getId();
-	    // If a staff has already been computed before,
-	    // don't compute again.
-	    if (computedMap.containsKey(managerID)) {
-		managerPayrollMap.put(assignment,
-			"Check " + computedMap.get(managerID));
-		continue;
-	    }
-
-	    // Get wage then add to map.
-	    managerPayrollMap.put(assignment, String
-		    .valueOf(this.payrollService.getTotalWageOfStaffInRange(
-			    manager, min, max)));
-	    computedMap.put(managerID, assignment.getProjectPosition());
-	}
-
-	// Construct JSON data for the gantt chart.
-	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
-
-	// Summary table map.
-	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
-	summaryMap.put("Total Tasks", proj.getAssignedTasks().size());
-	summaryMap.put("Total Milestones", proj.getMilestones().size());
-
-	// Add myself.
-	TaskGanttBean myGanttBean = new TaskGanttBean(proj);
-	ganttBeanList.add(myGanttBean);
-
-	// Count all milestone statuses.
-	int msNys = 0;
-	int msOngoing = 0;
-	int msDone = 0;
-
-	// Add all milestones and included tasks.
-	for (Milestone milestone : proj.getMilestones()) {
-	    TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
-		    myGanttBean);
-	    ganttBeanList.add(milestoneBean);
-
-	    // Actual adding of tasks under this milestone.
-	    int tasksNew = 0;
-	    int tasksOngoing = 0;
-	    int tasksEndState = 0;
-	    for (Task taskInMilestone : milestone.getTasks()) {
-		TaskGanttBean ganttBean = new TaskGanttBean(taskInMilestone,
-			milestoneBean);
-		ganttBeanList.add(ganttBean);
-
-		// Check if task is New, Ongoing, or neither (end state).
-		int taskStatusId = taskInMilestone.getStatus();
-		if (taskStatusId == TaskStatus.NEW.id()) {
-		    tasksNew++;
-		} else if (taskStatusId == TaskStatus.ONGOING.id()) {
-		    tasksOngoing++;
-		} else {
-		    tasksEndState++;
-		}
-	    }
-
-	    // If number of tasks is equal to
-	    // number of end state, milestone is finished.
-	    int tasksInMilestone = milestone.getTasks().size();
-	    if (tasksInMilestone == tasksEndState) {
-		msDone++;
-	    } else if (tasksInMilestone == tasksNew) {
-		// Else if task size == new, then milestone is not yet started.
-		msNys++;
-	    } else {
-		// Else, it's still ongoing.
-		msOngoing++;
-	    }
-
-	    // Get number of tasks assigned to milestones.
-	    summaryMap
-		    .put("Total Tasks Assigned to Milestones",
-			    summaryMap
-				    .get("Total Tasks Assigned to Milestones") == null ? 1
-				    : summaryMap
-					    .get("Total Tasks Assigned to Milestones")
-					    + milestone.getTasks().size());
-	}
-
-	// Add collected data.
-	summaryMap.put("Total Milestones (New)", msNys);
-	summaryMap.put("Total Milestones (Ongoing)", msOngoing);
-	summaryMap.put("Total Milestones (Done)", msDone);
-
-	// Get the gantt parent data.
-	// All tasks without a milestone.
-	for (Task task : proj.getAssignedTasks()) {
-
-	    // Add only tasks without a milestone.
-	    if (task.getMilestone() == null) {
-		TaskGanttBean ganttBean = new TaskGanttBean(task, myGanttBean);
-		ganttBeanList.add(ganttBean);
-	    }
-	}
-
 	// Get list of fields.
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
@@ -1074,7 +923,8 @@ public class ProjectController {
 	List<Staff> staffList = this.staffService.listUnassignedInProject(
 		companyID, proj);
 
-	// Get list of teams.
+	// Get list of teams unassigned.
+	// If at least one is not assigned, add a bean for the form input field.
 	List<Team> teamList = this.teamService.listUnassignedInProject(
 		companyID, proj);
 	if (teamList.size() > 0) {
@@ -1084,15 +934,33 @@ public class ProjectController {
 	    model.addAttribute(ATTR_TEAM_ASSIGNMENT, taBean);
 	}
 
-	model.addAttribute(ATTR_GANTT_JSON,
-		new Gson().toJson(ganttBeanList, ArrayList.class));
+	// Get payroll maps.
+	// And assign to model.
+	Map<String, Object> payrollMap = this.projectService
+		.getPayrollMap(proj);
+	Map<Team, Map<Staff, String>> teamPayrollMap = (Map<Team, Map<Staff, String>>) payrollMap
+		.get(ATTR_PAYROLL_MAP_TEAM);
+	Map<ManagerAssignment, String> managerPayrollMap = (Map<ManagerAssignment, String>) payrollMap
+		.get(ATTR_PAYROLL_MAP_MANAGER);
+	model.addAttribute(ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
+	model.addAttribute(ATTR_PAYROLL_MAP_MANAGER, managerPayrollMap);
+
+	// Get lists for selectors.
+	// Actual object and beans.
 	model.addAttribute(FieldController.ATTR_LIST, fieldList);
 	model.addAttribute(TeamController.ATTR_LIST, teamList);
 	model.addAttribute(StaffController.ATTR_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
 	model.addAttribute(ATTR_PROJECT, proj);
-	model.addAttribute(ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
-	model.addAttribute(ATTR_PAYROLL_MAP_MANAGER, managerPayrollMap);
+
+	// Gant JSON to be used by the chart in timeline.
+	model.addAttribute(ATTR_GANTT_JSON,
+		this.projectService.getGanttJSON(proj));
+
+	// Summary map found in timeline tab.
+	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP,
+		this.projectService.getTimelineSummaryMap(proj));
+
 	model.addAttribute(SystemConstants.ATTR_ACTION,
 		SystemConstants.ACTION_EDIT);
 

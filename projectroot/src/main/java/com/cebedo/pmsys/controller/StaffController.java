@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.controller;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,21 +25,15 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.DateRangeBean;
 import com.cebedo.pmsys.bean.MassAttendanceBean;
-import com.cebedo.pmsys.bean.TaskGanttBean;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.Status;
-import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Field;
-import com.cebedo.pmsys.model.Milestone;
-import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
@@ -50,7 +43,6 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
-import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(value = { StaffController.ATTR_STAFF,
@@ -83,9 +75,6 @@ public class StaffController {
     public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
     public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
-
-    private static final String STATUS_COUNT_VALUE = "statusCount";
-    private static final String STATUS_COUNT_EQUIVALENT_WAGE = "equivalentWage";
 
     private StaffService staffService;
     private TeamService teamService;
@@ -456,36 +445,6 @@ public class StaffController {
     }
 
     /**
-     * Get corresponding calendar events given a set of attendances.
-     * 
-     * @param attendanceList
-     * @return
-     */
-    private List<CalendarEventBean> getCalendarEvents(
-	    Set<Attendance> attendanceList) {
-	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
-	for (Attendance attendance : attendanceList) {
-	    CalendarEventBean event = new CalendarEventBean();
-
-	    Date myDate = attendance.getTimestamp();
-	    Status attnStat = attendance.getStatus();
-	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
-	    event.setStart(start);
-	    event.setTitle(attnStat.name());
-	    event.setId(start);
-	    event.setClassName(attnStat.css());
-	    event.setAttendanceStatus(String.valueOf(attendance.getStatus()
-		    .id()));
-	    event.setAttendanceWage(String.valueOf(attendance.getWage()));
-	    if (attnStat == Status.OVERTIME) {
-		event.setBorderColor("Red");
-	    }
-	    calendarEvents.add(event);
-	}
-	return calendarEvents;
-    }
-
-    /**
      * Get calendar min and max dates from session.
      * 
      * @param session
@@ -577,23 +536,6 @@ public class StaffController {
     }
 
     /**
-     * Get summary of tasks to count.
-     * 
-     * @param staff
-     * @return
-     */
-    private Map<TaskStatus, Integer> getTaskStatusMap(Staff staff) {
-	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
-	for (Task task : staff.getTasks()) {
-	    TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
-		    : taskStatusMap.get(taskStatus) + 1;
-	    taskStatusMap.put(taskStatus, statCount);
-	}
-	return taskStatusMap;
-    }
-
-    /**
      * Set model attributes before forwarding to JSP.
      * 
      * @param model
@@ -610,115 +552,41 @@ public class StaffController {
 	Set<Attendance> attendanceList = this.payrollService
 		.rangeStaffAttendance(staff, min, max);
 
-	// Get calendar events.
-	// And count number per status.
-	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
-	Map<Status, Map<String, Double>> attendanceStatusMap = new HashMap<Status, Map<String, Double>>();
-
-	for (Attendance attendance : attendanceList) {
-
-	    Date myDate = attendance.getTimestamp();
-	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
-	    Status attnStat = attendance.getStatus();
-
-	    // Get and set status count.
-	    Double statCount = attendanceStatusMap.get(attnStat) == null ? 1
-		    : attendanceStatusMap.get(attnStat).get(STATUS_COUNT_VALUE) + 1;
-	    Map<String, Double> breakdown = new HashMap<String, Double>();
-	    breakdown.put(STATUS_COUNT_VALUE, statCount);
-	    breakdown.put(STATUS_COUNT_EQUIVALENT_WAGE,
-		    statCount * staff.getWage());
-	    attendanceStatusMap.put(attnStat, breakdown);
-
-	    CalendarEventBean event = new CalendarEventBean();
-	    event.setStart(start);
-	    event.setTitle(attnStat.name());
-	    event.setId(start);
-	    event.setClassName(attnStat.css());
-	    event.setAttendanceStatus(String.valueOf(attendance.getStatus()
-		    .id()));
-	    event.setAttendanceWage(String.valueOf(attendance.getWage()));
-	    if (attnStat == Status.OVERTIME) {
-		event.setBorderColor("Red");
-	    }
-	    calendarEvents.add(event);
-	}
-
-	// Get summary of tasks.
-	// Get gantt-data.
-	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
-	List<TaskGanttBean> ganttBeanList = new ArrayList<TaskGanttBean>();
-
-	// Add myself.
-	TaskGanttBean myGanttBean = new TaskGanttBean(staff);
-	ganttBeanList.add(myGanttBean);
-
-	// Get the gantt parent data.
-	for (ManagerAssignment assigns : staff.getAssignedManagers()) {
-
-	    // Add all projects.
-	    Project proj = assigns.getProject();
-	    TaskGanttBean projectBean = new TaskGanttBean(proj, myGanttBean);
-	    ganttBeanList.add(projectBean);
-
-	    // For each milestone in this project, add.
-	    for (Milestone milestone : proj.getMilestones()) {
-		TaskGanttBean milestoneBean = new TaskGanttBean(milestone,
-			projectBean);
-		ganttBeanList.add(milestoneBean);
-	    }
-	}
-
-	// Get the tasks (children) of each parent.
-	for (Task task : staff.getTasks()) {
-	    int taskStatusInt = task.getStatus();
-	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
-	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
-		    : taskStatusMap.get(taskStatus) + 1;
-	    taskStatusMap.put(taskStatus, statCount);
-
-	    // Get the data for the gantt chart.
-	    // Get the parent of this task.
-	    String parentId = "";
-	    Project proj = task.getProject();
-	    if (task.getMilestone() != null) {
-		parentId = Milestone.OBJECT_NAME + "-"
-			+ task.getMilestone().getId();
-	    } else if (proj != null) {
-		parentId = Project.OBJECT_NAME + "-" + proj.getId();
-	    } else {
-		parentId = Staff.OBJECT_NAME + "-" + staff.getId();
-	    }
-
-	    TaskGanttBean ganttBean = new TaskGanttBean(task, parentId);
-	    ganttBeanList.add(ganttBean);
-	}
-
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	double totalWage = this.payrollService
-		.getTotalWageFromAttendance(attendanceList);
+	model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE,
+		this.payrollService.getTotalWageFromAttendance(attendanceList));
 
-	// Set attributes to model.
+	// Get attendance status map based on enum.
 	model.addAttribute(ATTR_CALENDAR_STATUS_LIST,
 		Status.getAllStatusInMap());
+
+	// Get start date of calendar.
+	// Add minimum and maximum of data loaded.
 	model.addAttribute(ATTR_CALENDAR_MIN_DATE_STR,
 		minDateStr == null ? DateHelper.formatDate(min, "yyyy-MM-dd")
 			: minDateStr);
-	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
 	model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
-	model.addAttribute(ATTR_TASK_STATUS_MAP, taskStatusMap);
-	model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, totalWage);
-	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, attendanceStatusMap);
-	model.addAttribute(ATTR_ATTENDANCE_MASS, new MassAttendanceBean(staff));
-	model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
-	model.addAttribute(ATTR_CALENDAR_JSON,
-		new Gson().toJson(calendarEvents, ArrayList.class));
-	model.addAttribute(ATTR_GANTT_JSON,
-		new Gson().toJson(ganttBeanList, ArrayList.class));
+	model.addAttribute(ATTR_TASK_STATUS_MAP,
+		this.staffService.getTaskStatusCountMap(staff));
+	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, this.staffService
+		.getAttendanceStatusCountMap(staff, attendanceList));
+
+	// Add objects.
+	// Add form beans.
 	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 	model.addAttribute(ATTR_STAFF, staff);
+	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
+	model.addAttribute(ATTR_ATTENDANCE_MASS, new MassAttendanceBean(staff));
+	model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
+
+	// Add front-end JSONs.
+	model.addAttribute(ATTR_CALENDAR_JSON,
+		this.staffService.getCalendarJSON(staff, attendanceList));
+	model.addAttribute(ATTR_GANTT_JSON,
+		this.staffService.getGanttJSON(staff));
+
 	model.addAttribute(SystemConstants.ATTR_ACTION,
 		SystemConstants.ACTION_EDIT);
     }
