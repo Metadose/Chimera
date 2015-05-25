@@ -12,6 +12,7 @@
 	
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
 	<style type="text/css">
 		ul {         
 		    padding:0 0 0 0;
@@ -28,6 +29,8 @@
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
+	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
+	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
@@ -58,6 +61,7 @@
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
+		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 	</c:when>
@@ -686,6 +690,20 @@
 				                           	</div>
 			                           	</div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_calendar">
+                                	<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Calendar</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div id='calendar'></div>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+           						</div>
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box box-default">
 		                                <div class="box-body">
@@ -978,6 +996,35 @@
    	<script type="text/javascript">
    	$(document).ready(function() {
 		$('#detailsDivEditor').hide();
+		
+		var eventsJSON = ${calendarJSON};
+		$('#calendar').fullCalendar({
+			events: eventsJSON,
+			dayClick: function(date, jsEvent, view) {
+// 				$("#modalDate").val(date.format());
+// 				$("#modalWage").val(staffWage);
+// 				$("#myModal").modal('show');
+		    },
+		    eventClick: function(calEvent, jsEvent, view) {
+// 		    	$("#modalDate").val(calEvent.start.format());
+// 				$("#modalWage").val(staffWage);
+// 				$("#myModal").modal('show');
+				
+// 				var statusValue = calEvent.attendanceStatus;
+// 				$('#attendanceStatus').val(statusValue);
+				
+// 				if(statusValue == 2 || this.value == -1) {
+// 					$('#modalWage').hide();
+// 					$('#modalWageLabel').hide();
+// 					$('#modalWageBreak').hide();
+// 				} else {
+// 					$('#modalWage').val(calEvent.attendanceWage);
+// 					$('#modalWage').show();
+// 					$('#modalWageLabel').show();
+// 					$('#modalWageBreak').show();
+// 				}
+		    }
+	    });
 	});
    	</script>
 	</sec:authorize>

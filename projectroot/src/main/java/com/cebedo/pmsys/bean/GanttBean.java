@@ -1,5 +1,10 @@
 package com.cebedo.pmsys.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.enums.ButtonElement;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.DateHelper;
@@ -7,6 +12,7 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.model.Team;
 
 public class GanttBean {
     private String id;
@@ -20,6 +26,8 @@ public class GanttBean {
     private boolean open;
     private int duration;
     private String parent;
+    private String assignedTeams;
+    private String assignedStaff;
 
     public GanttBean() {
 	;
@@ -57,6 +65,27 @@ public class GanttBean {
 	setParent(parent.getId());
 	setType("Task");
 
+	// Assigned teams.
+	if (task.getTeams() != null && !task.getTeams().isEmpty()) {
+	    List<String> teams = new ArrayList<String>();
+	    for (Team team : task.getTeams()) {
+		teams.add(team.getName());
+	    }
+	    setAssignedTeams(StringUtils.join(teams, ", "));
+	}
+
+	// Assigned staff.
+	if (task.getStaff() != null && !task.getStaff().isEmpty()) {
+	    List<String> staffMembers = new ArrayList<String>();
+	    for (Staff staff : task.getStaff()) {
+		String name = staff.getFullName().isEmpty() ? (staff.getUser()
+			.getUsername() + " (Unnamed Staff)") : staff
+			.getFullName();
+		staffMembers.add(name);
+	    }
+	    setAssignedStaff(StringUtils.join(staffMembers, ", "));
+	}
+
 	// Set color based on task status.
 	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
 	ButtonElement btnElem = ButtonElement.of(taskStatus.css());
@@ -84,6 +113,27 @@ public class GanttBean {
 	setDuration(task.getDuration());
 	setParent(parent);
 	setType("Task");
+
+	// Assigned teams.
+	if (task.getTeams() != null && !task.getTeams().isEmpty()) {
+	    List<String> teams = new ArrayList<String>();
+	    for (Team team : task.getTeams()) {
+		teams.add(team.getName());
+	    }
+	    setAssignedTeams(StringUtils.join(teams, ", "));
+	}
+
+	// Assigned staff.
+	if (task.getStaff() != null && !task.getStaff().isEmpty()) {
+	    List<String> staffMembers = new ArrayList<String>();
+	    for (Staff staff : task.getStaff()) {
+		String name = staff.getFullName().isEmpty() ? (staff.getUser()
+			.getUsername() + " (Unnamed Staff)") : staff
+			.getFullName();
+		staffMembers.add(name);
+	    }
+	    setAssignedStaff(StringUtils.join(staffMembers, ", "));
+	}
 
 	// Set color based on task status.
 	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
@@ -189,5 +239,21 @@ public class GanttBean {
 
     public void setTextColor(String textColor) {
 	this.textColor = textColor;
+    }
+
+    public String getAssignedTeams() {
+	return assignedTeams;
+    }
+
+    public void setAssignedTeams(String assignedTeams) {
+	this.assignedTeams = assignedTeams;
+    }
+
+    public String getAssignedStaff() {
+	return assignedStaff;
+    }
+
+    public void setAssignedStaff(String assignedStaff) {
+	this.assignedStaff = assignedStaff;
     }
 }

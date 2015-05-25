@@ -1,13 +1,29 @@
 // Tooltip.
 gantt.templates.tooltip_text = function(start, end, task){
 	var startStr = start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
-	var endStr = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate();
+	var endStr = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + (end.getDate()-1);
 	
 	var template = "";
 	template += "<b>("+task.type+") "+task.text+"</b><br/>";
 	template += "<br/><b>Duration:</b> "+ task.duration;
 	template += "<br/><b>Start Date:</b> "+ startStr;
 	template += "<br/><b>End Date:</b> "+ endStr;
+	
+	if(task.type == "Task") {
+		// Assigned teams.
+		if(task.assignedTeams === undefined) {
+			template += "<br/><b>Assigned Teams:</b> None";
+		} else {
+			template += "<br/><b>Assigned Teams:</b> "+task.assignedTeams;
+		}
+		
+		// Assigned staff members.
+		if(task.assignedStaff === undefined) {
+			template += "<br/><b>Assigned Staff:</b> None";
+		} else {
+			template += "<br/><b>Assigned Staff:</b> "+task.assignedStaff;
+		}
+	}
 	
 	// If undefined, then don't display.
 	if(task.content !== undefined) {

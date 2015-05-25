@@ -74,6 +74,7 @@
 																					<button class="btn btn-default btn-flat btn-sm">Delete</button>
 				                                								</a>
 																				</sec:authorize>
+																				<a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a>
 																			</center>
 																		</td>
 																		<td>

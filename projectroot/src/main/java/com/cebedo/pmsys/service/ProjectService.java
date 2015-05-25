@@ -38,4 +38,6 @@ public interface ProjectService {
 
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
 
+    public String getCalendarJSON(Project proj);
+
 }

@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,6 +16,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -23,10 +25,12 @@ import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -300,8 +304,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Add all milestones and included tasks.
 	for (Milestone milestone : proj.getMilestones()) {
-	    GanttBean milestoneBean = new GanttBean(milestone,
-		    myGanttBean);
+	    GanttBean milestoneBean = new GanttBean(milestone, myGanttBean);
 	    ganttBeanList.add(milestoneBean);
 
 	    for (Task taskInMilestone : milestone.getTasks()) {
@@ -526,5 +529,50 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	return taskStatusMapSorted;
+    }
+
+    @Transactional
+    @Override
+    public String getCalendarJSON(Project proj) {
+	// Get calendar events.
+	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
+
+	for (Task task : proj.getAssignedTasks()) {
+	    // Get the start date.
+	    Date startDate = task.getDateStart();
+	    String start = DateHelper.formatDate(startDate, "yyyy-MM-dd");
+
+	    // Set values to bean.
+	    CalendarEventBean event = new CalendarEventBean();
+	    event.setId(Task.OBJECT_NAME + "-" + start);
+	    event.setTitle("(Task) " + task.getTitle());
+	    event.setStart(start);
+
+	    // Get the end date.
+	    String end = "";
+	    int duration = task.getDuration();
+	    if (duration > 1) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(startDate);
+		c.add(Calendar.DATE, duration);
+		end = DateHelper.formatDate(c.getTime(), "yyyy-MM-dd");
+		event.setEnd(end);
+	    }
+
+	    calendarEvents.add(event);
+	}
+
+	for (Delivery delivery : proj.getDeliveries()) {
+	    Date myDate = delivery.getDate();
+	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+
+	    CalendarEventBean event = new CalendarEventBean();
+	    event.setId(Delivery.OBJECT_NAME + "-" + start);
+	    event.setStart(start);
+	    event.setTitle("(Delivery) " + delivery.getName());
+	    calendarEvents.add(event);
+	}
+
+	return new Gson().toJson(calendarEvents, ArrayList.class);
     }
 }

@@ -72,7 +72,9 @@ public class ProjectController {
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
 
+    public static final String ATTR_CALENDAR_JSON = "calendarJSON";
     public static final String ATTR_GANTT_JSON = "ganttJSON";
+
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_TIMELINE_MILESTONE_SUMMARY_MAP = "milestoneSummary";
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
@@ -990,8 +992,11 @@ public class ProjectController {
 	model.addAttribute(ATTR_PROJECT, proj);
 
 	// Gant JSON to be used by the chart in timeline.
+	// Get calendar JSON.
 	model.addAttribute(ATTR_GANTT_JSON,
 		this.projectService.getGanttJSON(proj));
+	model.addAttribute(ATTR_CALENDAR_JSON,
+		this.projectService.getCalendarJSON(proj));
 
 	// Timeline taks status and count map.
 	// Summary map found in timeline tab.

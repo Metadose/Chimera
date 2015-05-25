@@ -93,6 +93,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getFiles());
 	Hibernate.initialize(project.getPhotos());
+	Hibernate.initialize(project.getDeliveries());
 
 	// Initialize milestones.
 	Set<Milestone> milestones = project.getMilestones();

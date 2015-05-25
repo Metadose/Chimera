@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
@@ -199,6 +200,16 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (milestone.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Delivery delivery) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (delivery.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

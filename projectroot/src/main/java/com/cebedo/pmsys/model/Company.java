@@ -41,6 +41,7 @@ public class Company implements Serializable {
     private Set<ProjectFile> files;
     private Set<Photo> photos;
     private Set<AuditLog> auditLogs;
+    private Set<Delivery> deliveries;
 
     public Company() {
 	;
@@ -133,6 +134,15 @@ public class Company implements Serializable {
 
     public void setMilestones(Set<Milestone> milestones) {
 	this.milestones = milestones;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Delivery> getDeliveries() {
+	return deliveries;
+    }
+
+    public void setDeliveries(Set<Delivery> deliveries) {
+	this.deliveries = deliveries;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

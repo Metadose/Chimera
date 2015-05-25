@@ -51,6 +51,7 @@ public class Staff implements Serializable {
     private String companyPosition;
     private Set<ManagerAssignment> assignedManagers;
     private Set<Task> tasks;
+    private Set<Delivery> deliveries;
     private String email;
     private String contactNumber;
     private Set<ProjectFile> files;
@@ -158,6 +159,15 @@ public class Staff implements Serializable {
 
     public void setTasks(Set<Task> tasks) {
 	this.tasks = tasks;
+    }
+
+    @ManyToMany(mappedBy = "staff")
+    public Set<Delivery> getDeliveries() {
+	return deliveries;
+    }
+
+    public void setDeliveries(Set<Delivery> deliveries) {
+	this.deliveries = deliveries;
     }
 
     @Column(name = "email", length = 32)
