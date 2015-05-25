@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum ButtonElement {
+public enum CSSClass {
     INFO("btn-info", "Info", "#fff", "#5bc0de", "#46b8da"), PRIMARY(
 	    "btn-primary", "Primary", "#fff", "#337ab7", "#2e6da4"), SUCCESS(
 	    "btn-success", "Success", "#fff", "#5cb85c", "#4cae4c"), WARNING(
@@ -15,7 +15,7 @@ public enum ButtonElement {
     String backgroundColor;
     String borderColor;
 
-    ButtonElement(String cName, String label, String color,
+    CSSClass(String cName, String label, String color,
 	    String backgroundColor, String borderColor) {
 	this.className = cName;
 	this.label = label;
@@ -24,7 +24,7 @@ public enum ButtonElement {
 	this.borderColor = borderColor;
     }
 
-    public static ButtonElement of(String className) {
+    public static CSSClass of(String className) {
 	if (className.equals(INFO.className())) {
 	    return INFO;
 	}

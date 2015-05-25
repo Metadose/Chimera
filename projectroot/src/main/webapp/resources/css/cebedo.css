@@ -1,0 +1,36 @@
+/* Reference: http://www.colourlovers.com/palette/580974/Adrift_in_Dreams */
+.btn-cebedo-adrift-in-dreams-1{
+  background-color: #CFF09E;
+  border-color: #0B486B;
+  color: #007E7E;
+}
+
+.btn-cebedo-adrift-in-dreams-1:hover,
+.btn-cebedo-adrift-in-dreams-1:active,
+.btn-cebedo-adrift-in-dreams-1.hover {
+  background-color: #A8DBA8;
+}
+
+.btn-cebedo-adrift-in-dreams-2{
+  background-color: #A8DBA8;
+  border-color: #3B8686;
+  color: #007E7E;
+}
+
+.btn-cebedo-adrift-in-dreams-2:hover,
+.btn-cebedo-adrift-in-dreams-2:active,
+.btn-cebedo-adrift-in-dreams-2.hover {
+  background-color: #79BD9A;
+}
+
+.btn-cebedo-adrift-in-dreams-3{
+  background-color: #79BD9A;
+  border-color: #007E7E;
+  color: #007E7E;
+}
+
+.btn-cebedo-adrift-in-dreams-3:hover,
+.btn-cebedo-adrift-in-dreams-3:active,
+.btn-cebedo-adrift-in-dreams-3.hover {
+  background-color: #3B8686;
+}

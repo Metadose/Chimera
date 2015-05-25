@@ -409,10 +409,10 @@
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="row">
                    						<div class="col-xs-12">
-              								<div class="box-header">
-              									<h3 class="box-title">Timeline</h3>
-              								</div>
 		                                	<div class="box box-default">
+	              								<div class="box-header">
+	              									<h3 class="box-title">Timeline</h3>
+	              								</div>
 				                                <div class="box-body">
 				                                <table>
                										<tr>

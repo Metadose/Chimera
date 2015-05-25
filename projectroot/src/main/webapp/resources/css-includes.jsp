@@ -15,6 +15,7 @@
 <link href="<c:url value="/resources/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />"rel="stylesheet" type="text/css" />
 <!-- Theme style -->
 <link href="<c:url value="/resources/css/AdminLTE.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/cebedo.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

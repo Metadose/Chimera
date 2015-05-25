@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum MilestoneStatus {
-    NEW(0, "New", "btn-info"), ONGOING(1, "Ongoing", "btn-primary"), DONE(2,
-	    "Done", "btn-success");
+    NEW(0, "New", "btn-cebedo-adrift-in-dreams-1"), ONGOING(1, "Ongoing",
+	    "btn-cebedo-adrift-in-dreams-2"), DONE(2, "Done",
+	    "btn-cebedo-adrift-in-dreams-3");
 
     String label;
     int id;

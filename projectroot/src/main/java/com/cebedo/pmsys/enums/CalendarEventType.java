@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum CalendarEventType {
-    REMINDER("Reminder", "btn-warning"), TASK("Task", "btn-primary"), DELIVERY(
+    REMINDER("Reminder", "btn-info"), TASK("Task", "btn-primary"), DELIVERY(
 	    "Delivery", "btn-success");
 
     String label;
