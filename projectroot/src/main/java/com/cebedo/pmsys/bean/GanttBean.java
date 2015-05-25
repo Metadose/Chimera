@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.enums.ButtonElement;
+import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Milestone;
@@ -40,8 +40,8 @@ public class GanttBean {
 	setDuration(0);
 	setParent(parent.getId());
 	setType("Milestone");
-	setColor(ButtonElement.DEFAULT_HOVER.backgroundColor());
-	setTextColor(ButtonElement.DEFAULT_HOVER.color());
+	setColor(GanttElement.MILESTONE.backgroundColor());
+	setTextColor(GanttElement.MILESTONE.color());
     }
 
     public GanttBean(Project proj) {
@@ -50,8 +50,8 @@ public class GanttBean {
 	setOpen(true);
 	setDuration(0);
 	setType("Project");
-	setColor(ButtonElement.DEFAULT.backgroundColor());
-	setTextColor(ButtonElement.DEFAULT.color());
+	setColor(GanttElement.PROJECT.backgroundColor());
+	setTextColor(GanttElement.PROJECT.color());
     }
 
     public GanttBean(Task task, GanttBean parent) {
@@ -88,9 +88,9 @@ public class GanttBean {
 
 	// Set color based on task status.
 	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	ButtonElement btnElem = ButtonElement.of(taskStatus.css());
-	setColor(btnElem.backgroundColor());
-	setTextColor(btnElem.color());
+	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	setColor(ganttElem.backgroundColor());
+	setTextColor(ganttElem.color());
     }
 
     public GanttBean(Staff staff) {
@@ -99,8 +99,8 @@ public class GanttBean {
 	setOpen(true);
 	setDuration(0);
 	setType("Staff");
-	setColor(ButtonElement.DEFAULT.backgroundColor());
-	setTextColor(ButtonElement.DEFAULT.color());
+	setColor(GanttElement.STAFF.backgroundColor());
+	setTextColor(GanttElement.STAFF.color());
     }
 
     public GanttBean(Task task, String parent) {
@@ -137,9 +137,9 @@ public class GanttBean {
 
 	// Set color based on task status.
 	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	ButtonElement btnElem = ButtonElement.of(taskStatus.css());
-	setColor(btnElem.backgroundColor());
-	setTextColor(btnElem.color());
+	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	setColor(ganttElem.backgroundColor());
+	setTextColor(ganttElem.color());
     }
 
     public GanttBean(Project proj, GanttBean parent) {
@@ -149,8 +149,8 @@ public class GanttBean {
 	setDuration(0);
 	setType("Project");
 	setParent(parent.getId());
-	setColor(ButtonElement.DEFAULT.backgroundColor());
-	setTextColor(ButtonElement.DEFAULT.color());
+	setColor(GanttElement.PROJECT.backgroundColor());
+	setTextColor(GanttElement.PROJECT.color());
     }
 
     public String getId() {

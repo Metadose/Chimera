@@ -414,6 +414,30 @@
               								</div>
 		                                	<div class="box box-default">
 				                                <div class="box-body">
+				                                <table>
+               										<tr>
+           											<td>Legend:
+           											</td>
+           											<td>&nbsp;</td>
+           											<td>
+													<c:forEach items="${ganttElemTypeList}" var="ganttElem">
+														<c:set value="" var="border"></c:set>
+														<c:if test="${ganttElem.className().contains(\"btn-default\")}">
+															<c:set value="border: 1px solid #999999;" var="border"></c:set>
+														</c:if>
+														<span class="label ${ganttElem.className()}"
+														style="
+														color: ${ganttElem.color()};
+														background-color: ${ganttElem.backgroundColor()};
+														${border};
+														">
+														${ganttElem.label()}
+														</span>
+														&nbsp;
+													</c:forEach>
+           											</td>
+               										</tr>
+               									</table><br/>
 				                                <c:choose>
 				                                	<c:when test="${!empty project.assignedTasks}">
 						                                <div id="gantt-chart" style='width:1000px; height:400px;'>
