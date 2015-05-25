@@ -31,6 +31,7 @@ import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Field;
@@ -72,6 +73,8 @@ public class ProjectController {
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
 
+    public static final String ATTR_CALENDAR_EVENT_TYPES_MAP = "calendarEventTypesMap";
+    public static final String ATTR_CALENDAR_EVENT_TYPES_LIST = "calendarEventTypes";
     public static final String ATTR_CALENDAR_JSON = "calendarJSON";
     public static final String ATTR_GANTT_JSON = "ganttJSON";
 
@@ -1002,6 +1005,8 @@ public class ProjectController {
 	// Summary map found in timeline tab.
 	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP,
 		this.projectService.getTaskStatusCountMap(proj));
+	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST,
+		CalendarEventType.class.getEnumConstants());
 
 	// Summary of per milestones.
 	// Summary of timeline on all milestones.

@@ -691,18 +691,34 @@
 			                           	</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_calendar">
-                                	<div class="row">
-                   						<div class="col-xs-12">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Calendar</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div id='calendar'></div>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
+                               	<div class="row">
+               						<div class="col-xs-12">
+               							<div class="box box-default">
+               								<div class="box-header">
+<!--                    									List<Map<String, String>> getEventTypePropertyMaps -->
+               									<h3 class="box-title">Calendar</h3>
+               								</div>
+               								<div class="box-body">
+               									<table>
+               										<tr>
+           											<td>Legend:
+           											</td>
+           											<td>&nbsp;</td>
+           											<td>
+													<c:forEach items="${calendarEventTypes}" var="calendarEvent">
+														<span class="label ${calendarEvent.css()}">
+														${calendarEvent}
+														</span>
+														&nbsp;
+													</c:forEach>
+           											</td>
+               										</tr>
+               									</table><br/>
+               									<div id='calendar'></div>
+               								</div>
+               							</div>
+               						</div>
+          						</div>
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box box-default">

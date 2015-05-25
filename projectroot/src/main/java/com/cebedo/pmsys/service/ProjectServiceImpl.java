@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +23,7 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -33,6 +35,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Reminder;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
@@ -537,16 +540,20 @@ public class ProjectServiceImpl implements ProjectService {
 	// Get calendar events.
 	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
 
+	// Process all tasks to be included in the calendar.
 	for (Task task : proj.getAssignedTasks()) {
 	    // Get the start date.
 	    Date startDate = task.getDateStart();
 	    String start = DateHelper.formatDate(startDate, "yyyy-MM-dd");
+	    String name = task.getTitle();
 
 	    // Set values to bean.
 	    CalendarEventBean event = new CalendarEventBean();
-	    event.setId(Task.OBJECT_NAME + "-" + start);
-	    event.setTitle("(Task) " + task.getTitle());
+	    event.setId(Task.OBJECT_NAME + "-" + start + "-"
+		    + StringUtils.remove(name, " "));
+	    event.setTitle("(Task) " + name);
 	    event.setStart(start);
+	    event.setClassName(CalendarEventType.TASK.css());
 
 	    // Get the end date.
 	    String end = "";
@@ -562,14 +569,33 @@ public class ProjectServiceImpl implements ProjectService {
 	    calendarEvents.add(event);
 	}
 
+	// Process all reminders to be included in the calendar.
+	for (Reminder reminder : proj.getReminders()) {
+	    Date myDate = reminder.getDate();
+	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+	    String name = reminder.getTitle();
+
+	    CalendarEventBean event = new CalendarEventBean();
+	    event.setId(Reminder.OBJECT_NAME + "-" + start + ""
+		    + StringUtils.remove(name, " "));
+	    event.setStart(start);
+	    event.setTitle("(Reminder) " + name);
+	    event.setClassName(CalendarEventType.REMINDER.css());
+	    calendarEvents.add(event);
+	}
+
+	// Process all deliveries to be included in the calendar.
 	for (Delivery delivery : proj.getDeliveries()) {
 	    Date myDate = delivery.getDate();
 	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+	    String name = delivery.getName();
 
 	    CalendarEventBean event = new CalendarEventBean();
-	    event.setId(Delivery.OBJECT_NAME + "-" + start);
+	    event.setId(Delivery.OBJECT_NAME + "-" + start + "-"
+		    + StringUtils.remove(name, " "));
 	    event.setStart(start);
-	    event.setTitle("(Delivery) " + delivery.getName());
+	    event.setTitle("(Delivery) " + name);
+	    event.setClassName(CalendarEventType.DELIVERY.css());
 	    calendarEvents.add(event);
 	}
 

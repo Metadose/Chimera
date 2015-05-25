@@ -265,6 +265,7 @@
                 <beans:value>com.cebedo.pmsys.model.AuditLog</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Milestone</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Delivery</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Reminder</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.model.Expense</beans:value> -->
             </beans:list>
@@ -313,6 +314,13 @@
     </beans:bean>
     <beans:bean id="deliveryService" class="com.cebedo.pmsys.service.DeliveryServiceImpl">
         <beans:property name="deliveryDAO" ref="deliveryDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="reminderDAO" class="com.cebedo.pmsys.dao.ReminderDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="reminderService" class="com.cebedo.pmsys.service.ReminderServiceImpl">
+        <beans:property name="reminderDAO" ref="reminderDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="milestoneDAO" class="com.cebedo.pmsys.dao.MilestoneDAOImpl">

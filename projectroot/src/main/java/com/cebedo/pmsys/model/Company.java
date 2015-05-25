@@ -42,6 +42,7 @@ public class Company implements Serializable {
     private Set<Photo> photos;
     private Set<AuditLog> auditLogs;
     private Set<Delivery> deliveries;
+    private Set<Reminder> reminders;
 
     public Company() {
 	;
@@ -143,6 +144,15 @@ public class Company implements Serializable {
 
     public void setDeliveries(Set<Delivery> deliveries) {
 	this.deliveries = deliveries;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Reminder> getReminders() {
+	return reminders;
+    }
+
+    public void setReminders(Set<Reminder> reminders) {
+	this.reminders = reminders;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
