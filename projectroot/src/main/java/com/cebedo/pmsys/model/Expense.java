@@ -2,147 +2,124 @@ package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-//@Entity
-//@Table(name = Expense.TABLE_NAME)
+@Entity
+@Table(name = Expense.TABLE_NAME)
 public class Expense implements Serializable {
 
-	public static final String OBJECT_NAME = "subcontractor";
-	public static final String TABLE_NAME = "subcontractors";
-	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
-	private static final long serialVersionUID = 1L;
+    public static final String TABLE_NAME = "expenses";
+    public static final String OBJECT_NAME = "expense";
+    public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
+    private static final long serialVersionUID = 1L;
 
-	private long id;
-	private String name;
-	private String description;
-	private float value;
-	private Date date;
-	private Company company;
-	private Set<Project> projects;
-	private Set<Task> tasks;
-	private Set<Team> team;
-	private Set<Staff> members;
-	private Set<Photo> photos;
-	private Set<ProjectFile> files;
-	private Set<Subcontractor> subcontractor;
+    private long id;
+    private String name;
+    private String description;
+    private double value;
+    private Date date;
 
-	// @Id
-	// @GeneratedValue(strategy = GenerationType.IDENTITY)
-	// @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-	public long getId() {
-		return id;
-	}
+    /**
+     * Any of the following can have expenses.<br>
+     * Relationship is 1 of any below, to Many expenses.
+     */
+    private Task task;
+    private Project project;
+    private Company company;
+    private Staff staff;
+    private Team team;
+    private Delivery delivery;
+    private Material material;
+    private Milestone milestone;
+    private Reminder reminder;
+    private Storage storage;
+    private Supplier expenses;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+    public long getId() {
+	return id;
+    }
 
-	// @Column(name = "name", nullable = false, length = 64)
-	public String getName() {
-		return name;
-	}
+    public void setId(long id) {
+	this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "name", nullable = false, length = 32)
+    public String getName() {
+	return name;
+    }
 
-	@Column(name = "value", nullable = false)
-	public float getValue() {
-		return value;
-	}
+    public void setName(String name) {
+	this.name = name;
+    }
 
-	public void setValue(float value) {
-		this.value = value;
-	}
+    @Column(name = "description")
+    public String getDescription() {
+	return description;
+    }
 
-	public Company getCompany() {
-		return company;
-	}
+    public void setDescription(String description) {
+	this.description = description;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    @Column(name = "value", nullable = false)
+    public double getValue() {
+	return value;
+    }
 
-	public Set<Project> getProjects() {
-		return projects;
-	}
+    public void setValue(double value) {
+	this.value = value;
+    }
 
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
-	}
+    @Column(name = "date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    public Date getDate() {
+	return date;
+    }
 
-	public Set<Task> getTasks() {
-		return tasks;
-	}
+    public void setDate(Date date) {
+	this.date = date;
+    }
 
-	public void setTasks(Set<Task> tasks) {
-		this.tasks = tasks;
-	}
+    @ManyToOne
+    @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)
+    public Task getTask() {
+	return task;
+    }
 
-	public Set<Team> getTeam() {
-		return team;
-	}
+    public void setTask(Task task) {
+	this.task = task;
+    }
 
-	public void setTeam(Set<Team> team) {
-		this.team = team;
-	}
+    @ManyToOne
+    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
+    public Project getProject() {
+	return project;
+    }
 
-	public Set<Staff> getMembers() {
-		return members;
-	}
+    public void setProject(Project project) {
+	this.project = project;
+    }
 
-	public void setMembers(Set<Staff> members) {
-		this.members = members;
-	}
+    @ManyToOne
+    @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+    public Company getCompany() {
+	return company;
+    }
 
-	public Set<Photo> getPhotos() {
-		return photos;
-	}
-
-	public void setPhotos(Set<Photo> photos) {
-		this.photos = photos;
-	}
-
-	public Set<ProjectFile> getFiles() {
-		return files;
-	}
-
-	public void setFiles(Set<ProjectFile> files) {
-		this.files = files;
-	}
-
-	// @Column(name = "description")
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	// @Column(name = "date", nullable = false)
-	// @Temporal(TemporalType.DATE)
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	// @ManyToMany
-	// @JoinTable(name = SubconExpenseAssignment.TABLE_NAME, joinColumns = {
-	// @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
-	// @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false,
-	// updatable = false) })
-	public Set<Subcontractor> getSubcontractor() {
-		return subcontractor;
-	}
-
-	public void setSubcontractor(Set<Subcontractor> subcontractor) {
-		this.subcontractor = subcontractor;
-	}
+    public void setCompany(Company company) {
+	this.company = company;
+    }
 }

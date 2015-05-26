@@ -47,6 +47,7 @@ public class Company implements Serializable {
     private Set<Material> materials;
     private Set<Storage> storages;
     private Set<Supplier> suppliers;
+    private Set<Expense> expenses;
 
     public Company() {
 	;
@@ -220,6 +221,15 @@ public class Company implements Serializable {
 
     public void setSuppliers(Set<Supplier> suppliers) {
 	this.suppliers = suppliers;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

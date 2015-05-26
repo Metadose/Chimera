@@ -51,6 +51,7 @@ public class Task implements Serializable {
     private Set<Staff> staff;
     private Set<Team> teams;
     private Set<Material> materials;
+    private Set<Expense> expenses;
     private int status;
     private Company company;
     @Deprecated
@@ -161,6 +162,15 @@ public class Task implements Serializable {
 
     public void setMaterials(Set<Material> materials) {
 	this.materials = materials;
+    }
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 
     @Column(name = "status", nullable = false)
