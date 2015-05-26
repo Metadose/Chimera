@@ -51,9 +51,10 @@ public class Task implements Serializable {
     private Set<Staff> staff;
     private Set<Team> teams;
     private int status;
+    private Set<MaterialCollection> materialCollections;
+    private Company company;
     @Deprecated
     private Set<TaskFieldAssignment> fields;
-    private Company company;
 
     // private Set<Subcontractor> subcontractor;
 
@@ -160,6 +161,16 @@ public class Task implements Serializable {
 
     public void setStatus(int status) {
 	this.status = status;
+    }
+
+    @OneToMany(mappedBy = "task")
+    public Set<MaterialCollection> getMaterialCollections() {
+	return materialCollections;
+    }
+
+    public void setMaterialCollections(
+	    Set<MaterialCollection> materialCollections) {
+	this.materialCollections = materialCollections;
     }
 
     @Deprecated

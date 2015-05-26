@@ -31,6 +31,7 @@ public class Company implements Serializable {
     private String description;
     private Date dateStarted;
     private Date dateExpiration;
+    // FIXME What the hell? "admins" but getting all employees?
     private Set<Staff> admins;
     private Set<SystemUser> employees;
     private Set<Project> projects;
@@ -43,6 +44,10 @@ public class Company implements Serializable {
     private Set<AuditLog> auditLogs;
     private Set<Delivery> deliveries;
     private Set<Reminder> reminders;
+    private Set<MaterialCollection> materialCollections;
+    private Set<Material> materials;
+    private Set<Storage> storages;
+    private Set<Supplier> suppliers;
 
     public Company() {
 	;
@@ -198,6 +203,43 @@ public class Company implements Serializable {
 
     public void setPhotos(Set<Photo> photos) {
 	this.photos = photos;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<MaterialCollection> getMaterialCollections() {
+	return materialCollections;
+    }
+
+    public void setMaterialCollections(
+	    Set<MaterialCollection> materialCollections) {
+	this.materialCollections = materialCollections;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Material> getMaterials() {
+	return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+	this.materials = materials;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Supplier> getSuppliers() {
+	return suppliers;
+    }
+
+    public void setSuppliers(Set<Supplier> suppliers) {
+	this.suppliers = suppliers;
+    }
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    public Set<Storage> getStorages() {
+	return storages;
+    }
+
+    public void setStorages(Set<Storage> storages) {
+	this.storages = storages;
     }
 
     @OneToMany(mappedBy = "company")

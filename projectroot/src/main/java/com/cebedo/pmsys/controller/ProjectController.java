@@ -1016,7 +1016,7 @@ public class ProjectController {
 	// Summary of timeline on all milestones.
 	// Add map of id to milestone enum.
 	Map<String, Object> milestoneSummaryMap = this.projectService
-		.getMilestoneSummaryMap(proj);
+		.getTimelineSummaryMap(proj);
 	Map<Milestone, Map<String, Object>> milestoneCountMap = (Map<Milestone, Map<String, Object>>) milestoneSummaryMap
 		.get(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP);
 	Map<String, Integer> summaryMap = (Map<String, Integer>) milestoneSummaryMap

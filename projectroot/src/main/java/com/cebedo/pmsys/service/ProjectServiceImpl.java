@@ -332,11 +332,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
-     * Get summary of milestone data.
+     * Get summary of timeline data.
      */
     @Override
     @Transactional
-    public Map<String, Object> getMilestoneSummaryMap(Project proj) {
+    public Map<String, Object> getTimelineSummaryMap(Project proj) {
 	String keyTotalTasks = ProjectController.KEY_SUMMARY_TOTAL_TASKS;
 	String keyTotalMilestones = ProjectController.KEY_SUMMARY_TOTAL_MILESTONES;
 	String keyTotalTasksAssigned = ProjectController.KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES;

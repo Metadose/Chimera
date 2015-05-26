@@ -25,6 +25,10 @@
 		ul li img {
 		    cursor: pointer;
 		}
+		.gantt-holder {
+			width:auto;
+			height:auto;
+		}
 	</style>
 </head>
 <body class="skin-blue">
@@ -440,11 +444,11 @@
                									</table><br/>
 				                                <c:choose>
 				                                	<c:when test="${!empty project.assignedTasks}">
-						                                <div id="gantt-chart" style='width:1000px; height:400px;'>
+						                                <div id="gantt-chart" class="gantt-holder">
 						                                </div><!-- /.box-body -->
 				                                	</c:when>
 				                                	<c:when test="${empty project.assignedTasks}">
-				                                		<div id="gantt-chart" style='width:1000px; height:400px;'>
+				                                		<div id="gantt-chart" class="gantt-holder">
 				                                			No tasks for this project.
 						                                </div><!-- /.box-body -->
 				                                	</c:when>

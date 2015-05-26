@@ -32,7 +32,7 @@ public interface ProjectService {
 
     public String getGanttJSON(Project proj);
 
-    public Map<String, Object> getMilestoneSummaryMap(Project proj);
+    public Map<String, Object> getTimelineSummaryMap(Project proj);
 
     public Map<String, Object> getPayrollMap(Project proj);
 
