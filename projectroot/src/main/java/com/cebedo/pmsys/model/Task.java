@@ -50,8 +50,8 @@ public class Task implements Serializable {
     private Milestone milestone;
     private Set<Staff> staff;
     private Set<Team> teams;
+    private Set<Material> materials;
     private int status;
-    private Set<MaterialCollection> materialCollections;
     private Company company;
     @Deprecated
     private Set<TaskFieldAssignment> fields;
@@ -154,6 +154,15 @@ public class Task implements Serializable {
 	this.teams = teams;
     }
 
+    @OneToMany(mappedBy = "task")
+    public Set<Material> getMaterials() {
+	return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+	this.materials = materials;
+    }
+
     @Column(name = "status", nullable = false)
     public int getStatus() {
 	return status;
@@ -161,16 +170,6 @@ public class Task implements Serializable {
 
     public void setStatus(int status) {
 	this.status = status;
-    }
-
-    @OneToMany(mappedBy = "task")
-    public Set<MaterialCollection> getMaterialCollections() {
-	return materialCollections;
-    }
-
-    public void setMaterialCollections(
-	    Set<MaterialCollection> materialCollections) {
-	this.materialCollections = materialCollections;
     }
 
     @Deprecated

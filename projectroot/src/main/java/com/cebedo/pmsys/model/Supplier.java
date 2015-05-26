@@ -1,7 +1,9 @@
 package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -25,7 +27,7 @@ public class Supplier implements Serializable {
     private long id;
     private String name;
     private String description;
-    private Material material;
+    private Set<Material> materials;
     private Company company;
 
     @Id
@@ -57,14 +59,13 @@ public class Supplier implements Serializable {
 	this.description = description;
     }
 
-    @OneToOne
-    @JoinColumn(name = Material.COLUMN_PRIMARY_KEY)
-    public Material getMaterial() {
-	return material;
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    public Set<Material> getMaterials() {
+	return materials;
     }
 
-    public void setMaterial(Material material) {
-	this.material = material;
+    public void setMaterials(Set<Material> materials) {
+	this.materials = materials;
     }
 
     @ManyToOne

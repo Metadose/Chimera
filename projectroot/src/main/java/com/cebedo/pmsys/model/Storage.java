@@ -28,7 +28,8 @@ public class Storage implements Serializable {
     private String name;
     private String location;
     private String description;
-    private Set<MaterialCollection> materialCollections;
+    private Set<Material> materials;
+    private Set<Delivery> deliveries;
     private Company company;
 
     @Id
@@ -70,13 +71,21 @@ public class Storage implements Serializable {
     }
 
     @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL)
-    public Set<MaterialCollection> getMaterialCollections() {
-	return materialCollections;
+    public Set<Material> getMaterials() {
+	return materials;
     }
 
-    public void setMaterialCollections(
-	    Set<MaterialCollection> materialCollections) {
-	this.materialCollections = materialCollections;
+    public void setMaterials(Set<Material> m) {
+	this.materials = m;
+    }
+
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL)
+    public Set<Delivery> getDeliveries() {
+	return deliveries;
+    }
+
+    public void setDeliveries(Set<Delivery> deliveries) {
+	this.deliveries = deliveries;
     }
 
     @ManyToOne

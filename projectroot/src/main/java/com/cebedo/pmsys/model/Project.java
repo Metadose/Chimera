@@ -55,6 +55,7 @@ public class Project implements Serializable {
     private Company company;
     private Set<Delivery> deliveries;
     private Set<Reminder> reminders;
+    private Set<Material> materials;
 
     // private Set<Subcontractor> subcontractor;
 
@@ -229,6 +230,15 @@ public class Project implements Serializable {
 
     public void setDeliveries(Set<Delivery> deliveries) {
 	this.deliveries = deliveries;
+    }
+
+    @OneToMany(mappedBy = "project")
+    public Set<Material> getMaterials() {
+	return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+	this.materials = materials;
     }
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)

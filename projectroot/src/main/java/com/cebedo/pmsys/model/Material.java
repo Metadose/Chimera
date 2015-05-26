@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,15 +22,24 @@ public class Material implements Serializable {
     public static final String OBJECT_NAME = "material";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_PROJECT = "project";
+
+    public static final String MATERIALS_SUMMARY_KEY_TOTAL_COST = "totalCostOfMaterials";
+    public static final String MATERIALS_SUMMARY_KEY_COUNT = "materialsCountMap";
+
     private static final long serialVersionUID = 1L;
 
     private long id;
     private String name;
     private String description;
-    private MaterialCollection collection;
-    private double pricePerPiece;
+    private double price;
     private Date purchaseDate;
+    private int status;
     private Supplier supplier;
+    private Delivery delivery;
+    private Storage storage;
+    private Project project;
+    private Task task;
     private Company company;
 
     @Id
@@ -63,13 +71,13 @@ public class Material implements Serializable {
 	this.description = description;
     }
 
-    @Column(name = "price_per_piece", nullable = false)
-    public double getPricePerPiece() {
-	return pricePerPiece;
+    @Column(name = "price", nullable = false)
+    public double getPrice() {
+	return price;
     }
 
-    public void setPricePerPiece(double pricePerPiece) {
-	this.pricePerPiece = pricePerPiece;
+    public void setPrice(double pricePerPiece) {
+	this.price = pricePerPiece;
     }
 
     @Column(name = "purchase_date", nullable = false)
@@ -83,22 +91,42 @@ public class Material implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = MaterialCollection.COLUMN_PRIMARY_KEY)
-    public MaterialCollection getCollection() {
-	return collection;
-    }
-
-    public void setCollection(MaterialCollection collection) {
-	this.collection = collection;
-    }
-
-    @OneToOne(mappedBy = "material")
+    @JoinColumn(name = Supplier.COLUMN_PRIMARY_KEY)
     public Supplier getSupplier() {
 	return supplier;
     }
 
     public void setSupplier(Supplier supplier) {
 	this.supplier = supplier;
+    }
+
+    @Column(name = "status", nullable = false, length = 2)
+    public int getStatus() {
+	return status;
+    }
+
+    public void setStatus(int status) {
+	this.status = status;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
+    public Project getProject() {
+	return project;
+    }
+
+    public void setProject(Project project) {
+	this.project = project;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)
+    public Task getTask() {
+	return task;
+    }
+
+    public void setTask(Task task) {
+	this.task = task;
     }
 
     @ManyToOne
@@ -109,5 +137,25 @@ public class Material implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Storage.COLUMN_PRIMARY_KEY)
+    public Storage getStorage() {
+	return storage;
+    }
+
+    public void setStorage(Storage storage) {
+	this.storage = storage;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Delivery.COLUMN_PRIMARY_KEY)
+    public Delivery getDelivery() {
+	return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+	this.delivery = delivery;
     }
 }

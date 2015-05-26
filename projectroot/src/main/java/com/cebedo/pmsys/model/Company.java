@@ -44,7 +44,6 @@ public class Company implements Serializable {
     private Set<AuditLog> auditLogs;
     private Set<Delivery> deliveries;
     private Set<Reminder> reminders;
-    private Set<MaterialCollection> materialCollections;
     private Set<Material> materials;
     private Set<Storage> storages;
     private Set<Supplier> suppliers;
@@ -203,16 +202,6 @@ public class Company implements Serializable {
 
     public void setPhotos(Set<Photo> photos) {
 	this.photos = photos;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<MaterialCollection> getMaterialCollections() {
-	return materialCollections;
-    }
-
-    public void setMaterialCollections(
-	    Set<MaterialCollection> materialCollections) {
-	this.materialCollections = materialCollections;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

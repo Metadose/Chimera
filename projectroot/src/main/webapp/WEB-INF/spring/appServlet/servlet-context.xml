@@ -266,6 +266,8 @@
                 <beans:value>com.cebedo.pmsys.model.Milestone</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Delivery</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Reminder</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Material</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Supplier</beans:value>
 <!--                 <beans:value>com.cebedo.pmsys.model.Subcontractor</beans:value> -->
 <!--                 <beans:value>com.cebedo.pmsys.model.Expense</beans:value> -->
             </beans:list>
@@ -307,6 +309,20 @@
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="supplierDAO" class="com.cebedo.pmsys.dao.SupplierDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="supplierService" class="com.cebedo.pmsys.service.SupplierServiceImpl">
+        <beans:property name="supplierDAO" ref="supplierDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="materialDAO" class="com.cebedo.pmsys.dao.MaterialDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
+        <beans:property name="materialDAO" ref="materialDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="deliveryDAO" class="com.cebedo.pmsys.dao.DeliveryDAOImpl">

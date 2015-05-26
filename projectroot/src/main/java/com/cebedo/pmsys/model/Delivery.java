@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,11 +38,8 @@ public class Delivery implements Serializable {
     private Project project;
     private Company company;
     private Set<Staff> staff;
-
-    // private Storage storage;
-
-    // private Set<Material> materials;
-    // private Set<Expense> expenses;
+    private Storage storage;
+    private Set<Material> materials;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,13 +52,15 @@ public class Delivery implements Serializable {
 	this.id = id;
     }
 
-    // public Storage getStorage() {
-    // return storage;
-    // }
-    //
-    // public void setStorage(Storage storage) {
-    // this.storage = storage;
-    // }
+    @ManyToOne
+    @JoinColumn(name = Storage.COLUMN_PRIMARY_KEY)
+    public Storage getStorage() {
+	return storage;
+    }
+
+    public void setStorage(Storage storage) {
+	this.storage = storage;
+    }
 
     @ManyToMany
     @JoinTable(name = StaffDeliveryAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
@@ -71,21 +72,14 @@ public class Delivery implements Serializable {
 	this.staff = staff;
     }
 
-    // public Set<Material> getMaterials() {
-    // return materials;
-    // }
-    //
-    // public void setMaterials(Set<Material> materials) {
-    // this.materials = materials;
-    // }
-    //
-    // public Set<Expense> getExpenses() {
-    // return expenses;
-    // }
-    //
-    // public void setExpenses(Set<Expense> expenses) {
-    // this.expenses = expenses;
-    // }
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    public Set<Material> getMaterials() {
+	return materials;
+    }
+
+    public void setMaterials(Set<Material> materials) {
+	this.materials = materials;
+    }
 
     @Column(name = "name", nullable = false, length = 32)
     public String getName() {
