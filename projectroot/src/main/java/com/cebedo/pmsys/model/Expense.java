@@ -43,7 +43,90 @@ public class Expense implements Serializable {
     private Milestone milestone;
     private Reminder reminder;
     private Storage storage;
-    private Supplier expenses;
+    private Supplier supplier;
+
+    // TODO Add "other side", @OneToMany to associated obj.
+    @ManyToOne
+    @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
+    public Staff getStaff() {
+	return staff;
+    }
+
+    public void setStaff(Staff staff) {
+	this.staff = staff;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Team.COLUMN_PRIMARY_KEY)
+    public Team getTeam() {
+	return team;
+    }
+
+    public void setTeam(Team team) {
+	this.team = team;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Delivery.COLUMN_PRIMARY_KEY)
+    public Delivery getDelivery() {
+	return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+	this.delivery = delivery;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Material.COLUMN_PRIMARY_KEY)
+    public Material getMaterial() {
+	return material;
+    }
+
+    public void setMaterial(Material material) {
+	this.material = material;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Milestone.COLUMN_PRIMARY_KEY)
+    public Milestone getMilestone() {
+	return milestone;
+    }
+
+    public void setMilestone(Milestone milestone) {
+	this.milestone = milestone;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Reminder.COLUMN_PRIMARY_KEY)
+    public Reminder getReminder() {
+	return reminder;
+    }
+
+    public void setReminder(Reminder reminder) {
+	this.reminder = reminder;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Storage.COLUMN_PRIMARY_KEY)
+    public Storage getStorage() {
+	return storage;
+    }
+
+    public void setStorage(Storage storage) {
+	this.storage = storage;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Supplier.COLUMN_PRIMARY_KEY)
+    public Supplier getSupplier() {
+	return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+	this.supplier = supplier;
+    }
+
+    // -----------------------------------------------------------------------------
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
