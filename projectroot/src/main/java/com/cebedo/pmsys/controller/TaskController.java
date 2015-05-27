@@ -24,12 +24,14 @@ import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Expense;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.service.ExpenseService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -40,13 +42,15 @@ import com.cebedo.pmsys.ui.AlertBoxFactory;
 @Controller
 @SessionAttributes(value = { TaskController.ATTR_TASK,
 	TaskController.ATTR_STAFF_ASSIGNMENT,
-	TaskController.ATTR_TEAM_ASSIGNMENT }, types = { Task.class,
-	StaffAssignmentBean.class, TeamAssignmentBean.class })
+	TaskController.ATTR_TEAM_ASSIGNMENT, TaskController.ATTR_EXPENSE }, types = {
+	Task.class, StaffAssignmentBean.class, TeamAssignmentBean.class,
+	Expense.class })
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 
     public static final String ATTR_LIST = "taskList";
     public static final String ATTR_TASK = Task.OBJECT_NAME;
+    public static final String ATTR_EXPENSE = Expense.OBJECT_NAME;
     public static final String ATTR_STAFF_ASSIGNMENT = "staffAssignment";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
@@ -62,6 +66,13 @@ public class TaskController {
     private StaffService staffService;
     private FieldService fieldService;
     private ProjectService projectService;
+    private ExpenseService expenseService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "expenseService")
+    public void setExpenseService(ExpenseService s) {
+	this.expenseService = s;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "projectService")
@@ -420,6 +431,31 @@ public class TaskController {
 		SystemConstants.ACTION_ASSIGN);
 
 	return TaskController.JSP_EDIT;
+    }
+
+    /**
+     * Open a page with appropriate values.<br>
+     * May be a Create Page or Edit Page.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + Expense.OBJECT_NAME + "/{" + Expense.OBJECT_NAME + "}")
+    public String editExpense(
+	    @PathVariable(Expense.OBJECT_NAME) long expenseId, Model model,
+	    HttpSession session) {
+	Task task = (Task) session.getAttribute(ATTR_TASK);
+	if (expenseId == 0) {
+	    model.addAttribute(ATTR_EXPENSE, new Expense());
+	    return ExpenseController.JSP_EDIT;
+	}
+	Expense expense = this.expenseService.getByID(expenseId);
+	model.addAttribute(ATTR_EXPENSE, expense);
+	model.addAttribute(SystemConstants.ORIGIN, Task.OBJECT_NAME);
+	model.addAttribute(SystemConstants.ORIGIN_ID, task.getId());
+	return ExpenseController.JSP_EDIT;
     }
 
     /**

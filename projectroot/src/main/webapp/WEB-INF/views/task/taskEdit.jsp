@@ -113,7 +113,10 @@
                    								<tr>
                    								<td><h3 class="box-title">Expenses</h3></td>
                    								<td>
+                   									<c:url value="/edit/expense/0" var="addExpenseURL"/>
+                   									<a href="${addExpenseURL}">
 			                                		<button class="btn btn-default btn-flat btn-sm">Add Expense</button>
+                   									</a>
                    								</td>
                    								</tr>
                    								</table>
