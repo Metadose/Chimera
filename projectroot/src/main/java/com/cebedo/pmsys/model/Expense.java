@@ -27,7 +27,7 @@ public class Expense implements Serializable {
     private String name;
     private String description;
     private double value;
-    private Date date;
+    private Date datetime;
 
     /**
      * Any of the following can have expenses.<br>
@@ -83,14 +83,14 @@ public class Expense implements Serializable {
 	this.value = value;
     }
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "datetime", nullable = false)
     @Temporal(TemporalType.DATE)
-    public Date getDate() {
-	return date;
+    public Date getDatetime() {
+	return datetime;
     }
 
-    public void setDate(Date date) {
-	this.date = date;
+    public void setDatetime(Date datetime) {
+	this.datetime = datetime;
     }
 
     @ManyToOne

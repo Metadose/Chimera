@@ -31,7 +31,7 @@ public class Reminder implements Serializable {
     private long id;
     private String title;
     private String content;
-    private Date date;
+    private Date datetime;
     private Project project;
     private Company company;
     private Set<Expense> expenses;
@@ -65,14 +65,14 @@ public class Reminder implements Serializable {
 	this.content = content;
     }
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "datetime", nullable = false)
     @Temporal(TemporalType.DATE)
-    public Date getDate() {
-	return date;
+    public Date getDatetime() {
+	return datetime;
     }
 
-    public void setDate(Date date) {
-	this.date = date;
+    public void setDatetime(Date datetime) {
+	this.datetime = datetime;
     }
 
     @ManyToOne

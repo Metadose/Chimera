@@ -34,7 +34,7 @@ public class Delivery implements Serializable {
     private long id;
     private String name;
     private String description;
-    private Date date;
+    private Date datetime;
     private Project project;
     private Company company;
     private Set<Staff> staff;
@@ -100,14 +100,14 @@ public class Delivery implements Serializable {
 	this.description = description;
     }
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "datetime", nullable = false)
     @Temporal(TemporalType.DATE)
-    public Date getDate() {
-	return date;
+    public Date getDatetime() {
+	return datetime;
     }
 
-    public void setDate(Date date) {
-	this.date = date;
+    public void setDatetime(Date datetime) {
+	this.datetime = datetime;
     }
 
     @ManyToOne

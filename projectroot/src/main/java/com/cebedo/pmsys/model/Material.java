@@ -36,7 +36,7 @@ public class Material implements Serializable {
     private String name;
     private String description;
     private double price;
-    private Date purchaseDate;
+    private Date purchaseDatetime;
     private int status;
     private Supplier supplier;
     private Delivery delivery;
@@ -84,14 +84,14 @@ public class Material implements Serializable {
 	this.price = pricePerPiece;
     }
 
-    @Column(name = "purchase_date", nullable = false)
+    @Column(name = "purchase_datetime", nullable = false)
     @Temporal(TemporalType.DATE)
-    public Date getPurchaseDate() {
-	return purchaseDate;
+    public Date getPurchaseDatetime() {
+	return purchaseDatetime;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
-	this.purchaseDate = purchaseDate;
+    public void setPurchaseDatetime(Date purchaseDatetime) {
+	this.purchaseDatetime = purchaseDatetime;
     }
 
     @ManyToOne
