@@ -2,7 +2,9 @@ package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +34,7 @@ public class Reminder implements Serializable {
     private Date date;
     private Project project;
     private Company company;
+    private Set<Expense> expenses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,6 +93,15 @@ public class Reminder implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @OneToMany(mappedBy = "reminder", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 
 }

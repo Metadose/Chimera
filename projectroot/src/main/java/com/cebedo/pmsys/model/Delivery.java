@@ -40,6 +40,7 @@ public class Delivery implements Serializable {
     private Set<Staff> staff;
     private Storage storage;
     private Set<Material> materials;
+    private Set<Expense> expenses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,6 +128,15 @@ public class Delivery implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 
 }

@@ -31,6 +31,7 @@ public class Storage implements Serializable {
     private Set<Material> materials;
     private Set<Delivery> deliveries;
     private Company company;
+    private Set<Expense> expenses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,6 +97,15 @@ public class Storage implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 
 }

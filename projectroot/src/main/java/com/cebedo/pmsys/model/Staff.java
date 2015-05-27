@@ -52,6 +52,8 @@ public class Staff implements Serializable {
     private Set<ManagerAssignment> assignedManagers;
     private Set<Task> tasks;
     private Set<Delivery> deliveries;
+    private Set<Expense> expenses;
+
     private String email;
     private String contactNumber;
     private Set<ProjectFile> files;
@@ -253,5 +255,14 @@ public class Staff implements Serializable {
 	fullName += getLastName() == null ? "" : getLastName() + " ";
 	fullName += getSuffix() == null ? "" : getSuffix();
 	return fullName;
+    }
+
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
+    public Set<Expense> getExpenses() {
+	return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+	this.expenses = expenses;
     }
 }
