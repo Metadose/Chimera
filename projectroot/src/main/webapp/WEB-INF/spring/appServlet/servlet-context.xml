@@ -268,8 +268,8 @@
                 <beans:value>com.cebedo.pmsys.model.Reminder</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Material</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Supplier</beans:value>
-<!--                 <beans:value>com.cebedo.pmsys.model.Subcontractor</beans:value> -->
-<!--                 <beans:value>com.cebedo.pmsys.model.Expense</beans:value> -->
+                <beans:value>com.cebedo.pmsys.model.Expense</beans:value>
+                <beans:value>com.cebedo.pmsys.model.Storage</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -323,6 +323,20 @@
     </beans:bean>
     <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
         <beans:property name="materialDAO" ref="materialDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="storageDAO" class="com.cebedo.pmsys.dao.StorageDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="storageService" class="com.cebedo.pmsys.service.StorageServiceImpl">
+        <beans:property name="storageDAO" ref="storageDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="expenseDAO" class="com.cebedo.pmsys.dao.ExpenseDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="expenseService" class="com.cebedo.pmsys.service.ExpenseServiceImpl">
+        <beans:property name="expenseDAO" ref="expenseDAO"></beans:property>
     </beans:bean>
     
     <beans:bean id="deliveryDAO" class="com.cebedo.pmsys.dao.DeliveryDAOImpl">

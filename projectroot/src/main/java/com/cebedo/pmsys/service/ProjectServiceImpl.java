@@ -571,7 +571,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Process all reminders to be included in the calendar.
 	for (Reminder reminder : proj.getReminders()) {
-	    Date myDate = reminder.getDate();
+	    Date myDate = reminder.getDatetime();
 	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
 	    String name = reminder.getTitle();
 
@@ -586,7 +586,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Process all deliveries to be included in the calendar.
 	for (Delivery delivery : proj.getDeliveries()) {
-	    Date myDate = delivery.getDate();
+	    Date myDate = delivery.getDatetime();
 	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
 	    String name = delivery.getName();
 

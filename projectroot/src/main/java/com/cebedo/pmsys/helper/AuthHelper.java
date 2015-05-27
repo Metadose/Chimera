@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.Expense;
 import com.cebedo.pmsys.model.Material;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
@@ -15,6 +16,7 @@ import com.cebedo.pmsys.model.Reminder;
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.Storage;
 import com.cebedo.pmsys.model.Subcontractor;
 import com.cebedo.pmsys.model.Supplier;
 import com.cebedo.pmsys.model.SystemConfiguration;
@@ -243,6 +245,26 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (supplier.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Expense expense) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (expense.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Storage storage) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (storage.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

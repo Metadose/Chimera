@@ -21,6 +21,7 @@ public class Expense implements Serializable {
     public static final String TABLE_NAME = "expenses";
     public static final String OBJECT_NAME = "expense";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
+    public static final String PROPERTY_ID = "id";
     private static final long serialVersionUID = 1L;
 
     private long id;
