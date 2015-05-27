@@ -95,6 +95,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(project.getPhotos());
 	Hibernate.initialize(project.getDeliveries());
 	Hibernate.initialize(project.getReminders());
+	Hibernate.initialize(project.getExpenses());
 
 	// Initialize milestones.
 	Set<Milestone> milestones = project.getMilestones();
@@ -111,6 +112,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	    Hibernate.initialize(task.getTeams());
 	    Hibernate.initialize(task.getStaff());
 	    Hibernate.initialize(task.getMilestone());
+	    Hibernate.initialize(task.getExpenses());
 	}
 
 	// Initialize teams.
@@ -118,6 +120,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(teams);
 	for (Team team : teams) {
 	    Hibernate.initialize(team.getMembers());
+	    Hibernate.initialize(team.getExpenses());
 	}
 
 	return project;

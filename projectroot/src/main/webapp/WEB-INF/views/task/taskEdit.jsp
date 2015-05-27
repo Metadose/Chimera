@@ -45,6 +45,7 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
                                 <li><a href="#tab_assigned_staff" data-toggle="tab">Staff</a></li>
                                 <li><a href="#tab_assigned_teams" data-toggle="tab">Teams</a></li>
                             </ul>
@@ -103,6 +104,57 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_expenses">
+	                               	<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   							<div class="box-header">
+                   								<table>
+                   								<tr>
+                   								<td><h3 class="box-title">Expenses</h3></td>
+                   								<td>
+			                                		<button class="btn btn-default btn-flat btn-sm">Add Expense</button>
+                   								</td>
+                   								</tr>
+                   								</table>
+               								</div>
+               								<div class="box-body">
+			                                    <table id="expenses-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                    		<tr>
+				                                        	<th>&nbsp;</th>
+				                                        	<th>ID #</th>
+				                                            <th>Name</th>
+				                                            <th>Description</th>
+				                                            <th>Value</th>
+				                                            <th>Date and Time</th>
+				                                        </tr>
+			                                    	</thead>
+			                                        <tbody>
+		                                        		<c:forEach items="${task.expenses}" var="expense">
+		                                        			<tr>
+		                                        				<td>
+							                                        <a href="${contextPath}/task/edit/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            	</a>
+					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+					                                            	</a>
+		                                        				</td>
+					                                            <td>${expense.id}</td>
+					                                            <td>${expense.name}</td>
+					                                            <td>${expense.description}</td>
+					                                            <td>${expense.value}</td>
+					                                            <td>${expense.datetime}</td>
+					                                        </tr>
+		                                        		</c:forEach>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+			                                </div>
+                   						</div>
+              						</div>
+           						</div>
                                 <div class="tab-pane" id="tab_assigned_staff">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
@@ -327,6 +379,7 @@
 		$(document).ready(function() {
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task_status").val("${task.status}");
+			$("#expenses-table").dataTable();
 			$("#staff-table").dataTable();
 			$("#teams-table").dataTable();
 	    });

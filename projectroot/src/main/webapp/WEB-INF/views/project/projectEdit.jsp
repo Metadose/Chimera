@@ -64,6 +64,7 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
+		                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
@@ -903,6 +904,93 @@
 			                                                <td>${manager.companyPosition}</td>
 			                                                <td>${manager.email}</td>
 			                                                <td>${manager.contactNumber}</td>
+			                                            </tr>
+		                                            </c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_expenses">
+                                	<div class="box">
+		                                <div class="box-body table-responsive">
+		                                	<c:set var="displayBreakTeam" value="${false}"/>
+		                                	<table>
+		                                    	<tr>
+		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
+		                                    		<td>
+		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/project/${project.id}"/>
+		                                    			<a href="${urlCreateTeam}">
+				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
+		                                    			</a>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<c:set var="displayBreakTeam" value="${true}"/>
+		                                    		</sec:authorize>
+		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+		                                    		<c:if test="${!empty teamList}">
+		                                    		<form:form modelAttribute="teamAssignment" method="post" action="${contextPath}/project/assign/team">
+		                                    		<td>
+		                                    			<form:select class="form-control" path="teamID" items="${teamList}" itemLabel="name" itemValue="id"/>
+		                                    		</td>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<td>
+														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+		                                    		</td>
+		                                    		</form:form>
+		                                    		</c:if>
+		                                    		<td>
+		                                    			&nbsp;
+		                                    		</td>
+		                                    		<c:if test="${!empty project.assignedTeams}">
+		                                    		<td>
+              											<c:url value="/project/unassign/team/all" var="urlUnassignTeamAll"/>
+					                                    <a href="${urlUnassignTeamAll}">
+              												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+					                                    </a>
+		                                    		</td>
+		                                    		</c:if>
+		                                    		<c:set var="displayBreakTeam" value="${true}"/>
+		                                    		</sec:authorize>
+		                                    	</tr>
+		                                    </table>
+		                                    <c:if test="${displayBreakTeam}">
+		                                    <br/>
+		                                    </c:if>
+		                                    <table id="teams-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                            	<th>#</th>
+		                                                <th>Name</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="teams" value="${project.assignedTeams}"/>
+				                                	<c:if test="${!empty teams}">
+				                                		<c:forEach items="${teams}" var="team">
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/>
+			                                            			<a href="${urlViewTeam}">
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/>
+								                                    <a href="${urlUnassignTeam}">
+	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+								                                    </a>
+	                   												</sec:authorize>
+																</center>
+															</td>
+			                                                <td>${team.id}</td>
+		                                                	<td>${team.name}</td>
 			                                            </tr>
 		                                            </c:forEach>
 	                                        		</c:if>
