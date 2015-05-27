@@ -45,7 +45,84 @@ public class Expense implements Serializable {
     private Storage storage;
     private Supplier supplier;
 
-    // TODO Add "other side", @OneToMany to associated obj.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+    public long getId() {
+	return id;
+    }
+
+    public void setId(long id) {
+	this.id = id;
+    }
+
+    @Column(name = "name", nullable = false, length = 32)
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    @Column(name = "description")
+    public String getDescription() {
+	return description;
+    }
+
+    public void setDescription(String description) {
+	this.description = description;
+    }
+
+    @Column(name = "value", nullable = false)
+    public double getValue() {
+	return value;
+    }
+
+    public void setValue(double value) {
+	this.value = value;
+    }
+
+    @Column(name = "date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    public Date getDate() {
+	return date;
+    }
+
+    public void setDate(Date date) {
+	this.date = date;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)
+    public Task getTask() {
+	return task;
+    }
+
+    public void setTask(Task task) {
+	this.task = task;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
+    public Project getProject() {
+	return project;
+    }
+
+    public void setProject(Project project) {
+	this.project = project;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+    public Company getCompany() {
+	return company;
+    }
+
+    public void setCompany(Company company) {
+	this.company = company;
+    }
+
     @ManyToOne
     @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
     public Staff getStaff() {
@@ -124,85 +201,5 @@ public class Expense implements Serializable {
 
     public void setSupplier(Supplier supplier) {
 	this.supplier = supplier;
-    }
-
-    // -----------------------------------------------------------------------------
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-    public long getId() {
-	return id;
-    }
-
-    public void setId(long id) {
-	this.id = id;
-    }
-
-    @Column(name = "name", nullable = false, length = 32)
-    public String getName() {
-	return name;
-    }
-
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    @Column(name = "description")
-    public String getDescription() {
-	return description;
-    }
-
-    public void setDescription(String description) {
-	this.description = description;
-    }
-
-    @Column(name = "value", nullable = false)
-    public double getValue() {
-	return value;
-    }
-
-    public void setValue(double value) {
-	this.value = value;
-    }
-
-    @Column(name = "date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    public Date getDate() {
-	return date;
-    }
-
-    public void setDate(Date date) {
-	this.date = date;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)
-    public Task getTask() {
-	return task;
-    }
-
-    public void setTask(Task task) {
-	this.task = task;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
-    public Project getProject() {
-	return project;
-    }
-
-    public void setProject(Project project) {
-	this.project = project;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
-    public Company getCompany() {
-	return company;
-    }
-
-    public void setCompany(Company company) {
-	this.company = company;
     }
 }
