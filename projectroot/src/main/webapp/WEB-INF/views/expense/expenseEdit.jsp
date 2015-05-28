@@ -51,7 +51,7 @@
                    									<form:form modelAttribute="expense"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/expense/create/from/${origin}/${originID}">
+														action="${contextPath}/${origin}/create/expense">
 				                                        <div class="form-group">
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name"/><br/>

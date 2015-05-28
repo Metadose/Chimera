@@ -137,10 +137,11 @@
 		                                        		<c:forEach items="${task.expenses}" var="expense">
 		                                        			<tr>
 		                                        				<td>
-							                                        <a href="${contextPath}/task/edit/${task.id}">
+		                                        					<c:url value="/task/edit/expense/${expense.id}" var="viewExpenseURL"/>
+							                                        <a href="${viewExpenseURL}">
 					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            	<a href="${contextPath}/task/delete/XXXXX">
 					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
 					                                            	</a>
 		                                        				</td>

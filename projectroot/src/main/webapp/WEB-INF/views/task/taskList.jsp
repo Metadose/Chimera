@@ -84,7 +84,8 @@
 									                                            </ul>
 									                                        </div>
 									                                        </sec:authorize>
-									                                        <a href="${contextPath}/task/edit/${task.id}">
+									                                        <c:url value="/task/edit/${task.id}" var="viewTaskURL"/>
+									                                        <a href="${viewTaskURL}">
 							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 							                                            	</a>
 							                                            	<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">

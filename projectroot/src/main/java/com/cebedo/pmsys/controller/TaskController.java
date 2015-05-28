@@ -442,7 +442,7 @@ public class TaskController {
      * @return
      */
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + Expense.OBJECT_NAME + "/{" + Expense.OBJECT_NAME + "}")
+	    + Expense.OBJECT_NAME + "/{" + Expense.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String editExpense(
 	    @PathVariable(Expense.OBJECT_NAME) long expenseId, Model model,
 	    HttpSession session) {
@@ -456,6 +456,31 @@ public class TaskController {
 	model.addAttribute(SystemConstants.ORIGIN, Task.OBJECT_NAME);
 	model.addAttribute(SystemConstants.ORIGIN_ID, task.getId());
 	return ExpenseController.JSP_EDIT;
+    }
+
+    /**
+     * Create or Update an Expense entry.
+     * 
+     * @param expense
+     * @param origin
+     * @param originID
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
+	    + Expense.OBJECT_NAME, method = RequestMethod.POST)
+    public String createExpense(
+	    @ModelAttribute(Expense.OBJECT_NAME) Expense expense,
+	    SessionStatus status) {
+	if (expense.getId() == 0) {
+	    this.expenseService.create(expense);
+	} else {
+	    this.expenseService.update(expense);
+	}
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + ATTR_TASK + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ expense.getTask().getId();
     }
 
     /**
