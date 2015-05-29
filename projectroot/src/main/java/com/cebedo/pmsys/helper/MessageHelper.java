@@ -100,7 +100,7 @@ public class MessageHelper {
     private Map<String, Object> addMsgMapLog(Map<String, Object> messageMap,
 	    String objectName, AuthenticationToken auth, String logText) {
 	return addMsgMapLog(messageMap, objectName,
-		this.logHelper.generateLogMessage(auth, logText));
+		this.logHelper.logMessage(auth, logText));
     }
 
     /**
@@ -120,7 +120,8 @@ public class MessageHelper {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	String textNotif = this.notifHelper.constructNotificationText(auth,
 		action, objName, name);
-	String textLog = this.logHelper.constructLogText(action, objName, name);
+	String textLog = this.logHelper.constructTextActionOnObj(action,
+		objName, name);
 	List<Long> notificationRecipients = this.notifHelper
 		.getRecipientsFromCompany(auth.getCompany());
 
@@ -150,8 +151,8 @@ public class MessageHelper {
      * @param name
      * @return
      */
-    public Map<String, Object> constructAndSendMessageMap(String objName,
-	    AuditAction action, long objID, String name) {
+    public void constructAndSendMessageMap(String objName, AuditAction action,
+	    long objID, String name) {
 
 	// Construct the message.
 	Map<String, Object> messageMap = constructMessageMap(objName, action,
@@ -169,7 +170,6 @@ public class MessageHelper {
 
 	// Send the message.
 	sender.send(dest, messageMap);
-	return messageMap;
     }
 
 }

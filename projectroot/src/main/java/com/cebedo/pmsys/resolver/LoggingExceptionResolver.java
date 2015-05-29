@@ -60,6 +60,6 @@ public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 		}
 		logStr += "<br/>";
 
-		this.logger.error(this.logHelper.generateLogMessage(auth, logStr), ex);
+		this.logger.error(this.logHelper.logMessage(auth, logStr), ex);
 	}
 }

@@ -95,7 +95,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 			// Log the results.
 			String message = "Super admin " + ROOT_USER_NAME
 					+ " account was generated.";
-			logger.warn(this.logHelper.generateLogMessage(message));
+			logger.warn(this.logHelper.logMessage(message));
 		}
 	}
 

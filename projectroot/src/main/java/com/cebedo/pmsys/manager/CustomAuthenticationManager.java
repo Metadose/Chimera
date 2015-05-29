@@ -70,7 +70,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// If user does not exist.
 		// TODO Put alert boxes.
 		catch (Exception e) {
-			String text = this.logHelper.generateLogMessage(ipAddress, null,
+			String text = this.logHelper.logMessage(ipAddress, null,
 					null, null, null, "User does not exist: " + auth.getName());
 			logger.warn(text);
 			throw new BadCredentialsException(text);
@@ -80,7 +80,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			// If the current date is already after the company's expiration.
 			if (new Date(System.currentTimeMillis()).after(user.getCompany()
 					.getDateExpiration())) {
-				String text = this.logHelper.generateLogMessage(ipAddress,
+				String text = this.logHelper.logMessage(ipAddress,
 						user.getCompany(), user, user.getStaff(), null,
 						"User company is expired.");
 				logger.warn(text);
@@ -94,7 +94,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 
 			// If user is locked.
 			if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
-				String text = this.logHelper.generateLogMessage(ipAddress,
+				String text = this.logHelper.logMessage(ipAddress,
 						user.getCompany(), user, user.getStaff(), null,
 						"User account is locked.");
 				logger.warn(text);
@@ -113,7 +113,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 			user.setLoginAttempts(user.getLoginAttempts() + 1);
 			this.systemUserService.update(user, true);
 
-			String text = this.logHelper.generateLogMessage(ipAddress,
+			String text = this.logHelper.logMessage(ipAddress,
 					user.getCompany(), user, user.getStaff(), null,
 					"Invalid password.");
 			logger.warn(text);
@@ -123,7 +123,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 		// Here's the main logic of this custom authentication manager.
 		// Username and password must not be the same to authenticate.
 		if (auth.getName().equals(auth.getCredentials()) == true) {
-			String text = this.logHelper.generateLogMessage(ipAddress,
+			String text = this.logHelper.logMessage(ipAddress,
 					user.getCompany(), user, user.getStaff(), null,
 					"Username and password are the same.");
 			logger.warn(text);
@@ -140,7 +140,7 @@ public class CustomAuthenticationManager implements AuthenticationManager,
 					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
 					user.isCompanyAdmin(), user);
 			token.setIpAddress(ipAddress);
-			logger.info(this.logHelper.generateLogMessage(token,
+			logger.info(this.logHelper.logMessage(token,
 					"User is authenticated."));
 			return token;
 		}

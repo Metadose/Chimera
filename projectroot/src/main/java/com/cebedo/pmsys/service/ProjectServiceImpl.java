@@ -127,7 +127,6 @@ public class ProjectServiceImpl implements ProjectService {
 		    AuditAction.UPDATE, project.getId(), project.getName());
 
 	    // Actual service.
-	    @SuppressWarnings("deprecation")
 	    Company company = this.companyDAO.getCompanyByObjID(
 		    Project.TABLE_NAME, Project.COLUMN_PRIMARY_KEY,
 		    project.getId());
@@ -139,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    Project.OBJECT_NAME, project.getName());
 	} else {
 	    // Log a warning.
-	    logger.warn(this.logHelper.generateLogUnauthorizedMessage(auth,
+	    logger.warn(this.logHelper.logUnauthorized(auth,
 		    AuditAction.UPDATE, Project.OBJECT_NAME, project.getId(),
 		    project.getName()));
 
@@ -157,14 +156,16 @@ public class ProjectServiceImpl implements ProjectService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	if (token.isSuperAdmin()) {
-	    logger.info(this.logHelper.generateLogMessage(token,
-		    "Listing all projects as super admin."));
+	    // List as super admin.
+	    logger.info(this.logHelper.logListAsSuperAdmin(token,
+		    Project.OBJECT_NAME));
 	    return this.projectDAO.list(null);
 	}
+
+	// List as not a super admin.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.generateLogMessage(token,
-		"Listing all projects from company: " + company.getId() + " = "
-			+ company.getName()));
+	logger.info(this.logHelper.logListFromCompany(token,
+		Project.OBJECT_NAME, company));
 	return this.projectDAO.list(company.getId());
     }
 
@@ -176,14 +177,15 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByID(id);
 
 	if (this.authHelper.isActionAuthorized(project)) {
-	    logger.info(this.logHelper.generateLogMessage(auth,
-		    "Getting project: " + id + " = " + project.getName()));
+	    // Log the action.
+	    logger.info(this.logHelper.logGetObject(auth, Project.OBJECT_NAME,
+		    id, project.getName()));
 	    return project;
 	}
-	logger.warn(this.logHelper.generateLogMessage(
-		auth,
-		"Not authorized to get project: " + id + " = "
-			+ project.getName()));
+
+	// Create a warning log.
+	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET,
+		Project.OBJECT_NAME, id, project.getName()));
 	return new Project();
     }
 
@@ -221,7 +223,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    Project.OBJECT_NAME, project.getName());
 	} else {
 	    // If not, log as warning.
-	    logger.warn(this.logHelper.generateLogUnauthorizedMessage(auth,
+	    logger.warn(this.logHelper.logUnauthorized(auth,
 		    AuditAction.DELETE, Project.OBJECT_NAME, id,
 		    project.getName()));
 
@@ -237,15 +239,21 @@ public class ProjectServiceImpl implements ProjectService {
     @Cacheable(value = Project.OBJECT_NAME + ":listWithAllCollections")
     public List<Project> listWithAllCollections() {
 	AuthenticationToken token = this.authHelper.getAuth();
+
 	if (token.isSuperAdmin()) {
-	    logger.info(this.logHelper.generateLogMessage(token,
-		    "Listing projects with all collections as super admin."));
+	    // Log the action.
+	    // And return the list.
+	    logger.info(this.logHelper.logListWithCollectionsAsSuperAdmin(
+		    token, Project.OBJECT_NAME));
 	    return this.projectDAO.listWithAllCollections(null);
 	}
+
+	// Log the action.
+	// Return the list.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.generateLogMessage(token,
-		"Listing projects with all collections from company: "
-			+ company.getId() + " = " + company.getName()));
+	logger.info(this.logHelper.logListWithCollectionsFromCompany(token,
+		Project.OBJECT_NAME, company));
+
 	return this.projectDAO.listWithAllCollections(company.getId());
     }
 
@@ -263,14 +271,17 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 	if (this.authHelper.isActionAuthorized(project)) {
-	    logger.info(this.logHelper.generateLogMessage(auth,
-		    "Getting project with all collections: " + project.getId()
-			    + " = " + project.getName()));
+	    // Log the action.
+	    // Then do the action.
+	    logger.info(this.logHelper.logGetObjectWithAllCollections(auth,
+		    Project.OBJECT_NAME, id, project.getName()));
 	    return project;
 	}
-	logger.warn(this.logHelper.generateLogMessage(auth,
-		"Not authorized to get project with all collections: "
-			+ project.getId() + " = " + project.getName()));
+
+	// Log then return empty object.
+	logger.warn(this.logHelper.logUnauthorized(auth,
+		AuditAction.GET_WITH_COLLECTIONS, Project.OBJECT_NAME, id,
+		project.getName()));
 	return new Project();
     }
 
@@ -279,16 +290,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Cacheable(value = Project.OBJECT_NAME + ":listWithTasks")
     public List<Project> listWithTasks() {
 	AuthenticationToken token = this.authHelper.getAuth();
+
+	// Initiate with tasks.
 	if (token.isSuperAdmin()) {
-	    logger.info(this.logHelper
-		    .generateLogMessage(token,
-			    "Listing all projects (initiated with tasks) as super admin."));
+	    logger.info(this.logHelper.logListPartialCollectionsAsSuperAdmin(
+		    token, Project.OBJECT_NAME, Task.OBJECT_NAME));
 	    return this.projectDAO.listWithTasks(null);
 	}
+
+	// List with partial collections from company.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.generateLogMessage(token,
-		"Listing all projects (initiated with tasks) from company: "
-			+ company.getId() + " = " + company.getName()));
+	logger.info(this.logHelper.logListPartialCollectionsFromCompany(token,
+		Project.OBJECT_NAME, Task.OBJECT_NAME, company));
+
 	return this.projectDAO.listWithTasks(company.getId());
     }
 
@@ -298,8 +312,8 @@ public class ProjectServiceImpl implements ProjectService {
     public String getNameByID(long projectID) {
 	AuthenticationToken token = this.authHelper.getAuth();
 	String name = this.projectDAO.getNameByID(projectID);
-	logger.info(this.logHelper.generateLogMessage(token,
-		"Getting name of project: " + projectID + " = " + name));
+	logger.info(this.logHelper.logGetObjectProperty(token,
+		Project.OBJECT_NAME, Project.PROPERTY_NAME, projectID, name));
 	return name;
     }
 

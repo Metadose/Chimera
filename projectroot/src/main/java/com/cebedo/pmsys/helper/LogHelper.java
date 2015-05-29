@@ -17,28 +17,31 @@ public class LogHelper {
 
     private FileHelper fileHelper = new FileHelper();
 
-    public String generateLogMessage(String message) {
-	return generateLogMessage(null, null, null, null, null, message);
+    public String logMessage(String message) {
+	return logMessage(null, null, null, null, null, message);
     }
 
-    public String generateLogUnauthorizedMessage(AuthenticationToken auth,
-	    AuditAction action, String objectName, long id, String name) {
-	return generateLogUnauthorizedMessage(auth, action.label()
-		.toLowerCase(), objectName, id, name);
-    }
-
-    public String generateLogUnauthorizedMessage(AuthenticationToken auth,
-	    String action, String objectName, long id, String name) {
-	action = action.toLowerCase();
-	objectName = objectName.toLowerCase();
-	String message = "Not authorized to " + action + " " + objectName
+    /**
+     * Not authorized to do action on object.
+     * 
+     * @param auth
+     * @param action
+     * @param objectName
+     * @param id
+     * @param name
+     * @return
+     */
+    public String logUnauthorized(AuthenticationToken auth, AuditAction action,
+	    String objectName, long id, String name) {
+	String actionStr = action.label().toLowerCase();
+	String message = "(" + objectName + ") Not authorized to " + actionStr
 		+ ": " + id + " = " + name;
-	return generateLogMessage(auth, message);
+	return logMessage(auth, message);
     }
 
-    public String constructLogText(AuditAction action, String objName,
+    public String constructTextActionOnObj(AuditAction action, String objName,
 	    String name) {
-	return action.label() + " " + objName + ": " + name;
+	return "(" + objName + ") " + action.label() + ": " + name;
     }
 
     /**
@@ -48,9 +51,9 @@ public class LogHelper {
      * @param message
      * @return
      */
-    public String generateLogMessage(AuthenticationToken auth, String message) {
+    public String logMessage(AuthenticationToken auth, String message) {
 	if (auth == null) {
-	    return generateLogMessage(message);
+	    return logMessage(message);
 	}
 	// IP address.
 	String ip = "<td>" + auth.getIpAddress() + "</td>\n";
@@ -87,9 +90,8 @@ public class LogHelper {
 		+ message + "</td>";
     }
 
-    public String generateLogMessage(String ipAddr, Company company,
-	    SystemUser user, Staff staff, Collection<GrantedAuthority> auths,
-	    String message) {
+    public String logMessage(String ipAddr, Company company, SystemUser user,
+	    Staff staff, Collection<GrantedAuthority> auths, String message) {
 	// IP address.
 	String ip = "<td>" + (ipAddr == null ? "" : ipAddr) + "</td>\n";
 
@@ -196,4 +198,94 @@ public class LogHelper {
 	return jsonData;
     }
 
+    private String constructTextListAsSuperAdmin(String objectName) {
+	return "(" + objectName + ") Listing all as super admin.";
+    }
+
+    private String constructTextListFromCompany(String objectName,
+	    Company company) {
+	return "(" + objectName + ") Listing all from company: "
+		+ company.getId() + " = " + company.getName();
+    }
+
+    /**
+     * Generate log when listing entries from all companies.
+     * 
+     * @param token
+     * @param constructTextListFromCompany
+     * @param company
+     * @return
+     */
+    public String logListAsSuperAdmin(AuthenticationToken token, String objName) {
+	return logMessage(token, constructTextListAsSuperAdmin(objName));
+    }
+
+    /**
+     * Generate log when listing entries from a specific company.
+     * 
+     * @param token
+     * @param constructTextListFromCompany
+     * @param company
+     * @return
+     */
+    public String logListFromCompany(AuthenticationToken token, String objName,
+	    Company company) {
+	return logMessage(token, constructTextListFromCompany(objName, company));
+    }
+
+    public String logGetObjectProperty(AuthenticationToken auth,
+	    String objName, String objProperty, long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get " + objProperty + ": "
+		+ id + " = " + name);
+    }
+
+    public String logGetObject(AuthenticationToken auth, String objName,
+	    long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
+    }
+
+    public String logGetObjectWithAllCollections(AuthenticationToken auth,
+	    String objName, long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get with all collections: "
+		+ id + " = " + name);
+    }
+
+    public String logListPartialCollectionsAsSuperAdmin(
+	    AuthenticationToken token, String objectName, String initializedObj) {
+	String text = "(" + objectName + ") Listing all (initiated with "
+		+ initializedObj + ") as super admin.";
+	return logMessage(token, text);
+    }
+
+    public String logListPartialCollectionsFromCompany(
+	    AuthenticationToken token, String objectName,
+	    String initializedObj, Company company) {
+	String text = "(" + objectName + ") Listing all (initiated with "
+		+ initializedObj + ") from company: " + company.getId() + " = "
+		+ company.getName();
+	return logMessage(token, text);
+    }
+
+    public String logListWithCollectionsAsSuperAdmin(AuthenticationToken token,
+	    String objectName) {
+	String text = "(" + objectName
+		+ ") Listing with all collections as super admin.";
+	return logMessage(token, text);
+    }
+
+    public String logListWithCollectionsFromCompany(AuthenticationToken token,
+	    String objectName, Company company) {
+	String text = "(" + objectName
+		+ ") Listing with all collections from company: "
+		+ company.getId() + " = " + company.getName();
+	return logMessage(token, text);
+    }
+
+    public String logUnauthorizedSuperAdminOnly(AuthenticationToken auth,
+	    AuditAction action, String objectName) {
+	String actionStr = action.label().toLowerCase();
+	String message = "(" + objectName + ") Not authorized to " + actionStr
+		+ " if not super admin.";
+	return logMessage(auth, message);
+    }
 }

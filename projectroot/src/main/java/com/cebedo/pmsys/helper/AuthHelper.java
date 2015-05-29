@@ -269,4 +269,12 @@ public class AuthHelper {
 	}
 	return false;
     }
+
+    public boolean isActionAuthorized(Company company) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	}
+	return false;
+    }
 }
