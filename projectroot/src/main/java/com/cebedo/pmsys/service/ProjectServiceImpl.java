@@ -23,6 +23,7 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
@@ -30,7 +31,6 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
-import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Milestone;
@@ -42,6 +42,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.NotificationZSetRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.google.gson.Gson;
 
 @Service
@@ -74,6 +75,9 @@ public class ProjectServiceImpl implements ProjectService {
 	this.companyDAO = companyDAO;
     }
 
+    /**
+     * Create a new project.
+     */
     @Override
     @Transactional
     @Caching(evict = {
@@ -81,33 +85,26 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
-    public void create(Project project) {
-	// Send messages/notifications.
-	// Use message brokers as instructions.
-	// LIKE send message to logger to log.
-	// AND auditor to audit.
-	// Fire up the message so that it would go parallel with the service
-	// below.
+    public String create(Project project) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
-	String notifTxt = auth.getStaff() == null ? auth.getUser()
-		.getUsername() : auth.getStaff().getFullName()
-		+ " created a new project " + project.getName();
-
-	Notification notification = new Notification("Test Content", auth
-		.getUser().getId());
-
-	this.notificationZSetRepo.add(notification);
-	// this.messageHelper.constructSendMessage(project,
-	// AuditLog.ACTION_CREATE,
-	// "Creating project: " + project.getName());
+	// Construct and send system message.
+	this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
+		AuditAction.CREATE, project.getId(), project.getName());
 
 	// Do service.
 	Company authCompany = auth.getCompany();
 	project.setCompany(authCompany);
 	this.projectDAO.create(project);
+
+	// Return success response.
+	return AlertBoxFactory.SUCCESS.generateCreate(Project.OBJECT_NAME,
+		project.getName());
     }
 
+    /**
+     * Update a project.
+     */
     @Override
     @Transactional
     @Caching(evict = {
@@ -119,28 +116,38 @@ public class ProjectServiceImpl implements ProjectService {
 		    + ":getByIDWithAllCollections", key = "#project.getId()"),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#project.getId()"),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
-    public void update(Project project) {
+    public String update(Project project) {
 	AuthenticationToken auth = this.authHelper.getAuth();
+	String response = "";
 
 	if (this.authHelper.isActionAuthorized(project)) {
-	    // Audit and log.
-	    this.messageHelper.constructSendMessage(
-		    project,
-		    AuditLog.ACTION_UPDATE,
-		    "Updating project: " + project.getId() + " = "
-			    + project.getName());
+
+	    // Construct and send system message.
+	    this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
+		    AuditAction.UPDATE, project.getId(), project.getName());
 
 	    // Actual service.
+	    @SuppressWarnings("deprecation")
 	    Company company = this.companyDAO.getCompanyByObjID(
 		    Project.TABLE_NAME, Project.COLUMN_PRIMARY_KEY,
 		    project.getId());
 	    project.setCompany(company);
 	    this.projectDAO.update(project);
+
+	    // Response for the user.
+	    response = AlertBoxFactory.SUCCESS.generateUpdate(
+		    Project.OBJECT_NAME, project.getName());
 	} else {
-	    logger.warn(this.logHelper.generateLogMessage(auth,
-		    "Not authorized to update project: " + project.getId()
-			    + " = " + project.getName()));
+	    // Log a warning.
+	    logger.warn(this.logHelper.generateLogUnauthorizedMessage(auth,
+		    AuditAction.UPDATE, Project.OBJECT_NAME, project.getId(),
+		    project.getName()));
+
+	    // Construct failed response
+	    response = AlertBoxFactory.FAILED.generateUpdate(
+		    Project.OBJECT_NAME, project.getName());
 	}
+	return response;
     }
 
     @Override
@@ -180,6 +187,9 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Project();
     }
 
+    /**
+     * Delete a project.
+     */
     @Override
     @Transactional
     @Caching(evict = {
@@ -190,21 +200,36 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":listWithAllCollections", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
-    public void delete(long id) {
+    public String delete(long id) {
+
+	// Get auth and actual object.
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectDAO.getByID(id);
+	String response = "";
 
 	if (this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.constructSendMessage(project,
-		    AuditLog.ACTION_DELETE, "Deleting project: " + id + " = "
-			    + project.getName());
+
+	    // Construct and send system message.
+	    this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
+		    AuditAction.DELETE, project.getId(), project.getName());
+
+	    // If authorized, do actual service.
 	    this.projectDAO.delete(id);
+
+	    // Success response.
+	    response = AlertBoxFactory.SUCCESS.generateDelete(
+		    Project.OBJECT_NAME, project.getName());
 	} else {
-	    logger.warn(this.logHelper.generateLogMessage(
-		    auth,
-		    "Not authorized to delete project: " + id + " = "
-			    + project.getName()));
+	    // If not, log as warning.
+	    logger.warn(this.logHelper.generateLogUnauthorizedMessage(auth,
+		    AuditAction.DELETE, Project.OBJECT_NAME, id,
+		    project.getName()));
+
+	    // Failed response.
+	    response = AlertBoxFactory.FAILED.generateDelete(
+		    Project.OBJECT_NAME, project.getName());
 	}
+	return response;
     }
 
     @Override

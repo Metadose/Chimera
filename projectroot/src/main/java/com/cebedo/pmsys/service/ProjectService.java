@@ -8,13 +8,31 @@ import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
 
-    public void create(Project project);
+    /**
+     * Create a new project.
+     * 
+     * @param project
+     * @return
+     */
+    public String create(Project project);
 
     public Project getByID(long projectID);
 
-    public void update(Project project);
+    /**
+     * Update a project.
+     * 
+     * @param project
+     * @return
+     */
+    public String update(Project project);
 
-    public void delete(long id);
+    /**
+     * Delete a project.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
     public List<Project> list();
 

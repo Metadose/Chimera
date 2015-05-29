@@ -290,27 +290,20 @@ public class ProjectController {
     public String create(@ModelAttribute(ATTR_PROJECT) Project project,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
-	// Used for notification purposes.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-
 	// If request is to create a new project.
 	if (project.getId() == 0) {
-	    alertFactory.setMessage("Successfully <b>created</b> project <b>"
-		    + project.getName() + "</b>.");
-	    this.projectService.create(project);
+	    String response = this.projectService.create(project);
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    alertFactory.generateHTML());
+		    response);
 	    status.setComplete();
 	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 		    + SystemConstants.REQUEST_LIST;
 	}
 
 	// If request is to edit a project.
-	alertFactory.setMessage("Successfully <b>updated</b> project <b>"
-		+ project.getName() + "</b>.");
-	this.projectService.update(project);
+	String response = this.projectService.update(project);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();

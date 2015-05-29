@@ -79,6 +79,7 @@
 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
 	</beans:bean>
 	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListener"/>
+	<beans:bean id="notificationMessageListener" class="com.cebedo.pmsys.listener.NotificationMessageListener"/>
     <jms:listener-container
 	      container-type="default"
 	      connection-factory="connectionFactory"
@@ -86,6 +87,7 @@
 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
 	    <jms:listener destination="system.service.post.audit" ref="auditMessageListener" method="onMessage" />
 	    <jms:listener destination="system.service.post.log" ref="logMessageListener" method="onMessage" />
+	    <jms:listener destination="system.service.post.notification" ref="notificationMessageListener" method="onMessage" />
 	    <jms:listener destination="system.mail.send" ref="mailMessageListener" method="onMessage" />
 	</jms:listener-container>
 	  
