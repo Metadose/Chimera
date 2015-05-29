@@ -39,6 +39,14 @@ public class LogHelper {
 	return logMessage(auth, message);
     }
 
+    public String logUnauthorized(AuthenticationToken auth, AuditAction action,
+	    String objectName, String id, String name) {
+	String actionStr = action.label().toLowerCase();
+	String message = "(" + objectName + ") Not authorized to " + actionStr
+		+ ": " + id + " = " + name;
+	return logMessage(auth, message);
+    }
+
     public String constructTextActionOnObj(AuditAction action, String objName,
 	    String name) {
 	return "(" + objName + ") " + action.label() + ": " + name;
@@ -241,6 +249,11 @@ public class LogHelper {
 
     public String logGetObject(AuthenticationToken auth, String objName,
 	    long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
+    }
+
+    public String logGetObject(AuthenticationToken auth, String objName,
+	    String id, String name) {
 	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
     }
 

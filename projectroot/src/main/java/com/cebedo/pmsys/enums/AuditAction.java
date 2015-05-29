@@ -4,7 +4,9 @@ public enum AuditAction {
     CREATE(1, "Create", "Created"), UPDATE(2, "Update", "Updated"), DELETE(3,
 	    "Delete", "Deleted"), GET(4, "Get", "Get"), GET_WITH_COLLECTIONS(4,
 	    "Get With All Collections", "Get With All Collections"), LIST(5,
-	    "List", "Listed");
+	    "List", "Listed"), LIST_WITH_COLLECTIONS(6,
+	    "List With All Collections", "Listed With All Collections"), MARK_READ(
+	    7, "Mark Read", "Marked Read");
 
     String label;
     int id;

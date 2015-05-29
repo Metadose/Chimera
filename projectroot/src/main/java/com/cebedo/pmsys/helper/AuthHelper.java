@@ -3,6 +3,7 @@ package com.cebedo.pmsys.helper;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.cebedo.pmsys.domain.Conversation;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
@@ -273,6 +274,16 @@ public class AuthHelper {
     public boolean isActionAuthorized(Company company) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Conversation obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;
