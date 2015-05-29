@@ -21,7 +21,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 @Service
 public class ConversationServiceImpl implements ConversationService {
 
-    private static Logger logger = Logger.getLogger(Company.OBJECT_NAME);
+    private static Logger logger = Logger.getLogger(Conversation.OBJECT_NAME);
     private LogHelper logHelper = new LogHelper();
     private AuthHelper authHelper = new AuthHelper();
     private ConversationValueRepo conversationValueRepo;

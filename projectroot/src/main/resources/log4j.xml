@@ -29,6 +29,20 @@
 	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
 	</appender>
 	
+	<appender name="deliveryFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/delivery/delivery.html" />
+	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
+	</appender>
+	
+	<appender name="conversationFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/conversation/conversation.html" />
+	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
+	</appender>
+	
 	<appender name="projectFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
@@ -89,6 +103,16 @@
 	<logger name="company">
 		<level value="info" />
 		<appender-ref ref="companyFile" />
+	</logger>
+	
+	<logger name="delivery">
+		<level value="info" />
+		<appender-ref ref="deliveryFile" />
+	</logger>
+	
+	<logger name="conversation">
+		<level value="info" />
+		<appender-ref ref="conversationFile" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->

@@ -1,8 +1,10 @@
 package com.cebedo.pmsys.helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jms.Queue;
 
@@ -15,6 +17,12 @@ import com.cebedo.pmsys.listener.MailMessageListener;
 import com.cebedo.pmsys.listener.MessageListenerImpl;
 import com.cebedo.pmsys.listener.NotificationMessageListener;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -113,6 +121,37 @@ public class MessageHelper {
      * @return
      */
     private Map<String, Object> constructMessageMap(String objName,
+	    AuditAction action, long objID, String name,
+	    List<Long> notificationRecipients) {
+
+	// Get auth object.
+	// Construct needed texts.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	String textNotif = this.notifHelper.constructNotificationText(auth,
+		action, objName, name);
+	String textLog = this.logHelper.constructTextActionOnObj(action,
+		objName, name);
+
+	// Add data to map.
+	Map<String, Object> messageMap = new HashMap<String, Object>();
+	messageMap = addMsgMapUser(messageMap, auth);
+	messageMap = addMsgMapAudit(messageMap, action.id(), objName, objID);
+	messageMap = addMsgMapNotification(messageMap, notificationRecipients,
+		textNotif);
+	messageMap = addMsgMapLog(messageMap, objName, auth, textLog);
+	return messageMap;
+    }
+
+    /**
+     * Construct the message map to be sent to the listeners.
+     * 
+     * @param objName
+     * @param action
+     * @param objID
+     * @param name
+     * @return
+     */
+    private Map<String, Object> constructMessageMap(String objName,
 	    AuditAction action, long objID, String name) {
 
 	// Get auth object.
@@ -157,6 +196,78 @@ public class MessageHelper {
 	// Construct the message.
 	Map<String, Object> messageMap = constructMessageMap(objName, action,
 		objID, name);
+
+	// Get the bean
+	MessageSender sender = (MessageSender) this.beanHelper
+		.getBean(MessageSender.BEAN_NAME);
+
+	// Define the destinations.
+	String destinations = AuditMessageListener.MESSAGE_DESTINATION + ",";
+	destinations += LogMessageListener.MESSAGE_DESTINATION + ",";
+	destinations += MailMessageListener.MESSAGE_DESTINATION;
+	Queue dest = new ActiveMQQueue(destinations);
+
+	// Send the message.
+	sender.send(dest, messageMap);
+    }
+
+    private List<Long> addNotificationRecipients(
+	    List<Long> notificationRecipients, Set<Staff> staffMembers) {
+	for (Staff staff : staffMembers) {
+	    SystemUser user = staff.getUser();
+
+	    // If there is no user or
+	    // the user is already added.
+	    if (user == null || notificationRecipients.contains(user.getId())) {
+		return notificationRecipients;
+	    }
+
+	    // Else, add the user id.
+	    notificationRecipients.add(user.getId());
+	}
+	return notificationRecipients;
+    }
+
+    private List<Long> addNotificationRecipient(
+	    List<Long> notificationRecipients, Staff staff) {
+	SystemUser user = staff.getUser();
+
+	// If there is no user or
+	// the user is already added.
+	if (user == null || notificationRecipients.contains(user.getId())) {
+	    return notificationRecipients;
+	}
+
+	// Else, add the user id.
+	notificationRecipients.add(user.getId());
+	return notificationRecipients;
+    }
+
+    public void constructAndSendMessageMap(AuditAction action, Delivery delivery) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+	Project proj = delivery.getProject();
+
+	// Notify all teams in the project.
+	for (Team team : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff staff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, staff);
+	}
+
+	// Notify all staff involved in this delivery.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, delivery.getStaff());
+
+	// Construct the message.
+	Map<String, Object> messageMap = constructMessageMap(
+		Delivery.OBJECT_NAME, action, delivery.getId(),
+		delivery.getName(), notificationRecipients);
 
 	// Get the bean
 	MessageSender sender = (MessageSender) this.beanHelper
