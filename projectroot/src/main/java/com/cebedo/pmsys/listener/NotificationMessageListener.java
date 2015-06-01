@@ -23,7 +23,7 @@ public class NotificationMessageListener implements MessageListener {
 	    try {
 		// Get map contents.
 		messageMap = ((ActiveMQMapMessage) message).getContentMap();
-
+		System.out.println("Notificaiton message recieved.");
 		// Construct and create notification.
 		// for (long recipientID : notificationRecipients) {
 		// Notification notification = new

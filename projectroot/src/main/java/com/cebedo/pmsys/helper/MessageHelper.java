@@ -515,6 +515,7 @@ public class MessageHelper {
 	// Define the destinations.
 	String destinations = AuditMessageListener.MESSAGE_DESTINATION + ",";
 	destinations += LogMessageListener.MESSAGE_DESTINATION + ",";
+	destinations += NotificationMessageListener.MESSAGE_DESTINATION + ",";
 	destinations += MailMessageListener.MESSAGE_DESTINATION;
 	Queue dest = new ActiveMQQueue(destinations);
 

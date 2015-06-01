@@ -28,6 +28,7 @@ public class LogMessageListener implements MessageListener {
 		// Log the action.
 		Logger.getLogger(String.valueOf(messageMap.get(KEY_LOG_NAME)))
 			.info(String.valueOf(messageMap.get(KEY_LOG_TEXT)));
+
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }
