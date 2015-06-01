@@ -6,7 +6,9 @@ public enum AuditAction {
 	    "Get With All Collections", "Get With All Collections"), LIST(5,
 	    "List", "Listed"), LIST_WITH_COLLECTIONS(6,
 	    "List With All Collections", "Listed With All Collections"), MARK_READ(
-	    7, "Mark Read", "Marked Read");
+	    7, "Mark Read", "Marked Read"), ASSIGN(8, "Assign", "Assigned"), UNASSIGN(
+	    9, "Unassign", "Unassigned"), UNASSIGN_ALL(10, "Unassign All",
+	    "Unassigned All");
 
     String label;
     int id;

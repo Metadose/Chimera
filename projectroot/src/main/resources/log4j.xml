@@ -36,6 +36,13 @@
 	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
 	</appender>
 	
+	<appender name="teamFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/team/team.html" />
+	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
+	</appender>
+	
 	<appender name="conversationFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
@@ -108,6 +115,11 @@
 	<logger name="delivery">
 		<level value="info" />
 		<appender-ref ref="deliveryFile" />
+	</logger>
+	
+	<logger name="team">
+		<level value="info" />
+		<appender-ref ref="teamFile" />
 	</logger>
 	
 	<logger name="conversation">

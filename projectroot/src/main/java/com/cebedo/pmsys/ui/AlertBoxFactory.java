@@ -17,24 +17,63 @@ public class AlertBoxFactory {
     private static final String DELIMITER_OBJECT_TYPE = "DELIMITER_OBJECT_TYPE";
     private static final String DELIMITER_OBJECT_NAME = "DELIMITER_OBJECT_NAME";
 
+    /**
+     * Create.
+     */
     private static String TEMPLATE_SUCCESS_CREATE = "Successfully <b>created</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     private static String TEMPLATE_FAILED_CREATE = "Failed to <b>create</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
+    /**
+     * Update.
+     */
     private static String TEMPLATE_SUCCESS_UPDATE = "Successfully <b>updated</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     private static String TEMPLATE_FAILED_UPDATE = "Failed to <b>update</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
+    /**
+     * Delete.
+     */
     private static String TEMPLATE_SUCCESS_DELETE = "Successfully <b>deleted</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     private static String TEMPLATE_FAILED_DELETE = "Failed to <b>delete</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
+    /**
+     * Assign.
+     */
+    private static String TEMPLATE_SUCCESS_ASSIGN = "Successfully <b>assigned</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_ASSIGN = "Failed to <b>assign</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
+     * Unassign.
+     */
+    private static String TEMPLATE_SUCCESS_UNASSIGN = "Successfully <b>unassigned</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_UNASSIGN = "Failed to <b>unassign</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
+     * Unassign All.
+     */
+    private static String TEMPLATE_SUCCESS_UNASSIGN_ALL = "Successfully <b>unassigned all</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    private static String TEMPLATE_FAILED_UNASSIGN_ALL = "Failed to <b>unassign all</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    /**
+     * Template.
+     */
     private final String TEMPLATE = "<div class=\"alert alert-"
 	    + CONFIG_ALERT_STATUS
 	    + " alert-dismissable\"><i class=\"fa fa-"
@@ -68,6 +107,48 @@ public class AlertBoxFactory {
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateUnassignAll(String object) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_UNASSIGN_ALL.replace(
+		    DELIMITER_OBJECT_TYPE, object);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_UNASSIGN_ALL.replace(
+		    DELIMITER_OBJECT_TYPE, object);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateUnassign(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_UNASSIGN.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_UNASSIGN.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateAssign(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_ASSIGN.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_ASSIGN.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	}
 	this.message = result;

@@ -52,6 +52,13 @@ public class LogHelper {
 	return "(" + objName + ") " + action.label() + ": " + name;
     }
 
+    public String constructTextActionOnObjWithAssoc(AuditAction action,
+	    String objName, String name, String objNameAssoc, String nameAssoc) {
+	// Sample: (Team under Project) Assign: Excavators under ABC Dorm
+	return "(" + objNameAssoc + " under " + objName + ") " + action.label()
+		+ ": " + objNameAssoc + " under " + name;
+    }
+
     /**
      * Generate a log message using the auth.
      * 
@@ -300,5 +307,21 @@ public class LogHelper {
 	String message = "(" + objectName + ") Not authorized to " + actionStr
 		+ " if not super admin.";
 	return logMessage(auth, message);
+    }
+
+    /**
+     * Sample: (Team under Project) Unassign All: All Under ABC Dorm.
+     * 
+     * @param action
+     * @param objectName
+     * @param name
+     * @param objectNameAssoc
+     * @return
+     */
+    public String constructTextActionOnObjWithAssoc(AuditAction action,
+	    String objectName, String name, String objectNameAssoc) {
+	// Sample: (Team under Project) Unassign All: All under ABC Dorm
+	return "(" + objectNameAssoc + " under " + objectName + ") "
+		+ action.label() + ": All under " + name;
     }
 }

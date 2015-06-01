@@ -21,6 +21,8 @@ public class AuditMessageListener implements MessageListener {
     public final static String KEY_AUDIT_ACTION = "auditAction";
     public final static String KEY_AUDIT_OBJECT_NAME = "objName";
     public final static String KEY_AUDIT_OBJECT_ID = "objID";
+    public final static String KEY_AUDIT_OBJECT_NAME_ASSOC = "objNameAssoc";
+    public final static String KEY_AUDIT_OBJECT_ID_ASSOC = "objIDAssoc";
 
     private AuditLogDAO auditLogDAO;
 
@@ -45,14 +47,44 @@ public class AuditMessageListener implements MessageListener {
 			.get(MessageListenerImpl.KEY_USER_IP_ADDR));
 
 		// Audit the action.
-		AuditLog audit = new AuditLog(AuditLog.ACTION_CREATE, user,
-			ipAddr);
-		audit.setCompany((Company) messageMap.get(KEY_COMPANY));
-		audit.setObjectName(String.valueOf(messageMap
-			.get(KEY_AUDIT_OBJECT_NAME)));
-		audit.setObjectID(Long.valueOf(String.valueOf(messageMap
-			.get(KEY_AUDIT_OBJECT_ID))));
-		this.auditLogDAO.create(audit);
+		int actionID = Integer.valueOf(String.valueOf(messageMap
+			.get(KEY_AUDIT_ACTION)));
+		String objName = String.valueOf(messageMap
+			.get(KEY_AUDIT_OBJECT_NAME));
+		long objID = Long.valueOf(String.valueOf(messageMap
+			.get(KEY_AUDIT_OBJECT_ID)));
+		Company company = (Company) messageMap.get(KEY_COMPANY);
+
+		// If a slave exists,
+		// create separate entry.
+		String slaveName = String.valueOf(messageMap
+			.get(KEY_AUDIT_OBJECT_NAME_ASSOC));
+		long slaveID = Long.valueOf(String.valueOf(messageMap
+			.get(KEY_AUDIT_OBJECT_ID_ASSOC)));
+		if (slaveName != null) {
+		    // New audit entry.
+		    AuditLog audit = new AuditLog(actionID, user, ipAddr);
+		    audit.setCompany(company);
+		    audit.setObjectName(objName);
+		    audit.setObjectID(objID);
+		    this.auditLogDAO.create(audit);
+
+		    // If a slave exists, create separate entry.
+		    audit.setObjectName(slaveName);
+		    audit.setObjectID(slaveID);
+		    this.auditLogDAO.create(audit);
+		}
+
+		// Normal behaviour.
+		// New audit entry.
+		else {
+		    AuditLog audit = new AuditLog(actionID, user, ipAddr);
+		    audit.setCompany(company);
+		    audit.setObjectName(objName);
+		    audit.setObjectID(objID);
+		    this.auditLogDAO.create(audit);
+		}
+
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }

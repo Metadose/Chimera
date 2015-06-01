@@ -229,7 +229,7 @@ public class TeamController {
 	    @RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
 	    RedirectAttributes redirectAttrs) {
 	String teamName = this.teamService.getNameByID(teamID);
-	this.teamService.unassignAllTeamsFromProject(teamID);
+	this.teamService.unassignAllProjectsAssociatedToTeam(teamID);
 
 	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned " + teamName

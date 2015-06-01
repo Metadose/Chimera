@@ -89,8 +89,8 @@ public class ProjectServiceImpl implements ProjectService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// Construct and send system message.
-	this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
-		AuditAction.CREATE, project.getId(), project.getName());
+	this.messageHelper.constructAndSendMessageMap(AuditAction.CREATE,
+		project);
 
 	// Do service.
 	Company authCompany = auth.getCompany();
@@ -123,8 +123,8 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
-		    AuditAction.UPDATE, project.getId(), project.getName());
+	    this.messageHelper.constructAndSendMessageMap(AuditAction.UPDATE,
+		    project);
 
 	    // Actual service.
 	    Company company = this.companyDAO.getCompanyByObjID(
@@ -212,8 +212,8 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.constructAndSendMessageMap(Project.OBJECT_NAME,
-		    AuditAction.DELETE, project.getId(), project.getName());
+	    this.messageHelper.constructAndSendMessageMap(AuditAction.DELETE,
+		    project);
 
 	    // If authorized, do actual service.
 	    this.projectDAO.delete(id);

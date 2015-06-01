@@ -14,9 +14,62 @@ public class NotificationHelper {
     public String constructNotificationText(AuthenticationToken auth,
 	    AuditAction action, String objName, String name) {
 	String notifTxt = auth.getStaff() == null ? auth.getUser()
-		.getUsername() : auth.getStaff().getFullName() + " "
-		+ action.pastTense().toLowerCase() + " "
-		+ objName.toLowerCase() + " " + name + ".";
+		.getUsername() : auth.getStaff().getFullName() + " ";
+	notifTxt += action.pastTense().toLowerCase() + " ";
+	notifTxt += objName.toLowerCase() + " " + name + ".";
+	return notifTxt;
+    }
+
+    /**
+     * Sample: John assigned all Team entries under Project Rizal Dorm.
+     * 
+     * @param auth
+     * @param action
+     * @param objName
+     * @param name
+     * @param objNameAssoc
+     * @return
+     */
+    public String constructNotificationUnassignAllText(
+	    AuthenticationToken auth, AuditAction action, String objName,
+	    String name, String objNameAssoc) {
+
+	// Sample: John assigned all Team entries under Project Rizal Dorm.
+	String executor = auth.getStaff() == null ? auth.getUser()
+		.getUsername() : auth.getStaff().getFullName();
+	String actionStr = action.pastTense().toLowerCase();
+
+	// Construct.
+	String notifTxt = executor + " " + actionStr + " " + objNameAssoc
+		+ " entries under " + objName + " " + name;
+
+	return notifTxt;
+    }
+
+    /**
+     * Assign/unassign objects.
+     * 
+     * @param auth
+     * @param action
+     * @param objName
+     * @param name
+     * @param objNameAssoc
+     * @param nameAssoc
+     * @return
+     */
+    public String constructNotificationAssignText(AuthenticationToken auth,
+	    AuditAction action, String objName, String name,
+	    String objNameAssoc, String nameAssoc) {
+
+	// Sample: John assigned Team Excavators to Project Rizal Dorm.
+	String executor = auth.getStaff() == null ? auth.getUser()
+		.getUsername() : auth.getStaff().getFullName();
+	String actionStr = action.pastTense().toLowerCase();
+
+	// Construct.
+	String notifTxt = "" + executor + " " + actionStr + " " + objNameAssoc
+		+ " " + nameAssoc + " to " + objName + " " + name;
+
 	return notifTxt;
     }
 
