@@ -89,7 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// Construct and send system message.
-	this.messageHelper.constructAndSendMessageMap(AuditAction.CREATE,
+	this.messageHelper.sendAction(AuditAction.CREATE,
 		project);
 
 	// Do service.
@@ -123,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.UPDATE,
+	    this.messageHelper.sendAction(AuditAction.UPDATE,
 		    project);
 
 	    // Actual service.
@@ -212,7 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.DELETE,
+	    this.messageHelper.sendAction(AuditAction.DELETE,
 		    project);
 
 	    // If authorized, do actual service.

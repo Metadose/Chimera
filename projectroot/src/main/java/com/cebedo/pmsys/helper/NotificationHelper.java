@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
@@ -17,6 +18,31 @@ public class NotificationHelper {
 		.getUsername() : auth.getStaff().getFullName() + " ";
 	notifTxt += action.pastTense().toLowerCase() + " ";
 	notifTxt += objName.toLowerCase() + " " + name + ".";
+	return notifTxt;
+    }
+
+    /**
+     * Sample: John changed status of Task Excavation to Ongoing.
+     * 
+     * @param auth
+     * @param action
+     * @param objName
+     * @param name
+     * @param objNameAssoc
+     * @return
+     */
+    public String constructNotificationStatusUpdate(AuthenticationToken auth,
+	    String objName, String name, TaskStatus status) {
+
+	// Sample: John assigned all Team entries under Project Rizal Dorm.
+	String executor = auth.getStaff() == null ? auth.getUser()
+		.getUsername() : auth.getStaff().getFullName();
+	String statusStr = status.label();
+
+	// Construct.
+	String notifTxt = executor + " changed status of " + objName + " "
+		+ name + " to " + statusStr + ".";
+
 	return notifTxt;
     }
 
@@ -47,7 +73,8 @@ public class NotificationHelper {
     }
 
     /**
-     * Assign/unassign objects.
+     * Assign/unassign objects.<br>
+     * Sample: John assigned Team Excavators to Project Rizal Dorm.
      * 
      * @param auth
      * @param action
@@ -57,7 +84,7 @@ public class NotificationHelper {
      * @param nameAssoc
      * @return
      */
-    public String constructNotificationAssignText(AuthenticationToken auth,
+    public String constructNotificationAssignUnassign(AuthenticationToken auth,
 	    AuditAction action, String objName, String name,
 	    String objNameAssoc, String nameAssoc) {
 
@@ -65,10 +92,11 @@ public class NotificationHelper {
 	String executor = auth.getStaff() == null ? auth.getUser()
 		.getUsername() : auth.getStaff().getFullName();
 	String actionStr = action.pastTense().toLowerCase();
+	String link = action == AuditAction.ASSIGN ? "to" : "from";
 
 	// Construct.
-	String notifTxt = "" + executor + " " + actionStr + " " + objNameAssoc
-		+ " " + nameAssoc + " to " + objName + " " + name;
+	String notifTxt = executor + " " + actionStr + " " + objNameAssoc + " "
+		+ nameAssoc + " " + link + " " + objName + " " + name;
 
 	return notifTxt;
     }

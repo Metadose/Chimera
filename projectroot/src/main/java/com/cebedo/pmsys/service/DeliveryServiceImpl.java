@@ -40,7 +40,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	if (this.authHelper.isActionAuthorized(delivery)) {
 
 	    // Post-service message.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.CREATE,
+	    this.messageHelper.sendAction(AuditAction.CREATE,
 		    delivery);
 
 	    // Do service.
@@ -96,7 +96,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	if (this.authHelper.isActionAuthorized(delivery)) {
 	    // Log action and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.UPDATE,
+	    this.messageHelper.sendAction(AuditAction.UPDATE,
 		    delivery);
 
 	    // Do action.
@@ -127,7 +127,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	if (this.authHelper.isActionAuthorized(delivery)) {
 	    // Log action and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.DELETE,
+	    this.messageHelper.sendAction(AuditAction.DELETE,
 		    delivery);
 
 	    // Do service.

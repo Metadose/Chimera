@@ -37,7 +37,7 @@ public class CompanyServiceImpl implements CompanyService {
 	String result = "";
 	if (auth.isSuperAdmin()) {
 	    // Log and notifications happen here.
-	    this.messageHelper.constructAndSendMessageMap(Company.OBJECT_NAME,
+	    this.messageHelper.sendAction(Company.OBJECT_NAME,
 		    AuditAction.CREATE, company.getId(), company.getName());
 
 	    // Do actual service and construct response.
@@ -86,7 +86,7 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Create post-service operations.
-	    this.messageHelper.constructAndSendMessageMap(Company.OBJECT_NAME,
+	    this.messageHelper.sendAction(Company.OBJECT_NAME,
 		    AuditAction.UPDATE, company.getId(), company.getName());
 
 	    // Do actual update to object.
@@ -117,7 +117,7 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Proceed to post-service operations.
-	    this.messageHelper.constructAndSendMessageMap(Company.OBJECT_NAME,
+	    this.messageHelper.sendAction(Company.OBJECT_NAME,
 		    AuditAction.DELETE, id, company.getName());
 
 	    // Do actual service.

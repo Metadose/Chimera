@@ -52,6 +52,16 @@ public class LogHelper {
 	return "(" + objName + ") " + action.label() + ": " + name;
     }
 
+    /**
+     * Sample: (Team under Project) Assign: Excavators under ABC Dorm
+     * 
+     * @param action
+     * @param objName
+     * @param name
+     * @param objNameAssoc
+     * @param nameAssoc
+     * @return
+     */
     public String constructTextActionOnObjWithAssoc(AuditAction action,
 	    String objName, String name, String objNameAssoc, String nameAssoc) {
 	// Sample: (Team under Project) Assign: Excavators under ABC Dorm

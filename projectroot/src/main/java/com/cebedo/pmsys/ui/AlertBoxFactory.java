@@ -72,6 +72,24 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " entries.";
 
     /**
+     * Delete All.
+     */
+    private static String TEMPLATE_SUCCESS_DELETE_ALL = "Successfully <b>deleted all</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    private static String TEMPLATE_FAILED_DELETE_ALL = "Failed to <b>delete all</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    /**
+     * Mark As.
+     */
+    private static String TEMPLATE_SUCCESS_MARK_AS = "Successfully <b>updated the status</b> of "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_MARK_AS = "Failed to <b>update the status</b> of "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
      * Template.
      */
     private final String TEMPLATE = "<div class=\"alert alert-"
@@ -108,6 +126,34 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateMarkAs(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_MARK_AS.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_MARK_AS.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateDeleteAll(String object) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_DELETE_ALL.replace(DELIMITER_OBJECT_TYPE,
+		    object);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_DELETE_ALL.replace(DELIMITER_OBJECT_TYPE,
+		    object);
 	}
 	this.message = result;
 	return generateHTML();

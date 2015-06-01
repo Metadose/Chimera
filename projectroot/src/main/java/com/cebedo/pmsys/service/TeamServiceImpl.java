@@ -59,8 +59,7 @@ public class TeamServiceImpl implements TeamService {
 	team.setCompany(authCompany);
 	if (this.authHelper.isActionAuthorized(team)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.CREATE,
-		    team);
+	    this.messageHelper.sendAction(AuditAction.CREATE, team);
 
 	    // Do action.
 	    this.teamDAO.create(team);
@@ -118,8 +117,7 @@ public class TeamServiceImpl implements TeamService {
 	team.setCompany(company);
 	if (this.authHelper.isActionAuthorized(team)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.UPDATE,
-		    team);
+	    this.messageHelper.sendAction(AuditAction.UPDATE, team);
 
 	    // Do service.
 	    this.teamDAO.update(team);
@@ -149,8 +147,7 @@ public class TeamServiceImpl implements TeamService {
 
 	if (this.authHelper.isActionAuthorized(team)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.DELETE,
-		    team);
+	    this.messageHelper.sendAction(AuditAction.DELETE, team);
 
 	    // Do service.
 	    this.teamDAO.delete(id);
@@ -206,8 +203,8 @@ public class TeamServiceImpl implements TeamService {
 		&& this.authHelper.isActionAuthorized(team)) {
 
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.ASSIGN,
-		    project, team);
+	    this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, project,
+		    team);
 
 	    // Do action.
 	    TeamAssignment assignment = new TeamAssignment();
@@ -245,7 +242,7 @@ public class TeamServiceImpl implements TeamService {
 	if (this.authHelper.isActionAuthorized(project)
 		&& this.authHelper.isActionAuthorized(team)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(AuditAction.UNASSIGN,
+	    this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN,
 		    project, team);
 
 	    // Do service.
@@ -279,8 +276,7 @@ public class TeamServiceImpl implements TeamService {
 
 	if (this.authHelper.isActionAuthorized(project)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(
-		    AuditAction.UNASSIGN_ALL, Team.OBJECT_NAME, project);
+	    this.messageHelper.sendUnassignAll(Team.OBJECT_NAME, project);
 
 	    // Do service.
 	    this.teamDAO.unassignAllProjectTeams(projectID);
@@ -337,8 +333,7 @@ public class TeamServiceImpl implements TeamService {
 
 	if (this.authHelper.isActionAuthorized(team)) {
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(
-		    AuditAction.UNASSIGN_ALL, Staff.OBJECT_NAME, team);
+	    this.messageHelper.sendUnassignAll(Staff.OBJECT_NAME, team);
 
 	    // Do service.
 	    this.teamDAO.unassignAllMembers(teamID);
@@ -369,8 +364,7 @@ public class TeamServiceImpl implements TeamService {
 	if (this.authHelper.isActionAuthorized(team)) {
 
 	    // Log and notify.
-	    this.messageHelper.constructAndSendMessageMap(
-		    AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, team);
+	    this.messageHelper.sendUnassignAll(Project.OBJECT_NAME, team);
 
 	    // Do service.
 	    this.teamDAO.unassignAllTeamsFromProject(teamID);

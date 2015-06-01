@@ -8,7 +8,8 @@ public enum AuditAction {
 	    "List With All Collections", "Listed With All Collections"), MARK_READ(
 	    7, "Mark Read", "Marked Read"), ASSIGN(8, "Assign", "Assigned"), UNASSIGN(
 	    9, "Unassign", "Unassigned"), UNASSIGN_ALL(10, "Unassign All",
-	    "Unassigned All");
+	    "Unassigned All"), MARK_AS(11, "Mark As", "Marked As"), DELETE_ALL(
+	    12, "Delete All", "Deleted All");
 
     String label;
     int id;

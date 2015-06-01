@@ -6,59 +6,140 @@ import com.cebedo.pmsys.model.Task;
 
 public interface TaskService {
 
-	public void create(Task task);
+    /**
+     * Create a task.
+     * 
+     * @param task
+     * @return
+     */
+    public String create(Task task);
 
-	public Task getByID(long id);
+    public Task getByID(long id);
 
-	public void update(Task task);
+    /**
+     * Update a task.
+     * 
+     * @param task
+     * @return
+     */
+    public String update(Task task);
 
-	public void delete(long id);
+    /**
+     * Delete a task.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
-	public List<Task> list();
+    public List<Task> list();
 
-	public List<Task> listWithAllCollections();
+    public List<Task> listWithAllCollections();
 
-	public void mark(long taskID, int status);
+    /**
+     * Set the task to the status specified.
+     * 
+     * @param taskID
+     * @param status
+     * @return
+     */
+    public String mark(long taskID, int status);
 
-	public void assignStaffTask(long taskID, long staffID);
+    /**
+     * Assign a staff under task.
+     * 
+     * @param taskID
+     * @param staffID
+     * @return
+     */
+    public String assignStaffTask(long taskID, long staffID);
 
-	public void assignTeamTask(long taskID, long teamID);
+    /**
+     * Assign a team under task.
+     * 
+     * @param taskID
+     * @param staffID
+     * @return
+     */
+    public String assignTeamTask(long taskID, long teamID);
 
-	public Task getByIDWithAllCollections(long id);
+    public Task getByIDWithAllCollections(long id);
 
-	public void unassignTeamTask(long taskID, long teamID);
+    /**
+     * Unassign a team under task.
+     * 
+     * @param taskID
+     * @param teamID
+     * @return
+     */
+    public String unassignTeamTask(long taskID, long teamID);
 
-	/**
-	 * Unassign all teams in a given task.
-	 * 
-	 * @param taskID
-	 */
-	public void unassignAllTeamsInTask(long taskID);
+    /**
+     * Unassign all teams in a given task.
+     * 
+     * @param taskID
+     * @return
+     */
+    public String unassignAllTeamsInTask(long taskID);
 
-	/**
-	 * Unassign a staff from a task.
-	 * 
-	 * @param taskID
-	 * @param staffID
-	 */
-	public void unassignStaffTask(long taskID, long staffID);
+    /**
+     * Unassign a staff from a task.
+     * 
+     * @param taskID
+     * @param staffID
+     * @return
+     */
+    public String unassignStaffTask(long taskID, long staffID);
 
-	/**
-	 * Unassign all staff from a task.
-	 * 
-	 * @param taskID
-	 */
-	public void unassignAllStaffTasks(long taskID);
+    /**
+     * Unassign all staff from a task.
+     * 
+     * @param taskID
+     * @return
+     */
+    public String unassignAllStaffTasks(long taskID);
 
-	public void deleteAllTasksByProject(long projectID);
+    /**
+     * Delete all tasks given a project.
+     * 
+     * @param projectID
+     * @return
+     */
+    public String deleteAllTasksByProject(long projectID);
 
-	public void createWithProject(Task task, long projectID);
+    /**
+     * Create a task with a linked project.
+     * 
+     * @param task
+     * @param projectID
+     * @return
+     */
+    public String createWithProject(Task task, long projectID);
 
-	public void merge(Task task);
+    /**
+     * Update a task.
+     * 
+     * @param task
+     * @return
+     */
+    public String merge(Task task);
 
-	public String getTitleByID(long taskID);
+    public String getTitleByID(long taskID);
 
-	public void unassignAllTasksByProject(long projectID);
+    /**
+     * Unassign all tasks given a project.
+     * 
+     * @param projectID
+     * @return
+     */
+    public String unassignAllTasksByProject(long projectID);
 
-	public void unassignTaskByProject(long taskID, long projectID);
+    /**
+     * Unassign a task given a project.
+     * 
+     * @param taskID
+     * @param projectID
+     * @return
+     */
+    public String unassignTaskByProject(long taskID, long projectID);
 }
