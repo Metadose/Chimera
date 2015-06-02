@@ -144,6 +144,12 @@ public class ProjectController {
 	this.projectService = s;
     }
 
+    /**
+     * List projects.
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
@@ -164,14 +170,17 @@ public class ProjectController {
 	    + Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllProjectManagers(HttpSession session,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
+
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	long projectID = project.getId();
-	this.staffService.unassignAllProjectManagers(projectID);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
+	// Get response.
+	String response = this.staffService
+		.unassignAllProjectManagers(projectID);
+
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -195,27 +204,16 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-
-	// Error handling if staff was not set properly.
-	if (project == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    alertFactory.generateHTML());
-	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
-		    + "/" + SystemConstants.REQUEST_LIST;
-	}
 	long projectID = project.getId();
-	String staffName = this.staffService.getNameByID(staffID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned " + staffName
-		+ "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
 
-	this.staffService.unassignProjectManager(projectID, staffID);
+	// Get response.
+	String response = this.staffService.unassignProjectManager(projectID,
+		staffID);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -239,39 +237,32 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-
-	// Error handling if staff was not set properly.
-	if (project == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    alertFactory.generateHTML());
-	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
-		    + "/" + SystemConstants.REQUEST_LIST;
-	}
-
 	long staffID = staffAssignment.getStaffID();
 	String position = staffAssignment.getPosition();
 
-	// Fetch staff name, construct ui notifs.
-	String staffName = this.staffService.getNameByID(staffID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>assigned " + staffName
-		+ "</b> as <b>" + position + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
-
+	// Get response.
 	// Do service, clear session.
 	// Then redirect.
-	this.staffService.assignProjectManager(project.getId(), staffID,
-		position);
+	String response = this.staffService.assignProjectManager(
+		project.getId(), staffID, position);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
     }
 
+    /**
+     * Create a new project.
+     * 
+     * @param project
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_PROJECT) Project project,
@@ -279,18 +270,27 @@ public class ProjectController {
 
 	// If request is to create a new project.
 	if (project.getId() == 0) {
+
+	    // Get response.
 	    String response = this.projectService.create(project);
+
+	    // Attach response.
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		    response);
+
 	    status.setComplete();
 	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 		    + SystemConstants.REQUEST_LIST;
 	}
 
+	// Get response.
 	// If request is to edit a project.
 	String response = this.projectService.update(project);
+
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();

@@ -19,6 +19,7 @@ import com.cebedo.pmsys.listener.MessageListenerImpl;
 import com.cebedo.pmsys.listener.NotificationMessageListener;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SecurityRole;
@@ -26,6 +27,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -1020,6 +1022,56 @@ public class MessageHelper {
 	Map<String, Object> messageMap = constructUnassignAllDeleteAll(
 		Staff.OBJECT_NAME, AuditAction.UNASSIGN_ALL, staff.getId(),
 		staff.getFullName(), notificationRecipients, objectNameAssoc);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAction(AuditAction action, Field field) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	Company co = auth.getCompany();
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, co.getAdmins());
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAction(Field.OBJECT_NAME,
+		action, field.getId(), field.getName(), notificationRecipients);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAssignUnassign(AuditAction action, Project proj,
+	    FieldAssignment fieldAssignment) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Notify all staff assigned to task.
+	for (Task task : proj.getAssignedTasks()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, task.getStaff());
+	}
+
+	// Notify all company admins.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, proj.getCompany().getAdmins());
+
+	// Notify all teams in the project.
+	for (Team assignedTeam : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, assignedTeam.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff staff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, staff);
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAssignUnassign(
+		Project.OBJECT_NAME, action, proj.getId(), proj.getName(),
+		notificationRecipients, Field.OBJECT_NAME,
+		fieldAssignment.getLabel(), fieldAssignment.getField().getId());
 	sendMessageMap(messageMap);
     }
 }

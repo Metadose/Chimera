@@ -9,48 +9,89 @@ import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 
 public interface FieldService {
 
-	public void create(Field field);
+    /**
+     * Create a new field.
+     * 
+     * @param field
+     * @return
+     */
+    public String create(Field field);
 
-	public Field getByID(long id);
+    public Field getByID(long id);
 
-	public void update(Field field);
+    /**
+     * Update a field.
+     * 
+     * @param field
+     * @return
+     */
+    public String update(Field field);
 
-	public void delete(long id);
+    /**
+     * Delete a field.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
-	public List<Field> list();
+    public List<Field> list();
 
-	public List<Field> listWithAllCollections();
+    public List<Field> listWithAllCollections();
 
-	public void assignProject(FieldAssignment fieldAssignment, long fieldID,
-			long projectID);
+    /**
+     * Assign a new field to a project.
+     * 
+     * @param fieldAssignment
+     * @param fieldID
+     * @param projectID
+     * @return
+     */
+    public String assignProject(FieldAssignment fieldAssignment, long fieldID,
+	    long projectID);
 
-	public void unassignProject(long fieldID, long projID, String label,
-			String value);
+    /**
+     * Unassign a field from a project.
+     * 
+     * @param fieldID
+     * @param projID
+     * @param label
+     * @param value
+     * @return
+     */
+    public String unassignProject(long fieldID, long projID, String label,
+	    String value);
 
-	public void unassignAllProjects(long projectID);
+    /**
+     * Unassign all field under a project.
+     * 
+     * @param projectID
+     * @return
+     */
+    public String unassignAllProjects(long projectID);
 
-	public void updateAssignedProjectField(long projectID, long fieldID,
-			String oldLabel, String oldValue, String label2, String value2);
+    public void updateAssignedProjectField(long projectID, long fieldID,
+	    String oldLabel, String oldValue, String label2, String value2);
 
-	public void assignTask(TaskFieldAssignment taskField, long fieldID,
-			long taskID);
+    public void assignTask(TaskFieldAssignment taskField, long fieldID,
+	    long taskID);
 
-	public void unassignAllTasks(long taskID);
+    public void unassignAllTasks(long taskID);
 
-	public void unassignTask(long fieldID, long taskID, String label,
-			String value);
+    public void unassignTask(long fieldID, long taskID, String label,
+	    String value);
 
-	public void updateAssignedTaskField(long taskID, long fieldID,
-			String oldLabel, String oldValue, String label, String value);
+    public void updateAssignedTaskField(long taskID, long fieldID,
+	    String oldLabel, String oldValue, String label, String value);
 
-	public void unassignStaff(long fieldID, long staffID, String label,
-			String value);
+    public void unassignStaff(long fieldID, long staffID, String label,
+	    String value);
 
-	public void assignStaff(StaffFieldAssignment fieldAssignment, long fieldID,
-			long staffID);
+    public void assignStaff(StaffFieldAssignment fieldAssignment, long fieldID,
+	    long staffID);
 
-	public void unassignAllStaff(long staffID);
+    public void unassignAllStaff(long staffID);
 
-	public void updateAssignedStaffField(long staffID, long fieldID,
-			String oldLabel, String oldValue, String label, String value);
+    public void updateAssignedStaffField(long staffID, long fieldID,
+	    String oldLabel, String oldValue, String label, String value);
 }

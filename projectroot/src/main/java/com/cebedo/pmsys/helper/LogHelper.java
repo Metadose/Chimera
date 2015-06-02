@@ -233,6 +233,10 @@ public class LogHelper {
 		+ company.getId() + " = " + company.getName();
     }
 
+    private String constructTextListWithoutCompany(String objectName) {
+	return "(" + objectName + ") Listing all without company";
+    }
+
     /**
      * Generate log when listing entries from all companies.
      * 
@@ -339,5 +343,10 @@ public class LogHelper {
 	// Sample: (Team under Project) Unassign All: All under ABC Dorm
 	return "(" + objectNameAssoc + " under " + objectName + ") "
 		+ action.label() + ": All under " + name;
+    }
+
+    public String logListWithoutCompany(AuthenticationToken auth,
+	    String objectName) {
+	return logMessage(auth, constructTextListWithoutCompany(objectName));
     }
 }
