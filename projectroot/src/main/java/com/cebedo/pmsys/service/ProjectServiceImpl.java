@@ -312,7 +312,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String getNameByID(long projectID) {
 	AuthenticationToken token = this.authHelper.getAuth();
 	String name = this.projectDAO.getNameByID(projectID);
-	logger.info(this.logHelper.logGetObjectProperty(token,
+	logger.info(this.logHelper.logGetProperty(token,
 		Project.OBJECT_NAME, Project.PROPERTY_NAME, projectID, name));
 	return name;
     }

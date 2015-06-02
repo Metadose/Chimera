@@ -8,37 +8,103 @@ import com.cebedo.pmsys.model.SystemUser;
 
 public interface SystemUserService {
 
-	public void initRoot();
+    public void initRoot();
 
-	public List<SystemUser> list();
+    public List<SystemUser> list();
 
-	public void create(SystemUser user);
+    /**
+     * Create a new system user.
+     * 
+     * @param user
+     * @return
+     */
+    public String create(SystemUser user);
 
-	public void update(SystemUser user);
+    /**
+     * Update a user.
+     * 
+     * @param user
+     * @return
+     */
+    public String update(SystemUser user);
 
-	public void update(SystemUser user, boolean systemOverride);
+    /**
+     * Update a user.
+     * 
+     * @param user
+     * @param systemOverride
+     * @return
+     */
+    public String update(SystemUser user, boolean systemOverride);
 
-	public void delete(long id);
+    /**
+     * Delete a user given an id.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
-	public SystemUser getByID(long id);
+    public SystemUser getByID(long id);
 
-	public SystemUser getWithSecurityByID(long id);
+    public SystemUser getWithSecurityByID(long id);
 
-	public SystemUser getByID(long id, boolean override);
+    public SystemUser getByID(long id, boolean override);
 
-	public SystemUser searchDatabase(String name);
+    public SystemUser searchDatabase(String name);
 
-	public void assignSecurityAccess(SystemUser user,
-			UserSecAccessBean secAccBean);
+    /**
+     * Assign a security access to a user.
+     * 
+     * @param user
+     * @param secAccBean
+     * @return
+     */
+    public String assignSecurityAccess(SystemUser user,
+	    UserSecAccessBean secAccBean);
 
-	public void unassignSecurityAccess(SystemUser user, long secAccID);
+    /**
+     * Unassign a security access from a user.
+     * 
+     * @param user
+     * @param secAccID
+     * @return
+     */
+    public String unassignSecurityAccess(SystemUser user, long secAccID);
 
-	public void unassignSecurityRole(SystemUser user, long secRoleID);
+    /**
+     * Unassign a security role from a user.
+     * 
+     * @param user
+     * @param secRoleID
+     * @return
+     */
+    public String unassignSecurityRole(SystemUser user, long secRoleID);
 
-	public void unassignAllSecurityAccess(SystemUser user);
+    /**
+     * Unassign all security access.
+     * 
+     * @param user
+     * @return
+     */
+    public String unassignAllSecurityAccess(SystemUser user);
 
-	public void unassignAllSecurityRoles(SystemUser user);
+    /**
+     * Unassign all security roles.
+     * 
+     * @param user
+     * @return
+     */
+    public String unassignAllSecurityRoles(SystemUser user);
 
-	public void assignSecurityRole(SystemUser user, UserSecRoleBean secRoleBean);
+    /**
+     * Assign a security role to a user.
+     * 
+     * @param user
+     * @param secRoleBean
+     * @return
+     */
+    public String assignSecurityRole(SystemUser user,
+	    UserSecRoleBean secRoleBean);
 
 }

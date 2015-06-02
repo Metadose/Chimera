@@ -258,10 +258,16 @@ public class LogHelper {
 	return logMessage(token, constructTextListFromCompany(objName, company));
     }
 
-    public String logGetObjectProperty(AuthenticationToken auth,
-	    String objName, String objProperty, long id, String name) {
+    public String logGetProperty(AuthenticationToken auth, String objName,
+	    String objProperty, long id, String name) {
 	return logMessage(auth, "(" + objName + ") Get " + objProperty + ": "
 		+ id + " = " + name);
+    }
+
+    public String logGetObjectWithProperty(AuthenticationToken auth,
+	    String objName, String objProperty, long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get with " + objProperty
+		+ ": " + id + " = " + name);
     }
 
     public String logGetObject(AuthenticationToken auth, String objName,

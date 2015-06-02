@@ -9,7 +9,8 @@ public enum AuditAction {
 	    7, "Mark Read", "Marked Read"), ASSIGN(8, "Assign", "Assigned"), UNASSIGN(
 	    9, "Unassign", "Unassigned"), UNASSIGN_ALL(10, "Unassign All",
 	    "Unassigned All"), MARK_AS(11, "Mark As", "Marked As"), DELETE_ALL(
-	    12, "Delete All", "Deleted All");
+	    12, "Delete All", "Deleted All"), GET_PARTIAL(13,
+	    "Get With Partial Properties", "Get With Partial Properties");
 
     String label;
     int id;

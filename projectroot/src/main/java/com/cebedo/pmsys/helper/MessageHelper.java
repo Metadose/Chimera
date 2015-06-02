@@ -20,6 +20,8 @@ import com.cebedo.pmsys.listener.NotificationMessageListener;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.SecurityAccess;
+import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
@@ -826,6 +828,107 @@ public class MessageHelper {
 		Project.OBJECT_NAME, action, proj.getId(), proj.getName(),
 		notificationRecipients, Task.OBJECT_NAME, task.getTitle(),
 		task.getId());
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAction(AuditAction action, SystemUser systemUser) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, systemUser);
+	Company co = systemUser.getCompany();
+	if (co != null) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAction(
+		SystemUser.OBJECT_NAME, action, systemUser.getId(),
+		systemUser.getUsername(), notificationRecipients);
+	sendMessageMap(messageMap);
+    }
+
+    /**
+     * Add a system user to the list of recipients.
+     * 
+     * @param notificationRecipients
+     * @param user
+     * @return
+     */
+    private List<Long> addNotificationRecipient(
+	    List<Long> notificationRecipients, SystemUser user) {
+
+	// If there is no user or
+	// the user is already added.
+	if (user == null || notificationRecipients.contains(user.getId())) {
+	    return notificationRecipients;
+	}
+
+	// Else, add the user id.
+	notificationRecipients.add(user.getId());
+	return notificationRecipients;
+    }
+
+    public void sendAssignUnassign(AuditAction action, SystemUser systemUser,
+	    SecurityAccess secAcc) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, systemUser);
+	Company co = systemUser.getCompany();
+	if (co != null) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAssignUnassign(
+		SystemUser.OBJECT_NAME, action, systemUser.getId(),
+		systemUser.getUsername(), notificationRecipients,
+		SecurityAccess.OBJECT_NAME, secAcc.getLabel(), secAcc.getId());
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAssignUnassign(AuditAction action, SystemUser systemUser,
+	    SecurityRole secRole) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, systemUser);
+	Company co = systemUser.getCompany();
+	if (co != null) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAssignUnassign(
+		SystemUser.OBJECT_NAME, action, systemUser.getId(),
+		systemUser.getUsername(), notificationRecipients,
+		SecurityRole.OBJECT_NAME, secRole.getLabel(), secRole.getId());
+	sendMessageMap(messageMap);
+    }
+
+    public void sendUnassignAll(String objectNameAssoc, SystemUser systemUser) {
+	// Add recipients.
+	List<Long> notificationRecipients = new ArrayList<Long>();
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, systemUser);
+	Company co = systemUser.getCompany();
+	if (co != null) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructUnassignAllDeleteAll(
+		SystemUser.OBJECT_NAME, AuditAction.UNASSIGN_ALL,
+		systemUser.getId(), systemUser.getUsername(),
+		notificationRecipients, objectNameAssoc);
 	sendMessageMap(messageMap);
     }
 }
