@@ -36,8 +36,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
     private LogHelper logHelper = new LogHelper();
-    private static Logger logger = Logger
-	    .getLogger(SystemConstants.LOGGER_SYSTEM_USER);
+    private static Logger logger = Logger.getLogger(SystemUser.OBJECT_NAME);
 
     private SystemUserDAO systemUserDAO;
     private StaffDAO staffDAO;

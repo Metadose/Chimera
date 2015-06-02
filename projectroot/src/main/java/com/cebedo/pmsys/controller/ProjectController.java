@@ -165,19 +165,6 @@ public class ProjectController {
     public String unassignAllProjectManagers(HttpSession session,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-
-	// Error handling if staff was not set properly.
-	if (project == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    alertFactory.generateHTML());
-	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME
-		    + "/" + SystemConstants.REQUEST_LIST;
-	}
-
 	long projectID = project.getId();
 	this.staffService.unassignAllProjectManagers(projectID);
 

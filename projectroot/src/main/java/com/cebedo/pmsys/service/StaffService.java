@@ -13,13 +13,31 @@ import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 
 public interface StaffService {
 
-    public void create(Staff staff);
+    /**
+     * Create a new staff.
+     * 
+     * @param staff
+     * @return
+     */
+    public String create(Staff staff);
 
     public Staff getByID(long id);
 
-    public void update(Staff staff);
+    /**
+     * Update a staff.
+     * 
+     * @param staff
+     * @return
+     */
+    public String update(Staff staff);
 
-    public void delete(long id);
+    /**
+     * Delete a staff.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
     public List<Staff> list();
 
@@ -27,18 +45,52 @@ public interface StaffService {
 
     public List<Staff> listWithAllCollections();
 
-    public void assignProjectManager(long projectID, long staffID,
+    /**
+     * Assign a project manager.
+     * 
+     * @param projectID
+     * @param staffID
+     * @param position
+     * @return
+     */
+    public String assignProjectManager(long projectID, long staffID,
 	    String position);
 
-    public void unassignProjectManager(long projectID, long staffID);
+    /**
+     * Unassign a project manager.
+     * 
+     * @param projectID
+     * @param staffID
+     * @return
+     */
+    public String unassignProjectManager(long projectID, long staffID);
 
-    public void unassignAllProjectManagers(long projectID);
+    /**
+     * Unassign all project managers.
+     * 
+     * @param projectID
+     * @return
+     */
+    public String unassignAllProjectManagers(long projectID);
 
     public Staff getWithAllCollectionsByID(long id);
 
-    public void unassignTeam(long teamID, long staffID);
+    /**
+     * Unassign a team from staff.
+     * 
+     * @param teamID
+     * @param staffID
+     * @return
+     */
+    public String unassignTeam(long teamID, long staffID);
 
-    public void unassignAllTeams(long staffID);
+    /**
+     * Unassign all teams.
+     * 
+     * @param staffID
+     * @return
+     */
+    public String unassignAllTeams(long staffID);
 
     public void assignTeam(StaffTeamAssignment stAssign);
 

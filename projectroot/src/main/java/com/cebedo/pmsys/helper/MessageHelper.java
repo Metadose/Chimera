@@ -530,6 +530,48 @@ public class MessageHelper {
      * 
      * @param messageMap
      */
+    public void sendAssignUnassign(AuditAction action, Project proj, Staff staff) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, staff);
+
+	// Notify all staff assigned to task.
+	for (Task task : proj.getAssignedTasks()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, task.getStaff());
+	}
+
+	// Notify all company admins.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, proj.getCompany().getAdmins());
+
+	// Notify all teams in the project.
+	for (Team assignedTeam : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, assignedTeam.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff assignedStaff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, assignedStaff);
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAssignUnassign(
+		Project.OBJECT_NAME, action, proj.getId(), proj.getName(),
+		notificationRecipients, Staff.OBJECT_NAME, staff.getFullName(),
+		staff.getId());
+	sendMessageMap(messageMap);
+    }
+
+    /**
+     * Send the message map.
+     * 
+     * @param messageMap
+     */
     public void sendAssignUnassign(AuditAction action, Project proj, Team team) {
 	List<Long> notificationRecipients = new ArrayList<Long>();
 
@@ -929,6 +971,55 @@ public class MessageHelper {
 		SystemUser.OBJECT_NAME, AuditAction.UNASSIGN_ALL,
 		systemUser.getId(), systemUser.getUsername(),
 		notificationRecipients, objectNameAssoc);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAction(AuditAction action, Staff staff) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, staff);
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAction(Staff.OBJECT_NAME,
+		action, staff.getId(), staff.getFullName(),
+		notificationRecipients);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAssignUnassign(AuditAction action, Staff staff, Team team) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Add recipients.
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, staff);
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, team.getMembers());
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAssignUnassign(
+		Staff.OBJECT_NAME, action, staff.getId(), staff.getFullName(),
+		notificationRecipients, Team.OBJECT_NAME, team.getName(),
+		team.getId());
+	sendMessageMap(messageMap);
+    }
+
+    public void sendUnassignAll(String objectNameAssoc, Staff staff) {
+
+	// Get recipients.
+	List<Long> notificationRecipients = new ArrayList<Long>();
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, staff);
+	for (Team team : staff.getTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructUnassignAllDeleteAll(
+		Staff.OBJECT_NAME, AuditAction.UNASSIGN_ALL, staff.getId(),
+		staff.getFullName(), notificationRecipients, objectNameAssoc);
 	sendMessageMap(messageMap);
     }
 }
