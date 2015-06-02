@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
+import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
@@ -57,7 +58,12 @@ public class StaffServiceImpl implements StaffService {
     private ProjectDAO projectDAO;
     private TeamDAO teamDAO;
     private SystemUserDAO systemUserDAO;
+    private CompanyDAO companyDAO;
     private ProjectFileService projectFileService;
+
+    public void setCompanyDAO(CompanyDAO companyDAO) {
+	this.companyDAO = companyDAO;
+    }
 
     public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
 	this.systemUserDAO = systemUserDAO;
@@ -477,24 +483,71 @@ public class StaffServiceImpl implements StaffService {
 	return AlertBoxFactory.SUCCESS.generateUnassignAll(Team.OBJECT_NAME);
     }
 
+    /***
+     * Assign a team for the staff.
+     */
     @Override
     @Transactional
-    public void assignTeam(StaffTeamAssignment stAssign) {
+    public String assignTeam(StaffTeamAssignment stAssign) {
+	AuthenticationToken auth = this.authHelper.getAuth();
 	Staff staff = this.staffDAO.getByID(stAssign.getStaffID());
 	Team team = this.teamDAO.getByID(stAssign.getTeamID());
+
 	if (!this.authHelper.isActionAuthorized(staff)
 		|| !this.authHelper.isActionAuthorized(team)) {
-	    return;
+
+	    // Log warn.
+	    logger.warn(this.logHelper.logUnauthorized(auth,
+		    AuditAction.ASSIGN, Staff.OBJECT_NAME, staff.getId(),
+		    staff.getFullName()));
+	    logger.warn(this.logHelper.logUnauthorized(auth,
+		    AuditAction.ASSIGN, Team.OBJECT_NAME, team.getId(),
+		    team.getName()));
+
+	    // Return fail.
+	    return AlertBoxFactory.FAILED.generateAssign(Team.OBJECT_NAME,
+		    team.getName());
 	}
+
+	// Log and notify.
+	this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, staff, team);
+
+	// Do service.
 	this.staffDAO.assignTeam(stAssign);
+
+	// Return success.
+	return AlertBoxFactory.SUCCESS.generateAssign(Team.OBJECT_NAME,
+		team.getName());
     }
 
+    /**
+     * List all staff.
+     */
     @Override
     @Transactional
     public List<Staff> list(Long companyID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	if (auth.isSuperAdmin()) {
+	    // Log info.
+	    logger.info(this.logHelper.logListAsSuperAdmin(auth,
+		    Staff.OBJECT_NAME));
+
+	    // Return list.
+	    return this.staffDAO.list(null);
+	}
+
+	// Log info.
+	Company co = this.companyDAO.getByID(companyID);
+	logger.info(this.logHelper.logListFromCompany(auth, Staff.OBJECT_NAME,
+		co));
+
+	// Return list.
 	return this.staffDAO.list(companyID);
     }
 
+    /**
+     * List unassigned staff given a project.
+     */
     @Override
     @Transactional
     public List<Staff> listUnassignedInProject(Long companyID, Project project) {
@@ -511,43 +564,108 @@ public class StaffServiceImpl implements StaffService {
 	return new ArrayList<Staff>();
     }
 
+    /**
+     * Get name given an id.
+     */
     @Override
     @Transactional
     public String getNameByID(long staffID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	Staff staff = this.staffDAO.getByID(staffID);
+	logger.info(this.logHelper.logGetProperty(auth, Staff.OBJECT_NAME,
+		Staff.PROPERTY_TRANSIENT_FULL_NAME, staff.getId(),
+		staff.getFullName()));
 	return this.staffDAO.getNameByID(staffID);
     }
 
+    /**
+     * Create a staff from an origin.
+     */
     @Override
     @Transactional
-    public void createFromOrigin(Staff staff, String origin, String originID) {
+    public String createFromOrigin(Staff staff, String origin, String originID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+
+	// If coming from the system user page.
 	if (origin.equals(SystemUser.OBJECT_NAME)) {
 	    SystemUser user = this.systemUserDAO.getByID(Long
 		    .parseLong(originID));
 
 	    if (user == null) {
-		staff.setCompany(this.authHelper.getAuth().getCompany());
-		this.staffDAO.create(staff);
+
+		// Get the company from the executor.
+		staff.setCompany(auth.getCompany());
+
+		if (this.authHelper.isActionAuthorized(staff)) {
+
+		    // Log and notify.
+		    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+
+		    // Do service.
+		    this.staffDAO.create(staff);
+
+		    // Return success.
+		    return AlertBoxFactory.SUCCESS.generateCreate(
+			    Staff.OBJECT_NAME, staff.getFullName());
+		}
 	    } else {
 		// Get the company from the user.
-		// Update the staff.
 		staff.setCompany(user.getCompany());
-		this.staffDAO.create(staff);
 
-		// If coming from the system user,
-		// attach relationship with user.
-		user.setStaff(staff);
-		this.systemUserDAO.update(user);
+		if (this.authHelper.isActionAuthorized(staff)) {
+
+		    // Log and notify.
+		    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+
+		    // Do service.
+		    // Update the staff.
+		    this.staffDAO.create(staff);
+
+		    // If coming from the system user,
+		    // attach relationship with user.
+		    user.setStaff(staff);
+		    this.systemUserDAO.update(user);
+
+		    // Return success.
+		    return AlertBoxFactory.SUCCESS.generateCreate(
+			    Staff.OBJECT_NAME, staff.getFullName());
+		}
 	    }
 
-	    return;
+	    // Log warn.
+	    logger.warn(this.logHelper.logUnauthorized(auth,
+		    AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId(),
+		    staff.getFullName()));
+
+	    // Return fail.
+	    return AlertBoxFactory.FAILED.generateCreate(Staff.OBJECT_NAME,
+		    staff.getFullName());
 	}
 
 	// Create the staff first since to attach it's relationship
 	// with the company.
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Company authCompany = auth.getCompany();
 	staff.setCompany(authCompany);
-	this.staffDAO.create(staff);
+	if (this.authHelper.isActionAuthorized(staff)) {
+
+	    // Log and notify.
+	    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+
+	    // Do service.
+	    this.staffDAO.create(staff);
+
+	    // Return success.
+	    return AlertBoxFactory.SUCCESS.generateCreate(Staff.OBJECT_NAME,
+		    staff.getFullName());
+	}
+
+	// Log warn.
+	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE,
+		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
+
+	// Return fail.
+	return AlertBoxFactory.FAILED.generateCreate(Staff.OBJECT_NAME,
+		staff.getFullName());
     }
 
     /**

@@ -92,13 +92,27 @@ public interface StaffService {
      */
     public String unassignAllTeams(long staffID);
 
-    public void assignTeam(StaffTeamAssignment stAssign);
+    /**
+     * Assign a team.
+     * 
+     * @param stAssign
+     * @return
+     */
+    public String assignTeam(StaffTeamAssignment stAssign);
 
     public List<Staff> listUnassignedInProject(Long companyID, Project project);
 
     public String getNameByID(long staffID);
 
-    public void createFromOrigin(Staff staff, String origin, String originID);
+    /**
+     * Create a staff from a specific origin.
+     * 
+     * @param staff
+     * @param origin
+     * @param originID
+     * @return
+     */
+    public String createFromOrigin(Staff staff, String origin, String originID);
 
     public String getCalendarJSON(Staff staff, Set<Attendance> attendanceList);
 

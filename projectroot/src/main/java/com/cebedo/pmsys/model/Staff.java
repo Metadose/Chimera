@@ -37,6 +37,8 @@ public class Staff implements Serializable {
     public static final String PROPERTY_LAST_NAME = "lastName";
     public static final String PROPERTY_SUFFIX = "suffix";
 
+    public static final String PROPERTY_TRANSIENT_FULL_NAME = "Full Name";
+
     public static final String SUB_MODULE_PROFILE = "profile";
 
     private static final long serialVersionUID = 1L;
