@@ -291,8 +291,11 @@ public class SystemUserServiceImpl implements SystemUserService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	if (systemOverride || this.authHelper.isActionAuthorized(user)) {
-	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, user);
+
+	    if (!systemOverride) {
+		// Log and notify.
+		this.messageHelper.sendAction(AuditAction.UPDATE, user);
+	    }
 
 	    // Do service.
 	    this.systemUserDAO.update(user);

@@ -16,7 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
@@ -104,6 +106,11 @@ public class Project implements Serializable {
 
     public void setStatus(int status) {
 	this.status = status;
+    }
+
+    @Transient
+    public ProjectStatus getStatusEnum() {
+	return ProjectStatus.of(getStatus());
     }
 
     @OrderBy(Project.COLUMN_PRIMARY_KEY)

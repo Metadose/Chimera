@@ -53,7 +53,6 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
 
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
@@ -579,7 +578,8 @@ public class ProjectController {
 
 	// Do service.
 	// Get response.
-	String response = this.photoService.deleteProfilePicOfProject(projectID);
+	String response = this.photoService
+		.deleteProfilePicOfProject(projectID);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -615,7 +615,8 @@ public class ProjectController {
 	// If file is not empty.
 	// Get response.
 	if (!file.isEmpty()) {
-	    response = this.photoService.uploadProfilePicOfProject(file, projectID);
+	    response = this.photoService.uploadProfilePicOfProject(file,
+		    projectID);
 	} else {
 	    // TODO Handle this scenario.
 	}
@@ -695,6 +696,7 @@ public class ProjectController {
 		fieldAssignment, fieldID, proj.getId());
 
 	// Construct ui notifications.
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
 
@@ -725,21 +727,24 @@ public class ProjectController {
 	MultipartFile file = mpBean.getFile();
 	String description = mpBean.getDescription();
 	long projectID = mpBean.getProjectID();
+	String response = "";
 
-	AlertBoxFactory alertFactory = new AlertBoxFactory();
 	// If file is not empty.
 	if (!file.isEmpty()) {
+
 	    // Upload then evict cache.
-	    this.projectFileService.uploadFileToProject(file, projectID, description);
-	    alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
-	    alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
-		    + file.getOriginalFilename() + "</b>.");
+	    // Get response.
+	    response = this.projectFileService.uploadFileToProject(file,
+		    projectID, description);
 	} else {
 	    // TODO Handle this scenario.
 	}
-	status.setComplete();
+
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
+
+	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
     }
@@ -757,13 +762,12 @@ public class ProjectController {
 	    @PathVariable(ProjectFile.OBJECT_NAME) long fileID,
 	    HttpServletResponse response) {
 
+	// Get file from server.
 	File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
-	// AlertBoxFactory alertFactory = new AlertBoxFactory();
-	try {
-	    // alertFactory.setStatus(SystemConstants.UI_STATUS_INFO);
-	    // alertFactory.setMessage("<b>Downloading</b> file <b>"
-	    // + actualFile.getName() + "</b>.");
 
+	try {
+
+	    // Serve it to the client.
 	    FileInputStream iStream = new FileInputStream(actualFile);
 	    response.setContentType("application/octet-stream");
 	    response.setContentLength((int) actualFile.length());
@@ -771,19 +775,10 @@ public class ProjectController {
 		    + actualFile.getName() + "\"");
 	    IOUtils.copy(iStream, response.getOutputStream());
 	    response.flushBuffer();
+
 	} catch (Exception e) {
-	    // alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
-	    // alertFactory.setMessage("Failed to <b>download</b> file <b>"
-	    // + actualFile.getName() + "</b>.");
 	    e.printStackTrace();
 	}
-
-	// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-	// alertFactory.generateHTML());
-	//
-	// return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME +
-	// "/"
-	// + SystemConstants.REQUEST_EDIT + "/" + projectID;
     }
 
     /**
@@ -808,22 +803,23 @@ public class ProjectController {
 	MultipartFile file = mpBean.getFile();
 	String description = mpBean.getDescription();
 	long projectID = proj.getId();
-
-	AlertBoxFactory alertFactory = new AlertBoxFactory();
+	String response = "";
 
 	// TODO Limit only uploads to known extensions of an image.
 	// If file is not empty.
 	if (!file.isEmpty()) {
-	    alertFactory = this.photoService.uploadPhotoToProject(file, projectID,
+
+	    // Get response.
+	    response = this.photoService.uploadPhotoToProject(file, projectID,
 		    description);
 	} else {
-	    alertFactory = AlertBoxFactory.FAILED;
-	    alertFactory
-		    .setMessage("You cannot <b>upload</b> an <b>empty</b> photo.");
+	    // TODO Handle scenario.
 	}
 
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -844,16 +840,15 @@ public class ProjectController {
 	    HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
+	// Do service.
+	// Get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-
-	String name = this.photoService.getNameByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> photo <b>" + name
-		+ "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
-	this.photoService.delete(id);
+	String response = this.photoService.delete(id);
 	this.projectService.clearProjectCache(proj.getId());
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -878,17 +873,15 @@ public class ProjectController {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
-	String fileName = this.projectFileService.getNameByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> file <b>"
-		+ fileName + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
-
 	// Delete, then
 	// Evict cache.
-	this.projectFileService.delete(id);
+	String response = this.projectFileService.delete(id);
 	this.projectService.clearProjectCache(proj.getId());
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
@@ -904,6 +897,8 @@ public class ProjectController {
     @RequestMapping(value = "/clear/cache/{id}")
     public void clearCache(@PathVariable("id") long id) {
 	this.projectService.clearProjectCache(id);
+	this.projectService.clearListCache();
+
 	System.out.println("Cache cleared.");
     }
 

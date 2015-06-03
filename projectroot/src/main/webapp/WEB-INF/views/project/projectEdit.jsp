@@ -13,6 +13,12 @@
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+	
+	<!-- Ignite UI Required Combined CSS Files -->
+    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/structure/infragistics.css" rel="stylesheet" />
+    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/structure/modules/infragistics.ui.treegrid.css" rel="stylesheet" />
+    
 	<style type="text/css">
 		ul {         
 		    padding:0 0 0 0;
@@ -35,6 +41,13 @@
 	<c:import url="/resources/header.jsp" />
 	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
 	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
+
+    <!-- Ignite UI Required Combined JavaScript Files -->
+    <script src="http://modernizr.com/downloads/modernizr-latest.js"></script>
+    <script src="http://cdn-na.infragistics.com/igniteui/2015.1/latest/js/infragistics.core.js"></script>
+    <script src="http://cdn-na.infragistics.com/igniteui/2015.1/latest/js/infragistics.lob.js"></script>
+    <script src="http://cdn-na.infragistics.com/igniteui/2015.1/latest/js/modules/infragistics.ui.treegrid.js"></script>
+	
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
@@ -133,7 +146,8 @@
 			                                            <c:out value="${project.name}"/><br/><br/>
 			                                            
 			                                            <label>Status</label><br/>
-			                                            <c:out value="${project.status}"/><br/><br/>
+			                                            <c:set value="${project.getStatusEnum().css()}" var="css"></c:set>
+														<span class="label ${css}">${project.getStatusEnum()}</span><br/><br/>
 			                                            
 			                                            <label>Location</label><br/>
 			                                            <c:out value="${project.location}"/><br/><br/>
@@ -784,8 +798,12 @@
 		                                </c:forEach>
 		                                <br/>
 		                                <br/>
-		                                </div><!-- /.box-body -->
 		                                </div>
+		                                
+		                                <h3>Flat Data Source</h3>
+									    <table id="treegrid1"></table>
+									    
+		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
@@ -1248,5 +1266,60 @@
            });
 	    });
 	</script>
+	
+	<script>
+
+        $(function () {
+            var flatDS = [
+                { "employeeID": 0, "PID": -1, "firstName": "Andrew", "lastName": "Fuller", "reportsTo": "-" },
+                { "employeeID": 1, "PID": -1, "firstName": "Jonathan", "lastName": "Smith", "reportsTo": "-" },
+                { "employeeID": 2, "PID": -1, "firstName": "Nancy", "lastName": "Davolio", "reportsTo": "-" },
+                { "employeeID": 3, "PID": -1, "firstName": "Steven", "lastName": "Buchanan", "reportsTo": "-" },
+                // sub of ID 1
+                { "employeeID": 4, "PID": 0, "firstName": "Janet", "lastName": "Leverling", "reportsTo": "0" },
+                { "employeeID": 5, "PID": 0, "firstName": "Laura", "lastName": "Callahan", "reportsTo": "0" },
+                { "employeeID": 6, "PID": 0, "firstName": "Margaret", "lastName": "Peacock", "reportsTo": "0" },
+                { "employeeID": 7, "PID": 0, "firstName": "Michael", "lastName": "Suyama", "reportsTo": "0" },
+                // sub of ID 4
+                { "employeeID": 8, "PID": 4, "firstName": "Anne", "lastName": "Dodsworth", "reportsTo": "4" },
+                { "employeeID": 9, "PID": 4, "firstName": "Danielle", "lastName": "Davis", "reportsTo": "4" },
+                { "employeeID": 10, "PID": 4, "firstName": "Robert", "lastName": "King", "reportsTo": "4" },
+                // sub of ID 2
+                { "employeeID": 11, "PID": 2, "firstName": "Peter", "lastName": "Lewis", "reportsTo": "2" },
+                { "employeeID": 12, "PID": 2, "firstName": "Ryder", "lastName": "Zenaida", "reportsTo": "2" },
+                { "employeeID": 13, "PID": 2, "firstName": "Wang", "lastName": "Mercedes", "reportsTo": "2" },
+                // sub of ID 3
+                { "employeeID": 14, "PID": 3, "firstName": "Theodore", "lastName": "Zia", "reportsTo": "3" },
+                { "employeeID": 15, "PID": 3, "firstName": "Lacota", "lastName": "Mufutau", "reportsTo": "3" },
+                // sub of ID 16
+                { "employeeID": 16, "PID": 15, "firstName": "Jin", "lastName": "Elliott", "reportsTo": "16" },
+                { "employeeID": 17, "PID": 15, "firstName": "Armand", "lastName": "Ross", "reportsTo": "16" },
+                { "employeeID": 18, "PID": 15, "firstName": "Dane", "lastName": "Rodriquez", "reportsTo": "16" },
+                // sub of ID 19
+                { "employeeID": 19, "PID": 18, "firstName": "Declan", "lastName": "Lester", "reportsTo": "19" },
+                { "employeeID": 20, "PID": 18, "firstName": "Bernard", "lastName": "Jarvis", "reportsTo": "19" },
+                // sub of ID 20
+                { "employeeID": 21, "PID": 20, "firstName": "Jeremy", "lastName": "Donaldson", "reportsTo": "20" }
+            ];
+
+            $("#treegrid1").igTreeGrid({
+                width: "100%",
+                dataSource: flatDS, //bound to flat data source,
+                autoGenerateColumns: false,
+                primaryKey: "employeeID",
+                foreignKey: "PID",
+                initialExpandDepth: 1,
+                columns: [
+                    { headerText: "Employee ID", key: "employeeID", width: "200px", dataType: "number" },
+                    { headerText: "First Name", key: "firstName", width: "220px", dataType: "string" },
+                    { headerText: "Last Name", key: "lastName", width: "220px", dataType: "string" },
+                    { headerText: "Reports To", key: "reportsTo", width: "130px", dataType: "number" }
+                ]
+            });
+
+
+            });
+
+    </script>
 </body>
 </html>

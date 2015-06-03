@@ -58,4 +58,6 @@ public interface ProjectService {
 
     public String getCalendarJSON(Project proj);
 
+    public void clearListCache();
+
 }

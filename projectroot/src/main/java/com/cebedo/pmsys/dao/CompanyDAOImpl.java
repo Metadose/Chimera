@@ -16,79 +16,74 @@ import com.cebedo.pmsys.model.Company;
 @Repository
 public class CompanyDAOImpl implements CompanyDAO {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(CompanyDAOImpl.class);
-	private DAOHelper daoHelper = new DAOHelper();
-	private SessionFactory sessionFactory;
+    private static final Logger logger = LoggerFactory
+	    .getLogger(CompanyDAOImpl.class);
+    private DAOHelper daoHelper = new DAOHelper();
+    private SessionFactory sessionFactory;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public void setSessionFactory(SessionFactory sessionFactory) {
+	this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public void create(Company company) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(company);
-		logger.info("[Create] Company: " + company);
-	}
+    @Override
+    public void create(Company company) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.persist(company);
+	logger.info("[Create] Company: " + company);
+    }
 
-	@Override
-	public Company getByID(long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Criteria criteria = this.daoHelper.criteriaGetObjByID(session,
-				Company.class, Company.PROPERTY_ID, id);
-		Company company = (Company) criteria.uniqueResult();
-		return company;
-	}
+    @Override
+    public Company getByID(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Criteria criteria = this.daoHelper.criteriaGetObjByID(session,
+		Company.class, Company.PROPERTY_ID, id);
+	Company company = (Company) criteria.uniqueResult();
+	return company;
+    }
 
-	@Override
-	public void update(Company company) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.update(company);
-		logger.info("[Update] Company:" + company);
-	}
+    @Override
+    public void update(Company company) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.update(company);
+	logger.info("[Update] Company:" + company);
+    }
 
-	@Override
-	public void delete(long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Company company = getByID(id);
-		if (company != null) {
-			session.delete(company);
-		}
-		logger.info("[Delete] Company: " + company);
+    @Override
+    public void delete(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Company company = getByID(id);
+	if (company != null) {
+	    session.delete(company);
 	}
+	logger.info("[Delete] Company: " + company);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Company> list(Long companyID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<Company> companyList = this.daoHelper.getSelectQueryFilterCompany(
-				session, Company.class.getName(), companyID).list();
-		return companyList;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Company> list(Long companyID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	List<Company> companyList = this.daoHelper.getSelectQueryFilterCompany(
+		session, Company.class.getName(), companyID).list();
+	return companyList;
+    }
 
-	@Override
-	public long getCompanyIDByObjID(String objTable, String objKeyCol,
-			long objID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String qStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
-				+ objTable + " WHERE " + objKeyCol + " =:" + objKeyCol
-				+ " LIMIT 1";
-		SQLQuery query = session.createSQLQuery(qStr);
-		query.setParameter(objKeyCol, objID);
-		String resultStr = query.uniqueResult().toString();
-		return Long.parseLong(resultStr);
-	}
+    @Override
+    public long getCompanyIDByObjID(String objTable, String objKeyCol,
+	    long objID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String qStr = "SELECT " + Company.COLUMN_PRIMARY_KEY + " FROM "
+		+ objTable + " WHERE " + objKeyCol + " =:" + objKeyCol
+		+ " LIMIT 1";
+	SQLQuery query = session.createSQLQuery(qStr);
+	query.setParameter(objKeyCol, objID);
+	String resultStr = query.uniqueResult().toString();
+	return Long.parseLong(resultStr);
+    }
 
-	@SuppressWarnings("finally")
-	@Override
-	public Company getCompanyByObjID(String objTable, String objKeyCol,
-			long objID) {
-		try {
-			long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
-			return (Company) getByID(companyID);
-		} finally {
-			return null;
-		}
-	}
+    @Override
+    public Company getCompanyByObjID(String objTable, String objKeyCol,
+	    long objID) {
+	long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
+	return getByID(companyID);
+    }
 }

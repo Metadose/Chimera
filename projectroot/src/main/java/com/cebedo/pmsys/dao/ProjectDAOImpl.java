@@ -12,8 +12,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 
@@ -88,6 +90,16 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	Session session = this.sessionFactory.getCurrentSession();
 	Project project = (Project) session.load(Project.class, new Long(id));
+
+	// Init company.
+	// and company admins.
+	Hibernate.initialize(project.getCompany());
+	Company co = project.getCompany();
+	if (co != null) {
+	    for (Staff admin : co.getAdmins()) {
+		Hibernate.initialize(admin);
+	    }
+	}
 
 	Hibernate.initialize(project.getManagerAssignments());
 	Hibernate.initialize(project.getAssignedFields());

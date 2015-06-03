@@ -47,7 +47,7 @@ public class MessageHelper {
 	    long userID, String ipAddr, Company company) {
 	messageMap.put(MessageListenerImpl.KEY_USER_ID, userID);
 	messageMap.put(MessageListenerImpl.KEY_USER_IP_ADDR, ipAddr);
-	messageMap.put(AuditMessageListener.KEY_COMPANY, company);
+	messageMap.put(AuditMessageListener.KEY_COMPANY, company.getId());
 	return messageMap;
     }
 

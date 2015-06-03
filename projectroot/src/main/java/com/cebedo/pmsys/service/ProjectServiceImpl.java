@@ -89,8 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// Construct and send system message.
-	this.messageHelper.sendAction(AuditAction.CREATE,
-		project);
+	this.messageHelper.sendAction(AuditAction.CREATE, project);
 
 	// Do service.
 	Company authCompany = auth.getCompany();
@@ -123,8 +122,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.sendAction(AuditAction.UPDATE,
-		    project);
+	    this.messageHelper.sendAction(AuditAction.UPDATE, project);
 
 	    // Actual service.
 	    Company company = this.companyDAO.getCompanyByObjID(
@@ -212,8 +210,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.sendAction(AuditAction.DELETE,
-		    project);
+	    this.messageHelper.sendAction(AuditAction.DELETE, project);
 
 	    // If authorized, do actual service.
 	    this.projectDAO.delete(id);
@@ -312,8 +309,8 @@ public class ProjectServiceImpl implements ProjectService {
     public String getNameByID(long projectID) {
 	AuthenticationToken token = this.authHelper.getAuth();
 	String name = this.projectDAO.getNameByID(projectID);
-	logger.info(this.logHelper.logGetProperty(token,
-		Project.OBJECT_NAME, Project.PROPERTY_NAME, projectID, name));
+	logger.info(this.logHelper.logGetProperty(token, Project.OBJECT_NAME,
+		Project.PROPERTY_NAME, projectID, name));
 	return name;
     }
 
@@ -321,6 +318,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void clearProjectCache(long projectID) {
+	;
+    }
+
+    @CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks")
+    @Override
+    @Transactional
+    public void clearListCache() {
 	;
     }
 

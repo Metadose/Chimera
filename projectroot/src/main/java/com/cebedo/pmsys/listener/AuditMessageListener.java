@@ -53,15 +53,22 @@ public class AuditMessageListener implements MessageListener {
 			.get(KEY_AUDIT_OBJECT_NAME));
 		long objID = Long.valueOf(String.valueOf(messageMap
 			.get(KEY_AUDIT_OBJECT_ID)));
-		Company company = (Company) messageMap.get(KEY_COMPANY);
+		Long companyID = Long.valueOf(String.valueOf(messageMap
+			.get(KEY_COMPANY)));
+		Company company = new Company(companyID);
 
 		// If a slave exists,
 		// create separate entry.
-		String slaveName = String.valueOf(messageMap
-			.get(KEY_AUDIT_OBJECT_NAME_ASSOC));
-		long slaveID = Long.valueOf(String.valueOf(messageMap
-			.get(KEY_AUDIT_OBJECT_ID_ASSOC)));
-		if (slaveName != null) {
+		String associatedObjName = messageMap
+			.get(KEY_AUDIT_OBJECT_NAME_ASSOC) == null ? null
+			: String.valueOf(messageMap
+				.get(KEY_AUDIT_OBJECT_NAME_ASSOC));
+		Long associatedObjID = messageMap
+			.get(KEY_AUDIT_OBJECT_ID_ASSOC) == null ? null : Long
+			.valueOf(String.valueOf(messageMap
+				.get(KEY_AUDIT_OBJECT_ID_ASSOC)));
+
+		if (associatedObjName != null) {
 		    // New audit entry.
 		    AuditLog audit = new AuditLog(actionID, user, ipAddr);
 		    audit.setCompany(company);
@@ -70,8 +77,8 @@ public class AuditMessageListener implements MessageListener {
 		    this.auditLogDAO.create(audit);
 
 		    // If a slave exists, create separate entry.
-		    audit.setObjectName(slaveName);
-		    audit.setObjectID(slaveID);
+		    audit.setObjectName(associatedObjName);
+		    audit.setObjectID(associatedObjID);
 		    this.auditLogDAO.create(audit);
 		}
 
