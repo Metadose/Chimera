@@ -238,7 +238,7 @@ public class ProjectFileController {
 	AlertBoxFactory alertFactory = new AlertBoxFactory();
 	// If file is not empty.
 	if (!file.isEmpty()) {
-	    this.projectFileService.createForStaff(file, description);
+	    this.projectFileService.uploadFileToStaff(file, description);
 	    alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
 	    alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
 		    + file.getOriginalFilename() + "</b>.");

@@ -23,6 +23,7 @@ import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.ProjectFile;
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
@@ -1260,6 +1261,44 @@ public class MessageHelper {
 	// Construct the message then send.
 	Map<String, Object> messageMap = constructAction(Photo.OBJECT_NAME,
 		action, photo.getId(), photo.getName(), notificationRecipients);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendAction(AuditAction action, ProjectFile projectFile) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+	Project proj = projectFile.getProject();
+	Staff stf = projectFile.getUploader();
+
+	notificationRecipients = addNotificationRecipient(
+		notificationRecipients, stf);
+
+	// Notify all staff assigned to task.
+	for (Task task : proj.getAssignedTasks()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, task.getStaff());
+	}
+
+	// Notify all company admins.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, proj.getCompany().getAdmins());
+
+	// Notify all teams in the project.
+	for (Team team : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff staff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, staff);
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAction(
+		ProjectFile.OBJECT_NAME, action, projectFile.getId(),
+		projectFile.getName(), notificationRecipients);
 	sendMessageMap(messageMap);
     }
 }

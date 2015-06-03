@@ -578,13 +578,12 @@ public class ProjectController {
 	long projectID = proj.getId();
 
 	// Do service.
-	// Construct ui notification.
-	this.photoService.deleteProjectProfile(projectID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory
-		.setMessage("Successfully <b>deleted</b> the <b>profile picture</b>.");
+	// Get response.
+	String response = this.photoService.deleteProfilePicOfProject(projectID);
+
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 
 	// Clear session var.
 	// Then return.
@@ -605,18 +604,26 @@ public class ProjectController {
     @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
 	    + SystemConstants.PROFILE, method = RequestMethod.POST)
     public String uploadProfile(HttpSession session,
-	    @RequestParam(ATTR_FILE) MultipartFile file, SessionStatus status)
-	    throws IOException {
+	    @RequestParam(ATTR_FILE) MultipartFile file, SessionStatus status,
+	    RedirectAttributes redirectAttrs) throws IOException {
+
 	Project proj = (Project) session
 		.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
+	String response = "";
 
 	// If file is not empty.
+	// Get response.
 	if (!file.isEmpty()) {
-	    this.photoService.uploadProjectProfile(file, projectID);
+	    response = this.photoService.uploadProfilePicOfProject(file, projectID);
 	} else {
 	    // TODO Handle this scenario.
 	}
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -640,16 +647,17 @@ public class ProjectController {
 		.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
+	// Get response.
+	String response = this.fieldService
+		.unassignAllFieldsFromProject(projectID);
+
+	// Attach response.
 	// Construct notification.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory
-		.setMessage("Successfully <b>removed all</b> extra information.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 
 	// Do service and clear session vars.
 	// Then return.
-	this.fieldService.unassignAllFieldsFromProject(projectID);
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -681,17 +689,14 @@ public class ProjectController {
 	fieldAssignment.setValue(faBean.getValue());
 	fieldAssignment.setProject(proj);
 
-	// Construct ui notifications.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory
-		.setMessage("Successfully <b>added</b> extra information <b>"
-			+ fieldAssignment.getLabel() + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
-
 	// Do service.
-	this.fieldService.assignFieldToProject(fieldAssignment, fieldID,
-		proj.getId());
+	// Get response.
+	String response = this.fieldService.assignFieldToProject(
+		fieldAssignment, fieldID, proj.getId());
+
+	// Construct ui notifications.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	// Remove session variables.
 	// Evict project cache.
@@ -725,14 +730,12 @@ public class ProjectController {
 	// If file is not empty.
 	if (!file.isEmpty()) {
 	    // Upload then evict cache.
-	    this.projectFileService.create(file, projectID, description);
+	    this.projectFileService.uploadFileToProject(file, projectID, description);
 	    alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
 	    alertFactory.setMessage("Successfully <b>uploaded</b> file <b>"
 		    + file.getOriginalFilename() + "</b>.");
 	} else {
-	    alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
-	    alertFactory.setMessage("Failed to <b>upload</b> empty file <b>"
-		    + file.getOriginalFilename() + "</b>.");
+	    // TODO Handle this scenario.
 	}
 	status.setComplete();
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -811,7 +814,7 @@ public class ProjectController {
 	// TODO Limit only uploads to known extensions of an image.
 	// If file is not empty.
 	if (!file.isEmpty()) {
-	    alertFactory = this.photoService.create(file, projectID,
+	    alertFactory = this.photoService.uploadPhotoToProject(file, projectID,
 		    description);
 	} else {
 	    alertFactory = AlertBoxFactory.FAILED;

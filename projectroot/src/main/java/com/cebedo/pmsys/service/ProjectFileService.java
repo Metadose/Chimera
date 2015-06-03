@@ -10,25 +10,61 @@ import com.cebedo.pmsys.model.ProjectFile;
 
 public interface ProjectFileService {
 
-	public void create(MultipartFile file, long projectID, String description)
-			throws IOException;
+    /**
+     * Upload a file to project.
+     * 
+     * @param file
+     * @param projectID
+     * @param description
+     * @return
+     * @throws IOException
+     */
+    public String uploadFileToProject(MultipartFile file, long projectID,
+	    String description) throws IOException;
 
-	public void createForStaff(MultipartFile file, String description)
-			throws IOException;
+    /**
+     * Upload a file to staff.
+     * 
+     * @param file
+     * @param description
+     * @return
+     * @throws IOException
+     */
+    public String uploadFileToStaff(MultipartFile file, String description)
+	    throws IOException;
 
-	public ProjectFile getByID(long id);
+    public ProjectFile getByID(long id);
 
-	public void update(ProjectFile projectFile);
+    /**
+     * Update a project file.
+     * 
+     * @param projectFile
+     * @return
+     */
+    public String update(ProjectFile projectFile);
 
-	public void delete(long id);
+    /**
+     * Delete a project file.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
-	public List<ProjectFile> list();
+    public List<ProjectFile> list();
 
-	public List<ProjectFile> listWithAllCollections();
+    public List<ProjectFile> listWithAllCollections();
 
-	public void updateDescription(long fileID, String description);
+    /**
+     * Update description of a file.
+     * 
+     * @param fileID
+     * @param description
+     * @return
+     */
+    public String updateDescription(long fileID, String description);
 
-	public File getPhysicalFileByID(long fileID);
+    public File getPhysicalFileByID(long fileID);
 
-	public String getNameByID(long fileID);
+    public String getNameByID(long fileID);
 }

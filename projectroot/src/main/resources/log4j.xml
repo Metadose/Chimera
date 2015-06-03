@@ -57,6 +57,13 @@
 	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
 	</appender>
 	
+	<appender name="projectfileFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/projectfile/projectfile.html" />
+	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
+	</appender>
+	
 	<appender name="taskFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
@@ -123,6 +130,11 @@
 	<logger name="project">
 		<level value="info" />
 		<appender-ref ref="projectFile" />
+	</logger>
+	
+	<logger name="projectfile">
+		<level value="info" />
+		<appender-ref ref="projectfileFile" />
 	</logger>
 	
 	<logger name="staff">

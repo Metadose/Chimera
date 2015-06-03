@@ -18,7 +18,7 @@ public interface PhotoService {
      * @return
      * @throws IOException
      */
-    public String create(MultipartFile file, long projectID, String description)
+    public String uploadPhotoToProject(MultipartFile file, long projectID, String description)
 	    throws IOException;
 
     public Photo getByID(long id);
@@ -49,7 +49,7 @@ public interface PhotoService {
      * @return
      * @throws IOException
      */
-    public String uploadProjectProfile(MultipartFile file, long projectID)
+    public String uploadProfilePicOfProject(MultipartFile file, long projectID)
 	    throws IOException;
 
     /**
@@ -60,7 +60,7 @@ public interface PhotoService {
      * @return
      * @throws IOException
      */
-    public String uploadStaffProfile(MultipartFile file, long staffID)
+    public String uploadProfilePicOfStaff(MultipartFile file, long staffID)
 	    throws IOException;
 
     /**
@@ -69,7 +69,7 @@ public interface PhotoService {
      * @param projectID
      * @return
      */
-    public String deleteProjectProfile(long projectID);
+    public String deleteProfilePicOfProject(long projectID);
 
     public String getNameByID(long id);
 

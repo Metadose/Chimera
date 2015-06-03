@@ -88,7 +88,7 @@ public class PhotoServiceImpl implements PhotoService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
     @Override
     @Transactional
-    public String deleteProjectProfile(long projectID) {
+    public String deleteProfilePicOfProject(long projectID) {
 
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Project proj = this.projectDAO.getByID(projectID);
@@ -128,7 +128,7 @@ public class PhotoServiceImpl implements PhotoService {
      */
     @Override
     @Transactional
-    public String uploadStaffProfile(MultipartFile file, long staffID)
+    public String uploadProfilePicOfStaff(MultipartFile file, long staffID)
 	    throws IOException {
 	// If not authorized, return.
 	AuthenticationToken auth = this.authHelper.getAuth();
@@ -197,7 +197,7 @@ public class PhotoServiceImpl implements PhotoService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true) })
     @Override
     @Transactional
-    public String uploadProjectProfile(MultipartFile file, long projectID)
+    public String uploadProfilePicOfProject(MultipartFile file, long projectID)
 	    throws IOException {
 
 	// If the user is not authorized in this project,
@@ -272,7 +272,7 @@ public class PhotoServiceImpl implements PhotoService {
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
-    public String create(MultipartFile file, long projectID, String description)
+    public String uploadPhotoToProject(MultipartFile file, long projectID, String description)
 	    throws IOException {
 
 	AuthenticationToken auth = this.authHelper.getAuth();

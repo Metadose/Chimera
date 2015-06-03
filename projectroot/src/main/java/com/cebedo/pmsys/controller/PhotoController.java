@@ -69,7 +69,7 @@ public class PhotoController {
 
 		// If file is not empty.
 		if (!file.isEmpty()) {
-			this.photoService.uploadStaffProfile(file, staffID);
+			this.photoService.uploadProfilePicOfStaff(file, staffID);
 		} else {
 			// TODO Handle this scenario.
 		}
