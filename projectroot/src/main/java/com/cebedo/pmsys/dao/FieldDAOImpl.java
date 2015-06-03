@@ -77,13 +77,13 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void assignProject(FieldAssignment fieldAssignment) {
+    public void assignFieldToProject(FieldAssignment fieldAssignment) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(fieldAssignment);
     }
 
     @Override
-    public void unassignProject(long fieldID, long projID, String label,
+    public void unassignFieldFromProject(long fieldID, long projID, String label,
 	    String value) {
 	Session session = this.sessionFactory.getCurrentSession();
 	SQLQuery query = session.createSQLQuery("DELETE FROM "
@@ -101,7 +101,7 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void unassignAllProjects(long projectID) {
+    public void unassignAllFieldsFromProject(long projectID) {
 	Session session = this.sessionFactory.getCurrentSession();
 	SQLQuery query = session.createSQLQuery("DELETE FROM "
 		+ FieldAssignment.TABLE_NAME + " WHERE "
@@ -154,13 +154,13 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void assignTask(TaskFieldAssignment taskField) {
+    public void assignFieldToTask(TaskFieldAssignment taskField) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(taskField);
     }
 
     @Override
-    public void unassignAllTasks(long taskID) {
+    public void unassignAllFieldsFromTask(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Query query = session.createQuery("DELETE FROM "
 		+ TaskFieldAssignment.class.getName() + " WHERE "
@@ -170,7 +170,7 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void unassignTask(long fieldID, long taskID, String label,
+    public void unassignFieldFromTask(long fieldID, long taskID, String label,
 	    String value) {
 	// TODO Convert to Query, not SQLQuery.
 	Session session = this.sessionFactory.getCurrentSession();
@@ -191,7 +191,7 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void unassignStaff(long fieldID, long staffID, String label,
+    public void unassignFieldFromStaff(long fieldID, long staffID, String label,
 	    String value) {
 	Session session = this.sessionFactory.getCurrentSession();
 
@@ -214,13 +214,13 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
-    public void assignStaff(StaffFieldAssignment fieldAssignment) {
+    public void assignFieldToStaff(StaffFieldAssignment fieldAssignment) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(fieldAssignment);
     }
 
     @Override
-    public void unassignAllStaff(long staffID) {
+    public void unassignAllFieldsFromStaff(long staffID) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Query query = session.createQuery("DELETE FROM "
 		+ StaffFieldAssignment.class.getName() + " WHERE "

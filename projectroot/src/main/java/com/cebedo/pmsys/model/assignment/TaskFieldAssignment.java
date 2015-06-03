@@ -16,62 +16,63 @@ import com.cebedo.pmsys.model.Task;
 @Entity
 @Table(name = TaskFieldAssignment.TABLE_NAME)
 @AssociationOverrides({
-		@AssociationOverride(name = TaskFieldAssignment.PRIMARY_KEY + ".task", joinColumns = @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)),
-		@AssociationOverride(name = TaskFieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
+	@AssociationOverride(name = TaskFieldAssignment.PRIMARY_KEY + ".task", joinColumns = @JoinColumn(name = Task.COLUMN_PRIMARY_KEY)),
+	@AssociationOverride(name = TaskFieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
 public class TaskFieldAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_task_field";
-	public static final String PRIMARY_KEY = "assignmentID";
+    public static final String OBJECT_LABEL = "Task Field Assignment";
+    public static final String TABLE_NAME = "assignments_task_field";
+    public static final String PRIMARY_KEY = "assignmentID";
 
-	public static final String PROPERTY_TASK_ID = "task.id";
-	public static final String PROPERTY_FIELD_ID = "field.id";
+    public static final String PROPERTY_TASK_ID = "task.id";
+    public static final String PROPERTY_FIELD_ID = "field.id";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private TaskFieldAssignmentID assignmentID = new TaskFieldAssignmentID();
+    private TaskFieldAssignmentID assignmentID = new TaskFieldAssignmentID();
 
-	@EmbeddedId
-	public TaskFieldAssignmentID getAssignmentID() {
-		return assignmentID;
-	}
+    @EmbeddedId
+    public TaskFieldAssignmentID getAssignmentID() {
+	return assignmentID;
+    }
 
-	public void setAssignmentID(TaskFieldAssignmentID assignmentID) {
-		this.assignmentID = assignmentID;
-	}
+    public void setAssignmentID(TaskFieldAssignmentID assignmentID) {
+	this.assignmentID = assignmentID;
+    }
 
-	@Transient
-	public Task getTask() {
-		return getAssignmentID().getTask();
-	}
+    @Transient
+    public Task getTask() {
+	return getAssignmentID().getTask();
+    }
 
-	public void setTask(Task task) {
-		getAssignmentID().setTask(task);
-	}
+    public void setTask(Task task) {
+	getAssignmentID().setTask(task);
+    }
 
-	@Transient
-	public Field getField() {
-		return getAssignmentID().getField();
-	}
+    @Transient
+    public Field getField() {
+	return getAssignmentID().getField();
+    }
 
-	public void setField(Field field) {
-		getAssignmentID().setField(field);
-	}
+    public void setField(Field field) {
+	getAssignmentID().setField(field);
+    }
 
-	@Transient
-	public String getLabel() {
-		return getAssignmentID().getLabel();
-	}
+    @Transient
+    public String getLabel() {
+	return getAssignmentID().getLabel();
+    }
 
-	public void setLabel(String str) {
-		getAssignmentID().setLabel(str);
-	}
+    public void setLabel(String str) {
+	getAssignmentID().setLabel(str);
+    }
 
-	@Transient
-	public String getValue() {
-		return getAssignmentID().getValue();
-	}
+    @Transient
+    public String getValue() {
+	return getAssignmentID().getValue();
+    }
 
-	public void setValue(String str) {
-		getAssignmentID().setValue(str);
-	}
+    public void setValue(String str) {
+	getAssignmentID().setValue(str);
+    }
 }

@@ -47,8 +47,8 @@ public interface FieldService {
      * @param projectID
      * @return
      */
-    public String assignProject(FieldAssignment fieldAssignment, long fieldID,
-	    long projectID);
+    public String assignFieldToProject(FieldAssignment fieldAssignment,
+	    long fieldID, long projectID);
 
     /**
      * Unassign a field from a project.
@@ -59,8 +59,8 @@ public interface FieldService {
      * @param value
      * @return
      */
-    public String unassignProject(long fieldID, long projID, String label,
-	    String value);
+    public String unassignFieldFromProject(long fieldID, long projID,
+	    String label, String value);
 
     /**
      * Unassign all field under a project.
@@ -68,30 +68,109 @@ public interface FieldService {
      * @param projectID
      * @return
      */
-    public String unassignAllProjects(long projectID);
+    public String unassignAllFieldsFromProject(long projectID);
 
-    public void updateAssignedProjectField(long projectID, long fieldID,
+    /**
+     * Update an assign project field.
+     * 
+     * @param projectID
+     * @param fieldID
+     * @param oldLabel
+     * @param oldValue
+     * @param label2
+     * @param value2
+     * @return
+     */
+    public String updateAssignedProjectField(long projectID, long fieldID,
 	    String oldLabel, String oldValue, String label2, String value2);
 
-    public void assignTask(TaskFieldAssignment taskField, long fieldID,
-	    long taskID);
+    /**
+     * Assign field to a task.
+     * 
+     * @param taskField
+     * @param fieldID
+     * @param taskID
+     * @return
+     */
+    public String assignFieldToTask(TaskFieldAssignment taskField,
+	    long fieldID, long taskID);
 
-    public void unassignAllTasks(long taskID);
+    /**
+     * Unassign all fields from a task.
+     * 
+     * @param taskID
+     * @return
+     */
+    public String unassignAllFieldsFromTask(long taskID);
 
-    public void unassignTask(long fieldID, long taskID, String label,
-	    String value);
+    /**
+     * Unassign a field from a task.
+     * 
+     * @param fieldID
+     * @param taskID
+     * @param label
+     * @param value
+     * @return
+     */
+    public String unassignFieldFromTask(long fieldID, long taskID,
+	    String label, String value);
 
-    public void updateAssignedTaskField(long taskID, long fieldID,
+    /**
+     * Update an assigned task field.
+     * 
+     * @param taskID
+     * @param fieldID
+     * @param oldLabel
+     * @param oldValue
+     * @param label
+     * @param value
+     * @return
+     */
+    public String updateAssignedTaskField(long taskID, long fieldID,
 	    String oldLabel, String oldValue, String label, String value);
 
-    public void unassignStaff(long fieldID, long staffID, String label,
-	    String value);
+    /**
+     * Unassign a field from staff.
+     * 
+     * @param fieldID
+     * @param staffID
+     * @param label
+     * @param value
+     * @return
+     */
+    public String unassignFieldFromStaff(long fieldID, long staffID,
+	    String label, String value);
 
-    public void assignStaff(StaffFieldAssignment fieldAssignment, long fieldID,
-	    long staffID);
+    /**
+     * Assign a field to a staff.
+     * 
+     * @param fieldAssignment
+     * @param fieldID
+     * @param staffID
+     * @return
+     */
+    public String assignFieldToStaff(StaffFieldAssignment fieldAssignment,
+	    long fieldID, long staffID);
 
-    public void unassignAllStaff(long staffID);
+    /**
+     * Unassign all fields from a staff.
+     * 
+     * @param staffID
+     * @return
+     */
+    public String unassignAllFieldsFromStaff(long staffID);
 
-    public void updateAssignedStaffField(long staffID, long fieldID,
+    /**
+     * Update an assigned staff field.
+     * 
+     * @param staffID
+     * @param fieldID
+     * @param oldLabel
+     * @param oldValue
+     * @param label
+     * @param value
+     * @return
+     */
+    public String updateAssignedStaffField(long staffID, long fieldID,
 	    String oldLabel, String oldValue, String label, String value);
 }

@@ -476,7 +476,7 @@ public class ProjectController {
 
 	// Do service.
 	// Clear session attrs then redirect.
-	this.fieldService.unassignProject(faBean.getFieldID(),
+	this.fieldService.unassignFieldFromProject(faBean.getFieldID(),
 		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -646,7 +646,7 @@ public class ProjectController {
 
 	// Do service and clear session vars.
 	// Then return.
-	this.fieldService.unassignAllProjects(projectID);
+	this.fieldService.unassignAllFieldsFromProject(projectID);
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -687,7 +687,7 @@ public class ProjectController {
 		alertFactory.generateHTML());
 
 	// Do service.
-	this.fieldService.assignProject(fieldAssignment, fieldID, proj.getId());
+	this.fieldService.assignFieldToProject(fieldAssignment, fieldID, proj.getId());
 
 	// Remove session variables.
 	// Evict project cache.

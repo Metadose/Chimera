@@ -63,7 +63,7 @@ public class FieldController {
 	    @ModelAttribute(ATTR_FIELD) TaskFieldAssignment taskField,
 	    @RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
 	    @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
-	this.fieldService.assignTask(taskField, fieldID, taskID);
+	this.fieldService.assignFieldToTask(taskField, fieldID, taskID);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ taskID);
@@ -84,7 +84,7 @@ public class FieldController {
 	    @ModelAttribute(ATTR_FIELD) StaffFieldAssignment fieldAssignment,
 	    @RequestParam(Field.COLUMN_PRIMARY_KEY) long fieldID,
 	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
-	this.fieldService.assignStaff(fieldAssignment, fieldID, staffID);
+	this.fieldService.assignFieldToStaff(fieldAssignment, fieldID, staffID);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ staffID);
@@ -101,7 +101,7 @@ public class FieldController {
 	    + Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView unassignAllStaff(
 	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
-	this.fieldService.unassignAllStaff(staffID);
+	this.fieldService.unassignAllFieldsFromStaff(staffID);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ staffID);
@@ -118,7 +118,7 @@ public class FieldController {
 	    + Task.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView unassignAllTasks(
 	    @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID) {
-	this.fieldService.unassignAllTasks(taskID);
+	this.fieldService.unassignAllFieldsFromTask(taskID);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ taskID);
@@ -197,7 +197,7 @@ public class FieldController {
 	    @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 	    @RequestParam(Field.COLUMN_LABEL) String label,
 	    @RequestParam(Field.COLUMN_VALUE) String value) {
-	this.fieldService.unassignTask(fieldID, taskID, label, value);
+	this.fieldService.unassignFieldFromTask(fieldID, taskID, label, value);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Task.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ taskID);
@@ -220,7 +220,7 @@ public class FieldController {
 	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
 	    @RequestParam(Field.COLUMN_LABEL) String label,
 	    @RequestParam(Field.COLUMN_VALUE) String value) {
-	this.fieldService.unassignStaff(fieldID, staffID, label, value);
+	this.fieldService.unassignFieldFromStaff(fieldID, staffID, label, value);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ staffID);

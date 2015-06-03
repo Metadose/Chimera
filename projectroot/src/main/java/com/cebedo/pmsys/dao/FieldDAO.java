@@ -21,12 +21,12 @@ public interface FieldDAO {
 
 	public List<Field> listWithAllCollections();
 
-	public void assignProject(FieldAssignment fieldAssignment);
+	public void assignFieldToProject(FieldAssignment fieldAssignment);
 
-	public void unassignProject(long fieldID, long projID, String label,
+	public void unassignFieldFromProject(long fieldID, long projID, String label,
 			String value);
 
-	public void unassignAllProjects(long projectID);
+	public void unassignAllFieldsFromProject(long projectID);
 
 	public FieldAssignment getFieldByKeys(long projectID, long fieldID,
 			String label, String value);
@@ -34,19 +34,19 @@ public interface FieldDAO {
 	public void deleteAssignedField(long projectID, long fieldID, String label,
 			String value);
 
-	public void assignTask(TaskFieldAssignment taskField);
+	public void assignFieldToTask(TaskFieldAssignment taskField);
 
-	public void unassignAllTasks(long taskID);
+	public void unassignAllFieldsFromTask(long taskID);
 
-	public void unassignTask(long fieldID, long taskID, String label,
+	public void unassignFieldFromTask(long fieldID, long taskID, String label,
 			String value);
 
-	public void unassignStaff(long fieldID, long staffID, String label,
+	public void unassignFieldFromStaff(long fieldID, long staffID, String label,
 			String value);
 
-	public void assignStaff(StaffFieldAssignment fieldAssignment);
+	public void assignFieldToStaff(StaffFieldAssignment fieldAssignment);
 
-	public void unassignAllStaff(long staffID);
+	public void unassignAllFieldsFromStaff(long staffID);
 
 	public void updateAssignedProjectField(FieldAssignment assignment);
 
