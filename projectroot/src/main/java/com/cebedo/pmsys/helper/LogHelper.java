@@ -284,6 +284,12 @@ public class LogHelper {
 	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
     }
 
+    public String logUploadProfilePic(AuthenticationToken auth, String objName,
+	    long id, String name) {
+	return logMessage(auth, "(" + objName + ") Upload profile pic: " + id
+		+ " = " + name);
+    }
+
     public String logGetObjectWithAllCollections(AuthenticationToken auth,
 	    String objName, long id, String name) {
 	return logMessage(auth, "(" + objName + ") Get with all collections: "

@@ -10,7 +10,10 @@ public enum AuditAction {
 	    9, "Unassign", "Unassigned"), UNASSIGN_ALL(10, "Unassign All",
 	    "Unassigned All"), MARK_AS(11, "Mark As", "Marked As"), DELETE_ALL(
 	    12, "Delete All", "Deleted All"), GET_PARTIAL(13,
-	    "Get With Partial Properties", "Get With Partial Properties");
+	    "Get With Partial Properties", "Get With Partial Properties"), DELETE_PROFILE_PIC(
+	    14, "Delete the Profile Pic", "Deleted the Profile Pic"), UPLOAD_PROFILE_PIC(
+	    15, "Upload the Profile Pic", "Uploaded the Profile Pic"), UPLOAD(
+	    16, "Upload", "Uploaded");
 
     String label;
     int id;

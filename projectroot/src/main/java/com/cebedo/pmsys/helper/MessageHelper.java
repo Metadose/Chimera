@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.jms.Queue;
 
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
@@ -20,6 +21,7 @@ import com.cebedo.pmsys.listener.NotificationMessageListener;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Field;
+import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SecurityRole;
@@ -1167,6 +1169,97 @@ public class MessageHelper {
 	Map<String, Object> messageMap = constructAction(
 		TaskFieldAssignment.OBJECT_LABEL, action, fieldID, label,
 		notificationRecipients);
+	sendMessageMap(messageMap);
+    }
+
+    public void sendActionWithUpload(AuditAction action, Project proj,
+	    String objectName, MultipartFile file) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+
+	// Notify all staff assigned to task.
+	for (Task task : proj.getAssignedTasks()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, task.getStaff());
+	}
+
+	// Notify all company admins.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, proj.getCompany().getAdmins());
+
+	// Notify all teams in the project.
+	for (Team team : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff staff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, staff);
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructActionWithUpload(
+		Project.OBJECT_NAME, action, proj.getId(), proj.getName(),
+		notificationRecipients, objectName, file);
+
+	sendMessageMap(messageMap);
+    }
+
+    private Map<String, Object> constructActionWithUpload(String objName,
+	    AuditAction action, long objID, String name,
+	    List<Long> notificationRecipients, String objNameOfFile,
+	    MultipartFile file) {
+
+	// Get auth object.
+	// Construct needed texts.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	String textNotif = this.notifHelper.constructNotificationUpload(auth,
+		action, objName, name, objNameOfFile, file);
+	String textLog = this.logHelper.constructTextActionOnObj(action,
+		objName, name);
+
+	// Add data to map.
+	Map<String, Object> messageMap = new HashMap<String, Object>();
+	messageMap = addMsgMapUser(messageMap, auth);
+	messageMap = addMsgMapAudit(messageMap, action.id(), objName, objID);
+	messageMap = addMsgMapNotification(messageMap, notificationRecipients,
+		textNotif);
+	messageMap = addMsgMapLog(messageMap, objName, auth, textLog);
+	return messageMap;
+    }
+
+    public void sendAction(AuditAction action, Photo photo) {
+	List<Long> notificationRecipients = new ArrayList<Long>();
+	Project proj = photo.getProject();
+
+	// Notify all staff assigned to task.
+	for (Task task : proj.getAssignedTasks()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, task.getStaff());
+	}
+
+	// Notify all company admins.
+	notificationRecipients = addNotificationRecipients(
+		notificationRecipients, proj.getCompany().getAdmins());
+
+	// Notify all teams in the project.
+	for (Team team : proj.getAssignedTeams()) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
+
+	// Notify all managers of the project.
+	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
+	    Staff staff = managerAssign.getManager();
+	    notificationRecipients = addNotificationRecipient(
+		    notificationRecipients, staff);
+	}
+
+	// Construct the message then send.
+	Map<String, Object> messageMap = constructAction(Photo.OBJECT_NAME,
+		action, photo.getId(), photo.getName(), notificationRecipients);
 	sendMessageMap(messageMap);
     }
 }

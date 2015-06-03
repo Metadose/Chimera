@@ -6,29 +6,71 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.model.Photo;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
 
 public interface PhotoService {
 
-	public AlertBoxFactory create(MultipartFile file, long projectID,
-			String description) throws IOException;
+    /**
+     * Upload a new photo.
+     * 
+     * @param file
+     * @param projectID
+     * @param description
+     * @return
+     * @throws IOException
+     */
+    public String create(MultipartFile file, long projectID, String description)
+	    throws IOException;
 
-	public Photo getByID(long id);
+    public Photo getByID(long id);
 
-	public void update(Photo photo);
+    /**
+     * Update the photo.
+     * 
+     * @param photo
+     * @return
+     */
+    public String update(Photo photo);
 
-	public void delete(long id);
+    /**
+     * Delete a photo.
+     * 
+     * @param id
+     * @return
+     */
+    public String delete(long id);
 
-	public List<Photo> list();
+    public List<Photo> list();
 
-	public void uploadProjectProfile(MultipartFile file, long projectID)
-			throws IOException;
+    /**
+     * Upload a project profile pic.
+     * 
+     * @param file
+     * @param projectID
+     * @return
+     * @throws IOException
+     */
+    public String uploadProjectProfile(MultipartFile file, long projectID)
+	    throws IOException;
 
-	public void uploadStaffProfile(MultipartFile file, long staffID)
-			throws IOException;
+    /**
+     * Upload a staff profile pic.
+     * 
+     * @param file
+     * @param staffID
+     * @return
+     * @throws IOException
+     */
+    public String uploadStaffProfile(MultipartFile file, long staffID)
+	    throws IOException;
 
-	public void deleteProjectProfile(long projectID);
+    /**
+     * Delete a profile pic of a project.
+     * 
+     * @param projectID
+     * @return
+     */
+    public String deleteProjectProfile(long projectID);
 
-	public String getNameByID(long id);
+    public String getNameByID(long id);
 
 }

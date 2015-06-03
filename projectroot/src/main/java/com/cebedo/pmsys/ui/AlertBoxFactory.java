@@ -27,6 +27,15 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Upload.
+     */
+    private static String TEMPLATE_SUCCESS_UPLOAD = "Successfully <b>uploaded</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_UPLOAD = "Failed to <b>upload</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
      * Update.
      */
     private static String TEMPLATE_SUCCESS_UPDATE = "Successfully <b>updated</b> the "
@@ -42,6 +51,24 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     private static String TEMPLATE_FAILED_DELETE = "Failed to <b>delete</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
+     * Delete profile pic.
+     */
+    private static String TEMPLATE_SUCCESS_DELETE_PROFILE_PIC = "Successfully <b>deleted</b> the profile pic of "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_DELETE_PROFILE_PIC = "Failed to <b>delete</b> the profile pic of "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
+     * Upload profile pic.
+     */
+    private static String TEMPLATE_SUCCESS_UPLOAD_PROFILE_PIC = "Successfully <b>uploaded</b> the profile pic of "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_UPLOAD_PROFILE_PIC = "Failed to <b>upload</b> the profile pic of "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
@@ -115,6 +142,38 @@ public class AlertBoxFactory {
 
     public AlertBoxFactory() {
 	;
+    }
+
+    public String generateDeleteProfilePic(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_DELETE_PROFILE_PIC.replace(
+		    DELIMITER_OBJECT_TYPE, object).replace(
+		    DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_DELETE_PROFILE_PIC.replace(
+		    DELIMITER_OBJECT_TYPE, object).replace(
+		    DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateUploadProfilePic(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_UPLOAD_PROFILE_PIC.replace(
+		    DELIMITER_OBJECT_TYPE, object).replace(
+		    DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_UPLOAD_PROFILE_PIC.replace(
+		    DELIMITER_OBJECT_TYPE, object).replace(
+		    DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
     }
 
     public String generateDelete(String object, String objName) {
@@ -209,6 +268,20 @@ public class AlertBoxFactory {
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPDATE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateUpload(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_UPLOAD.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_UPLOAD.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	}
 	this.message = result;

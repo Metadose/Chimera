@@ -3,6 +3,8 @@ package com.cebedo.pmsys.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Company;
@@ -12,11 +14,55 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class NotificationHelper {
 
+    /**
+     * Sample: John uploaded photo myphoto.jpg to project ABC Dorm.
+     * 
+     * @param auth
+     * @param action
+     * @param objName
+     * @param name
+     * @param file
+     * @param objNameOfFile
+     * @return
+     */
+    public String constructNotificationUpload(AuthenticationToken auth,
+	    AuditAction action, String objName, String name,
+	    String objNameOfFile, MultipartFile file) {
+
+	String executor = auth.getStaff() == null ? auth.getUser()
+		.getUsername() : auth.getStaff().getFullName();
+	String actionStr = action.pastTense().toLowerCase();
+
+	// Combine.
+	String text = executor + " " + actionStr + " "
+		+ objNameOfFile.toLowerCase() + " "
+		+ file.getOriginalFilename() + " to " + objName.toLowerCase()
+		+ " " + name + ".";
+
+	return text;
+    }
+
+    /**
+     * Sample: John deleted project ABC Dorm.
+     * 
+     * @param auth
+     * @param action
+     * @param objName
+     * @param name
+     * @return
+     */
     public String constructNotificationText(AuthenticationToken auth,
 	    AuditAction action, String objName, String name) {
-	String notifTxt = auth.getStaff() == null ? auth.getUser()
-		.getUsername() : auth.getStaff().getFullName() + " ";
-	notifTxt += action.pastTense().toLowerCase() + " ";
+
+	String executor = auth.getStaff() == null ? auth.getUser()
+		.getUsername() : auth.getStaff().getFullName();
+	String actionStr = action.pastTense().toLowerCase();
+	String combine = (action == AuditAction.DELETE_PROFILE_PIC || action == AuditAction.UPLOAD_PROFILE_PIC) ? " of "
+		: " ";
+
+	// Combine.
+	String notifTxt = executor + " ";
+	notifTxt += actionStr + combine;
 	notifTxt += objName.toLowerCase() + " " + name + ".";
 	return notifTxt;
     }

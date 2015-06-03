@@ -316,18 +316,15 @@ public class ProjectController {
 	FieldAssignmentBean faBean = (FieldAssignmentBean) session
 		.getAttribute("old" + ATTR_FIELD);
 
+	// Get response.
 	// Do service.
-	this.fieldService.updateAssignedProjectField(faBean.getProjectID(),
-		faBean.getFieldID(), faBean.getLabel(), faBean.getValue(),
-		newFaBean.getLabel(), newFaBean.getValue());
+	String response = this.fieldService.updateAssignedProjectField(
+		faBean.getProjectID(), faBean.getFieldID(), faBean.getLabel(),
+		faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue());
 
-	// Create ui notifs.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory
-		.setMessage("Successfully <b>updated</b> extra information <b>"
-			+ newFaBean.getLabel() + "</b>.");
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 
 	// Clear session and redirect.
 	status.setComplete();
@@ -352,14 +349,14 @@ public class ProjectController {
 		.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
-	String teamName = this.teamService.getNameByID(teamID);
-	this.teamService.unassignProjectTeam(projectID, teamID);
+	// Get response.
+	String response = this.teamService.unassignProjectTeam(projectID,
+		teamID);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned</b> team <b>"
-		+ teamName + "</b>.");
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -378,18 +375,19 @@ public class ProjectController {
 	    @ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
 	    HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
+
 	long teamID = taBean.getTeamID();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	long projectID = proj.getId();
 
-	String teamName = this.teamService.getNameByID(teamID);
-	this.teamService.assignProjectTeam(projectID, teamID);
+	// Do service.
+	// Get response.
+	String response = this.teamService.assignProjectTeam(projectID, teamID);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>assigned</b> team <b>"
-		+ teamName + "</b>.");
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
@@ -406,16 +404,17 @@ public class ProjectController {
 	    + Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllProjectTeams(HttpSession session,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
+
 	Project proj = (Project) session
 		.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
-	this.teamService.unassignAllProjectTeams(projectID);
+	// Get response.
+	String response = this.teamService.unassignAllProjectTeams(projectID);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
+	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
+		response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -429,6 +428,7 @@ public class ProjectController {
 	    @RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
 	    @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
 	    Model model) {
+
 	// Add origin details.
 	model.addAttribute(SystemConstants.ORIGIN, origin);
 	model.addAttribute(SystemConstants.ORIGIN_ID, originID);
@@ -466,18 +466,17 @@ public class ProjectController {
 	FieldAssignmentBean faBean = (FieldAssignmentBean) session
 		.getAttribute(ATTR_FIELD);
 
-	// Construct ui notifs.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory
-		.setMessage("Successfully <b>deleted</b> extra information <b>"
-			+ faBean.getLabel() + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
-
 	// Do service.
 	// Clear session attrs then redirect.
-	this.fieldService.unassignFieldFromProject(faBean.getFieldID(),
-		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
+	// Get response.
+	String response = this.fieldService.unassignFieldFromProject(
+		faBean.getFieldID(), faBean.getProjectID(), faBean.getLabel(),
+		faBean.getValue());
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
@@ -528,17 +527,13 @@ public class ProjectController {
 	    + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
-	// Alert result.
-	String projectName = this.projectService.getNameByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> project <b>"
-		+ projectName + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		alertFactory.generateHTML());
 
 	// Reset search entries in cache.
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectService.getByID(id);
+
+	// Get company and
+	// clear cache.
 	Long companyID = null;
 	if (auth.getCompany() == null) {
 	    if (project.getCompany() != null) {
@@ -549,8 +544,16 @@ public class ProjectController {
 	}
 	this.projectService.clearSearchCache(companyID);
 
-	// TODO Cleanup also the SYS_HOME.
-	this.projectService.delete(id);
+	// Do service.
+	// FIXME Cleanup also the SYS_HOME.
+	// Get response.
+	String response = this.projectService.delete(id);
+
+	// Attach response.
+	// Alert result.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
 		+ SystemConstants.REQUEST_LIST;
@@ -687,7 +690,8 @@ public class ProjectController {
 		alertFactory.generateHTML());
 
 	// Do service.
-	this.fieldService.assignFieldToProject(fieldAssignment, fieldID, proj.getId());
+	this.fieldService.assignFieldToProject(fieldAssignment, fieldID,
+		proj.getId());
 
 	// Remove session variables.
 	// Evict project cache.
