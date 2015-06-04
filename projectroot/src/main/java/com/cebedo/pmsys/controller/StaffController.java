@@ -240,7 +240,7 @@ public class StaffController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
 
-	return editStaffWithMinDate(model, session);
+	return editStaffWithMinDate(model, session, startDate);
     }
 
     /**
@@ -261,7 +261,7 @@ public class StaffController {
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-	return editStaffWithMinDate(model, session);
+	return editStaffWithMinDate(model, session, attendance.getTimestamp());
     }
 
     /**
@@ -470,6 +470,42 @@ public class StaffController {
 	datePair.put(ATTR_CALENDAR_MIN_DATE, min);
 	datePair.put(ATTR_CALENDAR_MAX_DATE, max);
 	return datePair;
+    }
+
+    /**
+     * Open a view page where the user can edit the staff.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    private String editStaffWithMinDate(Model model, HttpSession session,
+	    Date minDate) {
+
+	// If the min date from session is lesser
+	// than min date passed, use from session.
+	Date minDateFromSession = (Date) session
+		.getAttribute(ATTR_CALENDAR_MIN_DATE);
+	if (minDateFromSession.before(minDate)) {
+	    minDate = minDateFromSession;
+	}
+
+	// TODO Check if where this is used.
+	// If not used, delete.
+	model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
+	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
+
+	// Get staff object.
+	// Get the current year and month.
+	// This will be minimum.
+	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+	Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
+	String minDateStr = (String) session
+		.getAttribute(ATTR_CALENDAR_MIN_DATE_STR);
+
+	// Set model attributes.
+	setModelAttributes(model, staff, minDate, maxDate, minDateStr);
+	return JSP_EDIT;
     }
 
     /**
