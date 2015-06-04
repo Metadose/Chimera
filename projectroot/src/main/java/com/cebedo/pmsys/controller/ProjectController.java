@@ -45,7 +45,6 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
@@ -82,8 +81,15 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_TIMELINE_MILESTONE_SUMMARY_MAP = "milestoneSummary";
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
+
+    public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
     public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
+    public static final String ATTR_PAYROLL_GROUP_TEAM = "payrollGroupTeam";
+    public static final String ATTR_PAYROLL_SUMMARY_MAP = "payrollSummaryMap";
+    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_OVERALL = "payrollSummaryTotalOverall";
+    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_TEAM = "payrollSummaryTotalTeam";
+    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_MANAGER = "payrollSummaryTotalManager";
 
     public static final String ATTR_MAP_ID_TO_MILESTONE = "idToMilestoneMap";
 
@@ -961,14 +967,8 @@ public class ProjectController {
 
 	// Get payroll maps.
 	// And assign to model.
-	Map<String, Object> payrollMap = this.projectService
-		.getPayrollMap(proj);
-	Map<Team, Map<Staff, String>> teamPayrollMap = (Map<Team, Map<Staff, String>>) payrollMap
-		.get(ATTR_PAYROLL_MAP_TEAM);
-	Map<ManagerAssignment, String> managerPayrollMap = (Map<ManagerAssignment, String>) payrollMap
-		.get(ATTR_PAYROLL_MAP_MANAGER);
-	model.addAttribute(ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
-	model.addAttribute(ATTR_PAYROLL_MAP_MANAGER, managerPayrollMap);
+	String payrollJSON = this.projectService.getPayrollJSON(proj);
+	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 
 	// Get lists for selectors.
 	// Actual object and beans.

@@ -52,12 +52,20 @@ public interface ProjectService {
 
     public Map<String, Object> getTimelineSummaryMap(Project proj);
 
-    public Map<String, Object> getPayrollMap(Project proj);
+    public Map<String, Object> getComputedPayrollMap(Project proj);
 
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
 
     public String getCalendarJSON(Project proj);
 
     public void clearListCache();
+
+    /**
+     * Get the JSON for the payroll tree grid.
+     * 
+     * @param proj
+     * @return
+     */
+    public String getPayrollJSON(Project proj);
 
 }

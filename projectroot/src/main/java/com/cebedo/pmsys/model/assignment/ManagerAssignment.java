@@ -22,6 +22,7 @@ import com.cebedo.pmsys.model.Staff;
 public class ManagerAssignment implements Serializable {
 
     public static final String OBJECT_LABEL = "Manager Assignment";
+    public static final String OBJECT_NAME = "managerAssignment";
     public static final String TABLE_NAME = "assignments_project_manager";
     public static final String PRIMARY_KEY = "assignmentID";
     public static final String COLUMN_PROJECT_POSITION = "project_position";

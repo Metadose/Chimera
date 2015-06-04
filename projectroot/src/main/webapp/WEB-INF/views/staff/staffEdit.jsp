@@ -452,10 +452,8 @@
                    									<h3 class="box-title">Timeline</h3>
                    								</div>
                    								<div class="box-body">
-                   									<c:if test="${!empty staff.tasks}">
 				                                	<div id="gantt-chart" style='width:1000px; height:400px;'>
 					                                </div><!-- /.box-body -->
-					                                </c:if>
                    								</div>
                    							</div>
                    						</div>
@@ -863,7 +861,6 @@
 	
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	
-	<c:if test="${staff.id != 0 && !empty staff.tasks}">
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
    	<script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
@@ -876,11 +873,15 @@
 	<script type="text/javascript">
 	    var ganttJSON = ${ganttJSON};
 	    var tasks = {'data': ganttJSON};
+	</script>
+	
+	<c:if test="${staff.id != 0 && !empty staff.tasks}">
+	<script type="text/javascript">
 		gantt.init("gantt-chart");
 	    gantt.parse(tasks);
 	    gantt.sort("start_date");
 	</script>
-   	</c:if>
+	</c:if>
    	
 	<script>
 		function submitForm(id) {

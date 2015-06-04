@@ -1,5 +1,8 @@
 package com.cebedo.pmsys.service;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
+import com.cebedo.pmsys.bean.TreeGridRowBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -48,6 +53,7 @@ import com.google.gson.Gson;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
+    private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
     private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
     private AuthHelper authHelper = new AuthHelper();
     private LogHelper logHelper = new LogHelper();
@@ -474,9 +480,121 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * Get map of payrolls.
      */
+    @SuppressWarnings("unchecked")
     @Override
     @Transactional
-    public Map<String, Object> getPayrollMap(Project proj) {
+    public String getPayrollJSON(Project proj) {
+	Map<String, Object> payrollMap = getComputedPayrollMap(proj);
+
+	// Team map.
+	Map<Team, Map<Staff, String>> teamPayrollMap = (Map<Team, Map<Staff, String>>) payrollMap
+		.get(ProjectController.ATTR_PAYROLL_MAP_TEAM);
+
+	// Manager map.
+	Map<ManagerAssignment, String> managerPayrollMap = (Map<ManagerAssignment, String>) payrollMap
+		.get(ProjectController.ATTR_PAYROLL_MAP_MANAGER);
+
+	// Summary groups.
+	Map<Team, Double> teamGroup = (Map<Team, Double>) payrollMap
+		.get(ProjectController.ATTR_PAYROLL_GROUP_TEAM);
+	Map<String, Double> summaryGroup = (Map<String, Double>) payrollMap
+		.get(ProjectController.ATTR_PAYROLL_SUMMARY_MAP);
+
+	// Currency formatter.
+	NumberFormat df = NumberFormat.getCurrencyInstance();
+	DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+	dfs.setCurrencySymbol("&#8369;");
+	dfs.setGroupingSeparator('.');
+	dfs.setMonetaryDecimalSeparator('.');
+	((DecimalFormat) df).setDecimalFormatSymbols(dfs);
+
+	// Summary details.
+	double managersTotal = summaryGroup
+		.get(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_MANAGER);
+	String managersTotalStr = df.format(managersTotal);
+	double teamsTotal = summaryGroup
+		.get(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_TEAM);
+	String teamsTotalStr = df.format(teamsTotal);
+	double overallTotal = summaryGroup
+		.get(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_OVERALL);
+	String overallTotalStr = df.format(overallTotal);
+
+	// Add the mother bean.
+	Random randomno = new Random();
+	List<TreeGridRowBean> treeGrid = new ArrayList<TreeGridRowBean>();
+	long motherPKey = Math.abs(randomno.nextLong());
+	TreeGridRowBean motherBean = new TreeGridRowBean(motherPKey, -1, "<b>"
+		+ proj.getName() + "</b>", overallTotalStr);
+	treeGrid.add(motherBean);
+
+	// Add header beans.
+	long headerManagerPKey = Math.abs(randomno.nextLong());
+	TreeGridRowBean headerManagerBean = new TreeGridRowBean(
+		headerManagerPKey, motherPKey, "Managers", managersTotalStr);
+	treeGrid.add(headerManagerBean);
+
+	long headerTeamPKey = Math.abs(randomno.nextLong());
+	TreeGridRowBean headerTeamBean = new TreeGridRowBean(headerTeamPKey,
+		motherPKey, "Teams", teamsTotalStr);
+	treeGrid.add(headerTeamBean);
+
+	// Loop through managers.
+	for (ManagerAssignment managerAssignment : managerPayrollMap.keySet()) {
+
+	    // Get details.
+	    Staff manager = managerAssignment.getManager();
+	    long rowPKey = Math.abs(randomno.nextLong());
+	    String rowName = manager.getFullName();
+	    String value = managerPayrollMap.get(managerAssignment);
+	    String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
+		    : df.format(Double.valueOf(value));
+
+	    // Add to bean.
+	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
+		    headerManagerPKey, rowName, rowValue);
+	    treeGrid.add(rowBean);
+	}
+
+	// Loop through teams.
+	for (Team team : teamPayrollMap.keySet()) {
+
+	    // Get details.
+	    long teamPKey = Math.abs(randomno.nextLong());
+	    double thisTeamTotal = teamGroup.get(team);
+	    String thisTeamTotalStr = df.format(thisTeamTotal);
+
+	    // Add to bean.
+	    TreeGridRowBean teamBean = new TreeGridRowBean(teamPKey,
+		    headerTeamPKey, team.getName(), thisTeamTotalStr);
+	    treeGrid.add(teamBean);
+
+	    // Add all staff inside team.
+	    Map<Staff, String> staffMap = teamPayrollMap.get(team);
+	    for (Staff staff : staffMap.keySet()) {
+
+		// Get details.
+		long rowPKey = Math.abs(randomno.nextLong());
+		String rowName = staff.getFullName();
+		String value = staffMap.get(staff);
+		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
+			: df.format(Double.valueOf(value));
+
+		// Add to bean.
+		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
+			teamPKey, rowName, rowValue);
+		treeGrid.add(rowBean);
+	    }
+	}
+
+	return new Gson().toJson(treeGrid, ArrayList.class);
+    }
+
+    /**
+     * Get map of payrolls.
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> getComputedPayrollMap(Project proj) {
 	Map<String, Object> payrollMaps = new HashMap<String, Object>();
 
 	// TODO Speed up performance!
@@ -485,8 +603,12 @@ public class ProjectServiceImpl implements ProjectService {
 	Date max = new Date(System.currentTimeMillis());
 
 	// Payroll maps.
+	Map<Team, Double> teamGroup = new HashMap<Team, Double>();
+	Map<String, Double> summaryGroup = new HashMap<String, Double>();
 	Map<Team, Map<Staff, String>> teamPayrollMap = new HashMap<Team, Map<Staff, String>>();
 	Map<ManagerAssignment, String> managerPayrollMap = new HashMap<ManagerAssignment, String>();
+	double managersTotal = 0;
+	double teamsTotal = 0;
 
 	// Wage for teams.
 	Map<Long, String> computedMap = new HashMap<Long, String>();
@@ -494,6 +616,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Loop through all the teams.
 	for (Team team : proj.getAssignedTeams()) {
 	    Map<Staff, String> staffPayrollMap = new HashMap<Staff, String>();
+	    double thisTeamTotal = 0;
 
 	    for (Staff member : team.getMembers()) {
 		long memberID = member.getId();
@@ -501,19 +624,23 @@ public class ProjectServiceImpl implements ProjectService {
 		// If a staff has already been computed before,
 		// don't compute again.
 		if (computedMap.containsKey(memberID)) {
-		    staffPayrollMap.put(member,
-			    "Check " + computedMap.get(memberID));
+		    staffPayrollMap.put(member, IDENTIFIER_ALREADY_EXISTS
+			    + computedMap.get(memberID));
 		    continue;
 		}
 
 		// Add to map
 		// and add to computed list.
-		staffPayrollMap.put(member, String.valueOf(this.payrollService
-			.getTotalWageOfStaffInRange(member, min, max)));
+		double totalWageOfStaff = this.payrollService
+			.getTotalWageOfStaffInRange(member, min, max);
+		thisTeamTotal += totalWageOfStaff;
+		staffPayrollMap.put(member, String.valueOf(totalWageOfStaff));
 		computedMap.put(memberID, "Team " + team.getName());
 	    }
 
 	    // Add to team list.
+	    teamsTotal += thisTeamTotal;
+	    teamGroup.put(team, thisTeamTotal);
 	    teamPayrollMap.put(team, staffPayrollMap);
 	}
 
@@ -524,18 +651,31 @@ public class ProjectServiceImpl implements ProjectService {
 	    // If a staff has already been computed before,
 	    // don't compute again.
 	    if (computedMap.containsKey(managerID)) {
-		managerPayrollMap.put(assignment,
-			"Check " + computedMap.get(managerID));
+		managerPayrollMap.put(assignment, IDENTIFIER_ALREADY_EXISTS
+			+ computedMap.get(managerID));
 		continue;
 	    }
 
 	    // Get wage then add to map.
-	    managerPayrollMap.put(assignment, String
-		    .valueOf(this.payrollService.getTotalWageOfStaffInRange(
-			    manager, min, max)));
+	    double managerWageTotal = this.payrollService
+		    .getTotalWageOfStaffInRange(manager, min, max);
+	    managersTotal += managerWageTotal;
+	    managerPayrollMap.put(assignment, String.valueOf(managerWageTotal));
 	    computedMap.put(managerID, assignment.getProjectPosition());
 	}
 
+	// Add summary details.
+	summaryGroup.put(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_OVERALL,
+		teamsTotal + managersTotal);
+	summaryGroup.put(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_TEAM,
+		teamsTotal);
+	summaryGroup.put(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_MANAGER,
+		managersTotal);
+
+	// Add maps to general map.
+	payrollMaps.put(ProjectController.ATTR_PAYROLL_GROUP_TEAM, teamGroup);
+	payrollMaps.put(ProjectController.ATTR_PAYROLL_SUMMARY_MAP,
+		summaryGroup);
 	payrollMaps
 		.put(ProjectController.ATTR_PAYROLL_MAP_TEAM, teamPayrollMap);
 	payrollMaps.put(ProjectController.ATTR_PAYROLL_MAP_MANAGER,
