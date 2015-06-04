@@ -29,6 +29,7 @@ import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
@@ -523,19 +524,23 @@ public class ProjectServiceImpl implements ProjectService {
 	Random randomno = new Random();
 	List<TreeGridRowBean> treeGrid = new ArrayList<TreeGridRowBean>();
 	long motherPKey = Math.abs(randomno.nextLong());
-	TreeGridRowBean motherBean = new TreeGridRowBean(motherPKey, -1, "<b>"
-		+ proj.getName() + "</b>", overallTotalStr);
+	TreeGridRowBean motherBean = new TreeGridRowBean(motherPKey, -1,
+		CSSClass.SUCCESS.getSpanHTML("PROJECT") + "&nbsp;"
+			+ proj.getName(), overallTotalStr);
 	treeGrid.add(motherBean);
 
 	// Add header beans.
 	long headerManagerPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerManagerBean = new TreeGridRowBean(
-		headerManagerPKey, motherPKey, "Managers", managersTotalStr);
+		headerManagerPKey, motherPKey,
+		CSSClass.PRIMARY.getSpanHTML("GROUP") + "&nbsp;Managers",
+		managersTotalStr);
 	treeGrid.add(headerManagerBean);
 
 	long headerTeamPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerTeamBean = new TreeGridRowBean(headerTeamPKey,
-		motherPKey, "Teams", teamsTotalStr);
+		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP")
+			+ "&nbsp;Teams", teamsTotalStr);
 	treeGrid.add(headerTeamBean);
 
 	// Loop through managers.
@@ -544,7 +549,8 @@ public class ProjectServiceImpl implements ProjectService {
 	    // Get details.
 	    Staff manager = managerAssignment.getManager();
 	    long rowPKey = Math.abs(randomno.nextLong());
-	    String rowName = manager.getFullName();
+	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF") + "&nbsp;"
+		    + manager.getFullName();
 	    String value = managerPayrollMap.get(managerAssignment);
 	    String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
 		    : df.format(Double.valueOf(value));
@@ -565,7 +571,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add to bean.
 	    TreeGridRowBean teamBean = new TreeGridRowBean(teamPKey,
-		    headerTeamPKey, team.getName(), thisTeamTotalStr);
+		    headerTeamPKey, CSSClass.INFO.getSpanHTML("TEAM")
+			    + "&nbsp;" + team.getName(), thisTeamTotalStr);
 	    treeGrid.add(teamBean);
 
 	    // Add all staff inside team.
@@ -574,7 +581,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 		// Get details.
 		long rowPKey = Math.abs(randomno.nextLong());
-		String rowName = staff.getFullName();
+		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
+			+ "&nbsp;" + staff.getFullName();
 		String value = staffMap.get(staff);
 		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
 			: df.format(Double.valueOf(value));

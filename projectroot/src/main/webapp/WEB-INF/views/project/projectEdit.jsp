@@ -1232,7 +1232,6 @@
 			// Tree grid.
 			var flatDS = ${payrollJSON};
             $("#treegrid1").igTreeGrid({
-                width: "100%",
                 dataSource: flatDS,
                 primaryKey: "primaryKey",
                 foreignKey: "foreignKey",
