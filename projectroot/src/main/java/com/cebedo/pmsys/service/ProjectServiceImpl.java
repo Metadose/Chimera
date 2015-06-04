@@ -607,10 +607,9 @@ public class ProjectServiceImpl implements ProjectService {
     public Map<String, Object> getComputedPayrollMap(Project proj) {
 	Map<String, Object> payrollMaps = new HashMap<String, Object>();
 
-	// TODO Speed up performance!
-	// FIXME Since beginning of time 'til now.
-	Date min = new Date(0);
-	Date max = new Date(System.currentTimeMillis());
+	// Default is current month.
+	Date min = DateHelper.getCurrentMonthDateStart();
+	Date max = DateHelper.getCurrentMonthDateEnd();
 
 	// Payroll maps.
 	Map<Team, Double> teamGroup = new HashMap<Team, Double>();
