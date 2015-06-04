@@ -819,6 +819,7 @@
         </aside>
 	</div>
 	
+	<c:if test="${staff.id != 0}">
 	<div id="myModal" class="modal fade">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -857,7 +858,7 @@
 	        </div>
 	    </div>
 	</div>
-	
+	</c:if>
 	
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	
@@ -884,10 +885,6 @@
 	</c:if>
    	
 	<script>
-		function submitForm(id) {
-			$('#'+id).submit();
-		}
-		
 		function submitAjax(id) {
 			var formObj = $('#'+id);
 			var serializedData = formObj.serialize();

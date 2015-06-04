@@ -15,9 +15,9 @@
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
 	
 	<!-- Ignite UI Required Combined CSS Files -->
-    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
-    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/structure/infragistics.css" rel="stylesheet" />
-    <link href="http://cdn-na.infragistics.com/igniteui/2015.1/latest/css/structure/modules/infragistics.ui.treegrid.css" rel="stylesheet" />
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
     
 	<style type="text/css">
 		ul {         
@@ -34,6 +34,13 @@
 		.gantt-holder {
 			width:auto;
 			height:auto;
+		}
+		#treegrid1_container {
+		  outline: none;
+		  border: none !important;
+		  -webkit-box-shadow: none !important;
+		  -moz-box-shadow: none !important;
+		  box-shadow: none !important;
 		}
 	</style>
 </head>
@@ -658,23 +665,8 @@
 								                                            	</sec:authorize>
 					                                        				</td>
 								                                            <td style="vertical-align: middle;">
-								                                            	<c:choose>
-									                                            	<c:when test="${task.status == 0}">
-									                                            		<span class="label label-info">New</span>
-									                                            	</c:when>
-									                                            	<c:when test="${task.status == 1}">
-									                                            		<span class="label label-primary">Ongoing</span>
-									                                            	</c:when>
-									                                            	<c:when test="${task.status == 2}">
-									                                            		<span class="label label-success">Completed</span>
-									                                            	</c:when>
-									                                            	<c:when test="${task.status == 3}">
-									                                            		<span class="label label-danger">Failed</span>
-									                                            	</c:when>
-									                                            	<c:when test="${task.status == 4}">
-									                                            		<span class="label btn-warning">Cancelled</span>
-									                                            	</c:when>
-									                                            </c:choose>
+									                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
+																				<span class="label ${css}">${task.getStatusEnum()}</span>
 								                                            </td>
 								                                            <td>${task.dateStart}</td>
 								                                            <td>${task.duration}</td>
@@ -759,6 +751,9 @@
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box box-default">
+                                		<div class="box-header">
+          									<h3 class="box-title">Payroll</h3>
+          								</div>
 		                                <div class="box-body">
 									  	  <table id="treegrid1"></table>
 		                                </div><!-- /.box-body -->

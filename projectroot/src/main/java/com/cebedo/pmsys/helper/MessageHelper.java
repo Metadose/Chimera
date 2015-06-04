@@ -465,26 +465,38 @@ public class MessageHelper {
 	List<Long> notificationRecipients = new ArrayList<Long>();
 
 	// Notify all staff assigned to task.
-	for (Task task : proj.getAssignedTasks()) {
-	    notificationRecipients = addNotificationRecipients(
-		    notificationRecipients, task.getStaff());
+	Set<Task> tasks = proj.getAssignedTasks();
+	if (tasks != null) {
+	    for (Task task : tasks) {
+		notificationRecipients = addNotificationRecipients(
+			notificationRecipients, task.getStaff());
+	    }
 	}
 
 	// Notify all company admins.
-	notificationRecipients = addNotificationRecipients(
-		notificationRecipients, proj.getCompany().getAdmins());
+	Company co = proj.getCompany();
+	if (co != null) {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	}
 
 	// Notify all teams in the project.
-	for (Team team : proj.getAssignedTeams()) {
-	    notificationRecipients = addNotificationRecipients(
-		    notificationRecipients, team.getMembers());
+	Set<Team> teams = proj.getAssignedTeams();
+	if (teams != null) {
+	    for (Team team : teams) {
+		notificationRecipients = addNotificationRecipients(
+			notificationRecipients, team.getMembers());
+	    }
 	}
 
 	// Notify all managers of the project.
-	for (ManagerAssignment managerAssign : proj.getManagerAssignments()) {
-	    Staff staff = managerAssign.getManager();
-	    notificationRecipients = addNotificationRecipient(
-		    notificationRecipients, staff);
+	Set<ManagerAssignment> manAssigns = proj.getManagerAssignments();
+	if (manAssigns != null) {
+	    for (ManagerAssignment managerAssign : manAssigns) {
+		Staff staff = managerAssign.getManager();
+		notificationRecipients = addNotificationRecipient(
+			notificationRecipients, staff);
+	    }
 	}
 
 	// Construct the message then send.

@@ -552,7 +552,8 @@ public class ProjectServiceImpl implements ProjectService {
 	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF") + "&nbsp;"
 		    + manager.getFullName();
 	    String value = managerPayrollMap.get(managerAssignment);
-	    String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
+	    String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
+		    + value + ")</i>"
 		    : df.format(Double.valueOf(value));
 
 	    // Add to bean.
@@ -584,7 +585,8 @@ public class ProjectServiceImpl implements ProjectService {
 		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
 			+ "&nbsp;" + staff.getFullName();
 		String value = staffMap.get(staff);
-		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? value
+		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
+			+ value + ")</i>"
 			: df.format(Double.valueOf(value));
 
 		// Add to bean.

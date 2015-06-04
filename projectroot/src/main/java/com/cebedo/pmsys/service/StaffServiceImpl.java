@@ -95,29 +95,18 @@ public class StaffServiceImpl implements StaffService {
     public String create(Staff staff) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
-	if (this.authHelper.isActionAuthorized(staff)) {
+	// Log and notify.
+	this.messageHelper.sendAction(AuditAction.CREATE, staff);
 
-	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+	// Do service.
+	// Create the staff first since to attach it's relationship
+	// with the company.
+	Company authCompany = auth.getCompany();
+	staff.setCompany(authCompany);
+	this.staffDAO.create(staff);
 
-	    // Do service.
-	    // Create the staff first since to attach it's relationship
-	    // with the company.
-	    Company authCompany = auth.getCompany();
-	    staff.setCompany(authCompany);
-	    this.staffDAO.create(staff);
-
-	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Staff.OBJECT_NAME,
-		    staff.getFullName());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE,
-		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
-
-	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Staff.OBJECT_NAME,
+	// Return success.
+	return AlertBoxFactory.SUCCESS.generateCreate(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -801,7 +790,7 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
-	    Staff staff, Set<Attendance> attendanceList) {
+	    Set<Attendance> attendanceList) {
 	String statusCount = "statusCount";
 	String equivalentWage = "equivalentWage";
 
@@ -818,10 +807,9 @@ public class StaffServiceImpl implements StaffService {
 		    : attendanceStatusMap.get(attnStat).get(statusCount) + 1;
 	    Map<String, Double> breakdown = new HashMap<String, Double>();
 	    breakdown.put(statusCount, statCount);
-	    breakdown.put(
-		    equivalentWage,
-		    attnStat == AttendanceStatus.ABSENT ? 0 : statCount
-			    * staff.getWage());
+	    double value = attnStat == AttendanceStatus.ABSENT ? 0 : statCount
+		    * attendance.getWage();
+	    breakdown.put(equivalentWage, value);
 	    attendanceStatusMap.put(attnStat, breakdown);
 	}
 

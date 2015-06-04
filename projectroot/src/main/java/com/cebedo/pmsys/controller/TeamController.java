@@ -35,6 +35,10 @@ import com.cebedo.pmsys.ui.AlertBoxFactory;
 public class TeamController {
 
     public static final String ATTR_LIST = "teamList";
+    public static final String ATTR_STAFF_LIST = "staffList";
+    public static final String ATTR_FIELD_LIST = "fieldList";
+    public static final String ATTR_PROJECT_LIST = "projectList";
+
     public static final String ATTR_TEAM = Team.OBJECT_NAME;
     public static final String JSP_LIST = Team.OBJECT_NAME + "/teamList";
     public static final String JSP_EDIT = Team.OBJECT_NAME + "/teamEdit";
@@ -175,9 +179,9 @@ public class TeamController {
 	List<Field> fieldList = this.fieldService.list();
 	List<Staff> staffList = this.staffService.list();
 	List<Project> projectList = this.projectService.list();
-	model.addAttribute(FieldController.JSP_LIST, fieldList);
-	model.addAttribute(StaffController.JSP_LIST, staffList);
-	model.addAttribute(ProjectController.JSP_LIST, projectList);
+	model.addAttribute(ATTR_FIELD_LIST, fieldList);
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+	model.addAttribute(ATTR_PROJECT_LIST, projectList);
 
 	if (id == 0) {
 	    model.addAttribute(ATTR_TEAM, new Team());
@@ -200,9 +204,9 @@ public class TeamController {
 	List<Field> fieldList = this.fieldService.list();
 	List<Staff> staffList = this.staffService.list();
 	List<Project> projectList = this.projectService.list();
-	model.addAttribute(FieldController.JSP_LIST, fieldList);
-	model.addAttribute(StaffController.JSP_LIST, staffList);
-	model.addAttribute(ProjectController.JSP_LIST, projectList);
+	model.addAttribute(ATTR_FIELD_LIST, fieldList);
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+	model.addAttribute(ATTR_PROJECT_LIST, projectList);
 	if (id == 0) {
 	    model.addAttribute(ATTR_TEAM, new Team());
 	    model.addAttribute(SystemConstants.ATTR_ACTION,

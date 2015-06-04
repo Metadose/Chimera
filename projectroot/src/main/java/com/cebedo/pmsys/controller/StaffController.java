@@ -570,8 +570,8 @@ public class StaffController {
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
 	model.addAttribute(ATTR_TASK_STATUS_MAP,
 		this.staffService.getTaskStatusCountMap(staff));
-	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, this.staffService
-		.getAttendanceStatusCountMap(staff, attendanceList));
+	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP,
+		this.staffService.getAttendanceStatusCountMap(attendanceList));
 
 	// Add objects.
 	// Add form beans.

@@ -121,6 +121,6 @@ public interface StaffService {
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Staff staff);
 
     public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
-	    Staff staff, Set<Attendance> attendanceList);
+	    Set<Attendance> attendanceList);
 
 }

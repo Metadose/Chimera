@@ -20,7 +20,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
@@ -180,6 +182,11 @@ public class Task implements Serializable {
 
     public void setStatus(int status) {
 	this.status = status;
+    }
+
+    @Transient
+    public TaskStatus getStatusEnum() {
+	return TaskStatus.of(getStatus());
     }
 
     @Deprecated
