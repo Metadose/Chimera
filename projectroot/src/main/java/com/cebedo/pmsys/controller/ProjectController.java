@@ -3,6 +3,7 @@ package com.cebedo.pmsys.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +31,14 @@ import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
@@ -45,6 +49,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
@@ -67,6 +72,7 @@ public class ProjectController {
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
+    public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
@@ -426,33 +432,36 @@ public class ProjectController {
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
     }
 
-    @RequestMapping(value = Staff.OBJECT_NAME + "/"
-	    + SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String editStaff(
-	    @PathVariable(Staff.OBJECT_NAME) long staffID,
-	    @RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-	    @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
-	    Model model) {
-
-	// Add origin details.
-	model.addAttribute(SystemConstants.ORIGIN, origin);
-	model.addAttribute(SystemConstants.ORIGIN_ID, originID);
-
-	// If new, create it.
-	if (staffID == 0) {
-	    model.addAttribute(ATTR_STAFF, new Staff());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
-	    return JSP_EDIT;
-	}
-
-	// Else if not new, edit it.
-	model.addAttribute(ATTR_STAFF,
-		this.staffService.getWithAllCollectionsByID(staffID));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
-	return JSP_EDIT;
-    }
+    // @RequestMapping(value = Staff.OBJECT_NAME + "/"
+    // + SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}", method =
+    // RequestMethod.GET)
+    // public String editStaff(
+    // @PathVariable(Staff.OBJECT_NAME) long staffID,
+    // @RequestParam(value = SystemConstants.ORIGIN, required = false) String
+    // origin,
+    // @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long
+    // originID,
+    // Model model) {
+    //
+    // // Add origin details.
+    // model.addAttribute(SystemConstants.ORIGIN, origin);
+    // model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+    //
+    // // If new, create it.
+    // if (staffID == 0) {
+    // model.addAttribute(ATTR_STAFF, new Staff());
+    // model.addAttribute(SystemConstants.ATTR_ACTION,
+    // SystemConstants.ACTION_CREATE);
+    // return JSP_EDIT;
+    // }
+    //
+    // // Else if not new, edit it.
+    // model.addAttribute(ATTR_STAFF,
+    // this.staffService.getWithAllCollectionsByID(staffID));
+    // model.addAttribute(SystemConstants.ATTR_ACTION,
+    // SystemConstants.ACTION_EDIT);
+    // return JSP_EDIT;
+    // }
 
     /**
      * Unassign a field from a project.
@@ -859,6 +868,51 @@ public class ProjectController {
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
+     * Open an edit page with payroll object.
+     * 
+     * @param payrollKey
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_PAYROLL + "/{"
+	    + RedisConstants.OBJECT_PAYROLL + "}", method = RequestMethod.GET)
+    public String editPayroll(
+	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
+	    Model model, HttpSession session) {
+
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// List of possible approvers.
+	// Get all managers in this project.
+	List<Staff> managers = new ArrayList<Staff>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    managers.add(managerAssignment.getManager());
+	}
+
+	// For the multi-select box.
+	// Get all staff in this project.
+	List<Staff> allStaff = this.projectService.getAllStaff(proj);
+
+	// TODO <!-- List of all in PayrollStatus enum -->
+	// <label>Status</label>
+	// <form:input type="text" class="form-control" path="statusID"/><br/>
+
+	if (payrollKey.equals("0")) {
+	    Company co = proj.getCompany();
+	    Long companyID = co == null ? 0 : co.getId();
+	    long projectID = proj.getId();
+	    long creatorID = this.authHelper.getAuth().getUser().getId();
+	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(
+		    companyID, projectID, creatorID));
+	    return RedisConstants.JSP_PAYROLL_EDIT;
+	}
+
+	// TODO
+	return null;
     }
 
     /**

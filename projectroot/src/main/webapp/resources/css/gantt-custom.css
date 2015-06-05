@@ -1,5 +1,9 @@
 @CHARSET "ISO-8859-1";
 
+.gantt-holder {
+	width:auto;
+	height:auto;
+}
 /* 	Start of gantt task colors */
 .gantt-info{
 	border:2px solid #00c0ef;

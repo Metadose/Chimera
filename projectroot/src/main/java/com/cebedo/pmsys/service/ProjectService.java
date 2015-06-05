@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
 
 public interface ProjectService {
 
@@ -67,5 +69,12 @@ public interface ProjectService {
      * @return
      */
     public String getPayrollJSON(Project proj);
+
+    public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
+	    Date max);
+
+    public String getPayrollJSON(Project proj, Date min, Date max);
+
+    public List<Staff> getAllStaff(Project proj);
 
 }

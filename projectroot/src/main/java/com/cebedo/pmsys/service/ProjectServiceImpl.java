@@ -480,14 +480,9 @@ public class ProjectServiceImpl implements ProjectService {
 	return milestoneSummaryMap;
     }
 
-    /**
-     * Get map of payrolls.
-     */
     @SuppressWarnings("unchecked")
-    @Override
-    @Transactional
-    public String getPayrollJSON(Project proj) {
-	Map<String, Object> payrollMap = getComputedPayrollMap(proj);
+    private String constructPayrollJSON(Map<String, Object> payrollMap,
+	    Project proj) {
 
 	// Team map.
 	Map<Team, Map<Staff, String>> teamPayrollMap = (Map<Team, Map<Staff, String>>) payrollMap
@@ -606,12 +601,29 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public Map<String, Object> getComputedPayrollMap(Project proj) {
-	Map<String, Object> payrollMaps = new HashMap<String, Object>();
+    public String getPayrollJSON(Project proj, Date min, Date max) {
+	Map<String, Object> payrollMap = getComputedPayrollMap(proj, min, max);
+	return constructPayrollJSON(payrollMap, proj);
+    }
 
-	// Default is current month.
-	Date min = DateHelper.getCurrentMonthDateStart();
-	Date max = DateHelper.getCurrentMonthDateEnd();
+    /**
+     * Get map of payrolls.
+     */
+    @Override
+    @Transactional
+    public String getPayrollJSON(Project proj) {
+	Map<String, Object> payrollMap = getComputedPayrollMap(proj);
+	return constructPayrollJSON(payrollMap, proj);
+    }
+
+    /**
+     * Get map of payrolls.
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
+	    Date max) {
+	Map<String, Object> payrollMaps = new HashMap<String, Object>();
 
 	// Payroll maps.
 	Map<Team, Double> teamGroup = new HashMap<Team, Double>();
@@ -693,6 +705,18 @@ public class ProjectServiceImpl implements ProjectService {
 		managerPayrollMap);
 
 	return payrollMaps;
+    }
+
+    /**
+     * Get map of payrolls.
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> getComputedPayrollMap(Project proj) {
+	// Default is current month.
+	Date min = DateHelper.getCurrentMonthDateStart();
+	Date max = DateHelper.getCurrentMonthDateEnd();
+	return getComputedPayrollMap(proj, min, max);
     }
 
     /**
@@ -794,5 +818,31 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	return new Gson().toJson(calendarEvents, ArrayList.class);
+    }
+
+    @Transactional
+    @Override
+    public List<Staff> getAllStaff(Project proj) {
+	// Get all managers in this project.
+	List<Staff> managers = new ArrayList<Staff>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    managers.add(managerAssignment.getManager());
+	}
+
+	// Get all staff in this project.
+	List<Staff> allStaff = new ArrayList<Staff>();
+	allStaff.addAll(managers);
+	for (Task task : proj.getAssignedTasks()) {
+	    allStaff.addAll(task.getStaff());
+	}
+
+	for (Team team : proj.getAssignedTeams()) {
+	    allStaff.addAll(team.getMembers());
+	}
+
+	for (Delivery delivery : proj.getDeliveries()) {
+	    allStaff.addAll(delivery.getStaff());
+	}
+	return allStaff;
     }
 }

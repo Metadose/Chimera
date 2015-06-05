@@ -452,7 +452,7 @@
                    									<h3 class="box-title">Timeline</h3>
                    								</div>
                    								<div class="box-body">
-				                                	<div id="gantt-chart" style='width:1000px; height:400px;'>
+				                                	<div id="gantt-chart" class="gantt-holder">
 					                                </div><!-- /.box-body -->
                    								</div>
                    							</div>
@@ -514,34 +514,17 @@
 						                                            	</a>
 			                                        				</td>
 						                                            <td style="vertical-align: middle;">
-						                                            	<c:choose>
-						                                            	<c:when test="${task.status == 0}">
-						                                            		<span class="label label-info">New</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 1}">
-						                                            		<span class="label label-primary">Ongoing</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 2}">
-						                                            		<span class="label label-success">Completed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 3}">
-						                                            		<span class="label label-danger">Failed</span>
-						                                            	</c:when>
-						                                            	<c:when test="${task.status == 4}">
-						                                            		<h6>Cancelled</h6>
-						                                            	</c:when>
-							                                            </c:choose>
+							                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
+																		<span class="label ${css}">${task.getStatusEnum()}</span>
 						                                            </td>
 						                                            <td>${task.title}</td>
 						                                            <td>${task.content}</td>
 						                                            <td>
 						                                            	<c:choose>
 					                                            		<c:when test="${!empty task.project}">
-					                                            			<a href="${contextPath}/project/edit/from/staff/?${task.project.id}">
-							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-							                                            	</a>
+					                                            			<a class="general-link" href="${contextPath}/project/edit/from/staff/${task.project.id}">
 							                                            	${task.project.name}
-							                                            	<br/>
+							                                            	</a>
 					                                            		</c:when>
 					                                            		<c:when test="${empty task.project}">
 					                                            			<h5>No project assigned.</h5>

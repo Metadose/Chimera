@@ -295,8 +295,7 @@ public class StaffController {
 
 	// Attach bean to model.
 	model.addAttribute(ATTR_ATTENDANCE, attendance);
-	return RedisConstants.OBJECT_ATTENDANCE + "/"
-		+ RedisConstants.JSP_ATTENDANCE_EDIT;
+	return RedisConstants.JSP_ATTENDANCE_EDIT;
     }
 
     /**

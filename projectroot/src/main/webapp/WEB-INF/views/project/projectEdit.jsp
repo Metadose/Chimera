@@ -31,10 +31,6 @@
 		ul li img {
 		    cursor: pointer;
 		}
-		.gantt-holder {
-			width:auto;
-			height:auto;
-		}
 		#treegrid1_container {
 		  outline: none;
 		  border: none !important;
@@ -680,10 +676,9 @@
 								                                            	<c:choose>
 								                                            		<c:when test="${!empty task.teams}">
 								                                            			<c:forEach items="${task.teams}" var="taskTeam">
-								                                            			<a href="${contextPath}/team/edit/${taskTeam.id}">
-										                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-										                                            	</a>
+								                                            			<a class="general-link" href="${contextPath}/team/edit/${taskTeam.id}">
 										                                            	${taskTeam.name}
+										                                            	</a>
 										                                            	<br/>
 								                                            			</c:forEach>
 								                                            		</c:when>
@@ -697,10 +692,9 @@
 								                                            		<c:when test="${!empty task.staff}">
 								                                            			<c:forEach items="${task.staff}" var="taskStaff">
 								                                            			<c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
-								                                            			<a href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
-										                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
-										                                            	</a>
+								                                            			<a class="general-link" href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
 										                                            	${taskStaffName}
+										                                            	</a>
 										                                            	<br/>
 								                                            			</c:forEach>
 								                                            		</c:when>
@@ -756,6 +750,46 @@
           								</div>
 		                                <div class="box-body">
 									  	  <table id="treegrid1"></table>
+									  	  
+									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0"/>
+	                                  		<a href="${urlCreateTeam}">
+	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
+	                                  		</a>
+	                                  		
+		                                    <table id="teams-table" class="table table-bordered table-striped">
+		                                    	<thead>
+		                                            <tr>
+		                                            	<th>&nbsp;</th>
+		                                            	<th>#</th>
+		                                                <th>Name</th>
+		                                            </tr>
+                                        		</thead>
+		                                        <tbody>
+			                                        <c:set var="teams" value="${project.assignedTeams}"/>
+				                                	<c:if test="${!empty teams}">
+				                                		<c:forEach items="${teams}" var="team">
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/>
+			                                            			<a href="${urlViewTeam}">
+							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/>
+								                                    <a href="${urlUnassignTeam}">
+	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+								                                    </a>
+	                   												</sec:authorize>
+																</center>
+															</td>
+			                                                <td>${team.id}</td>
+		                                                	<td>${team.name}</td>
+			                                            </tr>
+		                                            </c:forEach>
+	                                        		</c:if>
+			                                    </tbody>
+			                                </table>
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
