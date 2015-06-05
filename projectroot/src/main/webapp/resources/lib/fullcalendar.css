@@ -4,6 +4,12 @@
  * (c) 2013 Adam Shaw
  */
 
+.fc-sat {
+	color: blue;
+}
+.fc-sun {
+	color: red;
+}
 .fc-past {
 	background-color: #EAEAEA;
 }
