@@ -283,7 +283,7 @@ public class AuthHelper {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	} else if (obj.getCompanyID() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

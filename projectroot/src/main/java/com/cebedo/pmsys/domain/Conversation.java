@@ -3,24 +3,26 @@ package com.cebedo.pmsys.domain;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
 
 public class Conversation implements IDomainObject {
 
-    public static final String OBJECT_NAME = "conversation";
     private static final long serialVersionUID = 1L;
-    private Company company;
-    private List<SystemUser> contributors;
+    private Long companyID;
+    private List<Long> contributorIDs;
     private boolean read;
+    private Map<String, Object> extMap;
 
-    public Company getCompany() {
-	return company;
+    public Long getCompanyID() {
+	return companyID;
     }
 
-    public void setCompany(Company company) {
-	this.company = company;
+    public void setCompanyID(Long company) {
+	this.companyID = company;
     }
 
     public boolean isRead() {
@@ -31,12 +33,12 @@ public class Conversation implements IDomainObject {
 	this.read = read;
     }
 
-    public List<SystemUser> getContributors() {
-	return contributors;
+    public List<Long> getContributorIDs() {
+	return contributorIDs;
     }
 
-    public void setContributors(List<SystemUser> contributors) {
-	this.contributors = contributors;
+    public void setContributorIDs(List<Long> contributors) {
+	this.contributorIDs = contributors;
     }
 
     /**
@@ -64,17 +66,15 @@ public class Conversation implements IDomainObject {
 	}
 	long companyID = company == null ? 0 : company.getId();
 	String key = Company.OBJECT_NAME + ":" + companyID + ":"
-		+ Message.OBJECT_NAME + ":conversation:read:" + rd + ":id:"
-		+ keyPart;
+		+ RedisConstants.OBJECT_MESSAGE + ":conversation:read:" + rd
+		+ ":id:" + keyPart;
 	return key;
     }
 
     private void sortContributors() {
-	Collections.sort(this.contributors, new Comparator<SystemUser>() {
+	Collections.sort(this.contributorIDs, new Comparator<Long>() {
 	    @Override
-	    public int compare(SystemUser aObj, SystemUser bObj) {
-		long a = aObj.getId();
-		long b = bObj.getId();
+	    public int compare(Long a, Long b) {
 		return a < b ? -1 : a > b ? 1 : 0;
 	    }
 	});
@@ -87,14 +87,24 @@ public class Conversation implements IDomainObject {
     public String getKey() {
 	sortContributors();
 	String keyPart = ".";
-	for (SystemUser contributor : this.contributors) {
-	    keyPart += contributor.getId() + ".";
+	for (Long contributorID : this.contributorIDs) {
+	    keyPart += contributorID + ".";
 	}
-	long companyID = getCompany() == null ? 0 : getCompany().getId();
+	long companyID = getCompanyID() == null ? 0 : getCompanyID();
 	String key = Company.OBJECT_NAME + ":" + companyID + ":"
-		+ Message.OBJECT_NAME + ":conversation:read:" + isRead()
-		+ ":id:" + keyPart;
+		+ RedisConstants.OBJECT_MESSAGE + ":conversation:read:"
+		+ isRead() + ":id:" + keyPart;
 	return key;
+    }
+
+    @Override
+    public Map<String, Object> getExtMap() {
+	return extMap;
+    }
+
+    @Override
+    public void setExtMap(Map<String, Object> extMap) {
+	this.extMap = extMap;
     }
 
 }

@@ -4,7 +4,12 @@
  * (c) 2013 Adam Shaw
  */
 
-
+.fc-past {
+	background-color: #EAEAEA;
+}
+.fc-today {
+	background-color: #FFF2B0 !important;
+}
 .fc {
 	direction: ltr;
 	text-align: left;

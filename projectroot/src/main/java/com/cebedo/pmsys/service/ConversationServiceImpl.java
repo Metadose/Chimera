@@ -1,6 +1,8 @@
 package com.cebedo.pmsys.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.domain.Conversation;
 import com.cebedo.pmsys.domain.Message;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -21,10 +25,16 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 @Service
 public class ConversationServiceImpl implements ConversationService {
 
-    private static Logger logger = Logger.getLogger(Conversation.OBJECT_NAME);
+    private static Logger logger = Logger
+	    .getLogger(RedisConstants.OBJECT_CONVERSATION);
     private LogHelper logHelper = new LogHelper();
     private AuthHelper authHelper = new AuthHelper();
     private ConversationValueRepo conversationValueRepo;
+    private SystemUserDAO systemUserDAO;
+
+    public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
+	this.systemUserDAO = systemUserDAO;
+    }
 
     public void setConversationValueRepo(ConversationValueRepo repo) {
 	this.conversationValueRepo = repo;
@@ -39,8 +49,12 @@ public class ConversationServiceImpl implements ConversationService {
 	    if (!obj.isRead()) {
 
 		// Else, rename it.
-		String readKey = Conversation.constructKey(
-			obj.getContributors(), true);
+		List<SystemUser> users = new ArrayList<SystemUser>();
+		for (long userID : obj.getContributorIDs()) {
+		    SystemUser user = this.systemUserDAO.getByID(userID);
+		    users.add(user);
+		}
+		String readKey = Conversation.constructKey(users, true);
 		this.conversationValueRepo.rename(obj, readKey);
 
 		// Using the new renamed key,
@@ -53,8 +67,8 @@ public class ConversationServiceImpl implements ConversationService {
 	    // If not authorized,
 	    // log the event.
 	    logger.warn(this.logHelper.logUnauthorized(auth,
-		    AuditAction.MARK_READ, Conversation.OBJECT_NAME,
-		    obj.getKey(), StringUtils.join(obj.getContributors(), ",")));
+		    AuditAction.MARK_READ, RedisConstants.OBJECT_CONVERSATION,
+		    obj.getKey(), StringUtils.join(obj.getContributorIDs(), ",")));
 	}
     }
 
@@ -71,18 +85,18 @@ public class ConversationServiceImpl implements ConversationService {
 
 	// Get necessary objects.
 	Conversation conversation = this.conversationValueRepo.get(key);
-	String name = StringUtils.join(conversation.getContributors(), ",");
+	String name = StringUtils.join(conversation.getContributorIDs(), ",");
 
 	if (this.authHelper.isActionAuthorized(conversation)) {
 	    // If valid, log then return.
 	    logger.info(this.logHelper.logGetObject(auth,
-		    Conversation.OBJECT_NAME, key, name));
+		    RedisConstants.OBJECT_CONVERSATION, key, name));
 	    return conversation;
 	}
 	// If not valid,
 	// log as warning then return empty object.
 	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET,
-		Conversation.OBJECT_NAME, key, name));
+		RedisConstants.OBJECT_CONVERSATION, key, name));
 	return new Conversation();
     }
 
@@ -103,7 +117,7 @@ public class ConversationServiceImpl implements ConversationService {
 	Company company = user.getCompany();
 	long companyID = company == null ? 0 : company.getId();
 	String companyKeyPart = Company.OBJECT_NAME + ":" + companyID + ":";
-	String pattern = companyKeyPart + Message.OBJECT_NAME
+	String pattern = companyKeyPart + RedisConstants.OBJECT_MESSAGE
 		+ ":conversation:read:*:id:*." + user.getId() + ".*";
 
 	// Get the auth object.
@@ -124,9 +138,10 @@ public class ConversationServiceImpl implements ConversationService {
 	    }
 
 	    // Else, log a warning.
-	    String name = StringUtils.join(conversation.getContributors(), ",");
+	    String name = StringUtils.join(conversation.getContributorIDs(), ",");
 	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET,
-		    Conversation.OBJECT_NAME, conversation.getKey(), name));
+		    RedisConstants.OBJECT_CONVERSATION, conversation.getKey(),
+		    name));
 	}
 	return conversations;
     }

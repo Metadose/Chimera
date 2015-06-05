@@ -788,14 +788,14 @@
 		                                        			<tr>
 					                                            <td>${attendance.getFormattedDateString("yyyy-MM-dd")}</td>
 					                                            <c:choose>
-					                                            	<c:when test="${attendance.status.id() == 6}">
+					                                            	<c:when test="${attendance.getStatus().id() == 6}">
 						                                            <c:set value="border: 1px solid red" var="spanBorder"/>
 					                                            	</c:when>
-					                                            	<c:when test="${attendance.status.id() != 6}">
+					                                            	<c:when test="${attendance.getStatus().id() != 6}">
 						                                            <c:set value="" var="spanBorder"/>
 					                                            	</c:when>
 					                                            </c:choose>
-					                                            <td><span style="${spanBorder}" class="label ${attendance.status.css()}">${attendance.status}</span></td>
+					                                            <td><span style="${spanBorder}" class="label ${attendance.getStatus().css()}">${attendance.getStatus()}</span></td>
 					                                            <td>
 					                                            <fmt:formatNumber type="currency" 
 						                                		currencySymbol="&#8369;"
@@ -968,7 +968,7 @@
 					}
 			    }
 		    });
-			var dateAsVal = '${minDateStr}';
+			var dateAsVal = '${maxDateStr}';
 			var minDate = moment(dateAsVal);
 			$('#calendar').fullCalendar('gotoDate', minDate);
 	    });

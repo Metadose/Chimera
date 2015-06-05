@@ -2,25 +2,39 @@ package com.cebedo.pmsys.domain;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
+
+import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.model.Company;
 
 public class Notification implements IDomainObject {
 
-    public static final String OBJECT_KEY = "notifications";
     private static final long serialVersionUID = 1L;
     private Date timestamp;
+    private Long companyID;
     private long userID;
     private boolean read;
     private String content;
+    private Map<String, Object> extMap;
 
     public Notification() {
 	;
     }
 
-    public Notification(String content, long userId) {
+    public Notification(Long companyID, String content, long userId) {
+	setCompanyID(companyID);
 	setContent(content);
 	setUserID(userId);
 	setRead(false);
 	setTimestamp(new Timestamp(System.currentTimeMillis()));
+    }
+
+    public Long getCompanyID() {
+	return companyID;
+    }
+
+    public void setCompanyID(Long companyID) {
+	this.companyID = companyID;
     }
 
     public Date getTimestamp() {
@@ -55,9 +69,10 @@ public class Notification implements IDomainObject {
 	this.content = content;
     }
 
-    public static String constructKey(long userID, boolean read) {
-	String key = "user:" + userID;
-	key += ":" + OBJECT_KEY;
+    public static String constructKey(long companyID, long userID, boolean read) {
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
+	String key = companyPart + "user:" + userID;
+	key += ":" + RedisConstants.OBJECT_NOTIFICATION;
 	key += ":read:" + read;
 
 	return key;
@@ -65,11 +80,24 @@ public class Notification implements IDomainObject {
 
     @Override
     public String getKey() {
-	String key = "user:" + getUserID();
-	key += ":" + OBJECT_KEY;
+	long companyID = getCompanyID() == null ? 0 : getCompanyID();
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
+
+	String key = companyPart + "user:" + getUserID();
+	key += ":" + RedisConstants.OBJECT_NOTIFICATION;
 	key += ":read:" + isRead();
 
 	return key;
+    }
+
+    @Override
+    public Map<String, Object> getExtMap() {
+	return extMap;
+    }
+
+    @Override
+    public void setExtMap(Map<String, Object> extMap) {
+	this.extMap = extMap;
     }
 
 }

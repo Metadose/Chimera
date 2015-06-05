@@ -27,10 +27,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.DateRangeBean;
 import com.cebedo.pmsys.bean.MassAttendanceBean;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.helper.DateHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
@@ -49,7 +51,7 @@ import com.cebedo.pmsys.ui.AlertBoxFactory;
 	StaffController.ATTR_ATTENDANCE, StaffController.ATTR_ATTENDANCE_MASS,
 	StaffController.ATTR_CALENDAR_MIN_DATE,
 	StaffController.ATTR_CALENDAR_MAX_DATE,
-	StaffController.ATTR_CALENDAR_MIN_DATE_STR }, types = { Staff.class,
+	StaffController.ATTR_CALENDAR_MAX_DATE_STR }, types = { Staff.class,
 	Attendance.class, MassAttendanceBean.class, })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
@@ -66,12 +68,12 @@ public class StaffController {
 
     public static final String ATTR_CALENDAR_JSON = "calendarJSON";
     public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
-    public static final String ATTR_CALENDAR_MIN_DATE_STR = "minDateStr";
+    public static final String ATTR_CALENDAR_MAX_DATE_STR = "maxDateStr";
     public static final String ATTR_CALENDAR_MIN_DATE = "minDate";
     public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
     public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
 
-    public static final String ATTR_ATTENDANCE = Attendance.OBJECT_NAME;
+    public static final String ATTR_ATTENDANCE = RedisConstants.OBJECT_ATTENDANCE;
     public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
     public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
@@ -211,7 +213,7 @@ public class StaffController {
      * @return
      */
     @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
-	    + Attendance.OBJECT_NAME + "/" + SystemConstants.MASS }, method = RequestMethod.POST)
+	    + RedisConstants.OBJECT_ATTENDANCE + "/" + SystemConstants.MASS }, method = RequestMethod.POST)
     public String addAttendanceMass(
 	    @ModelAttribute(ATTR_ATTENDANCE_MASS) MassAttendanceBean attendanceMass,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model,
@@ -240,7 +242,7 @@ public class StaffController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
 
-	return editStaffWithMinDate(model, session, startDate);
+	return editStaffWithMaxDate(model, session, startDate);
     }
 
     /**
@@ -249,7 +251,7 @@ public class StaffController {
      * @return
      */
     @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
-	    + Attendance.OBJECT_NAME }, method = RequestMethod.POST)
+	    + RedisConstants.OBJECT_ATTENDANCE }, method = RequestMethod.POST)
     public String addAttendance(
 	    @ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model,
@@ -261,7 +263,7 @@ public class StaffController {
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-	return editStaffWithMinDate(model, session, attendance.getTimestamp());
+	return editStaffWithMaxDate(model, session, attendance.getTimestamp());
     }
 
     /**
@@ -270,10 +272,10 @@ public class StaffController {
      * @return
      */
     @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/"
-	    + Attendance.OBJECT_NAME + "/{" + Attendance.OBJECT_NAME
-	    + "}/{status}" }, method = RequestMethod.GET)
+	    + RedisConstants.OBJECT_ATTENDANCE + "/{"
+	    + RedisConstants.OBJECT_ATTENDANCE + "}/{status}" }, method = RequestMethod.GET)
     public String editAttendance(
-	    @PathVariable(Attendance.OBJECT_NAME) long timestamp,
+	    @PathVariable(RedisConstants.OBJECT_ATTENDANCE) long timestamp,
 	    @PathVariable("status") int status, HttpSession session, Model model) {
 
 	// Get staff from session.
@@ -282,7 +284,9 @@ public class StaffController {
 	// Construct bean.
 	Attendance attendance = new Attendance();
 	if (timestamp == 0) {
-	    attendance = new Attendance(staff);
+	    Company co = staff.getCompany();
+	    Long companyID = co == null ? 0 : co.getId();
+	    attendance = new Attendance(companyID, staff.getId());
 	} else {
 	    // TODO Make function for this in service.
 	    attendance = this.payrollService.get(staff,
@@ -291,7 +295,8 @@ public class StaffController {
 
 	// Attach bean to model.
 	model.addAttribute(ATTR_ATTENDANCE, attendance);
-	return Attendance.OBJECT_NAME + "/" + Attendance.JSP_EDIT;
+	return RedisConstants.OBJECT_ATTENDANCE + "/"
+		+ RedisConstants.JSP_ATTENDANCE_EDIT;
     }
 
     /**
@@ -424,10 +429,10 @@ public class StaffController {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	String minDateStr = DateHelper.formatDate(min, "yyyy-MM-dd");
+	String maxDateStr = DateHelper.formatDate(max, "yyyy-MM-dd");
 
 	// Add attributes to model.
-	setModelAttributes(model, staff, min, max, minDateStr);
+	setModelAttributes(model, staff, min, max, maxDateStr);
 	return JSP_EDIT;
     }
 
@@ -479,7 +484,7 @@ public class StaffController {
      * @param model
      * @return
      */
-    private String editStaffWithMinDate(Model model, HttpSession session,
+    private String editStaffWithMaxDate(Model model, HttpSession session,
 	    Date minDate) {
 
 	// If the min date from session is lesser
@@ -500,11 +505,11 @@ public class StaffController {
 	// This will be minimum.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 	Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
-	String minDateStr = (String) session
-		.getAttribute(ATTR_CALENDAR_MIN_DATE_STR);
+	String maxDateStr = (String) session
+		.getAttribute(ATTR_CALENDAR_MAX_DATE_STR);
 
 	// Set model attributes.
-	setModelAttributes(model, staff, minDate, maxDate, minDateStr);
+	setModelAttributes(model, staff, minDate, maxDate, maxDateStr);
 	return JSP_EDIT;
     }
 
@@ -528,11 +533,11 @@ public class StaffController {
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 	Date minDate = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
 	Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
-	String minDateStr = (String) session
-		.getAttribute(ATTR_CALENDAR_MIN_DATE_STR);
+	String maxDateStr = (String) session
+		.getAttribute(ATTR_CALENDAR_MAX_DATE_STR);
 
 	// Set model attributes.
-	setModelAttributes(model, staff, minDate, maxDate, minDateStr);
+	setModelAttributes(model, staff, minDate, maxDate, maxDateStr);
 	return JSP_EDIT;
     }
 
@@ -578,10 +583,10 @@ public class StaffController {
      * @param staff
      * @param min
      * @param max
-     * @param minDateStr
+     * @param maxDateStr
      */
     private void setModelAttributes(Model model, Staff staff, Date min,
-	    Date max, String minDateStr) {
+	    Date max, String maxDateStr) {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
@@ -599,9 +604,9 @@ public class StaffController {
 
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.
-	model.addAttribute(ATTR_CALENDAR_MIN_DATE_STR,
-		minDateStr == null ? DateHelper.formatDate(min, "yyyy-MM-dd")
-			: minDateStr);
+	model.addAttribute(ATTR_CALENDAR_MAX_DATE_STR,
+		maxDateStr == null ? DateHelper.formatDate(max, "yyyy-MM-dd")
+			: maxDateStr);
 	model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
 	model.addAttribute(ATTR_TASK_STATUS_MAP,
@@ -611,11 +616,14 @@ public class StaffController {
 
 	// Add objects.
 	// Add form beans.
+	Company co = staff.getCompany();
+	Long companyID = co == null ? 0 : co.getId();
 	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 	model.addAttribute(ATTR_STAFF, staff);
 	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
 	model.addAttribute(ATTR_ATTENDANCE_MASS, new MassAttendanceBean(staff));
-	model.addAttribute(ATTR_ATTENDANCE, new Attendance(staff));
+	model.addAttribute(ATTR_ATTENDANCE,
+		new Attendance(companyID, staff.getId()));
 
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON,

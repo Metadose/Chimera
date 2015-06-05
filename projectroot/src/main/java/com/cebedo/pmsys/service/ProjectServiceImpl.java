@@ -268,10 +268,12 @@ public class ProjectServiceImpl implements ProjectService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// TODO 86400000 is 24 hours.
+	Long companyID = auth.getCompany() == null ? 0 : auth.getCompany()
+		.getId();
 	Set<Notification> notifs = this.notificationZSetRepo.rangeByScore(
-		Notification.constructKey(auth.getUser().getId(), false),
-		System.currentTimeMillis() - 86400000,
-		System.currentTimeMillis());
+		Notification.constructKey(companyID, auth.getUser().getId(),
+			false), System.currentTimeMillis() - 86400000, System
+			.currentTimeMillis());
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 	if (this.authHelper.isActionAuthorized(project)) {
