@@ -72,7 +72,8 @@
                    								<div class="box-body">
                    									<c:choose>
                    									<c:when  test="${empty projectStructManagers}">
-                   									<i>Cannot create Payroll without a Project Manager.</i>
+                   									<i>Cannot create Payroll without a Project Manager.<br/>
+                   									Only assigned Project Managers are allowed to approve/reject a Payroll.</i>
                    									</c:when>
                    									<c:when  test="${!empty projectStructManagers}">
                    									<form:form modelAttribute="projectPayroll"
