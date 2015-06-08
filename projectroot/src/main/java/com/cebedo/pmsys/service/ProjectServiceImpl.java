@@ -845,4 +845,66 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	return allStaff;
     }
+
+    @Transactional
+    @Override
+    public Map<String, Object> getProjectStructureMap(Project proj,
+	    Date startDate, Date endDate) {
+
+	Map<String, Object> projectStructMap = new HashMap<String, Object>();
+
+	// Get all managers in this project.
+	List<Staff> managers = new ArrayList<Staff>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    managers.add(managerAssignment.getManager());
+	}
+	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_MANAGERS,
+		managers);
+
+	// Get all staff in this project.
+	Map<Team, Set<Staff>> teamStaffMap = new HashMap<Team, Set<Staff>>();
+	Map<Task, Set<Staff>> taskStaffMap = new HashMap<Task, Set<Staff>>();
+	Map<Delivery, Set<Staff>> deliveryStaffMap = new HashMap<Delivery, Set<Staff>>();
+	List<Date> datesAllowed = DateHelper.getDatesBetweenDates(startDate,
+		endDate);
+
+	for (Team team : proj.getAssignedTeams()) {
+	    teamStaffMap.put(team, team.getMembers());
+	}
+
+	for (Task task : proj.getAssignedTasks()) {
+	    // Only allow dates that are in range.
+	    Date taskStartDate = task.getDateStart();
+	    if (datesAllowed.contains(taskStartDate)) {
+		taskStaffMap.put(task, task.getStaff());
+	    }
+	}
+
+	for (Delivery delivery : proj.getDeliveries()) {
+	    // Only allow dates that are in range.
+	    if (datesAllowed.contains(delivery.getDatetime())) {
+		deliveryStaffMap.put(delivery, delivery.getStaff());
+	    }
+	}
+
+	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS,
+		teamStaffMap);
+	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_TASKS,
+		taskStaffMap);
+	projectStructMap.put(
+		ProjectController.KEY_PROJECT_STRUCTURE_DELIVERIES,
+		deliveryStaffMap);
+
+	return projectStructMap;
+    }
+
+    @Transactional
+    @Override
+    public List<Staff> getManagers(Project proj) {
+	List<Staff> managers = new ArrayList<Staff>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    managers.add(managerAssignment.getManager());
+	}
+	return managers;
+    }
 }

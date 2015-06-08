@@ -74,6 +74,23 @@ public class DateHelper {
     }
 
     /**
+     * Add days to date.<br>
+     * Reference:
+     * http://stackoverflow.com/questions/428918/how-can-i-increment-a
+     * -date-by-one-day-in-java
+     * 
+     * @param date
+     * @param days
+     * @return
+     */
+    public static Date addDays(Date date, int days) {
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(date);
+	cal.add(Calendar.DATE, days); // minus number would decrement the days
+	return cal.getTime();
+    }
+
+    /**
      * Reference:
      * http://stackoverflow.com/questions/2689379/how-to-get-a-list-of
      * -dates-between-two-dates-in-java

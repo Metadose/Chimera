@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -105,9 +106,14 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getFiles());
 	Hibernate.initialize(project.getPhotos());
-	Hibernate.initialize(project.getDeliveries());
 	Hibernate.initialize(project.getReminders());
 	Hibernate.initialize(project.getExpenses());
+
+	Set<Delivery> deliveries = project.getDeliveries();
+	Hibernate.initialize(deliveries);
+	for (Delivery delivery : deliveries) {
+	    Hibernate.initialize(delivery.getStaff());
+	}
 
 	// Initialize milestones.
 	Set<Milestone> milestones = project.getMilestones();

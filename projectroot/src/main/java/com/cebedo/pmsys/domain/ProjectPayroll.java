@@ -28,6 +28,8 @@ public class ProjectPayroll implements IDomainObject {
     /**
      * Other properties.
      */
+    private boolean saved;
+    private long[] staffIDs;
     private List<Long> staffList;
     private String payrollJSON;
     private Map<String, Object> payrollMap;
@@ -49,6 +51,22 @@ public class ProjectPayroll implements IDomainObject {
 
     public void setApproverID(long approverID) {
 	this.approverID = approverID;
+    }
+
+    public long[] getStaffIDs() {
+	return staffIDs;
+    }
+
+    public void setStaffIDs(long[] staffIDs) {
+	this.staffIDs = staffIDs;
+    }
+
+    public boolean isSaved() {
+	return saved;
+    }
+
+    public void setSaved(boolean saved) {
+	this.saved = saved;
     }
 
     public long getCreatorID() {
@@ -136,7 +154,8 @@ public class ProjectPayroll implements IDomainObject {
     public static String constructKey(long companyID, long projectID,
 	    long approverID, long creatorID, int statusID, Date startDate,
 	    Date endDate) {
-	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID
+		+ ":payroll:";
 	String projectPart = Project.OBJECT_NAME + ":" + projectID + ":";
 	String approverPart = "approver:" + approverID + ":";
 	String creatorPart = "creator:" + creatorID + ":";
@@ -159,7 +178,8 @@ public class ProjectPayroll implements IDomainObject {
     @Override
     public String getKey() {
 	long companyID = getCompanyID() == null ? 0 : getCompanyID();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID
+		+ ":payroll:";
 	String projectPart = Project.OBJECT_NAME + ":" + getProjectID() + ":";
 	String approverPart = "approver:" + getApproverID() + ":";
 	String creatorPart = "creator:" + getCreatorID() + ":";

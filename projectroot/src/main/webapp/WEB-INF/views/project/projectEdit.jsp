@@ -749,12 +749,12 @@
           									<h3 class="box-title">Payroll</h3>
           								</div>
 		                                <div class="box-body">
-									  	  <table id="treegrid1"></table>
-									  	  
 									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0"/>
 	                                  		<a href="${urlCreateTeam}">
 	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
 	                                  		</a>
+									  	  <table id="treegrid1"></table>
+									  	  
 	                                  		
 		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>

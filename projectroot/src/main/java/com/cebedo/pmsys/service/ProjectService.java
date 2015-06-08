@@ -77,4 +77,9 @@ public interface ProjectService {
 
     public List<Staff> getAllStaff(Project proj);
 
+    public Map<String, Object> getProjectStructureMap(Project proj,
+	    Date startDate, Date endDate);
+
+    public List<Staff> getManagers(Project proj);
+
 }
