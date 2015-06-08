@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -54,26 +55,14 @@ public interface ProjectService {
 
     public Map<String, Object> getTimelineSummaryMap(Project proj);
 
-    public Map<String, Object> getComputedPayrollMap(Project proj);
-
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
 
     public String getCalendarJSON(Project proj);
 
     public void clearListCache();
 
-    /**
-     * Get the JSON for the payroll tree grid.
-     * 
-     * @param proj
-     * @return
-     */
-    public String getPayrollJSON(Project proj);
-
     public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
-	    Date max);
-
-    public String getPayrollJSON(Project proj, Date min, Date max);
+	    Date max, ProjectPayroll projectPayroll);
 
     public List<Staff> getAllStaff(Project proj);
 
@@ -81,5 +70,8 @@ public interface ProjectService {
 	    Date startDate, Date endDate);
 
     public List<Staff> getManagers(Project proj);
+
+    public String getPayrollJSON(Project proj, Date startDate, Date endDate,
+	    ProjectPayroll getPayrollJSON);
 
 }

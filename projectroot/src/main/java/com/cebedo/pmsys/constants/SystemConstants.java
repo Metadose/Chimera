@@ -24,6 +24,7 @@ public abstract class SystemConstants {
     public static final String REQUEST_DELETE = "delete";
     public static final String REQUEST_CHANGE_PASSWORD = "changepassword";
     public static final String REQUEST_CREATE = "create";
+    public static final String REQUEST_COMPUTE = "compute";
     public static final String REQUEST_UPDATE = "update";
     public static final String REQUEST_MARK = "mark";
     public static final String REQUEST_DOWNLOAD = "download";

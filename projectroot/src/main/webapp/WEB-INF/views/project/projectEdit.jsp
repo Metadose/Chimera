@@ -14,11 +14,6 @@
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
 	
-	<!-- Ignite UI Required Combined CSS Files -->
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
-    
 	<style type="text/css">
 		ul {         
 		    padding:0 0 0 0;
@@ -30,13 +25,6 @@
 		}
 		ul li img {
 		    cursor: pointer;
-		}
-		#treegrid1_container {
-		  outline: none;
-		  border: none !important;
-		  -webkit-box-shadow: none !important;
-		  -moz-box-shadow: none !important;
-		  box-shadow: none !important;
 		}
 	</style>
 </head>
@@ -753,8 +741,6 @@
 	                                  		<a href="${urlCreateTeam}">
 	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
 	                                  		</a>
-									  	  <table id="treegrid1"></table>
-									  	  
 	                                  		
 		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>
@@ -1111,12 +1097,6 @@
     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
-	<!-- Ignite UI Required Combined JavaScript Files -->
-	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
-	
 	<script type="text/javascript">
 	    $(document).ready(function() {
 	    	var ganttJSON = ${ganttJSON};
@@ -1258,20 +1238,6 @@
                 });
            });
 			
-			// Tree grid.
-			var flatDS = ${payrollJSON};
-            $("#treegrid1").igTreeGrid({
-                dataSource: flatDS,
-                primaryKey: "primaryKey",
-                foreignKey: "foreignKey",
-                columns: [
-					{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
-					{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
-                    { headerText: "Name", key: "name", dataType: "string" },
-                    { headerText: "Payroll", key: "value", dataType: "string" }
-                ]
-            });
-            
 	    });
 	</script>
 </body>

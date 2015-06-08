@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -950,6 +951,59 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
+    @SuppressWarnings("unchecked")
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/"
+	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
+    public String computePayroll(
+	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll getPayrollJSON,
+	    Model model, HttpSession session) {
+
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	Date startDate = getPayrollJSON.getStartDate();
+	Date endDate = getPayrollJSON.getEndDate();
+
+	// Get payroll maps.
+	// And assign to model.
+	String payrollJSON = this.projectService.getPayrollJSON(proj,
+		startDate, endDate, getPayrollJSON);
+	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
+
+	// List of possible approvers.
+	// Get all managers in this project.
+	List<Staff> managers = this.projectService.getManagers(proj);
+	PayrollStatus[] payrollStatusArr = PayrollStatus.class
+		.getEnumConstants();
+	model.addAttribute(ATTR_PAYROLL_STATUS_ARRAY, payrollStatusArr);
+	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS, managers);
+
+	// For the multi-select box.
+	// Get all staff in this project.
+	Map<String, Object> projectStruct = this.projectService
+		.getProjectStructureMap(proj, startDate, endDate);
+
+	// // Get all staff in this project.
+	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_TEAMS);
+	Map<Task, Set<Staff>> taskStaffMap = (Map<Task, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_TASKS);
+	Map<Delivery, Set<Staff>> deliveryStaffMap = (Map<Delivery, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_DELIVERIES);
+
+	// Set attributes.
+	model.addAttribute(ATTR_PROJECT_STRUCT_TEAMS, teamStaffMap);
+	model.addAttribute(ATTR_PROJECT_STRUCT_TASKS, taskStaffMap);
+	model.addAttribute(ATTR_PROJECT_STRUCT_DELIVERIES, deliveryStaffMap);
+
+	return RedisConstants.JSP_PAYROLL_EDIT;
+    }
+
+    /**
+     * Open an edit page with payroll object.
+     * 
+     * @param payrollKey
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
 	    + RedisConstants.OBJECT_PAYROLL + "/{"
@@ -1088,11 +1142,6 @@ public class ProjectController {
 	    TeamAssignmentBean taBean = new TeamAssignmentBean(sampleID);
 	    model.addAttribute(ATTR_TEAM_ASSIGNMENT, taBean);
 	}
-
-	// Get payroll maps.
-	// And assign to model.
-	String payrollJSON = this.projectService.getPayrollJSON(proj);
-	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 
 	// Get lists for selectors.
 	// Actual object and beans.

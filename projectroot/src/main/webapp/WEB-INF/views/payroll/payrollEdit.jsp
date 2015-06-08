@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -6,8 +7,19 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Payroll Edit</title>
+	<c:choose>
+   	<c:when test="${!projectPayroll.saved}">
+    	<title>Payroll Create</title>
+   	</c:when>
+   	<c:when test="${projectPayroll.saved}">
+		<title>Payroll Edit</title>
+   	</c:when>
+   	</c:choose>
 	
+	<!-- Ignite UI Required Combined CSS Files -->
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -30,8 +42,18 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	TODO
-	                <small>${action} Field</small>
+	            	<c:choose>
+	            	<c:when test="${!projectPayroll.saved}">
+		            	New Payroll
+		                <small>Create Payroll</small>
+	            	</c:when>
+	            	<c:when test="${projectPayroll.saved}">
+	            		<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.startDate}" var="startDate"/>
+	            		<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.endDate}" var="endDate"/>
+		            	${startDate} to ${endDate}
+		                <small>Edit Payroll</small>
+	            	</c:when>
+	            	</c:choose>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -48,6 +70,11 @@
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-body">
+                   									<c:choose>
+                   									<c:when  test="${empty projectStructManagers}">
+                   									<i>Cannot create Payroll without a Project Manager.</i>
+                   									</c:when>
+                   									<c:when  test="${!empty projectStructManagers}">
                    									<form:form modelAttribute="projectPayroll"
 														id="detailsForm"
 														method="post"
@@ -85,6 +112,8 @@
 	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
 				                                        </c:if>
 				                                    </form:form>
+				                                    </c:when>
+                   									</c:choose>
                    								</div>
                    							</div>
                    						</div>
@@ -99,6 +128,11 @@
 				                                        <div class="form-group">
 
 															<label>Managers</label><br/>
+															<c:choose>
+															<c:when test="${empty projectStructManagers}">
+															<i>No manager assigned.</i><br/><br/>
+															</c:when>
+															<c:when test="${!empty projectStructManagers}">
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -121,11 +155,17 @@
 																</tr>
 															</c:forEach>
 															</tbody>
-															</table>
+															</table><br/>
+															</c:when>
+															</c:choose>
 															
 															
-															
-															<br/><label>Teams</label><br/>
+															<label>Teams</label><br/>
+															<c:choose>
+															<c:when test="${empty projectStructTeams}">
+															<i>No team assigned.</i><br/><br/>
+															</c:when>
+															<c:when test="${!empty projectStructTeams}">
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -156,11 +196,18 @@
 						                                		</c:forEach>
 															</c:forEach>
 															</tbody>
-															</table>
+															</table><br/>
+															</c:when>
+															</c:choose>
 															
 															
+															<label>Tasks</label><br/>
+															<c:choose>
+															<c:when test="${empty projectStructTasks}">
+															<i>No task assigned.</i><br/><br/>
+															</c:when>
+															<c:when test="${!empty projectStructTasks}">
 															
-															<br/><label>Tasks</label><br/>
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -191,12 +238,18 @@
 						                                		</c:forEach>
 															</c:forEach>
 															</tbody>
-															</table>
+															</table><br/>
+															</c:when>
+															</c:choose>
 															
 															
 															
-															<!--     public static final String ATTR_PROJECT_STRUCT_DELIVERIES = "projectStructDeliveries"; -->
-															<br/><label>Deliveries</label><br/>
+															<label>Deliveries</label><br/>
+															<c:choose>
+															<c:when test="${empty projectStructDeliveries}">
+															<i>No deliveries.</i><br/>
+															</c:when>
+															<c:when test="${!empty projectStructDeliveries}">
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -208,40 +261,56 @@
 															<tbody>
 															<c:forEach items="${projectStructDeliveries}" var="deliveryStaffMap">
 																<c:set value="${deliveryStaffMap.key}" var="delivery"/>
-						                                		<c:set value="${deliveryStaffMap.value}" var="staffList"/>
-						                                		<c:forEach items="${staffList}" var="staff">
+						                                		<c:set value="${deliveryStaffMap.value}" var="deliveryStaffList"/>
+						                                		<c:forEach items="${deliveryStaffList}" var="deliveryStaff">
 																<tr>
 																	<td align="center">
 								                                		<form:checkbox class="form-control include-checkbox delivery-checkboxes" 
 								                                			path="staffIDs" 
-								                                			value="${staff.id}"
+								                                			value="${deliveryStaff.id}"
 								                                			/>
 																	</td>
 																	<td>
 																		${delivery.name}
 																	</td>
 																	<td>
-																		${staff.getFullName()}
+																		${deliveryStaff.getFullName()}
 																	</td>
 																</tr>
 						                                		</c:forEach>
 															</c:forEach>
 															</tbody>
 															</table>
+															</c:when>
+															</c:choose>
 															
 				                                            
 				                                        </div>
+				                                        <c:if test="${!empty projectStructManagers || !empty projectStructTeams || !empty projectStructTasks || !empty projectStructDeliveries}">
 	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
+				                                        </c:if>
 				                                    </form:form>
-<%--                                             		<c:url var="urlDeleteField" value="/project/field/delete" /> --%>
-<%--                                             		<a href="${urlDeleteField}"> --%>
-<!-- 														<button class="btn btn-default btn-flat btn-sm">Remove This Field</button> -->
-<!-- 													</a> -->
+				                                    <c:if test="${!empty projectStructManagers || !empty projectStructTeams || !empty projectStructTasks || !empty projectStructDeliveries}">
+				                                    <br/>
+                                            		<c:url var="urlCompute" value="/project/compute/payroll" />
+                                            		<a href="${urlCompute}">
+														<button class="btn btn-default btn-flat btn-sm">Compute Payroll</button>
+													</a>
+													</c:if>
                    								</div>
                    							</div>
                    						</div>
                    						</c:if>
               						</div>
+              						<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-body">
+                   									<table id="treegrid1"></table>
+                   								</div>
+                							</div>
+                						</div>
+                					</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
@@ -250,6 +319,32 @@
             </section><!-- /.content -->
         </aside>
 	</div>
+	
+	<!-- Ignite UI Required Combined JavaScript Files -->
+	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
+	
+	<c:if test="${!empty payrollJSON}">
+	<script>
+	$(document).ready(function() {
+		// Tree grid.
+		var flatDS = ${payrollJSON};
+        $("#treegrid1").igTreeGrid({
+            dataSource: flatDS,
+            primaryKey: "primaryKey",
+            foreignKey: "foreignKey",
+            columns: [
+				{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
+				{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
+                { headerText: "Name", key: "name", dataType: "string" },
+                { headerText: "Payroll", key: "value", dataType: "string" }
+            ]
+        });
+	});
+	</script>
+	</c:if>
 	
 	<script>
 		function submitForm(id) {

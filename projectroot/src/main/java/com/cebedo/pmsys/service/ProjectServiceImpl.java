@@ -28,12 +28,14 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.DataStructHelper;
 import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -562,6 +564,11 @@ public class ProjectServiceImpl implements ProjectService {
 	// Loop through teams.
 	for (Team team : teamPayrollMap.keySet()) {
 
+	    Map<Staff, String> staffMap = teamPayrollMap.get(team);
+	    if (staffMap.keySet().isEmpty()) {
+		continue;
+	    }
+
 	    // Get details.
 	    long teamPKey = Math.abs(randomno.nextLong());
 	    double thisTeamTotal = teamGroup.get(team);
@@ -574,7 +581,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    treeGrid.add(teamBean);
 
 	    // Add all staff inside team.
-	    Map<Staff, String> staffMap = teamPayrollMap.get(team);
 	    for (Staff staff : staffMap.keySet()) {
 
 		// Get details.
@@ -601,29 +607,11 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public String getPayrollJSON(Project proj, Date min, Date max) {
-	Map<String, Object> payrollMap = getComputedPayrollMap(proj, min, max);
-	return constructPayrollJSON(payrollMap, proj);
-    }
-
-    /**
-     * Get map of payrolls.
-     */
-    @Override
-    @Transactional
-    public String getPayrollJSON(Project proj) {
-	Map<String, Object> payrollMap = getComputedPayrollMap(proj);
-	return constructPayrollJSON(payrollMap, proj);
-    }
-
-    /**
-     * Get map of payrolls.
-     */
-    @Override
-    @Transactional
     public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
-	    Date max) {
+	    Date max, ProjectPayroll projectPayroll) {
 	Map<String, Object> payrollMaps = new HashMap<String, Object>();
+	List<Long> staffIDsToCompute = DataStructHelper
+		.convertArrayToList(projectPayroll.getStaffIDs());
 
 	// Payroll maps.
 	Map<Team, Double> teamGroup = new HashMap<Team, Double>();
@@ -643,6 +631,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    for (Staff member : team.getMembers()) {
 		long memberID = member.getId();
+
+		if (!staffIDsToCompute.contains(memberID)) {
+		    continue;
+		}
 
 		// If a staff has already been computed before,
 		// don't compute again.
@@ -671,6 +663,11 @@ public class ProjectServiceImpl implements ProjectService {
 	for (ManagerAssignment assignment : proj.getManagerAssignments()) {
 	    Staff manager = assignment.getManager();
 	    long managerID = manager.getId();
+
+	    if (!staffIDsToCompute.contains(managerID)) {
+		continue;
+	    }
+
 	    // If a staff has already been computed before,
 	    // don't compute again.
 	    if (computedMap.containsKey(managerID)) {
@@ -705,18 +702,6 @@ public class ProjectServiceImpl implements ProjectService {
 		managerPayrollMap);
 
 	return payrollMaps;
-    }
-
-    /**
-     * Get map of payrolls.
-     */
-    @Override
-    @Transactional
-    public Map<String, Object> getComputedPayrollMap(Project proj) {
-	// Default is current month.
-	Date min = DateHelper.getCurrentMonthDateStart();
-	Date max = DateHelper.getCurrentMonthDateEnd();
-	return getComputedPayrollMap(proj, min, max);
     }
 
     /**
@@ -907,4 +892,14 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	return managers;
     }
+
+    @Transactional
+    @Override
+    public String getPayrollJSON(Project proj, Date startDate, Date endDate,
+	    ProjectPayroll projectPayroll) {
+	Map<String, Object> payrollMap = getComputedPayrollMap(proj, startDate,
+		endDate, projectPayroll);
+	return constructPayrollJSON(payrollMap, proj);
+    }
+
 }
