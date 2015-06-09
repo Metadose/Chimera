@@ -251,4 +251,24 @@ public class ProjectPayroll implements IDomainObject {
 		+ statusPart + startDatePart + endDatePart;
 	return key;
     }
+
+    public String constructPattern(Date oldStart, Date oldEnd) {
+	long companyID = getCompanyID() == null ? 0 : getCompanyID();
+	String companyPart = Company.OBJECT_NAME + ":" + companyID
+		+ ":payroll:";
+	String projectPart = Project.OBJECT_NAME + ":" + getProjectID() + ":";
+
+	String approverPart = "approver:*:";
+	String creatorPart = "creator:*:";
+	String statusPart = "status:*:";
+
+	String startDateStr = DateUtils.formatDate(oldStart, "yyyy.MM.dd");
+	String endDateStr = DateUtils.formatDate(oldEnd, "yyyy.MM.dd");
+	String startDatePart = "startdate:" + startDateStr + ":";
+	String endDatePart = "enddate:" + endDateStr;
+
+	String key = companyPart + projectPart + approverPart + creatorPart
+		+ statusPart + startDatePart + endDatePart;
+	return key;
+    }
 }

@@ -73,6 +73,11 @@ public class DateUtils {
 	return formatter.format(date);
     }
 
+    public static String formatDate(Date date) {
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+	return formatter.format(date);
+    }
+
     /**
      * Add days to date.<br>
      * Reference:

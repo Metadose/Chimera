@@ -363,7 +363,8 @@ public class StaffController {
     }
 
     /**
-     * If the Create/Edit Staff request is coming from the project.
+     * If the Create/Edit Staff request is coming from the project.<br>
+     * staff/edit/{id}/from/{origin}/{originid}
      * 
      * @param staffID
      * @param projectID

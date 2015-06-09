@@ -61,6 +61,7 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 @Controller
@@ -85,6 +86,9 @@ public class ProjectController {
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
+
+    public static final String OLD_PAYROLL_START = "oldPayrollStart";
+    public static final String OLD_PAYROLL_END = "oldPayrollEnd";
 
     public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
     public static final String ATTR_PAYROLL_SELECTOR_APPROVER = "payrollApproverOptions";
@@ -917,15 +921,19 @@ public class ProjectController {
 	    + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    Model model, HttpSession session) {
+	    Model model, HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
-	// TODO End the session after this.
-	// TODO Then redirect to an edit page of this object.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	if (proj == null) {
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
+		    .getProjectID());
+	}
 
 	// Take a snapshot of the project structure
 	// during the creation of the payroll.
 	Map<String, Object> projectStruct = new HashMap<String, Object>();
+	boolean isUpdating = projectPayroll.isSaved();
 
 	// Get all managers in this project.
 	// Preserve list of managers during this time.
@@ -940,15 +948,23 @@ public class ProjectController {
 	projectPayroll.setProjectStructure(projectStruct);
 	projectPayroll.setSaved(true);
 
+	// If we are update, delete first the old entry.
+	// Because the date and time are used as key parts.
+	if (isUpdating) {
+	    preUpdateClear(session, projectPayroll);
+	}
+
+	// Set the new values.
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// List of possible approvers.
-	setPayrollStatusSelector(proj, model);
+	setFormSelectors(proj, model);
 
 	// Set the project structure.
 	setProjectStructure(projectPayroll, model);
 
-	return RedisConstants.JSP_PAYROLL_EDIT;
+	// Complete the transaction.
+	return payrollEndState(status, redirectAttrs, projectPayroll);
     }
 
     /**
@@ -964,11 +980,16 @@ public class ProjectController {
     public String createPayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model,
-	    HttpSession session) {
+	    HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
 	// TODO End the session after this.
 	// TODO Then redirect to an edit page of this object.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	if (proj == null) {
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
+		    .getProjectID());
+	}
 
 	// If the update button is clicked from the "right-side"
 	// project structure checkboxes, reset the payroll JSON.
@@ -976,15 +997,47 @@ public class ProjectController {
 	    projectPayroll.setPayrollJSON(null);
 	}
 
+	// Do rename first before setting.
+	preUpdateClear(session, projectPayroll);
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// List of possible approvers.
-	setPayrollStatusSelector(proj, model);
+	setFormSelectors(proj, model);
 
 	// Set the project structure.
 	setProjectStructure(projectPayroll, model);
 
-	return RedisConstants.JSP_PAYROLL_EDIT;
+	// Redirect to:
+	// /project/edit/payroll/${payrollKey}-end
+	return payrollEndState(status, redirectAttrs, projectPayroll);
+    }
+
+    /**
+     * Rename first the object before updating.<br>
+     * If this process is not executed, will create duplicate entry of this
+     * object.
+     * 
+     * @param session
+     * @param projectPayroll
+     */
+    private void preUpdateClear(HttpSession session,
+	    ProjectPayroll projectPayroll) {
+	// If the start and end dates are the same,
+	// don't do anything.
+	Date oldStart = (Date) session.getAttribute(OLD_PAYROLL_START);
+	Date oldEnd = (Date) session.getAttribute(OLD_PAYROLL_END);
+	Date newStart = projectPayroll.getStartDate();
+	Date newEnd = projectPayroll.getEndDate();
+
+	// Else, delete old payroll.
+	// Clear the computational results.
+	// Before updating.
+	if (!oldStart.equals(newStart) || !oldEnd.equals(newEnd)) {
+	    projectPayroll.setPayrollJSON(null);
+	    Set<String> clearOlds = this.projectPayrollValueRepo
+		    .keys(projectPayroll.constructPattern(oldStart, oldEnd));
+	    this.projectPayrollValueRepo.delete(clearOlds);
+	}
     }
 
     /**
@@ -998,9 +1051,14 @@ public class ProjectController {
 	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    Model model, HttpSession session) {
+	    Model model, HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	if (proj == null) {
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
+		    .getProjectID());
+	}
 	Date startDate = projectPayroll.getStartDate();
 	Date endDate = projectPayroll.getEndDate();
 
@@ -1014,13 +1072,51 @@ public class ProjectController {
 
 	// List of possible approvers.
 	// Get all managers in this project.
-	setPayrollStatusSelector(proj, model);
+	setFormSelectors(proj, model);
 
 	// For the multi-select box.
 	// Get all staff in this project.
 	setProjectStructure(projectPayroll, model);
 
-	return RedisConstants.JSP_PAYROLL_EDIT;
+	return payrollEndState(status, redirectAttrs, projectPayroll);
+    }
+
+    /**
+     * End state of payroll for create, update, and compute.
+     * 
+     * @param status
+     * @param redirectAttrs
+     * @param projectPayroll
+     * @return
+     */
+    private String payrollEndState(SessionStatus status,
+	    RedirectAttributes redirectAttrs, ProjectPayroll projectPayroll) {
+
+	// Complete the transaction.
+	// Add flash attribute.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ projectPayroll.getProjectID();
+    }
+
+    /**
+     * Construct key needed for payroll edit.
+     * 
+     * @param projectPayroll
+     * @return
+     */
+    @SuppressWarnings("unused")
+    private String createPayrollRedirectKey(ProjectPayroll projectPayroll) {
+	// Redirect to:
+	// /project/edit/payroll/${payrollKey}-end
+	String payrollKey = projectPayroll.getApproverID() + "-";
+	payrollKey += projectPayroll.getCreatorID() + "-";
+	payrollKey += projectPayroll.getStatusID() + "-";
+	payrollKey += DateUtils.formatDate(projectPayroll.getStartDate()) + "-";
+	payrollKey += DateUtils.formatDate(projectPayroll.getEndDate());
+
+	return payrollKey;
     }
 
     /**
@@ -1040,7 +1136,10 @@ public class ProjectController {
 	// Common to both edit new and existing.
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	setPayrollStatusSelector(proj, model);
+
+	// Set the form selectors.
+	// Managers and status.
+	setFormSelectors(proj, model);
 
 	// Required for key creation.
 	Company co = proj.getCompany();
@@ -1071,7 +1170,12 @@ public class ProjectController {
 		projectID, approverID, creatorID, statusID, startDate, endDate);
 
 	// Attach to response.
+	// If flash attribute was null,
+	// use the key.
 	ProjectPayroll projectPayroll = this.projectPayrollValueRepo.get(key);
+	session.setAttribute(OLD_PAYROLL_START, projectPayroll.getStartDate());
+	session.setAttribute(OLD_PAYROLL_END, projectPayroll.getEndDate());
+
 	model.addAttribute(ATTR_PROJECT_PAYROLL, projectPayroll);
 	model.addAttribute(ATTR_PAYROLL_JSON, projectPayroll.getPayrollJSON());
 
@@ -1086,7 +1190,7 @@ public class ProjectController {
      * 
      * @param model
      */
-    private void setPayrollStatusSelector(Project proj, Model model) {
+    private void setFormSelectors(Project proj, Model model) {
 
 	// Approvers.
 	List<Staff> selectorManagers = this.projectService

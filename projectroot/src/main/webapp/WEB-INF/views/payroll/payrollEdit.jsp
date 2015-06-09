@@ -179,7 +179,10 @@
 																		</c:if>
 																	</td>
 																	<td>
+																		<c:url value="/staff/edit/${manager.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		<a href="${staffLink}" class="general-link">
 																		${manager.getFullName()}
+																		</a>
 																	</td>
 																</tr>
 															</c:forEach>
@@ -226,7 +229,10 @@
 																		${team.name}
 																	</td>
 																	<td>
+																		<c:url value="/staff/edit/${teamMember.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		<a href="${staffLink}" class="general-link">
 																		${teamMember.getFullName()}
+																		</a>
 																	</td>
 																</tr>
 						                                		</c:forEach>
@@ -275,7 +281,10 @@
 																		${task.title}
 																	</td>
 																	<td>
+																		<c:url value="/staff/edit/${staff.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		<a href="${staffLink}" class="general-link">
 																		${staff.getFullName()}
+																		</a>
 																	</td>
 																</tr>
 						                                		</c:forEach>
@@ -323,7 +332,10 @@
 																		${delivery.name}
 																	</td>
 																	<td>
+																		<c:url value="/staff/edit/${deliveryStaff.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		<a href="${staffLink}" class="general-link">
 																		${deliveryStaff.getFullName()}
+																		</a>
 																	</td>
 																</tr>
 						                                		</c:forEach>
