@@ -373,7 +373,7 @@
                    									<h3 class="box-title">Computation</h3>
                    								</div>
                    								<div class="box-body">
-                   									<table id="treegrid1"></table>
+                   									<table id="treegrid1" style="width: auto"></table>
                    								</div>
                 							</div>
                 						</div>
@@ -407,8 +407,14 @@
             columns: [
 				{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
 				{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
-                { headerText: "Name", key: "name", dataType: "string" },
-                { headerText: "Payroll", key: "value", dataType: "string" }
+                { headerText: "Name", width: "320px", key: "name", dataType: "string" },
+                { headerText: "Payroll", width: "150px", key: "value", dataType: "string" },
+                { headerText: "Overtime", width: "100px", key: "breakdownOvertime", dataType: "string" },
+                { headerText: "Present", width: "100px", key: "breakdownPresent", dataType: "string" },
+                { headerText: "Late", width: "100px", key: "breakdownLate", dataType: "string" },
+                { headerText: "Half-day", width: "100px", key: "breakdownHalfday", dataType: "string" },
+                { headerText: "Leave", width: "100px", key: "breakdownLeave", dataType: "string" },
+                { headerText: "Absent", width: "100px", key: "breakdownAbsent", dataType: "string" }
             ]
         });
 	});

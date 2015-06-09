@@ -54,6 +54,9 @@ public class StaffServiceImpl implements StaffService {
     private LogHelper logHelper = new LogHelper();
     private static Logger logger = Logger.getLogger(Staff.OBJECT_NAME);
 
+    public static final String STAFF_ATTENDANCE_STATUS_COUNT = "statusCount";
+    public static final String STAFF_ATTENDANCE_EQUIVALENT_WAGE = "equivalentWage";
+
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
     private TeamDAO teamDAO;
@@ -791,8 +794,6 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
 	    Set<Attendance> attendanceList) {
-	String statusCount = "statusCount";
-	String equivalentWage = "equivalentWage";
 
 	// And count number per status.
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();
@@ -805,12 +806,13 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Get and set status count.
 	    Double statCount = attendanceStatusMap.get(attnStat) == null ? 1
-		    : attendanceStatusMap.get(attnStat).get(statusCount) + 1;
+		    : attendanceStatusMap.get(attnStat).get(
+			    STAFF_ATTENDANCE_STATUS_COUNT) + 1;
 	    Map<String, Double> breakdown = new HashMap<String, Double>();
-	    breakdown.put(statusCount, statCount);
+	    breakdown.put(STAFF_ATTENDANCE_STATUS_COUNT, statCount);
 	    double value = attnStat == AttendanceStatus.ABSENT ? 0 : statCount
 		    * attendance.getWage();
-	    breakdown.put(equivalentWage, value);
+	    breakdown.put(STAFF_ATTENDANCE_EQUIVALENT_WAGE, value);
 	    attendanceStatusMap.put(attnStat, breakdown);
 	}
 
@@ -824,8 +826,8 @@ public class StaffServiceImpl implements StaffService {
 	    Map<String, Double> breakdown = attendanceStatusMap.get(status);
 	    if (breakdown == null) {
 		breakdown = new HashMap<String, Double>();
-		breakdown.put(statusCount, (double) 0);
-		breakdown.put(equivalentWage, (double) 0);
+		breakdown.put(STAFF_ATTENDANCE_STATUS_COUNT, (double) 0);
+		breakdown.put(STAFF_ATTENDANCE_EQUIVALENT_WAGE, (double) 0);
 		attendanceStatusSorted.put(status, breakdown);
 	    }
 	    attendanceStatusSorted.put(status, breakdown);

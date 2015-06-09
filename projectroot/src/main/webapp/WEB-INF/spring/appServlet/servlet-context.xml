@@ -291,6 +291,7 @@
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="payrollService" ref="payrollService"></beans:property>
+        <beans:property name="staffService" ref="staffService"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
         <beans:property name="projectPayrollValueRepo" ref="projectPayrollValueRepo"></beans:property>
     </beans:bean>

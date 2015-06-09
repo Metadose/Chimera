@@ -108,6 +108,7 @@ public class ProjectController {
     public static final String ATTR_PAYROLL_MAP_TASK = "taskPayrollMap";
     public static final String ATTR_PAYROLL_MAP_DELIVERY = "deliveryPayrollMap";
     public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
+    public static final String ATTR_PAYROLL_MAP_ATTENDANCE_BREAKDOWN = "allStaffAttendanceBreakdown";
     public static final String ATTR_PAYROLL_GROUP_TEAM = "payrollGroupTeam";
     public static final String ATTR_PAYROLL_GROUP_TASK = "payrollGroupTask";
     public static final String ATTR_PAYROLL_GROUP_DELIVERY = "payrollGroupDelivery";

@@ -30,8 +30,10 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
+import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
@@ -75,6 +77,11 @@ public class ProjectServiceImpl implements ProjectService {
     private PayrollService payrollService;
     private ProjectPayrollValueRepo projectPayrollValueRepo;
     private SystemUserDAO systemUserDAO;
+    private StaffService staffService;
+
+    public void setStaffService(StaffService staffService) {
+	this.staffService = staffService;
+    }
 
     public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
 	this.systemUserDAO = systemUserDAO;
@@ -536,21 +543,25 @@ public class ProjectServiceImpl implements ProjectService {
 			+ proj.getName(), overallTotalStr);
 	treeGrid.add(motherBean);
 
+	// All staff attendance breakdown.
+	Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown = (Map<Staff, Map<AttendanceStatus, Map<String, Double>>>) payrollMap
+		.get(ProjectController.ATTR_PAYROLL_MAP_ATTENDANCE_BREAKDOWN);
+
 	// Managers.
-	treeGrid = getManagerTreeGrid(payrollMap, summaryGroup, motherPKey,
-		randomno, df, treeGrid);
+	treeGrid = getManagerTreeGrid(payrollMap, randomno, summaryGroup, df,
+		motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Teams.
 	treeGrid = getTeamTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid);
+		motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Tasks.
 	treeGrid = getTaskTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid);
+		motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Deliveries.
 	treeGrid = getDeliveryTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid);
+		motherPKey, treeGrid, allStaffWageBreakdown);
 
 	return new Gson().toJson(treeGrid, ArrayList.class);
     }
@@ -564,13 +575,18 @@ public class ProjectServiceImpl implements ProjectService {
      * @param df
      * @param headerTeamPKey
      * @param treeGrid
+     * @param allStaffWageBreakdown
      * @return
      */
     @SuppressWarnings({ "unchecked" })
     private List<TreeGridRowBean> getDeliveryTreeGrid(
-	    Map<String, Object> payrollMap, Random randomno,
-	    Map<String, Double> summaryGroup, NumberFormat df, long motherPKey,
-	    List<TreeGridRowBean> treeGrid) {
+	    Map<String, Object> payrollMap,
+	    Random randomno,
+	    Map<String, Double> summaryGroup,
+	    NumberFormat df,
+	    long motherPKey,
+	    List<TreeGridRowBean> treeGrid,
+	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
 
 	// The map.
 	Map<Delivery, Map<Staff, String>> thisPayrollMap = (Map<Delivery, Map<Staff, String>>) payrollMap
@@ -615,13 +631,22 @@ public class ProjectServiceImpl implements ProjectService {
 		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
 			+ "&nbsp;" + staff.getFullName();
 		String value = staffMap.get(staff);
-		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
-			+ value + ")</i>"
-			: df.format(Double.valueOf(value));
+		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
+		String rowValue = skip ? "<i>(" + value + ")</i>" : df
+			.format(Double.valueOf(value));
 
 		// Add to bean.
 		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
 			thisPKey, rowName, rowValue);
+
+		// Breakdown.
+		if (!skip) {
+		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
+			    .get(staff);
+		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
+			    rowBean);
+		}
+
 		treeGrid.add(rowBean);
 	    }
 	}
@@ -637,13 +662,18 @@ public class ProjectServiceImpl implements ProjectService {
      * @param randomno
      * @param df
      * @param treeGrid
+     * @param allStaffWageBreakdown
      * @return
      */
     @SuppressWarnings("unchecked")
     private List<TreeGridRowBean> getManagerTreeGrid(
-	    Map<String, Object> payrollMap, Map<String, Double> summaryGroup,
-	    long motherPKey, Random randomno, NumberFormat df,
-	    List<TreeGridRowBean> treeGrid) {
+	    Map<String, Object> payrollMap,
+	    Random randomno,
+	    Map<String, Double> summaryGroup,
+	    NumberFormat df,
+	    long motherPKey,
+	    List<TreeGridRowBean> treeGrid,
+	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
 
 	Map<ManagerAssignment, String> managerPayrollMap = (Map<ManagerAssignment, String>) payrollMap
 		.get(ProjectController.ATTR_PAYROLL_MAP_MANAGER);
@@ -670,16 +700,84 @@ public class ProjectServiceImpl implements ProjectService {
 	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF") + "&nbsp;"
 		    + manager.getFullName();
 	    String value = managerPayrollMap.get(managerAssignment);
-	    String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
-		    + value + ")</i>"
-		    : df.format(Double.valueOf(value));
+	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
+	    String rowValue = skip ? "<i>(" + value + ")</i>" : df
+		    .format(Double.valueOf(value));
 
 	    // Add to bean.
 	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
 		    headerManagerPKey, rowName, rowValue);
+
+	    // Breakdown.
+	    if (!skip) {
+		Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
+			.get(manager);
+		rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
+	    }
+
+	    // Add to tree grid list.
 	    treeGrid.add(rowBean);
 	}
 	return treeGrid;
+    }
+
+    /**
+     * Get the staff's breakdown of attendance count and wage.
+     * 
+     * @param staffWageBreakdown
+     * @param rowBean
+     * @return
+     */
+    private TreeGridRowBean setAttendanceBreakdown(
+	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
+	    TreeGridRowBean rowBean) {
+
+	// OVERTIME.
+	Map<String, Double> overtimeCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.OVERTIME);
+	rowBean.setBreakdownOvertime(getBreakdownText(overtimeCountAndWage));
+
+	// ABSENT.
+	Map<String, Double> absentCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.ABSENT);
+	rowBean.setBreakdownAbsent(getBreakdownText(absentCountAndWage));
+
+	// HALFDAY.
+	Map<String, Double> halfdayCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.HALFDAY);
+	rowBean.setBreakdownHalfday(getBreakdownText(halfdayCountAndWage));
+
+	// LATE.
+	Map<String, Double> lateCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.LATE);
+	rowBean.setBreakdownLate(getBreakdownText(lateCountAndWage));
+
+	// LEAVE.
+	Map<String, Double> leaveCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.LEAVE);
+	rowBean.setBreakdownLeave(getBreakdownText(leaveCountAndWage));
+
+	// PRESENT.
+	Map<String, Double> presentCountAndWage = staffWageBreakdown
+		.get(AttendanceStatus.PRESENT);
+	rowBean.setBreakdownPresent(getBreakdownText(presentCountAndWage));
+
+	return rowBean;
+    }
+
+    /**
+     * Get the breakdown of an attendance status.
+     * 
+     * @param countAndWage
+     * @return
+     */
+    private String getBreakdownText(Map<String, Double> countAndWage) {
+	Double count = countAndWage
+		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
+	Double wage = countAndWage
+		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
+	String breakdownText = wage + " (" + count + ")";
+	return breakdownText;
     }
 
     /**
@@ -691,13 +789,18 @@ public class ProjectServiceImpl implements ProjectService {
      * @param df
      * @param headerTeamPKey
      * @param treeGrid
+     * @param allStaffWageBreakdown
      * @return
      */
     @SuppressWarnings({ "unchecked" })
     private List<TreeGridRowBean> getTaskTreeGrid(
-	    Map<String, Object> payrollMap, Random randomno,
-	    Map<String, Double> summaryGroup, NumberFormat df, long motherPKey,
-	    List<TreeGridRowBean> treeGrid) {
+	    Map<String, Object> payrollMap,
+	    Random randomno,
+	    Map<String, Double> summaryGroup,
+	    NumberFormat df,
+	    long motherPKey,
+	    List<TreeGridRowBean> treeGrid,
+	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
 
 	// The map.
 	Map<Task, Map<Staff, String>> thisPayrollMap = (Map<Task, Map<Staff, String>>) payrollMap
@@ -742,13 +845,22 @@ public class ProjectServiceImpl implements ProjectService {
 		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
 			+ "&nbsp;" + staff.getFullName();
 		String value = staffMap.get(staff);
-		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
-			+ value + ")</i>"
-			: df.format(Double.valueOf(value));
+		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
+		String rowValue = skip ? "<i>(" + value + ")</i>" : df
+			.format(Double.valueOf(value));
 
 		// Add to bean.
 		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
 			thisPKey, rowName, rowValue);
+
+		// Breakdown.
+		if (!skip) {
+		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
+			    .get(staff);
+		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
+			    rowBean);
+		}
+
 		treeGrid.add(rowBean);
 	    }
 	}
@@ -765,13 +877,18 @@ public class ProjectServiceImpl implements ProjectService {
      * @param df
      * @param headerTeamPKey
      * @param treeGrid
+     * @param allStaffWageBreakdown
      * @return
      */
     @SuppressWarnings({ "unchecked" })
     private List<TreeGridRowBean> getTeamTreeGrid(
-	    Map<String, Object> payrollMap, Random randomno,
-	    Map<String, Double> summaryGroup, NumberFormat df, long motherPKey,
-	    List<TreeGridRowBean> treeGrid) {
+	    Map<String, Object> payrollMap,
+	    Random randomno,
+	    Map<String, Double> summaryGroup,
+	    NumberFormat df,
+	    long motherPKey,
+	    List<TreeGridRowBean> treeGrid,
+	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
 
 	// Team map.
 	Map<Team, Map<Staff, String>> teamPayrollMap = (Map<Team, Map<Staff, String>>) payrollMap
@@ -816,13 +933,22 @@ public class ProjectServiceImpl implements ProjectService {
 		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
 			+ "&nbsp;" + staff.getFullName();
 		String value = staffMap.get(staff);
-		String rowValue = value.contains(IDENTIFIER_ALREADY_EXISTS) ? "<i>("
-			+ value + ")</i>"
-			: df.format(Double.valueOf(value));
+		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
+		String rowValue = skip ? "<i>(" + value + ")</i>" : df
+			.format(Double.valueOf(value));
 
 		// Add to bean.
 		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
 			teamPKey, rowName, rowValue);
+
+		// Breakdown.
+		if (!skip) {
+		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
+			    .get(staff);
+		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
+			    rowBean);
+		}
+
 		treeGrid.add(rowBean);
 	    }
 	}
@@ -846,6 +972,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Already computed? Add ID to this list.
 	Map<Long, String> computedMap = new HashMap<Long, String>();
+
+	// Attendance status with corresponding count map.
+	Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
 
 	// Wage for managers.
 	double managersTotal = 0;
@@ -872,6 +1001,11 @@ public class ProjectServiceImpl implements ProjectService {
 	    managersTotal += managerWageTotal;
 	    managerPayrollMap.put(assignment, String.valueOf(managerWageTotal));
 	    computedMap.put(managerID, "Manager List");
+
+	    // Get the breakdown of this total.
+	    Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getWageTotalBreakdown(
+		    manager, min, max);
+	    allStaffWageBreakdown.put(manager, attendanceStatusCountMap);
 	}
 
 	// Wage for teams.
@@ -905,6 +1039,11 @@ public class ProjectServiceImpl implements ProjectService {
 		thisTeamTotal += totalWageOfStaff;
 		staffPayrollMap.put(member, String.valueOf(totalWageOfStaff));
 		computedMap.put(memberID, "Team " + team.getName());
+
+		// Get the breakdown of this total.
+		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getWageTotalBreakdown(
+			member, min, max);
+		allStaffWageBreakdown.put(member, attendanceStatusCountMap);
 	    }
 
 	    // Add to team list.
@@ -948,6 +1087,12 @@ public class ProjectServiceImpl implements ProjectService {
 		staffPayrollMap.put(assignedStaff,
 			String.valueOf(totalWageOfStaff));
 		computedMap.put(staffID, "Task " + task.getTitle());
+
+		// Get the breakdown of this total.
+		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getWageTotalBreakdown(
+			assignedStaff, min, max);
+		allStaffWageBreakdown.put(assignedStaff,
+			attendanceStatusCountMap);
 	    }
 
 	    // Add to team list.
@@ -991,6 +1136,12 @@ public class ProjectServiceImpl implements ProjectService {
 		staffPayrollMap.put(assignedStaff,
 			String.valueOf(totalWageOfStaff));
 		computedMap.put(staffID, "Delivery " + delivery.getName());
+
+		// Get the breakdown of this total.
+		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getWageTotalBreakdown(
+			assignedStaff, min, max);
+		allStaffWageBreakdown.put(assignedStaff,
+			attendanceStatusCountMap);
 	    }
 
 	    // Add to team list.
@@ -1029,7 +1180,37 @@ public class ProjectServiceImpl implements ProjectService {
 	payrollMaps.put(ProjectController.ATTR_PAYROLL_MAP_MANAGER,
 		managerPayrollMap);
 
+	// All staff attedance status breakdown.
+	payrollMaps.put(
+		ProjectController.ATTR_PAYROLL_MAP_ATTENDANCE_BREAKDOWN,
+		allStaffWageBreakdown);
+
 	return payrollMaps;
+    }
+
+    /**
+     * Get the breakdown of the total wage.
+     * 
+     * @param manager
+     * @param min
+     * @param max
+     * @return
+     */
+    private Map<AttendanceStatus, Map<String, Double>> getWageTotalBreakdown(
+	    Staff manager, Date min, Date max) {
+	// Attendance count map.
+	Set<Attendance> attendanceList = this.payrollService
+		.rangeStaffAttendance(manager, min, max);
+
+	// For each attendance status,
+	// there is a count. And equivalent wage.
+	// Map keys as:
+	// String statusCount = "statusCount";
+	// String equivalentWage = "equivalentWage"
+	// (Breakdown of this total wage);
+	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = this.staffService
+		.getAttendanceStatusCountMap(attendanceList);
+	return attendanceStatusCountMap;
     }
 
     /**
