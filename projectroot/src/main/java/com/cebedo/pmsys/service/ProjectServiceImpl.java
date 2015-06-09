@@ -5,6 +5,8 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -1241,20 +1243,32 @@ public class ProjectServiceImpl implements ProjectService {
 	return constructPayrollJSON(payrollMap, proj);
     }
 
+    /**
+     * Get all payrolls given a project.
+     */
     @Transactional
     @Override
     public List<ProjectPayrollWrapper> getAllPayrolls(Project proj) {
+
+	// Get the needed ID's for the key.
+	// Construct the key.
 	long companyID = proj.getCompany() == null ? 0 : proj.getCompany()
 		.getId();
 	String pattern = ProjectPayroll.constructKey(companyID, proj.getId(),
 		null, null, null, null, null);
+
+	// Get all keys based on pattern.
+	// Multi-get all objects based on keys.
 	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
 	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo
 		.multiGet(keys);
 	List<ProjectPayrollWrapper> wrappedProjectPayrolls = new ArrayList<ProjectPayrollWrapper>();
 
+	// For each resulting object,
+	// wrap with wrapper.
 	for (ProjectPayroll payroll : projectPayrolls) {
 
+	    // Get objects which corresponding to which ID's.
 	    SystemUser approver = this.systemUserDAO.getByID(payroll
 		    .getApproverID());
 	    SystemUser creator = this.systemUserDAO.getByID(payroll
@@ -1264,10 +1278,28 @@ public class ProjectServiceImpl implements ProjectService {
 	    PayrollStatus status = PayrollStatus.of(payroll.getStatusID());
 	    Company co = this.companyDAO.getByID(payroll.getCompanyID());
 
+	    // Construct the wrapped object.
+	    // Add object to list.
 	    ProjectPayrollWrapper wrappedPayroll = new ProjectPayrollWrapper(
 		    approver, creator, startDate, endDate, status, co, proj);
 	    wrappedProjectPayrolls.add(wrappedPayroll);
 	}
+
+	// Sort the list in descending order.
+	Collections.sort(wrappedProjectPayrolls,
+		new Comparator<ProjectPayrollWrapper>() {
+		    @Override
+		    public int compare(ProjectPayrollWrapper aObj,
+			    ProjectPayrollWrapper bObj) {
+			Date aStart = aObj.getStartDate();
+			Date bStart = bObj.getStartDate();
+
+			// To sort in ascending,
+			// remove Not's.
+			return !(aStart.before(bStart)) ? -1 : !(aStart
+				.after(bStart)) ? 1 : 0;
+		    }
+		});
 
 	return wrappedProjectPayrolls;
     }

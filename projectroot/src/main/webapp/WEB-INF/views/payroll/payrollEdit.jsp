@@ -113,9 +113,9 @@
 				                                            
 				                                            <!-- Date pickers -->
 				                                            <label>Start Date</label>
-				                                            <form:input type="text" class="form-control date-picker" path="startDate"/><br/>
+				                                            <form:input type="text" class="form-control date-picker" path="startDate" value="${startDate}"/><br/>
 				                                            <label>End Date</label>
-				                                            <form:input type="text" class="form-control date-picker" path="endDate"/>
+				                                            <form:input type="text" class="form-control date-picker" path="endDate" value="${endDate}"/>
 				                                        </div>
 				                                        <c:if test="${projectPayroll.saved}">
 	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
@@ -385,6 +385,7 @@
 	<c:if test="${!empty payrollJSON}">
 	<script>
 	$(document).ready(function() {
+		
 		// Tree grid.
 		var flatDS = ${payrollJSON};
         $("#treegrid1").igTreeGrid({
@@ -428,21 +429,6 @@
 			    format: 'yyyy/mm/dd'
 			});
 		});
-		
-// 		$(document).ready(function() {
-// 		    $('#selecctall').click(function(event) {  //on click 
-// 		        if(this.checked) { // check select status
-// 		            $('.checkbox1').each(function() { //loop through each checkbox
-// 		                this.checked = true;  //select all checkboxes with class "checkbox1"               
-// 		            });
-// 		        }else{
-// 		            $('.checkbox1').each(function() { //loop through each checkbox
-// 		                this.checked = false; //deselect all checkboxes with class "checkbox1"                       
-// 		            });         
-// 		        }
-// 		    });
-		    
-// 		});
 	</script>
 </body>
 </html>

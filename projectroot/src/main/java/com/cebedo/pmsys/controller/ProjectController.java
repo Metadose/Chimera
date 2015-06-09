@@ -934,7 +934,7 @@ public class ProjectController {
 		.getAllManagersWithUsers(proj);
 	projectPayroll.setManagers(managers);
 
-	// Preserve project strucutre.
+	// Preserve project structure.
 	projectStruct = this.projectService.getProjectStructureMap(proj,
 		projectPayroll.getStartDate(), projectPayroll.getEndDate());
 	projectPayroll.setProjectStructure(projectStruct);
