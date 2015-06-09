@@ -3,8 +3,8 @@ package com.cebedo.pmsys.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +53,6 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
@@ -62,6 +61,7 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
@@ -79,12 +79,15 @@ public class ProjectController {
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
-    public static final String ATTR_PAYROLL_STATUS_ARRAY = "payrollStatusArr";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
+    public static final String ATTR_WRAPPED_PROJECT_PAYROLL_LIST = "wrappedProjectPayrollList";
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
+
+    public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
+    public static final String ATTR_PAYROLL_SELECTOR_APPROVER = "payrollApproverOptions";
 
     public static final String ATTR_CALENDAR_EVENT_TYPES_MAP = "calendarEventTypesMap";
     public static final String ATTR_CALENDAR_EVENT_TYPES_LIST = "calendarEventTypes";
@@ -909,44 +912,41 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @SuppressWarnings("unchecked")
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.POST)
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
+	    + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session) {
 
+	// TODO End the session after this.
+	// TODO Then redirect to an edit page of this object.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// Take a snapshot of the project structure
+	// during the creation of the payroll.
+	Map<String, Object> projectStruct = new HashMap<String, Object>();
+
+	// Get all managers in this project.
+	// Preserve list of managers during this time.
+	// FIXME What if manager/approver is deleted? Payroll is orphaned.
+	List<Staff> managers = this.projectService
+		.getAllManagersWithUsers(proj);
+	projectPayroll.setManagers(managers);
+
+	// Preserve project strucutre.
+	projectStruct = this.projectService.getProjectStructureMap(proj,
+		projectPayroll.getStartDate(), projectPayroll.getEndDate());
+	projectPayroll.setProjectStructure(projectStruct);
 	projectPayroll.setSaved(true);
+
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// List of possible approvers.
-	// Get all managers in this project.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	List<Staff> managers = this.projectService.getManagers(proj);
-	PayrollStatus[] payrollStatusArr = PayrollStatus.class
-		.getEnumConstants();
-	model.addAttribute(ATTR_PAYROLL_STATUS_ARRAY, payrollStatusArr);
-	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS, managers);
+	setPayrollStatusSelector(proj, model);
 
-	// For the multi-select box.
-	// Get all staff in this project.
-	Map<String, Object> projectStruct = this.projectService
-		.getProjectStructureMap(proj, projectPayroll.getStartDate(),
-			projectPayroll.getEndDate());
-
-	// // Get all staff in this project.
-	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TEAMS);
-	Map<Task, Set<Staff>> taskStaffMap = (Map<Task, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TASKS);
-	Map<Delivery, Set<Staff>> deliveryStaffMap = (Map<Delivery, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_DELIVERIES);
-
-	// Set attributes.
-	model.addAttribute(ATTR_PROJECT_STRUCT_TEAMS, teamStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_TASKS, taskStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_DELIVERIES, deliveryStaffMap);
+	// Set the project structure.
+	setProjectStructure(projectPayroll, model);
 
 	return RedisConstants.JSP_PAYROLL_EDIT;
     }
@@ -957,49 +957,68 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
+	    + RedisConstants.OBJECT_PAYROLL + "/" + SystemConstants.CLEAR
+	    + "/{" + SystemConstants.CLEAR + "}" }, method = RequestMethod.POST)
+    public String createPayrollClearComputation(
+	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
+	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model,
+	    HttpSession session) {
+
+	// TODO End the session after this.
+	// TODO Then redirect to an edit page of this object.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// If the update button is clicked from the "right-side"
+	// project structure checkboxes, reset the payroll JSON.
+	if (toClear.equals("computation")) {
+	    projectPayroll.setPayrollJSON(null);
+	}
+
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	// List of possible approvers.
+	setPayrollStatusSelector(proj, model);
+
+	// Set the project structure.
+	setProjectStructure(projectPayroll, model);
+
+	return RedisConstants.JSP_PAYROLL_EDIT;
+    }
+
+    /**
+     * Open an edit page with payroll object.
+     * 
+     * @param payrollKey
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/"
 	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(
-	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll getPayrollJSON,
+	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	Date startDate = getPayrollJSON.getStartDate();
-	Date endDate = getPayrollJSON.getEndDate();
+	Date startDate = projectPayroll.getStartDate();
+	Date endDate = projectPayroll.getEndDate();
 
 	// Get payroll maps.
 	// And assign to model.
 	String payrollJSON = this.projectService.getPayrollJSON(proj,
-		startDate, endDate, getPayrollJSON);
+		startDate, endDate, projectPayroll);
+	projectPayroll.setPayrollJSON(payrollJSON);
+	this.projectPayrollValueRepo.set(projectPayroll);
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 
 	// List of possible approvers.
 	// Get all managers in this project.
-	List<Staff> managers = this.projectService.getManagers(proj);
-	PayrollStatus[] payrollStatusArr = PayrollStatus.class
-		.getEnumConstants();
-	model.addAttribute(ATTR_PAYROLL_STATUS_ARRAY, payrollStatusArr);
-	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS, managers);
+	setPayrollStatusSelector(proj, model);
 
 	// For the multi-select box.
 	// Get all staff in this project.
-	Map<String, Object> projectStruct = this.projectService
-		.getProjectStructureMap(proj, startDate, endDate);
-
-	// // Get all staff in this project.
-	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TEAMS);
-	Map<Task, Set<Staff>> taskStaffMap = (Map<Task, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TASKS);
-	Map<Delivery, Set<Staff>> deliveryStaffMap = (Map<Delivery, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_DELIVERIES);
-
-	// Set attributes.
-	model.addAttribute(ATTR_PROJECT_STRUCT_TEAMS, teamStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_TASKS, taskStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_DELIVERIES, deliveryStaffMap);
+	setProjectStructure(projectPayroll, model);
 
 	return RedisConstants.JSP_PAYROLL_EDIT;
     }
@@ -1013,36 +1032,98 @@ public class ProjectController {
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
 	    + RedisConstants.OBJECT_PAYROLL + "/{"
-	    + RedisConstants.OBJECT_PAYROLL + "}", method = RequestMethod.GET)
+	    + RedisConstants.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
     public String editPayroll(
 	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
 	    Model model, HttpSession session) {
 
+	// Common to both edit new and existing.
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	PayrollStatus[] payrollStatusArr = PayrollStatus.class
-		.getEnumConstants();
+	setPayrollStatusSelector(proj, model);
 
-	// Get all managers in this project.
-	List<Staff> managers = new ArrayList<Staff>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    managers.add(managerAssignment.getManager());
-	}
-	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS, managers);
-	model.addAttribute(ATTR_PAYROLL_STATUS_ARRAY, payrollStatusArr);
+	// Required for key creation.
+	Company co = proj.getCompany();
+	Long companyID = co == null ? 0 : co.getId();
+	long projectID = proj.getId();
 
+	// If a new payroll object.
 	if (payrollKey.equals("0")) {
-	    Company co = proj.getCompany();
-	    Long companyID = co == null ? 0 : co.getId();
-	    long projectID = proj.getId();
+
+	    // Assign the creator.
+	    // Add the empty object.
+	    // Then redirect.
 	    long creatorID = this.authHelper.getAuth().getUser().getId();
 	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(
 		    companyID, projectID, creatorID));
 	    return RedisConstants.JSP_PAYROLL_EDIT;
 	}
 
-	// TODO
-	return null;
+	// If existing payroll object.
+	String approverID = payrollKey.split("-")[0];
+	String creatorID = payrollKey.split("-")[1];
+	String statusID = payrollKey.split("-")[2];
+	String startDate = payrollKey.split("-")[3];
+	String endDate = payrollKey.split("-")[4];
+
+	// Get object based on key.
+	String key = ProjectPayroll.constructKeyWithStrings(companyID,
+		projectID, approverID, creatorID, statusID, startDate, endDate);
+
+	// Attach to response.
+	ProjectPayroll projectPayroll = this.projectPayrollValueRepo.get(key);
+	model.addAttribute(ATTR_PROJECT_PAYROLL, projectPayroll);
+	model.addAttribute(ATTR_PAYROLL_JSON, projectPayroll.getPayrollJSON());
+
+	// Set the project structure.
+	setProjectStructure(projectPayroll, model);
+
+	return RedisConstants.JSP_PAYROLL_EDIT;
+    }
+
+    /**
+     * Options for the payroll status selector.
+     * 
+     * @param model
+     */
+    private void setPayrollStatusSelector(Project proj, Model model) {
+
+	// Approvers.
+	List<Staff> selectorManagers = this.projectService
+		.getAllManagersWithUsers(proj);
+	model.addAttribute(ATTR_PAYROLL_SELECTOR_APPROVER, selectorManagers);
+
+	// Status.
+	PayrollStatus[] payrollStatusArr = PayrollStatus.class
+		.getEnumConstants();
+	model.addAttribute(ATTR_PAYROLL_SELECTOR_STATUS, payrollStatusArr);
+    }
+
+    /**
+     * Set the project structure.
+     * 
+     * @param projectPayroll
+     * @param model
+     */
+    @SuppressWarnings("unchecked")
+    private void setProjectStructure(ProjectPayroll projectPayroll, Model model) {
+	// For the multi-select box.
+	// Get all staff in this project.
+	Map<String, Object> projectStruct = projectPayroll
+		.getProjectStructure();
+	List<Staff> managers = projectPayroll.getManagers();
+	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_TEAMS);
+	Map<Task, Set<Staff>> taskStaffMap = (Map<Task, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_TASKS);
+	Map<Delivery, Set<Staff>> deliveryStaffMap = (Map<Delivery, Set<Staff>>) projectStruct
+		.get(KEY_PROJECT_STRUCTURE_DELIVERIES);
+
+	// Set attributes.
+	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS, managers);
+	model.addAttribute(ATTR_PROJECT_STRUCT_TEAMS, teamStaffMap);
+	model.addAttribute(ATTR_PROJECT_STRUCT_TASKS, taskStaffMap);
+	model.addAttribute(ATTR_PROJECT_STRUCT_DELIVERIES, deliveryStaffMap);
     }
 
     /**
@@ -1101,8 +1182,8 @@ public class ProjectController {
      */
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 	    + Project.COLUMN_PRIMARY_KEY + "}")
-    public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
-	    Model model) {
+    public String editProject(
+	    @PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
 
 	// Model for forms.
 	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
@@ -1117,7 +1198,13 @@ public class ProjectController {
 	    return JSP_EDIT;
 	}
 
+	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+	List<ProjectPayrollWrapper> wrappedPayrolls = this.projectService
+		.getAllPayrolls(proj);
+
+	model.addAttribute(ATTR_WRAPPED_PROJECT_PAYROLL_LIST, wrappedPayrolls);
+
 	setModelAttributes(proj, model);
 	return JSP_EDIT;
     }

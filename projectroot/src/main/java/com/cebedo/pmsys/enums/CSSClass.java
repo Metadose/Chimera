@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-import com.cebedo.pmsys.helper.HTMLHelper;
+import com.cebedo.pmsys.utils.HTMLUtils;
 
 public enum CSSClass {
     INFO("btn-info", "Info", "#fff", "#5bc0de", "#46b8da"), PRIMARY(
@@ -46,12 +46,12 @@ public enum CSSClass {
     }
 
     public String getSpanHTML(String label) {
-	return HTMLHelper.getSpanHTML(className(), color(), backgroundColor(),
+	return HTMLUtils.getSpanHTML(className(), color(), backgroundColor(),
 		borderColor(), label);
     }
 
     public String getSpanHTML() {
-	return HTMLHelper.getSpanHTML(className(), color(), backgroundColor(),
+	return HTMLUtils.getSpanHTML(className(), color(), backgroundColor(),
 		borderColor(), label());
     }
 

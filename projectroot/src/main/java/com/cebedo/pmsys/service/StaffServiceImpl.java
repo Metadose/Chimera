@@ -28,7 +28,6 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
@@ -43,6 +42,7 @@ import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.wrapper.StaffWrapper;
 import com.google.gson.Gson;
 
@@ -673,7 +673,7 @@ public class StaffServiceImpl implements StaffService {
 	for (Attendance attendance : attendanceList) {
 
 	    Date myDate = attendance.getTimestamp();
-	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
 	    AttendanceStatus attnStat = AttendanceStatus.of(attendance
 		    .getStatusID());
 

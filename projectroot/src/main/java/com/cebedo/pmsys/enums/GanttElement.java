@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-import com.cebedo.pmsys.helper.HTMLHelper;
+import com.cebedo.pmsys.utils.HTMLUtils;
 
 public enum GanttElement {
     TASK_NEW("btn-info", "NEW TASK", "#fff", "#5bc0de", "#46b8da"), TASK_ONGOING(
@@ -47,12 +47,12 @@ public enum GanttElement {
     }
 
     public String getSpanHTML(String label) {
-	return HTMLHelper.getSpanHTML(className(), color(), backgroundColor(),
+	return HTMLUtils.getSpanHTML(className(), color(), backgroundColor(),
 		borderColor(), label);
     }
 
     public String getSpanHTML() {
-	return HTMLHelper.getSpanHTML(className(), color(), backgroundColor(),
+	return HTMLUtils.getSpanHTML(className(), color(), backgroundColor(),
 		borderColor(), label());
     }
 

@@ -733,47 +733,59 @@
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="box box-default">
-                                		<div class="box-header">
-          									<h3 class="box-title">Payroll</h3>
-          								</div>
+<!--                                 		<div class="box-header"> -->
+<!--           									<h3 class="box-title">Payroll</h3> -->
+<!--           								</div> -->
 		                                <div class="box-body">
-									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0"/>
+									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
 	                                  		<a href="${urlCreateTeam}">
 	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
 	                                  		</a>
-	                                  		
+	                                  		<br/><br/>
 		                                    <table id="teams-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
-		                                            	<th>#</th>
-		                                                <th>Name</th>
+		                                                <th>Start Date</th>
+		                                                <th>End Date</th>
+		                                            	<th>Approver</th>
+		                                                <th>Creator</th>
+		                                                <th>Status</th>
 		                                            </tr>
                                         		</thead>
 		                                        <tbody>
-			                                        <c:set var="teams" value="${project.assignedTeams}"/>
-				                                	<c:if test="${!empty teams}">
-				                                		<c:forEach items="${teams}" var="team">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/>
-			                                            			<a href="${urlViewTeam}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            			</a>
-								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/>
-								                                    <a href="${urlUnassignTeam}">
-	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-								                                    </a>
-	                   												</sec:authorize>
-																</center>
-															</td>
-			                                                <td>${team.id}</td>
-		                                                	<td>${team.name}</td>
-			                                            </tr>
-		                                            </c:forEach>
-	                                        		</c:if>
+			                                		<c:forEach items="${wrappedProjectPayrollList}" var="payrollRow">
+													<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+													<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+			                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
+			                                				var="payrollKey"></c:set>
+			                                		
+		                                            <tr>
+		                                            	<td>
+		                                            		<center>
+		                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+		                                            			<a href="${urlEditPayroll}">
+						                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+		                                            			</a>
+							                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+							                                    <a href="${urlDeletePayroll}">
+                   													<button class="btn btn-default btn-flat btn-sm">Delete</button>
+							                                    </a>
+															</center>
+														</td>
+														<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+		                                                <td>${payrollStartDate}</td>
+		                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+		                                                <td>${payrollEndDate}</td>
+		                                                <td>${payrollRow.approver.staff.getFullName()}</td>
+		                                                <td>${payrollRow.creator.staff.getFullName()}</td>
+		                                                <td>
+		                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
+		                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
+														<span class="label ${css}">${payrollStatus}</span>
+		                                                </td>
+		                                            </tr>
+	                                            	</c:forEach>
 			                                    </tbody>
 			                                </table>
 		                                </div><!-- /.box-body -->

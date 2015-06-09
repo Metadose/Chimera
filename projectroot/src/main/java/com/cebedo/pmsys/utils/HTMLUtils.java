@@ -1,6 +1,6 @@
-package com.cebedo.pmsys.helper;
+package com.cebedo.pmsys.utils;
 
-public class HTMLHelper {
+public class HTMLUtils {
 
     public static String getSpanHTML(String className, String styleColor,
 	    String styleBgColor, String styleBorderColor, String label) {

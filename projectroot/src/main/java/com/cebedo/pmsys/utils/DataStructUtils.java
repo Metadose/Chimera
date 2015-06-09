@@ -1,9 +1,9 @@
-package com.cebedo.pmsys.helper;
+package com.cebedo.pmsys.utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataStructHelper {
+public class DataStructUtils {
 
     public static List<Long> convertArrayToList(long[] longNums) {
 	List<Long> longNumbers = new ArrayList<Long>();

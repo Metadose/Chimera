@@ -8,6 +8,7 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 public interface ProjectService {
 
@@ -69,9 +70,13 @@ public interface ProjectService {
     public Map<String, Object> getProjectStructureMap(Project proj,
 	    Date startDate, Date endDate);
 
-    public List<Staff> getManagers(Project proj);
+    public List<Staff> getAllManagers(Project proj);
 
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll getPayrollJSON);
+
+    public List<ProjectPayrollWrapper> getAllPayrolls(Project proj);
+
+    public List<Staff> getAllManagersWithUsers(Project proj);
 
 }

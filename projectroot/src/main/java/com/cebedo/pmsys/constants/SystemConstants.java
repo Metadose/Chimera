@@ -52,6 +52,7 @@ public abstract class SystemConstants {
     public static final String MASS = "mass";
     public static final String RANGE = "range";
     public static final String MIN = "min";
+    public static final String CLEAR = "clear";
     public static final String FROM = "from";
     public static final String PROFILE = "profile";
     public static final String ALL = "all";

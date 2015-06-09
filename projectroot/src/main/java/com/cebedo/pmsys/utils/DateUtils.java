@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.helper;
+package com.cebedo.pmsys.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class DateHelper {
+public class DateUtils {
 
     /**
      * Reference:

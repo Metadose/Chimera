@@ -27,16 +27,16 @@ import com.cebedo.pmsys.bean.TreeGridRowBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
+import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.DataStructHelper;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
@@ -45,12 +45,17 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Reminder;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.NotificationZSetRepo;
+import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.utils.DataStructUtils;
+import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 import com.google.gson.Gson;
 
 @Service
@@ -66,6 +71,17 @@ public class ProjectServiceImpl implements ProjectService {
     private CompanyDAO companyDAO;
     private NotificationZSetRepo notificationZSetRepo;
     private PayrollService payrollService;
+    private ProjectPayrollValueRepo projectPayrollValueRepo;
+    private SystemUserDAO systemUserDAO;
+
+    public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
+	this.systemUserDAO = systemUserDAO;
+    }
+
+    public void setProjectPayrollValueRepo(
+	    ProjectPayrollValueRepo projectPayrollValueRepo) {
+	this.projectPayrollValueRepo = projectPayrollValueRepo;
+    }
 
     public void setPayrollService(PayrollService s) {
 	this.payrollService = s;
@@ -531,8 +547,6 @@ public class ProjectServiceImpl implements ProjectService {
 		motherPKey, treeGrid);
 
 	// Deliveries.
-	// TODO Finished this function but not tested yet.
-	// Might need to change something in JSP, not sure.
 	treeGrid = getDeliveryTreeGrid(payrollMap, randomno, summaryGroup, df,
 		motherPKey, treeGrid);
 
@@ -822,7 +836,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
 	    Date max, ProjectPayroll projectPayroll) {
 	Map<String, Object> payrollMaps = new HashMap<String, Object>();
-	List<Long> staffIDsToCompute = DataStructHelper
+	List<Long> staffIDsToCompute = DataStructUtils
 		.convertArrayToList(projectPayroll.getStaffIDs());
 
 	// Payroll maps.
@@ -1059,7 +1073,7 @@ public class ProjectServiceImpl implements ProjectService {
 	for (Task task : proj.getAssignedTasks()) {
 	    // Get the start date.
 	    Date startDate = task.getDateStart();
-	    String start = DateHelper.formatDate(startDate, "yyyy-MM-dd");
+	    String start = DateUtils.formatDate(startDate, "yyyy-MM-dd");
 	    String name = task.getTitle();
 
 	    // Set values to bean.
@@ -1077,7 +1091,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
 		c.add(Calendar.DATE, duration);
-		end = DateHelper.formatDate(c.getTime(), "yyyy-MM-dd");
+		end = DateUtils.formatDate(c.getTime(), "yyyy-MM-dd");
 		event.setEnd(end);
 	    }
 
@@ -1087,7 +1101,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Process all reminders to be included in the calendar.
 	for (Reminder reminder : proj.getReminders()) {
 	    Date myDate = reminder.getDatetime();
-	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
 	    String name = reminder.getTitle();
 
 	    CalendarEventBean event = new CalendarEventBean();
@@ -1102,7 +1116,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Process all deliveries to be included in the calendar.
 	for (Delivery delivery : proj.getDeliveries()) {
 	    Date myDate = delivery.getDatetime();
-	    String start = DateHelper.formatDate(myDate, "yyyy-MM-dd");
+	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
 	    String name = delivery.getName();
 
 	    CalendarEventBean event = new CalendarEventBean();
@@ -1162,7 +1176,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Map<Team, Set<Staff>> teamStaffMap = new HashMap<Team, Set<Staff>>();
 	Map<Task, Set<Staff>> taskStaffMap = new HashMap<Task, Set<Staff>>();
 	Map<Delivery, Set<Staff>> deliveryStaffMap = new HashMap<Delivery, Set<Staff>>();
-	List<Date> datesAllowed = DateHelper.getDatesBetweenDates(startDate,
+	List<Date> datesAllowed = DateUtils.getDatesBetweenDates(startDate,
 		endDate);
 
 	for (Team team : proj.getAssignedTeams()) {
@@ -1197,9 +1211,22 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public List<Staff> getManagers(Project proj) {
+    public List<Staff> getAllManagers(Project proj) {
 	List<Staff> managers = new ArrayList<Staff>();
 	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    managers.add(managerAssignment.getManager());
+	}
+	return managers;
+    }
+
+    @Transactional
+    @Override
+    public List<Staff> getAllManagersWithUsers(Project proj) {
+	List<Staff> managers = new ArrayList<Staff>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    if (managerAssignment.getManager().getUser() == null) {
+		continue;
+	    }
 	    managers.add(managerAssignment.getManager());
 	}
 	return managers;
@@ -1212,6 +1239,37 @@ public class ProjectServiceImpl implements ProjectService {
 	Map<String, Object> payrollMap = getComputedPayrollMap(proj, startDate,
 		endDate, projectPayroll);
 	return constructPayrollJSON(payrollMap, proj);
+    }
+
+    @Transactional
+    @Override
+    public List<ProjectPayrollWrapper> getAllPayrolls(Project proj) {
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany()
+		.getId();
+	String pattern = ProjectPayroll.constructKey(companyID, proj.getId(),
+		null, null, null, null, null);
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo
+		.multiGet(keys);
+	List<ProjectPayrollWrapper> wrappedProjectPayrolls = new ArrayList<ProjectPayrollWrapper>();
+
+	for (ProjectPayroll payroll : projectPayrolls) {
+
+	    SystemUser approver = this.systemUserDAO.getByID(payroll
+		    .getApproverID());
+	    SystemUser creator = this.systemUserDAO.getByID(payroll
+		    .getCreatorID());
+	    Date startDate = payroll.getStartDate();
+	    Date endDate = payroll.getEndDate();
+	    PayrollStatus status = PayrollStatus.of(payroll.getStatusID());
+	    Company co = this.companyDAO.getByID(payroll.getCompanyID());
+
+	    ProjectPayrollWrapper wrappedPayroll = new ProjectPayrollWrapper(
+		    approver, creator, startDate, endDate, status, co, proj);
+	    wrappedProjectPayrolls.add(wrappedPayroll);
+	}
+
+	return wrappedProjectPayrolls;
     }
 
 }

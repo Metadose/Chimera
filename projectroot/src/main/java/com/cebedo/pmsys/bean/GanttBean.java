@@ -7,12 +7,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.TaskStatus;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.utils.DateUtils;
 
 public class GanttBean {
     private String id;
@@ -59,7 +59,7 @@ public class GanttBean {
 	setStatus(task.getStatus());
 	setText(task.getTitle());
 	setContent(task.getContent());
-	setStart_date(DateHelper.formatDate(task.getDateStart(), "dd-MM-yyyy"));
+	setStart_date(DateUtils.formatDate(task.getDateStart(), "dd-MM-yyyy"));
 	setOpen(true);
 	setDuration(task.getDuration());
 	setParent(parent.getId());
@@ -108,7 +108,7 @@ public class GanttBean {
 	setStatus(task.getStatus());
 	setText(task.getTitle());
 	setContent(task.getContent());
-	setStart_date(DateHelper.formatDate(task.getDateStart(), "dd-MM-yyyy"));
+	setStart_date(DateUtils.formatDate(task.getDateStart(), "dd-MM-yyyy"));
 	setOpen(true);
 	setDuration(task.getDuration());
 	setParent(parent);

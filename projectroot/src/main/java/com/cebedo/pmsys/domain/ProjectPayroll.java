@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.utils.RedisKeyPartUtils;
 
 public class ProjectPayroll implements IDomainObject {
 
@@ -31,9 +33,15 @@ public class ProjectPayroll implements IDomainObject {
     private boolean saved;
     private long[] staffIDs;
     private List<Long> staffList;
-    private String payrollJSON;
     private Map<String, Object> payrollMap;
     private Map<String, Object> extMap;
+
+    /**
+     * Project Structure snapshot.
+     */
+    private List<Staff> managers;
+    private Map<String, Object> projectStructure;
+    private String payrollJSON;
 
     public ProjectPayroll() {
 	;
@@ -51,6 +59,14 @@ public class ProjectPayroll implements IDomainObject {
 
     public void setApproverID(long approverID) {
 	this.approverID = approverID;
+    }
+
+    public List<Staff> getManagers() {
+	return managers;
+    }
+
+    public void setManagers(List<Staff> managers) {
+	this.managers = managers;
     }
 
     public long[] getStaffIDs() {
@@ -151,18 +167,33 @@ public class ProjectPayroll implements IDomainObject {
 	this.extMap = extMap;
     }
 
-    public static String constructKey(long companyID, long projectID,
-	    long approverID, long creatorID, int statusID, Date startDate,
+    public Map<String, Object> getProjectStructure() {
+	return projectStructure;
+    }
+
+    public void setProjectStructure(Map<String, Object> projectStructure) {
+	this.projectStructure = projectStructure;
+    }
+
+    public static String constructKey(long companyID, Long projectID,
+	    Long approverID, Long creatorID, Integer statusID, Date startDate,
 	    Date endDate) {
+
 	String companyPart = Company.OBJECT_NAME + ":" + companyID
 		+ ":payroll:";
-	String projectPart = Project.OBJECT_NAME + ":" + projectID + ":";
-	String approverPart = "approver:" + approverID + ":";
-	String creatorPart = "creator:" + creatorID + ":";
-	String statusPart = "status:" + statusID + ":";
+	String projectPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		Project.OBJECT_NAME, projectID);
+	String approverPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"approver", approverID);
+	String creatorPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"creator", creatorID);
+	String statusPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"status", statusID);
 
-	String startDateStr = DateHelper.formatDate(startDate, "yyyy.MM.dd");
-	String endDateStr = DateHelper.formatDate(endDate, "yyyy.MM.dd");
+	String startDateStr = startDate == null ? "*" : DateUtils.formatDate(
+		startDate, "yyyy.MM.dd");
+	String endDateStr = endDate == null ? "*" : DateUtils.formatDate(
+		endDate, "yyyy.MM.dd");
 	String startDatePart = "startdate:" + startDateStr + ":";
 	String endDatePart = "enddate:" + endDateStr;
 
@@ -185,9 +216,34 @@ public class ProjectPayroll implements IDomainObject {
 	String creatorPart = "creator:" + getCreatorID() + ":";
 	String statusPart = "status:" + getStatusID() + ":";
 
-	String startDateStr = DateHelper.formatDate(getStartDate(),
-		"yyyy.MM.dd");
-	String endDateStr = DateHelper.formatDate(getEndDate(), "yyyy.MM.dd");
+	String startDateStr = DateUtils
+		.formatDate(getStartDate(), "yyyy.MM.dd");
+	String endDateStr = DateUtils.formatDate(getEndDate(), "yyyy.MM.dd");
+	String startDatePart = "startdate:" + startDateStr + ":";
+	String endDatePart = "enddate:" + endDateStr;
+
+	String key = companyPart + projectPart + approverPart + creatorPart
+		+ statusPart + startDatePart + endDatePart;
+	return key;
+    }
+
+    public static String constructKeyWithStrings(Long companyID,
+	    long projectID, String approverID, String creatorID,
+	    String statusID, String startDate, String endDate) {
+
+	String companyPart = Company.OBJECT_NAME + ":" + companyID
+		+ ":payroll:";
+	String projectPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		Project.OBJECT_NAME, projectID);
+	String approverPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"approver", approverID);
+	String creatorPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"creator", creatorID);
+	String statusPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
+		"status", statusID);
+
+	String startDateStr = startDate == null ? "*" : startDate;
+	String endDateStr = endDate == null ? "*" : endDate;
 	String startDatePart = "startdate:" + startDateStr + ":";
 	String endDatePart = "enddate:" + endDateStr;
 

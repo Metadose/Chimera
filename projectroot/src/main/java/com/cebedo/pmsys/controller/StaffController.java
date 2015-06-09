@@ -31,7 +31,6 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.SecurityRole;
@@ -45,6 +44,7 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
 @SessionAttributes(value = { StaffController.ATTR_STAFF,
@@ -428,7 +428,7 @@ public class StaffController {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	String maxDateStr = DateHelper.formatDate(max, "yyyy-MM-dd");
+	String maxDateStr = DateUtils.formatDate(max, "yyyy-MM-dd");
 
 	// Add attributes to model.
 	setModelAttributes(model, staff, min, max, maxDateStr);
@@ -604,7 +604,7 @@ public class StaffController {
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE_STR,
-		maxDateStr == null ? DateHelper.formatDate(max, "yyyy-MM-dd")
+		maxDateStr == null ? DateUtils.formatDate(max, "yyyy-MM-dd")
 			: maxDateStr);
 	model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);

@@ -17,13 +17,13 @@ import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
+import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
 public class PayrollServiceImpl implements PayrollService {
@@ -245,7 +245,7 @@ public class PayrollServiceImpl implements PayrollService {
 	boolean includeWeekends = attendanceMass.isIncludeWeekends();
 	Date startDate = attendanceMass.getStartDate();
 	Date endDate = attendanceMass.getEndDate();
-	List<Date> dates = DateHelper.getDatesBetweenDates(startDate, endDate);
+	List<Date> dates = DateUtils.getDatesBetweenDates(startDate, endDate);
 	Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
 	for (Date date : dates) {
 	    Company co = staff.getCompany();
@@ -254,7 +254,7 @@ public class PayrollServiceImpl implements PayrollService {
 		    status.id(), date, wage);
 
 	    // Check if date is a weekend.
-	    int dayOfWeek = DateHelper.getDayOfWeek(date);
+	    int dayOfWeek = DateUtils.getDayOfWeek(date);
 	    boolean isWeekend = dayOfWeek == Calendar.SATURDAY
 		    || dayOfWeek == Calendar.SUNDAY;
 

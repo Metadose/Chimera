@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.Map;
 
 import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.helper.DateHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.utils.DateUtils;
 
 public class Attendance implements IDomainObject {
 
@@ -76,7 +76,7 @@ public class Attendance implements IDomainObject {
     }
 
     public String getFormattedDateString(String pattern) {
-	return DateHelper.formatDate(this.timestamp, pattern);
+	return DateUtils.formatDate(this.timestamp, pattern);
     }
 
     public void setTimestamp(Date timestamp) {
@@ -120,7 +120,7 @@ public class Attendance implements IDomainObject {
 	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
 
 	long staffID = staff.getId();
-	String date = DateHelper.formatDate(tstamp, "yyyy.MM.dd");
+	String date = DateUtils.formatDate(tstamp, "yyyy.MM.dd");
 	String key = companyPart + "staff:" + staffID
 		+ ":payroll:attendance:date:" + date + ":status:*";
 	return key;
@@ -142,7 +142,7 @@ public class Attendance implements IDomainObject {
 	    AttendanceStatus status) {
 
 	long staffID = staff.getId();
-	String date = DateHelper.formatDate(timestamp, "yyyy.MM.dd");
+	String date = DateUtils.formatDate(timestamp, "yyyy.MM.dd");
 
 	// Construct key.
 	Company co = staff.getCompany();
@@ -163,7 +163,7 @@ public class Attendance implements IDomainObject {
     public String getKey() {
 
 	Date myDate = getTimestamp();
-	String date = DateHelper.formatDate(myDate, "yyyy.MM.dd");
+	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
 
 	String companyPart = Company.OBJECT_NAME + ":" + this.companyID + ":";
 	String key = companyPart + "staff:" + this.staffID
