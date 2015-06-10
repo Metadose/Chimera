@@ -1067,6 +1067,7 @@ public class ProjectController {
 	// And assign to model.
 	String payrollJSON = this.projectService.getPayrollJSON(proj,
 		startDate, endDate, projectPayroll);
+	projectPayroll.setLastComputed(new Date(System.currentTimeMillis()));
 	projectPayroll.setPayrollJSON(payrollJSON);
 	this.projectPayrollValueRepo.set(projectPayroll);
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);

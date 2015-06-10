@@ -75,4 +75,8 @@ public enum CSSClass {
 	return this.borderColor;
     }
 
+    public String getSpanHTML(String spanBoxLabel, String label) {
+	return getSpanHTML(spanBoxLabel) + "&nbsp;" + label;
+    }
+
 }

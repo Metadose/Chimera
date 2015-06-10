@@ -42,6 +42,15 @@ public class ProjectPayroll implements IDomainObject {
     private List<Staff> managers;
     private Map<String, Object> projectStructure;
     private String payrollJSON;
+    private Date lastComputed;
+
+    public Date getLastComputed() {
+	return lastComputed;
+    }
+
+    public void setLastComputed(Date lastComputed) {
+	this.lastComputed = lastComputed;
+    }
 
     public ProjectPayroll() {
 	;

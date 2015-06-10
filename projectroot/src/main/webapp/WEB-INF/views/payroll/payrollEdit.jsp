@@ -356,6 +356,14 @@
                                             		<a href="${urlCompute}">
 														<button class="btn btn-default btn-flat btn-sm">Compute Payroll</button>
 													</a>
+													<c:choose>
+													<c:when test="${empty projectPayroll.lastComputed}">
+													Not yet computed
+													</c:when>
+													<c:when test="${!empty projectPayroll.lastComputed}">
+													Last Computed: ${projectPayroll.lastComputed}
+													</c:when>
+													</c:choose>
 													</c:if>
 													
                    								</div>
@@ -370,10 +378,10 @@
                    						<div class="col-xs-12">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Computation</h3>
+                   									<h3 class="box-title">Computation as of ${projectPayroll.lastComputed}</h3>
                    								</div>
-                   								<div class="box-body">
-                   									<table id="treegrid1" style="width: auto"></table>
+                   								<div class="box-body table-responsive">
+                   									<table id="treegrid1"></table>
                    								</div>
                 							</div>
                 						</div>
@@ -402,20 +410,30 @@
 		var flatDS = ${payrollJSON};
         $("#treegrid1").igTreeGrid({
             dataSource: flatDS,
+            width: "100%",
             primaryKey: "primaryKey",
             foreignKey: "foreignKey",
             columns: [
 				{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
 				{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
-                { headerText: "Name", width: "320px", key: "name", dataType: "string" },
-                { headerText: "Payroll", width: "150px", key: "value", dataType: "string" },
-                { headerText: "Overtime", width: "100px", key: "breakdownOvertime", dataType: "string" },
-                { headerText: "Present", width: "100px", key: "breakdownPresent", dataType: "string" },
-                { headerText: "Late", width: "100px", key: "breakdownLate", dataType: "string" },
-                { headerText: "Half-day", width: "100px", key: "breakdownHalfday", dataType: "string" },
-                { headerText: "Leave", width: "100px", key: "breakdownLeave", dataType: "string" },
-                { headerText: "Absent", width: "100px", key: "breakdownAbsent", dataType: "string" }
-            ]
+                { headerText: "Name", width: "34%", key: "name", dataType: "string" },
+                { headerText: "Payroll", width: "14%", key: "value", dataType: "string" },
+                { headerText: "Overtime", width: "10%", key: "breakdownOvertime", dataType: "string" },
+                { headerText: "Present", width: "10%", key: "breakdownPresent", dataType: "string" },
+                { headerText: "Late", width: "8%", key: "breakdownLate", dataType: "string" },
+                { headerText: "Half-day", width: "8%", key: "breakdownHalfday", dataType: "string" },
+                { headerText: "Leave", width: "8%", key: "breakdownLeave", dataType: "string" },
+                { headerText: "Absent", width: "8%", key: "breakdownAbsent", dataType: "string" }
+            ],
+            dataRendered: function (evt, ui) {
+                ui.owner.element.find("tr td:nth-child(2)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(3)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(4)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(5)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(6)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(7)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(8)").css("text-align", "right");
+            }
         });
 	});
 	</script>

@@ -1,7 +1,5 @@
 package com.cebedo.pmsys.service;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +57,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DataStructUtils;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 import com.google.gson.Gson;
 
@@ -519,28 +518,24 @@ public class ProjectServiceImpl implements ProjectService {
 	    Project proj) {
 
 	// Currency formatter.
+	NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
+
 	// Summary groups.
-	NumberFormat df = NumberFormat.getCurrencyInstance();
-	DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-	dfs.setCurrencySymbol("&#8369;");
-	dfs.setGroupingSeparator('.');
-	dfs.setMonetaryDecimalSeparator('.');
-	((DecimalFormat) df).setDecimalFormatSymbols(dfs);
 	Map<String, Double> summaryGroup = (Map<String, Double>) payrollMap
 		.get(ProjectController.ATTR_PAYROLL_SUMMARY_MAP);
 
 	// Summary details.
 	double overallTotal = summaryGroup
 		.get(ProjectController.ATTR_PAYROLL_SUMMARY_TOTAL_OVERALL);
-	String overallTotalStr = df.format(overallTotal);
+	String overallTotalStr = formatter.format(overallTotal);
 
 	// Add the mother bean.
 	Random randomno = new Random();
 	List<TreeGridRowBean> treeGrid = new ArrayList<TreeGridRowBean>();
 	long motherPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean motherBean = new TreeGridRowBean(motherPKey, -1,
-		CSSClass.SUCCESS.getSpanHTML("PROJECT") + "&nbsp;"
-			+ proj.getName(), overallTotalStr);
+		CSSClass.SUCCESS.getSpanHTML("PROJECT", proj.getName()),
+		overallTotalStr);
 	treeGrid.add(motherBean);
 
 	// All staff attendance breakdown.
@@ -548,20 +543,20 @@ public class ProjectServiceImpl implements ProjectService {
 		.get(ProjectController.ATTR_PAYROLL_MAP_ATTENDANCE_BREAKDOWN);
 
 	// Managers.
-	treeGrid = getManagerTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid, allStaffWageBreakdown);
+	treeGrid = getManagerTreeGrid(payrollMap, randomno, summaryGroup,
+		formatter, motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Teams.
-	treeGrid = getTeamTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid, allStaffWageBreakdown);
+	treeGrid = getTeamTreeGrid(payrollMap, randomno, summaryGroup,
+		formatter, motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Tasks.
-	treeGrid = getTaskTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid, allStaffWageBreakdown);
+	treeGrid = getTaskTreeGrid(payrollMap, randomno, summaryGroup,
+		formatter, motherPKey, treeGrid, allStaffWageBreakdown);
 
 	// Deliveries.
-	treeGrid = getDeliveryTreeGrid(payrollMap, randomno, summaryGroup, df,
-		motherPKey, treeGrid, allStaffWageBreakdown);
+	treeGrid = getDeliveryTreeGrid(payrollMap, randomno, summaryGroup,
+		formatter, motherPKey, treeGrid, allStaffWageBreakdown);
 
 	return new Gson().toJson(treeGrid, ArrayList.class);
     }
@@ -600,8 +595,9 @@ public class ProjectServiceImpl implements ProjectService {
 	// Add the mother key.
 	long headerPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerBean = new TreeGridRowBean(headerPKey,
-		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP")
-			+ "&nbsp;Deliveries", thisTotalStr);
+		motherPKey,
+		CSSClass.PRIMARY.getSpanHTML("GROUP", "Deliveries"),
+		thisTotalStr);
 	treeGrid.add(headerBean);
 
 	// Loop through teams.
@@ -619,36 +615,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add to bean.
 	    TreeGridRowBean thisBean = new TreeGridRowBean(thisPKey,
-		    headerPKey, CSSClass.INFO.getSpanHTML("DELIVERY")
-			    + "&nbsp;" + delivery.getName(), thisObjectTotalStr);
+		    headerPKey, CSSClass.INFO.getSpanHTML("DELIVERY",
+			    delivery.getName()), thisObjectTotalStr);
 	    treeGrid.add(thisBean);
 
-	    // Add all staff inside team.
-	    for (Staff staff : staffMap.keySet()) {
-
-		// Get details.
-		long rowPKey = Math.abs(randomno.nextLong());
-		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
-			+ "&nbsp;" + staff.getFullName();
-		String value = staffMap.get(staff);
-		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-		String rowValue = skip ? "<i>(" + value + ")</i>" : df
-			.format(Double.valueOf(value));
-
-		// Add to bean.
-		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
-			thisPKey, rowName, rowValue);
-
-		// Breakdown.
-		if (!skip) {
-		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
-			    .get(staff);
-		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
-			    rowBean);
-		}
-
-		treeGrid.add(rowBean);
-	    }
+	    // Staff list total and breakdown.
+	    treeGrid = getStaffListTotalAndBreakdown(treeGrid, staffMap,
+		    randomno, df, thisPKey, allStaffWageBreakdown);
 	}
 
 	return treeGrid;
@@ -686,9 +659,8 @@ public class ProjectServiceImpl implements ProjectService {
 	// Add header beans.
 	long headerManagerPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerManagerBean = new TreeGridRowBean(
-		headerManagerPKey, motherPKey,
-		CSSClass.PRIMARY.getSpanHTML("GROUP") + "&nbsp;Managers",
-		managersTotalStr);
+		headerManagerPKey, motherPKey, CSSClass.PRIMARY.getSpanHTML(
+			"GROUP", "Managers"), managersTotalStr);
 	treeGrid.add(headerManagerBean);
 
 	// Loop through managers.
@@ -697,12 +669,11 @@ public class ProjectServiceImpl implements ProjectService {
 	    // Get details.
 	    Staff manager = managerAssignment.getManager();
 	    long rowPKey = Math.abs(randomno.nextLong());
-	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF") + "&nbsp;"
-		    + manager.getFullName();
+	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF",
+		    manager.getFullName());
 	    String value = managerPayrollMap.get(managerAssignment);
 	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-	    String rowValue = skip ? "<i>(" + value + ")</i>" : df
-		    .format(Double.valueOf(value));
+	    String rowValue = getTreeGridRowValue(skip, value, df);
 
 	    // Add to bean.
 	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
@@ -772,11 +743,17 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private String getBreakdownText(Map<String, Double> countAndWage) {
-	Double count = countAndWage
+
+	// Get the count, wage and format.
+	double count = countAndWage
 		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
 	Double wage = countAndWage
 		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
-	String breakdownText = wage + " (" + count + ")";
+	NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
+
+	// Construct the text.
+	String countPart = "(" + (int) count + ")";
+	String breakdownText = countPart + " " + formatter.format(wage);
 	return breakdownText;
     }
 
@@ -814,8 +791,8 @@ public class ProjectServiceImpl implements ProjectService {
 	// Add the mother key.
 	long headerPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerBean = new TreeGridRowBean(headerPKey,
-		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP")
-			+ "&nbsp;Tasks", thisTotalStr);
+		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP", "Tasks"),
+		thisTotalStr);
 	treeGrid.add(headerBean);
 
 	// Loop through teams.
@@ -833,36 +810,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add to bean.
 	    TreeGridRowBean thisBean = new TreeGridRowBean(thisPKey,
-		    headerPKey, CSSClass.INFO.getSpanHTML("TASK") + "&nbsp;"
-			    + task.getTitle(), thisObjectTotalStr);
+		    headerPKey, CSSClass.INFO.getSpanHTML("TASK",
+			    task.getTitle()), thisObjectTotalStr);
 	    treeGrid.add(thisBean);
 
-	    // Add all staff inside team.
-	    for (Staff staff : staffMap.keySet()) {
-
-		// Get details.
-		long rowPKey = Math.abs(randomno.nextLong());
-		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
-			+ "&nbsp;" + staff.getFullName();
-		String value = staffMap.get(staff);
-		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-		String rowValue = skip ? "<i>(" + value + ")</i>" : df
-			.format(Double.valueOf(value));
-
-		// Add to bean.
-		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
-			thisPKey, rowName, rowValue);
-
-		// Breakdown.
-		if (!skip) {
-		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
-			    .get(staff);
-		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
-			    rowBean);
-		}
-
-		treeGrid.add(rowBean);
-	    }
+	    // Staff list total and breakdown.
+	    treeGrid = getStaffListTotalAndBreakdown(treeGrid, staffMap,
+		    randomno, df, thisPKey, allStaffWageBreakdown);
 	}
 
 	return treeGrid;
@@ -902,8 +856,8 @@ public class ProjectServiceImpl implements ProjectService {
 	// Add the mother key.
 	long headerTeamPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerTeamBean = new TreeGridRowBean(headerTeamPKey,
-		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP")
-			+ "&nbsp;Teams", teamsTotalStr);
+		motherPKey, CSSClass.PRIMARY.getSpanHTML("GROUP", "Teams"),
+		teamsTotalStr);
 	treeGrid.add(headerTeamBean);
 
 	// Loop through teams.
@@ -921,39 +875,77 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add to bean.
 	    TreeGridRowBean teamBean = new TreeGridRowBean(teamPKey,
-		    headerTeamPKey, CSSClass.INFO.getSpanHTML("TEAM")
-			    + "&nbsp;" + team.getName(), thisTeamTotalStr);
+		    headerTeamPKey, CSSClass.INFO.getSpanHTML("TEAM",
+			    team.getName()), thisTeamTotalStr);
 	    treeGrid.add(teamBean);
 
-	    // Add all staff inside team.
-	    for (Staff staff : staffMap.keySet()) {
-
-		// Get details.
-		long rowPKey = Math.abs(randomno.nextLong());
-		String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF")
-			+ "&nbsp;" + staff.getFullName();
-		String value = staffMap.get(staff);
-		boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-		String rowValue = skip ? "<i>(" + value + ")</i>" : df
-			.format(Double.valueOf(value));
-
-		// Add to bean.
-		TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey,
-			teamPKey, rowName, rowValue);
-
-		// Breakdown.
-		if (!skip) {
-		    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
-			    .get(staff);
-		    rowBean = setAttendanceBreakdown(staffWageBreakdown,
-			    rowBean);
-		}
-
-		treeGrid.add(rowBean);
-	    }
+	    // Staff list total and breakdown.
+	    treeGrid = getStaffListTotalAndBreakdown(treeGrid, staffMap,
+		    randomno, df, teamPKey, allStaffWageBreakdown);
 	}
 
 	return treeGrid;
+    }
+
+    /**
+     * Get list of total and breakdown of a given staff list.
+     * 
+     * @param treeGrid
+     * @param staffMap
+     * @param randomno
+     * @param df
+     * @param thisPKey
+     * @param allStaffWageBreakdown
+     * @return
+     */
+    private List<TreeGridRowBean> getStaffListTotalAndBreakdown(
+	    List<TreeGridRowBean> treeGrid,
+	    Map<Staff, String> staffMap,
+	    Random randomno,
+	    NumberFormat df,
+	    long thisPKey,
+	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
+
+	// Add all staff inside team.
+	for (Staff staff : staffMap.keySet()) {
+
+	    // Get details.
+	    long rowPKey = Math.abs(randomno.nextLong());
+	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF",
+		    staff.getFullName());
+	    String value = staffMap.get(staff);
+	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
+	    String rowValue = getTreeGridRowValue(skip, value, df);
+
+	    // Add to bean.
+	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, thisPKey,
+		    rowName, rowValue);
+
+	    // Breakdown.
+	    if (!skip) {
+		Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
+			.get(staff);
+		rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
+	    }
+
+	    treeGrid.add(rowBean);
+	}
+
+	return treeGrid;
+    }
+
+    /**
+     * Return value of tree grid.
+     * 
+     * @param skip
+     * @param value
+     * @param df
+     * @return
+     */
+    private String getTreeGridRowValue(boolean skip, String value,
+	    NumberFormat df) {
+	return skip ? "<i>(" + value + ")</i>" : df.format(Double
+		.valueOf(value));
     }
 
     /**
