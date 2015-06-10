@@ -996,6 +996,7 @@ public class ProjectController {
 	// project structure checkboxes, reset the payroll JSON.
 	if (toClear.equals("computation")) {
 	    projectPayroll.setPayrollJSON(null);
+	    projectPayroll.setLastComputed(null);
 	}
 
 	// Do rename first before setting.
@@ -1097,9 +1098,12 @@ public class ProjectController {
 	// Complete the transaction.
 	// Add flash attribute.
 	status.setComplete();
+	String payrollKey = createPayrollRedirectKey(projectPayroll);
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/"
-		+ projectPayroll.getProjectID();
+		+ projectPayroll.getProjectID() + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ RedisConstants.OBJECT_PAYROLL + "/" + payrollKey + "-end";
     }
 
     /**
@@ -1108,7 +1112,6 @@ public class ProjectController {
      * @param projectPayroll
      * @return
      */
-    @SuppressWarnings("unused")
     private String createPayrollRedirectKey(ProjectPayroll projectPayroll) {
 	// Redirect to:
 	// /project/edit/payroll/${payrollKey}-end
@@ -1128,16 +1131,20 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
+	    + Project.OBJECT_NAME + "}/" + SystemConstants.REQUEST_EDIT + "/"
 	    + RedisConstants.OBJECT_PAYROLL + "/{"
 	    + RedisConstants.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
-    public String editPayroll(
+    public String editPayroll(@PathVariable(Project.OBJECT_NAME) long projID,
 	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
 	    Model model, HttpSession session) {
 
 	// Common to both edit new and existing.
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	if (proj == null) {
+	    proj = this.projectService.getByIDWithAllCollections(projID);
+	}
 
 	// Set the form selectors.
 	// Managers and status.

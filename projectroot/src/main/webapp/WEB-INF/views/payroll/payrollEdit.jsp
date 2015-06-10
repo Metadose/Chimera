@@ -351,7 +351,7 @@
                                             		<button onclick="submitForm('checkboxesForm')" class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
 			                                        </c:if>
 			                                        
-				                                    <c:if test="${(!empty projectStructManagers || !empty projectStructTeams || !empty projectStructTasks || !empty projectStructDeliveries) && !empty projectPayroll.staffIDs}">
+				                                    <c:if test="${!empty projectPayroll.staffIDs && fn:length(projectPayroll.staffIDs) > 0}">
                                             		<c:url var="urlCompute" value="/project/compute/payroll" />
                                             		<a href="${urlCompute}">
 														<button class="btn btn-default btn-flat btn-sm">Compute Payroll</button>

@@ -737,7 +737,7 @@
 <!--           									<h3 class="box-title">Payroll</h3> -->
 <!--           								</div> -->
 		                                <div class="box-body">
-									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
+									  	  	<c:url var="urlCreateTeam" value="/project/edit/${project.id}/edit/payroll/0-end"/>
 	                                  		<a href="${urlCreateTeam}">
 	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
 	                                  		</a>
@@ -763,7 +763,7 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-		                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+		                                            			<c:url var="urlEditPayroll" value="/project/edit/${project.id}/edit/payroll/${payrollKey}-end"/>
 		                                            			<a href="${urlEditPayroll}">
 						                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
 		                                            			</a>
