@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
@@ -78,5 +80,27 @@ public interface ProjectService {
     public List<ProjectPayrollWrapper> getAllPayrolls(Project proj);
 
     public List<Staff> getAllManagersWithUsers(Project proj);
+
+    /**
+     * Create or update a payroll.
+     * 
+     * @param session
+     * @param proj
+     * @param projectPayroll
+     * @return
+     */
+    public String createPayroll(HttpSession session, Project proj,
+	    ProjectPayroll projectPayroll);
+
+    /**
+     * Update the payroll then clear the computation.
+     * 
+     * @param session
+     * @param projectPayroll
+     * @param toClear
+     * @return
+     */
+    public String createPayrollClearComputation(HttpSession session,
+	    ProjectPayroll projectPayroll, String toClear);
 
 }

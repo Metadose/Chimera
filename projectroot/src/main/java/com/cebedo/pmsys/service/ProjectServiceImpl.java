@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.bean.TreeGridRowBean;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -1477,4 +1480,116 @@ public class ProjectServiceImpl implements ProjectService {
 	return wrappedProjectPayrolls;
     }
 
+    /**
+     * Get date part of the alert box response.
+     * 
+     * @param projectPayroll
+     * @return
+     */
+    public static String getResponseDatePart(ProjectPayroll projectPayroll) {
+	// Date parts of the response.
+	String startStr = DateUtils.formatDate(projectPayroll.getStartDate(),
+		"yyyy/MM/dd");
+	String endStr = DateUtils.formatDate(projectPayroll.getEndDate(),
+		"yyyy/MM/dd");
+	String datePart = startStr + " to " + endStr;
+	return datePart;
+    }
+
+    @Transactional
+    @Override
+    public String createPayroll(HttpSession session, Project proj,
+	    ProjectPayroll projectPayroll) {
+
+	// Take a snapshot of the project structure
+	// during the creation of the payroll.
+	Map<String, Object> projectStruct = new HashMap<String, Object>();
+	boolean isUpdating = projectPayroll.isSaved();
+
+	// Get all managers in this project.
+	// Preserve list of managers during this time.
+	// FIXME What if manager/approver is deleted? Payroll is orphaned.
+	List<Staff> managers = getAllManagersWithUsers(proj);
+	projectPayroll.setManagers(managers);
+
+	// Preserve project structure.
+	projectStruct = getProjectStructureMap(proj,
+		projectPayroll.getStartDate(), projectPayroll.getEndDate());
+	projectPayroll.setProjectStructure(projectStruct);
+	projectPayroll.setSaved(true);
+
+	// Date parts of the response.
+	String response = "";
+	String datePart = getResponseDatePart(projectPayroll);
+
+	// If we are update, delete first the old entry.
+	// Because the date and time are used as key parts.
+	if (isUpdating) {
+	    preUpdateClear(session, projectPayroll);
+	    response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
+		    RedisConstants.OBJECT_PAYROLL, datePart);
+	} else {
+	    response = AlertBoxFactory.SUCCESS.generateCreate(
+		    RedisConstants.OBJECT_PAYROLL, datePart);
+	}
+
+	// Set the new values.
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	return response;
+    }
+
+    @Transactional
+    @Override
+    public String createPayrollClearComputation(HttpSession session,
+	    ProjectPayroll projectPayroll, String toClear) {
+
+	// If the update button is clicked from the "right-side"
+	// project structure checkboxes, reset the payroll JSON.
+	if (toClear.equals("computation")) {
+	    projectPayroll.setPayrollJSON(null);
+	    projectPayroll.setLastComputed(null);
+	}
+
+	// Do rename first before setting.
+	preUpdateClear(session, projectPayroll);
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	// Generate response.
+	String datePart = getResponseDatePart(projectPayroll);
+	String response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
+		RedisConstants.OBJECT_PAYROLL, datePart);
+	return response;
+    }
+
+    /**
+     * Rename first the object before updating.<br>
+     * If this process is not executed, will create duplicate entry of this
+     * object.
+     * 
+     * @param session
+     * @param projectPayroll
+     */
+    private void preUpdateClear(HttpSession session,
+	    ProjectPayroll projectPayroll) {
+	// If the start and end dates are the same,
+	// don't do anything.
+	Date oldStart = (Date) session
+		.getAttribute(ProjectController.OLD_PAYROLL_START);
+	Date oldEnd = (Date) session
+		.getAttribute(ProjectController.OLD_PAYROLL_END);
+	Date newStart = projectPayroll.getStartDate();
+	Date newEnd = projectPayroll.getEndDate();
+
+	// Else, delete old payroll.
+	// Clear the computational results.
+	// Before updating.
+	if (!oldStart.equals(newStart) || !oldEnd.equals(newEnd)) {
+	    projectPayroll.setLastComputed(null);
+	    projectPayroll.setPayrollJSON(null);
+	    Set<String> clearOlds = this.projectPayrollValueRepo
+		    .keys(projectPayroll.constructPattern(oldStart, oldEnd));
+	    this.projectPayrollValueRepo.delete(clearOlds);
+	}
+    }
 }

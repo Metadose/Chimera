@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,9 +57,11 @@ import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectService;
+import com.cebedo.pmsys.service.ProjectServiceImpl;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
@@ -931,32 +932,11 @@ public class ProjectController {
 		    .getProjectID());
 	}
 
-	// Take a snapshot of the project structure
-	// during the creation of the payroll.
-	Map<String, Object> projectStruct = new HashMap<String, Object>();
-	boolean isUpdating = projectPayroll.isSaved();
-
-	// Get all managers in this project.
-	// Preserve list of managers during this time.
-	// FIXME What if manager/approver is deleted? Payroll is orphaned.
-	List<Staff> managers = this.projectService
-		.getAllManagersWithUsers(proj);
-	projectPayroll.setManagers(managers);
-
-	// Preserve project structure.
-	projectStruct = this.projectService.getProjectStructureMap(proj,
-		projectPayroll.getStartDate(), projectPayroll.getEndDate());
-	projectPayroll.setProjectStructure(projectStruct);
-	projectPayroll.setSaved(true);
-
-	// If we are update, delete first the old entry.
-	// Because the date and time are used as key parts.
-	if (isUpdating) {
-	    preUpdateClear(session, projectPayroll);
-	}
-
-	// Set the new values.
-	this.projectPayrollValueRepo.set(projectPayroll);
+	// Do service.
+	String response = this.projectService.createPayroll(session, proj,
+		projectPayroll);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -992,16 +972,11 @@ public class ProjectController {
 		    .getProjectID());
 	}
 
-	// If the update button is clicked from the "right-side"
-	// project structure checkboxes, reset the payroll JSON.
-	if (toClear.equals("computation")) {
-	    projectPayroll.setPayrollJSON(null);
-	    projectPayroll.setLastComputed(null);
-	}
-
-	// Do rename first before setting.
-	preUpdateClear(session, projectPayroll);
-	this.projectPayrollValueRepo.set(projectPayroll);
+	// Update the payroll then clear the computation.
+	String response = this.projectService.createPayrollClearComputation(
+		session, projectPayroll, toClear);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -1012,35 +987,6 @@ public class ProjectController {
 	// Redirect to:
 	// /project/edit/payroll/${payrollKey}-end
 	return payrollEndState(status, redirectAttrs, projectPayroll);
-    }
-
-    /**
-     * Rename first the object before updating.<br>
-     * If this process is not executed, will create duplicate entry of this
-     * object.
-     * 
-     * @param session
-     * @param projectPayroll
-     */
-    private void preUpdateClear(HttpSession session,
-	    ProjectPayroll projectPayroll) {
-	// If the start and end dates are the same,
-	// don't do anything.
-	Date oldStart = (Date) session.getAttribute(OLD_PAYROLL_START);
-	Date oldEnd = (Date) session.getAttribute(OLD_PAYROLL_END);
-	Date newStart = projectPayroll.getStartDate();
-	Date newEnd = projectPayroll.getEndDate();
-
-	// Else, delete old payroll.
-	// Clear the computational results.
-	// Before updating.
-	if (!oldStart.equals(newStart) || !oldEnd.equals(newEnd)) {
-	    projectPayroll.setLastComputed(null);
-	    projectPayroll.setPayrollJSON(null);
-	    Set<String> clearOlds = this.projectPayrollValueRepo
-		    .keys(projectPayroll.constructPattern(oldStart, oldEnd));
-	    this.projectPayrollValueRepo.delete(clearOlds);
-	}
     }
 
     /**
@@ -1073,6 +1019,14 @@ public class ProjectController {
 	projectPayroll.setPayrollJSON(payrollJSON);
 	this.projectPayrollValueRepo.set(projectPayroll);
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
+
+	// Construct response.
+	String datePart = ProjectServiceImpl
+		.getResponseDatePart(projectPayroll);
+	String response = AlertBoxFactory.SUCCESS.generateCompute(
+		RedisConstants.OBJECT_PAYROLL, datePart);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	// List of possible approvers.
 	// Get all managers in this project.

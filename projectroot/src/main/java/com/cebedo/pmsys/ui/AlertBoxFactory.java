@@ -45,6 +45,15 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Compute.
+     */
+    private static String TEMPLATE_SUCCESS_COMPUTE = "Successfully <b>computed</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_COMPUTE = "Failed to <b>compute</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
      * Delete.
      */
     private static String TEMPLATE_SUCCESS_DELETE = "Successfully <b>deleted</b> the "
@@ -254,6 +263,35 @@ public class AlertBoxFactory {
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ASSIGN.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateUpdatePayroll(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_UPDATE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_UPDATE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	    result += " Please compute to view results.";
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateCompute(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_COMPUTE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_COMPUTE.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
 	}
 	this.message = result;
