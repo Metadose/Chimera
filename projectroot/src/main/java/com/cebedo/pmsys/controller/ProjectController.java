@@ -105,20 +105,6 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
-    public static final String ATTR_PAYROLL_MAP_TEAM = "teamPayrollMap";
-    public static final String ATTR_PAYROLL_MAP_TASK = "taskPayrollMap";
-    public static final String ATTR_PAYROLL_MAP_DELIVERY = "deliveryPayrollMap";
-    public static final String ATTR_PAYROLL_MAP_MANAGER = "managerPayrollMap";
-    public static final String ATTR_PAYROLL_MAP_ATTENDANCE_BREAKDOWN = "allStaffAttendanceBreakdown";
-    public static final String ATTR_PAYROLL_GROUP_TEAM = "payrollGroupTeam";
-    public static final String ATTR_PAYROLL_GROUP_TASK = "payrollGroupTask";
-    public static final String ATTR_PAYROLL_GROUP_DELIVERY = "payrollGroupDelivery";
-    public static final String ATTR_PAYROLL_SUMMARY_MAP = "payrollSummaryMap";
-    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_OVERALL = "payrollSummaryTotalOverall";
-    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_TEAM = "payrollSummaryTotalTeam";
-    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_MANAGER = "payrollSummaryTotalManager";
-    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_TASK = "payrollSummaryTotalTask";
-    public static final String ATTR_PAYROLL_SUMMARY_TOTAL_DELIVERY = "payrollSummaryTotalDelivery";
 
     public static final String ATTR_MAP_ID_TO_MILESTONE = "idToMilestoneMap";
 

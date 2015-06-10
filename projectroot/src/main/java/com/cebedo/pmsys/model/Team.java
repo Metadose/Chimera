@@ -14,6 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.cebedo.pmsys.enums.PayrollType;
 
 @Entity
 @Table(name = Team.TABLE_NAME)
@@ -35,6 +38,21 @@ public class Team implements Serializable {
     private Set<Staff> members;
     private Company company;
     private Set<Expense> expenses;
+    private int payrollType;
+
+    @Column(name = "payroll_type", nullable = false)
+    public int getPayrollType() {
+	return payrollType;
+    }
+
+    @Transient
+    public PayrollType getPayrollTypeEnum() {
+	return PayrollType.of(getPayrollType());
+    }
+
+    public void setPayrollType(int payrollType) {
+	this.payrollType = payrollType;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

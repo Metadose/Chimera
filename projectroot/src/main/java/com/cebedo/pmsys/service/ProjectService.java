@@ -64,9 +64,6 @@ public interface ProjectService {
 
     public void clearListCache();
 
-    public Map<String, Object> getComputedPayrollMap(Project proj, Date min,
-	    Date max, ProjectPayroll projectPayroll);
-
     public List<Staff> getAllStaff(Project proj);
 
     public Map<String, Object> getProjectStructureMap(Project proj,
