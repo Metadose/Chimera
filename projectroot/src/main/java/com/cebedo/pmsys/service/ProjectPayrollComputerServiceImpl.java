@@ -563,6 +563,19 @@ public class ProjectPayrollComputerServiceImpl implements
 	}
     }
 
+    private String getBreakdownCount(Map<String, Double> countAndWage) {
+	// Get the count, wage and format.
+	double count = countAndWage
+		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
+	return "(" + (int) count + ")";
+    }
+
+    private String getBreakdownWage(Map<String, Double> countAndWage) {
+	Double wage = countAndWage
+		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
+	return this.formatter.format(wage);
+    }
+
     /**
      * Get the staff's breakdown of attendance count and wage.
      * 
@@ -577,54 +590,40 @@ public class ProjectPayrollComputerServiceImpl implements
 	// OVERTIME.
 	Map<String, Double> overtimeCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.OVERTIME);
-	rowBean.setBreakdownOvertime(getBreakdownText(overtimeCountAndWage));
+	rowBean.setBreakdownOvertimeCount(getBreakdownCount(overtimeCountAndWage));
+	rowBean.setBreakdownOvertimeWage(getBreakdownWage(overtimeCountAndWage));
 
 	// ABSENT.
 	Map<String, Double> absentCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.ABSENT);
-	rowBean.setBreakdownAbsent(getBreakdownText(absentCountAndWage));
+	rowBean.setBreakdownAbsentCount(getBreakdownCount(absentCountAndWage));
+	rowBean.setBreakdownAbsentWage(getBreakdownWage(absentCountAndWage));
 
 	// HALFDAY.
 	Map<String, Double> halfdayCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.HALFDAY);
-	rowBean.setBreakdownHalfday(getBreakdownText(halfdayCountAndWage));
+	rowBean.setBreakdownHalfdayCount(getBreakdownCount(halfdayCountAndWage));
+	rowBean.setBreakdownHalfdayWage(getBreakdownWage(halfdayCountAndWage));
 
 	// LATE.
 	Map<String, Double> lateCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.LATE);
-	rowBean.setBreakdownLate(getBreakdownText(lateCountAndWage));
+	rowBean.setBreakdownLateCount(getBreakdownCount(lateCountAndWage));
+	rowBean.setBreakdownLateWage(getBreakdownWage(lateCountAndWage));
 
 	// LEAVE.
 	Map<String, Double> leaveCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.LEAVE);
-	rowBean.setBreakdownLeave(getBreakdownText(leaveCountAndWage));
+	rowBean.setBreakdownLeaveCount(getBreakdownCount(leaveCountAndWage));
+	rowBean.setBreakdownLeaveWage(getBreakdownWage(leaveCountAndWage));
 
 	// PRESENT.
 	Map<String, Double> presentCountAndWage = staffWageBreakdown
 		.get(AttendanceStatus.PRESENT);
-	rowBean.setBreakdownPresent(getBreakdownText(presentCountAndWage));
+	rowBean.setBreakdownPresentCount(getBreakdownCount(presentCountAndWage));
+	rowBean.setBreakdownPresentWage(getBreakdownWage(presentCountAndWage));
 
 	return rowBean;
-    }
-
-    /**
-     * Get the breakdown of an attendance status.
-     * 
-     * @param countAndWage
-     * @return
-     */
-    private String getBreakdownText(Map<String, Double> countAndWage) {
-
-	// Get the count, wage and format.
-	double count = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
-	Double wage = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
-
-	// Construct the text.
-	String countPart = "(" + (int) count + ")";
-	String breakdownText = countPart + " " + this.formatter.format(wage);
-	return breakdownText;
     }
 
     /**

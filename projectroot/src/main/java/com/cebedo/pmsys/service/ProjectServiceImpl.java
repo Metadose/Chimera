@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.service;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -25,18 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
-import com.cebedo.pmsys.bean.TreeGridRowBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
-import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
@@ -59,14 +53,12 @@ import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DateUtils;
-import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 import com.google.gson.Gson;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
     private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
     private AuthHelper authHelper = new AuthHelper();
     private LogHelper logHelper = new LogHelper();
@@ -75,19 +67,13 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
     private NotificationZSetRepo notificationZSetRepo;
-    private PayrollService payrollService;
     private ProjectPayrollValueRepo projectPayrollValueRepo;
     private SystemUserDAO systemUserDAO;
-    private StaffService staffService;
     private ProjectPayrollComputerService projectPayrollComputerService;
 
     public void setProjectPayrollComputerService(
 	    ProjectPayrollComputerService projectPayrollComputerService) {
 	this.projectPayrollComputerService = projectPayrollComputerService;
-    }
-
-    public void setStaffService(StaffService staffService) {
-	this.staffService = staffService;
     }
 
     public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
@@ -97,10 +83,6 @@ public class ProjectServiceImpl implements ProjectService {
     public void setProjectPayrollValueRepo(
 	    ProjectPayrollValueRepo projectPayrollValueRepo) {
 	this.projectPayrollValueRepo = projectPayrollValueRepo;
-    }
-
-    public void setPayrollService(PayrollService s) {
-	this.payrollService = s;
     }
 
     public void setNotificationZSetRepo(
@@ -512,157 +494,6 @@ public class ProjectServiceImpl implements ProjectService {
 		summaryMap);
 
 	return milestoneSummaryMap;
-    }
-
-    /**
-     * Get the staff's breakdown of attendance count and wage.
-     * 
-     * @param staffWageBreakdown
-     * @param rowBean
-     * @return
-     */
-    private TreeGridRowBean setAttendanceBreakdown(
-	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
-	    TreeGridRowBean rowBean) {
-
-	// OVERTIME.
-	Map<String, Double> overtimeCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.OVERTIME);
-	rowBean.setBreakdownOvertime(getBreakdownText(overtimeCountAndWage));
-
-	// ABSENT.
-	Map<String, Double> absentCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.ABSENT);
-	rowBean.setBreakdownAbsent(getBreakdownText(absentCountAndWage));
-
-	// HALFDAY.
-	Map<String, Double> halfdayCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.HALFDAY);
-	rowBean.setBreakdownHalfday(getBreakdownText(halfdayCountAndWage));
-
-	// LATE.
-	Map<String, Double> lateCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.LATE);
-	rowBean.setBreakdownLate(getBreakdownText(lateCountAndWage));
-
-	// LEAVE.
-	Map<String, Double> leaveCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.LEAVE);
-	rowBean.setBreakdownLeave(getBreakdownText(leaveCountAndWage));
-
-	// PRESENT.
-	Map<String, Double> presentCountAndWage = staffWageBreakdown
-		.get(AttendanceStatus.PRESENT);
-	rowBean.setBreakdownPresent(getBreakdownText(presentCountAndWage));
-
-	return rowBean;
-    }
-
-    /**
-     * Get the breakdown of an attendance status.
-     * 
-     * @param countAndWage
-     * @return
-     */
-    private String getBreakdownText(Map<String, Double> countAndWage) {
-
-	// Get the count, wage and format.
-	double count = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
-	Double wage = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
-	NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
-
-	// Construct the text.
-	String countPart = "(" + (int) count + ")";
-	String breakdownText = countPart + " " + formatter.format(wage);
-	return breakdownText;
-    }
-
-    /**
-     * Get list of total and breakdown of a given staff list.
-     * 
-     * @param treeGrid
-     * @param staffMap
-     * @param randomno
-     * @param df
-     * @param thisPKey
-     * @param allStaffWageBreakdown
-     * @return
-     */
-    private List<TreeGridRowBean> getStaffListTotalAndBreakdown(
-	    List<TreeGridRowBean> treeGrid,
-	    Map<Staff, String> staffMap,
-	    Random randomno,
-	    NumberFormat df,
-	    long thisPKey,
-	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> allStaffWageBreakdown) {
-
-	// Add all staff inside team.
-	for (Staff staff : staffMap.keySet()) {
-
-	    // Get details.
-	    long rowPKey = Math.abs(randomno.nextLong());
-	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF",
-		    staff.getFullName());
-	    String value = staffMap.get(staff);
-	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-	    String rowValue = getTreeGridRowValue(skip, value, df);
-
-	    // Add to bean.
-	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, thisPKey,
-		    rowName, rowValue);
-
-	    // Breakdown.
-	    if (!skip) {
-		Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = allStaffWageBreakdown
-			.get(staff);
-		rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
-	    }
-
-	    treeGrid.add(rowBean);
-	}
-
-	return treeGrid;
-    }
-
-    /**
-     * Return value of tree grid.
-     * 
-     * @param skip
-     * @param value
-     * @param df
-     * @return
-     */
-    private String getTreeGridRowValue(boolean skip, String value,
-	    NumberFormat df) {
-	return skip ? "<i>(" + value + ")</i>" : df.format(Double
-		.valueOf(value));
-    }
-
-    /**
-     * Get the breakdown of the total wage.
-     * 
-     * @param manager
-     * @param min
-     * @param max
-     * @return
-     */
-    private Map<AttendanceStatus, Map<String, Double>> getWageTotalBreakdown(
-	    Staff manager, Date min, Date max) {
-	// Attendance count map.
-	Set<Attendance> attendanceList = this.payrollService
-		.rangeStaffAttendance(manager, min, max);
-
-	// For each attendance status,
-	// there is a count. And equivalent wage.
-	// Map keys as:
-	// String statusCount = "statusCount";
-	// String equivalentWage = "equivalentWage"
-	// (Breakdown of this total wage);
-	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = this.staffService
-		.getAttendanceStatusCountMap(attendanceList);
-	return attendanceStatusCountMap;
     }
 
     /**

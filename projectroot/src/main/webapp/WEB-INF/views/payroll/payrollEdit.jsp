@@ -427,17 +427,38 @@
             width: "100%",
             primaryKey: "primaryKey",
             foreignKey: "foreignKey",
+            features:[
+                { name: "MultiColumnHeaders" }
+            ],
             columns: [
-				{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
-				{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
-                { headerText: "Name", width: "34%", key: "name", dataType: "string" },
-                { headerText: "Payroll", width: "14%", key: "value", dataType: "string" },
-                { headerText: "Overtime", width: "10%", key: "breakdownOvertime", dataType: "string" },
-                { headerText: "Present", width: "10%", key: "breakdownPresent", dataType: "string" },
-                { headerText: "Late", width: "8%", key: "breakdownLate", dataType: "string" },
-                { headerText: "Half-day", width: "8%", key: "breakdownHalfday", dataType: "string" },
-                { headerText: "Leave", width: "8%", key: "breakdownLeave", dataType: "string" },
-                { headerText: "Absent", width: "8%", key: "breakdownAbsent", dataType: "string" }
+               	{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
+               	{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
+               	{ headerText: "Name", width: "26%", key: "name", dataType: "string" },
+               	{ headerText: "Total", width: "8%", key: "value", dataType: "string" },
+               	{ headerText: "Overtime", key: "breakdownOvertime", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownOvertimeCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownOvertimeWage", dataType: "string" }
+               		]},
+               	{ headerText: "Present", key: "breakdownPresent", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownPresentCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownPresentWage", dataType: "string" }
+               		]},
+               	{ headerText: "Late", key: "breakdownLate", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownLateCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownLateWage", dataType: "string" }
+               		]},
+               	{ headerText: "Half-day", key: "breakdownHalfday", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownHalfdayCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownHalfdayWage", dataType: "string" }
+               		]},
+               	{ headerText: "Leave", key: "breakdownLeave", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownLeaveCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownLeaveWage", dataType: "string" }
+               		]},
+               	{ headerText: "Absent", key: "breakdownAbsent", group: [
+               			{ headerText: "Count", width: "4%", key: "breakdownAbsentCount", dataType: "string" },
+               			{ headerText: "Subtotal", width: "7%", key: "breakdownAbsentWage", dataType: "string" }
+               		]}
             ],
             dataRendered: function (evt, ui) {
                 ui.owner.element.find("tr td:nth-child(2)").css("text-align", "right");
@@ -447,6 +468,12 @@
                 ui.owner.element.find("tr td:nth-child(6)").css("text-align", "right");
                 ui.owner.element.find("tr td:nth-child(7)").css("text-align", "right");
                 ui.owner.element.find("tr td:nth-child(8)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(9)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(10)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(11)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(12)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(13)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(14)").css("text-align", "right");
             }
         });
 	});
