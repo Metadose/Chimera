@@ -1,3 +1,43 @@
 - humana ang manual add of teams to payroll, unsaon ang manual add ug staff?
 - if pwede ang manual add, pwede sad guro ang manual exclude?
 
+Team "payroll" type can either be task-based or project-based.
+
+??? Manually add set<Expenses> to Payroll
+
+Start implementing max lengths on input fields
+
+Remove Timeline in list page
+
+Team is subcontractor or not
+
+??? Project managers also have scope. "Task-based" or "project-based
+
+??? "Other staff", mga tawo nga project-based but not manager, and not task-based.
+
+Task predecessor, on or before task in project
+
+Choose either "predecerssor" or "start date"
+
+Add subtasks (set of tasks) under task. If has subtask, dont use start date
+
+Expenses can have sub expenses as (set of expenses)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
