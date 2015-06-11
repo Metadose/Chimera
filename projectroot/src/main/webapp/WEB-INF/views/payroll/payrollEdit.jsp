@@ -207,6 +207,7 @@
 					                                    		<tr>
 						                                            <th>Add</th>
 						                                            <th>Team</th>
+						                                            <th>Payroll Type</th>
 						                                            <th>Staff</th>
 						                                        </tr>
 					                                    	</thead>
@@ -214,6 +215,7 @@
 															<c:forEach items="${projectStructTeams}" var="teamStaffMap">
 																<c:set value="${teamStaffMap.key}" var="team"/>
 						                                		<c:set value="${teamStaffMap.value}" var="staffList"/>
+						                                		<c:if test="${!empty staffList}">
 						                                		<c:forEach items="${staffList}" var="teamMember">
 																<tr>
 																	<td align="center">
@@ -226,7 +228,13 @@
 																		</c:if>
 																	</td>
 																	<td>
+																		<c:url value="/team/edit/${team.id}" var="urlTeamLink"/>
+																		<a href="${urlTeamLink}" class="general-link">
 																		${team.name}
+																		</a>
+																	</td>
+																	<td>
+																		${team.getPayrollTypeEnum().label()}
 																	</td>
 																	<td>
 																		<c:url value="/staff/edit/${teamMember.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
@@ -236,6 +244,7 @@
 																	</td>
 																</tr>
 						                                		</c:forEach>
+						                                		</c:if>
 															</c:forEach>
 															</tbody>
 															</table><br/>
@@ -278,7 +287,10 @@
 																		</c:if>
 																	</td>
 																	<td>
+																		<c:url value="/task/edit/${task.id}" var="urlTaskLink"/>
+																		<a href="${urlTaskLink}" class="general-link">
 																		${task.title}
+																		</a>
 																	</td>
 																	<td>
 																		<c:url value="/staff/edit/${staff.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
@@ -358,9 +370,11 @@
 													</a>
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">
+													<br/>
 													Not yet computed
 													</c:when>
 													<c:when test="${!empty projectPayroll.lastComputed}">
+													<br/>
 													Last Computed: ${projectPayroll.lastComputed}
 													</c:when>
 													</c:choose>

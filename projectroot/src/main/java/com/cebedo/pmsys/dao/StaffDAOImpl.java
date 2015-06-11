@@ -12,13 +12,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -29,8 +28,6 @@ import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 @Repository
 public class StaffDAOImpl implements StaffDAO {
 
-    private static final Logger logger = LoggerFactory
-	    .getLogger(StaffDAOImpl.class);
     private DAOHelper daoHelper = new DAOHelper();
     private SessionFactory sessionFactory;
 
@@ -42,7 +39,6 @@ public class StaffDAOImpl implements StaffDAO {
     public void create(Staff staff) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(staff);
-	logger.info("[Create] Staff: " + staff);
     }
 
     @Override
@@ -64,16 +60,21 @@ public class StaffDAOImpl implements StaffDAO {
 	for (ManagerAssignment assignment : managerAssignment) {
 	    Project proj = assignment.getProject();
 	    Hibernate.initialize(proj);
-	    Hibernate.initialize(proj.getMilestones());
+	    for (Milestone milestone : proj.getMilestones()) {
+		Hibernate.initialize(milestone);
+	    }
 	    Hibernate.initialize(assignment.getManager());
 	}
 
 	Set<Task> taskList = staff.getTasks();
 	for (Task task : taskList) {
 	    Hibernate.initialize(task.getTeams());
-	    Hibernate.initialize(task.getProject());
 	    Hibernate.initialize(task.getStaff());
-	    logger.info("[List] Task: " + task);
+	    Hibernate.initialize(task.getMilestone());
+
+	    Project proj = task.getProject();
+	    Hibernate.initialize(proj);
+	    Hibernate.initialize(proj.getMilestones());
 	}
 	return staff;
     }
@@ -82,7 +83,6 @@ public class StaffDAOImpl implements StaffDAO {
     public void update(Staff staff) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.update(staff);
-	logger.info("[Update] Staff:" + staff);
     }
 
     @Override
@@ -92,7 +92,6 @@ public class StaffDAOImpl implements StaffDAO {
 	if (staff != null) {
 	    session.delete(staff);
 	}
-	logger.info("[Delete] Staff: " + staff);
     }
 
     @SuppressWarnings("unchecked")
@@ -148,7 +147,6 @@ public class StaffDAOImpl implements StaffDAO {
     public void assignProjectManager(ManagerAssignment assignment) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(assignment);
-	logger.info("[Create] Manager: " + assignment);
     }
 
     @Override

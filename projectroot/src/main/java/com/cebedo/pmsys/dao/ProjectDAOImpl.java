@@ -127,7 +127,12 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Set<Task> assignedTasks = project.getAssignedTasks();
 	Hibernate.initialize(assignedTasks);
 	for (Task task : assignedTasks) {
-	    Hibernate.initialize(task.getTeams());
+
+	    Set<Team> teams = task.getTeams();
+	    Hibernate.initialize(teams);
+	    for (Team team : teams) {
+		Hibernate.initialize(team.getMembers());
+	    }
 	    Hibernate.initialize(task.getStaff());
 	    Hibernate.initialize(task.getMilestone());
 	    Hibernate.initialize(task.getExpenses());

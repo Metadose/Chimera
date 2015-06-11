@@ -468,37 +468,37 @@
                    									<br/>
                    									<br/>
                    									<table id="milestones-table" class="table table-bordered table-striped">
-              										<thead>
-              											<tr>
-              											<th>&nbsp;</th>
-              											<th>Milestone</th>
-              											<th>Status</th>
-              											<th>New Task</th>
-              											<th>Ongoing Task</th>
-              											<th>Done Task</th>
-              											</tr>
-              										</thead>
-              										<tbody>
-														<tr>
-															<td>
-															<button class="btn btn-default btn-flat btn-sm">View</button>
-															<button class="btn btn-default btn-flat btn-sm">Delete</button>
-															</td>
-														<c:forEach items="${milestoneSummary}" var="milestoneMap">
-														<c:set value="${milestoneMap.key}" var="milestone"/>
-					                                	<c:set value="${milestoneMap.value}" var="msCount"/>
-															<td>${milestone.name}</td>
-															<td>
-															<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
-															<span class="label ${css}">${msCount.get("Status")}</span>
-															</td>
-															<td>${msCount.get("New")}</td>
-															<td>${msCount.get("Ongoing")}</td>
-															<td>${msCount.get("Done")}</td>
-														</c:forEach>
-														</tr>
-													</tbody>
-                   									</table>
+				                                    	<thead>
+				                                            <tr>
+	              											<th>&nbsp;</th>
+	              											<th>Milestone</th>
+	              											<th>Status</th>
+	              											<th>New Task</th>
+	              											<th>Ongoing Task</th>
+	              											<th>Done Task</th>
+	              											</tr>
+		                                        		</thead>
+					                                    <tbody>
+															<c:forEach items="${milestoneSummary}" var="milestoneMap">
+															<c:set value="${milestoneMap.key}" var="milestone"/>
+						                                	<c:set value="${milestoneMap.value}" var="msCount"/>
+															<tr>
+																<td>
+																<button class="btn btn-default btn-flat btn-sm">View</button>
+																<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																</td>
+																<td>${milestone.name}</td>
+																<td>
+																<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
+																<span class="label ${css}">${msCount.get("Status")}</span>
+																</td>
+																<td>${msCount.get("New")}</td>
+																<td>${msCount.get("Ongoing")}</td>
+																<td>${msCount.get("Done")}</td>
+															</tr>
+															</c:forEach>
+														</tbody>
+					                                </table>
                    									<br/>
 													<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
 													<b>Total Milestones:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
@@ -667,7 +667,7 @@
 								                                            			<a class="general-link" href="${contextPath}/team/edit/${taskTeam.id}">
 										                                            	${taskTeam.name}
 										                                            	</a>
-										                                            	<br/>
+										                                            	<br/><br/>
 								                                            			</c:forEach>
 								                                            		</c:when>
 								                                            		<c:when test="${empty task.teams}">
@@ -683,11 +683,11 @@
 								                                            			<a class="general-link" href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
 										                                            	${taskStaffName}
 										                                            	</a>
-										                                            	<br/>
+										                                            	<br/><br/>
 								                                            			</c:forEach>
 								                                            		</c:when>
 								                                            		<c:when test="${empty task.staff}">
-								                                            			No manager assigned.
+								                                            			No staff assigned.
 								                                            		</c:when>
 								                                            	</c:choose>					                                            
 								                                            </td>
@@ -742,7 +742,7 @@
 	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
 	                                  		</a>
 	                                  		<br/><br/>
-		                                    <table id="teams-table" class="table table-bordered table-striped">
+		                                    <table id="payroll-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
@@ -864,7 +864,8 @@
 		                                            	<th>&nbsp;</th>
 		                                                <th>Photo</th>
 		                                                <th>Full Name</th>
-		                                                <th>Position</th>
+		                                                <th>Company Position</th>
+		                                                <th>Project Position</th>
 		                                                <th>E-Mail</th>
 		                                                <th>Contact Number</th>
 		                                            </tr>
@@ -905,6 +906,7 @@
 			                                                </td>
 			                                                <td>${manager.prefix} ${manager.firstName} ${manager.middleName} ${manager.lastName} ${manager.suffix}</td>
 			                                                <td>${manager.companyPosition}</td>
+			                                                <td>${assignment.projectPosition}</td>
 			                                                <td>${manager.email}</td>
 			                                                <td>${manager.contactNumber}</td>
 			                                            </tr>
@@ -965,7 +967,7 @@
 		                                    <c:if test="${displayBreakTeam}">
 		                                    <br/>
 		                                    </c:if>
-		                                    <table id="teams-table" class="table table-bordered table-striped">
+		                                    <table id="expenses-table" class="table table-bordered table-striped">
 		                                    	<thead>
 		                                            <tr>
 		                                            	<th>&nbsp;</th>
@@ -1058,6 +1060,7 @@
 		                                            	<th>&nbsp;</th>
 		                                            	<th>#</th>
 		                                                <th>Name</th>
+		                                                <th>Payroll Type</th>
 		                                            </tr>
                                         		</thead>
 		                                        <tbody>
@@ -1081,6 +1084,7 @@
 															</td>
 			                                                <td>${team.id}</td>
 		                                                	<td>${team.name}</td>
+		                                                	<td>${team.getPayrollTypeEnum().label()}</td>
 			                                            </tr>
 		                                            </c:forEach>
 	                                        		</c:if>
@@ -1213,9 +1217,12 @@
 	    });
 		
 		$(document).ready(function() {
+			$("#payroll-table").dataTable();
+			$("#milestones-table").dataTable();
 			$("#example-1").dataTable();
 			$("#managers-table").dataTable();
 			$("#teams-table").dataTable();
+			$("#expenses-table").dataTable();
 			$("#tasks-table").dataTable();
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 // 			$("#project_status").val("${fn:escapeXml(project.status)}");

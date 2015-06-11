@@ -714,10 +714,14 @@ public class StaffServiceImpl implements StaffService {
 	ganttBeanList.add(myGanttBean);
 
 	// Get the gantt parent data.
+	List<Long> addedProjects = new ArrayList<Long>();
+	List<Long> addedMilestones = new ArrayList<Long>();
+
 	for (ManagerAssignment assigns : staff.getAssignedManagers()) {
 
 	    // Add all projects.
 	    Project proj = assigns.getProject();
+	    addedProjects.add(proj.getId());
 	    GanttBean projectBean = new GanttBean(proj, myGanttBean);
 	    ganttBeanList.add(projectBean);
 
@@ -725,18 +729,57 @@ public class StaffServiceImpl implements StaffService {
 	    for (Milestone milestone : proj.getMilestones()) {
 		GanttBean milestoneBean = new GanttBean(milestone, projectBean);
 		ganttBeanList.add(milestoneBean);
+		addedMilestones.add(milestone.getId());
 	    }
 	}
 
 	// Get the tasks (children) of each parent.
 	for (Task task : staff.getTasks()) {
+
 	    // Get the data for the gantt chart.
 	    // Get the parent of this task.
 	    String parentId = "";
 	    Project proj = task.getProject();
-	    if (task.getMilestone() != null) {
+
+	    // If this milestone has been added,
+	    // then simply pass the id.
+	    Milestone milestone = task.getMilestone();
+	    if (milestone != null) {
+
+		// Else, add this project.
+		// Then add all milestones.
+		if (!addedMilestones.contains(milestone.getId())) {
+
+		    Project project = milestone.getProject();
+		    GanttBean projectBean = new GanttBean(project, myGanttBean);
+		    long projID = project.getId();
+
+		    // If the project has not yet been added.
+		    if (!addedProjects.contains(projID)) {
+			addedProjects.add(projID);
+			ganttBeanList.add(projectBean);
+		    }
+
+		    // For each milestone in this project, add.
+		    for (Milestone projectMilestone : project.getMilestones()) {
+
+			// If has already been added,
+			// continue.
+			if (addedMilestones.contains(projectMilestone.getId())) {
+			    continue;
+			}
+			GanttBean milestoneBean = new GanttBean(
+				projectMilestone, projectBean);
+			ganttBeanList.add(milestoneBean);
+			addedMilestones.add(projectMilestone.getId());
+		    }
+
+		}
+
+		// Construct the id.
 		parentId = Milestone.OBJECT_NAME + "-"
 			+ task.getMilestone().getId();
+
 	    } else if (proj != null) {
 		parentId = Project.OBJECT_NAME + "-" + proj.getId();
 	    } else {
@@ -834,5 +877,28 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	return attendanceStatusSorted;
+    }
+
+    /**
+     * List all in company except given staff.
+     */
+    @Transactional
+    @Override
+    public List<Staff> listExcept(Long coID, Set<Staff> doNotInclude) {
+
+	// Get all staff from the company.
+	List<Staff> companyStaffList = this.staffDAO.list(coID);
+	List<StaffWrapper> wrappedCompanyStaffList = StaffWrapper
+		.wrap(companyStaffList);
+
+	// Staff to NOT include.
+	List<StaffWrapper> wrappedDoNotInclude = StaffWrapper
+		.wrapSet(doNotInclude);
+
+	// Company list (minus) do not include list = result list.
+	wrappedCompanyStaffList.removeAll(wrappedDoNotInclude);
+
+	// Return the result.
+	return StaffWrapper.unwrap(wrappedCompanyStaffList);
     }
 }

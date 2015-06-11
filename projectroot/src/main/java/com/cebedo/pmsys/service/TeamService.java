@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Team;
@@ -36,5 +37,23 @@ public interface TeamService {
     public List<Team> listWithTasks();
 
     public String getNameByID(long teamID);
+
+    /**
+     * List all the company teams except a list of teams.
+     * 
+     * @param coID
+     * @param teams
+     * @return
+     */
+    public List<Team> listExcept(Long coID, Set<Team> teams);
+
+    /**
+     * List all the company Project-based teams except a list of teams.
+     * 
+     * @param coID
+     * @param teams
+     * @return
+     */
+    public List<Team> listTaskBasedExcept(Long coID, Set<Team> teams);
 
 }

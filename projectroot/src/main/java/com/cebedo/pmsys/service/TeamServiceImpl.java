@@ -2,6 +2,7 @@ package com.cebedo.pmsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
@@ -416,9 +417,22 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public List<Team> listUnassignedInProject(Long companyID, Project project) {
 	if (this.authHelper.isActionAuthorized(project)) {
+
+	    // Get all teams from the company.
 	    List<Team> companyTeamList = this.teamDAO.list(companyID);
+
+	    // Filter all.
+	    // Only include project-based teams.
+	    List<Team> projectBasedTeams = new ArrayList<Team>();
+	    for (Team team : companyTeamList) {
+		if (team.isProjectBased()) {
+		    projectBasedTeams.add(team);
+		}
+	    }
+
+	    // Wrap and remove assigned.
 	    List<TeamWrapper> wrappedTeamList = TeamWrapper
-		    .wrap(companyTeamList);
+		    .wrap(projectBasedTeams);
 	    List<TeamWrapper> wrappedAssignedList = TeamWrapper.wrap(project
 		    .getAssignedTeams());
 	    wrappedTeamList.removeAll(wrappedAssignedList);
@@ -459,6 +473,52 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public String getNameByID(long teamID) {
 	return this.teamDAO.getNameByID(teamID);
+    }
+
+    @Override
+    @Transactional
+    public List<Team> listExcept(Long coID, Set<Team> doNotInclude) {
+
+	// Get all staff from the company.
+	List<Team> companyTeamList = this.teamDAO.list(coID);
+	List<TeamWrapper> wrappedCompanyTeamList = TeamWrapper
+		.wrap(companyTeamList);
+
+	// Staff to NOT include.
+	List<TeamWrapper> wrappedDoNotInclude = TeamWrapper.wrap(doNotInclude);
+
+	// Company list (minus) do not include list = result list.
+	wrappedCompanyTeamList.removeAll(wrappedDoNotInclude);
+
+	// Return the result.
+	return TeamWrapper.unwrap(wrappedCompanyTeamList);
+    }
+
+    @Override
+    @Transactional
+    public List<Team> listTaskBasedExcept(Long coID, Set<Team> doNotInclude) {
+	// Get all staff from the company.
+	// Include only the task-based teams.
+	List<Team> companyTeamList = this.teamDAO.list(coID);
+	List<Team> taskBasedTeams = new ArrayList<Team>();
+	for (Team team : companyTeamList) {
+	    if (team.isTaskBased()) {
+		taskBasedTeams.add(team);
+	    }
+	}
+
+	// Wrap the task-based teams.
+	List<TeamWrapper> wrappedCompanyTeamList = TeamWrapper
+		.wrap(taskBasedTeams);
+
+	// Staff to NOT include.
+	List<TeamWrapper> wrappedDoNotInclude = TeamWrapper.wrap(doNotInclude);
+
+	// Company list (minus) do not include list = result list.
+	wrappedCompanyTeamList.removeAll(wrappedDoNotInclude);
+
+	// Return the result.
+	return TeamWrapper.unwrap(wrappedCompanyTeamList);
     }
 
 }

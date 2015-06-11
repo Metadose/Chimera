@@ -64,6 +64,7 @@ public class ProjectPayrollComputerServiceImpl implements
     private Map<Team, Map<Staff, String>> teamToStaffToWageMap = new HashMap<Team, Map<Staff, String>>();
     private Map<Delivery, Map<Staff, String>> deliveryToStaffToWageMap = new HashMap<Delivery, Map<Staff, String>>();
     private Map<Task, Map<Staff, String>> taskToStaffToWageMap = new HashMap<Task, Map<Staff, String>>();
+    private Map<Task, Map<Team, Map<Staff, String>>> taskToTeamToStaffToWageMap = new HashMap<Task, Map<Team, Map<Staff, String>>>();
 
     // Total wage for group "managersTotal".
     private double overallTotalOfAll = 0;
@@ -77,6 +78,7 @@ public class ProjectPayrollComputerServiceImpl implements
     private Map<Team, Double> mapOfTeamToTotal = new HashMap<Team, Double>();
     private Map<Delivery, Double> mapOfDeliveryToTotal = new HashMap<Delivery, Double>();
     private Map<Task, Double> mapOfTaskToTotal = new HashMap<Task, Double>();
+    private Map<Task, Map<Team, Double>> mapOfTaskTeamToTotal = new HashMap<Task, Map<Team, Double>>();
 
     // "allStaffWageBreakdown" Attendance status with corresponding count map.
     // This is the breakdown of total for each staff.
@@ -124,6 +126,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	this.teamToStaffToWageMap = new HashMap<Team, Map<Staff, String>>();
 	this.deliveryToStaffToWageMap = new HashMap<Delivery, Map<Staff, String>>();
 	this.taskToStaffToWageMap = new HashMap<Task, Map<Staff, String>>();
+	this.taskToTeamToStaffToWageMap = new HashMap<Task, Map<Team, Map<Staff, String>>>();
 
 	this.overallTotalOfAll = 0;
 	this.overallTotalOfManagers = 0;
@@ -134,6 +137,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	this.mapOfTeamToTotal = new HashMap<Team, Double>();
 	this.mapOfDeliveryToTotal = new HashMap<Delivery, Double>();
 	this.mapOfTaskToTotal = new HashMap<Task, Double>();
+	this.mapOfTaskTeamToTotal = new HashMap<Task, Map<Team, Double>>();
 
 	this.staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
 	this.treeGrid = new ArrayList<TreeGridRowBean>();
@@ -143,9 +147,6 @@ public class ProjectPayrollComputerServiceImpl implements
      * Compute tasks.
      */
     private void computeTasks() {
-	// Wage for tasks.
-	// Loop through all the teams.
-	Map<Task, Map<Team, Map<Staff, String>>> taskTeamPayrollMap = new HashMap<Task, Map<Team, Map<Staff, String>>>();
 
 	// Loop through all tasks.
 	for (Task task : this.project.getAssignedTasks()) {
@@ -181,26 +182,77 @@ public class ProjectPayrollComputerServiceImpl implements
 		this.alreadyComputedMap.put(staffID, "Task " + task.getTitle());
 
 		// Get the breakdown of this total.
-		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
-			assignedStaff, this.startDate, this.endDate);
-		this.staffPayrollBreakdownMap.put(assignedStaff,
-			attendanceStatusCountMap);
+		putStaffBreakdown(assignedStaff);
 	    }
 
-	    // A task can also have a list of teams.
-	    // For every team, there is a list of staff. Teams -> Staff.
-	    Map<Team, Map<Staff, String>> teamStaffMap = new HashMap<Team, Map<Staff, String>>();
+	    this.taskToStaffToWageMap.put(task, staffPayrollMap);
 
-	    // Map of task -> team -> staff.
-	    taskTeamPayrollMap.put(task, teamStaffMap);
+	    // A task can also have teams.
+	    double thisTaskTeamTotal = 0;
+	    Map<Team, Map<Staff, String>> teamStaffWageMap = new HashMap<Team, Map<Staff, String>>();
+	    Map<Team, Double> taskTeamToTotal = new HashMap<Team, Double>();
+	    for (Team team : task.getTeams()) {
+
+		// Consider only task-based teams.
+		// Teams that are paid if there are tasks.
+		if (team.getPayrollTypeEnum() == PayrollType.TASK) {
+
+		    // Loop through each member of the team.
+		    double thisTeamTotal = 0;
+		    Map<Staff, String> staffWageMap = new HashMap<Staff, String>();
+		    for (Staff staff : team.getMembers()) {
+
+			// Skip if not in target.
+			long staffID = staff.getId();
+			if (!this.staffIDsToCompute.contains(staffID)) {
+			    continue;
+			}
+
+			// If a staff has already been computed before,
+			// don't compute again.
+			if (this.alreadyComputedMap.containsKey(staffID)) {
+			    staffWageMap.put(staff, IDENTIFIER_ALREADY_EXISTS
+				    + this.alreadyComputedMap.get(staffID));
+			    continue;
+			}
+
+			// Add to map
+			// and add to computed list.
+			double totalWageOfStaff = this.payrollService
+				.getTotalWageOfStaffInRange(staff,
+					this.startDate, this.endDate);
+			thisTeamTotal += totalWageOfStaff;
+			staffWageMap.put(staff,
+				String.valueOf(totalWageOfStaff));
+			this.alreadyComputedMap.put(staffID, "Task Team "
+				+ team.getName());
+
+			// Get the breakdown of this total.
+			putStaffBreakdown(staff);
+		    }
+
+		    thisTaskTeamTotal += thisTeamTotal;
+		    teamStaffWageMap.put(team, staffWageMap);
+
+		    // For every team, there is a total.
+		    taskTeamToTotal.put(team, thisTeamTotal);
+
+		} // End If we are a task-based.
+	    } // End loop of all teams.
+
+	    // Add the task team total to the overall task.
+	    thisTaskTotal += thisTaskTeamTotal;
+
+	    // For every team with total, assign it to task.
+	    this.mapOfTaskTeamToTotal.put(task, taskTeamToTotal);
 
 	    // Add to task list.
-	    overallTotalOfTasks += thisTaskTotal;
+	    this.overallTotalOfTasks += thisTaskTotal;
 
 	    // For every task, there is a corresponding total.
-	    mapOfTaskToTotal.put(task, thisTaskTotal);
+	    this.mapOfTaskToTotal.put(task, thisTaskTotal);
 
-	    taskToStaffToWageMap.put(task, staffPayrollMap);
+	    this.taskToTeamToStaffToWageMap.put(task, teamStaffWageMap);
 	}
     }
 
@@ -246,10 +298,7 @@ public class ProjectPayrollComputerServiceImpl implements
 			"Delivery " + delivery.getName());
 
 		// Get the breakdown of this total.
-		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
-			assignedStaff, this.startDate, this.endDate);
-		this.staffPayrollBreakdownMap.put(assignedStaff,
-			attendanceStatusCountMap);
+		putStaffBreakdown(assignedStaff);
 	    }
 
 	    // Add to team list.
@@ -305,10 +354,7 @@ public class ProjectPayrollComputerServiceImpl implements
 		this.alreadyComputedMap.put(memberID, "Team " + team.getName());
 
 		// Get the breakdown of this total.
-		Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
-			member, this.startDate, this.endDate);
-		this.staffPayrollBreakdownMap.put(member,
-			attendanceStatusCountMap);
+		putStaffBreakdown(member);
 	    }
 
 	    // Add to team list.
@@ -316,6 +362,17 @@ public class ProjectPayrollComputerServiceImpl implements
 	    this.mapOfTeamToTotal.put(team, thisTeamTotal);
 	    this.teamToStaffToWageMap.put(team, staffPayrollMap);
 	}
+    }
+
+    /**
+     * Put the staff's wage breakdown.
+     * 
+     * @param staff
+     */
+    private void putStaffBreakdown(Staff staff) {
+	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
+		staff, this.startDate, this.endDate);
+	this.staffPayrollBreakdownMap.put(staff, attendanceStatusCountMap);
     }
 
     /**
@@ -359,10 +416,7 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	    // Get the breakdown of this total.
 	    // Add the breakdown to the map.
-	    Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
-		    manager, this.startDate, this.endDate);
-	    this.staffPayrollBreakdownMap
-		    .put(manager, attendanceStatusCountMap);
+	    putStaffBreakdown(manager);
 	}
     }
 
@@ -465,8 +519,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	    this.treeGrid.add(thisBean);
 
 	    // Staff list total and breakdown.
-	    this.treeGrid = getStaffListTotalAndBreakdown(staffMap, randomno,
-		    thisPKey);
+	    setStaffListTotalAndBreakdown(staffMap, randomno, thisPKey);
 	}
     }
 
@@ -477,12 +530,12 @@ public class ProjectPayrollComputerServiceImpl implements
      * @param staffMap
      * @param randomno
      * @param this.formatter
-     * @param thisPKey
+     * @param motherPKey
      * @param allStaffWageBreakdown
      * @return
      */
-    private List<TreeGridRowBean> getStaffListTotalAndBreakdown(
-	    Map<Staff, String> staffMap, Random randomno, long thisPKey) {
+    private void setStaffListTotalAndBreakdown(Map<Staff, String> staffMap,
+	    Random randomno, long motherPKey) {
 
 	// Add all staff inside team.
 	for (Staff staff : staffMap.keySet()) {
@@ -496,7 +549,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	    String rowValue = getTreeGridRowValue(skip, value);
 
 	    // Add to bean.
-	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, thisPKey,
+	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, motherPKey,
 		    rowName, rowValue);
 
 	    // Breakdown.
@@ -508,8 +561,6 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	    this.treeGrid.add(rowBean);
 	}
-
-	return this.treeGrid;
     }
 
     /**
@@ -585,8 +636,9 @@ public class ProjectPayrollComputerServiceImpl implements
      * @return
      */
     private String getTreeGridRowValue(boolean skip, String value) {
-	return skip ? "<i>(" + value + ")</i>" : this.formatter.format(Double
-		.valueOf(value));
+	// return skip ? "<i>(" + value + ")</i>" : this.formatter.format(Double
+	// .valueOf(value));
+	return skip ? "" : this.formatter.format(Double.valueOf(value));
     }
 
     /**
@@ -631,8 +683,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	    this.treeGrid.add(teamBean);
 
 	    // Staff list total and breakdown.
-	    this.treeGrid = getStaffListTotalAndBreakdown(staffMap, randomno,
-		    teamPKey);
+	    setStaffListTotalAndBreakdown(staffMap, randomno, teamPKey);
 	}
     }
 
@@ -713,14 +764,25 @@ public class ProjectPayrollComputerServiceImpl implements
 	// Loop through teams.
 	for (Task task : this.taskToStaffToWageMap.keySet()) {
 
-	    // If staff list is empty, skip it.
-	    Map<Staff, String> staffMap = this.taskToStaffToWageMap.get(task);
-	    if (staffMap.keySet().isEmpty()) {
+	    // Loop through teams in this task.
+	    Map<Team, Map<Staff, String>> taskTeamStaffWageMap = this.taskToTeamToStaffToWageMap
+		    .get(task);
+	    Map<Team, Double> taskTeamToTotalWageMap = this.mapOfTaskTeamToTotal
+		    .get(task);
+	    Map<Staff, String> taskStaffMap = this.taskToStaffToWageMap
+		    .get(task);
+
+	    // Empty variables.
+	    boolean emptyTaskStaff = taskStaffMap.keySet().isEmpty();
+	    boolean emptyTaskTeamStaff = taskTeamStaffWageMap.keySet().size() == 0;
+
+	    // Continue if the task -> staff is not empty,
+	    // and the task -> team -> staff is not empty.
+	    if (emptyTaskStaff && emptyTaskTeamStaff) {
 		continue;
 	    }
 
-	    // Get details.
-	    // Add to bean.
+	    // This current task's key.
 	    long thisPKey = Math.abs(randomno.nextLong());
 	    double thisObjectTotal = this.mapOfTaskToTotal.get(task);
 	    String thisObjectTotalStr = this.formatter.format(thisObjectTotal);
@@ -729,9 +791,39 @@ public class ProjectPayrollComputerServiceImpl implements
 			    task.getTitle()), thisObjectTotalStr);
 	    this.treeGrid.add(thisBean);
 
+	    // Only include this if not empty.
+	    if (!emptyTaskTeamStaff) {
+		for (Team team : taskTeamStaffWageMap.keySet()) {
+
+		    // Get details.
+		    // Add to bean.
+		    long teamPKey = Math.abs(randomno.nextLong());
+		    double thisTeamTotal = taskTeamToTotalWageMap.get(team);
+		    String thisTeamTotalStr = this.formatter
+			    .format(thisTeamTotal);
+		    TreeGridRowBean teamBean = new TreeGridRowBean(teamPKey,
+			    thisPKey, CSSClass.INFO.getSpanHTML("TEAM",
+				    team.getName()), thisTeamTotalStr);
+		    this.treeGrid.add(teamBean);
+
+		    // Add the staff members inside this team.
+		    // Skip if the staff list if empty.
+		    Map<Staff, String> teamStaffMap = taskTeamStaffWageMap
+			    .get(team);
+		    if (teamStaffMap.keySet().isEmpty()) {
+			continue;
+		    }
+		    setStaffListTotalAndBreakdown(teamStaffMap, randomno,
+			    teamPKey);
+		}
+	    }
+
+	    // If staff list is empty, skip it.
 	    // Staff list total and breakdown.
-	    this.treeGrid = getStaffListTotalAndBreakdown(staffMap, randomno,
-		    thisPKey);
+	    if (!emptyTaskStaff) {
+		setStaffListTotalAndBreakdown(taskStaffMap, randomno, thisPKey);
+	    }
+
 	}
     }
 

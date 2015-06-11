@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -142,6 +143,17 @@ public class Project implements Serializable {
     @JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
     public Set<Team> getAssignedTeams() {
 	return this.assignedTeams;
+    }
+
+    @Transient
+    public Set<Team> getAssignedProjectBasedTeams() {
+	Set<Team> teams = new HashSet<Team>();
+	for (Team team : this.assignedTeams) {
+	    if (team.isProjectBased()) {
+		teams.add(team);
+	    }
+	}
+	return teams;
     }
 
     public void setAssignedTeams(Set<Team> teams) {

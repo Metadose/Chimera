@@ -9,12 +9,11 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -26,8 +25,6 @@ import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 @Repository
 public class TaskDAOImpl implements TaskDAO {
 
-    private static final Logger logger = LoggerFactory
-	    .getLogger(TaskDAOImpl.class);
     private SessionFactory sessionFactory;
     private DAOHelper daoHelper = new DAOHelper();
 
@@ -39,14 +36,12 @@ public class TaskDAOImpl implements TaskDAO {
     public void create(Task task) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(task);
-	logger.info("[Create] Task: " + task);
     }
 
     @Override
     public Task getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Task task = (Task) session.load(Task.class, new Long(id));
-	logger.info("[Get by ID] Task: " + task);
 	return task;
     }
 
@@ -55,11 +50,16 @@ public class TaskDAOImpl implements TaskDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 	Task task = (Task) session.load(Task.class, new Long(id));
 	Hibernate.initialize(task.getTeams());
-	Hibernate.initialize(task.getProject());
 	Hibernate.initialize(task.getStaff());
 	Hibernate.initialize(task.getFields());
 	Hibernate.initialize(task.getExpenses());
-	logger.info("[Get by ID] Task: " + task);
+
+	Project proj = task.getProject();
+	Hibernate.initialize(proj);
+	for (Milestone milestone : proj.getMilestones()) {
+	    Hibernate.initialize(milestone);
+	}
+
 	return task;
     }
 
@@ -76,7 +76,6 @@ public class TaskDAOImpl implements TaskDAO {
 	if (task != null) {
 	    session.delete(task);
 	}
-	logger.info("[Delete] Task: " + task);
     }
 
     @SuppressWarnings("unchecked")

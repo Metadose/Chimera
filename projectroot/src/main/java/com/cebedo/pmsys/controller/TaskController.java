@@ -48,6 +48,9 @@ import com.cebedo.pmsys.ui.AlertBoxFactory;
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 
+    public static final String ATTR_TEAM_LIST = "teamList";
+    public static final String ATTR_FIELD_LIST = "fieldList";
+    public static final String ATTR_STAFF_LIST = "staffList";
     public static final String ATTR_LIST = "taskList";
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_EXPENSE = Expense.OBJECT_NAME;
@@ -491,22 +494,13 @@ public class TaskController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.ACTION_EDIT + "/{"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
 	    + Task.OBJECT_NAME + "}/" + SystemConstants.FROM + "/{"
 	    + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.GET)
     public String editTaskFromOrigin(
 	    @PathVariable(Task.OBJECT_NAME) long taskID,
 	    @PathVariable(SystemConstants.ORIGIN) String origin,
 	    @PathVariable(SystemConstants.ORIGIN_ID) long originID, Model model) {
-
-	// TODO Faster performance by getting only name and id.
-	// Get list of teams for the selector.
-	List<Team> teamList = this.teamService.list();
-	List<Staff> staffList = this.staffService.list();
-	List<Field> fieldList = this.fieldService.list();
-	model.addAttribute(TeamController.JSP_LIST, teamList);
-	model.addAttribute(StaffController.JSP_LIST, staffList);
-	model.addAttribute(FieldController.JSP_LIST, fieldList);
 
 	// Set origin values.
 	model.addAttribute(SystemConstants.ORIGIN, origin);
@@ -525,11 +519,7 @@ public class TaskController {
 
 	// Else, get the object from DB
 	// then populate the fields in JSP.
-	model.addAttribute(ATTR_TASK,
-		this.taskService.getByIDWithAllCollections(taskID));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
-	return JSP_EDIT;
+	return endStateEditTask(model, taskID);
     }
 
     /**
@@ -750,21 +740,37 @@ public class TaskController {
 	    return JSP_EDIT;
 	}
 
+	return endStateEditTask(model, id);
+    }
+
+    /**
+     * End state if the user is editing a task.
+     * 
+     * @param model
+     * @param id
+     * @return
+     */
+    public String endStateEditTask(Model model, long id) {
 	// Else, get the object from DB
 	// then populate the fields in JSP.
 	Company co = this.authHelper.getAuth().getCompany();
 	Long coID = co == null ? null : co.getId();
 
-	// FIXME List unassigned teams/staff,
+	// Task object.
+	Task task = this.taskService.getByIDWithAllCollections(id);
+
+	// List unassigned teams/staff,
 	// don't list them all.
-	List<Team> teamList = this.teamService.list(coID);
-	List<Staff> staffList = this.staffService.list(coID);
-	model.addAttribute(TeamController.JSP_LIST, teamList);
-	model.addAttribute(StaffController.JSP_LIST, staffList);
+	List<Team> teamList = this.teamService.listTaskBasedExcept(coID,
+		task.getTeams());
+	List<Staff> staffList = this.staffService.listExcept(coID,
+		task.getStaff());
+	model.addAttribute(ATTR_TEAM_LIST, teamList);
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+
 	model.addAttribute(ATTR_STAFF_ASSIGNMENT, new StaffAssignmentBean());
 	model.addAttribute(ATTR_TEAM_ASSIGNMENT, new TeamAssignmentBean());
-	model.addAttribute(ATTR_TASK,
-		this.taskService.getByIDWithAllCollections(id));
+	model.addAttribute(ATTR_TASK, task);
 	model.addAttribute(SystemConstants.ATTR_ACTION,
 		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;

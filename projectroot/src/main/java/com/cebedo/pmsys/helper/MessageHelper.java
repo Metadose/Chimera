@@ -379,20 +379,56 @@ public class MessageHelper {
     public void sendAction(AuditAction action, Task task) {
 	List<Long> notificationRecipients = new ArrayList<Long>();
 
-	// Notify all staff involved in this task.
-	notificationRecipients = addNotificationRecipients(
-		notificationRecipients, task.getStaff());
+	// If the task is new,
+	// notify only the project managers.
+	if (task.getId() == 0) {
+	    notificationRecipients = addNotificationToManagers(
+		    notificationRecipients, task.getProject()
+			    .getManagerAssignments());
+	} else {
 
-	// Notify all staff in teams in this task.
-	for (Team team : task.getTeams()) {
+	    // Notify all staff involved in this task.
 	    notificationRecipients = addNotificationRecipients(
-		    notificationRecipients, team.getMembers());
+		    notificationRecipients, task.getStaff());
+
+	    // Notify all staff in teams in this task.
+	    for (Team team : task.getTeams()) {
+		notificationRecipients = addNotificationRecipients(
+			notificationRecipients, team.getMembers());
+	    }
 	}
 
 	// Construct the message then send.
 	Map<String, Object> messageMap = constructAction(Task.OBJECT_NAME,
 		action, task.getId(), task.getTitle(), notificationRecipients);
 	sendMessageMap(messageMap);
+    }
+
+    /**
+     * Add managers to the list of notifications.
+     * 
+     * @param notificationRecipients
+     * @param managerAssignments
+     * @return
+     */
+    private List<Long> addNotificationToManagers(
+	    List<Long> notificationRecipients,
+	    Set<ManagerAssignment> managerAssignments) {
+
+	for (ManagerAssignment manager : managerAssignments) {
+	    Staff staff = manager.getManager();
+	    SystemUser user = staff.getUser();
+
+	    // If there is no user or
+	    // the user is already added.
+	    if (user == null || notificationRecipients.contains(user.getId())) {
+		return notificationRecipients;
+	    }
+
+	    // Else, add the user id.
+	    notificationRecipients.add(user.getId());
+	}
+	return notificationRecipients;
     }
 
     /**

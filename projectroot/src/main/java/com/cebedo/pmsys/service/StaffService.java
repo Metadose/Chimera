@@ -123,4 +123,13 @@ public interface StaffService {
     public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
 	    Set<Attendance> attendanceList);
 
+    /**
+     * List all staff from company except.
+     * 
+     * @param coID
+     * @param staff
+     * @return
+     */
+    public List<Staff> listExcept(Long coID, Set<Staff> staff);
+
 }

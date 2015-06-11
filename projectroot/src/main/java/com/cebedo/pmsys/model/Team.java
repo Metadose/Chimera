@@ -120,4 +120,14 @@ public class Team implements Serializable {
 	this.expenses = expenses;
     }
 
+    @Transient
+    public boolean isTaskBased() {
+	return getPayrollTypeEnum() == PayrollType.TASK;
+    }
+
+    @Transient
+    public boolean isProjectBased() {
+	return getPayrollTypeEnum() == PayrollType.PROJECT;
+    }
+
 }

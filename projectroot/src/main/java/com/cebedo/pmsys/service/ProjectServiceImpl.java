@@ -814,8 +814,12 @@ public class ProjectServiceImpl implements ProjectService {
 	List<Date> datesAllowed = DateUtils.getDatesBetweenDates(startDate,
 		endDate);
 
+	// Add all teams in project.
+	// Add only project-based teams.
 	for (Team team : proj.getAssignedTeams()) {
-	    teamStaffMap.put(team, team.getMembers());
+	    if (team.isProjectBased()) {
+		teamStaffMap.put(team, team.getMembers());
+	    }
 	}
 
 	for (Task task : proj.getAssignedTasks()) {
@@ -823,6 +827,17 @@ public class ProjectServiceImpl implements ProjectService {
 	    Date taskStartDate = task.getDateStart();
 	    if (datesAllowed.contains(taskStartDate)) {
 		taskStaffMap.put(task, task.getStaff());
+
+		// Add teams if there is any.
+		// Add only task-based teams.
+		Set<Team> taskTeams = task.getTeams();
+		if (taskTeams.size() > 0) {
+		    for (Team team : taskTeams) {
+			if (team.isTaskBased()) {
+			    teamStaffMap.put(team, team.getMembers());
+			}
+		    }
+		}
 	    }
 	}
 
