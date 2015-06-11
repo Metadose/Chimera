@@ -100,4 +100,14 @@ public interface ProjectService {
     public String createPayrollClearComputation(HttpSession session,
 	    ProjectPayroll projectPayroll, String toClear);
 
+    /**
+     * Manually include a team to payroll checklist.
+     * 
+     * @param projectPayroll
+     * @param teamID
+     * @return
+     */
+    public String includeTeamToPayroll(ProjectPayroll projectPayroll,
+	    long teamID);
+
 }

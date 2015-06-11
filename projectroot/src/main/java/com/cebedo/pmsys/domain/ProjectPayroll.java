@@ -3,10 +3,13 @@ package com.cebedo.pmsys.domain;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.RedisKeyPartUtils;
 
@@ -279,5 +282,17 @@ public class ProjectPayroll implements IDomainObject {
 	String key = companyPart + projectPart + approverPart + creatorPart
 		+ statusPart + startDatePart + endDatePart;
 	return key;
+    }
+
+    /**
+     * Get all teams in this object.
+     * 
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Set<Team> getAllTeams() {
+	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) this.projectStructure
+		.get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
+	return teamStaffMap.keySet();
     }
 }

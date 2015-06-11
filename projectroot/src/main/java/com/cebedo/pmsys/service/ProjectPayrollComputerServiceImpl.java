@@ -52,6 +52,7 @@ public class ProjectPayrollComputerServiceImpl implements
     // In this "proj", we are computing "staffIDsToCompute",
     // in range "startDate", "endDate".
     private Project project;
+    private ProjectPayroll projectPayroll;
     private List<Long> staffIDsToCompute;
     private Date startDate, endDate;
 
@@ -314,7 +315,9 @@ public class ProjectPayrollComputerServiceImpl implements
     private void computeTeams() {
 
 	// Loop through all the teams.
-	for (Team team : this.project.getAssignedTeams()) {
+	Set<Team> teams = this.projectPayroll.getAllTeams() == null ? this.project
+		.getAssignedTeams() : this.projectPayroll.getAllTeams();
+	for (Team team : teams) {
 
 	    // If the team is project-based,
 	    // add him to computation. Compute now.
@@ -838,6 +841,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	this.startDate = min;
 	this.endDate = max;
 	this.project = proj;
+	this.projectPayroll = projectPayroll;
 	this.staffIDsToCompute = DataStructUtils
 		.convertArrayToList(projectPayroll.getStaffIDs());
 

@@ -36,6 +36,14 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Include.
+     */
+    private static String TEMPLATE_SUCCESS_INCLUDE = "Successfully <b>included</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_INCLUDE = "Failed to <b>included</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+    /**
      * Update.
      */
     private static String TEMPLATE_SUCCESS_UPDATE = "Successfully <b>updated</b> the "
@@ -264,6 +272,21 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ASSIGN.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateInclude(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_INCLUDE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_INCLUDE.replace(DELIMITER_OBJECT_TYPE,
+		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	    result += " Please re-compute to view results.";
 	}
 	this.message = result;
 	return generateHTML();

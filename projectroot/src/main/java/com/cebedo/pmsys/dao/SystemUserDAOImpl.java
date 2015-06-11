@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
 
 /**
@@ -41,6 +42,10 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 		Hibernate.initialize(dbUser.getStaff());
 		Hibernate.initialize(dbUser.getSecurityAccess());
 		Hibernate.initialize(dbUser.getSecurityRoles());
+
+		Company co = dbUser.getCompany();
+		Hibernate.initialize(co);
+		Hibernate.initialize(co.getAdmins());
 		return dbUser;
 	    }
 	}

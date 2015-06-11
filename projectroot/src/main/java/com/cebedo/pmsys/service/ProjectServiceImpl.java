@@ -28,6 +28,7 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
+import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -70,6 +71,15 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectPayrollValueRepo projectPayrollValueRepo;
     private SystemUserDAO systemUserDAO;
     private ProjectPayrollComputerService projectPayrollComputerService;
+    private TeamDAO teamDAO;
+
+    public TeamDAO getTeamDAO() {
+	return teamDAO;
+    }
+
+    public void setTeamDAO(TeamDAO teamDAO) {
+	this.teamDAO = teamDAO;
+    }
 
     public void setProjectPayrollComputerService(
 	    ProjectPayrollComputerService projectPayrollComputerService) {
@@ -894,5 +904,39 @@ public class ProjectServiceImpl implements ProjectService {
 		    .keys(projectPayroll.constructPattern(oldStart, oldEnd));
 	    this.projectPayrollValueRepo.delete(clearOlds);
 	}
+    }
+
+    /**
+     * Manually include a team to payroll checklist.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public String includeTeamToPayroll(ProjectPayroll projectPayroll,
+	    long teamID) {
+
+	// Get the struct.
+	// Get the team staff map.
+	Map<String, Object> projectStructure = projectPayroll
+		.getProjectStructure();
+	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStructure
+		.get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
+
+	// Construct the team.
+	// Put the team to map.
+	Team team = this.teamDAO.getWithAllCollectionsByID(teamID);
+	teamStaffMap.put(team, team.getMembers());
+
+	// Return the team staff map to struct.
+	// Return the struct to the payroll object.
+	projectStructure.put(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS,
+		teamStaffMap);
+	projectPayroll.setProjectStructure(projectStructure);
+
+	// Return the object to data store.
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	return AlertBoxFactory.SUCCESS.generateInclude(Team.OBJECT_NAME,
+		team.getName());
     }
 }

@@ -128,13 +128,72 @@
                    									</c:choose>
                    								</div>
                    							</div>
+                   							<c:if test="${projectPayroll.saved}">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Include to Payroll</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<p><i>This feature should only be used when adding Team/Staff members that were not automatically added to the checklist.</i></p>
+			                                        <table>
+                   									<form:form modelAttribute="payrollIncludeTeam"
+														id="detailsForm"
+														method="post"
+														action="${contextPath}/project/payroll/include/team">
+				                                        	<tr>
+				                                        	<td><label>Teams</label></td>
+				                                        	<td>&nbsp;</td>
+				                                        	<td style="width: 100%">
+				                                            <form:select class="form-control" path="teamID">
+				                                            	<c:forEach items="${manualTeamList}" var="team">
+				                                            	<form:option class="form-control" value="${team.id}" label="${team.name}"/>
+				                                            	</c:forEach>
+				                                            </form:select>
+				                                        	</td>
+				                                        	<td>&nbsp;</td>
+				                                        	<td>
+				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Include</button>
+				                                        	</td>
+				                                        	</tr>
+				                                    </form:form>
+				                                    <tr>
+			                                        	<td>&nbsp;</td>
+			                                        	<td>&nbsp;</td>
+			                                        	<td>&nbsp;</td>
+			                                        	<td>&nbsp;</td>
+			                                        	<td>&nbsp;</td>
+		                                        	</tr>
+				                                    <form:form modelAttribute="projectPayroll"
+														id="detailsForm"
+														method="post"
+														action="${contextPath}/project/create/payroll">
+				                                        	<tr>
+				                                        	<td><label>Staff</label></td>
+				                                        	<td>&nbsp;</td>
+				                                        	<td style="width: 100%">
+				                                            <form:select class="form-control" path="statusID">
+				                                            	<c:forEach items="${manualStaffList}" var="staff">
+				                                            	<form:option class="form-control" value="${staff.id}" label="${staff.getFullName()}"/>
+				                                            	</c:forEach>
+				                                            </form:select>
+				                                        	</td>
+				                                        	<td>&nbsp;</td>
+				                                        	<td>
+				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Include</button>
+				                                        	</td>
+				                                        	</tr>
+				                                    </form:form>
+			                                        </table>
+                   								</div>
+                   							</div>
+                   							</c:if>
                    						</div>
                    						<c:if test="${projectPayroll.saved}">
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Add to Payroll</h3>
-                   								</div>
+                   									<h3 class="box-title">Payroll Checklist</h3>
+                   								</div>  
                    								<div class="box-body">
                    									<label>All</label>&nbsp;
 													<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;

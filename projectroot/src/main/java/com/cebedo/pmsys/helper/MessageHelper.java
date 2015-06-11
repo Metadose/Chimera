@@ -549,8 +549,16 @@ public class MessageHelper {
      */
     public void sendAction(AuditAction action, Team team) {
 	List<Long> notificationRecipients = new ArrayList<Long>();
-	notificationRecipients = addNotificationRecipients(
-		notificationRecipients, team.getMembers());
+
+	// If new team, notify company admins only.
+	if (team.getId() == 0) {
+	    Company co = team.getCompany();
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, co.getAdmins());
+	} else {
+	    notificationRecipients = addNotificationRecipients(
+		    notificationRecipients, team.getMembers());
+	}
 
 	// Construct the message then send.
 	Map<String, Object> messageMap = constructAction(Team.OBJECT_NAME,
