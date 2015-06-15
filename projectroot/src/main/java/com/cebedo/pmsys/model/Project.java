@@ -141,6 +141,15 @@ public class Project implements Serializable {
 	return this.managerAssignments;
     }
 
+    @Transient
+    public Set<Staff> getManagers() {
+	Set<Staff> mans = new HashSet<Staff>();
+	for (ManagerAssignment manAss : this.managerAssignments) {
+	    mans.add(manAss.getManager());
+	}
+	return mans;
+    }
+
     public void setManagerAssignments(Set<ManagerAssignment> man) {
 	this.managerAssignments = man;
     }

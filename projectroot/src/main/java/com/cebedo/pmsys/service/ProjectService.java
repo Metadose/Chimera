@@ -12,7 +12,6 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 public interface ProjectService {
 
@@ -73,7 +72,7 @@ public interface ProjectService {
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll getPayrollJSON);
 
-    public List<ProjectPayrollWrapper> getAllPayrolls(Project proj);
+    public List<ProjectPayroll> getAllPayrolls(Project proj);
 
     public List<Staff> getAllManagersWithUsers(Project proj);
 
@@ -101,5 +100,7 @@ public interface ProjectService {
      */
     public String createPayrollClearComputation(HttpSession session,
 	    ProjectPayroll projectPayroll, String toClear);
+
+    public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList);
 
 }

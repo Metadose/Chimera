@@ -450,7 +450,6 @@
     </beans:bean>
     <beans:bean id="payrollService" class="com.cebedo.pmsys.service.PayrollServiceImpl">
         <beans:property name="attendanceZSetRepo" ref="attendanceZSetRepo"></beans:property>
-        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="projectService" ref="projectService"></beans:property>
     </beans:bean>
     

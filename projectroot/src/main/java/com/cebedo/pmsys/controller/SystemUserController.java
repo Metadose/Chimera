@@ -272,8 +272,6 @@ public class SystemUserController {
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemUsers(Model model) {
 	model.addAttribute(ATTR_LIST, this.systemUserService.list());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -413,8 +411,6 @@ public class SystemUserController {
 	// return with an empty object.
 	if (id == 0) {
 	    model.addAttribute(ATTR_SYSTEM_USER, new SystemUser());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
@@ -428,8 +424,6 @@ public class SystemUserController {
 	model.addAttribute(ATTR_SEC_ACCESS, new UserSecAccessBean(id));
 	model.addAttribute(ATTR_SEC_ROLE, new UserSecRoleBean(id));
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 }

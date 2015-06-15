@@ -16,7 +16,7 @@ public class NumberFormatUtils {
 	NumberFormat df = NumberFormat.getCurrencyInstance();
 	DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 	dfs.setCurrencySymbol("&#8369;");
-	dfs.setGroupingSeparator('.');
+	dfs.setGroupingSeparator(',');
 	dfs.setMonetaryDecimalSeparator('.');
 	((DecimalFormat) df).setDecimalFormatSymbols(dfs);
 	return df;

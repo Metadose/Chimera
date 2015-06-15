@@ -134,7 +134,7 @@
                    									<h3 class="box-title">Include to Payroll</h3>
                    								</div>
                    								<div class="box-body">
-                   									<p><i>This feature should only be used when adding Team/Staff members that were not automatically added to the checklist.</i></p>
+                   									<p><i>This feature can be used to manually add Staff members that are not part of this Project.</i></p>
 			                                        <table>
 				                                    <form:form modelAttribute="projectPayroll"
 														id="detailsForm"
@@ -353,6 +353,7 @@
                	{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
                	{ headerText: "Name", width: "26%", key: "name", dataType: "string" },
                	{ headerText: "Total", width: "8%", key: "value", dataType: "string" },
+               	{ headerText: "Salary (Daily)", width: "8%", key: "wage", dataType: "string" },
                	{ headerText: "Overtime", key: "breakdownOvertime", group: [
                			{ headerText: "Count", width: "4%", key: "breakdownOvertimeCount", dataType: "string" },
                			{ headerText: "Subtotal", width: "7%", key: "breakdownOvertimeWage", dataType: "string" }
@@ -392,6 +393,7 @@
                 ui.owner.element.find("tr td:nth-child(12)").css("text-align", "right");
                 ui.owner.element.find("tr td:nth-child(13)").css("text-align", "right");
                 ui.owner.element.find("tr td:nth-child(14)").css("text-align", "right");
+                ui.owner.element.find("tr td:nth-child(15)").css("text-align", "right");
             }
         });
 	});

@@ -26,6 +26,7 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
@@ -104,6 +105,11 @@ public class Task implements Serializable {
     @Temporal(TemporalType.DATE)
     public Date getDateStart() {
 	return dateStart;
+    }
+
+    @Transient
+    public Date getEndDate() {
+	return DateUtils.addDays(dateStart, duration);
     }
 
     public void setDateStart(Date dateStart) {

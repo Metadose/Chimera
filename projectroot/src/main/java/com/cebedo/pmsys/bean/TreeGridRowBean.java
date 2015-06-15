@@ -1,11 +1,19 @@
 package com.cebedo.pmsys.bean;
 
-public class TreeGridRowBean {
+import java.io.Serializable;
 
+import com.cebedo.pmsys.utils.NumberFormatUtils;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
+public class TreeGridRowBean implements Serializable {
+
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("TreeGridRowBean");
     private long primaryKey;
     private long foreignKey;
     private String name;
     private String value;
+    private String wage = NumberFormatUtils.getCurrencyFormatter().format(0.0);
 
     /**
      * Attendance breakdown.
@@ -199,6 +207,14 @@ public class TreeGridRowBean {
 	setValue(v);
     }
 
+    public TreeGridRowBean(long pKey, long fKey, String n, String v, String w) {
+	setPrimaryKey(pKey);
+	setForeignKey(fKey);
+	setName(n);
+	setValue(v);
+	setWage(w);
+    }
+
     public long getPrimaryKey() {
 	return primaryKey;
     }
@@ -229,6 +245,14 @@ public class TreeGridRowBean {
 
     public void setValue(String value) {
 	this.value = value;
+    }
+
+    public String getWage() {
+	return wage;
+    }
+
+    public void setWage(String wage) {
+	this.wage = wage;
     }
 
 }

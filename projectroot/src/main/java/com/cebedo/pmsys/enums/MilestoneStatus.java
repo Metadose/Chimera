@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum MilestoneStatus {
-    NEW(0, "New", "btn-cebedo-adrift-in-dreams-1"), ONGOING(1, "Ongoing",
-	    "btn-cebedo-adrift-in-dreams-2"), DONE(2, "Done",
+    NOT_YET_STARTED(0, "NOT YET STARTED", "btn-cebedo-adrift-in-dreams-1"), ONGOING(
+	    1, "ONGOING", "btn-cebedo-adrift-in-dreams-2"), DONE(2, "DONE",
 	    "btn-cebedo-adrift-in-dreams-3");
 
     String label;
@@ -31,8 +31,8 @@ public enum MilestoneStatus {
     }
 
     public static MilestoneStatus of(int idn) {
-	if (idn == NEW.id()) {
-	    return NEW;
+	if (idn == NOT_YET_STARTED.id()) {
+	    return NOT_YET_STARTED;
 
 	} else if (idn == ONGOING.id()) {
 	    return ONGOING;
@@ -41,7 +41,7 @@ public enum MilestoneStatus {
 	    return DONE;
 
 	}
-	return NEW;
+	return NOT_YET_STARTED;
     }
 
     public String css() {

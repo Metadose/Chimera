@@ -12,8 +12,6 @@ public abstract class SystemConstants {
     public static final String ORIGIN = "origin";
     public static final String ORIGIN_ID = "originID";
 
-    public static final String ATTR_ACTION = "action";
-
     public static final String REQUEST_ROOT = "/";
     public static final String REQUEST_SEND = "send";
     public static final String REQUEST_COMPOSE = "compose";

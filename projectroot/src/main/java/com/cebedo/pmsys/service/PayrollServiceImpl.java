@@ -30,10 +30,8 @@ public class PayrollServiceImpl implements PayrollService {
 
     private AttendanceValueRepo attendanceValueRepo;
     private ProjectService projectService;
-    private StaffDAO staffDAO;
 
     public void setStaffDAO(StaffDAO staffDAO) {
-	this.staffDAO = staffDAO;
     }
 
     public void setProjectService(ProjectService projectService) {

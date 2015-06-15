@@ -65,7 +65,6 @@ import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DateUtils;
-import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
@@ -84,7 +83,8 @@ public class ProjectController {
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
-    public static final String ATTR_WRAPPED_PROJECT_PAYROLL_LIST = "wrappedProjectPayrollList";
+    public static final String ATTR_PAYROLL_LIST = "payrollList";
+    public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
@@ -117,7 +117,7 @@ public class ProjectController {
     public static final String KEY_SUMMARY_TOTAL_TASKS = "Total Tasks";
     public static final String KEY_SUMMARY_TOTAL_MILESTONES = "Total Milestones";
     public static final String KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES = "Total Tasks Assigned to Milestones";
-    public static final String KEY_SUMMARY_TOTAL_MILESTONE_NEW = "Total Milestones (New)";
+    public static final String KEY_SUMMARY_TOTAL_MILESTONE_NEW = "Total Milestones (Not Yet Started)";
     public static final String KEY_SUMMARY_TOTAL_MILESTONE_ONGOING = "Total Milestones (Ongoing)";
     public static final String KEY_SUMMARY_TOTAL_MILESTONE_DONE = "Total Milestones (Done)";
 
@@ -191,8 +191,6 @@ public class ProjectController {
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
 	model.addAttribute(ATTR_LIST, this.projectService.listWithTasks());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -225,6 +223,32 @@ public class ProjectController {
     }
 
     /**
+     * Unassign all staff from a project.
+     * 
+     * @param projectID
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+	    + Staff.OBJECT_NAME + "-member" + "/" + SystemConstants.ALL, method = RequestMethod.GET)
+    public String unassignAllStaffMembers(HttpSession session,
+	    SessionStatus status, RedirectAttributes redirectAttrs) {
+
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// Get response.
+	String response = this.staffService.unassignAllStaffMembers(project);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+    }
+
+    /**
      * Unassign a staff from a project.
      * 
      * @param projectID
@@ -254,6 +278,67 @@ public class ProjectController {
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+    }
+
+    /**
+     * Unassign a staff from a project.
+     * 
+     * @param projectID
+     * @param staffID
+     * @param position
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
+	    + Staff.OBJECT_NAME + "-member" + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String unassignStaffMember(HttpSession session,
+	    SessionStatus status,
+	    @PathVariable(Staff.OBJECT_NAME) long staffID,
+	    RedirectAttributes redirectAttrs) {
+
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	long projectID = project.getId();
+
+	// Get response.
+	String response = this.staffService.unassignStaffMember(project,
+		staffID);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+    }
+
+    /**
+     * Assign a staff to a project.
+     * 
+     * @param projectID
+     * @param staffID
+     * @param staffAssignment
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
+	    + Staff.OBJECT_NAME + "/" + SystemConstants.MASS, method = RequestMethod.POST)
+    public String assignStaffMass(HttpSession session, SessionStatus status,
+	    @ModelAttribute(ATTR_PROJECT) Project project,
+	    RedirectAttributes redirectAttrs) {
+
+	// Get response.
+	// Do service, clear session.
+	// Then redirect.
+	String response = this.staffService.assignStaffMass(project);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
     }
 
     /**
@@ -1108,7 +1193,7 @@ public class ProjectController {
 	session.setAttribute(OLD_PAYROLL_END, projectPayroll.getEndDate());
 
 	// Set the project structure.
-	setModelAttributesOfPayroll(projectPayroll, model, companyID);
+	setModelAttributesOfPayroll(projectPayroll, proj, model, companyID);
 
 	return RedisConstants.JSP_PAYROLL_EDIT;
     }
@@ -1135,11 +1220,12 @@ public class ProjectController {
      * Set the project structure.
      * 
      * @param projectPayroll
+     * @param proj
      * @param model
      * @param proj
      */
     private void setModelAttributesOfPayroll(ProjectPayroll projectPayroll,
-	    Model model, Long companyID) {
+	    Project proj, Model model, Long companyID) {
 
 	// For the multi-select box.
 	// Get all staff in this project payroll.
@@ -1149,8 +1235,8 @@ public class ProjectController {
 	Set<Staff> staff = projectPayroll.getStaffList();
 
 	// Get collection of all staff here.
-	List<Staff> manualStaffList = this.staffService.listExcept(companyID,
-		projectPayroll.getAssignedStaffList());
+	List<Staff> manualStaffList = this.staffService
+		.listUnassignedStaffInProject(companyID, proj);
 
 	// Set attributes.
 	// Manually include team/staff beans.
@@ -1229,24 +1315,20 @@ public class ProjectController {
 	// Model for forms.
 	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
 
-	// TODO Comment below.
-	model.addAttribute(ATTR_PROJECT_FILE, new MultipartBean(id));
-	model.addAttribute(ATTR_PHOTO, new MultipartBean(id));
-
 	// If ID is zero, create new.
 	if (id == 0) {
 	    model.addAttribute(ATTR_PROJECT, new Project());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
 	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
-	List<ProjectPayrollWrapper> wrappedPayrolls = this.projectService
+	List<ProjectPayroll> payrollList = this.projectService
 		.getAllPayrolls(proj);
-
-	model.addAttribute(ATTR_WRAPPED_PROJECT_PAYROLL_LIST, wrappedPayrolls);
+	String payrollGrandTotal = this.projectService
+		.getPayrollGrandTotalAsString(payrollList);
+	model.addAttribute(ATTR_PAYROLL_LIST_TOTAL, payrollGrandTotal);
+	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
 
 	setModelAttributesOfProject(proj, model);
 	return JSP_EDIT;
@@ -1264,25 +1346,11 @@ public class ProjectController {
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
 		.getCompany().getId();
-	List<Field> fieldList = this.fieldService.list();
 	List<Staff> staffList = this.staffService.listExcept(companyID,
 		proj.getAssignedStaff());
 
-	// Get list of teams unassigned.
-	// If at least one is not assigned, add a bean for the form input field.
-	List<Team> teamList = this.teamService.listUnassignedInProject(
-		companyID, proj);
-	if (teamList.size() > 0) {
-	    Team team = teamList.get(0);
-	    long sampleID = team.getId();
-	    TeamAssignmentBean taBean = new TeamAssignmentBean(sampleID);
-	    model.addAttribute(ATTR_TEAM_ASSIGNMENT, taBean);
-	}
-
 	// Get lists for selectors.
 	// Actual object and beans.
-	model.addAttribute(FieldController.ATTR_LIST, fieldList);
-	model.addAttribute(TeamController.ATTR_LIST, teamList);
 	model.addAttribute(StaffController.ATTR_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
 	model.addAttribute(ATTR_PROJECT, proj);
@@ -1318,7 +1386,5 @@ public class ProjectController {
 	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE,
 		MilestoneStatus.getIdToStatusMap());
 
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
     }
 }

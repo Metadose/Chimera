@@ -4,6 +4,7 @@
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
+  font-size: 12px;
 }
 .ui-igprogressbar{position:relative;text-align:left}
 .ui-igprogressbar .ui-igprogressbar-range{position:absolute;z-index:1;font-size:.7em;display:block;border:0;background-position:0 0;background-color:lightgray}

@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.enums;
 
+
 public enum PayrollStatus {
     NEW(0, "New", "btn-info"), PENDING(1, "Pending", "btn-primary"), APPROVED(
 	    2, "Approved", "btn-warning"), RELEASED(3, "Released",

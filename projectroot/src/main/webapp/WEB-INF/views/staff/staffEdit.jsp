@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 <c:set var="staffWage" value="${staff.wage}"/>
 <fmt:formatDate pattern="yyyy/MM/dd" value="${minDate}" var="minDateText"/>
 <fmt:formatDate pattern="yyyy/MM/dd" value="${maxDate}" var="maxDateText"/>
@@ -47,7 +46,7 @@
 	            		New Staff
 	            	</c:when>
 	            	<c:when test="${staff.id > 0}">
-	            		${staffName}
+	            		${staff.getFullName()}
 	            	</c:when>
 	            	</c:choose>
 	                <small>${action} Staff</small>

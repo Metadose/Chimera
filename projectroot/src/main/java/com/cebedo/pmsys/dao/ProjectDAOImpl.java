@@ -6,8 +6,6 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +21,6 @@ import com.cebedo.pmsys.model.Team;
 @Repository
 public class ProjectDAOImpl implements ProjectDAO {
 
-    private static final Logger logger = LoggerFactory
-	    .getLogger(ProjectDAOImpl.class);
     private SessionFactory sessionFactory;
     private DAOHelper daoHelper = new DAOHelper();
 
@@ -35,7 +31,6 @@ public class ProjectDAOImpl implements ProjectDAO {
     public void create(Project project) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(project);
-	logger.info("[Create] Project: " + project);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,7 +46,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 	Project project = (Project) session.load(Project.class.getName(),
 		new Long(id));
-	logger.info("[Get by ID] Project: " + project);
 	return project;
     }
 
@@ -59,7 +53,6 @@ public class ProjectDAOImpl implements ProjectDAO {
     public void update(Project project) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.update(project);
-	logger.info("[Update] Project:" + project);
     }
 
     @Override
@@ -69,7 +62,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	if (project != null) {
 	    session.delete(project);
 	}
-	logger.info("[Delete] Project: " + project);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +73,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	    Hibernate.initialize(project.getManagerAssignments());
 	    Hibernate.initialize(project.getAssignedTeams());
 	    Hibernate.initialize(project.getAssignedTasks());
-	    logger.info("[List] Project: " + project);
 	}
 	return projectList;
     }
@@ -179,5 +170,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 	List<Project> list = this.daoHelper.getSelectQueryFilterCompany(
 		session, Project.class.getName(), companyID).list();
 	return list;
+    }
+
+    @Override
+    public void merge(Project project) {
+	Session session = this.sessionFactory.getCurrentSession();
+	session.merge(project);
     }
 }

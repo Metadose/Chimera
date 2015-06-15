@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import com.cebedo.pmsys.bean.PayrollComputationResult;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -44,7 +45,6 @@ public class ProjectPayroll implements IDomainObject {
      */
     private boolean saved;
     private long[] staffIDs;
-    private Map<String, Object> payrollMap;
     private Map<String, Object> extMap;
 
     /**
@@ -63,6 +63,16 @@ public class ProjectPayroll implements IDomainObject {
      */
     private String payrollJSON;
     private Date lastComputed;
+    private PayrollComputationResult payrollComputationResult;
+
+    public PayrollComputationResult getPayrollComputationResult() {
+	return payrollComputationResult;
+    }
+
+    public void setPayrollComputationResult(
+	    PayrollComputationResult payrollComputationResult) {
+	this.payrollComputationResult = payrollComputationResult;
+    }
 
     public Set<ManagerAssignment> getManagerAssignments() {
 	return managerAssignments;
@@ -193,14 +203,6 @@ public class ProjectPayroll implements IDomainObject {
 
     public void setPayrollJSON(String payrollJSON) {
 	this.payrollJSON = payrollJSON;
-    }
-
-    public Map<String, Object> getPayrollMap() {
-	return payrollMap;
-    }
-
-    public void setPayrollMap(Map<String, Object> payrollMap) {
-	this.payrollMap = payrollMap;
     }
 
     public Set<Staff> getStaffList() {

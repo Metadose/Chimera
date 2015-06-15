@@ -23,6 +23,25 @@ Add subtasks (set of tasks) under task. If has subtask, dont use start date
 
 Expenses can have sub expenses as (set of expenses)
 
+Disable notification module
+
+Payroll estimation inventory
+
+Fix css in payroll, smaller fonts
+
+Add end date in project -> timeline. 
+Re-render timeline if hiding the sidebar
+
+Pass serialized objects via JMS
+
+In project -> timeline, load only specific date range
+
+Hide/unhide task/reminder/delivery in project->calendar
+
+In managers of projects, list only those who have user accounts
+
+In payroll, display staff's wage per day.
+
 
 
 

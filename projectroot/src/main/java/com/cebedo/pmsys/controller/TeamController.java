@@ -76,8 +76,6 @@ public class TeamController {
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listTeams(Model model) {
 	model.addAttribute(ATTR_LIST, this.teamService.listWithTasks());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -185,15 +183,11 @@ public class TeamController {
 
 	if (id == 0) {
 	    model.addAttribute(ATTR_TEAM, new Team());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
 	model.addAttribute(ATTR_TEAM,
 		this.teamService.getWithAllCollectionsByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 
@@ -209,14 +203,10 @@ public class TeamController {
 	model.addAttribute(ATTR_PROJECT_LIST, projectList);
 	if (id == 0) {
 	    model.addAttribute(ATTR_TEAM, new Team());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	model.addAttribute(ATTR_TEAM,
 		this.teamService.getWithAllCollectionsByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 

@@ -119,8 +119,6 @@ public class StaffController {
     public String listStaff(Model model) {
 	model.addAttribute(ATTR_LIST,
 		this.staffService.listWithAllCollections());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -386,8 +384,6 @@ public class StaffController {
 	if (staffID == 0) {
 	    Staff stf = new Staff();
 	    model.addAttribute(ATTR_STAFF, stf);
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
@@ -443,8 +439,6 @@ public class StaffController {
      */
     public String editEmptyStaff(Model model) {
 	model.addAttribute(ATTR_STAFF, new Staff());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_CREATE);
 	return JSP_EDIT;
     }
 
@@ -627,9 +621,6 @@ public class StaffController {
 		this.staffService.getCalendarJSON(staff, attendanceList));
 	model.addAttribute(ATTR_GANTT_JSON,
 		this.staffService.getGanttJSON(staff));
-
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
     }
 
     /**

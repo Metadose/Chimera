@@ -189,8 +189,7 @@
 		                                    				<c:choose>
 		                                    					<c:when test="${!empty staffList}">
 		                                    						<c:forEach items="${staffList}" var="staff">
-		                                    							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
-		                                    							<option value="${staff.id}">${staffName}</option>
+		                                    							<option value="${staff.id}">${staff.getFullName()}</option>
 		                                    						</c:forEach>
 		                                    					</c:when>
 		                                    				</c:choose>
@@ -262,7 +261,7 @@
 													            </div>
 														        </div>
 			                                                </td>
-			                                                <td>${member.prefix} ${member.firstName} ${member.middleName} ${member.lastName} ${member.suffix}</td>
+			                                                <td>${member.getFullName()}</td>
 			                                                <td>${member.companyPosition}</td>
 			                                                <td>${member.email}</td>
 			                                                <td>${member.contactNumber}</td>

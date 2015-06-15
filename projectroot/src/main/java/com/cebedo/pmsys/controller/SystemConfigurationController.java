@@ -38,8 +38,6 @@ public class SystemConfigurationController {
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemConfigurations(Model model) {
 	model.addAttribute(ATTR_LIST, this.systemConfigurationService.list());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -75,14 +73,10 @@ public class SystemConfigurationController {
 	if (id == 0) {
 	    model.addAttribute(ATTR_SYSTEM_CONFIGURATION,
 		    new SystemConfiguration());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	model.addAttribute(ATTR_SYSTEM_CONFIGURATION,
 		this.systemConfigurationService.getByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 

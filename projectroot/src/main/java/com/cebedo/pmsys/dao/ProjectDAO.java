@@ -6,24 +6,26 @@ import com.cebedo.pmsys.model.Project;
 
 public interface ProjectDAO {
 
-	public void create(Project project);
+    public void create(Project project);
 
-	public Project getByID(long id);
+    public Project getByID(long id);
 
-	public void update(Project project);
+    public void update(Project project);
 
-	public void delete(long id);
+    public void delete(long id);
 
-	public List<Project> list(Long companyID);
+    public List<Project> list(Long companyID);
 
-	public List<Project> listWithAllCollections(Long companyID);
+    public List<Project> listWithAllCollections(Long companyID);
 
-	public Project getByIDWithAllCollections(long id);
+    public Project getByIDWithAllCollections(long id);
 
-	public List<Project> listWithTasks(Long id);
+    public List<Project> listWithTasks(Long id);
 
-	public String getNameByID(long projectID);
+    public String getNameByID(long projectID);
 
-	public List<Project> listProjectFromCache(Long companyID);
+    public List<Project> listProjectFromCache(Long companyID);
+
+    public void merge(Project project);
 
 }

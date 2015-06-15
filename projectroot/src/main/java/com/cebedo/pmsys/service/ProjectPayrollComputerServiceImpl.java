@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.PayrollComputationResult;
 import com.cebedo.pmsys.bean.TreeGridRowBean;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -68,6 +69,9 @@ public class ProjectPayrollComputerServiceImpl implements
 
     // Currency formatter.
     private NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
+
+    // Results.
+    private PayrollComputationResult payrollResult = new PayrollComputationResult();
 
     /**
      * Clear old data.
@@ -268,7 +272,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	String staffTotalStr = this.formatter.format(this.overallTotalOfStaff);
 	long headerPKey = Math.abs(randomno.nextLong());
 	TreeGridRowBean headerBean = new TreeGridRowBean(headerPKey, -1,
-		CSSClass.PRIMARY.getSpanHTML("TOTAL", "Staff"), staffTotalStr);
+		CSSClass.PRIMARY.getSpanHTML("TOTAL"), staffTotalStr, "&nbsp;");
 	this.treeGrid.add(headerBean);
 
 	// Loop through managers.
@@ -276,15 +280,19 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	    // Get details.
 	    long rowPKey = Math.abs(randomno.nextLong());
-	    String rowName = CSSClass.DEFAULT.getSpanHTML("STAFF",
-		    staff.getFullName());
+	    boolean isManager = staff.isManager(this.projectPayroll
+		    .getProject());
+	    String rowName = isManager ? CSSClass.DANGER.getSpanHTML("MANAGER",
+		    staff.getFullName()) : CSSClass.SUCCESS.getSpanHTML(
+		    "STAFF", staff.getFullName());
 	    String value = this.staffToWageMap.get(staff);
 	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
 	    String rowValue = getTreeGridRowValue(skip, value);
 
 	    // Add to bean.
 	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, headerPKey,
-		    rowName, rowValue);
+		    rowName, rowValue, NumberFormatUtils.getCurrencyFormatter()
+			    .format(staff.getWage()));
 
 	    // Breakdown.
 	    if (!skip) {
@@ -315,6 +323,23 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	// Compute.
 	compute();
+	results();
+    }
+
+    private void results() {
+	this.payrollResult.setStartDate(this.startDate);
+	this.payrollResult.setEndDate(this.endDate);
+	this.payrollResult.setOverallTotalOfStaff(this.overallTotalOfStaff);
+	this.payrollResult
+		.setStaffPayrollBreakdownMap(this.staffPayrollBreakdownMap);
+	this.payrollResult.setStaffToWageMap(this.staffToWageMap);
+	this.payrollResult.setTreeGrid(this.treeGrid);
+    }
+
+    @Transactional
+    @Override
+    public PayrollComputationResult getPayrollResult() {
+	return payrollResult;
     }
 
 }

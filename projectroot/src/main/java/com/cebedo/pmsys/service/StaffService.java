@@ -132,4 +132,12 @@ public interface StaffService {
      */
     public List<Staff> listExcept(Long coID, Set<Staff> staff);
 
+    public String assignStaffMass(Project project);
+
+    public String unassignStaffMember(Project project, long staffID);
+
+    public String unassignAllStaffMembers(Project project);
+
+    public List<Staff> listUnassignedStaffInProject(Long companyID, Project proj);
+
 }

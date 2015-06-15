@@ -67,8 +67,7 @@ $(document).ready(function() {
             <div class="pull-left info">
             	<c:choose>
             	 	<c:when test="${!empty authStaff}">
-            	 		<c:set var="staffName" value="${authStaff.prefix} ${authStaff.firstName} ${authStaff.middleName} ${authStaff.lastName} ${authStaff.suffix}"/>
-            	 		<p>Hello, ${staffName}</p>
+            	 		<p>Hello, ${authStaff.getFullName()}</p>
             	 		<h6>(${authUser.username})</h6>
             	 	</c:when>
             	 	<c:when test="${empty authStaff}">
@@ -79,15 +78,15 @@ $(document).ready(function() {
             </div>
         </div>
         <!-- search form -->
-        <form action="#" id="sidebar-search-form" method="post" class="sidebar-form">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <div class="input-group">
-                <input type="text" id="searchField" name="search" class='form-control' placeholder="Search..."/>
-                <span class="input-group-btn">
-                    <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-                </span>
-            </div>
-        </form>
+<!--         <form action="#" id="sidebar-search-form" method="post" class="sidebar-form"> -->
+<%-- 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
+<!--             <div class="input-group"> -->
+<!--                 <input type="text" id="searchField" name="search" class='form-control' placeholder="Search..."/> -->
+<!--                 <span class="input-group-btn"> -->
+<!--                     <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button> -->
+<!--                 </span> -->
+<!--             </div> -->
+<!--         </form> -->
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
@@ -121,15 +120,14 @@ $(document).ready(function() {
                 </a>
             </li>
             </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_TEAM')">
-            <li>
-            	<c:url var="urlTeamList" value="/team/list/"/>
-                <a href="${urlTeamList}">
-                    <i class="fa fa-users"></i> <span>Teams</span>
-<!--                     <small class="badge pull-right bg-green">new</small> -->
-                </a> 
-            </li>
-            </sec:authorize>
+<%--             <sec:authorize access="hasRole('ACCESS_TEAM')"> --%>
+<!--             <li> -->
+<%--             	<c:url var="urlTeamList" value="/team/list/"/> --%>
+<%--                 <a href="${urlTeamList}"> --%>
+<!--                     <i class="fa fa-users"></i> <span>Teams</span> -->
+<!--                 </a>  -->
+<!--             </li> -->
+<%--             </sec:authorize> --%>
             <sec:authorize access="hasRole('ACCESS_TASK')">
             <li>
             	<c:url var="urlTaskList" value="/task/list/"/>
@@ -138,14 +136,14 @@ $(document).ready(function() {
                 </a>
             </li>
             </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_PROJECTFILE')">
-            <li>
-            	<c:url var="urlProjFileList" value="/projectfile/list/"/>
-                <a href="${urlProjFileList}">
-                    <i class="fa fa-file"></i> <span>Files</span>
-                </a>
-            </li>
-            </sec:authorize>
+<%--             <sec:authorize access="hasRole('ACCESS_PROJECTFILE')"> --%>
+<!--             <li> -->
+<%--             	<c:url var="urlProjFileList" value="/projectfile/list/"/> --%>
+<%--                 <a href="${urlProjFileList}"> --%>
+<!--                     <i class="fa fa-file"></i> <span>Files</span> -->
+<!--                 </a> -->
+<!--             </li> -->
+<%--             </sec:authorize> --%>
 <!--             <li> -->
 <!--                 <a href="pages/calendar.html"> -->
 <!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->

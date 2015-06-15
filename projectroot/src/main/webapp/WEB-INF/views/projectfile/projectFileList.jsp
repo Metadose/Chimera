@@ -50,7 +50,6 @@
                                         	<c:if test="${!empty projectFileList}">
                                         		<c:forEach items="${projectFileList}" var="file">
                                         			<c:set var="staff" value="${file.uploader}"/>
-	                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
@@ -89,7 +88,7 @@
 		                                                <a href="${contextPath}/staff/edit/${file.uploader.id}">
 															<button class="btn btn-default btn-flat btn-sm">View</button>
 														</a>
-		                                                ${staffName}
+		                                                ${staff.getFullName()}
 		                                                </td>
 		                                                <td>${file.dateUploaded}</td>
 		                                            </tr>

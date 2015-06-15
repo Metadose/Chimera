@@ -117,8 +117,6 @@ public class TaskController {
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listTasks(Model model) {
 	model.addAttribute(ATTR_LIST, this.taskService.listWithAllCollections());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -285,8 +283,6 @@ public class TaskController {
 	// And ID.
 	model.addAttribute(ATTR_TASK, new Task());
 	model.addAttribute(ATTR_ASSIGN_STAFF_ID, id);
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_ASSIGN);
 	return JSP_EDIT;
     }
 
@@ -430,8 +426,6 @@ public class TaskController {
 	model.addAttribute(ATTR_TASK, new Task(proj));
 	model.addAttribute(SystemConstants.ORIGIN, Project.OBJECT_NAME);
 	model.addAttribute(SystemConstants.ORIGIN_ID, proj.getId());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_ASSIGN);
 
 	return TaskController.JSP_EDIT;
     }
@@ -512,8 +506,6 @@ public class TaskController {
 	// Open a page with empty values, ready to create.
 	if (taskID == 0) {
 	    model.addAttribute(ATTR_TASK, new Task());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
@@ -735,8 +727,6 @@ public class TaskController {
 	// Open a page with empty values, ready to create.
 	if (id == 0) {
 	    model.addAttribute(ATTR_TASK, new Task());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 
@@ -771,8 +761,6 @@ public class TaskController {
 	model.addAttribute(ATTR_STAFF_ASSIGNMENT, new StaffAssignmentBean());
 	model.addAttribute(ATTR_TEAM_ASSIGNMENT, new TeamAssignmentBean());
 	model.addAttribute(ATTR_TASK, task);
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 

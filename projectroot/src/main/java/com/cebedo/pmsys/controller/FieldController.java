@@ -43,8 +43,6 @@ public class FieldController {
     public String listField(Model model) {
 	model.addAttribute(ATTR_LIST,
 		this.fieldService.listWithAllCollections());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -220,7 +218,8 @@ public class FieldController {
 	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
 	    @RequestParam(Field.COLUMN_LABEL) String label,
 	    @RequestParam(Field.COLUMN_VALUE) String value) {
-	this.fieldService.unassignFieldFromStaff(fieldID, staffID, label, value);
+	this.fieldService
+		.unassignFieldFromStaff(fieldID, staffID, label, value);
 	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
 		+ Staff.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/"
 		+ staffID);
@@ -260,13 +259,9 @@ public class FieldController {
 	    Model model) {
 	if (id == 0) {
 	    model.addAttribute(ATTR_FIELD, new Field());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	model.addAttribute(ATTR_FIELD, this.fieldService.getByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 }

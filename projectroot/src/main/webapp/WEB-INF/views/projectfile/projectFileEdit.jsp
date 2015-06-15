@@ -79,11 +79,10 @@
 					                                        </div>
 					                                        
 		                                            		<c:set var="staff" value="${projectfile.uploader}"/>
-			                                                <c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
 				                                            <label>Name ${projectfile.name}</label>
 					                                        <label>Size ${projectfile.size}</label><br/>
 				                                            <label>Project ${projectfile.project.name}</label><br/>
-				                                            <label>Uploader ${staffName}</label><br/>
+				                                            <label>Uploader ${staff.getFullName()}</label><br/>
 				                                            <label>Date Uploaded ${projectfile.dateUploaded}</label><br/>
 				                                            
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('fileForm')">Update</button>

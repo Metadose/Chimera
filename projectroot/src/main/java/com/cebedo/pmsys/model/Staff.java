@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
@@ -190,6 +191,11 @@ public class Staff implements Serializable {
 	return wage;
     }
 
+    @Transient
+    public String getWageAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(wage);
+    }
+
     public void setWage(double wage) {
 	this.wage = wage;
     }
@@ -255,7 +261,8 @@ public class Staff implements Serializable {
     public String getFullName() {
 	String fullName = getPrefix() == null ? "" : getPrefix() + " ";
 	fullName += getFirstName() == null ? "" : getFirstName() + " ";
-	fullName += getMiddleName() == null ? "" : getMiddleName() + " ";
+	fullName += getMiddleName() == null ? "" : getMiddleName().charAt(0)
+		+ ". ";
 	fullName += getLastName() == null ? "" : getLastName() + " ";
 	fullName += getSuffix() == null ? "" : getSuffix();
 	return fullName;
@@ -268,5 +275,15 @@ public class Staff implements Serializable {
 
     public void setExpenses(Set<Expense> expenses) {
 	this.expenses = expenses;
+    }
+
+    @Transient
+    public boolean isManager(Project project) {
+	for (ManagerAssignment assign : project.getManagerAssignments()) {
+	    if (assign.getManager().getId() == this.id) {
+		return true;
+	    }
+	}
+	return false;
     }
 }

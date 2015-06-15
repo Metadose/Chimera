@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -898,5 +899,86 @@ public class StaffServiceImpl implements StaffService {
 
 	// Return the result.
 	return StaffWrapper.unwrap(wrappedCompanyStaffList);
+    }
+
+    @Transactional
+    @Override
+    public String assignStaffMass(Project project) {
+
+	// Transform the array of id's to
+	// actual objects.
+	long[] staffIDs = project.getStaffIDs();
+	Set<Staff> staffList = new HashSet<Staff>();
+	for (long id : staffIDs) {
+	    Staff staff = this.staffDAO.getWithAllCollectionsByID(id);
+	    staffList.add(staff);
+	}
+
+	// Get the existing and append.
+	Set<Staff> assignedStaffList = project.getAssignedStaff();
+	assignedStaffList.addAll(staffList);
+	project.setAssignedStaff(assignedStaffList);
+
+	// Update.
+	this.projectDAO.merge(project);
+
+	return AlertBoxFactory.SUCCESS.generateAssignEntries(Staff.OBJECT_NAME);
+    }
+
+    @Transactional
+    @Override
+    public String unassignStaffMember(Project project, long staffID) {
+
+	// Get index of staff to remove.
+	Set<Staff> assignedStaffList = project.getAssignedStaff();
+	Set<Staff> newStaffList = new HashSet<Staff>();
+	for (Staff staff : assignedStaffList) {
+	    if (staff.getId() == staffID) {
+		continue;
+	    }
+	    newStaffList.add(staff);
+	}
+
+	// Do service.
+	project.setAssignedStaff(newStaffList);
+	this.projectDAO.merge(project);
+
+	// Construct response.
+	Staff staff = this.staffDAO.getByID(staffID);
+	return AlertBoxFactory.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
+		staff.getFullName());
+    }
+
+    @Transactional
+    @Override
+    public String unassignAllStaffMembers(Project project) {
+	project.setAssignedStaff(new HashSet<Staff>());
+	this.projectDAO.merge(project);
+	return AlertBoxFactory.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
+    }
+
+    @Transactional
+    @Override
+    public List<Staff> listUnassignedStaffInProject(Long companyID,
+	    Project project) {
+	if (this.authHelper.isActionAuthorized(project)) {
+	    // Full list.
+	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
+	    List<StaffWrapper> wrappedStaffList = StaffWrapper
+		    .wrap(companyStaffList);
+
+	    // Minus list.
+	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project
+		    .getAssignedStaff());
+	    List<StaffWrapper> assignedManagerList = StaffWrapper
+		    .wrapSet(project.getManagers());
+
+	    // Do minus.
+	    wrappedStaffList.removeAll(assignedStaffList);
+	    wrappedStaffList.removeAll(assignedManagerList);
+	    return StaffWrapper.unwrap(StaffWrapper
+		    .removeEmptyNames(wrappedStaffList));
+	}
+	return new ArrayList<Staff>();
     }
 }

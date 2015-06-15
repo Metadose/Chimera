@@ -80,8 +80,6 @@ public class ProjectFileController {
     public String listProjectFiles(Model model) {
 	model.addAttribute(ATTR_LIST,
 		this.projectFileService.listWithAllCollections());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -150,14 +148,10 @@ public class ProjectFileController {
 	model.addAttribute(SystemConstants.ORIGIN_ID, originID);
 	if (id == 0) {
 	    model.addAttribute(ATTR_PROJECTFILE, new ProjectFile());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	model.addAttribute(ATTR_PROJECTFILE,
 		this.projectFileService.getByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 
@@ -174,14 +168,10 @@ public class ProjectFileController {
 	    @PathVariable(ProjectFile.OBJECT_NAME) int id, Model model) {
 	if (id == 0) {
 	    model.addAttribute(ATTR_PROJECTFILE, new ProjectFile());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	model.addAttribute(ATTR_PROJECTFILE,
 		this.projectFileService.getByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 

@@ -184,8 +184,7 @@
  		                                    			<td>
  		                                    			<form:select class="form-control" path="staffID"> 
                                      						<c:forEach items="${staffList}" var="staff"> 
-                                     							<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/> 
-                                     							<form:option value="${staff.id}" label="${staffName}"/> 
+                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
                                      						</c:forEach> 
  		                                    			</form:select> 
  		                                    			</td>
@@ -253,7 +252,7 @@
 													            </div>
 														        </div>
 			                                                </td>
-			                                                <td>${staffAssign.prefix} ${staffAssign.firstName} ${staffAssign.middleName} ${staffAssign.lastName} ${staffAssign.suffix}</td>
+			                                                <td>${staffAssign.getFullName()}</td>
 			                                                <td>${staffAssign.companyPosition}</td>
 			                                                <td>${staffAssign.email}</td>
 			                                                <td>${staffAssign.contactNumber}</td>

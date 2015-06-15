@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
+import com.cebedo.pmsys.bean.PayrollComputationResult;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -55,7 +56,7 @@ import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DateUtils;
-import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.google.gson.Gson;
 
 @Service
@@ -464,7 +465,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    } else if (tasksInMilestone == tasksNew) {
 		// Else if task size == new, then milestone is not yet started.
 		msNys++;
-		msStatus = MilestoneStatus.NEW;
+		msStatus = MilestoneStatus.NOT_YET_STARTED;
 	    } else {
 		// Else, it's still ongoing.
 		msOngoing++;
@@ -474,7 +475,8 @@ public class ProjectServiceImpl implements ProjectService {
 	    // Add collected data for milestone status and
 	    // corresponding count.
 	    milestoneStatusMap.put("Status", msStatus);
-	    milestoneStatusMap.put(MilestoneStatus.NEW.label(), tasksNew);
+	    milestoneStatusMap.put(MilestoneStatus.NOT_YET_STARTED.label(),
+		    tasksNew);
 	    milestoneStatusMap.put(MilestoneStatus.ONGOING.label(),
 		    tasksOngoing);
 	    milestoneStatusMap.put(MilestoneStatus.DONE.label(), tasksEndState);
@@ -657,8 +659,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll projectPayroll) {
+
+	// Do the computation.
 	this.projectPayrollComputerService.compute(proj, startDate, endDate,
 		projectPayroll);
+
+	// Get the resulting state of the computation.
+	// And save it.
+	PayrollComputationResult payrollComputationResult = this.projectPayrollComputerService
+		.getPayrollResult();
+	projectPayroll.setPayrollComputationResult(payrollComputationResult);
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	// Return the JSON equivalent of the result.
 	return this.projectPayrollComputerService.getPayrollJSONResult();
     }
 
@@ -667,7 +680,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Transactional
     @Override
-    public List<ProjectPayrollWrapper> getAllPayrolls(Project proj) {
+    public List<ProjectPayroll> getAllPayrolls(Project proj) {
 
 	// Get the needed ID's for the key.
 	// Construct the key.
@@ -681,44 +694,22 @@ public class ProjectServiceImpl implements ProjectService {
 	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
 	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo
 		.multiGet(keys);
-	List<ProjectPayrollWrapper> wrappedProjectPayrolls = new ArrayList<ProjectPayrollWrapper>();
-
-	// For each resulting object,
-	// wrap with wrapper.
-	for (ProjectPayroll payroll : projectPayrolls) {
-
-	    // Get objects which corresponding to which ID's.
-	    SystemUser approver = payroll.getApprover();
-	    SystemUser creator = payroll.getCreator();
-	    Date startDate = payroll.getStartDate();
-	    Date endDate = payroll.getEndDate();
-	    PayrollStatus status = payroll.getStatus();
-	    Company co = payroll.getCompany();
-
-	    // Construct the wrapped object.
-	    // Add object to list.
-	    ProjectPayrollWrapper wrappedPayroll = new ProjectPayrollWrapper(
-		    approver, creator, startDate, endDate, status, co, proj);
-	    wrappedProjectPayrolls.add(wrappedPayroll);
-	}
 
 	// Sort the list in descending order.
-	Collections.sort(wrappedProjectPayrolls,
-		new Comparator<ProjectPayrollWrapper>() {
-		    @Override
-		    public int compare(ProjectPayrollWrapper aObj,
-			    ProjectPayrollWrapper bObj) {
-			Date aStart = aObj.getStartDate();
-			Date bStart = bObj.getStartDate();
+	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
+	    @Override
+	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
+		Date aStart = aObj.getStartDate();
+		Date bStart = bObj.getStartDate();
 
-			// To sort in ascending,
-			// remove Not's.
-			return !(aStart.before(bStart)) ? -1 : !(aStart
-				.after(bStart)) ? 1 : 0;
-		    }
-		});
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1
+			: !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
 
-	return wrappedProjectPayrolls;
+	return projectPayrolls;
     }
 
     /**
@@ -850,6 +841,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
     }
 
+    @Transactional
     @Override
     public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(
 	    Project proj) {
@@ -861,5 +853,19 @@ public class ProjectServiceImpl implements ProjectService {
 	    managers.add(managerAssignment);
 	}
 	return managers;
+    }
+
+    @Transactional
+    @Override
+    public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList) {
+	double total = 0;
+	for (ProjectPayroll payroll : payrollList) {
+	    PayrollComputationResult result = payroll
+		    .getPayrollComputationResult();
+	    if (result != null) {
+		total += result.getOverallTotalOfStaff();
+	    }
+	}
+	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 }

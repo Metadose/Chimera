@@ -41,8 +41,6 @@ public class CompanyController {
     public String listCompanies(Model model) {
 	logger.info("Listing all companies.");
 	model.addAttribute(ATTR_LIST, this.companyService.list());
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_LIST);
 	return JSP_LIST;
     }
 
@@ -109,14 +107,10 @@ public class CompanyController {
 	if (id == 0) {
 	    logger.info("Opening new company: " + id);
 	    model.addAttribute(ATTR_COMPANY, new Company());
-	    model.addAttribute(SystemConstants.ATTR_ACTION,
-		    SystemConstants.ACTION_CREATE);
 	    return JSP_EDIT;
 	}
 	logger.info("Editing company: " + id);
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
-	model.addAttribute(SystemConstants.ATTR_ACTION,
-		SystemConstants.ACTION_EDIT);
 	return JSP_EDIT;
     }
 

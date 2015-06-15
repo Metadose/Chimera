@@ -98,6 +98,15 @@ public class AlertBoxFactory {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Assign.
+     */
+    private static String TEMPLATE_SUCCESS_ASSIGN_ENTRIES = "Successfully <b>assigned</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    private static String TEMPLATE_FAILED_ASSIGN_ENTRIES = "Failed to <b>assign</b> "
+	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    /**
      * Unassign.
      */
     private static String TEMPLATE_SUCCESS_UNASSIGN = "Successfully <b>unassigned</b> the "
@@ -272,6 +281,20 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ASSIGN.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateAssignEntries(String object) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_ASSIGN_ENTRIES.replace(
+		    DELIMITER_OBJECT_TYPE, object);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_ASSIGN_ENTRIES.replace(
+		    DELIMITER_OBJECT_TYPE, object);
 	}
 	this.message = result;
 	return generateHTML();

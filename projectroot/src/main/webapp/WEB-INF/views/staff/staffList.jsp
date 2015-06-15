@@ -100,7 +100,7 @@
 																	            </div>
 																		        </div>
 							                                                </td>
-							                                                <td>${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}</td>
+							                                                <td>${staff.getFullName()}</td>
 							                                                <td>${staff.companyPosition}</td>
 							                                                <td>${staff.email}</td>
 							                                                <td>${staff.contactNumber}</td>
@@ -151,7 +151,7 @@
     <c:if test="${!empty staffList}">
     	<c:forEach items="${staffList}" var="staff">
     		<c:if test="${!empty staff.tasks}">
-    		<c:set var="staffName" value="${staff.prefix} ${staff.firstName} ${staff.middleName} ${staff.lastName} ${staff.suffix}"/>
+    		<c:set var="staffName" value="${staff.getFullName()}"/>
     		<c:set var="staffRow" value="{id:'${staff.id}', duration:0, text:'${fn:escapeXml(staffName)}', open: true},"/>
     		<c:set var="ganttData" value="${ganttData}${staffRow}"/>
     		<c:forEach var="task" items="${staff.tasks}">

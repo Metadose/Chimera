@@ -147,7 +147,7 @@
 						                                            		<c:when test="${!empty task.staff}">
 						                                            			<c:forEach items="${task.staff}" var="taskStaffMember">
 						                                            				<c:set var="taskStaff" value="${taskStaffMember}"/>
-										                                            <c:set var="taskStaffName" value="${taskStaff.prefix} ${taskStaff.firstName} ${taskStaff.middleName} ${taskStaff.lastName} ${taskStaff.suffix}"/>
+										                                            <c:set var="taskStaffName" value="${taskStaff.getFullName()}"/>
 									                                            	<a href="${contextPath}/staff/edit/${taskStaff.id}">
 									                                            		<button class="btn btn-default btn-flat btn-sm">View</button>&nbsp;&nbsp;
 									                                            	</a>
