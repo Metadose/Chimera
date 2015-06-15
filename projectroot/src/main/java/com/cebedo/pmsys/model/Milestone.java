@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 @Entity
 @Table(name = Milestone.TABLE_NAME)
 public class Milestone implements Serializable {
@@ -23,7 +25,8 @@ public class Milestone implements Serializable {
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Milestone");
 
     private long id;
     private String name;

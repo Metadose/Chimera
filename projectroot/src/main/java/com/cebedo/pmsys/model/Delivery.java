@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.model.assignment.StaffDeliveryAssignment;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Delivery.TABLE_NAME)
@@ -29,7 +30,8 @@ public class Delivery implements Serializable {
     public static final String OBJECT_NAME = "delivery";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Delivery");
 
     private long id;
     private String name;

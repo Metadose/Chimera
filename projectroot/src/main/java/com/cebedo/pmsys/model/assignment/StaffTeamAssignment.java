@@ -9,36 +9,38 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = StaffTeamAssignment.TABLE_NAME)
 public class StaffTeamAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_staff_team";
+    public static final String TABLE_NAME = "assignments_staff_team";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("StaffTeamAssignment");
 
-	private long staffID;
-	private long teamID;
+    private long staffID;
+    private long teamID;
 
-	@Id
-	@Column(name = Staff.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getStaffID() {
-		return staffID;
-	}
+    @Id
+    @Column(name = Staff.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getStaffID() {
+	return staffID;
+    }
 
-	public void setStaffID(long staffID) {
-		this.staffID = staffID;
-	}
+    public void setStaffID(long staffID) {
+	this.staffID = staffID;
+    }
 
-	@Id
-	@Column(name = Team.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getTeamID() {
-		return teamID;
-	}
+    @Id
+    @Column(name = Team.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getTeamID() {
+	return teamID;
+    }
 
-	public void setTeamID(long teamID) {
-		this.teamID = teamID;
-	}
+    public void setTeamID(long teamID) {
+	this.teamID = teamID;
+    }
 
 }

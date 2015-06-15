@@ -2,33 +2,36 @@ package com.cebedo.pmsys.model.assignment;
 
 import java.io.Serializable;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 //@Entity
 //@Table(name = SubconProjectAssignment.TABLE_NAME)
 public class SubconProjectAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_subcon_project";
-	private static final long serialVersionUID = 1L;
+    public static final String TABLE_NAME = "assignments_subcon_project";
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("SubconProjectAssignment");
 
-	private long projectID;
-	private long subconID;
+    private long projectID;
+    private long subconID;
 
-	// @Id
-	// @Column(name = Project.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getProjectID() {
-		return projectID;
-	}
+    // @Id
+    // @Column(name = Project.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getProjectID() {
+	return projectID;
+    }
 
-	public void setProjectID(long projectID) {
-		this.projectID = projectID;
-	}
+    public void setProjectID(long projectID) {
+	this.projectID = projectID;
+    }
 
-	// @Id
-	// @Column(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getSubcontractorID() {
-		return subconID;
-	}
+    // @Id
+    // @Column(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getSubcontractorID() {
+	return subconID;
+    }
 
-	public void setSubcontractorID(long subconID) {
-		this.subconID = subconID;
-	}
+    public void setSubcontractorID(long subconID) {
+	this.subconID = subconID;
+    }
 }

@@ -19,165 +19,167 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.assignment.UserAccessAssignment;
 import com.cebedo.pmsys.model.assignment.UserRoleAssignment;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
 public class SystemUser implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	public static final String TABLE_NAME = "system_users";
-	public static final String OBJECT_NAME = "systemuser";
-	public static final String COLUMN_PRIMARY_KEY = "user_id";
-	public static final String COLUMN_USER_NAME = "username";
-	public static final String COLUMN_PASSWORD = "password";
-	public static final String COLUMN_ACCESS = "access";
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("SystemUser");
+    public static final String TABLE_NAME = "system_users";
+    public static final String OBJECT_NAME = "systemuser";
+    public static final String COLUMN_PRIMARY_KEY = "user_id";
+    public static final String COLUMN_USER_NAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
+    public static final String COLUMN_ACCESS = "access";
 
-	private long id;
-	private String username;
-	private String password;
-	private String retypePassword;
-	private Staff staff;
-	private boolean superAdmin;
-	private Company company;
-	private Long companyID;
-	private boolean companyAdmin;
-	private Set<SecurityAccess> securityAccess;
-	private Set<SecurityRole> securityRoles;
-	private Set<AuditLog> auditLogs;
-	private int loginAttempts;
+    private long id;
+    private String username;
+    private String password;
+    private String retypePassword;
+    private Staff staff;
+    private boolean superAdmin;
+    private Company company;
+    private Long companyID;
+    private boolean companyAdmin;
+    private Set<SecurityAccess> securityAccess;
+    private Set<SecurityRole> securityRoles;
+    private Set<AuditLog> auditLogs;
+    private int loginAttempts;
 
-	public SystemUser() {
-		;
-	}
+    public SystemUser() {
+	;
+    }
 
-	public SystemUser(long userID) {
-		this.id = userID;
-	}
+    public SystemUser(long userID) {
+	this.id = userID;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+    public long getId() {
+	return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+	this.id = id;
+    }
 
-	@Column(name = "username", nullable = false, length = 32)
-	public String getUsername() {
-		return username;
-	}
+    @Column(name = "username", nullable = false, length = 32)
+    public String getUsername() {
+	return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+	this.username = username;
+    }
 
-	@Column(name = "password", nullable = false)
-	public String getPassword() {
-		return password;
-	}
+    @Column(name = "password", nullable = false)
+    public String getPassword() {
+	return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+	this.password = password;
+    }
 
-	@OneToOne
-	@JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
-	public Staff getStaff() {
-		return staff;
-	}
+    @OneToOne
+    @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)
+    public Staff getStaff() {
+	return staff;
+    }
 
-	public void setStaff(Staff staff) {
-		this.staff = staff;
-	}
+    public void setStaff(Staff staff) {
+	this.staff = staff;
+    }
 
-	@Column(name = "super_admin")
-	public boolean isSuperAdmin() {
-		return superAdmin;
-	}
+    @Column(name = "super_admin")
+    public boolean isSuperAdmin() {
+	return superAdmin;
+    }
 
-	public void setSuperAdmin(boolean superAdmin) {
-		this.superAdmin = superAdmin;
-	}
+    public void setSuperAdmin(boolean superAdmin) {
+	this.superAdmin = superAdmin;
+    }
 
-	@Column(name = "company_admin")
-	public boolean isCompanyAdmin() {
-		return companyAdmin;
-	}
+    @Column(name = "company_admin")
+    public boolean isCompanyAdmin() {
+	return companyAdmin;
+    }
 
-	public void setCompanyAdmin(boolean companyAdmin) {
-		this.companyAdmin = companyAdmin;
-	}
+    public void setCompanyAdmin(boolean companyAdmin) {
+	this.companyAdmin = companyAdmin;
+    }
 
-	@ManyToOne
-	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
-	public Company getCompany() {
-		return company;
-	}
+    @ManyToOne
+    @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+    public Company getCompany() {
+	return company;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    public void setCompany(Company company) {
+	this.company = company;
+    }
 
-	@ManyToMany
-	@JoinTable(name = UserAccessAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityAccess.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<SecurityAccess> getSecurityAccess() {
-		return securityAccess;
-	}
+    @ManyToMany
+    @JoinTable(name = UserAccessAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityAccess.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+    public Set<SecurityAccess> getSecurityAccess() {
+	return securityAccess;
+    }
 
-	public void setSecurityAccess(Set<SecurityAccess> securityAccess) {
-		this.securityAccess = securityAccess;
-	}
+    public void setSecurityAccess(Set<SecurityAccess> securityAccess) {
+	this.securityAccess = securityAccess;
+    }
 
-	@ManyToMany
-	@JoinTable(name = UserRoleAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-	public Set<SecurityRole> getSecurityRoles() {
-		return securityRoles;
-	}
+    @ManyToMany
+    @JoinTable(name = UserRoleAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+    public Set<SecurityRole> getSecurityRoles() {
+	return securityRoles;
+    }
 
-	public void setSecurityRoles(Set<SecurityRole> securityRoles) {
-		this.securityRoles = securityRoles;
-	}
+    public void setSecurityRoles(Set<SecurityRole> securityRoles) {
+	this.securityRoles = securityRoles;
+    }
 
-	@OneToMany(mappedBy = "user")
-	public Set<AuditLog> getAuditLogs() {
-		return auditLogs;
-	}
+    @OneToMany(mappedBy = "user")
+    public Set<AuditLog> getAuditLogs() {
+	return auditLogs;
+    }
 
-	public void setAuditLogs(Set<AuditLog> auditLogs) {
-		this.auditLogs = auditLogs;
-	}
+    public void setAuditLogs(Set<AuditLog> auditLogs) {
+	this.auditLogs = auditLogs;
+    }
 
-	@Column(name = "login_attempts", nullable = false)
-	public int getLoginAttempts() {
-		return loginAttempts;
-	}
+    @Column(name = "login_attempts", nullable = false)
+    public int getLoginAttempts() {
+	return loginAttempts;
+    }
 
-	public void setLoginAttempts(int loginAttempts) {
-		this.loginAttempts = loginAttempts;
-	}
+    public void setLoginAttempts(int loginAttempts) {
+	this.loginAttempts = loginAttempts;
+    }
 
-	@Transient
-	public String getRetypePassword() {
-		return retypePassword;
-	}
+    @Transient
+    public String getRetypePassword() {
+	return retypePassword;
+    }
 
-	public void setRetypePassword(String retypePassword) {
-		this.retypePassword = retypePassword;
-	}
+    public void setRetypePassword(String retypePassword) {
+	this.retypePassword = retypePassword;
+    }
 
-	@Transient
-	public Long getCompanyID() {
-		return companyID;
-	}
+    @Transient
+    public Long getCompanyID() {
+	return companyID;
+    }
 
-	public void setCompanyID(Long companyID) {
-		this.companyID = companyID;
-	}
+    public void setCompanyID(Long companyID) {
+	this.companyID = companyID;
+    }
 
-	public String toString() {
-		return String.valueOf(this.id);
-	}
+    public String toString() {
+	return String.valueOf(this.id);
+    }
 }

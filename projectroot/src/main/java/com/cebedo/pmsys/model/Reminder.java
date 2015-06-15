@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 @Entity
 @Table(name = Reminder.TABLE_NAME)
 public class Reminder implements Serializable {
@@ -26,7 +28,8 @@ public class Reminder implements Serializable {
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Reminder");
 
     private long id;
     private String title;

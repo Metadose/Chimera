@@ -24,6 +24,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
@@ -40,7 +41,8 @@ public class Project implements Serializable {
 
     public static final String SUB_MODULE_PROFILE = "profile";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Project");
 
     private long id;
     private String name;

@@ -13,10 +13,12 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.RedisKeyPartUtils;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class ProjectPayroll implements IDomainObject {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("ProjectPayroll");
 
     /**
      * Keys<br>

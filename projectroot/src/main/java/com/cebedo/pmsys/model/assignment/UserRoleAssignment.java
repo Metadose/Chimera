@@ -9,34 +9,36 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = UserRoleAssignment.TABLE_NAME)
 public class UserRoleAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_user_role";
-	private static final long serialVersionUID = 1L;
+    public static final String TABLE_NAME = "assignments_user_role";
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("UserRoleAssignment");
 
-	private long userID;
-	private long roleID;
+    private long userID;
+    private long roleID;
 
-	@Id
-	@Column(name = SystemUser.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getSystemUserID() {
-		return userID;
-	}
+    @Id
+    @Column(name = SystemUser.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getSystemUserID() {
+	return userID;
+    }
 
-	public void setSystemUserID(long userID) {
-		this.userID = userID;
-	}
+    public void setSystemUserID(long userID) {
+	this.userID = userID;
+    }
 
-	@Id
-	@Column(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false)
-	public long getSecurityRoleID() {
-		return roleID;
-	}
+    @Id
+    @Column(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false)
+    public long getSecurityRoleID() {
+	return roleID;
+    }
 
-	public void setSecurityRoleID(long roleID) {
-		this.roleID = roleID;
-	}
+    public void setSecurityRoleID(long roleID) {
+	this.roleID = roleID;
+    }
 }

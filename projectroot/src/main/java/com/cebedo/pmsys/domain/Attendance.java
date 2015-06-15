@@ -7,10 +7,12 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Attendance implements IDomainObject {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Attendance");
     private Company company;
     private Staff staff;
     private Date timestamp;

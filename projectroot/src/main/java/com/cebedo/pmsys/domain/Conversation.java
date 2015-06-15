@@ -8,10 +8,12 @@ import java.util.Map;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Conversation implements IDomainObject {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Conversation");
     private Long companyID;
     private List<Long> contributorIDs;
     private boolean read;

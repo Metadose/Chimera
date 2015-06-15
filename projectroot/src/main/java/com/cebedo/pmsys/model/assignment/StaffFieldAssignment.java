@@ -12,63 +12,65 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = StaffFieldAssignment.TABLE_NAME)
 @AssociationOverrides({
-		@AssociationOverride(name = StaffFieldAssignment.PRIMARY_KEY + ".staff", joinColumns = @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)),
-		@AssociationOverride(name = StaffFieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
+	@AssociationOverride(name = StaffFieldAssignment.PRIMARY_KEY + ".staff", joinColumns = @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)),
+	@AssociationOverride(name = StaffFieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
 public class StaffFieldAssignment implements Serializable {
 
-	public static final String TABLE_NAME = "assignments_staff_field";
-	public static final String PRIMARY_KEY = "assignmentID";
+    public static final String TABLE_NAME = "assignments_staff_field";
+    public static final String PRIMARY_KEY = "assignmentID";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("StaffFieldAssignment");
 
-	private StaffFieldAssignmentID assignmentID = new StaffFieldAssignmentID();
+    private StaffFieldAssignmentID assignmentID = new StaffFieldAssignmentID();
 
-	@EmbeddedId
-	public StaffFieldAssignmentID getAssignmentID() {
-		return assignmentID;
-	}
+    @EmbeddedId
+    public StaffFieldAssignmentID getAssignmentID() {
+	return assignmentID;
+    }
 
-	public void setAssignmentID(StaffFieldAssignmentID assignmentID) {
-		this.assignmentID = assignmentID;
-	}
+    public void setAssignmentID(StaffFieldAssignmentID assignmentID) {
+	this.assignmentID = assignmentID;
+    }
 
-	@Transient
-	public Staff getStaff() {
-		return getAssignmentID().getStaff();
-	}
+    @Transient
+    public Staff getStaff() {
+	return getAssignmentID().getStaff();
+    }
 
-	public void setStaff(Staff staff) {
-		getAssignmentID().setStaff(staff);
-	}
+    public void setStaff(Staff staff) {
+	getAssignmentID().setStaff(staff);
+    }
 
-	@Transient
-	public Field getField() {
-		return getAssignmentID().getField();
-	}
+    @Transient
+    public Field getField() {
+	return getAssignmentID().getField();
+    }
 
-	public void setField(Field field) {
-		getAssignmentID().setField(field);
-	}
+    public void setField(Field field) {
+	getAssignmentID().setField(field);
+    }
 
-	@Transient
-	public String getLabel() {
-		return getAssignmentID().getLabel();
-	}
+    @Transient
+    public String getLabel() {
+	return getAssignmentID().getLabel();
+    }
 
-	public void setLabel(String str) {
-		getAssignmentID().setLabel(str);
-	}
+    public void setLabel(String str) {
+	getAssignmentID().setLabel(str);
+    }
 
-	@Transient
-	public String getValue() {
-		return getAssignmentID().getValue();
-	}
+    @Transient
+    public String getValue() {
+	return getAssignmentID().getValue();
+    }
 
-	public void setValue(String str) {
-		getAssignmentID().setValue(str);
-	}
+    public void setValue(String str) {
+	getAssignmentID().setValue(str);
+    }
 }

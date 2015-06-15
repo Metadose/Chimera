@@ -11,11 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 @Entity
 @Table(name = SecurityAccess.TABLE_NAME)
 public class SecurityAccess implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("SecurityAccess");
     public static final String OBJECT_NAME = "securityaccess";
     public static final String TABLE_NAME = "security_access";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";

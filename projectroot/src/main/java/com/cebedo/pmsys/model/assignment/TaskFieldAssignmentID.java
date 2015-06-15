@@ -8,60 +8,62 @@ import javax.persistence.ManyToOne;
 
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Embeddable
 public class TaskFieldAssignmentID implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("TaskFieldAssignmentID");
 
-	private Task task;
-	private Field field;
-	private String label;
-	private String value;
+    private Task task;
+    private Field field;
+    private String label;
+    private String value;
 
-	public TaskFieldAssignmentID() {
-		;
-	}
+    public TaskFieldAssignmentID() {
+	;
+    }
 
-	public TaskFieldAssignmentID(Task proj, Field field2) {
-		setTask(proj);
-		setField(field2);
-	}
+    public TaskFieldAssignmentID(Task proj, Field field2) {
+	setTask(proj);
+	setField(field2);
+    }
 
-	@ManyToOne
-	public Task getTask() {
-		return task;
-	}
+    @ManyToOne
+    public Task getTask() {
+	return task;
+    }
 
-	public void setTask(Task task) {
-		this.task = task;
-	}
+    public void setTask(Task task) {
+	this.task = task;
+    }
 
-	@ManyToOne
-	public Field getField() {
-		return field;
-	}
+    @ManyToOne
+    public Field getField() {
+	return field;
+    }
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    public void setField(Field field) {
+	this.field = field;
+    }
 
-	@Column(name = "label", nullable = false, length = 32)
-	public String getLabel() {
-		return label;
-	}
+    @Column(name = "label", nullable = false, length = 32)
+    public String getLabel() {
+	return label;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+	this.label = label;
+    }
 
-	@Column(name = "value", nullable = false, length = 255)
-	public String getValue() {
-		return value;
-	}
+    @Column(name = "value", nullable = false, length = 255)
+    public String getValue() {
+	return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+	this.value = value;
+    }
 
 }

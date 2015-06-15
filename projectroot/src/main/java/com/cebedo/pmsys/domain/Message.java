@@ -5,10 +5,12 @@ import java.util.Map;
 
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Message implements IDomainObject {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Message");
     private Long companyID;
     private long senderID;
     private long recipientID;

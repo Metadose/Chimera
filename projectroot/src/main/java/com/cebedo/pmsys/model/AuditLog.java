@@ -16,145 +16,147 @@ import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = AuditLog.TABLE_NAME)
 public class AuditLog implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	public static final String OBJECT_NAME = "auditlog";
-	public static final String TABLE_NAME = "audit_logs";
-	public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("AuditLog");
+    public static final String OBJECT_NAME = "auditlog";
+    public static final String TABLE_NAME = "audit_logs";
+    public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
-	public static final int ACTION_CREATE = 1;
-	public static final int ACTION_UPDATE = 2;
-	public static final int ACTION_DELETE = 3;
+    public static final int ACTION_CREATE = 1;
+    public static final int ACTION_UPDATE = 2;
+    public static final int ACTION_DELETE = 3;
 
-	private AuthHelper authHelper = new AuthHelper();
+    private AuthHelper authHelper = new AuthHelper();
 
-	public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_ID = "id";
 
-	private long id;
-	private Date dateExecuted;
-	private String ipAddress;
-	private SystemUser user;
-	private Company company;
-	private int action;
-	private String objectName;
-	private long objectID;
+    private long id;
+    private Date dateExecuted;
+    private String ipAddress;
+    private SystemUser user;
+    private Company company;
+    private int action;
+    private String objectName;
+    private long objectID;
 
-	public AuditLog() {
-		setDetails();
+    public AuditLog() {
+	setDetails();
+    }
+
+    public AuditLog(int action) {
+	this.setAction(action);
+	setDetails();
+    }
+
+    public AuditLog(int action, AuthenticationToken auth) {
+	this.setAction(action);
+	Date dateExecuted = new Date(System.currentTimeMillis());
+	this.setDateExecuted(dateExecuted);
+	if (auth != null) {
+	    this.setIpAddress(auth.getIpAddress());
+	    this.setUser(auth.getUser());
 	}
+    }
 
-	public AuditLog(int action) {
-		this.setAction(action);
-		setDetails();
-	}
+    public AuditLog(int action, SystemUser usr, String ipAddr) {
+	this.setAction(action);
+	this.setUser(usr);
+	Date dateExecuted = new Date(System.currentTimeMillis());
+	this.setDateExecuted(dateExecuted);
+	this.setIpAddress(ipAddr);
+    }
 
-	public AuditLog(int action, AuthenticationToken auth) {
-		this.setAction(action);
-		Date dateExecuted = new Date(System.currentTimeMillis());
-		this.setDateExecuted(dateExecuted);
-		if (auth != null) {
-			this.setIpAddress(auth.getIpAddress());
-			this.setUser(auth.getUser());
-		}
+    private void setDetails() {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	Date dateExecuted = new Date(System.currentTimeMillis());
+	this.setDateExecuted(dateExecuted);
+	if (auth != null) {
+	    this.setIpAddress(auth.getIpAddress());
+	    this.setUser(auth.getUser());
 	}
+    }
 
-	public AuditLog(int action, SystemUser usr, String ipAddr) {
-		this.setAction(action);
-		this.setUser(usr);
-		Date dateExecuted = new Date(System.currentTimeMillis());
-		this.setDateExecuted(dateExecuted);
-		this.setIpAddress(ipAddr);
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
+    public long getId() {
+	return id;
+    }
 
-	private void setDetails() {
-		AuthenticationToken auth = this.authHelper.getAuth();
-		Date dateExecuted = new Date(System.currentTimeMillis());
-		this.setDateExecuted(dateExecuted);
-		if (auth != null) {
-			this.setIpAddress(auth.getIpAddress());
-			this.setUser(auth.getUser());
-		}
-	}
+    public void setId(long id) {
+	this.id = id;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
-	public long getId() {
-		return id;
-	}
+    @Column(name = "date_executed", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getDateExecuted() {
+	return dateExecuted;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setDateExecuted(Date dateExecuted) {
+	this.dateExecuted = dateExecuted;
+    }
 
-	@Column(name = "date_executed", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getDateExecuted() {
-		return dateExecuted;
-	}
+    @ManyToOne
+    @JoinColumn(name = SystemUser.COLUMN_PRIMARY_KEY)
+    public SystemUser getUser() {
+	return user;
+    }
 
-	public void setDateExecuted(Date dateExecuted) {
-		this.dateExecuted = dateExecuted;
-	}
+    public void setUser(SystemUser user) {
+	this.user = user;
+    }
 
-	@ManyToOne
-	@JoinColumn(name = SystemUser.COLUMN_PRIMARY_KEY)
-	public SystemUser getUser() {
-		return user;
-	}
+    @Column(name = "action", length = 4, nullable = false)
+    public int getAction() {
+	return action;
+    }
 
-	public void setUser(SystemUser user) {
-		this.user = user;
-	}
+    public void setAction(int action) {
+	this.action = action;
+    }
 
-	@Column(name = "action", length = 4, nullable = false)
-	public int getAction() {
-		return action;
-	}
+    @Column(name = "object_name", length = 64, nullable = false)
+    public String getObjectName() {
+	return objectName;
+    }
 
-	public void setAction(int action) {
-		this.action = action;
-	}
+    public void setObjectName(String objectName) {
+	this.objectName = objectName;
+    }
 
-	@Column(name = "object_name", length = 64, nullable = false)
-	public String getObjectName() {
-		return objectName;
-	}
+    @Column(name = "object_id", nullable = false)
+    public long getObjectID() {
+	return objectID;
+    }
 
-	public void setObjectName(String objectName) {
-		this.objectName = objectName;
-	}
+    public void setObjectID(long objectID) {
+	this.objectID = objectID;
+    }
 
-	@Column(name = "object_id", nullable = false)
-	public long getObjectID() {
-		return objectID;
-	}
+    @ManyToOne
+    @JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
+    public Company getCompany() {
+	return company;
+    }
 
-	public void setObjectID(long objectID) {
-		this.objectID = objectID;
-	}
+    public void setCompany(Company company) {
+	this.company = company;
+    }
 
-	@ManyToOne
-	@JoinColumn(name = Company.COLUMN_PRIMARY_KEY)
-	public Company getCompany() {
-		return company;
-	}
+    @Column(name = "ip_address", nullable = false, length = 15)
+    public String getIpAddress() {
+	return ipAddress;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
-
-	@Column(name = "ip_address", nullable = false, length = 15)
-	public String getIpAddress() {
-		return ipAddress;
-	}
-
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
+    public void setIpAddress(String ipAddress) {
+	this.ipAddress = ipAddress;
+    }
 
 }

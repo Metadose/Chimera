@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 @Entity
 @Table(name = Material.TABLE_NAME)
 public class Material implements Serializable {
@@ -30,7 +32,8 @@ public class Material implements Serializable {
     public static final String MATERIALS_SUMMARY_KEY_TOTAL_COST = "totalCostOfMaterials";
     public static final String MATERIALS_SUMMARY_KEY_COUNT = "materialsCountMap";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Material");
 
     private long id;
     private String name;

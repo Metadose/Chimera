@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cebedo.pmsys.enums.PayrollType;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Team.TABLE_NAME)
@@ -29,7 +30,8 @@ public class Team implements Serializable {
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_NAME = "name";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Team");
 
     private long id;
     private String name;

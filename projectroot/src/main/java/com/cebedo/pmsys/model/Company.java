@@ -15,11 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+
 @Entity
 @Table(name = Company.TABLE_NAME)
 public class Company implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Company");
     public static final String TABLE_NAME = "companies";
     public static final String OBJECT_NAME = "company";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";

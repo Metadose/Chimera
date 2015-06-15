@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
+import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Staff.TABLE_NAME)
@@ -41,7 +42,8 @@ public class Staff implements Serializable {
 
     public static final String SUB_MODULE_PROFILE = "profile";
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerialVersionUIDUtils
+	    .convertStringToLong("Staff");
 
     private long id;
     private String thumbnailURL;
