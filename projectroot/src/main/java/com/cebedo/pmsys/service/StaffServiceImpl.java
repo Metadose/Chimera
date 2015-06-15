@@ -677,8 +677,7 @@ public class StaffServiceImpl implements StaffService {
 
 	    Date myDate = attendance.getTimestamp();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
-	    AttendanceStatus attnStat = AttendanceStatus.of(attendance
-		    .getStatusID());
+	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Construct the event bean for this attendance.
 	    CalendarEventBean event = new CalendarEventBean();
@@ -686,7 +685,7 @@ public class StaffServiceImpl implements StaffService {
 	    event.setTitle(attnStat.name());
 	    event.setId(start);
 	    event.setClassName(attnStat.css());
-	    event.setAttendanceStatus(String.valueOf(attendance.getStatusID()));
+	    event.setAttendanceStatus(String.valueOf(attendance.getStatus()));
 	    event.setAttendanceWage(String.valueOf(attendance.getWage()));
 	    if (attnStat == AttendanceStatus.OVERTIME) {
 		event.setBorderColor("Red");
@@ -844,8 +843,7 @@ public class StaffServiceImpl implements StaffService {
 
 	for (Attendance attendance : attendanceList) {
 
-	    AttendanceStatus attnStat = AttendanceStatus.of(attendance
-		    .getStatusID());
+	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Get and set status count.
 	    Double statCount = attendanceStatusMap.get(attnStat) == null ? 1

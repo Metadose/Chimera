@@ -285,8 +285,7 @@ public class StaffController {
 	Attendance attendance = new Attendance();
 	if (timestamp == 0) {
 	    Company co = staff.getCompany();
-	    Long companyID = co == null ? 0 : co.getId();
-	    attendance = new Attendance(companyID, staff.getId());
+	    attendance = new Attendance(co, staff);
 	} else {
 	    // TODO Make function for this in service.
 	    attendance = this.payrollService.get(staff,
@@ -617,13 +616,11 @@ public class StaffController {
 	// Add objects.
 	// Add form beans.
 	Company co = staff.getCompany();
-	Long companyID = co == null ? 0 : co.getId();
 	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 	model.addAttribute(ATTR_STAFF, staff);
 	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
 	model.addAttribute(ATTR_ATTENDANCE_MASS, new MassAttendanceBean(staff));
-	model.addAttribute(ATTR_ATTENDANCE,
-		new Attendance(companyID, staff.getId()));
+	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, staff));
 
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON,

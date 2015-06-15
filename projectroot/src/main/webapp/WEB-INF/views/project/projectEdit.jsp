@@ -61,11 +61,12 @@
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
-                                		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li>
+                                		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
+<!--                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li> -->
 		                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
-		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li>
+<!-- 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li> -->
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 	</c:when>
                                 </c:choose>
@@ -267,149 +268,149 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
-                                <div class="tab-pane" id="tab_3">
-                                	<div class="box box-default">
-                                    <div class="box-body table-responsive">
-                                    	<form:form id="uploadProjectFileForm"
-											modelAttribute="projectfile"
-											action="${contextPath}/project/upload/projectfile"
-											method="post"
-											enctype="multipart/form-data">
-	         									<label for="exampleInputFile">File Upload (20MB Max)</label>
-												<form:input type="file" id="file" path="file"/><br/>
-												<label>Description</label>
-												<form:textarea class="form-control"
-													rows="3" id="description" path="description"
-													placeholder="Example: Reference spreadsheet file..."></form:textarea><br/>
-												<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
-                                        </form:form>
-	                                    <br/>
-	                                    <table id="example-1" class="table table-bordered table-striped">
-	                                        <thead>
-	                                            <tr>
-	                                            	<th>&nbsp;</th>
-	                                            	<th>#</th>
-	                                                <th>Name</th>
-	                                                <th>Description</th>
-	                                                <th>Size</th>
-	                                                <th>Uploader</th>
-	                                                <th>Date Uploaded</th>
-	                                            </tr>
-	                                        </thead>
-	                                        <tbody>
-	                                        	<c:if test="${!empty project.files}">
-	                                        		<c:forEach items="${project.files}" var="file">
-	                                        			<c:set var="uploader" value="${file.uploader}"/>
-	                                               		<c:set var="uploaderName" value="${uploader.prefix} ${uploader.firstName} ${uploader.middleName} ${uploader.lastName} ${uploader.suffix}"/>
-	                                        			<tr>
-			                                            	<td>
-			                                            		<center>
-			                                            		<c:url value="/project/download/projectfile/${file.id}" var="urlDownloadProjectfile"/>
-			                                            		<a href="${urlDownloadProjectfile}">
-			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button>
-			                                            		</a>
-			                                            		<c:url value="/projectfile/edit/${file.id}/from/project/${project.id}" var="urlViewProjectfile"/>
-			                                            		<a href="${urlViewProjectfile}">
-			                                            			<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            		</a>
-			                                            		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-			                                            		<c:url value="/project/delete/projectfile/${file.id}" var="urlDeleteProjectfile"/>
-			                                            		<a href="${urlDeleteProjectfile}">
-																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
-			                                            		</a>
-																</sec:authorize>
-																</center>
-															</td>
-			                                                <td>${file.id}</td>
-			                                                <td>${file.name}</td>
-			                                                <td>${file.description}</td>
-			                                                <c:choose>
-		                                                	<c:when test="${file.size < 1000000}">
-		                                                		<c:set var="fileSize" value="${file.size / 1000}"/>
-		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> KB</td>
-		                                                	</c:when>
-		                                                	<c:when test="${file.size >= 1000000}">
-		                                                		<c:set var="fileSize" value="${file.size / 1000000}"/>
-		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> MB</td>
-		                                                	</c:when>
-			                                                </c:choose>
-			                                                <td>${uploaderName}</td>
-			                                                <td>${file.dateUploaded}</td>
-			                                            </tr>
-	                                        		</c:forEach>
-	                                        	</c:if>
-	                                        </tbody>
-	                                        <tfoot>
-	                                            <tr>
-	                                            	<th>&nbsp;</th>
-	                                            	<th>#</th>
-	                                                <th>Name</th>
-	                                                <th>Description</th>
-	                                                <th>Size</th>
-	                                                <th>Uploader</th>
-	                                                <th>Date Uploaded</th>
-	                                            </tr>
-	                                        </tfoot>
-	                                    </table>
-	                                </div><!-- /.box-body -->
-	                                </div>
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_4">
-                                	<div class="box box-default">
-                                	<div class="box-body">
-                                	<form:form id="uploadProjectFileForm"
-										modelAttribute="photo"
-										action="${contextPath}/project/upload/photo"
-										method="post"
-										enctype="multipart/form-data">
-         									<label for="exampleInputFile">Upload Photo (20MB Max)</label>
-											<form:input type="file" id="file" path="file"/><br/>
-											<label>Description</label>
-											<form:textarea class="form-control"
-												rows="3" id="description" path="description"
-												placeholder="Example: Image of project progress..."></form:textarea><br/>
-											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button>
-                                    </form:form>
-                                    <br/>
-                                    <c:if test="${!empty project.photos}">
-                                    	<br/>
-           									<ul class="row">
-									     		<c:forEach items="${project.photos}" var="photo">
-									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/>
-														<h6>${photo.name}</h6>
-														<h6>${photo.description}</h6>
-														<br/>
-														<h6>Uploaded ${photo.dateUploaded}</h6>
-														<c:set var="photoUploader" value="${photo.uploader}"/>
-														<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/>
-														<h6>${photoUploaderName}</h6>
+<!--                                 <div class="tab-pane" id="tab_3"> -->
+<!--                                 	<div class="box box-default"> -->
+<!--                                     <div class="box-body table-responsive"> -->
+<%--                                     	<form:form id="uploadProjectFileForm" --%>
+<%-- 											modelAttribute="projectfile" --%>
+<%-- 											action="${contextPath}/project/upload/projectfile" --%>
+<%-- 											method="post" --%>
+<%-- 											enctype="multipart/form-data"> --%>
+<!-- 	         									<label for="exampleInputFile">File Upload (20MB Max)</label> -->
+<%-- 												<form:input type="file" id="file" path="file"/><br/> --%>
+<!-- 												<label>Description</label> -->
+<%-- 												<form:textarea class="form-control" --%>
+<%-- 													rows="3" id="description" path="description" --%>
+<%-- 													placeholder="Example: Reference spreadsheet file..."></form:textarea><br/> --%>
+<!-- 												<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button> -->
+<%--                                         </form:form> --%>
+<!-- 	                                    <br/> -->
+<!-- 	                                    <table id="example-1" class="table table-bordered table-striped"> -->
+<!-- 	                                        <thead> -->
+<!-- 	                                            <tr> -->
+<!-- 	                                            	<th>&nbsp;</th> -->
+<!-- 	                                            	<th>#</th> -->
+<!-- 	                                                <th>Name</th> -->
+<!-- 	                                                <th>Description</th> -->
+<!-- 	                                                <th>Size</th> -->
+<!-- 	                                                <th>Uploader</th> -->
+<!-- 	                                                <th>Date Uploaded</th> -->
+<!-- 	                                            </tr> -->
+<!-- 	                                        </thead> -->
+<!-- 	                                        <tbody> -->
+<%-- 	                                        	<c:if test="${!empty project.files}"> --%>
+<%-- 	                                        		<c:forEach items="${project.files}" var="file"> --%>
+<%-- 	                                        			<c:set var="uploader" value="${file.uploader}"/> --%>
+<%-- 	                                               		<c:set var="uploaderName" value="${uploader.prefix} ${uploader.firstName} ${uploader.middleName} ${uploader.lastName} ${uploader.suffix}"/> --%>
+<!-- 	                                        			<tr> -->
+<!-- 			                                            	<td> -->
+<%-- 			                                            		<center> --%>
+<%-- 			                                            		<c:url value="/project/download/projectfile/${file.id}" var="urlDownloadProjectfile"/> --%>
+<%-- 			                                            		<a href="${urlDownloadProjectfile}"> --%>
+<!-- 			                                            			<button class="btn btn-default btn-flat btn-sm">Download</button> -->
+<!-- 			                                            		</a> -->
+<%-- 			                                            		<c:url value="/projectfile/edit/${file.id}/from/project/${project.id}" var="urlViewProjectfile"/> --%>
+<%-- 			                                            		<a href="${urlViewProjectfile}"> --%>
+<!-- 			                                            			<button class="btn btn-default btn-flat btn-sm">View</button> -->
+<!-- 			                                            		</a> -->
+<%-- 			                                            		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')"> --%>
+<%-- 			                                            		<c:url value="/project/delete/projectfile/${file.id}" var="urlDeleteProjectfile"/> --%>
+<%-- 			                                            		<a href="${urlDeleteProjectfile}"> --%>
+<!-- 																	<button class="btn btn-default btn-flat btn-sm">Delete</button> -->
+<!-- 			                                            		</a> -->
+<%-- 																</sec:authorize> --%>
+<%-- 																</center> --%>
+<!-- 															</td> -->
+<%-- 			                                                <td>${file.id}</td> --%>
+<%-- 			                                                <td>${file.name}</td> --%>
+<%-- 			                                                <td>${file.description}</td> --%>
+<%-- 			                                                <c:choose> --%>
+<%-- 		                                                	<c:when test="${file.size < 1000000}"> --%>
+<%-- 		                                                		<c:set var="fileSize" value="${file.size / 1000}"/> --%>
+<%-- 		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> KB</td> --%>
+<%-- 		                                                	</c:when> --%>
+<%-- 		                                                	<c:when test="${file.size >= 1000000}"> --%>
+<%-- 		                                                		<c:set var="fileSize" value="${file.size / 1000000}"/> --%>
+<%-- 		                                                		<td><fmt:formatNumber type="number" maxIntegerDigits="3" value="${fileSize}"/> MB</td> --%>
+<%-- 		                                                	</c:when> --%>
+<%-- 			                                                </c:choose> --%>
+<%-- 			                                                <td>${uploaderName}</td> --%>
+<%-- 			                                                <td>${file.dateUploaded}</td> --%>
+<!-- 			                                            </tr> -->
+<%-- 	                                        		</c:forEach> --%>
+<%-- 	                                        	</c:if> --%>
+<!-- 	                                        </tbody> -->
+<!-- 	                                        <tfoot> -->
+<!-- 	                                            <tr> -->
+<!-- 	                                            	<th>&nbsp;</th> -->
+<!-- 	                                            	<th>#</th> -->
+<!-- 	                                                <th>Name</th> -->
+<!-- 	                                                <th>Description</th> -->
+<!-- 	                                                <th>Size</th> -->
+<!-- 	                                                <th>Uploader</th> -->
+<!-- 	                                                <th>Date Uploaded</th> -->
+<!-- 	                                            </tr> -->
+<!-- 	                                        </tfoot> -->
+<!-- 	                                    </table> -->
+<!-- 	                                </div>/.box-body -->
+<!-- 	                                </div> -->
+<!--                                 </div>/.tab-pane -->
+<!--                                 <div class="tab-pane" id="tab_4"> -->
+<!--                                 	<div class="box box-default"> -->
+<!--                                 	<div class="box-body"> -->
+<%--                                 	<form:form id="uploadProjectFileForm" --%>
+<%-- 										modelAttribute="photo" --%>
+<%-- 										action="${contextPath}/project/upload/photo" --%>
+<%-- 										method="post" --%>
+<%-- 										enctype="multipart/form-data"> --%>
+<!--          									<label for="exampleInputFile">Upload Photo (20MB Max)</label> -->
+<%-- 											<form:input type="file" id="file" path="file"/><br/> --%>
+<!-- 											<label>Description</label> -->
+<%-- 											<form:textarea class="form-control" --%>
+<%-- 												rows="3" id="description" path="description" --%>
+<%-- 												placeholder="Example: Image of project progress..."></form:textarea><br/> --%>
+<!-- 											<button class="btn btn-default btn-flat btn-sm" id="uploadButton">Upload</button> -->
+<%--                                     </form:form> --%>
+<!--                                     <br/> -->
+<%--                                     <c:if test="${!empty project.photos}"> --%>
+<!--                                     	<br/> -->
+<!--            									<ul class="row"> -->
+<%-- 									     		<c:forEach items="${project.photos}" var="photo"> --%>
+<!-- 									     			<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4"> -->
+<%-- 														<img src="${contextPath}/image/display/?project_id=${project.id}&filename=${photo.name}"/><br/><br/> --%>
+<%-- 														<h6>${photo.name}</h6> --%>
+<%-- 														<h6>${photo.description}</h6> --%>
+<!-- 														<br/> -->
+<%-- 														<h6>Uploaded ${photo.dateUploaded}</h6> --%>
+<%-- 														<c:set var="photoUploader" value="${photo.uploader}"/> --%>
+<%-- 														<c:set var="photoUploaderName" value="${photoUploader.prefix} ${photoUploader.firstName} ${photoUploader.middleName} ${photoUploader.lastName} ${photoUploader.suffix}"/> --%>
+<%-- 														<h6>${photoUploaderName}</h6> --%>
 														
-														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/>
-														<a href="#">
-															<button class="btn btn-default btn-flat btn-sm">View</button>
-														</a>
-														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/>
-														<a href="${urlDeletePhoto}">
-															<button class="btn btn-default btn-flat btn-sm">Delete</button>
-														</a>
-														</sec:authorize>
-													</li>
-									     		</c:forEach>
-										     </ul>
-       								</c:if>
-       								</div>
-       								</div>
-									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								      <div id="modal-dialog" class="modal-dialog modal-lg">
-								        <div class="modal-content">         
-								          <div class="modal-body">                
-								          </div>
-								        </div><!-- /.modal-content -->
-								      </div><!-- /.modal-dialog -->
-								    </div><!-- /.modal -->
-                                </div><!-- /.tab-pane -->
+<%-- 														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/> --%>
+<!-- 														<a href="#"> -->
+<!-- 															<button class="btn btn-default btn-flat btn-sm">View</button> -->
+<!-- 														</a> -->
+<%-- 														<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')"> --%>
+<%-- 														<c:url value="/project/delete/photo/${photo.id}" var="urlDeletePhoto"/> --%>
+<%-- 														<a href="${urlDeletePhoto}"> --%>
+<!-- 															<button class="btn btn-default btn-flat btn-sm">Delete</button> -->
+<!-- 														</a> -->
+<%-- 														</sec:authorize> --%>
+<!-- 													</li> -->
+<%-- 									     		</c:forEach> --%>
+<!-- 										     </ul> -->
+<%--        								</c:if> --%>
+<!--        								</div> -->
+<!--        								</div> -->
+<!-- 									<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> -->
+<!-- 								      <div id="modal-dialog" class="modal-dialog modal-lg"> -->
+<!-- 								        <div class="modal-content">          -->
+<!-- 								          <div class="modal-body">                 -->
+<!-- 								          </div> -->
+<!-- 								        </div>/.modal-content -->
+<!-- 								      </div>/.modal-dialog -->
+<!-- 								    </div>/.modal -->
+<!--                                 </div>/.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="row">
                    						<div class="col-xs-12">
@@ -608,7 +609,6 @@
 						                                            <th>Duration</th>
 						                                            <th>Title</th>
 						                                            <th>Content</th>
-						                                            <th>Team</th>
 						                                            <th>Staff</th>
 						                                        </tr>
 			                                        		</thead>
@@ -659,21 +659,6 @@
 								                                            </td>
 								                                            <td>
 								                                            ${task.content}
-								                                            </td>
-								                                            <td>
-								                                            	<c:choose>
-								                                            		<c:when test="${!empty task.teams}">
-								                                            			<c:forEach items="${task.teams}" var="taskTeam">
-								                                            			<a class="general-link" href="${contextPath}/team/edit/${taskTeam.id}">
-										                                            	${taskTeam.name}
-										                                            	</a>
-										                                            	<br/><br/>
-								                                            			</c:forEach>
-								                                            		</c:when>
-								                                            		<c:when test="${empty task.teams}">
-								                                            			No team assigned.
-								                                            		</c:when>
-								                                            	</c:choose>
 								                                            </td>
 								                                            <td>
 								                                            	<c:choose>
@@ -1004,95 +989,183 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_teams">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">
-		                                	<c:set var="displayBreakTeam" value="${false}"/>
-		                                	<table>
-		                                    	<tr>
-		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
-		                                    		<td>
-		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/project/${project.id}"/>
-		                                    			<a href="${urlCreateTeam}">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:set var="displayBreakTeam" value="${true}"/>
-		                                    		</sec:authorize>
-		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                    		<c:if test="${!empty teamList}">
-		                                    		<form:form modelAttribute="teamAssignment" method="post" action="${contextPath}/project/assign/team">
-		                                    		<td>
-		                                    			<form:select class="form-control" path="teamID" items="${teamList}" itemLabel="name" itemValue="id"/>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-														<button class="btn btn-default btn-flat btn-sm">Assign</button>
-		                                    		</td>
-		                                    		</form:form>
-		                                    		</c:if>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:if test="${!empty project.assignedTeams}">
-		                                    		<td>
-              											<c:url value="/project/unassign/team/all" var="urlUnassignTeamAll"/>
-					                                    <a href="${urlUnassignTeamAll}">
-              												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-					                                    </a>
-		                                    		</td>
-		                                    		</c:if>
-		                                    		<c:set var="displayBreakTeam" value="${true}"/>
-		                                    		</sec:authorize>
-		                                    	</tr>
-		                                    </table>
-		                                    <c:if test="${displayBreakTeam}">
-		                                    <br/>
-		                                    </c:if>
-		                                    <table id="teams-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                            	<th>#</th>
-		                                                <th>Name</th>
-		                                                <th>Payroll Type</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                        <c:set var="teams" value="${project.assignedTeams}"/>
-				                                	<c:if test="${!empty teams}">
-				                                		<c:forEach items="${teams}" var="team">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/>
-			                                            			<a href="${urlViewTeam}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            			</a>
-								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/>
-								                                    <a href="${urlUnassignTeam}">
-	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-								                                    </a>
-	                   												</sec:authorize>
-																</center>
-															</td>
-			                                                <td>${team.id}</td>
-		                                                	<td>${team.name}</td>
-		                                                	<td>${team.getPayrollTypeEnum().label()}</td>
-			                                            </tr>
-		                                            </c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_staff">
+                                	<div class="row">
+                   						<div class="col-xs-12">
+		                                	<div class="box box-default">
+				                                <div class="box-body table-responsive">
+				                                    <table id="teams-table" class="table table-bordered table-striped">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Name</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                        <c:set var="assignedStaff" value="${project.assignedStaff}"/>
+						                                	<c:if test="${!empty assignedStaff}">
+						                                		<c:forEach items="${assignedStaff}" var="assignedStaffMember">
+					                                            <tr>
+					                                            	<td>
+					                                            		<center>
+					                                            			<c:url var="urlViewStaff" value="/staff/edit/${assignedStaffMember.id}/from/project/${project.id}"/>
+					                                            			<a href="${urlViewStaff}">
+									                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            			</a>
+										                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+										                                    <c:url value="/project/unassign/staff/${assignedStaffMember.id}" var="urlUnassignStaff"/>
+										                                    <a href="${urlUnassignStaff}">
+			                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+										                                    </a>
+			                   												</sec:authorize>
+																		</center>
+																	</td>
+				                                                	<td>${assignedStaffMember.getFullName()}</td>
+					                                            </tr>
+				                                            </c:forEach>
+			                                        		</c:if>
+					                                    </tbody>
+					                                </table>
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+				                   	</div>
+				                   	<div class="row">
+                   						<div class="col-md-6">
+		                                	<div class="box box-default">
+	              								<div class="box-header">
+	              									<h3 class="box-title">Assign Staff</h3>
+	              								</div>
+				                                <div class="box-body">
+				                                	<table>
+				                                    	<tr>
+				                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
+				                                    		<td>
+				                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
+				                                    			<a href="${urlCreateStaff}">
+						                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+				                                    			</a>
+				                                    		</td>
+				                                    		<td>
+				                                    			&nbsp;
+				                                    		</td>
+				                                    		</sec:authorize>
+				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+				                                    		<c:if test="${!empty project.assignedStaff}">
+				                                    		<td>
+		              											<c:url value="/project/unassign/staff/all" var="urlUnassignStaffAll"/>
+							                                    <a href="${urlUnassignStaffAll}">
+		              												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+							                                    </a>
+				                                    		</td>
+				                                    		</c:if>
+				                                    		</sec:authorize>
+				                                    	</tr>
+				                                    	<tr>
+				                                    		<form:form modelAttribute="project" 
+				                                    		method="post" 
+				                                    		action="${contextPath}/project/assign/staff/mass">
+				                                    		<c:forEach items="${staffList}" var="staff">
+				                                    			<form:checkbox class="form-control" path="staffIDs" value="${staff.id}" label="${staff.getFullName()}"/><br/>
+				                                    		</c:forEach>
+				                                    		<button class="btn btn-default btn-flat btn-sm">Assign</button>
+				                                    		</form:form>
+				                                    	</tr>
+				                                    </table>
+				                                </div>
+				                             </div>
+				                        </div>
+				                   	</div>
+				                </div>
+<!--                                 <div class="tab-pane" id="tab_teams"> -->
+<!--                                 	<div class="box"> -->
+<!-- 		                                <div class="box-body table-responsive"> -->
+<%-- 		                                	<c:set var="displayBreakTeam" value="${false}"/> --%>
+<!-- 		                                	<table> -->
+<!-- 		                                    	<tr> -->
+<%-- 		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')"> --%>
+<!-- 		                                    		<td> -->
+<%-- 		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/project/${project.id}"/> --%>
+<%-- 		                                    			<a href="${urlCreateTeam}"> --%>
+<!-- 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button> -->
+<!-- 		                                    			</a> -->
+<!-- 		                                    		</td> -->
+<!-- 		                                    		<td> -->
+<!-- 		                                    			&nbsp; -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		<c:set var="displayBreakTeam" value="${true}"/> --%>
+<%-- 		                                    		</sec:authorize> --%>
+<%-- 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')"> --%>
+<%-- 		                                    		<c:if test="${!empty teamList}"> --%>
+<%-- 		                                    		<form:form modelAttribute="teamAssignment" method="post" action="${contextPath}/project/assign/team"> --%>
+<!-- 		                                    		<td> -->
+<%-- 		                                    			<form:select class="form-control" path="teamID" items="${teamList}" itemLabel="name" itemValue="id"/> --%>
+<!-- 		                                    		</td> -->
+<!-- 		                                    		<td> -->
+<!-- 		                                    			&nbsp; -->
+<!-- 		                                    		</td> -->
+<!-- 		                                    		<td> -->
+<!-- 														<button class="btn btn-default btn-flat btn-sm">Assign</button> -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		</form:form> --%>
+<%-- 		                                    		</c:if> --%>
+<!-- 		                                    		<td> -->
+<!-- 		                                    			&nbsp; -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		<c:if test="${!empty project.assignedTeams}"> --%>
+<!-- 		                                    		<td> -->
+<%--               											<c:url value="/project/unassign/team/all" var="urlUnassignTeamAll"/> --%>
+<%-- 					                                    <a href="${urlUnassignTeamAll}"> --%>
+<!--               												<button class="btn btn-default btn-flat btn-sm">Unassign All</button> -->
+<!-- 					                                    </a> -->
+<!-- 		                                    		</td> -->
+<%-- 		                                    		</c:if> --%>
+<%-- 		                                    		<c:set var="displayBreakTeam" value="${true}"/> --%>
+<%-- 		                                    		</sec:authorize> --%>
+<!-- 		                                    	</tr> -->
+<!-- 		                                    </table> -->
+<%-- 		                                    <c:if test="${displayBreakTeam}"> --%>
+<!-- 		                                    <br/> -->
+<%-- 		                                    </c:if> --%>
+<!-- 		                                    <table id="teams-table" class="table table-bordered table-striped"> -->
+<!-- 		                                    	<thead> -->
+<!-- 		                                            <tr> -->
+<!-- 		                                            	<th>&nbsp;</th> -->
+<!-- 		                                            	<th>#</th> -->
+<!-- 		                                                <th>Name</th> -->
+<!-- 		                                                <th>Payroll Type</th> -->
+<!-- 		                                            </tr> -->
+<!--                                         		</thead> -->
+<!-- 		                                        <tbody> -->
+<%-- 			                                        <c:set var="teams" value="${project.assignedTeams}"/> --%>
+<%-- 				                                	<c:if test="${!empty teams}"> --%>
+<%-- 				                                		<c:forEach items="${teams}" var="team"> --%>
+<!-- 			                                            <tr> -->
+<!-- 			                                            	<td> -->
+<%-- 			                                            		<center> --%>
+<%-- 			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/project/${project.id}"/> --%>
+<%-- 			                                            			<a href="${urlViewTeam}"> --%>
+<!-- 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button> -->
+<!-- 			                                            			</a> -->
+<%-- 								                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')"> --%>
+<%-- 								                                    <c:url value="/project/unassign/team/${team.id}" var="urlUnassignTeam"/> --%>
+<%-- 								                                    <a href="${urlUnassignTeam}"> --%>
+<!-- 	                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button> -->
+<!-- 								                                    </a> -->
+<%-- 	                   												</sec:authorize> --%>
+<%-- 																</center> --%>
+<!-- 															</td> -->
+<%-- 			                                                <td>${team.id}</td> --%>
+<%-- 		                                                	<td>${team.name}</td> --%>
+<%-- 		                                                	<td>${team.getPayrollTypeEnum().label()}</td> --%>
+<!-- 			                                            </tr> -->
+<%-- 		                                            </c:forEach> --%>
+<%-- 	                                        		</c:if> --%>
+<!-- 			                                    </tbody> -->
+<!-- 			                                </table> -->
+<!-- 		                                </div>/.box-body -->
+<!-- 		                            </div> -->
+<!--                                 </div>/.tab-pane -->
                                 </c:when>
                                 </c:choose>
                             </div><!-- /.tab-content -->

@@ -60,7 +60,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
-                        <c:url var="urlBack" value="/project/edit/${projectPayroll.projectID}" />
+                        <c:url var="urlBack" value="/project/edit/${projectPayroll.project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-default btn-flat btn-sm">Back to Project</button>
 						</a><br/><br/>
@@ -68,7 +68,7 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <c:if test="${!empty projectStructManagers && !empty projectPayroll.staffIDs && !empty payrollJSON}">
+                                <c:if test="${!empty payrollJSON}">
                                 <li><a href="#tab_computation" data-toggle="tab">Computation</a></li>
                                 </c:if>
                             </ul>
@@ -136,33 +136,6 @@
                    								<div class="box-body">
                    									<p><i>This feature should only be used when adding Team/Staff members that were not automatically added to the checklist.</i></p>
 			                                        <table>
-                   									<form:form modelAttribute="payrollIncludeTeam"
-														id="detailsForm"
-														method="post"
-														action="${contextPath}/project/payroll/include/team">
-				                                        	<tr>
-				                                        	<td><label>Teams</label></td>
-				                                        	<td>&nbsp;</td>
-				                                        	<td style="width: 100%">
-				                                            <form:select class="form-control" path="teamID">
-				                                            	<c:forEach items="${manualTeamList}" var="team">
-				                                            	<form:option class="form-control" value="${team.id}" label="${team.name}"/>
-				                                            	</c:forEach>
-				                                            </form:select>
-				                                        	</td>
-				                                        	<td>&nbsp;</td>
-				                                        	<td>
-				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Include</button>
-				                                        	</td>
-				                                        	</tr>
-				                                    </form:form>
-				                                    <tr>
-			                                        	<td>&nbsp;</td>
-			                                        	<td>&nbsp;</td>
-			                                        	<td>&nbsp;</td>
-			                                        	<td>&nbsp;</td>
-			                                        	<td>&nbsp;</td>
-		                                        	</tr>
 				                                    <form:form modelAttribute="projectPayroll"
 														id="detailsForm"
 														method="post"
@@ -214,36 +187,41 @@
 															<a href="#" onclick="uncheckAll('manager-checkboxes')" class="general-link">Uncheck All</a>
 															<br/>
 															<c:choose>
-															<c:when test="${empty projectStructManagers}">
-															<i>No manager assigned.</i><br/><br/>
+															<c:when test="${empty managerList}">
+															<i>No manager assigned in project.</i><br/><br/>
 															</c:when>
-															<c:when test="${!empty projectStructManagers}">
+															<c:when test="${!empty managerList}">
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
 						                                            <th>Add</th>
+						                                            <th>Position</th>
 						                                            <th>Manager</th>
 						                                        </tr>
 					                                    	</thead>
 															<tbody>
-															<c:forEach items="${projectStructManagers}" var="manager">
+															<c:forEach items="${managerList}" var="managerAssignment">
+																<c:set value="${managerAssignment.manager}" var="manager"/>
+																<c:if test="${!fn:contains(alreadyRendered, manager.id)}">
 																<tr>
 																	<td align="center">
-																		<c:if test="${!fn:contains(alreadyRendered, manager.id)}">
 																		<c:set value="${alreadyRendered}-${manager.id}-" var="alreadyRendered"/>
 								                                		<form:checkbox class="form-control include-checkbox manager-checkboxes" 
 								                                			path="staffIDs" 
 								                                			value="${manager.id}"
 								                                			/>
-																		</c:if>
 																	</td>
 																	<td>
-																		<c:url value="/staff/edit/${manager.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		${managerAssignment.projectPosition}
+																	</td>
+																	<td>
+																		<c:url value="/staff/edit/${manager.id}/from/project/${projectPayroll.project.id}" var="staffLink"/>
 																		<a href="${staffLink}" class="general-link">
 																		${manager.getFullName()}
 																		</a>
 																	</td>
 																</tr>
+																</c:if>
 															</c:forEach>
 															</tbody>
 															</table><br/>
@@ -251,178 +229,59 @@
 															</c:choose>
 															
 															
-															
-															<label>Teams</label>&nbsp;
-															<a href="#" onclick="checkAll('team-checkboxes')" class="general-link">Check All</a>&nbsp;
-															<a href="#" onclick="uncheckAll('team-checkboxes')" class="general-link">Uncheck All</a>
-															<br/>
-															<c:choose>
-															<c:when test="${empty projectStructTeams}">
-															<i>No team assigned.</i><br/><br/>
-															</c:when>
-															<c:when test="${!empty projectStructTeams}">
-			                                            	<table class="table table-bordered table-striped">
-															<thead>
-					                                    		<tr>
-						                                            <th>Add</th>
-						                                            <th>Team</th>
-						                                            <th>Payroll Type</th>
-						                                            <th>Staff</th>
-						                                        </tr>
-					                                    	</thead>
-															<tbody>
-															<c:forEach items="${projectStructTeams}" var="teamStaffMap">
-																<c:set value="${teamStaffMap.key}" var="team"/>
-						                                		<c:set value="${teamStaffMap.value}" var="staffList"/>
-						                                		<c:if test="${!empty staffList}">
-						                                		<c:forEach items="${staffList}" var="teamMember">
-																<tr>
-																	<td align="center">
-																		<c:if test="${!fn:contains(alreadyRendered, teamMember.id)}">
-																		<c:set value="${alreadyRendered}-${teamMember.id}-" var="alreadyRendered"/>
-								                                		<form:checkbox class="form-control include-checkbox team-checkboxes" 
-								                                			path="staffIDs" 
-								                                			value="${teamMember.id}"
-								                                			/>
-																		</c:if>
-																	</td>
-																	<td>
-																		<c:url value="/team/edit/${team.id}" var="urlTeamLink"/>
-																		<a href="${urlTeamLink}" class="general-link">
-																		${team.name}
-																		</a>
-																	</td>
-																	<td>
-																		${team.getPayrollTypeEnum().label()}
-																	</td>
-																	<td>
-																		<c:url value="/staff/edit/${teamMember.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
-																		<a href="${staffLink}" class="general-link">
-																		${teamMember.getFullName()}
-																		</a>
-																	</td>
-																</tr>
-						                                		</c:forEach>
-						                                		</c:if>
-															</c:forEach>
-															</tbody>
-															</table><br/>
-															</c:when>
-															</c:choose>
-															
 
 
-															<label>Tasks</label>&nbsp;
-															<a href="#" onclick="checkAll('task-checkboxes')" class="general-link">Check All</a>&nbsp;
-															<a href="#" onclick="uncheckAll('task-checkboxes')" class="general-link">Uncheck All</a>
+															<label>Staff</label>&nbsp;
+															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
+															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
 															<br/>
 															<c:choose>
-															<c:when test="${empty projectStructTasks}">
-															<i>No task assigned.</i><br/><br/>
+															<c:when test="${empty staffList}">
+															<i>No staff assigned in project.</i><br/><br/>
 															</c:when>
-															<c:when test="${!empty projectStructTasks}">
+															<c:when test="${!empty staffList}">
 															
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
 						                                            <th>Add</th>
-						                                            <th>Task</th>
 						                                            <th>Staff</th>
 						                                        </tr>
 					                                    	</thead>
 															<tbody>
-															<c:forEach items="${projectStructTasks}" var="taskStaffMap">
-																<c:set value="${taskStaffMap.key}" var="task"/>
-						                                		<c:set value="${taskStaffMap.value}" var="staffList"/>
 						                                		<c:forEach items="${staffList}" var="staff">
+																<c:if test="${!fn:contains(alreadyRendered, staff.id)}">
 																<tr>
 																	<td align="center">
-																		<c:if test="${!fn:contains(alreadyRendered, staff.id)}">
 																		<c:set value="${alreadyRendered}-${staff.id}-" var="alreadyRendered"/>
-								                                		<form:checkbox class="form-control include-checkbox task-checkboxes" 
+								                                		<form:checkbox class="form-control include-checkbox staff-checkboxes" 
 								                                			path="staffIDs" 
 								                                			value="${staff.id}"
 								                                			/>
-																		</c:if>
 																	</td>
 																	<td>
-																		<c:url value="/task/edit/${task.id}" var="urlTaskLink"/>
-																		<a href="${urlTaskLink}" class="general-link">
-																		${task.title}
-																		</a>
-																	</td>
-																	<td>
-																		<c:url value="/staff/edit/${staff.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
+																		<c:url value="/staff/edit/${staff.id}/from/project/${projectPayroll.project.id}" var="staffLink"/>
 																		<a href="${staffLink}" class="general-link">
 																		${staff.getFullName()}
 																		</a>
 																	</td>
 																</tr>
+																</c:if>
 						                                		</c:forEach>
-															</c:forEach>
 															</tbody>
 															</table><br/>
 															</c:when>
 															</c:choose>
 															
 															
-															
-															<label>Deliveries</label>&nbsp;
-															<a href="#" onclick="checkAll('delivery-checkboxes')" class="general-link">Check All</a>&nbsp;
-															<a href="#" onclick="uncheckAll('delivery-checkboxes')" class="general-link">Uncheck All</a>
-															<br/>
-															<c:choose>
-															<c:when test="${empty projectStructDeliveries}">
-															<i>No deliveries.</i><br/>
-															</c:when>
-															<c:when test="${!empty projectStructDeliveries}">
-			                                            	<table class="table table-bordered table-striped">
-															<thead>
-					                                    		<tr>
-						                                            <th>Add</th>
-						                                            <th>Delivery</th>
-						                                            <th>Staff</th>
-						                                        </tr>
-					                                    	</thead>
-															<tbody>
-															<c:forEach items="${projectStructDeliveries}" var="deliveryStaffMap">
-																<c:set value="${deliveryStaffMap.key}" var="delivery"/>
-						                                		<c:set value="${deliveryStaffMap.value}" var="deliveryStaffList"/>
-						                                		<c:forEach items="${deliveryStaffList}" var="deliveryStaff">
-																<tr>
-																	<td align="center">	
-																		<c:if test="${!fn:contains(alreadyRendered, deliveryStaff.id)}">
-																		<c:set value="${alreadyRendered}-${deliveryStaff.id}-" var="alreadyRendered"/>
-								                                		<form:checkbox class="form-control include-checkbox delivery-checkboxes" 
-								                                			path="staffIDs" 
-								                                			value="${deliveryStaff.id}"
-								                                			/>
-																		</c:if>
-																	</td>
-																	<td>
-																		${delivery.name}
-																	</td>
-																	<td>
-																		<c:url value="/staff/edit/${deliveryStaff.id}/from/project/${projectPayroll.projectID}" var="staffLink"/>
-																		<a href="${staffLink}" class="general-link">
-																		${deliveryStaff.getFullName()}
-																		</a>
-																	</td>
-																</tr>
-						                                		</c:forEach>
-															</c:forEach>
-															</tbody>
-															</table>
-															</c:when>
-															</c:choose>
 				                                        </div>
 				                                    </form:form>
 				                                    
-			                                        <c:if test="${!empty projectStructManagers || !empty projectStructTeams || !empty projectStructTasks || !empty projectStructDeliveries}">
+			                                        <c:if test="${!empty staffList || !empty managerList}">
                                             		<button onclick="submitForm('checkboxesForm')" class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
 			                                        </c:if>
 			                                        
-				                                    <c:if test="${!empty projectPayroll.staffIDs && fn:length(projectPayroll.staffIDs) > 0}">
+				                                    <c:if test="${!empty projectPayroll.assignedStaffList && fn:length(projectPayroll.assignedStaffList) > 0}">
                                             		<c:url var="urlCompute" value="/project/compute/payroll" />
                                             		<a href="${urlCompute}">
 														<button class="btn btn-default btn-flat btn-sm">Compute Payroll</button>
@@ -445,7 +304,7 @@
                    						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <c:if test="${!empty projectStructManagers && !empty projectPayroll.staffIDs && !empty payrollJSON}">
+                                <c:if test="${!empty payrollJSON}">
                                 <div class="tab-pane" id="tab_computation">
               						<div class="row">
                    						<div class="col-xs-12">

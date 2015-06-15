@@ -80,6 +80,9 @@ public class StaffWrapper {
     }
 
     public static List<StaffWrapper> wrapSet(Set<Staff> staffList) {
+	if (staffList == null || staffList.isEmpty()) {
+	    return new ArrayList<StaffWrapper>();
+	}
 	List<StaffWrapper> wrappedList = new ArrayList<StaffWrapper>();
 	for (Staff staff : staffList) {
 	    wrappedList.add(new StaffWrapper(staff));

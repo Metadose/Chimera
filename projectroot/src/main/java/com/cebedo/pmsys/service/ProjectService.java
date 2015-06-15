@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +11,7 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.wrapper.ProjectPayrollWrapper;
 
 public interface ProjectService {
@@ -66,9 +68,6 @@ public interface ProjectService {
 
     public List<Staff> getAllStaff(Project proj);
 
-    public Map<String, Object> getProjectStructureMap(Project proj,
-	    Date startDate, Date endDate);
-
     public List<Staff> getAllManagers(Project proj);
 
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
@@ -77,6 +76,9 @@ public interface ProjectService {
     public List<ProjectPayrollWrapper> getAllPayrolls(Project proj);
 
     public List<Staff> getAllManagersWithUsers(Project proj);
+
+    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(
+	    Project proj);
 
     /**
      * Create or update a payroll.
@@ -99,15 +101,5 @@ public interface ProjectService {
      */
     public String createPayrollClearComputation(HttpSession session,
 	    ProjectPayroll projectPayroll, String toClear);
-
-    /**
-     * Manually include a team to payroll checklist.
-     * 
-     * @param projectPayroll
-     * @param teamID
-     * @return
-     */
-    public String includeTeamToPayroll(ProjectPayroll projectPayroll,
-	    long teamID);
 
 }

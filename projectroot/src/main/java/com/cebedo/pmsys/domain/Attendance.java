@@ -11,64 +11,92 @@ import com.cebedo.pmsys.utils.DateUtils;
 public class Attendance implements IDomainObject {
 
     private static final long serialVersionUID = 1L;
-    private Long companyID;
-    private long staffID;
+    private Company company;
+    private Staff staff;
     private Date timestamp;
-    private int statusID;
+    private AttendanceStatus status;
     private double wage;
     private Map<String, Object> extMap;
+
+    /**
+     * Bean-backed form.
+     */
+    private int statusID;
+
+    public int getStatusID() {
+	return statusID;
+    }
+
+    public void setStatusID(int statusID) {
+	this.statusID = statusID;
+    }
 
     public Attendance() {
 	;
     }
 
-    public Attendance(Long coID, long stf) {
-	setCompanyID(coID);
-	setStaffID(stf);
+    public Attendance(Company coID, Staff stf) {
+	setCompany(coID);
+	setStaff(stf);
     }
 
-    public Attendance(Long coID, long stf, int stat) {
-	setCompanyID(coID);
-	setStaffID(stf);
-	setStatusID(stat);
+    public Attendance(Company coID, Staff stf, AttendanceStatus stat) {
+	setCompany(coID);
+	setStaff(stf);
+	setStatus(stat);
 	setTimestamp(new Date(System.currentTimeMillis()));
     }
 
-    public Attendance(Long coID, long stf, Date tstamp) {
-	setCompanyID(coID);
-	setStaffID(stf);
+    public Attendance(Company coID, Staff stf, Date tstamp) {
+	setCompany(coID);
+	setStaff(stf);
 	setTimestamp(tstamp);
     }
 
-    public Attendance(Long coID, long stf, int stat, Date tstamp) {
-	setCompanyID(coID);
-	setStaffID(stf);
-	setStatusID(stat);
+    public Attendance(Company coID, Staff stf, AttendanceStatus stat,
+	    Date tstamp) {
+	setCompany(coID);
+	setStaff(stf);
+	setStatus(stat);
 	setTimestamp(tstamp);
     }
 
-    public Attendance(Long coID, long stf, int stat, Date tstamp, double w) {
-	setCompanyID(coID);
-	setStaffID(stf);
-	setStatusID(stat);
+    public Attendance(Company coID, Staff stf, AttendanceStatus stat,
+	    Date tstamp, double w) {
+	setCompany(coID);
+	setStaff(stf);
+	setStatus(stat);
 	setTimestamp(tstamp);
 	setWage(w);
     }
 
-    public long getStaffID() {
-	return staffID;
+    public Attendance(Staff staff, AttendanceStatus status) {
+	setCompany(staff.getCompany());
+	setStaff(staff);
+	setStatus(status);
     }
 
-    public void setStaffID(long staff) {
-	this.staffID = staff;
+    public Attendance(Staff staff, AttendanceStatus status, Date timestamp2) {
+	setCompany(staff.getCompany());
+	setStaff(staff);
+	setStatus(status);
+	setTimestamp(timestamp2);
     }
 
-    public Long getCompanyID() {
-	return companyID;
+    public Staff getStaff() {
+	return staff;
     }
 
-    public void setCompanyID(Long companyID) {
-	this.companyID = companyID;
+    public void setStaff(Staff staff) {
+	this.staff = staff;
+    }
+
+    public Company getCompany() {
+	return company;
+    }
+
+    public void setCompany(Company companyID) {
+	this.company = companyID;
     }
 
     public Date getTimestamp() {
@@ -83,16 +111,12 @@ public class Attendance implements IDomainObject {
 	this.timestamp = timestamp;
     }
 
-    public int getStatusID() {
-	return statusID;
-    }
-
-    public void setStatusID(int status) {
-	this.statusID = status;
-    }
-
     public AttendanceStatus getStatus() {
-	return AttendanceStatus.of(getStatusID());
+	return status;
+    }
+
+    public void setStatus(AttendanceStatus status) {
+	this.status = status;
     }
 
     public double getWage() {
@@ -165,10 +189,12 @@ public class Attendance implements IDomainObject {
 	Date myDate = getTimestamp();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
 
-	String companyPart = Company.OBJECT_NAME + ":" + this.companyID + ":";
-	String key = companyPart + "staff:" + this.staffID
+	String companyPart = Company.OBJECT_NAME + ":" + this.company.getId()
+		+ ":";
+
+	String key = companyPart + "staff:" + this.staff.getId()
 		+ ":payroll:attendance:date:" + date + ":status:"
-		+ getStatusID();
+		+ getStatus().id();
 
 	return key;
     }

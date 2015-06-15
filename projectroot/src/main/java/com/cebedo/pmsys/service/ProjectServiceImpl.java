@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,8 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
-import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -69,25 +70,21 @@ public class ProjectServiceImpl implements ProjectService {
     private CompanyDAO companyDAO;
     private NotificationZSetRepo notificationZSetRepo;
     private ProjectPayrollValueRepo projectPayrollValueRepo;
-    private SystemUserDAO systemUserDAO;
     private ProjectPayrollComputerService projectPayrollComputerService;
-    private TeamDAO teamDAO;
+    private StaffDAO staffDAO;
+    private SystemUserDAO systemUserDAO;
 
-    public TeamDAO getTeamDAO() {
-	return teamDAO;
+    public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
+	this.systemUserDAO = systemUserDAO;
     }
 
-    public void setTeamDAO(TeamDAO teamDAO) {
-	this.teamDAO = teamDAO;
+    public void setStaffDAO(StaffDAO staffDAO) {
+	this.staffDAO = staffDAO;
     }
 
     public void setProjectPayrollComputerService(
 	    ProjectPayrollComputerService projectPayrollComputerService) {
 	this.projectPayrollComputerService = projectPayrollComputerService;
-    }
-
-    public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
-	this.systemUserDAO = systemUserDAO;
     }
 
     public void setProjectPayrollValueRepo(
@@ -635,73 +632,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Map<String, Object> getProjectStructureMap(Project proj,
-	    Date startDate, Date endDate) {
-
-	Map<String, Object> projectStructMap = new HashMap<String, Object>();
-
-	// Get all managers in this project.
-	List<Staff> managers = new ArrayList<Staff>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    managers.add(managerAssignment.getManager());
-	}
-	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_MANAGERS,
-		managers);
-
-	// Get all staff in this project.
-	Map<Team, Set<Staff>> teamStaffMap = new HashMap<Team, Set<Staff>>();
-	Map<Task, Set<Staff>> taskStaffMap = new HashMap<Task, Set<Staff>>();
-	Map<Delivery, Set<Staff>> deliveryStaffMap = new HashMap<Delivery, Set<Staff>>();
-	List<Date> datesAllowed = DateUtils.getDatesBetweenDates(startDate,
-		endDate);
-
-	// Add all teams in project.
-	// Add only project-based teams.
-	for (Team team : proj.getAssignedTeams()) {
-	    if (team.isProjectBased()) {
-		teamStaffMap.put(team, team.getMembers());
-	    }
-	}
-
-	for (Task task : proj.getAssignedTasks()) {
-	    // Only allow dates that are in range.
-	    Date taskStartDate = task.getDateStart();
-	    if (datesAllowed.contains(taskStartDate)) {
-		taskStaffMap.put(task, task.getStaff());
-
-		// Add teams if there is any.
-		// Add only task-based teams.
-		Set<Team> taskTeams = task.getTeams();
-		if (taskTeams.size() > 0) {
-		    for (Team team : taskTeams) {
-			if (team.isTaskBased()) {
-			    teamStaffMap.put(team, team.getMembers());
-			}
-		    }
-		}
-	    }
-	}
-
-	for (Delivery delivery : proj.getDeliveries()) {
-	    // Only allow dates that are in range.
-	    if (datesAllowed.contains(delivery.getDatetime())) {
-		deliveryStaffMap.put(delivery, delivery.getStaff());
-	    }
-	}
-
-	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS,
-		teamStaffMap);
-	projectStructMap.put(ProjectController.KEY_PROJECT_STRUCTURE_TASKS,
-		taskStaffMap);
-	projectStructMap.put(
-		ProjectController.KEY_PROJECT_STRUCTURE_DELIVERIES,
-		deliveryStaffMap);
-
-	return projectStructMap;
-    }
-
-    @Transactional
-    @Override
     public List<Staff> getAllManagers(Project proj) {
 	List<Staff> managers = new ArrayList<Staff>();
 	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
@@ -758,14 +688,12 @@ public class ProjectServiceImpl implements ProjectService {
 	for (ProjectPayroll payroll : projectPayrolls) {
 
 	    // Get objects which corresponding to which ID's.
-	    SystemUser approver = this.systemUserDAO.getByID(payroll
-		    .getApproverID());
-	    SystemUser creator = this.systemUserDAO.getByID(payroll
-		    .getCreatorID());
+	    SystemUser approver = payroll.getApprover();
+	    SystemUser creator = payroll.getCreator();
 	    Date startDate = payroll.getStartDate();
 	    Date endDate = payroll.getEndDate();
-	    PayrollStatus status = PayrollStatus.of(payroll.getStatusID());
-	    Company co = this.companyDAO.getByID(payroll.getCompanyID());
+	    PayrollStatus status = payroll.getStatus();
+	    Company co = payroll.getCompany();
 
 	    // Construct the wrapped object.
 	    // Add object to list.
@@ -816,19 +744,23 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Take a snapshot of the project structure
 	// during the creation of the payroll.
-	Map<String, Object> projectStruct = new HashMap<String, Object>();
 	boolean isUpdating = projectPayroll.isSaved();
 
 	// Get all managers in this project.
 	// Preserve list of managers during this time.
 	// FIXME What if manager/approver is deleted? Payroll is orphaned.
-	List<Staff> managers = getAllManagersWithUsers(proj);
-	projectPayroll.setManagers(managers);
+	Set<ManagerAssignment> managers = getAllManagersAssignmentsWithUsers(proj);
+	projectPayroll.setManagerAssignments(managers);
+	projectPayroll.setStaffList(proj.getAssignedStaff());
+
+	// Generate actual object from form ID.
+	SystemUser approver = this.systemUserDAO
+		.getWithSecurityByID(projectPayroll.getApproverID());
+	projectPayroll.setApprover(approver);
+	projectPayroll
+		.setStatus(PayrollStatus.of(projectPayroll.getStatusID()));
 
 	// Preserve project structure.
-	projectStruct = getProjectStructureMap(proj,
-		projectPayroll.getStartDate(), projectPayroll.getEndDate());
-	projectPayroll.setProjectStructure(projectStruct);
 	projectPayroll.setSaved(true);
 
 	// Date parts of the response.
@@ -866,6 +798,18 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Do rename first before setting.
 	preUpdateClear(session, projectPayroll);
+
+	// Transform the selected ID's into actual objects.
+	// Store the actual objects in the payroll object.
+	long[] staffIDs = projectPayroll.getStaffIDs();
+	Set<Staff> assignedStaffList = new HashSet<Staff>();
+	for (long staffID : staffIDs) {
+	    Staff staff = this.staffDAO.getWithAllCollectionsByID(staffID);
+	    assignedStaffList.add(staff);
+	}
+	projectPayroll.setAssignedStaffList(assignedStaffList);
+
+	// Do store.
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Generate response.
@@ -906,37 +850,16 @@ public class ProjectServiceImpl implements ProjectService {
 	}
     }
 
-    /**
-     * Manually include a team to payroll checklist.
-     */
-    @SuppressWarnings("unchecked")
     @Override
-    @Transactional
-    public String includeTeamToPayroll(ProjectPayroll projectPayroll,
-	    long teamID) {
-
-	// Get the struct.
-	// Get the team staff map.
-	Map<String, Object> projectStructure = projectPayroll
-		.getProjectStructure();
-	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStructure
-		.get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
-
-	// Construct the team.
-	// Put the team to map.
-	Team team = this.teamDAO.getWithAllCollectionsByID(teamID);
-	teamStaffMap.put(team, team.getMembers());
-
-	// Return the team staff map to struct.
-	// Return the struct to the payroll object.
-	projectStructure.put(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS,
-		teamStaffMap);
-	projectPayroll.setProjectStructure(projectStructure);
-
-	// Return the object to data store.
-	this.projectPayrollValueRepo.set(projectPayroll);
-
-	return AlertBoxFactory.SUCCESS.generateInclude(Team.OBJECT_NAME,
-		team.getName());
+    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(
+	    Project proj) {
+	Set<ManagerAssignment> managers = new HashSet<ManagerAssignment>();
+	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
+	    if (managerAssignment.getManager().getUser() == null) {
+		continue;
+	    }
+	    managers.add(managerAssignment);
+	}
+	return managers;
     }
 }

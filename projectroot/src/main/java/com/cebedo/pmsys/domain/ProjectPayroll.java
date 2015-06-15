@@ -1,15 +1,16 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.cebedo.pmsys.controller.ProjectController;
+import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Team;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.RedisKeyPartUtils;
 
@@ -22,30 +23,52 @@ public class ProjectPayroll implements IDomainObject {
      * company:45:project:21:approver:55:creator:151:status:4:startdate:2015.05
      * .01:enddate:2015.05.15
      */
-    private Long companyID;
-    private long projectID;
-    private long approverID; // User ID.
-    private long creatorID; // User ID.
-    private int statusID; // Give me all payrolls not yet approved.
+    private Company company;
+    private Project project;
+    private SystemUser approver;
+    private SystemUser creator;
+    private PayrollStatus status; // Give me all payrolls not yet approved.
     private Date startDate;
     private Date endDate;
+
+    /**
+     * Bean-backed form.
+     */
+    private long approverID;
+    private int statusID;
 
     /**
      * Other properties.
      */
     private boolean saved;
     private long[] staffIDs;
-    private List<Long> staffList;
     private Map<String, Object> payrollMap;
     private Map<String, Object> extMap;
 
     /**
+     * List of staff during the object was created.
+     */
+    private Set<ManagerAssignment> managerAssignments;
+    private Set<Staff> staffList;
+
+    /**
+     * List of assigned.
+     */
+    private Set<Staff> assignedStaffList;
+
+    /**
      * Project Structure snapshot.
      */
-    private List<Staff> managers;
-    private Map<String, Object> projectStructure;
     private String payrollJSON;
     private Date lastComputed;
+
+    public Set<ManagerAssignment> getManagerAssignments() {
+	return managerAssignments;
+    }
+
+    public void setManagerAssignments(Set<ManagerAssignment> managerAssignments) {
+	this.managerAssignments = managerAssignments;
+    }
 
     public Date getLastComputed() {
 	return lastComputed;
@@ -55,14 +78,31 @@ public class ProjectPayroll implements IDomainObject {
 	this.lastComputed = lastComputed;
     }
 
+    public Set<Staff> getAssignedStaffList() {
+	return assignedStaffList;
+    }
+
+    public void setAssignedStaffList(Set<Staff> assignedStaffList) {
+	this.assignedStaffList = assignedStaffList;
+    }
+
     public ProjectPayroll() {
 	;
     }
 
-    public ProjectPayroll(Long companyID2, long projectID2, long creatorID2) {
-	setCompanyID(companyID2);
-	setProjectID(projectID2);
-	setCreatorID(creatorID2);
+    public ProjectPayroll(Company company2, Project project2,
+	    SystemUser creator2) {
+	setCompany(company2);
+	setProject(project2);
+	setCreator(creator2);
+    }
+
+    public SystemUser getApprover() {
+	return approver;
+    }
+
+    public void setApprover(SystemUser approverID) {
+	this.approver = approverID;
     }
 
     public long getApproverID() {
@@ -73,12 +113,12 @@ public class ProjectPayroll implements IDomainObject {
 	this.approverID = approverID;
     }
 
-    public List<Staff> getManagers() {
-	return managers;
+    public int getStatusID() {
+	return statusID;
     }
 
-    public void setManagers(List<Staff> managers) {
-	this.managers = managers;
+    public void setStatusID(int statusID) {
+	this.statusID = statusID;
     }
 
     public long[] getStaffIDs() {
@@ -97,12 +137,12 @@ public class ProjectPayroll implements IDomainObject {
 	this.saved = saved;
     }
 
-    public long getCreatorID() {
-	return creatorID;
+    public SystemUser getCreator() {
+	return creator;
     }
 
-    public void setCreatorID(long creatorID) {
-	this.creatorID = creatorID;
+    public void setCreator(SystemUser creatorID) {
+	this.creator = creatorID;
     }
 
     public Date getStartDate() {
@@ -121,28 +161,28 @@ public class ProjectPayroll implements IDomainObject {
 	this.endDate = endDate;
     }
 
-    public Long getCompanyID() {
-	return companyID;
+    public Company getCompany() {
+	return company;
     }
 
-    public void setCompanyID(Long companyID) {
-	this.companyID = companyID;
+    public void setCompany(Company companyID) {
+	this.company = companyID;
     }
 
-    public long getProjectID() {
-	return projectID;
+    public Project getProject() {
+	return project;
     }
 
-    public void setProjectID(long projectID) {
-	this.projectID = projectID;
+    public void setProject(Project projectID) {
+	this.project = projectID;
     }
 
-    public int getStatusID() {
-	return statusID;
+    public PayrollStatus getStatus() {
+	return status;
     }
 
-    public void setStatusID(int statusID) {
-	this.statusID = statusID;
+    public void setStatus(PayrollStatus status2) {
+	this.status = status2;
     }
 
     public String getPayrollJSON() {
@@ -161,11 +201,11 @@ public class ProjectPayroll implements IDomainObject {
 	this.payrollMap = payrollMap;
     }
 
-    public List<Long> getStaffList() {
+    public Set<Staff> getStaffList() {
 	return staffList;
     }
 
-    public void setStaffList(List<Long> staffList) {
+    public void setStaffList(Set<Staff> staffList) {
 	this.staffList = staffList;
     }
 
@@ -177,14 +217,6 @@ public class ProjectPayroll implements IDomainObject {
     @Override
     public void setExtMap(Map<String, Object> extMap) {
 	this.extMap = extMap;
-    }
-
-    public Map<String, Object> getProjectStructure() {
-	return projectStructure;
-    }
-
-    public void setProjectStructure(Map<String, Object> projectStructure) {
-	this.projectStructure = projectStructure;
     }
 
     public static String constructKey(long companyID, Long projectID,
@@ -220,13 +252,16 @@ public class ProjectPayroll implements IDomainObject {
      */
     @Override
     public String getKey() {
-	long companyID = getCompanyID() == null ? 0 : getCompanyID();
+	long companyID = this.company == null ? 0 : this.company.getId();
 	String companyPart = Company.OBJECT_NAME + ":" + companyID
 		+ ":payroll:";
-	String projectPart = Project.OBJECT_NAME + ":" + getProjectID() + ":";
-	String approverPart = "approver:" + getApproverID() + ":";
-	String creatorPart = "creator:" + getCreatorID() + ":";
-	String statusPart = "status:" + getStatusID() + ":";
+	String projectPart = Project.OBJECT_NAME + ":" + getProject().getId()
+		+ ":";
+	String approverPart = "approver:" + getApprover().getId() + ":";
+	String creatorPart = "creator:" + getCreator().getId() + ":";
+	String statusPart = "status:"
+		+ (getStatus() == null ? getStatusID() : getStatus().id())
+		+ ":";
 
 	String startDateStr = DateUtils
 		.formatDate(getStartDate(), "yyyy.MM.dd");
@@ -265,10 +300,11 @@ public class ProjectPayroll implements IDomainObject {
     }
 
     public String constructPattern(Date oldStart, Date oldEnd) {
-	long companyID = getCompanyID() == null ? 0 : getCompanyID();
+	long companyID = this.company == null ? 0 : this.company.getId();
 	String companyPart = Company.OBJECT_NAME + ":" + companyID
 		+ ":payroll:";
-	String projectPart = Project.OBJECT_NAME + ":" + getProjectID() + ":";
+	String projectPart = Project.OBJECT_NAME + ":" + getProject().getId()
+		+ ":";
 
 	String approverPart = "approver:*:";
 	String creatorPart = "creator:*:";
@@ -291,8 +327,11 @@ public class ProjectPayroll implements IDomainObject {
      */
     @SuppressWarnings("unchecked")
     public Set<Team> getAllTeams() {
-	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) this.projectStructure
-		.get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
-	return teamStaffMap.keySet();
+	// Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>)
+	// this.projectStructure
+	// .get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
+	// return teamStaffMap.keySet();
+	// FIXME
+	return null;
     }
 }

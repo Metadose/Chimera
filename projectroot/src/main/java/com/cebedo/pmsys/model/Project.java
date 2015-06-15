@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
 
 @Entity
@@ -48,6 +49,7 @@ public class Project implements Serializable {
     private Set<ManagerAssignment> managerAssignments;
     private Set<Team> assignedTeams;
     private Set<FieldAssignment> assignedFields;
+    private Set<Staff> assignedStaff;
     private String thumbnailURL;
     private String location;
     private String notes;
@@ -60,6 +62,11 @@ public class Project implements Serializable {
     private Set<Reminder> reminders;
     private Set<Material> materials;
     private Set<Expense> expenses;
+
+    /**
+     * Bean-backed forms.
+     */
+    private long[] staffIDs;
 
     // private Set<Subcontractor> subcontractor;
 
@@ -154,6 +161,25 @@ public class Project implements Serializable {
 	    }
 	}
 	return teams;
+    }
+
+    @ManyToMany
+    @JoinTable(name = ProjectStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+    public Set<Staff> getAssignedStaff() {
+	return assignedStaff;
+    }
+
+    public void setAssignedStaff(Set<Staff> assignedStaff) {
+	this.assignedStaff = assignedStaff;
+    }
+
+    @Transient
+    public long[] getStaffIDs() {
+	return staffIDs;
+    }
+
+    public void setStaffIDs(long[] staffIDs) {
+	this.staffIDs = staffIDs;
     }
 
     public void setAssignedTeams(Set<Team> teams) {

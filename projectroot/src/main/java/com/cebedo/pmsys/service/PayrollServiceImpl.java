@@ -47,7 +47,8 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     @Transactional
     public void set(Attendance attendance) {
-	AttendanceStatus status = AttendanceStatus.of(attendance.getStatusID());
+	AttendanceStatus status = attendance.getStatus() == null ? AttendanceStatus
+		.of(attendance.getStatusID()) : attendance.getStatus();
 	if (status == AttendanceStatus.DELETE) {
 	    deleteAllInDate(attendance);
 	    return;
@@ -56,7 +57,7 @@ public class PayrollServiceImpl implements PayrollService {
 	    attendance.setWage(0);
 	}
 	if (status != AttendanceStatus.ABSENT && attendance.getWage() == 0) {
-	    Staff staff = this.staffDAO.getByID(attendance.getStaffID());
+	    Staff staff = attendance.getStaff();
 	    attendance.setWage(getWage(staff, status));
 	}
 	// Delete all previously declared attendance in this date.
@@ -71,7 +72,7 @@ public class PayrollServiceImpl implements PayrollService {
      */
     public void deleteAllInDate(Attendance attendance) {
 	// Delete all previously declared attendance in this date.
-	Staff staff = this.staffDAO.getByID(attendance.getStaffID());
+	Staff staff = attendance.getStaff();
 	String key = Attendance.constructKey(staff, attendance.getTimestamp());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
 	this.attendanceValueRepo.delete(keys);
@@ -80,7 +81,7 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     @Transactional
     public void set(Staff staff, AttendanceStatus status) {
-	Attendance attendance = new Attendance(staff.getId(), status.id());
+	Attendance attendance = new Attendance(staff, status);
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
@@ -98,8 +99,7 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     @Transactional
     public void set(Staff staff, AttendanceStatus status, Date timestamp) {
-	Attendance attendance = new Attendance(staff.getId(), status.id(),
-		timestamp);
+	Attendance attendance = new Attendance(staff, status, timestamp);
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
@@ -249,9 +249,8 @@ public class PayrollServiceImpl implements PayrollService {
 	Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
 	for (Date date : dates) {
 	    Company co = staff.getCompany();
-	    Long companyID = co == null ? 0 : co.getId();
-	    Attendance attendance = new Attendance(companyID, staff.getId(),
-		    status.id(), date, wage);
+	    Attendance attendance = new Attendance(co, staff, status, date,
+		    wage);
 
 	    // Check if date is a weekend.
 	    int dayOfWeek = DateUtils.getDayOfWeek(date);

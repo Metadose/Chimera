@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
-import com.cebedo.pmsys.bean.PayrollIncludeTeamBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
@@ -44,7 +42,6 @@ import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
@@ -52,9 +49,11 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.ProjectFile;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
+import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
@@ -108,9 +107,9 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
-    public static final String ATTR_PAYROLL_MANUAL_TEAM_LIST = "manualTeamList";
+    public static final String ATTR_PAYROLL_CHECKBOX_MANAGERS = "managerList";
+    public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
     public static final String ATTR_PAYROLL_MANUAL_STAFF_LIST = "manualStaffList";
-    public static final String ATTR_PAYROLL_INCLUDE_TEAM = "payrollIncludeTeam";
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
 
     public static final String ATTR_MAP_ID_TO_MILESTONE = "idToMilestoneMap";
@@ -122,15 +121,7 @@ public class ProjectController {
     public static final String KEY_SUMMARY_TOTAL_MILESTONE_ONGOING = "Total Milestones (Ongoing)";
     public static final String KEY_SUMMARY_TOTAL_MILESTONE_DONE = "Total Milestones (Done)";
 
-    public static final String ATTR_PROJECT_STRUCT_MANAGERS = "projectStructManagers";
-    public static final String ATTR_PROJECT_STRUCT_TEAMS = "projectStructTeams";
-    public static final String ATTR_PROJECT_STRUCT_TASKS = "projectStructTasks";
-    public static final String ATTR_PROJECT_STRUCT_DELIVERIES = "projectStructDeliveries";
-
     public static final String KEY_PROJECT_STRUCTURE_MANAGERS = "Managers";
-    public static final String KEY_PROJECT_STRUCTURE_TEAMS = "Teams";
-    public static final String KEY_PROJECT_STRUCTURE_TASKS = "Tasks";
-    public static final String KEY_PROJECT_STRUCTURE_DELIVERIES = "Deliveries";
 
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
@@ -922,7 +913,7 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
 	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProjectID());
+		    .getProject().getId());
 	}
 
 	// Do service.
@@ -954,12 +945,12 @@ public class ProjectController {
 	    HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
-	// TODO End the session after this.
-	// TODO Then redirect to an edit page of this object.
+	// End the session after this.
+	// Then redirect to an edit page of this object.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
 	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProjectID());
+		    .getProject().getId());
 	}
 
 	// Update the payroll then clear the computation.
@@ -992,7 +983,7 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
 	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProjectID());
+		    .getProject().getId());
 	}
 	Date startDate = projectPayroll.getStartDate();
 	Date endDate = projectPayroll.getEndDate();
@@ -1037,7 +1028,7 @@ public class ProjectController {
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/"
-		+ projectPayroll.getProjectID();
+		+ projectPayroll.getProject().getId();
     }
 
     /**
@@ -1050,9 +1041,9 @@ public class ProjectController {
     private String createPayrollRedirectKey(ProjectPayroll projectPayroll) {
 	// Redirect to:
 	// /project/edit/payroll/${payrollKey}-end
-	String payrollKey = projectPayroll.getApproverID() + "-";
-	payrollKey += projectPayroll.getCreatorID() + "-";
-	payrollKey += projectPayroll.getStatusID() + "-";
+	String payrollKey = projectPayroll.getApprover() + "-";
+	payrollKey += projectPayroll.getCreator() + "-";
+	payrollKey += projectPayroll.getStatus() + "-";
 	payrollKey += DateUtils.formatDate(projectPayroll.getStartDate()) + "-";
 	payrollKey += DateUtils.formatDate(projectPayroll.getEndDate());
 
@@ -1092,9 +1083,9 @@ public class ProjectController {
 	    // Assign the creator.
 	    // Add the empty object.
 	    // Then redirect.
-	    long creatorID = this.authHelper.getAuth().getUser().getId();
-	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(
-		    companyID, projectID, creatorID));
+	    SystemUser creator = this.authHelper.getAuth().getUser();
+	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(co,
+		    proj, creator));
 	    return RedisConstants.JSP_PAYROLL_EDIT;
 	}
 
@@ -1147,35 +1138,22 @@ public class ProjectController {
      * @param model
      * @param proj
      */
-    @SuppressWarnings("unchecked")
     private void setModelAttributesOfPayroll(ProjectPayroll projectPayroll,
 	    Model model, Long companyID) {
 
 	// For the multi-select box.
-	// Get all staff in this project.
-	Map<String, Object> projectStruct = projectPayroll
-		.getProjectStructure();
-	Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TEAMS);
-	Map<Task, Set<Staff>> taskStaffMap = (Map<Task, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_TASKS);
-	Map<Delivery, Set<Staff>> deliveryStaffMap = (Map<Delivery, Set<Staff>>) projectStruct
-		.get(KEY_PROJECT_STRUCTURE_DELIVERIES);
-
-	// Attach complete list of teams that are not on the list.
-	List<Team> manualTeamList = this.teamService.listExcept(companyID,
-		teamStaffMap.keySet());
+	// Get all staff in this project payroll.
+	// List of staff "during that time".
+	Set<ManagerAssignment> managers = projectPayroll
+		.getManagerAssignments();
+	Set<Staff> staff = projectPayroll.getStaffList();
 
 	// Get collection of all staff here.
-	Set<Staff> staffToExclude = getStaffSetInPayroll(teamStaffMap,
-		taskStaffMap, deliveryStaffMap);
 	List<Staff> manualStaffList = this.staffService.listExcept(companyID,
-		staffToExclude);
+		projectPayroll.getAssignedStaffList());
 
 	// Set attributes.
 	// Manually include team/staff beans.
-	model.addAttribute(ATTR_PAYROLL_INCLUDE_TEAM,
-		new PayrollIncludeTeamBean());
 	model.addAttribute(ATTR_PAYROLL_INCLUDE_STAFF,
 		new PayrollIncludeStaffBean());
 
@@ -1184,75 +1162,9 @@ public class ProjectController {
 	model.addAttribute(ATTR_PAYROLL_JSON, projectPayroll.getPayrollJSON());
 
 	// Structure/checklist attributes.
-	model.addAttribute(ATTR_PROJECT_STRUCT_MANAGERS,
-		projectPayroll.getManagers());
-	model.addAttribute(ATTR_PROJECT_STRUCT_TEAMS, teamStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_TASKS, taskStaffMap);
-	model.addAttribute(ATTR_PROJECT_STRUCT_DELIVERIES, deliveryStaffMap);
-	model.addAttribute(ATTR_PAYROLL_MANUAL_TEAM_LIST, manualTeamList);
+	model.addAttribute(ATTR_PAYROLL_CHECKBOX_MANAGERS, managers);
+	model.addAttribute(ATTR_PAYROLL_CHECKBOX_STAFF, staff);
 	model.addAttribute(ATTR_PAYROLL_MANUAL_STAFF_LIST, manualStaffList);
-    }
-
-    /**
-     * Manually include a team to payroll checklist.
-     * 
-     * @param includeTeamBean
-     * @param projectPayroll
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = RedisConstants.OBJECT_PAYROLL + "/"
-	    + SystemConstants.REQUEST_INCLUDE + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public String includeTeamToPayroll(
-	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_TEAM) PayrollIncludeTeamBean includeTeamBean,
-	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
-
-	// Do service.
-	// Get response.
-	String response = this.projectService.includeTeamToPayroll(
-		projectPayroll, includeTeamBean.getTeamID());
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
-
-	return payrollEndState(status, projectPayroll);
-    }
-
-    /**
-     * Get all staff involved in this payroll.
-     * 
-     * @param teamStaffMap
-     * @param taskStaffMap
-     * @param deliveryStaffMap
-     * @return
-     */
-    public Set<Staff> getStaffSetInPayroll(Map<Team, Set<Staff>> teamStaffMap,
-	    Map<Task, Set<Staff>> taskStaffMap,
-	    Map<Delivery, Set<Staff>> deliveryStaffMap) {
-
-	Set<Staff> staffToExclude = new HashSet<Staff>();
-
-	// Team.
-	for (Team team : teamStaffMap.keySet()) {
-	    Set<Staff> staffSet = teamStaffMap.get(team);
-	    staffToExclude.addAll(staffSet);
-	}
-
-	// Task.
-	for (Task task : taskStaffMap.keySet()) {
-	    Set<Staff> staffSet = taskStaffMap.get(task);
-	    staffToExclude.addAll(staffSet);
-	}
-
-	// Delivery.
-	for (Delivery delivery : deliveryStaffMap.keySet()) {
-	    Set<Staff> staffSet = deliveryStaffMap.get(delivery);
-	    staffToExclude.addAll(staffSet);
-	}
-
-	return staffToExclude;
     }
 
     /**
@@ -1316,6 +1228,8 @@ public class ProjectController {
 
 	// Model for forms.
 	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
+
+	// TODO Comment below.
 	model.addAttribute(ATTR_PROJECT_FILE, new MultipartBean(id));
 	model.addAttribute(ATTR_PHOTO, new MultipartBean(id));
 
@@ -1351,8 +1265,8 @@ public class ProjectController {
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
 		.getCompany().getId();
 	List<Field> fieldList = this.fieldService.list();
-	List<Staff> staffList = this.staffService.listUnassignedInProject(
-		companyID, proj);
+	List<Staff> staffList = this.staffService.listExcept(companyID,
+		proj.getAssignedStaff());
 
 	// Get list of teams unassigned.
 	// If at least one is not assigned, add a bean for the form input field.
