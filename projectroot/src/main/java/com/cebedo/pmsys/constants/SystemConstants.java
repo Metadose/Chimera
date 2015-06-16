@@ -18,6 +18,7 @@ public abstract class SystemConstants {
     public static final String REQUEST_LOGIN = "login";
     public static final String REQUEST_LIST = "list";
     public static final String REQUEST_EDIT = "edit";
+    public static final String REQUEST_TEST = "test";
     public static final String REQUEST_ADD = "add";
     public static final String REQUEST_INCLUDE = "include";
     public static final String REQUEST_DELETE = "delete";
@@ -71,6 +72,7 @@ public abstract class SystemConstants {
     public static final String ACTION_ASSIGN = "Assign";
 
     public static final String UI_PARAM_ALERT = "uiParamAlert";
+    public static final String UI_FORMULA_TEST = "uiFormulaTest";
 
     public static final String UI_STATUS_INFO = "info";
     public static final String UI_STATUS_SUCCESS = "success";

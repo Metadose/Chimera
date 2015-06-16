@@ -15,12 +15,21 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.repository.FormulaValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.wolfram.alpha.WAEngine;
+import com.wolfram.alpha.WAException;
+import com.wolfram.alpha.WAPlainText;
+import com.wolfram.alpha.WAPod;
+import com.wolfram.alpha.WAQuery;
+import com.wolfram.alpha.WAQueryResult;
+import com.wolfram.alpha.WASubpod;
 
 @Service
 public class FormulaServiceImpl implements FormulaService {
 
+    private static final String WA_APP_ID = "AU7QGR-T7QT7QVGKY";
     private AuthHelper authHelper = new AuthHelper();
     private FormulaValueRepo formulaValueRepo;
+    private WAEngine wolframAlphaEngine = new WAEngine();
 
     public void setFormulaValueRepo(FormulaValueRepo formulaValueRepo) {
 	this.formulaValueRepo = formulaValueRepo;
@@ -98,5 +107,75 @@ public class FormulaServiceImpl implements FormulaService {
 	Set<String> keys = this.formulaValueRepo.keys(pattern);
 	List<Formula> fList = this.formulaValueRepo.multiGet(keys);
 	return fList;
+    }
+
+    @Override
+    @Transactional
+    public String test(Formula formula) {
+
+	String returnStr = "";
+	String input = "(1/2)*5*6";
+
+	// TODO These properties will be set in all the WAQuery objects created
+	// from this WAEngine.
+	this.wolframAlphaEngine.setAppID(WA_APP_ID);
+	this.wolframAlphaEngine.addFormat("plaintext");
+
+	// Create the query.
+	WAQuery query = this.wolframAlphaEngine.createQuery();
+
+	// Set properties of the query.
+	query.setInput(input);
+
+	try {
+	    // For educational purposes, print out the URL we are about to send:
+	    returnStr += "\n\n\n" + "Query URL:";
+	    returnStr += "\n\n\n" + this.wolframAlphaEngine.toURL(query);
+
+	    // This sends the URL to the Wolfram|Alpha server, gets the XML
+	    // result
+	    // and parses it into an object hierarchy held by the WAQueryResult
+	    // object.
+	    WAQueryResult queryResult = this.wolframAlphaEngine
+		    .performQuery(query);
+
+	    if (queryResult.isError()) {
+		returnStr += "\n\n\n" + "Query error";
+		returnStr += "\n\n\n" + "  error code: "
+			+ queryResult.getErrorCode();
+		returnStr += "\n\n\n" + "  error message: "
+			+ queryResult.getErrorMessage();
+	    } else if (!queryResult.isSuccess()) {
+		System.out
+			.println("Query was not understood; no results available.");
+	    } else {
+		// Got a result.
+		returnStr += "\n\n\n" + "Successful query. Pods follow:\n";
+		for (WAPod pod : queryResult.getPods()) {
+		    if (!pod.isError()) {
+			returnStr += "\n\n\n" + pod.getTitle();
+			returnStr += "\n\n\n" + "------------";
+			for (WASubpod subpod : pod.getSubpods()) {
+			    for (Object element : subpod.getContents()) {
+				if (element instanceof WAPlainText) {
+				    returnStr += "\n\n\n"
+					    + ((WAPlainText) element).getText();
+				    returnStr += "\n\n\n" + "";
+				}
+			    }
+			}
+			returnStr += "\n\n\n" + "";
+		    }
+		}
+		// We ignored many other types of Wolfram|Alpha output, such as
+		// warnings, assumptions, etc.
+		// These can be obtained by methods of WAQueryResult or objects
+		// deeper in the hierarchy.
+	    }
+	} catch (WAException e) {
+	    e.printStackTrace();
+	}
+
+	return returnStr;
     }
 }

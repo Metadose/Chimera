@@ -60,7 +60,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
-                        <c:url var="urlBack" value="/formula/edit/${formula.uuid}" />
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -87,17 +87,39 @@
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name"/><br/>
 				                                            <label>Formula</label>
-				                                            <form:input type="text" class="form-control" path="formula"/><br/>
+				                                            <form:input type="text" id="formula" class="form-control" path="formula"/><br/>
 				                                            <label>Description</label>
 				                                            <form:input type="text" class="form-control" path="description"/>
 				                                        </div>
-				                                        <c:if test="${isUpdating}">
-	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
-				                                        </c:if>
-				                                        <c:if test="${!isUpdating}">
-	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
-				                                        </c:if>
 				                                    </form:form>
+			                                        <c:if test="${isUpdating}">
+                                            		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
+			                                        </c:if>
+			                                        <c:if test="${!isUpdating}">
+                                            		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
+			                                        </c:if>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Test Formula</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+                   									<form:form modelAttribute="formula"
+														method="post"
+														action="${contextPath}/formula/test">
+				                                        <div class="form-group">
+				                                            <label>Formula</label>
+				                                            <form:input type="text" id="formula" class="form-control" path="formula"/>
+				                                        </div>
+			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Test Formula</button>
+				                                    </form:form>
+				                                    ${uiFormulaTest}
                    								</div>
                    							</div>
                    						</div>
@@ -111,4 +133,9 @@
         </aside>
 	</div>
 </body>
+<script>
+function submitForm(id) {
+	$('#'+id).submit();
+}
+</script>
 </html>

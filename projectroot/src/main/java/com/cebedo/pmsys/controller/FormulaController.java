@@ -47,6 +47,42 @@ public class FormulaController {
 	return JSP_LIST;
     }
 
+    /**
+     * Test a formula.
+     * 
+     * @param formula
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = { SystemConstants.REQUEST_TEST }, method = RequestMethod.POST)
+    public String testFormula(
+	    @ModelAttribute(RedisConstants.OBJECT_FORMULA) Formula formula,
+	    SessionStatus status, RedirectAttributes redirectAttrs) {
+
+	// Do service and get response.
+	String response = this.formulaService.test(formula);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_FORMULA_TEST,
+		response);
+
+	// Clear session.
+	status.setComplete();
+
+	return SystemConstants.CONTROLLER_REDIRECT
+		+ RedisConstants.OBJECT_FORMULA + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + formula.getUuid();
+    }
+
+    /**
+     * Create or update a formula.
+     * 
+     * @param formula
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE }, method = RequestMethod.POST)
     public String createFormula(
 	    @ModelAttribute(RedisConstants.OBJECT_FORMULA) Formula formula,

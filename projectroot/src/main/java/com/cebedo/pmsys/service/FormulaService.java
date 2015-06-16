@@ -27,4 +27,6 @@ public interface FormulaService {
 
     public List<Formula> list();
 
+    public String test(Formula formula);
+
 }
