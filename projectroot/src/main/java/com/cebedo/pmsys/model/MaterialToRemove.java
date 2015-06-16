@@ -20,8 +20,8 @@ import javax.persistence.TemporalType;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
-@Table(name = Material.TABLE_NAME)
-public class Material implements Serializable {
+@Table(name = MaterialToRemove.TABLE_NAME)
+public class MaterialToRemove implements Serializable {
 
     public static final String TABLE_NAME = "materials";
     public static final String OBJECT_NAME = "material";

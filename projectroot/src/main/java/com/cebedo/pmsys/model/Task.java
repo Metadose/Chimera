@@ -55,7 +55,7 @@ public class Task implements Serializable {
     private Milestone milestone;
     private Set<Staff> staff;
     private Set<Team> teams;
-    private Set<Material> materials;
+    private Set<MaterialToRemove> materials;
     private Set<Expense> expenses;
     private int status;
     private Company company;
@@ -166,11 +166,11 @@ public class Task implements Serializable {
     }
 
     @OneToMany(mappedBy = "task")
-    public Set<Material> getMaterials() {
+    public Set<MaterialToRemove> getMaterials() {
 	return materials;
     }
 
-    public void setMaterials(Set<Material> materials) {
+    public void setMaterials(Set<MaterialToRemove> materials) {
 	this.materials = materials;
     }
 

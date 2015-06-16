@@ -136,6 +136,12 @@ $(document).ready(function() {
                 </a>
             </li>
             </sec:authorize>
+            <li>
+            	<c:url var="urlFormulaList" value="/formula/list/"/>
+                <a href="${urlFormulaList}">
+                    <i class="fa fa-connectdevelop"></i> <span>Formulas</span>
+                </a>
+            </li>
 <%--             <sec:authorize access="hasRole('ACCESS_PROJECTFILE')"> --%>
 <!--             <li> -->
 <%--             	<c:url var="urlProjFileList" value="/projectfile/list/"/> --%>

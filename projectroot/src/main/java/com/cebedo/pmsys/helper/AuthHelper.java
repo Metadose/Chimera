@@ -8,7 +8,7 @@ import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Delivery;
 import com.cebedo.pmsys.model.Expense;
-import com.cebedo.pmsys.model.Material;
+import com.cebedo.pmsys.model.MaterialToRemove;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
@@ -231,7 +231,7 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(Material material) {
+    public boolean isActionAuthorized(MaterialToRemove material) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;

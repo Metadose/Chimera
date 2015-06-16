@@ -43,7 +43,7 @@ public class Expense implements Serializable {
     private Staff staff;
     private Team team;
     private Delivery delivery;
-    private Material material;
+    private MaterialToRemove material;
     private Milestone milestone;
     private Reminder reminder;
     private Storage storage;
@@ -158,12 +158,12 @@ public class Expense implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = Material.COLUMN_PRIMARY_KEY)
-    public Material getMaterial() {
+    @JoinColumn(name = MaterialToRemove.COLUMN_PRIMARY_KEY)
+    public MaterialToRemove getMaterial() {
 	return material;
     }
 
-    public void setMaterial(Material material) {
+    public void setMaterial(MaterialToRemove material) {
 	this.material = material;
     }
 

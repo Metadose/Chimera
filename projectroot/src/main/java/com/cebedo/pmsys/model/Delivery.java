@@ -41,7 +41,7 @@ public class Delivery implements Serializable {
     private Company company;
     private Set<Staff> staff;
     private Storage storage;
-    private Set<Material> materials;
+    private Set<MaterialToRemove> materials;
     private Set<Expense> expenses;
 
     @Id
@@ -76,11 +76,11 @@ public class Delivery implements Serializable {
     }
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
-    public Set<Material> getMaterials() {
+    public Set<MaterialToRemove> getMaterials() {
 	return materials;
     }
 
-    public void setMaterials(Set<Material> materials) {
+    public void setMaterials(Set<MaterialToRemove> materials) {
 	this.materials = materials;
     }
 

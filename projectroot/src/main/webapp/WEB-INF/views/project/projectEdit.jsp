@@ -66,11 +66,10 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
-<!--                                 		<li><a href="#tab_teams" data-toggle="tab">Teams</a></li> -->
-		                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
 		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
-<!-- 		                                <li><a href="#tab_3" data-toggle="tab">Files</a></li> -->
+		                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
+										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 	</c:when>
                                 </c:choose>
@@ -709,6 +708,189 @@
                						</div>
                						</div>
                                 </div><!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_inventory">
+                                	<div class="row">
+		                            <div class="col-md-6">
+               							<div class="box box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Deliveries</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+										  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0"/>
+		                                  		<a href="${urlCreateDelivery}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
+		                                  		</a>
+		                                  		<br/>
+		                                  		<br/>
+			                                    <table id="delivery-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                            <tr>
+			                                            	<th>&nbsp;</th>
+<!-- 			                                                <th>Start Date</th> -->
+<!-- 			                                                <th>End Date</th> -->
+<!-- 			                                            	<th>Approver</th> -->
+<!-- 			                                                <th>Creator</th> -->
+<!-- 			                                                <th>Status</th> -->
+<!-- 			                                                <th>Payroll Total</th> -->
+<!-- 			                                                <th>Last Computed</th> -->
+			                                            </tr>
+	                                        		</thead>
+			                                        <tbody>
+				                                		<c:forEach items="${payrollList}" var="payrollRow">
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
+				                                				var="payrollKey"></c:set>
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<a href="${urlEditPayroll}">
+							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <a href="${urlDeletePayroll}">
+	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+								                                    </a>
+																</center>
+															</td>
+			                                            </tr>
+		                                            	</c:forEach>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+               							</div>
+               						</div>
+               						<div class="col-md-6">
+               							<div class="box box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Pull-Outs</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
+		                                  		<a href="${urlCreateTeam}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
+		                                  		</a>
+		                                  		<br/>
+		                                  		<br/>
+			                                    <table id="pull-out-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                            <tr>
+			                                            	<th>&nbsp;</th>
+<!-- 			                                                <th>Start Date</th> -->
+<!-- 			                                                <th>End Date</th> -->
+<!-- 			                                            	<th>Approver</th> -->
+<!-- 			                                                <th>Creator</th> -->
+<!-- 			                                                <th>Status</th> -->
+<!-- 			                                                <th>Payroll Total</th> -->
+<!-- 			                                                <th>Last Computed</th> -->
+			                                            </tr>
+	                                        		</thead>
+			                                        <tbody>
+				                                		<c:forEach items="${payrollList}" var="payrollRow">
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
+				                                				var="payrollKey"></c:set>
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<a href="${urlEditPayroll}">
+							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <a href="${urlDeletePayroll}">
+	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+								                                    </a>
+																</center>
+															</td>
+			                                            </tr>
+		                                            	</c:forEach>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+               							</div>
+               						</div>
+               						</div>
+                                	<div class="row">
+		                            <div class="col-xs-12">
+               							<div class="box box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Inventory</h3>
+               								</div>
+               								<div class="box-body box-default">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
+		                                  		<a href="${urlCreateTeam}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
+		                                  		</a>
+		                                  		<br/>
+		                                  		<br/>
+			                                    <table id="payroll-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                            <tr>
+			                                            	<th>&nbsp;</th>
+			                                                <th>Start Date</th>
+			                                                <th>End Date</th>
+			                                            	<th>Approver</th>
+			                                                <th>Creator</th>
+			                                                <th>Status</th>
+			                                                <th>Payroll Total</th>
+			                                                <th>Last Computed</th>
+			                                            </tr>
+	                                        		</thead>
+			                                        <tbody>
+				                                		<c:forEach items="${payrollList}" var="payrollRow">
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
+				                                				var="payrollKey"></c:set>
+				                                		
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<a href="${urlEditPayroll}">
+							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <a href="${urlDeletePayroll}">
+	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+								                                    </a>
+																</center>
+															</td>
+															<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+			                                                <td>${payrollStartDate}</td>
+			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+			                                                <td>${payrollEndDate}</td>
+			                                                <td>${payrollRow.approver.staff.getFullName()}</td>
+			                                                <td>${payrollRow.creator.staff.getFullName()}</td>
+			                                                <td>
+			                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
+			                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
+															<span class="label ${css}">${payrollStatus}</span>
+			                                                </td>
+			                                                <td>${payrollRow.payrollComputationResult.getOverallTotalOfStaffAsString()}</td>
+			                                                <fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${payrollRow.lastComputed}" var="lastComputed"/>
+			                                                <td>${lastComputed}</td>
+			                                            </tr>
+		                                            	</c:forEach>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+               							</div>
+               						</div>
+               						</div>
+                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
                                 		<div class="box-header">
@@ -1094,6 +1276,8 @@
 	    });
 		
 		$(document).ready(function() {
+			$("#pull-out-table").dataTable();
+			$("#delivery-table").dataTable();
 			$("#payroll-table").dataTable();
 			$("#milestones-table").dataTable();
 			$("#managers-table").dataTable();

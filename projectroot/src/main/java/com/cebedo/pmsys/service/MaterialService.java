@@ -1,23 +1,27 @@
 package com.cebedo.pmsys.service;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
-import com.cebedo.pmsys.model.Material;
-import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.domain.Material;
 
 public interface MaterialService {
 
-    public void create(Material material);
+    public void rename(Material obj, String newKey);
 
-    public Material getByID(long id);
+    public void multiSet(Map<String, Material> m);
 
-    public void update(Material material);
+    public void set(Material obj);
 
-    public void delete(long id);
+    public void delete(Collection<String> keys);
 
-    public List<Material> list();
+    public void setIfAbsent(Material obj);
 
-    public Map<String, Object> getMaterialsSummary(Project proj);
+    public Material get(String key);
+
+    public Set<String> keys(String pattern);
+
+    public Collection<Material> multiGet(Collection<String> keys);
 
 }

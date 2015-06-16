@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
-import com.cebedo.pmsys.model.Material;
+import com.cebedo.pmsys.model.MaterialToRemove;
 import com.cebedo.pmsys.model.Project;
 
 @Repository
@@ -21,22 +21,22 @@ public class MaterialDAOImpl implements MaterialDAO {
     }
 
     @Override
-    public void create(Material material) {
+    public void create(MaterialToRemove material) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(material);
     }
 
     @Override
-    public Material getByID(long id) {
+    public MaterialToRemove getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Material material = (Material) this.daoHelper.criteriaGetObjByID(
-		session, Material.class, Material.PROPERTY_ID, id)
+	MaterialToRemove material = (MaterialToRemove) this.daoHelper.criteriaGetObjByID(
+		session, MaterialToRemove.class, MaterialToRemove.PROPERTY_ID, id)
 		.uniqueResult();
 	return material;
     }
 
     @Override
-    public void update(Material material) {
+    public void update(MaterialToRemove material) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.update(material);
     }
@@ -44,7 +44,7 @@ public class MaterialDAOImpl implements MaterialDAO {
     @Override
     public void delete(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Material material = getByID(id);
+	MaterialToRemove material = getByID(id);
 	if (material != null) {
 	    session.delete(material);
 	}
@@ -52,19 +52,19 @@ public class MaterialDAOImpl implements MaterialDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Material> list() {
+    public List<MaterialToRemove> list() {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Material> list = session.createQuery(
-		"FROM " + Material.class.getName()).list();
+	List<MaterialToRemove> list = session.createQuery(
+		"FROM " + MaterialToRemove.class.getName()).list();
 	return list;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Material> list(Project project) {
+    public List<MaterialToRemove> list(Project project) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Material> list = this.daoHelper.criteriaGetObjByID(session,
-		Material.class, Material.PROPERTY_PROJECT, project).list();
+	List<MaterialToRemove> list = this.daoHelper.criteriaGetObjByID(session,
+		MaterialToRemove.class, MaterialToRemove.PROPERTY_PROJECT, project).list();
 	return list;
     }
 

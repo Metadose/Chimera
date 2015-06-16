@@ -30,7 +30,7 @@ public class Supplier implements Serializable {
     private long id;
     private String name;
     private String description;
-    private Set<Material> materials;
+    private Set<MaterialToRemove> materials;
     private Company company;
     private Set<Expense> expenses;
 
@@ -64,11 +64,11 @@ public class Supplier implements Serializable {
     }
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
-    public Set<Material> getMaterials() {
+    public Set<MaterialToRemove> getMaterials() {
 	return materials;
     }
 
-    public void setMaterials(Set<Material> materials) {
+    public void setMaterials(Set<MaterialToRemove> materials) {
 	this.materials = materials;
     }
 

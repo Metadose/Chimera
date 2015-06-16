@@ -268,7 +268,7 @@
                 <beans:value>com.cebedo.pmsys.model.Milestone</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Delivery</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Reminder</beans:value>
-                <beans:value>com.cebedo.pmsys.model.Material</beans:value>
+                <beans:value>com.cebedo.pmsys.model.MaterialToRemove</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Supplier</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Expense</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Storage</beans:value>
@@ -332,7 +332,10 @@
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
-        <beans:property name="materialDAO" ref="materialDAO"></beans:property>
+        <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
     <beans:bean id="storageDAO" class="com.cebedo.pmsys.dao.StorageDAOImpl">
@@ -421,6 +424,12 @@
     </beans:bean>
     
     <!-- Redis object Notification -->
+    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.FormulaServiceImpl">
+        <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="formulaValueRepo" class="com.cebedo.pmsys.repository.FormulaValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
     <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.repository.NotificationZSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>

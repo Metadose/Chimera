@@ -62,7 +62,7 @@ public class Project implements Serializable {
     private Company company;
     private Set<Delivery> deliveries;
     private Set<Reminder> reminders;
-    private Set<Material> materials;
+    private Set<MaterialToRemove> materials;
     private Set<Expense> expenses;
 
     /**
@@ -290,11 +290,11 @@ public class Project implements Serializable {
     }
 
     @OneToMany(mappedBy = "project")
-    public Set<Material> getMaterials() {
+    public Set<MaterialToRemove> getMaterials() {
 	return materials;
     }
 
-    public void setMaterials(Set<Material> materials) {
+    public void setMaterials(Set<MaterialToRemove> materials) {
 	this.materials = materials;
     }
 

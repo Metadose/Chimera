@@ -1,99 +1,70 @@
 package com.cebedo.pmsys.service;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.dao.MaterialDAO;
-import com.cebedo.pmsys.enums.MaterialStatus;
-import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.model.Material;
-import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.repository.MaterialValueRepo;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
 
-    private AuthHelper authHelper = new AuthHelper();
-    private MaterialDAO materialDAO;
+    private MaterialValueRepo materialValueRepo;
 
-    public void setMaterialDAO(MaterialDAO materialDAO) {
-	this.materialDAO = materialDAO;
+    public void setMaterialValueRepo(MaterialValueRepo materialValueRepo) {
+	this.materialValueRepo = materialValueRepo;
     }
 
     @Override
     @Transactional
-    public void create(Material material) {
-	if (this.authHelper.isActionAuthorized(material)) {
-	    this.materialDAO.create(material);
-	}
+    public void rename(Material obj, String newKey) {
+	this.materialValueRepo.rename(obj, newKey);
     }
 
     @Override
     @Transactional
-    public Material getByID(long id) {
-	Material material = this.materialDAO.getByID(id);
-	if (this.authHelper.isActionAuthorized(material)) {
-	    return material;
-	}
-	return new Material();
+    public void multiSet(Map<String, Material> m) {
+	this.materialValueRepo.multiSet(m);
     }
 
     @Override
     @Transactional
-    public void update(Material material) {
-	if (this.authHelper.isActionAuthorized(material)) {
-	    this.materialDAO.update(material);
-	}
+    public void set(Material obj) {
+	this.materialValueRepo.set(obj);
     }
 
     @Override
     @Transactional
-    public void delete(long id) {
-	Material material = this.materialDAO.getByID(id);
-	if (this.authHelper.isActionAuthorized(material)) {
-	    this.materialDAO.delete(id);
-	}
+    public void delete(Collection<String> keys) {
+	this.materialValueRepo.delete(keys);
     }
 
     @Override
     @Transactional
-    public List<Material> list() {
-	return this.materialDAO.list();
+    public void setIfAbsent(Material obj) {
+	this.materialValueRepo.setIfAbsent(obj);
     }
 
     @Override
     @Transactional
-    public Map<String, Object> getMaterialsSummary(Project proj) {
-	List<Material> materialsInProj = this.materialDAO.list(proj);
+    public Material get(String key) {
+	return this.materialValueRepo.get(key);
+    }
 
-	Map<String, Map<MaterialStatus, Integer>> materialCountMap = new HashMap<String, Map<MaterialStatus, Integer>>();
-	double totalCostOfMaterials = 0;
+    @Override
+    @Transactional
+    public Set<String> keys(String pattern) {
+	return this.materialValueRepo.keys(pattern);
+    }
 
-	for (Material material : materialsInProj) {
-	    String name = material.getName();
-
-	    // For a specific material,
-	    // How many are used? how many are not used?
-	    Map<MaterialStatus, Integer> statusCountMap = new HashMap<MaterialStatus, Integer>();
-	    MaterialStatus status = MaterialStatus.of(material.getStatus());
-	    Integer materialCount = materialCountMap.get(name) == null ? 1
-		    : materialCountMap.get(name).get(status) == null ? 1
-			    : materialCountMap.get(name).get(status) + 1;
-	    statusCountMap.put(status, materialCount);
-	    materialCountMap.put(name, statusCountMap);
-
-	    // Total cost of materials.
-	    totalCostOfMaterials += material.getPrice();
-	}
-	Map<String, Object> materialsSummary = new HashMap<String, Object>();
-	materialsSummary.put(Material.MATERIALS_SUMMARY_KEY_TOTAL_COST,
-		totalCostOfMaterials);
-	materialsSummary.put(Material.MATERIALS_SUMMARY_KEY_COUNT,
-		materialCountMap);
-	return materialsSummary;
+    @Override
+    @Transactional
+    public Collection<Material> multiGet(Collection<String> keys) {
+	return this.materialValueRepo.multiGet(keys);
     }
 
 }
