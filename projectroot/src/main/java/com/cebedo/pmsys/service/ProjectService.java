@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
@@ -102,5 +103,8 @@ public interface ProjectService {
 	    ProjectPayroll projectPayroll, String toClear);
 
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList);
+
+    public String includeStaffToPayroll(ProjectPayroll projectPayroll,
+	    PayrollIncludeStaffBean includeStaffBean);
 
 }

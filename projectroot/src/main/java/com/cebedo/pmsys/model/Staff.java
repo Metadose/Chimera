@@ -268,6 +268,19 @@ public class Staff implements Serializable {
 	return fullName;
     }
 
+    @Transient
+    public String getFormalName() {
+	String pfx = getPrefix() == null || getPrefix().equals("") ? "" : ", "
+		+ getPrefix();
+	String fname = getFirstName() == null ? "" : getFirstName();
+	String mname = getMiddleName() == null || getMiddleName().equals("") ? ""
+		: ", " + getMiddleName().charAt(0) + ".";
+	String lname = getLastName() == null ? "" : getLastName();
+	String sfx = getSuffix() == null ? "" : getSuffix();
+
+	return lname + ", " + fname + " " + sfx + mname + pfx;
+    }
+
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
     public Set<Expense> getExpenses() {
 	return expenses;

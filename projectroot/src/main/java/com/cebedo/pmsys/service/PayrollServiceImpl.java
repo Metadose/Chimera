@@ -45,8 +45,11 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     @Transactional
     public void set(Attendance attendance) {
-	AttendanceStatus status = attendance.getStatus() == null ? AttendanceStatus
-		.of(attendance.getStatusID()) : attendance.getStatus();
+	if (attendance.getStatus() == null) {
+	    attendance.setStatus(AttendanceStatus.of(attendance.getStatusID()));
+	}
+	AttendanceStatus status = attendance.getStatus();
+
 	if (status == AttendanceStatus.DELETE) {
 	    deleteAllInDate(attendance);
 	    return;

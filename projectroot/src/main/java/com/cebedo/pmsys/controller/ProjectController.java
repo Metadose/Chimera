@@ -190,7 +190,7 @@ public class ProjectController {
     @RequestMapping(value = { SystemConstants.REQUEST_ROOT,
 	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
-	model.addAttribute(ATTR_LIST, this.projectService.listWithTasks());
+	model.addAttribute(ATTR_LIST, this.projectService.list());
 	return JSP_LIST;
     }
 
@@ -981,6 +981,25 @@ public class ProjectController {
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_PAYROLL + "/"
+	    + SystemConstants.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
+    public String includeStaffToPayroll(
+	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
+	    SessionStatus status,
+	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) PayrollIncludeStaffBean includeStaffBean,
+	    RedirectAttributes redirectAttrs) {
+
+	String response = this.projectService.includeStaffToPayroll(
+		projectPayroll, includeStaffBean);
+
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	return payrollEndState(status, projectPayroll);
+    }
+
     /**
      * Open an edit page with payroll object.
      * 
@@ -1232,11 +1251,13 @@ public class ProjectController {
 	// List of staff "during that time".
 	Set<ManagerAssignment> managers = projectPayroll
 		.getManagerAssignments();
-	Set<Staff> staff = projectPayroll.getStaffList();
 
 	// Get collection of all staff here.
 	List<Staff> manualStaffList = this.staffService
-		.listUnassignedStaffInProject(companyID, proj);
+		.listUnassignedStaffInProjectPayroll(companyID, projectPayroll);
+
+	// Full list minus already included.
+	Set<Staff> staff = projectPayroll.getStaffList();
 
 	// Set attributes.
 	// Manually include team/staff beans.

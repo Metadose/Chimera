@@ -2,6 +2,9 @@ package com.cebedo.pmsys.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import com.cebedo.pmsys.model.Staff;
 
 public class DataStructUtils {
 
@@ -11,6 +14,12 @@ public class DataStructUtils {
 	    longNumbers.add(longNum);
 	}
 	return longNumbers;
+    }
+
+    public static List<Staff> convertSetToList(Set<Staff> staffSet) {
+	List<Staff> staffList = new ArrayList<Staff>();
+	staffList.addAll(staffSet);
+	return staffList;
     }
 
 }

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.bean.PayrollComputationResult;
+import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -661,7 +662,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    ProjectPayroll projectPayroll) {
 
 	// Do the computation.
-	this.projectPayrollComputerService.compute(proj, startDate, endDate,
+	this.projectPayrollComputerService.compute(startDate, endDate,
 		projectPayroll);
 
 	// Get the resulting state of the computation.
@@ -867,5 +868,19 @@ public class ProjectServiceImpl implements ProjectService {
 	    }
 	}
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
+    }
+
+    @Transactional
+    @Override
+    public String includeStaffToPayroll(ProjectPayroll projectPayroll,
+	    PayrollIncludeStaffBean includeStaffBean) {
+	Set<Staff> staffList = projectPayroll.getStaffList();
+	Staff staff = this.staffDAO.getByID(includeStaffBean.getStaffID());
+	staffList.add(staff);
+	projectPayroll.setStaffList(staffList);
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	return AlertBoxFactory.SUCCESS.generateInclude(Staff.OBJECT_NAME,
+		staff.getFullName());
     }
 }

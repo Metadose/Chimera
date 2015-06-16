@@ -25,6 +25,7 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
@@ -678,7 +679,8 @@ public class StaffServiceImpl implements StaffService {
 
 	    Date myDate = attendance.getTimestamp();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
-	    AttendanceStatus attnStat = attendance.getStatus();
+	    AttendanceStatus attnStat = attendance.getStatus() == null ? AttendanceStatus
+		    .of(attendance.getStatusID()) : attendance.getStatus();
 
 	    // Construct the event bean for this attendance.
 	    CalendarEventBean event = new CalendarEventBean();
@@ -970,6 +972,34 @@ public class StaffServiceImpl implements StaffService {
 	    // Minus list.
 	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project
 		    .getAssignedStaff());
+	    List<StaffWrapper> assignedManagerList = StaffWrapper
+		    .wrapSet(project.getManagers());
+
+	    // Do minus.
+	    wrappedStaffList.removeAll(assignedStaffList);
+	    wrappedStaffList.removeAll(assignedManagerList);
+	    return StaffWrapper.unwrap(StaffWrapper
+		    .removeEmptyNames(wrappedStaffList));
+	}
+	return new ArrayList<Staff>();
+    }
+
+    @Transactional
+    @Override
+    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID,
+	    ProjectPayroll projectPayroll) {
+
+	Project project = projectPayroll.getProject();
+
+	if (this.authHelper.isActionAuthorized(project)) {
+	    // Full list.
+	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
+	    List<StaffWrapper> wrappedStaffList = StaffWrapper
+		    .wrap(companyStaffList);
+
+	    // Minus list.
+	    List<StaffWrapper> assignedStaffList = StaffWrapper
+		    .wrapSet(projectPayroll.getStaffList());
 	    List<StaffWrapper> assignedManagerList = StaffWrapper
 		    .wrapSet(project.getManagers());
 

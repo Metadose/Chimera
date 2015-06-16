@@ -196,7 +196,7 @@ public class Attendance implements IDomainObject {
 
 	String key = companyPart + "staff:" + this.staff.getId()
 		+ ":payroll:attendance:date:" + date + ":status:"
-		+ getStatus().id();
+		+ (getStatus() == null ? getStatusID() : getStatus().id());
 
 	return key;
     }

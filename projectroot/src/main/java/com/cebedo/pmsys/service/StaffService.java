@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
@@ -139,5 +140,8 @@ public interface StaffService {
     public String unassignAllStaffMembers(Project project);
 
     public List<Staff> listUnassignedStaffInProject(Long companyID, Project proj);
+
+    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID,
+	    ProjectPayroll projectPayroll);
 
 }

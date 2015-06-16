@@ -85,6 +85,9 @@ public class StaffWrapper {
 	}
 	List<StaffWrapper> wrappedList = new ArrayList<StaffWrapper>();
 	for (Staff staff : staffList) {
+	    if (staff == null) {
+		continue;
+	    }
 	    wrappedList.add(new StaffWrapper(staff));
 	}
 	return wrappedList;

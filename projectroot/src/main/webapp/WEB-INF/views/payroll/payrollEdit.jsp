@@ -62,7 +62,7 @@
                     <div class="col-xs-12">
                         <c:url var="urlBack" value="/project/edit/${projectPayroll.project.id}" />
 	                    <a href="${urlBack}">
-							<button class="btn btn-default btn-flat btn-sm">Back to Project</button>
+							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 						</a><br/><br/>
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -81,6 +81,9 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<c:choose>
                    									<c:when  test="${empty payrollApproverOptions}">
                    									<i>Cannot create Payroll without a Project Manager.<br/>
@@ -118,10 +121,10 @@
 				                                            <form:input type="text" class="form-control date-picker" path="endDate" value="${endDate}"/>
 				                                        </div>
 				                                        <c:if test="${projectPayroll.saved}">
-	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
+	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
 				                                        </c:if>
 				                                        <c:if test="${!projectPayroll.saved}">
-	                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Create</button>
+	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
 				                                        </c:if>
 				                                    </form:form>
 				                                    </c:when>
@@ -134,17 +137,20 @@
                    									<h3 class="box-title">Include to Payroll</h3>
                    								</div>
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<p><i>This feature can be used to manually add Staff members that are not part of this Project.</i></p>
 			                                        <table>
-				                                    <form:form modelAttribute="projectPayroll"
+				                                    <form:form modelAttribute="payrollIncludeStaff"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/project/create/payroll">
+														action="${contextPath}/project/edit/payroll/include/staff">
 				                                        	<tr>
 				                                        	<td><label>Staff</label></td>
 				                                        	<td>&nbsp;</td>
 				                                        	<td style="width: 100%">
-				                                            <form:select class="form-control" path="statusID">
+				                                            <form:select class="form-control" path="staffID">
 				                                            	<c:forEach items="${manualStaffList}" var="staff">
 				                                            	<form:option class="form-control" value="${staff.id}" label="${staff.getFullName()}"/>
 				                                            	</c:forEach>
@@ -152,7 +158,7 @@
 				                                        	</td>
 				                                        	<td>&nbsp;</td>
 				                                        	<td>
-				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton">Include</button>
+				                                        	<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Include</button>
 				                                        	</td>
 				                                        	</tr>
 				                                    </form:form>
@@ -168,6 +174,9 @@
                    									<h3 class="box-title">Payroll Checklist</h3>
                    								</div>  
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<label>All</label>&nbsp;
 													<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 													<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
@@ -269,22 +278,20 @@
 																</c:if>
 						                                		</c:forEach>
 															</tbody>
-															</table><br/>
+															</table>
 															</c:when>
 															</c:choose>
-															
-															
 				                                        </div>
 				                                    </form:form>
 				                                    
 			                                        <c:if test="${!empty staffList || !empty managerList}">
-                                            		<button onclick="submitForm('checkboxesForm')" class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		<button onclick="submitForm('checkboxesForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
 			                                        </c:if>
 			                                        
 				                                    <c:if test="${!empty projectPayroll.assignedStaffList && fn:length(projectPayroll.assignedStaffList) > 0}">
                                             		<c:url var="urlCompute" value="/project/compute/payroll" />
                                             		<a href="${urlCompute}">
-														<button class="btn btn-default btn-flat btn-sm">Compute Payroll</button>
+														<button class="btn btn-cebedo-update btn-flat btn-sm">Compute Payroll</button>
 													</a>
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">
@@ -293,7 +300,8 @@
 													</c:when>
 													<c:when test="${!empty projectPayroll.lastComputed}">
 													<br/>
-													Last Computed: ${projectPayroll.lastComputed}
+													<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
+													Last Computed: ${lastComputed}
 													</c:when>
 													</c:choose>
 													</c:if>
@@ -310,9 +318,13 @@
                    						<div class="col-xs-12">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Computation as of ${projectPayroll.lastComputed}</h3>
+                   									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
+                   									<h3 class="box-title">Computation as of ${lastComputed}</h3>
                    								</div>
                    								<div class="box-body table-responsive">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<table id="treegrid1"></table>
                    								</div>
                 							</div>

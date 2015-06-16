@@ -84,19 +84,24 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<c:choose>
                                 						<c:when test="${project.id != 0}">
                                 							<c:choose>
 		                   										<c:when test="${!empty project.thumbnailURL}">
 		                   											<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
+		                   											<br/>
+		                   											<br/>
 		                   										</c:when>
 		                   										<c:when test="${empty project.thumbnailURL}">
-		                   											No photo uploaded.
+		                   											<div class="callout callout-warning callout-cebedo">
+													                    <p>No photo uploaded.</p>
+													                </div>
 		                   										</c:when>
 		                   									</c:choose>
-		                   									<br/>
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                   									<br/>
 		                   									<div class="form-group">
 		                   										<form:form id="uploadPhotoForm"
 	                   												modelAttribute="profilePhoto"
@@ -116,14 +121,25 @@
 			                   												</td>
 			                   											</tr>
 			                   										</table>
-							                                        <button class="btn btn-default btn-flat btn-sm">Upload</button>
 						                                        </form:form>
+						                                        <table>
+						                                        <tr>
+						                                        <td>
+						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-cebedo-upload btn-flat btn-sm">Upload</button>
+						                                        </td>
 						                                        <c:if test="${!empty project.thumbnailURL}">
+						                                        <td>
+						                                        &nbsp;
+						                                        </td>
+						                                        <td>
 						                                        <c:url var="urlProjectProfileDelete" value="/project/profile/delete"/>
                                 								<a href="${urlProjectProfileDelete}">
-						                                        <button class="btn btn-default btn-flat btn-sm">Delete Photo</button>
+						                                        <button class="btn btn-cebedo-delete btn-flat btn-sm">Delete Photo</button>
           														</a>
+						                                        </td>
 						                                        </c:if>
+						                                        </tr>
+						                                        </table>
 						                                    </div>
 						                                    </sec:authorize>
                                 						</c:when>
@@ -146,7 +162,7 @@
 			                                            <c:out value="${project.notes}"/><br/><br/>
 			                                            
 			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-			                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit</button>
+			                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit Details</button>
 			                                            </sec:authorize>
 			                                        </div>
 			                                        </c:if>
@@ -180,20 +196,18 @@
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
                                								<a href="${urlProjectDelete}">
-																<button class="btn btn-default btn-flat btn-sm">Delete This Project</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Project</button>
        														</a>
 		                                            	</c:when>
 		                                            </c:choose>
-		                                            <br/>
 		                                            <c:if test="${project.id != 0}">
-		                                            <br/>
-		                                            <button class="btn btn-default btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
+		                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
 		                                            </c:if>
 			                                        </div>
 		                                            </sec:authorize>
@@ -208,37 +222,38 @@
                    									<h3 class="box-title">More Information</h3>
                    								</div>
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
                												
                    											<c:if test="${!empty projectFields}">
    															<div class="form-group" id="fieldsDivViewer">
 	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
-	               													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-${field.label}-${field.value}"/>
-		                                								<a href="${urlEditProjectField}">
-						                                            	<button class="btn btn-default btn-flat btn-sm">Edit</button>
-	               														</a>
-						                                            </sec:authorize>
                														<!-- More Information Output -->
-	       															<label><c:out value="${field.label}"/></label>&nbsp;<c:out value="${field.value}"/>
+	       															<label><c:out value="${field.label}"/></label>
+	       															<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-${field.label}-${field.value}"/>
+						                                            	(
+		                                								<a class="general-link" href="${urlEditProjectField}">
+						                                            	Edit
+	               														</a>
+						                                            	)
+						                                            </sec:authorize>
+						                                            <br/>
+						                                            <c:out value="${field.value}"/>
+	       															<br/>
 	       															<br/>
 																</c:forEach>
-       															<br/>
-																<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-																	<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
-		                               								<a href="${urlProjectUnassignFieldAll}">
-																		<button class="btn btn-default btn-flat btn-sm">Remove All</button>
-		       														</a>
-																</sec:authorize>
    															</div>
    															</c:if>
    															<c:if test="${empty projectFields}">
-   																No extra information added.
-   																<br/>
+   															<div class="callout callout-warning callout-cebedo">
+											                    <p>No extra information added.</p>
+											                </div>
    															</c:if>
    															<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-   															<br/>
    															<h4>Add More Information</h4>
 															<form:form modelAttribute="field"
 																id="fieldsForm" 
@@ -256,7 +271,13 @@
 															
 															</form:form>
 															<br/>
-	                                           				<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add</button><br/>
+	                                           				<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add Information</button>
+	                                           				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+																<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
+	                               								<a href="${urlProjectUnassignFieldAll}">
+																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Remove All</button>
+	       														</a>
+															</sec:authorize>
 	                                           				</sec:authorize>
 			                                        </div>
                    								</div>
@@ -280,6 +301,9 @@
 	              									<h3 class="box-title">Timeline</h3>
 	              								</div>
 				                                <div class="box-body">
+				                                <div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
 				                                <table>
                										<tr>
            											<td>Legend:
@@ -326,7 +350,10 @@
                    									<h3 class="box-title">Milestones</h3>
                    								</div>
                    								<div class="box-body">
-                   									<button class="btn btn-default btn-flat btn-sm" id="createMilestone">Create Milestone</button>
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+                   									<button class="btn btn-cebedo-create btn-flat btn-sm" id="createMilestone">Create Milestone</button>
                    									<br/>
                    									<br/>
                    									<table id="milestones-table" class="table table-bordered table-striped">
@@ -346,8 +373,8 @@
 						                                	<c:set value="${milestoneMap.value}" var="msCount"/>
 															<tr>
 																<td>
-																<button class="btn btn-default btn-flat btn-sm">View</button>
-																<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 																</td>
 																<td>${milestone.name}</td>
 																<td>
@@ -400,7 +427,10 @@
                    									<h3 class="box-title">Summary of Tasks</h3>
                    								</div>
                    								<div class="box-body">
-                   								
+                   								<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+								                
                    								<b>Total Tasks:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
                    								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
                    								
@@ -437,13 +467,16 @@
                    									<h3 class="box-title">Tasks</h3>
                    								</div>
                    								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
 			                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 					                                	<table>
 					                                    	<tr>
 					                                    		<td>
 					                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
 					                                    			<a href="${urlAddTask}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">Add Task</button>
+							                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Task</button>
 					                                    			</a>
 					                                    		</td>
 					                                    		<c:if test="${!empty project.assignedTasks}">
@@ -454,7 +487,7 @@
 					                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
 					                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-			                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+			                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
 			               											</form>
 					                                    		</td>
 					                                    		</c:if>
@@ -482,7 +515,7 @@
 					                                        				<td>
 					                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 					                                        					<div class="btn-group">
-										                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+										                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 										                                                Mark As&nbsp;
 										                                                <span class="caret"></span>
 										                                            </button>
@@ -499,14 +532,14 @@
 										                                        </sec:authorize>
 										                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
 										                                        <a href="${urlViewTask}">
-								                                            	<button class="btn btn-default btn-flat btn-sm">View</button>
+								                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 										                                        </a>
 								                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 								                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
 								                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 								                                            	<input type="hidden" name="task_id" value="${task.id}"/>
 								                                            	<input type="hidden" name="project_id" value="${project.id}"/>
-								                                            	<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+								                                            	<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
 								                                            	</form> 
 								                                            	</sec:authorize>
 					                                        				</td>
@@ -559,6 +592,9 @@
                									<h3 class="box-title">Calendar</h3>
                								</div>
                								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
                									<table>
                										<tr>
            											<td>Legend:
@@ -581,74 +617,97 @@
           						</div>
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
-                                	<div class="box box-default">
-<!--                                 		<div class="box-header"> -->
-<!--           									<h3 class="box-title">Payroll</h3> -->
-<!--           								</div> -->
-		                                <div class="box-body">
-									  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
-	                                  		<a href="${urlCreateTeam}">
-	                                    		<button class="btn btn-default btn-flat btn-sm">Create Payroll</button>
-	                                  		</a>
-	                                  		<br/>
-	                                  		<br/>
-	                                  		<div class="pull-right">
-	                                  		<h3>Grand Total <b><u>
-		                                	${payrollListTotal}
-											</u></b></h3>
-											</div>
-		                                    <table id="payroll-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                                <th>Start Date</th>
-		                                                <th>End Date</th>
-		                                            	<th>Approver</th>
-		                                                <th>Creator</th>
-		                                                <th>Status</th>
-		                                                <th>Payroll Total</th>
-		                                                <th>Last Computed</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                		<c:forEach items="${payrollList}" var="payrollRow">
-													<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-													<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-			                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-			                                				var="payrollKey"></c:set>
-			                                		
-		                                            <tr>
-		                                            	<td>
-		                                            		<center>
-		                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
-		                                            			<a href="${urlEditPayroll}">
-						                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-		                                            			</a>
-							                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
-							                                    <a href="${urlDeletePayroll}">
-                   													<button class="btn btn-default btn-flat btn-sm">Delete</button>
-							                                    </a>
-															</center>
-														</td>
-														<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-		                                                <td>${payrollStartDate}</td>
-		                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-		                                                <td>${payrollEndDate}</td>
-		                                                <td>${payrollRow.approver.staff.getFullName()}</td>
-		                                                <td>${payrollRow.creator.staff.getFullName()}</td>
-		                                                <td>
-		                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
-		                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
-														<span class="label ${css}">${payrollStatus}</span>
-		                                                </td>
-		                                                <td>${payrollRow.payrollComputationResult.getOverallTotalOfStaffAsString()}</td>
-		                                                <td>${payrollRow.lastComputed}</td>
-		                                            </tr>
-	                                            	</c:forEach>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
+                                	<div class="row">
+		                            <div class="col-xs-12">
+               							<div class="box box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Payroll List</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
+		                                  		<a href="${urlCreateTeam}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
+		                                  		</a>
+		                                  		<br/>
+		                                  		<br/>
+		                                  		<div class="pull-right">
+		                                  		<h3>Grand Total <b><u>
+			                                	${payrollListTotal}
+												</u></b></h3>
+												</div>
+			                                    <table id="payroll-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                            <tr>
+			                                            	<th>&nbsp;</th>
+			                                                <th>Start Date</th>
+			                                                <th>End Date</th>
+			                                            	<th>Approver</th>
+			                                                <th>Creator</th>
+			                                                <th>Status</th>
+			                                                <th>Payroll Total</th>
+			                                                <th>Last Computed</th>
+			                                            </tr>
+	                                        		</thead>
+			                                        <tbody>
+				                                		<c:forEach items="${payrollList}" var="payrollRow">
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
+				                                				var="payrollKey"></c:set>
+				                                		
+			                                            <tr>
+			                                            	<td>
+			                                            		<center>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<a href="${urlEditPayroll}">
+							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+			                                            			</a>
+								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <a href="${urlDeletePayroll}">
+	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+								                                    </a>
+																</center>
+															</td>
+															<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
+			                                                <td>${payrollStartDate}</td>
+			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+			                                                <td>${payrollEndDate}</td>
+			                                                <td>${payrollRow.approver.staff.getFullName()}</td>
+			                                                <td>${payrollRow.creator.staff.getFullName()}</td>
+			                                                <td>
+			                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
+			                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
+															<span class="label ${css}">${payrollStatus}</span>
+			                                                </td>
+			                                                <td>${payrollRow.payrollComputationResult.getOverallTotalOfStaffAsString()}</td>
+			                                                <fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${payrollRow.lastComputed}" var="lastComputed"/>
+			                                                <td>${lastComputed}</td>
+			                                            </tr>
+		                                            	</c:forEach>
+				                                    </tbody>
+				                                </table>
+			                                </div><!-- /.box-body -->
+               							</div>
+               						</div>
+               						</div>
+		                            <div class="row">
+		                            <div class="col-md-6">
+               							<div class="box box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Graph</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
+               									Line graph here of [release date, total]
+               								</div>
+               							</div>
+               						</div>
+               						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
@@ -656,6 +715,9 @@
           									<h3 class="box-title">Managers</h3>
           								</div>
 		                                <div class="box-body table-responsive">
+          									<div class="callout callout-info callout-cebedo">
+							                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+							                </div>
 		                                	<c:set var="displayBreakManager" value="${false}"/>
 		                                	<table>
 		                                    	<tr>
@@ -663,7 +725,7 @@
 		                                    		<td>
 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 		                                    			<a href="${urlCreateStaff}">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+				                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 		                                    			</a>
 		                                    		</td>
 		                                    		<td>
@@ -688,7 +750,7 @@
  		                                    				&nbsp;
  		                                    			</td>
  		                                    			<td>
- 		                                    			<form:input placeholder="Example: Project Manager, Leader, etc..." 
+ 		                                    			<form:input placeholder="e.g., Timekeeper, Foreman, etc..." 
  		                                    				type="text" 
  															class="form-control" 
  															path="position"/>
@@ -697,7 +759,7 @@
  		                                    				&nbsp;
  		                                    			</td>
  														<td>
- 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
+ 														<button class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
  		                                    			</td> 
  		                                    		</form:form> 
 		                                    		</c:if>
@@ -708,7 +770,7 @@
 		                                    		<td>
                											<c:url var="urlProjectUnassignStaffAll" value="/project/unassign/staff/all"/>
 		                                    			<a href="${urlProjectUnassignStaffAll}">
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
 		                                    			</a>
 		                                    		</td>
 		                                    		</c:if>
@@ -742,12 +804,12 @@
 			                                            		<center>
 			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" />
 			                                            			<a href="${urlViewStaff}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
 	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
 	                   												<a href="${urlUnassignStaff}">
-																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+																		<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
 	                   												</a>
 	                   												</sec:authorize>
 																</center>
@@ -794,6 +856,9 @@
 	              									<h3 class="box-title">Staff Members</h3>
 	              								</div>
 				                                <div class="box-body table-responsive">
+				                                	<div class="callout callout-info callout-cebedo">
+									                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+									                </div>
 				                                    <table id="assigned-staff-table" class="table table-bordered table-striped">
 				                                    	<thead>
 				                                            <tr>
@@ -814,12 +879,12 @@
 					                                            		<center>
 					                                            			<c:url var="urlViewStaff" value="/staff/edit/${assignedStaffMember.id}/from/project/${project.id}"/>
 					                                            			<a href="${urlViewStaff}">
-									                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
+									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            			</a>
 										                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 										                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
 										                                    <a href="${urlUnassignStaff}">
-			                   													<button class="btn btn-default btn-flat btn-sm">Unassign</button>
+			                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
 										                                    </a>
 			                   												</sec:authorize>
 																		</center>
@@ -842,20 +907,26 @@
                    						<div class="col-xs-12">
 		                                	<div class="box box-default">
 	              								<div class="box-header">
-	              									<h3 class="box-title">Assign Staff</h3>
+	              									<h3 class="box-title">Staff Assignment Controls</h3>
 	              								</div>
 				                                <div class="box-body">
+				                                	<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 		                                    			<a href="${urlCreateStaff}">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+				                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 		                                    			</a>
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+		                                    		<c:if test="${!empty staffList}">
+		                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
+		                                    		</c:if>
 		                                    		<c:if test="${!empty project.assignedStaff}">
               											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
 					                                    <a href="${urlUnassignStaffAll}">
-              												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
+              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
 					                                    </a>
 		                                    		</c:if>
 		                                    		<c:if test="${!empty staffList}">
@@ -868,6 +939,7 @@
 		                                    		</sec:authorize>
 		                                    		<form:form modelAttribute="project" 
 		                                    		method="post" 
+		                                    		id="assignStaffForm"
 		                                    		action="${contextPath}/project/assign/staff/mass">
 		                                    		<table id="assign-staff-table" class="table table-bordered table-striped">
 		                                    			<thead>
@@ -895,7 +967,6 @@
 			                                    		</c:forEach>
 		                                    			</tbody>
 		                                    		</table>
-		                                    		<button class="btn btn-default btn-flat btn-sm">Assign</button>
 		                                    		</form:form>
 				                                </div>
 				                             </div>
