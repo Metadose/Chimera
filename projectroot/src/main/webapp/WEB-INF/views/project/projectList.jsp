@@ -74,23 +74,8 @@
 																			</center>
 																		</td>
 																		<td>
-						                                                	<c:choose>
-								                                            	<c:when test="${project.status == 0}">
-								                                            		<span class="label label-info">New</span>
-								                                            	</c:when>
-								                                            	<c:when test="${project.status == 1}">
-								                                            		<span class="label label-primary">Ongoing</span>
-								                                            	</c:when>
-								                                            	<c:when test="${project.status == 2}">
-								                                            		<span class="label label-success">Completed</span>
-								                                            	</c:when>
-								                                            	<c:when test="${project.status == 3}">
-								                                            		<span class="label label-danger">Failed</span>
-								                                            	</c:when>
-								                                            	<c:when test="${project.status == 4}">
-								                                            		<span class="label label">Cancelled</span>
-								                                            	</c:when>
-								                                            </c:choose>
+								                                            <c:set value="${project.getStatusEnum().css()}" var="css"></c:set>
+																			<span class="label ${css}">${project.getStatusEnum()}</span>
 						                                                </td>
 						                                                <td>
 								                                            ${project.name}<br/><br/>

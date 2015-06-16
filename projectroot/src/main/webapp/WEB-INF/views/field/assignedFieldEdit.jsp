@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Field ${action}</title>
+	<title>Field Edit</title>
 	
 	<style>
 	  ul {         
@@ -31,10 +31,14 @@
 	        <section class="content-header">
 	            <h1>
 	            	<c:out value="${field.label}"></c:out>
-	                <small>${action} Field</small>
+	                <small>Edit Field</small>
 	            </h1>
 	        </section>
 	        <section class="content">
+	        	<c:url var="urlBack" value="/project/edit/${project.id}" />
+                   <a href="${urlBack}">
+					<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
+				</a><br/><br/>
                 <div class="row">
                     <div class="col-xs-12">
                         <!-- Custom Tabs -->
@@ -46,8 +50,10 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-body">
+                   							<div class="box-body box-default">
+                   								<div class="callout callout-info callout-cebedo">
+								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+								                </div>
                    									<form:form modelAttribute="field"
 														id="detailsForm"
 														method="post"
@@ -56,15 +62,14 @@
 				                                            <label>Label</label>
 				                                            <form:input type="text" class="form-control" path="label"/><br/>
 				                                            <label>Value</label>
-				                                            <form:input type="text" class="form-control" path="value"/><br/>
+				                                            <form:input type="text" class="form-control" path="value"/>
 				                                        </div>
 				                                    </form:form>
-                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
                                             		<c:url var="urlDeleteField" value="/project/field/delete" />
                                             		<a href="${urlDeleteField}">
-														<button class="btn btn-default btn-flat btn-sm">Remove This Field</button>
+														<button class="btn btn-cebedo-delete btn-flat btn-sm">Remove This Field</button>
 													</a>
-                   								</div>
                    							</div>
                    						</div>
               						</div>

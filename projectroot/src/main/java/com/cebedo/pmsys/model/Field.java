@@ -23,6 +23,7 @@ public class Field implements Serializable {
 
     public static final String TABLE_NAME = "fields";
     public static final String OBJECT_NAME = "field";
+    public static final String IDENTIFIER_SEPARATOR = "-3edc-";
 
     public static final String COLUMN_PRIMARY_KEY = "field_id";
     public static final String COLUMN_LABEL = "label";

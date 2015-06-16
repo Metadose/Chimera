@@ -626,17 +626,19 @@ public class ProjectController {
 	Project proj = (Project) session
 		.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
-	long fieldID = Long.valueOf(fieldIdentifiers.split("-")[0]);
-	String label = fieldIdentifiers.split("-")[1];
-	String value = fieldIdentifiers.split("-")[2];
+	long fieldID = Long.valueOf(fieldIdentifiers
+		.split(Field.IDENTIFIER_SEPARATOR)[0]);
+	String label = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[1];
+	String value = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[2];
 
 	// Set to model attribute "field".
+	model.addAttribute(ATTR_PROJECT, proj);
 	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID,
 		fieldID, label, value));
 	session.setAttribute("old" + ATTR_FIELD, new FieldAssignmentBean(
 		projectID, fieldID, label, value));
 
-	return Field.OBJECT_NAME + "/" + JSP_EDIT_FIELD;
+	return JSP_EDIT_FIELD;
     }
 
     /**
