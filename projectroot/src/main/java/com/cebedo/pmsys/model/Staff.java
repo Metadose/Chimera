@@ -56,7 +56,7 @@ public class Staff implements Serializable {
     private String companyPosition;
     private Set<ManagerAssignment> assignedManagers;
     private Set<Task> tasks;
-    private Set<Delivery> deliveries;
+    private Set<DeliveryToDelete> deliveries;
     private Set<Expense> expenses;
 
     private String email;
@@ -169,11 +169,11 @@ public class Staff implements Serializable {
     }
 
     @ManyToMany(mappedBy = "staff")
-    public Set<Delivery> getDeliveries() {
+    public Set<DeliveryToDelete> getDeliveries() {
 	return deliveries;
     }
 
-    public void setDeliveries(Set<Delivery> deliveries) {
+    public void setDeliveries(Set<DeliveryToDelete> deliveries) {
 	this.deliveries = deliveries;
     }
 

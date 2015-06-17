@@ -43,7 +43,7 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Reminder;
@@ -590,13 +590,13 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Process all deliveries to be included in the calendar.
-	for (Delivery delivery : proj.getDeliveries()) {
+	for (DeliveryToDelete delivery : proj.getDeliveries()) {
 	    Date myDate = delivery.getDatetime();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
 	    String name = delivery.getName();
 
 	    CalendarEventBean event = new CalendarEventBean();
-	    event.setId(Delivery.OBJECT_NAME + "-" + start + "-"
+	    event.setId(DeliveryToDelete.OBJECT_NAME + "-" + start + "-"
 		    + StringUtils.remove(name, " "));
 	    event.setStart(start);
 	    event.setTitle("(Delivery) " + name);
@@ -627,7 +627,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    allStaff.addAll(team.getMembers());
 	}
 
-	for (Delivery delivery : proj.getDeliveries()) {
+	for (DeliveryToDelete delivery : proj.getDeliveries()) {
 	    allStaff.addAll(delivery.getStaff());
 	}
 	return allStaff;

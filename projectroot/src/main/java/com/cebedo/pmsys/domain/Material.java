@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
@@ -17,13 +17,11 @@ public class Material implements IDomainObject {
     /**
      * Keys:
      * company:2321:project:1123:inventory:delivery:1123:material:12d1-123sd12
-     * -sad123-asd
      */
     private Company company;
     private Project project;
-    private Delivery delivery;
+    private DeliveryToDelete delivery;
     private UUID uuid;
-    // Keys also include an auto-increment "material".
 
     /**
      * Detail fields.
@@ -35,6 +33,8 @@ public class Material implements IDomainObject {
      * Specifications.
      */
     private double quantity;
+    private double used;
+    private double available;
     private String unit;
 
     /**
@@ -69,12 +69,12 @@ public class Material implements IDomainObject {
     }
 
     public static String constructKey(Company company, Project project,
-	    Delivery delivery, UUID uuid) {
+	    DeliveryToDelete delivery, UUID uuid) {
 	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
 	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
 	String inventoryPart = "inventory:";
-	String deliveryPart = Delivery.OBJECT_NAME + ":" + delivery.getId()
-		+ ":";
+	String deliveryPart = DeliveryToDelete.OBJECT_NAME + ":"
+		+ delivery.getId() + ":";
 	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + uuid;
 	String key = companyPart + projectPart + inventoryPart + deliveryPart
 		+ materialPart;
@@ -89,7 +89,7 @@ public class Material implements IDomainObject {
 	String projectPart = Project.OBJECT_NAME + ":" + this.project.getId()
 		+ ":";
 	String inventoryPart = "inventory:";
-	String deliveryPart = Delivery.OBJECT_NAME + ":"
+	String deliveryPart = DeliveryToDelete.OBJECT_NAME + ":"
 		+ this.delivery.getId() + ":";
 	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + this.uuid;
 	String key = companyPart + projectPart + inventoryPart + deliveryPart
@@ -113,11 +113,11 @@ public class Material implements IDomainObject {
 	this.project = project;
     }
 
-    public Delivery getDelivery() {
+    public DeliveryToDelete getDelivery() {
 	return delivery;
     }
 
-    public void setDelivery(Delivery delivery) {
+    public void setDelivery(DeliveryToDelete delivery) {
 	this.delivery = delivery;
     }
 
@@ -223,6 +223,22 @@ public class Material implements IDomainObject {
 
     public void setUuid(UUID uuid) {
 	this.uuid = uuid;
+    }
+
+    public double getUsed() {
+	return used;
+    }
+
+    public void setUsed(double used) {
+	this.used = used;
+    }
+
+    public double getAvailable() {
+	return available;
+    }
+
+    public void setAvailable(double available) {
+	this.available = available;
     }
 
 }

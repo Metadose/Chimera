@@ -1,175 +1,70 @@
 package com.cebedo.pmsys.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.dao.DeliveryDAO;
-import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.LogHelper;
-import com.cebedo.pmsys.helper.MessageHelper;
-import com.cebedo.pmsys.model.Delivery;
-import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.repository.DeliveryValueRepo;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
-    private static Logger logger = Logger.getLogger(Delivery.OBJECT_NAME);
-    private AuthHelper authHelper = new AuthHelper();
-    private LogHelper logHelper = new LogHelper();
-    private MessageHelper messageHelper = new MessageHelper();
-    private DeliveryDAO deliveryDAO;
+    private DeliveryValueRepo deliveryValueRepo;
 
-    public void setDeliveryDAO(DeliveryDAO deliveryDAO) {
-	this.deliveryDAO = deliveryDAO;
+    public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
+	this.deliveryValueRepo = deliveryValueRepo;
     }
 
-    /**
-     * Create a new delivery.
-     */
     @Override
     @Transactional
-    public String create(Delivery delivery) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-
-	if (this.authHelper.isActionAuthorized(delivery)) {
-
-	    // Post-service message.
-	    this.messageHelper.sendAction(AuditAction.CREATE,
-		    delivery);
-
-	    // Do service.
-	    this.deliveryDAO.create(delivery);
-
-	    // Return response.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Delivery.OBJECT_NAME,
-		    delivery.getName());
-	}
-
-	// Log warning.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE,
-		Delivery.OBJECT_NAME, delivery.getId(), delivery.getName()));
-
-	// Return failed.
-	return AlertBoxFactory.FAILED.generateCreate(Delivery.OBJECT_NAME,
-		delivery.getName());
+    public void rename(Delivery obj, String newKey) {
+	this.deliveryValueRepo.rename(obj, newKey);
     }
 
-    /**
-     * Return an object given an ID.
-     */
     @Override
     @Transactional
-    public Delivery getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Delivery delivery = this.deliveryDAO.getByID(id);
-
-	if (this.authHelper.isActionAuthorized(delivery)) {
-	    // Log the action.
-	    logger.info(this.logHelper.logGetObject(auth, Delivery.OBJECT_NAME,
-		    id, delivery.getName()));
-
-	    // Return.
-	    return delivery;
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE,
-		Delivery.OBJECT_NAME, delivery.getId(), delivery.getName()));
-
-	// Return empty.
-	return new Delivery();
+    public void multiSet(Map<String, Delivery> m) {
+	this.deliveryValueRepo.multiSet(m);
     }
 
-    /**
-     * Update a delivery object.
-     */
     @Override
     @Transactional
-    public String update(Delivery delivery) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-
-	if (this.authHelper.isActionAuthorized(delivery)) {
-	    // Log action and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE,
-		    delivery);
-
-	    // Do action.
-	    this.deliveryDAO.update(delivery);
-
-	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Delivery.OBJECT_NAME,
-		    delivery.getName());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE,
-		Delivery.OBJECT_NAME, delivery.getId(), delivery.getName()));
-
-	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Delivery.OBJECT_NAME,
-		delivery.getName());
+    public void set(Delivery obj) {
+	this.deliveryValueRepo.set(obj);
     }
 
-    /**
-     * Delete a delivery given an id.
-     */
     @Override
     @Transactional
-    public String delete(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Delivery delivery = this.deliveryDAO.getByID(id);
-
-	if (this.authHelper.isActionAuthorized(delivery)) {
-	    // Log action and notify.
-	    this.messageHelper.sendAction(AuditAction.DELETE,
-		    delivery);
-
-	    // Do service.
-	    this.deliveryDAO.delete(id);
-
-	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Delivery.OBJECT_NAME,
-		    delivery.getName());
-	}
-
-	// Log warn
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE,
-		Delivery.OBJECT_NAME, id, delivery.getName()));
-
-	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Delivery.OBJECT_NAME,
-		delivery.getName());
+    public void delete(Collection<String> keys) {
+	this.deliveryValueRepo.delete(keys);
     }
 
-    /**
-     * List deliveries.
-     */
     @Override
     @Transactional
-    public List<Delivery> list() {
-	AuthenticationToken auth = this.authHelper.getAuth();
+    public void setIfAbsent(Delivery obj) {
+	this.deliveryValueRepo.setIfAbsent(obj);
+    }
 
-	if (auth.isSuperAdmin()) {
-	    // Log info.
-	    logger.info(this.logHelper.logListAsSuperAdmin(auth,
-		    Delivery.OBJECT_NAME));
+    @Override
+    @Transactional
+    public Delivery get(String key) {
+	return this.deliveryValueRepo.get(key);
+    }
 
-	    // Return list.
-	    return this.deliveryDAO.list();
-	}
+    @Override
+    @Transactional
+    public Set<String> keys(String pattern) {
+	return this.deliveryValueRepo.keys(pattern);
+    }
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorizedSuperAdminOnly(auth,
-		AuditAction.LIST, Delivery.OBJECT_NAME));
-
-	// Return empty.
-	return new ArrayList<Delivery>();
+    @Override
+    @Transactional
+    public Collection<Delivery> multiGet(Collection<String> keys) {
+	return this.deliveryValueRepo.multiGet(keys);
     }
 
 }

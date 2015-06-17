@@ -1,19 +1,27 @@
 package com.cebedo.pmsys.service;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.domain.Delivery;
 
 public interface DeliveryService {
 
-    public String create(Delivery delivery);
+    public void rename(Delivery obj, String newKey);
 
-    public Delivery getByID(long id);
+    public void multiSet(Map<String, Delivery> m);
 
-    public String update(Delivery delivery);
+    public void set(Delivery obj);
 
-    public String delete(long id);
+    public void delete(Collection<String> keys);
 
-    public List<Delivery> list();
+    public void setIfAbsent(Delivery obj);
+
+    public Delivery get(String key);
+
+    public Set<String> keys(String pattern);
+
+    public Collection<Delivery> multiGet(Collection<String> keys);
 
 }

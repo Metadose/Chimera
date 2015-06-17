@@ -19,7 +19,7 @@ import com.cebedo.pmsys.listener.MailMessageListener;
 import com.cebedo.pmsys.listener.MessageListenerImpl;
 import com.cebedo.pmsys.listener.NotificationMessageListener;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
@@ -342,7 +342,7 @@ public class MessageHelper {
      * @param action
      * @param delivery
      */
-    public void sendAction(AuditAction action, Delivery delivery) {
+    public void sendAction(AuditAction action, DeliveryToDelete delivery) {
 	List<Long> notificationRecipients = new ArrayList<Long>();
 	Project proj = delivery.getProject();
 
@@ -364,7 +364,7 @@ public class MessageHelper {
 		notificationRecipients, delivery.getStaff());
 
 	// Construct the message then send.
-	Map<String, Object> messageMap = constructAction(Delivery.OBJECT_NAME,
+	Map<String, Object> messageMap = constructAction(DeliveryToDelete.OBJECT_NAME,
 		action, delivery.getId(), delivery.getName(),
 		notificationRecipients);
 	sendMessageMap(messageMap);

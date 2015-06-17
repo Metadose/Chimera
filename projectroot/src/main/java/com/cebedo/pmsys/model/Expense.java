@@ -42,7 +42,7 @@ public class Expense implements Serializable {
     private Company company;
     private Staff staff;
     private Team team;
-    private Delivery delivery;
+    private DeliveryToDelete delivery;
     private MaterialToRemove material;
     private Milestone milestone;
     private Reminder reminder;
@@ -148,12 +148,12 @@ public class Expense implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = Delivery.COLUMN_PRIMARY_KEY)
-    public Delivery getDelivery() {
+    @JoinColumn(name = DeliveryToDelete.COLUMN_PRIMARY_KEY)
+    public DeliveryToDelete getDelivery() {
 	return delivery;
     }
 
-    public void setDelivery(Delivery delivery) {
+    public void setDelivery(DeliveryToDelete delivery) {
 	this.delivery = delivery;
     }
 

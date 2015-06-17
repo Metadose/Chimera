@@ -32,7 +32,7 @@ public class Storage implements Serializable {
     private String location;
     private String description;
     private Set<MaterialToRemove> materials;
-    private Set<Delivery> deliveries;
+    private Set<DeliveryToDelete> deliveries;
     private Company company;
     private Set<Expense> expenses;
 
@@ -84,11 +84,11 @@ public class Storage implements Serializable {
     }
 
     @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL)
-    public Set<Delivery> getDeliveries() {
+    public Set<DeliveryToDelete> getDeliveries() {
 	return deliveries;
     }
 
-    public void setDeliveries(Set<Delivery> deliveries) {
+    public void setDeliveries(Set<DeliveryToDelete> deliveries) {
 	this.deliveries = deliveries;
     }
 

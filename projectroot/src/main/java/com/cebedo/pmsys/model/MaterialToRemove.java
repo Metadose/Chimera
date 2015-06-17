@@ -42,7 +42,7 @@ public class MaterialToRemove implements Serializable {
     private Date purchaseDatetime;
     private int status;
     private Supplier supplier;
-    private Delivery delivery;
+    private DeliveryToDelete delivery;
     private Storage storage;
     private Project project;
     private Task task;
@@ -157,12 +157,12 @@ public class MaterialToRemove implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = Delivery.COLUMN_PRIMARY_KEY)
-    public Delivery getDelivery() {
+    @JoinColumn(name = DeliveryToDelete.COLUMN_PRIMARY_KEY)
+    public DeliveryToDelete getDelivery() {
 	return delivery;
     }
 
-    public void setDelivery(Delivery delivery) {
+    public void setDelivery(DeliveryToDelete delivery) {
 	this.delivery = delivery;
     }
 

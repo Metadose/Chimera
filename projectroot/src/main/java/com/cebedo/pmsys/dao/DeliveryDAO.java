@@ -2,18 +2,18 @@ package com.cebedo.pmsys.dao;
 
 import java.util.List;
 
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 
 public interface DeliveryDAO {
 
-    public void create(Delivery delivery);
+    public void create(DeliveryToDelete delivery);
 
-    public Delivery getByID(long id);
+    public DeliveryToDelete getByID(long id);
 
-    public void update(Delivery delivery);
+    public void update(DeliveryToDelete delivery);
 
     public void delete(long id);
 
-    public List<Delivery> list();
+    public List<DeliveryToDelete> list();
 
 }

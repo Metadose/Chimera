@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
@@ -33,7 +33,7 @@ public class StaffDeliveryAssignment implements Serializable {
     }
 
     @Id
-    @Column(name = Delivery.COLUMN_PRIMARY_KEY, nullable = false)
+    @Column(name = DeliveryToDelete.COLUMN_PRIMARY_KEY, nullable = false)
     public long getDeliveryID() {
 	return deliveryID;
     }

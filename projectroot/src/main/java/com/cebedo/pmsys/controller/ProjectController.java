@@ -1346,6 +1346,10 @@ public class ProjectController {
 
 	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+
+	// Get all payrolls.
+	// Get the grandtotal of all payrolls.
+	// Add to model.
 	List<ProjectPayroll> payrollList = this.projectService
 		.getAllPayrolls(proj);
 	String payrollGrandTotal = this.projectService
@@ -1353,6 +1357,14 @@ public class ProjectController {
 	model.addAttribute(ATTR_PAYROLL_LIST_TOTAL, payrollGrandTotal);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
 
+	// Get all deliveries.
+	// Get all pull-outs.
+	// Get inventory.
+	// Then add to model.
+	// TODO
+
+	// Do post-adding of attrs.
+	// Return to the edit page.
 	setModelAttributesOfProject(proj, model);
 	return JSP_EDIT;
     }

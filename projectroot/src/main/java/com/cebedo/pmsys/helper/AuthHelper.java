@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cebedo.pmsys.domain.Conversation;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Expense;
 import com.cebedo.pmsys.model.MaterialToRemove;
 import com.cebedo.pmsys.model.Milestone;
@@ -211,7 +211,7 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(Delivery delivery) {
+    public boolean isActionAuthorized(DeliveryToDelete delivery) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;

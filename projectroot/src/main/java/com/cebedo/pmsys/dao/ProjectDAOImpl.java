@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -101,9 +101,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(project.getReminders());
 	Hibernate.initialize(project.getExpenses());
 
-	Set<Delivery> deliveries = project.getDeliveries();
+	Set<DeliveryToDelete> deliveries = project.getDeliveries();
 	Hibernate.initialize(deliveries);
-	for (Delivery delivery : deliveries) {
+	for (DeliveryToDelete delivery : deliveries) {
 	    Hibernate.initialize(delivery.getStaff());
 	}
 

@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
-import com.cebedo.pmsys.model.Delivery;
+import com.cebedo.pmsys.model.DeliveryToDelete;
 
 @Repository
 public class DeliveryDAOImpl implements DeliveryDAO {
@@ -20,22 +20,22 @@ public class DeliveryDAOImpl implements DeliveryDAO {
     }
 
     @Override
-    public void create(Delivery delivery) {
+    public void create(DeliveryToDelete delivery) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(delivery);
     }
 
     @Override
-    public Delivery getByID(long id) {
+    public DeliveryToDelete getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Delivery delivery = (Delivery) this.daoHelper.criteriaGetObjByID(
-		session, Delivery.class, Delivery.PROPERTY_ID, id)
+	DeliveryToDelete delivery = (DeliveryToDelete) this.daoHelper.criteriaGetObjByID(
+		session, DeliveryToDelete.class, DeliveryToDelete.PROPERTY_ID, id)
 		.uniqueResult();
 	return delivery;
     }
 
     @Override
-    public void update(Delivery delivery) {
+    public void update(DeliveryToDelete delivery) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.update(delivery);
     }
@@ -43,7 +43,7 @@ public class DeliveryDAOImpl implements DeliveryDAO {
     @Override
     public void delete(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Delivery delivery = getByID(id);
+	DeliveryToDelete delivery = getByID(id);
 	if (delivery != null) {
 	    session.delete(delivery);
 	}
@@ -51,10 +51,10 @@ public class DeliveryDAOImpl implements DeliveryDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Delivery> list() {
+    public List<DeliveryToDelete> list() {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Delivery> list = session.createQuery(
-		"FROM " + Delivery.class.getName()).list();
+	List<DeliveryToDelete> list = session.createQuery(
+		"FROM " + DeliveryToDelete.class.getName()).list();
 	return list;
     }
 
