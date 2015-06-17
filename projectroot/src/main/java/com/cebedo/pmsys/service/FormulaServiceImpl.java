@@ -51,6 +51,10 @@ public class FormulaServiceImpl implements FormulaService {
     @Transactional
     public String set(Formula obj) {
 
+	if (!obj.isValid()) {
+
+	}
+
 	if (obj.getCompany() == null) {
 	    obj.setCompany(this.authHelper.getAuth().getCompany());
 	}

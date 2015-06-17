@@ -1,16 +1,20 @@
 package com.cebedo.pmsys.domain;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
+import com.cebedo.pmsys.utils.StringUtils;
 
 public class Formula implements IDomainObject {
 
     private static final long serialVersionUID = SerialVersionUIDUtils
 	    .convertStringToLong("Formula");
+    private static final String DELIMITER_OPEN_VARIABLE = "[[";
+    private static final String DELIMITER_CLOSE_VARIABLE = "]]";
 
     /**
      * Keys: company:12123:formula:uuid:123-123-123
@@ -28,6 +32,7 @@ public class Formula implements IDomainObject {
      * Specs.
      */
     private String formula;
+    private String[] formulaInputs;
 
     /**
      * Extension map.
@@ -136,4 +141,26 @@ public class Formula implements IDomainObject {
 	this.formula = formula;
     }
 
+    public String[] getFormulaInputs() {
+	return formulaInputs;
+    }
+
+    public void setFormulaInputs(String[] formulaInputs) {
+	this.formulaInputs = formulaInputs;
+    }
+
+    public boolean isValid() {
+
+	// Check if open brackets are equal to close brackets.
+	List<Integer> openIndices = StringUtils.getAllIndicesOfSubstring(
+		this.formula, DELIMITER_OPEN_VARIABLE);
+	List<Integer> closeIndices = StringUtils.getAllIndicesOfSubstring(
+		this.formula, DELIMITER_CLOSE_VARIABLE);
+
+	if (openIndices.size() == closeIndices.size()) {
+
+	}
+
+	return false;
+    }
 }
