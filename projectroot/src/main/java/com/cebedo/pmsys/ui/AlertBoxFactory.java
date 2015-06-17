@@ -18,6 +18,15 @@ public class AlertBoxFactory {
     private static final String DELIMITER_OBJECT_NAME = "DELIMITER_OBJECT_NAME";
 
     /**
+     * Add.
+     */
+    private static String TEMPLATE_SUCCESS_ADD = "Successfully <b>added</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_ADD = "Failed to <b>add</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
      * Create.
      */
     private static String TEMPLATE_SUCCESS_CREATE = "Successfully <b>created</b> the "
@@ -367,6 +376,21 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPLOAD.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateAdd(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_ADD.replace(DELIMITER_OBJECT_TYPE, object)
+		    .replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_ADD
+		    .replace(DELIMITER_OBJECT_TYPE, object).replace(
+			    DELIMITER_OBJECT_NAME, objName);
 	}
 	this.message = result;
 	return generateHTML();

@@ -10,6 +10,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Delivery implements IDomainObject {
@@ -35,6 +36,7 @@ public class Delivery implements IDomainObject {
     /**
      * More details.
      */
+    private double grandTotalOfMaterials;
     private Set<Material> materials;
     private Set<Staff> staff;
 
@@ -134,6 +136,19 @@ public class Delivery implements IDomainObject {
 
     public void setMaterials(Set<Material> materials) {
 	this.materials = materials;
+    }
+
+    public String getGrandTotalOfMaterialsAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		grandTotalOfMaterials);
+    }
+
+    public double getGrandTotalOfMaterials() {
+	return grandTotalOfMaterials;
+    }
+
+    public void setGrandTotalOfMaterials(double grandTotalOfMaterials) {
+	this.grandTotalOfMaterials = grandTotalOfMaterials;
     }
 
     public Set<Staff> getStaff() {

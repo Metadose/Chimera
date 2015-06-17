@@ -36,6 +36,7 @@ import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
@@ -58,6 +59,7 @@ import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.FieldService;
+import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectService;
@@ -72,21 +74,23 @@ import com.cebedo.pmsys.utils.DateUtils;
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
-	RedisConstants.OBJECT_DELIVERY }, types = { Project.class,
-	FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
-	Delivery.class })
+	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL }, types = {
+	Project.class, FieldAssignmentBean.class, ProjectFile.class,
+	ProjectPayroll.class, Delivery.class, Material.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
     public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
+    public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
+    public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
@@ -142,9 +146,16 @@ public class ProjectController {
     private PhotoService photoService;
     private ProjectFileService projectFileService;
     private DeliveryService deliveryService;
+    private MaterialService materialService;
 
     // TODO Put this in service layer.
     private ProjectPayrollValueRepo projectPayrollValueRepo;
+
+    @Autowired(required = true)
+    @Qualifier(value = "materialService")
+    public void setMaterialService(MaterialService materialService) {
+	this.materialService = materialService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "deliveryService")
@@ -1037,6 +1048,30 @@ public class ProjectController {
 		+ delivery.getProject().getId();
     }
 
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
+	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String addMaterial(
+	    @ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+	    RedirectAttributes redirecAttrs, SessionStatus status) {
+
+	// Do service
+	// and get response.
+	String response = this.materialService.set(material);
+
+	// Attach to redirect attributes.
+	redirecAttrs
+		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Then redirect back to the delivery.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ RedisConstants.OBJECT_DELIVERY + "/"
+		+ material.getDelivery().getUuid();
+    }
+
     /**
      * Open an edit page with payroll object.
      * 
@@ -1220,6 +1255,13 @@ public class ProjectController {
 	// return the object from redis.
 	Delivery delivery = this.deliveryService.get(uuid);
 	model.addAttribute(ATTR_DELIVERY, delivery);
+
+	// Get the list of materials this delivery has.
+	// Then add to model.
+	List<Material> materialList = this.materialService.list(delivery);
+	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
+	model.addAttribute(ATTR_MATERIAL, new Material(delivery));
+
 	return RedisConstants.JSP_DELIVERY_EDIT;
     }
 

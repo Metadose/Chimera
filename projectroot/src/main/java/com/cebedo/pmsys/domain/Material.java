@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Material implements IDomainObject {
@@ -20,7 +20,7 @@ public class Material implements IDomainObject {
      */
     private Company company;
     private Project project;
-    private DeliveryToDelete delivery;
+    private Delivery delivery;
     private UUID uuid;
 
     /**
@@ -58,6 +58,16 @@ public class Material implements IDomainObject {
      */
     private Map<String, Object> extMap;
 
+    public Material() {
+	;
+    }
+
+    public Material(Delivery delivery2) {
+	setCompany(delivery2.getCompany());
+	setProject(delivery2.getProject());
+	setDelivery(delivery2);
+    }
+
     @Override
     public Map<String, Object> getExtMap() {
 	return extMap;
@@ -69,12 +79,12 @@ public class Material implements IDomainObject {
     }
 
     public static String constructKey(Company company, Project project,
-	    DeliveryToDelete delivery, UUID uuid) {
+	    Delivery delivery, UUID uuid) {
 	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
 	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
 	String inventoryPart = "inventory:";
-	String deliveryPart = DeliveryToDelete.OBJECT_NAME + ":"
-		+ delivery.getId() + ":";
+	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
+		+ delivery.getUuid() + ":";
 	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + uuid;
 	String key = companyPart + projectPart + inventoryPart + deliveryPart
 		+ materialPart;
@@ -89,8 +99,8 @@ public class Material implements IDomainObject {
 	String projectPart = Project.OBJECT_NAME + ":" + this.project.getId()
 		+ ":";
 	String inventoryPart = "inventory:";
-	String deliveryPart = DeliveryToDelete.OBJECT_NAME + ":"
-		+ this.delivery.getId() + ":";
+	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
+		+ this.delivery.getUuid() + ":";
 	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + this.uuid;
 	String key = companyPart + projectPart + inventoryPart + deliveryPart
 		+ materialPart;
@@ -113,11 +123,11 @@ public class Material implements IDomainObject {
 	this.project = project;
     }
 
-    public DeliveryToDelete getDelivery() {
+    public Delivery getDelivery() {
 	return delivery;
     }
 
-    public void setDelivery(DeliveryToDelete delivery) {
+    public void setDelivery(Delivery delivery) {
 	this.delivery = delivery;
     }
 
@@ -153,6 +163,11 @@ public class Material implements IDomainObject {
 	this.unit = unit;
     }
 
+    public String getCostPerUnitMaterialAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		costPerUnitMaterial);
+    }
+
     public double getCostPerUnitMaterial() {
 	return costPerUnitMaterial;
     }
@@ -183,6 +198,11 @@ public class Material implements IDomainObject {
 
     public void setCostPerUnitTotal(double costPerUnitTotal) {
 	this.costPerUnitTotal = costPerUnitTotal;
+    }
+
+    public String getTotalCostPerUnitMaterialAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		totalCostPerUnitMaterial);
     }
 
     public double getTotalCostPerUnitMaterial() {
@@ -239,6 +259,22 @@ public class Material implements IDomainObject {
 
     public void setAvailable(double available) {
 	this.available = available;
+    }
+
+    public static String constructPattern(Delivery delivery2) {
+	Company company = delivery2.getCompany();
+	Project project = delivery2.getProject();
+
+	// company:2321:project:1123:inventory:delivery:1123:material:123-123
+	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
+	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
+	String inventoryPart = "inventory:";
+	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
+		+ delivery2.getUuid() + ":";
+	String materialPart = RedisConstants.OBJECT_MATERIAL + ":*";
+	String key = companyPart + projectPart + inventoryPart + deliveryPart
+		+ materialPart;
+	return key;
     }
 
 }

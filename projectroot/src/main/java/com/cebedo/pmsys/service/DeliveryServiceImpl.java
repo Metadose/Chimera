@@ -90,7 +90,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Below is assuming that the UUID is indeed unique.
 	Set<String> keys = this.deliveryValueRepo.keys(pattern);
 	for (String key : keys) {
-	    return this.deliveryValueRepo.get(key);
+	    Delivery delivery = this.deliveryValueRepo.get(key);
+	    return delivery;
 	}
 	return new Delivery();
     }

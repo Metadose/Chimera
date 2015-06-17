@@ -100,6 +100,96 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Add Materials</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+                   									<form:form modelAttribute="material"
+														id="materialForm"
+														method="post"
+														action="${contextPath}/project/add/material">
+				                                        <div class="form-group">
+				                                            <label>Name</label>
+				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            <label>Quantity</label>
+				                                            <form:input type="text" class="form-control" path="quantity"/><br/>
+				                                            <label>Unit</label>
+				                                            <form:input type="text" class="form-control" path="unit"/><br/>
+				                                            <label>Cost (Per Unit)</label>
+				                                            <form:input type="text" class="form-control" path="costPerUnitMaterial"/><br/>
+				                                            <label>Remarks</label>
+				                                            <form:input type="text" class="form-control" path="remarks"/>
+				                                        </div>
+				                                    </form:form>
+                                            		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Add</button>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+              						<div class="row">
+                   						<div class="col-xs-12">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">List of Materials</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+									                <div class="pull-right">
+									                <h3>Grand Total <b><u>
+				                                	${delivery.getGrandTotalOfMaterialsAsString()}
+													</u></b></h3>
+									                </div>
+                                            		<table id="material-table" class="table table-bordered table-striped">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Name</th>
+				                                                <th>Used</th>
+				                                                <th>Available</th>
+				                                            	<th>Quantity</th>
+				                                                <th>Cost (Per Unit)</th>
+				                                                <th>Total Cost</th>
+				                                                <th>Unit</th>
+				                                                <th>Remarks</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                		<c:forEach items="${materialList}" var="row">
+				                                            <tr>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlEdit" value="/project/edit/material/${row.uuid}"/>
+				                                            			<a href="${urlEdit}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+									                                    <c:url var="urlDelete" value="/project/delete/material/${row.uuid}"/>
+									                                    <a href="${urlDelete}">
+		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+									                                    </a>
+																	</center>
+																</td>
+																<td>${row.name}</td>
+																<td>${row.used}</td>
+																<td>${row.available}</td>
+																<td>${row.quantity}</td>
+																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
+																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
+																<td>${row.unit}</td>
+																<td>${row.remarks}</td>
+				                                            </tr>
+			                                            	</c:forEach>
+					                                    </tbody>
+					                                </table>
+                   								</div>
+                   							</div>
+                   						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
@@ -114,6 +204,7 @@
 <script>
 $(function () {
 	$('#date-picker').datetimepicker();
+	$('#material-table').dataTable();
 });
 function submitForm(id) {
 	$('#'+id).submit();

@@ -732,6 +732,7 @@
 			                                                <th>Date and Time</th>
 			                                                <th>Name</th>
 			                                                <th>Description</th>
+			                                                <th>Materials Cost</th>
 			                                            </tr>
 	                                        		</thead>
 			                                        <tbody>
@@ -753,6 +754,7 @@
 															<td>${deliveryDateTime}</td>
 															<td>${deliveryRow.name}</td>
 															<td>${deliveryRow.description}</td>
+															<td>${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
 			                                            </tr>
 		                                            	</c:forEach>
 				                                    </tbody>
@@ -769,12 +771,6 @@
                									<div class="callout callout-info callout-cebedo">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
-										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
-		                                  		<a href="${urlCreateTeam}">
-		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
-		                                  		</a>
-		                                  		<br/>
-		                                  		<br/>
 			                                    <table id="pull-out-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                            <tr>
@@ -831,7 +827,7 @@
 		                                  		</a>
 		                                  		<br/>
 		                                  		<br/>
-			                                    <table id="payroll-table" class="table table-bordered table-striped">
+			                                    <table id="inventory-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
@@ -1272,6 +1268,7 @@
 	    });
 		
 		$(document).ready(function() {
+			$("#inventory-table").dataTable();
 			$("#pull-out-table").dataTable();
 			$("#delivery-table").dataTable();
 			$("#payroll-table").dataTable();

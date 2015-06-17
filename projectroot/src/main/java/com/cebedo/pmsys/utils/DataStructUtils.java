@@ -1,9 +1,11 @@
 package com.cebedo.pmsys.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.model.Staff;
 
 public class DataStructUtils {
@@ -14,6 +16,12 @@ public class DataStructUtils {
 	    longNumbers.add(longNum);
 	}
 	return longNumbers;
+    }
+
+    public static Set<Material> convertListToSet(List<Material> myList) {
+	Set<Material> mySet = new HashSet<Material>();
+	mySet.addAll(myList);
+	return mySet;
     }
 
     public static List<Staff> convertSetToList(Set<Staff> staffSet) {
