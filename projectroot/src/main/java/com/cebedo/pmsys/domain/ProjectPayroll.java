@@ -21,11 +21,6 @@ public class ProjectPayroll implements IDomainObject {
     private static final long serialVersionUID = SerialVersionUIDUtils
 	    .convertStringToLong("ProjectPayroll");
 
-    /**
-     * Keys<br>
-     * company:45:project:21:approver:55:creator:151:status:4:startdate:2015.05
-     * .01:enddate:2015.05.15
-     */
     private Company company;
     private Project project;
     private SystemUser approver;
@@ -227,10 +222,9 @@ public class ProjectPayroll implements IDomainObject {
 	    Long approverID, Long creatorID, Integer statusID, Date startDate,
 	    Date endDate) {
 
-	String companyPart = Company.OBJECT_NAME + ":" + companyID
-		+ ":payroll:";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
 	String projectPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
-		Project.OBJECT_NAME, projectID);
+		Project.OBJECT_NAME, projectID) + "payroll:";
 	String approverPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
 		"approver", approverID);
 	String creatorPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
@@ -250,17 +244,12 @@ public class ProjectPayroll implements IDomainObject {
 	return key;
     }
 
-    /**
-     * company:45:project:21:approver:55:creator:151:status:4:<br>
-     * startdate:2015.05.01:enddate:2015.05.15
-     */
     @Override
     public String getKey() {
 	long companyID = this.company == null ? 0 : this.company.getId();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID
-		+ ":payroll:";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
 	String projectPart = Project.OBJECT_NAME + ":" + getProject().getId()
-		+ ":";
+		+ ":payroll:";
 	String approverPart = "approver:" + getApprover().getId() + ":";
 	String creatorPart = "creator:" + getCreator().getId() + ":";
 	String statusPart = "status:"
@@ -282,10 +271,9 @@ public class ProjectPayroll implements IDomainObject {
 	    long projectID, String approverID, String creatorID,
 	    String statusID, String startDate, String endDate) {
 
-	String companyPart = Company.OBJECT_NAME + ":" + companyID
-		+ ":payroll:";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
 	String projectPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
-		Project.OBJECT_NAME, projectID);
+		Project.OBJECT_NAME, projectID) + "payroll:";
 	String approverPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
 		"approver", approverID);
 	String creatorPart = RedisKeyPartUtils.generateKeyPartWithWildcard(
@@ -305,10 +293,9 @@ public class ProjectPayroll implements IDomainObject {
 
     public String constructPattern(Date oldStart, Date oldEnd) {
 	long companyID = this.company == null ? 0 : this.company.getId();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID
-		+ ":payroll:";
+	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
 	String projectPart = Project.OBJECT_NAME + ":" + getProject().getId()
-		+ ":";
+		+ ":payroll:";
 
 	String approverPart = "approver:*:";
 	String creatorPart = "creator:*:";
@@ -329,7 +316,6 @@ public class ProjectPayroll implements IDomainObject {
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
     public Set<Team> getAllTeams() {
 	// Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>)
 	// this.projectStructure

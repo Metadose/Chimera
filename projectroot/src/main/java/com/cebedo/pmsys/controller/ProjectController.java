@@ -35,6 +35,7 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
@@ -55,6 +56,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
+import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
@@ -69,20 +71,23 @@ import com.cebedo.pmsys.utils.DateUtils;
 @Controller
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
 	"old" + ProjectController.ATTR_FIELD,
-	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL }, types = {
-	Project.class, FieldAssignmentBean.class, ProjectFile.class,
-	ProjectPayroll.class })
+	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
+	RedisConstants.OBJECT_DELIVERY }, types = { Project.class,
+	FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
+	Delivery.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
+    public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
+    public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
@@ -136,7 +141,16 @@ public class ProjectController {
     private FieldService fieldService;
     private PhotoService photoService;
     private ProjectFileService projectFileService;
+    private DeliveryService deliveryService;
+
+    // TODO Put this in service layer.
     private ProjectPayrollValueRepo projectPayrollValueRepo;
+
+    @Autowired(required = true)
+    @Qualifier(value = "deliveryService")
+    public void setDeliveryService(DeliveryService deliveryService) {
+	this.deliveryService = deliveryService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "projectPayrollValueRepo")
@@ -1002,6 +1016,27 @@ public class ProjectController {
 	return payrollEndState(status, projectPayroll);
     }
 
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
+	    + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
+    public String createDelivery(
+	    @ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.deliveryService.set(delivery);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ delivery.getProject().getId();
+    }
+
     /**
      * Open an edit page with payroll object.
      * 
@@ -1154,6 +1189,38 @@ public class ProjectController {
 	payrollKey += DateUtils.formatDate(projectPayroll.getEndDate());
 
 	return payrollKey;
+    }
+
+    /**
+     * Open an edit page to create/update an object.
+     * 
+     * @param uuid
+     * @param model
+     * @param session
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_DELIVERY + "/{"
+	    + RedisConstants.OBJECT_DELIVERY + "}", method = RequestMethod.GET)
+    public String editDelivery(
+	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String uuid,
+	    Model model, HttpSession session) {
+
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// If we're creating.
+	// Return an empty object.
+	if (uuid.equals("0")) {
+	    model.addAttribute(ATTR_DELIVERY, new Delivery(proj));
+	    return RedisConstants.JSP_DELIVERY_EDIT;
+	}
+
+	// If we're updating,
+	// return the object from redis.
+	Delivery delivery = this.deliveryService.get(uuid);
+	model.addAttribute(ATTR_DELIVERY, delivery);
+	return RedisConstants.JSP_DELIVERY_EDIT;
     }
 
     /**
@@ -1361,7 +1428,8 @@ public class ProjectController {
 	// Get all pull-outs.
 	// Get inventory.
 	// Then add to model.
-	// TODO
+	List<Delivery> deliveryList = this.deliveryService.list(proj);
+	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
 
 	// Do post-adding of attrs.
 	// Return to the edit page.

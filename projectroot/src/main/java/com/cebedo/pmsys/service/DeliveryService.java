@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.model.Project;
 
 public interface DeliveryService {
 
@@ -12,16 +14,18 @@ public interface DeliveryService {
 
     public void multiSet(Map<String, Delivery> m);
 
-    public void set(Delivery obj);
+    public String set(Delivery obj);
 
     public void delete(Collection<String> keys);
 
     public void setIfAbsent(Delivery obj);
 
-    public Delivery get(String key);
+    public Delivery get(String uuid);
 
     public Set<String> keys(String pattern);
 
     public Collection<Delivery> multiGet(Collection<String> keys);
+
+    public List<Delivery> list(Project proj);
 
 }

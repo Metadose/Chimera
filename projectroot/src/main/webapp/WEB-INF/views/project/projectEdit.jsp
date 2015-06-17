@@ -729,34 +729,30 @@
 			                                    	<thead>
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
-<!-- 			                                                <th>Start Date</th> -->
-<!-- 			                                                <th>End Date</th> -->
-<!-- 			                                            	<th>Approver</th> -->
-<!-- 			                                                <th>Creator</th> -->
-<!-- 			                                                <th>Status</th> -->
-<!-- 			                                                <th>Payroll Total</th> -->
-<!-- 			                                                <th>Last Computed</th> -->
+			                                                <th>Date and Time</th>
+			                                                <th>Name</th>
+			                                                <th>Description</th>
 			                                            </tr>
 	                                        		</thead>
 			                                        <tbody>
-				                                		<c:forEach items="${payrollList}" var="payrollRow">
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-				                                				var="payrollKey"></c:set>
+				                                		<c:forEach items="${deliveryList}" var="deliveryRow">
+														<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${deliveryRow.datetime}" var="deliveryDateTime"/>
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
-			                                            			<a href="${urlEditPayroll}">
+			                                            			<c:url var="urlEditDelivery" value="/project/edit/delivery/${deliveryRow.uuid}"/>
+			                                            			<a href="${urlEditDelivery}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
-								                                    <a href="${urlDeletePayroll}">
+								                                    <c:url value="/project/delete/delivery/${deliveryRow.uuid}" var="urlDeleteDelivery"/>
+								                                    <a href="${urlDeleteDelivery}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
 																</center>
 															</td>
+															<td>${deliveryDateTime}</td>
+															<td>${deliveryRow.name}</td>
+															<td>${deliveryRow.description}</td>
 			                                            </tr>
 		                                            	</c:forEach>
 				                                    </tbody>

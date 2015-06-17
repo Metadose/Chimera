@@ -10,14 +10,15 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
 	<c:choose>
-   	<c:when test="${empty formula.uuid}">
-    	<title>Formula Create</title>
+   	<c:when test="${empty delivery.uuid}">
+    	<title>Delivery Create</title>
    	</c:when>
-   	<c:when test="${!empty formula.uuid}">
-		<title>Formula Edit</title>
+   	<c:when test="${!empty delivery.uuid}">
+		<title>Delivery Edit</title>
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>
+   	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -42,12 +43,12 @@
 	            <h1>
 	            	<c:choose>
 	            	<c:when test="${!isUpdating}">
-		            	New Formula
-		                <small>Create Formula</small>
+		            	New Delivery
+		                <small>Create Delivery</small>
 	            	</c:when>
 	            	<c:when test="${isUpdating}">
-	            		${formula.name}
-		                <small>Edit Formula</small>
+	            		${delivery.name}
+		                <small>Edit Delivery</small>
 	            	</c:when>
 	            	</c:choose>
 	            </h1>
@@ -55,6 +56,10 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
+                    	<c:url var="urlBack" value="/project/edit/${delivery.project.id}" />
+	                    <a href="${urlBack}">
+							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
+						</a><br/><br/>
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -73,16 +78,15 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<form:form modelAttribute="formula"
+                   									<form:form modelAttribute="delivery"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/formula/create">
+														action="${contextPath}/project/create/delivery">
 				                                        <div class="form-group">
-				                                            
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name"/><br/>
-				                                            <label>Formula</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formula"/><br/>
+				                                            <label>Date and Time</label>
+				                                            <form:input type="text" class="form-control" id="date-picker" path="datetime"/><br/>
 				                                            <label>Description</label>
 				                                            <form:input type="text" class="form-control" path="description"/>
 				                                        </div>
@@ -96,37 +100,6 @@
                    								</div>
                    							</div>
                    						</div>
-                   						<c:if test="${isUpdating}">
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Test Formula</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
-                   									<form:form modelAttribute="formula"
-														method="post"
-														action="${contextPath}/formula/test">
-				                                        <div class="form-group">
-				                                            <label>Formula</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formula"/>
-				                                            <c:forEach items="${formula.variableNames}" var="variableName">
-				                                            <br/>
-				                                            <label>${variableName}</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formulaInputs"/>
-				                                            </c:forEach>
-				                                        </div>
-			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Test Formula</button>
-				                                    </form:form>
-				                                    <br/>
-				                                    <br/>
-				                                    ${uiFormulaTest}
-                   								</div>
-                   							</div>
-                   						</div>
-                   						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
@@ -137,7 +110,11 @@
         </aside>
 	</div>
 </body>
+<script src="${contextPath}/resources/lib/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script>
 <script>
+$(function () {
+	$('#date-picker').datetimepicker();
+});
 function submitForm(id) {
 	$('#'+id).submit();
 }

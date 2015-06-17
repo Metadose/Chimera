@@ -1,18 +1,25 @@
 package com.cebedo.pmsys.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
+import com.cebedo.pmsys.ui.AlertBoxFactory;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
+    private AuthHelper authHelper = new AuthHelper();
     private DeliveryValueRepo deliveryValueRepo;
 
     public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
@@ -33,8 +40,34 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public void set(Delivery obj) {
+    public String set(Delivery obj) {
+
+	// If company is null.
+	if (obj.getCompany() == null) {
+	    obj.setCompany(this.authHelper.getAuth().getCompany());
+	}
+
+	// If we're creating.
+	boolean isCreate = false;
+	if (obj.getUuid() == null) {
+	    isCreate = true;
+	    obj.setUuid(UUID.randomUUID());
+	}
+
+	// Before setting,
+	// delete previous old object using uuid.
+	String pattern = Delivery.constructPattern(obj.getUuid().toString());
+	this.deliveryValueRepo.delete(this.deliveryValueRepo.keys(pattern));
+
+	// Do the action.
+	// Return success.
 	this.deliveryValueRepo.set(obj);
+	if (isCreate) {
+	    return AlertBoxFactory.SUCCESS.generateCreate(
+		    RedisConstants.OBJECT_DELIVERY, obj.getName());
+	}
+	return AlertBoxFactory.SUCCESS.generateUpdate(
+		RedisConstants.OBJECT_DELIVERY, obj.getName());
     }
 
     @Override
@@ -51,8 +84,15 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public Delivery get(String key) {
-	return this.deliveryValueRepo.get(key);
+    public Delivery get(String uuid) {
+	String pattern = Delivery.constructPattern(uuid);
+
+	// Below is assuming that the UUID is indeed unique.
+	Set<String> keys = this.deliveryValueRepo.keys(pattern);
+	for (String key : keys) {
+	    return this.deliveryValueRepo.get(key);
+	}
+	return new Delivery();
     }
 
     @Override
@@ -64,6 +104,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Transactional
     public Collection<Delivery> multiGet(Collection<String> keys) {
+	return this.deliveryValueRepo.multiGet(keys);
+    }
+
+    @Override
+    @Transactional
+    public List<Delivery> list(Project proj) {
+	String pattern = Delivery.constructPattern(proj);
+	Set<String> keys = this.deliveryValueRepo.keys(pattern);
 	return this.deliveryValueRepo.multiGet(keys);
     }
 
