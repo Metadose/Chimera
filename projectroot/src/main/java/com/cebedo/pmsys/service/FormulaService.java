@@ -29,4 +29,8 @@ public interface FormulaService {
 
     public String test(Formula formula);
 
+    public List<String> getAllVariableNames(Formula formula);
+
+    public String getReadyToSolveEquation(Formula formula);
+
 }

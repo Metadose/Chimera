@@ -458,8 +458,9 @@ public class AlertBoxFactory {
 	return message;
     }
 
-    public void setMessage(String message) {
+    public AlertBoxFactory setMessage(String message) {
 	this.message = message;
+	return this;
     }
 
 }

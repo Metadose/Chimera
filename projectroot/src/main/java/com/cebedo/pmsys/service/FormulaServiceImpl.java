@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.repository.FormulaValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.utils.StringUtils;
 import com.wolfram.alpha.WAEngine;
 import com.wolfram.alpha.WAException;
 import com.wolfram.alpha.WAPlainText;
@@ -47,17 +49,34 @@ public class FormulaServiceImpl implements FormulaService {
 	this.formulaValueRepo.multiSet(m);
     }
 
+    /**
+     * Set the formula object.
+     */
     @Override
     @Transactional
     public String set(Formula obj) {
 
+	// If the object is not valid.
 	if (!obj.isValid()) {
 
+	    // If we're creating.
+	    if (obj.getUuid() == null) {
+		return AlertBoxFactory.FAILED.generateCreate(
+			RedisConstants.OBJECT_FORMULA, obj.getName());
+	    }
+	    // Else, we're updating.
+	    return AlertBoxFactory.FAILED.generateUpdate(
+		    RedisConstants.OBJECT_FORMULA, obj.getName());
 	}
 
+	// If company is null,
+	// set it based on auth.
 	if (obj.getCompany() == null) {
 	    obj.setCompany(this.authHelper.getAuth().getCompany());
 	}
+
+	// Set the variable names in this formula.
+	obj.setVariableNames(getAllVariableNames(obj));
 
 	// If we're creating.
 	if (obj.getUuid() == null) {
@@ -115,71 +134,150 @@ public class FormulaServiceImpl implements FormulaService {
 
     @Override
     @Transactional
+    public String getReadyToSolveEquation(Formula formula) {
+
+	// Get all ingredients.
+	String[] formulaInputs = formula.getFormulaInputs();
+	List<String> variableNames = formula.getVariableNames();
+	String formulaStr = formula.getFormula();
+
+	for (int i = 0; i < variableNames.size(); i++) {
+
+	    // Get the input.
+	    // And the variable to replace.
+	    String input = formulaInputs[i];
+	    String variableName = variableNames.get(i);
+
+	    // Replace the variable with the actual input.
+	    formulaStr = formulaStr.replaceAll(variableName, input);
+	}
+
+	// Clean the string.
+	formulaStr = org.apache.commons.lang.StringUtils.remove(formulaStr,
+		Formula.DELIMITER_OPEN_VARIABLE);
+	formulaStr = org.apache.commons.lang.StringUtils.remove(formulaStr,
+		Formula.DELIMITER_CLOSE_VARIABLE);
+	return formulaStr;
+    }
+
+    @Override
+    @Transactional
     public String test(Formula formula) {
 
-	String returnStr = "";
-	String input = "(1/2)*5*6";
-
-	// TODO These properties will be set in all the WAQuery objects created
-	// from this WAEngine.
-	this.wolframAlphaEngine.setAppID(WA_APP_ID);
-	this.wolframAlphaEngine.addFormat("plaintext");
-
+	// Get the input.
+	// Configure the format.
 	// Create the query.
+	String input = getReadyToSolveEquation(formula);
 	WAQuery query = this.wolframAlphaEngine.createQuery();
 
 	// Set properties of the query.
 	query.setInput(input);
+	query.addFormat("plaintext");
+	String returnStr = "";
 
 	try {
-	    // For educational purposes, print out the URL we are about to send:
-	    returnStr += "\n\n\n" + "Query URL:";
-	    returnStr += "\n\n\n" + this.wolframAlphaEngine.toURL(query);
-
-	    // This sends the URL to the Wolfram|Alpha server, gets the XML
-	    // result
-	    // and parses it into an object hierarchy held by the WAQueryResult
-	    // object.
+	    // This sends the URL to the Wolfram|Alpha server,
+	    // gets the XML result and parses it into an object hierarchy
+	    // held by the WAQueryResult object.
 	    WAQueryResult queryResult = this.wolframAlphaEngine
 		    .performQuery(query);
 
 	    if (queryResult.isError()) {
-		returnStr += "\n\n\n" + "Query error";
-		returnStr += "\n\n\n" + "  error code: "
-			+ queryResult.getErrorCode();
-		returnStr += "\n\n\n" + "  error message: "
+		String error = "";
+		error += "<b>Error Code:</b> " + queryResult.getErrorCode()
+			+ "<br/>";
+		error += "<b>Error Message:</b> "
 			+ queryResult.getErrorMessage();
-	    } else if (!queryResult.isSuccess()) {
-		System.out
-			.println("Query was not understood; no results available.");
-	    } else {
-		// Got a result.
-		returnStr += "\n\n\n" + "Successful query. Pods follow:\n";
+		returnStr = AlertBoxFactory.FAILED.setMessage(error)
+			.generateHTML();
+	    }
+	    // If general error, unknown cause.
+	    else if (!queryResult.isSuccess()) {
+		returnStr = AlertBoxFactory.FAILED.generateCompute(
+			RedisConstants.OBJECT_FORMULA, formula.getName());
+	    }
+	    // If the query was a success.
+	    else {
+
+		// Top header.
+		String successStr = "";
+
 		for (WAPod pod : queryResult.getPods()) {
 		    if (!pod.isError()) {
-			returnStr += "\n\n\n" + pod.getTitle();
-			returnStr += "\n\n\n" + "------------";
+
+			if (pod.getTitle().equals("Number line")) {
+			    continue;
+			}
+
+			// Pod title.
+			successStr += "<b>" + pod.getTitle() + "</b><br/>";
+
+			// Subpods.
+			// And results.
 			for (WASubpod subpod : pod.getSubpods()) {
 			    for (Object element : subpod.getContents()) {
 				if (element instanceof WAPlainText) {
-				    returnStr += "\n\n\n"
-					    + ((WAPlainText) element).getText();
-				    returnStr += "\n\n\n" + "";
+				    WAPlainText text = ((WAPlainText) element);
+				    successStr += text.getText() + "<br/>";
 				}
 			    }
 			}
-			returnStr += "\n\n\n" + "";
+
+			// End of pod.
+			successStr += "<br/>";
 		    }
 		}
-		// We ignored many other types of Wolfram|Alpha output, such as
-		// warnings, assumptions, etc.
-		// These can be obtained by methods of WAQueryResult or objects
-		// deeper in the hierarchy.
+
+		// Success string.
+		returnStr = AlertBoxFactory.SUCCESS.setMessage(successStr)
+			.generateHTML();
 	    }
 	} catch (WAException e) {
 	    e.printStackTrace();
 	}
 
 	return returnStr;
+    }
+
+    /**
+     * Get all variable names of this formula.
+     * 
+     * @return
+     */
+    @Transactional
+    @Override
+    public List<String> getAllVariableNames(Formula formula) {
+
+	// Get all indices of open and close variables.
+	List<Integer> openIndices = StringUtils.getAllIndicesOfSubstring(
+		formula.getFormula(), Formula.DELIMITER_OPEN_VARIABLE);
+	List<Integer> closeIndices = StringUtils.getAllIndicesOfSubstring(
+		formula.getFormula(), Formula.DELIMITER_CLOSE_VARIABLE);
+
+	// Proceed only if legal.
+	if (openIndices.size() == closeIndices.size()) {
+
+	    List<String> variableNames = new ArrayList<String>();
+
+	    for (int i = 0; i < openIndices.size(); i++) {
+
+		// Get the variable name.
+		int indexOpen = openIndices.get(i);
+		int indexClose = closeIndices.get(i);
+		String variableName = formula.getFormula().substring(indexOpen,
+			indexClose);
+
+		// Clean the variable name.
+		variableName = org.apache.commons.lang.StringUtils.remove(
+			variableName, Formula.DELIMITER_OPEN_VARIABLE);
+		variableName = org.apache.commons.lang.StringUtils.remove(
+			variableName, Formula.DELIMITER_CLOSE_VARIABLE);
+
+		// Add the name to the output list.
+		variableNames.add(variableName);
+	    }
+	    return variableNames;
+	}
+	return new ArrayList<String>();
     }
 }

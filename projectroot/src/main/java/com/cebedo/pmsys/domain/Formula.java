@@ -7,14 +7,13 @@ import java.util.UUID;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-import com.cebedo.pmsys.utils.StringUtils;
 
 public class Formula implements IDomainObject {
 
     private static final long serialVersionUID = SerialVersionUIDUtils
 	    .convertStringToLong("Formula");
-    private static final String DELIMITER_OPEN_VARIABLE = "[[";
-    private static final String DELIMITER_CLOSE_VARIABLE = "]]";
+    public static final String DELIMITER_OPEN_VARIABLE = "[[";
+    public static final String DELIMITER_CLOSE_VARIABLE = "]]";
 
     /**
      * Keys: company:12123:formula:uuid:123-123-123
@@ -32,6 +31,7 @@ public class Formula implements IDomainObject {
      * Specs.
      */
     private String formula;
+    private List<String> variableNames;
     private String[] formulaInputs;
 
     /**
@@ -149,18 +149,29 @@ public class Formula implements IDomainObject {
 	this.formulaInputs = formulaInputs;
     }
 
+    public List<String> getVariableNames() {
+	return variableNames;
+    }
+
+    public void setVariableNames(List<String> variableNames) {
+	this.variableNames = variableNames;
+    }
+
+    /**
+     * Check if the formula is valid.
+     * 
+     * @return
+     */
     public boolean isValid() {
 
 	// Check if open brackets are equal to close brackets.
-	List<Integer> openIndices = StringUtils.getAllIndicesOfSubstring(
+	int openIndices = org.apache.commons.lang.StringUtils.countMatches(
 		this.formula, DELIMITER_OPEN_VARIABLE);
-	List<Integer> closeIndices = StringUtils.getAllIndicesOfSubstring(
+	int closeIndices = org.apache.commons.lang.StringUtils.countMatches(
 		this.formula, DELIMITER_CLOSE_VARIABLE);
-
-	if (openIndices.size() == closeIndices.size()) {
-
+	if (openIndices == closeIndices) {
+	    return true;
 	}
-
 	return false;
     }
 }

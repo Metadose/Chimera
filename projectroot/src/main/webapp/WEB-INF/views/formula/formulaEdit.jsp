@@ -101,6 +101,7 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${isUpdating}">
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
@@ -116,13 +117,21 @@
 				                                        <div class="form-group">
 				                                            <label>Formula</label>
 				                                            <form:input type="text" id="formula" class="form-control" path="formula"/>
+				                                            <c:forEach items="${formula.variableNames}" var="variableName">
+				                                            <br/>
+				                                            <label>${variableName}</label>
+				                                            <form:input type="text" id="formula" class="form-control" path="formulaInputs"/>
+				                                            </c:forEach>
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Test Formula</button>
 				                                    </form:form>
+				                                    <br/>
+				                                    <br/>
 				                                    ${uiFormulaTest}
                    								</div>
                    							</div>
                    						</div>
+                   						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
