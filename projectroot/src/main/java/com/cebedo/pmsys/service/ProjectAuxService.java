@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.model.Project;
 
 public interface ProjectAuxService {
 
@@ -25,5 +27,9 @@ public interface ProjectAuxService {
     public Set<String> keys(String pattern);
 
     public Collection<ProjectAux> multiGet(Collection<String> keys);
+
+    public ProjectAux get(Delivery delivery);
+
+    public ProjectAux get(Project proj);
 
 }

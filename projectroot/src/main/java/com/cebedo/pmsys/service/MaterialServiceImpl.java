@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
@@ -23,6 +25,11 @@ public class MaterialServiceImpl implements MaterialService {
     private AuthHelper authHelper = new AuthHelper();
     private MaterialValueRepo materialValueRepo;
     private DeliveryValueRepo deliveryValueRepo;
+    private ProjectAuxService projectAuxService;
+
+    public void setProjectAuxService(ProjectAuxService projectAuxService) {
+	this.projectAuxService = projectAuxService;
+    }
 
     public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
 	this.deliveryValueRepo = deliveryValueRepo;
@@ -79,6 +86,13 @@ public class MaterialServiceImpl implements MaterialService {
 	delivery.setGrandTotalOfMaterials(newGrandTotal);
 	this.deliveryValueRepo.set(delivery);
 
+	// Update the project auxillary.
+	ProjectAux projectAux = this.projectAuxService.get(delivery);
+	double projectTotalDelivery = projectAux.getGrandTotalDelivery()
+		+ obj.getTotalCostPerUnitMaterial();
+	projectAux.setGrandTotalDelivery(projectTotalDelivery);
+	this.projectAuxService.set(projectAux);
+
 	// Return.
 	if (isCreate) {
 	    return AlertBoxFactory.SUCCESS.generateAdd(
@@ -130,6 +144,14 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public void delete(String key) {
 	this.materialValueRepo.delete(key);
+    }
+
+    @Transactional
+    @Override
+    public List<Material> list(Project proj) {
+	String pattern = Material.constructPattern(proj);
+	Set<String> keys = this.materialValueRepo.keys(pattern);
+	return this.materialValueRepo.multiGet(keys);
     }
 
 }

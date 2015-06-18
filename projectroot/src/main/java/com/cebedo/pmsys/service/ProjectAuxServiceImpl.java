@@ -7,7 +7,9 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 
 @Service
@@ -71,6 +73,20 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
     @Transactional
     public void delete(String key) {
 	this.projectAuxValueRepo.delete(key);
+    }
+
+    @Override
+    @Transactional
+    public ProjectAux get(Delivery delivery) {
+	String key = ProjectAux.constructKey(delivery.getProject());
+	return this.get(key);
+    }
+
+    @Override
+    @Transactional
+    public ProjectAux get(Project proj) {
+	String key = ProjectAux.constructKey(proj);
+	return this.get(key);
     }
 
 }

@@ -144,4 +144,16 @@ public interface StaffService {
     public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID,
 	    ProjectPayroll projectPayroll);
 
+    public List<Staff> listWithUsers(Long companyID);
+
+    /**
+     * List staff with users, and filter by given set.
+     * 
+     * @param companyID
+     * @param managers
+     * @return
+     */
+    public List<Staff> listWithUsersAndFilter(Long companyID,
+	    Set<Staff> filterList);
+
 }

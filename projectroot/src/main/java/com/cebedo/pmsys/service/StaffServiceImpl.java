@@ -542,12 +542,26 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     public List<Staff> listUnassignedInProject(Long companyID, Project project) {
 	if (this.authHelper.isActionAuthorized(project)) {
+
+	    // Complete list.
 	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
 	    List<StaffWrapper> wrappedStaffList = StaffWrapper
 		    .wrap(companyStaffList);
-	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrap(project
+
+	    // Staff assigned as a manager.
+	    List<StaffWrapper> assignedManagerList = StaffWrapper.wrap(project
 		    .getManagerAssignments());
+
+	    // Staff assigned as staff.
+	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project
+		    .getAssignedStaff());
+
+	    // Remove assigned managers.
+	    // Remove assigned staff.
+	    wrappedStaffList.removeAll(assignedManagerList);
 	    wrappedStaffList.removeAll(assignedStaffList);
+
+	    // Return as unwrapped.
 	    return StaffWrapper.unwrap(StaffWrapper
 		    .removeEmptyNames(wrappedStaffList));
 	}
@@ -1006,5 +1020,38 @@ public class StaffServiceImpl implements StaffService {
 		    .removeEmptyNames(wrappedStaffList));
 	}
 	return new ArrayList<Staff>();
+    }
+
+    @Override
+    @Transactional
+    public List<Staff> listWithUsers(Long companyID) {
+	List<Staff> staffList = this.staffDAO.list(companyID);
+	List<Staff> returnList = new ArrayList<Staff>();
+
+	for (Staff staff : staffList) {
+	    if (staff.getUser() == null) {
+		continue;
+	    }
+	    returnList.add(staff);
+	}
+	return returnList;
+    }
+
+    @Override
+    @Transactional
+    public List<Staff> listWithUsersAndFilter(Long companyID,
+	    Set<Staff> filterList) {
+
+	// Get staff with users.
+	List<Staff> staffList = listWithUsers(companyID);
+
+	// Wrap the staff list and filter list.
+	// Remove filterlist from staff list.
+	List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(staffList);
+	List<StaffWrapper> wrappedFilterList = StaffWrapper.wrapSet(filterList);
+	wrappedStaffList.removeAll(wrappedFilterList);
+
+	// Return unwrapped.
+	return StaffWrapper.unwrap(wrappedStaffList);
     }
 }

@@ -291,6 +291,7 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
+        <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
     </beans:bean>
     
     <!-- Project Payroll Computer -->
@@ -488,6 +489,7 @@
     <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
+        <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
     </beans:bean>
     <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -553,6 +555,7 @@
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="projectPayrollComputerService" ref="projectPayrollComputerService"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
     </beans:bean>
     
     <!-- Attendance -->

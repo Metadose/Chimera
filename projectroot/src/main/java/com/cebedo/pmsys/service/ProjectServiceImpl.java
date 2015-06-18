@@ -24,6 +24,7 @@ import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Notification;
+import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -41,6 +42,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.NotificationZSetRepo;
+import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxFactory;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -57,6 +59,11 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
     private NotificationZSetRepo notificationZSetRepo;
+    private ProjectAuxValueRepo projectAuxValueRepo;
+
+    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+	this.projectAuxValueRepo = projectAuxValueRepo;
+    }
 
     public void setNotificationZSetRepo(
 	    NotificationZSetRepo notificationZSetRepo) {
@@ -91,6 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Company authCompany = auth.getCompany();
 	project.setCompany(authCompany);
 	this.projectDAO.create(project);
+	this.projectAuxValueRepo.set(new ProjectAux(project));
 
 	// Return success response.
 	return AlertBoxFactory.SUCCESS.generateCreate(Project.OBJECT_NAME,
@@ -210,6 +218,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // If authorized, do actual service.
 	    this.projectDAO.delete(id);
+	    this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
 
 	    // Success response.
 	    response = AlertBoxFactory.SUCCESS.generateDelete(

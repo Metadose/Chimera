@@ -37,6 +37,7 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
@@ -56,11 +57,11 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
+import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectPayrollServiceImpl;
@@ -83,6 +84,7 @@ public class ProjectController {
 
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
+    public static final String ATTR_PROJECT_AUX = RedisConstants.OBJECT_PROJECT_AUX;
     public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
@@ -100,9 +102,6 @@ public class ProjectController {
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
 
-    public static final String OLD_PAYROLL_START = "oldPayrollStart";
-    public static final String OLD_PAYROLL_END = "oldPayrollEnd";
-
     public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
     public static final String ATTR_PAYROLL_SELECTOR_APPROVER = "payrollApproverOptions";
 
@@ -119,6 +118,8 @@ public class ProjectController {
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_MANAGERS = "managerList";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
+    public static final String ATTR_STAFF_LIST = "staffList";
+    public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
     public static final String ATTR_PAYROLL_MANUAL_STAFF_LIST = "manualStaffList";
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
 
@@ -148,20 +149,20 @@ public class ProjectController {
     private ProjectFileService projectFileService;
     private DeliveryService deliveryService;
     private MaterialService materialService;
-    private AttendanceService attendanceService;
     private ProjectPayrollService projectPayrollService;
+    private ProjectAuxService projectAuxService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "projectAuxService")
+    public void setProjectAuxService(ProjectAuxService projectAuxService) {
+	this.projectAuxService = projectAuxService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "projectPayrollService")
     public void setProjectPayrollService(
 	    ProjectPayrollService projectPayrollService) {
 	this.projectPayrollService = projectPayrollService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "attendanceService")
-    public void setPayrollService(AttendanceService payrollService) {
-	this.attendanceService = payrollService;
     }
 
     @Autowired(required = true)
@@ -1020,7 +1021,6 @@ public class ProjectController {
 	    + SystemConstants.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public String includeStaffToPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    SessionStatus status,
 	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) PayrollIncludeStaffBean includeStaffBean,
 	    RedirectAttributes redirectAttrs) {
 
@@ -1030,7 +1030,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
 
-	return payrollEndState(status, projectPayroll);
+	return payrollEndState(projectPayroll);
     }
 
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
@@ -1089,8 +1089,7 @@ public class ProjectController {
 	    + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    Model model, HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
@@ -1108,7 +1107,7 @@ public class ProjectController {
 	setFormSelectors(proj, model);
 
 	// Complete the transaction.
-	return payrollEndState(status, projectPayroll);
+	return payrollEndState(projectPayroll);
     }
 
     /**
@@ -1124,8 +1123,7 @@ public class ProjectController {
     public String createPayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model,
-	    HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    HttpSession session, RedirectAttributes redirectAttrs) {
 
 	// End the session after this.
 	// Then redirect to an edit page of this object.
@@ -1145,7 +1143,7 @@ public class ProjectController {
 	setFormSelectors(proj, model);
 
 	// Redirect to:
-	return payrollEndState(status, projectPayroll);
+	return payrollEndState(projectPayroll);
     }
 
     /**
@@ -1159,8 +1157,7 @@ public class ProjectController {
 	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    Model model, HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
@@ -1189,7 +1186,7 @@ public class ProjectController {
 	// Get all managers in this project.
 	setFormSelectors(proj, model);
 
-	return payrollEndState(status, projectPayroll);
+	return payrollEndState(projectPayroll);
     }
 
     /**
@@ -1200,15 +1197,13 @@ public class ProjectController {
      * @param projectPayroll
      * @return
      */
-    private String payrollEndState(SessionStatus status,
-	    ProjectPayroll projectPayroll) {
+    private String payrollEndState(ProjectPayroll projectPayroll) {
 
-	// Complete the transaction.
-	// Add flash attribute.
-	status.setComplete();
+	// /edit/payroll/${payrollRow.getKey()}-end
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/"
-		+ projectPayroll.getProject().getId();
+		+ RedisConstants.OBJECT_PAYROLL + "/" + projectPayroll.getKey()
+		+ "-end";
     }
 
     /**
@@ -1311,8 +1306,6 @@ public class ProjectController {
 	// use the key.
 	ProjectPayroll projectPayroll = this.projectPayrollService
 		.get(payrollKey);
-	session.setAttribute(OLD_PAYROLL_START, projectPayroll.getStartDate());
-	session.setAttribute(OLD_PAYROLL_END, projectPayroll.getEndDate());
 
 	// Set the project structure.
 	Long companyID = co == null ? 0 : co.getId();
@@ -1450,13 +1443,9 @@ public class ProjectController {
 	Project proj = this.projectService.getByIDWithAllCollections(id);
 
 	// Get all payrolls.
-	// Get the grandtotal of all payrolls.
 	// Add to model.
 	List<ProjectPayroll> payrollList = this.projectPayrollService
 		.getAllPayrolls(proj);
-	String payrollGrandTotal = this.projectPayrollService
-		.getPayrollGrandTotalAsString(payrollList);
-	model.addAttribute(ATTR_PAYROLL_LIST_TOTAL, payrollGrandTotal);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
 
 	// Get all deliveries.
@@ -1465,6 +1454,11 @@ public class ProjectController {
 	// Then add to model.
 	List<Delivery> deliveryList = this.deliveryService.list(proj);
 	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
+
+	// Get all materials.
+	// Add to model.
+	List<Material> materialList = this.materialService.list(proj);
+	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
 
 	// Do post-adding of attrs.
 	// Return to the edit page.
@@ -1484,12 +1478,21 @@ public class ProjectController {
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
 		.getCompany().getId();
-	List<Staff> staffList = this.staffService.listExcept(companyID,
-		proj.getAssignedStaff());
+
+	// Used in the manager selector.
+	List<Staff> staffList = this.staffService.listWithUsersAndFilter(
+		companyID, proj.getManagers());
+
+	// Used in the "assign staff constrols".
+	// Get the list of staff not yet assigned in this project.
+	// Company staff, minus managers, minus assigned.
+	List<Staff> availableStaffToAssign = this.staffService
+		.listUnassignedInProject(companyID, proj);
 
 	// Get lists for selectors.
 	// Actual object and beans.
-	model.addAttribute(StaffController.ATTR_LIST, staffList);
+	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
 	model.addAttribute(ATTR_PROJECT, proj);
 
@@ -1524,5 +1527,8 @@ public class ProjectController {
 	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE,
 		MilestoneStatus.getIdToStatusMap());
 
+	// Add the auxillary object.
+	ProjectAux projectAux = this.projectAuxService.get(proj);
+	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
     }
 }

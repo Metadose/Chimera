@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.model.Project;
 
 public interface MaterialService {
 
@@ -29,5 +30,7 @@ public interface MaterialService {
     public Collection<Material> multiGet(Collection<String> keys);
 
     public List<Material> list(Delivery delivery);
+
+    public List<Material> list(Project proj);
 
 }

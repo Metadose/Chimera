@@ -20,6 +20,7 @@ import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
+import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Project;
@@ -39,6 +40,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private SystemUserDAO systemUserDAO;
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
+    private ProjectAuxService projectAuxService;
+
+    public void setProjectAuxService(ProjectAuxService projectAuxService) {
+	this.projectAuxService = projectAuxService;
+    }
 
     public void setStaffDAO(StaffDAO staffDAO) {
 	this.staffDAO = staffDAO;
@@ -71,6 +77,22 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	projectPayroll.setLastComputed(new Date(System.currentTimeMillis()));
 	projectPayroll.setPayrollJSON(payrollJSON);
 	this.projectPayrollValueRepo.set(projectPayroll);
+
+	// Add the total result to the
+	// grand total of the whole project.
+	PayrollComputationResult payrollComputationResult = projectPayroll
+		.getPayrollComputationResult();
+	ProjectAux projectAux = this.projectAuxService.get(proj);
+	double payrollResult = payrollComputationResult
+		.getOverallTotalOfStaff();
+	double oldGrandTotal = projectAux.getGrandTotalPayroll();
+
+	// The new grandtotal.
+	// Then save it.
+	projectAux.setGrandTotalPayroll(oldGrandTotal + payrollResult);
+	this.projectAuxService.set(projectAux);
+
+	// Return the result earlier.
 	return payrollJSON;
     }
 

@@ -95,7 +95,7 @@
 		                   											<br/>
 		                   										</c:when>
 		                   										<c:when test="${empty project.thumbnailURL}">
-		                   											<div class="callout callout-warning callout-cebedo">
+		                   											<div class="callout callout-warning">
 													                    <p>No photo uploaded.</p>
 													                </div>
 		                   										</c:when>
@@ -248,7 +248,7 @@
    															</div>
    															</c:if>
    															<c:if test="${empty projectFields}">
-   															<div class="callout callout-warning callout-cebedo">
+   															<div class="callout callout-warning">
 											                    <p>No extra information added.</p>
 											                </div>
    															</c:if>
@@ -303,6 +303,7 @@
 				                                <div class="callout callout-info callout-cebedo">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
+								                <c:if test="${!empty project.assignedTasks}">
 				                                <table>
                										<tr>
            											<td>Legend:
@@ -326,7 +327,9 @@
 													</c:forEach>
            											</td>
                										</tr>
-               									</table><br/>
+               									</table>
+               									<br/>
+               									</c:if>
 				                                <c:choose>
 				                                	<c:when test="${!empty project.assignedTasks}">
 						                                <div id="gantt-chart" class="gantt-holder">
@@ -334,7 +337,9 @@
 				                                	</c:when>
 				                                	<c:when test="${empty project.assignedTasks}">
 				                                		<div id="gantt-chart" class="gantt-holder">
-				                                			No tasks for this project.
+				                                			<div class="callout callout-warning">
+											                    <p>No tasks in this project.</p>
+											                </div>
 						                                </div><!-- /.box-body -->
 				                                	</c:when>
 				                                </c:choose>
@@ -634,7 +639,7 @@
 		                                  		<br/>
 		                                  		<div class="pull-right">
 		                                  		<h3>Grand Total <b><u>
-			                                	${payrollListTotal}
+			                                	${projectAux.getGrandTotalPayrollAsString()}
 												</u></b></h3>
 												</div>
 			                                    <table id="payroll-table" class="table table-bordered table-striped">
@@ -819,56 +824,48 @@
                									<div class="callout callout-info callout-cebedo">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
-										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
-		                                  		<a href="${urlCreateTeam}">
-		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
-		                                  		</a>
-		                                  		<br/>
-		                                  		<br/>
-			                                    <table id="inventory-table" class="table table-bordered table-striped">
+								                <div class="pull-right">
+		                                  		<h3>Grand Total <b><u>
+			                                	${projectAux.getGrandTotalDeliveryAsString()}
+												</u></b></h3>
+												</div>
+			                                    <table id="material-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
-			                                                <th>Start Date</th>
-			                                                <th>End Date</th>
-			                                            	<th>Approver</th>
-			                                                <th>Creator</th>
-			                                                <th>Status</th>
-			                                                <th>Payroll Total</th>
-			                                                <th>Last Computed</th>
+			                                                <th>Name</th>
+			                                                <th>Used</th>
+			                                                <th>Available</th>
+			                                            	<th>Quantity</th>
+			                                                <th>Cost (Per Unit)</th>
+			                                                <th>Total Cost</th>
+			                                                <th>Unit</th>
+			                                                <th>Remarks</th>
 			                                            </tr>
 	                                        		</thead>
 			                                        <tbody>
-				                                		<c:forEach items="${payrollList}" var="payrollRow">
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:forEach items="${materialList}" var="row">
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollRow.getKey()}-end"/>
-			                                            			<a href="${urlEditPayroll}">
+			                                            			<c:url var="urlEdit" value="/project/edit/material/${row.getKey()}-end"/>
+			                                            			<a href="${urlEdit}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollRow.getKey()}-end" var="urlDeletePayroll"/>
-								                                    <a href="${urlDeletePayroll}">
+								                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
+								                                    <a href="${urlDelete}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
 																</center>
 															</td>
-															<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-			                                                <td>${payrollStartDate}</td>
-			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-			                                                <td>${payrollEndDate}</td>
-			                                                <td>${payrollRow.approver.staff.getFullName()}</td>
-			                                                <td>${payrollRow.creator.staff.getFullName()}</td>
-			                                                <td>
-			                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
-			                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
-															<span class="label ${css}">${payrollStatus}</span>
-			                                                </td>
-			                                                <td>${payrollRow.payrollComputationResult.getOverallTotalOfStaffAsString()}</td>
-			                                                <fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${payrollRow.lastComputed}" var="lastComputed"/>
-			                                                <td>${lastComputed}</td>
+															<td>${row.name}</td>
+															<td>${row.used}</td>
+															<td>${row.available}</td>
+															<td>${row.quantity}</td>
+															<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
+															<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
+															<td>${row.unit}</td>
+															<td>${row.remarks}</td>
 			                                            </tr>
 		                                            	</c:forEach>
 				                                    </tbody>
@@ -1089,7 +1086,7 @@
 		                                    			</a>
 		                                    		</sec:authorize>
 		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                    		<c:if test="${!empty staffList}">
+		                                    		<c:if test="${!empty availableStaffToAssign}">
 		                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
 		                                    		</c:if>
 		                                    		<c:if test="${!empty project.assignedStaff}">
@@ -1098,7 +1095,7 @@
               												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
 					                                    </a>
 		                                    		</c:if>
-		                                    		<c:if test="${!empty staffList}">
+		                                    		<c:if test="${!empty availableStaffToAssign}">
 		                                    		&nbsp;&nbsp;
 		                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 													<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
@@ -1122,7 +1119,7 @@
 		                                    			</tr>
 		                                    			</thead>
 		                                    			<tbody>
-		                                    			<c:forEach items="${staffList}" var="staff">
+		                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
 		                                    			<tr>
 		                                    			<td align="center">
 			                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
@@ -1263,7 +1260,7 @@
 	    });
 		
 		$(document).ready(function() {
-			$("#inventory-table").dataTable();
+			$("#material-table").dataTable();
 			$("#pull-out-table").dataTable();
 			$("#delivery-table").dataTable();
 			$("#payroll-table").dataTable();

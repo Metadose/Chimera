@@ -318,7 +318,7 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_INCLUDE.replace(DELIMITER_OBJECT_TYPE,
 		    object).replace(DELIMITER_OBJECT_NAME, objName);
-	    result += " Please re-compute to view results.";
+	    result += " Please compute to view results.";
 	}
 	this.message = result;
 	return generateHTML();

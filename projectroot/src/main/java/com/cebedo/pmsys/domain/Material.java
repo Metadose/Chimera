@@ -243,4 +243,10 @@ public class Material implements IDomainObject {
 		project.getId(), delivery2.getUuid(), "*");
     }
 
+    public static String constructPattern(Project project) {
+	Company company = project.getCompany();
+	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(),
+		project.getId(), "*", "*");
+    }
+
 }

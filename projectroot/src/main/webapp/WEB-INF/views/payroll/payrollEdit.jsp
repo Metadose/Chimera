@@ -64,6 +64,7 @@
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 						</a><br/><br/>
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -86,8 +87,10 @@
 									                </div>
                    									<c:choose>
                    									<c:when  test="${empty payrollApproverOptions}">
-                   									<i>Cannot create Payroll without a Project Manager.<br/>
-                   									Only assigned Project Managers are allowed to approve or reject a Payroll.</i>
+                   									<div class="callout callout-danger">
+									                    <p>Cannot create Payroll without a Project Manager.<br/>
+                   									Only assigned Project Managers are allowed to approve or reject a Payroll.</p>
+									                </div>
                    									</c:when>
                    									<c:when  test="${!empty payrollApproverOptions}">
                    									<form:form modelAttribute="projectPayroll"
@@ -240,16 +243,24 @@
 															
 
 
-															<label>Staff</label>&nbsp;
+															<label>Staff</label>
+															
+															<c:if test="${!empty staffList}">
+															&nbsp;
 															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
+															</c:if>
+
 															<br/>
 															<c:choose>
 															<c:when test="${empty staffList}">
-															<i>No staff assigned in project.</i><br/><br/>
+															<div class="callout callout-warning">
+											                    <p>No staff assigned in project.</p>
+											                </div>
 															</c:when>
-															<c:when test="${!empty staffList}">
 															
+															<c:when test="${!empty staffList}">
+															<br/><br/>
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -293,17 +304,24 @@
                                             		<a href="${urlCompute}">
 														<button class="btn btn-cebedo-update btn-flat btn-sm">Compute Payroll</button>
 													</a>
+													<br/>
+													<br/>
+													
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">
-													<br/>
-													Not yet computed
+														<div class="callout callout-info">
+										                    <p>Not yet computed.</p>
+										                </div>
 													</c:when>
+													
 													<c:when test="${!empty projectPayroll.lastComputed}">
-													<br/>
-													<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
-													Last Computed: ${lastComputed}
+														<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
+														<div class="callout callout-info">
+										                    <p>Last Computed: ${lastComputed}</p>
+										                </div>
 													</c:when>
 													</c:choose>
+													
 													</c:if>
 													
                    								</div>

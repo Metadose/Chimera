@@ -5,6 +5,7 @@ import java.util.Map;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ProjectAux implements IDomainObject {
 
@@ -14,9 +15,25 @@ public class ProjectAux implements IDomainObject {
     private Project project;
 
     /**
+     * Specs.
+     */
+    private double grandTotalDelivery;
+    private double grandTotalPayroll;
+
+    /**
      * Extension map.
      */
     private Map<String, Object> extMap;
+
+    public ProjectAux() {
+	;
+    }
+
+    public ProjectAux(Project project2) {
+	Company co = project2.getCompany();
+	setCompany(co);
+	setProject(project2);
+    }
 
     public Map<String, Object> getExtMap() {
 	return extMap;
@@ -49,6 +66,38 @@ public class ProjectAux implements IDomainObject {
 
     public void setProject(Project project) {
 	this.project = project;
+    }
+
+    public static String constructKey(Project project) {
+	Company company = project.getCompany();
+	return String.format(RedisKeyRegistry.KEY_PROJECT_AUX, company.getId(),
+		project.getId());
+    }
+
+    public double getGrandTotalDelivery() {
+	return grandTotalDelivery;
+    }
+
+    public String getGrandTotalDeliveryAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		this.grandTotalDelivery);
+    }
+
+    public void setGrandTotalDelivery(double grandTotalDelivery) {
+	this.grandTotalDelivery = grandTotalDelivery;
+    }
+
+    public double getGrandTotalPayroll() {
+	return grandTotalPayroll;
+    }
+
+    public String getGrandTotalPayrollAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		this.grandTotalPayroll);
+    }
+
+    public void setGrandTotalPayroll(double grandTotalPayroll) {
+	this.grandTotalPayroll = grandTotalPayroll;
     }
 
 }
