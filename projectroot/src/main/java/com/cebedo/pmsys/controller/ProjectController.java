@@ -39,6 +39,7 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -76,9 +77,10 @@ import com.cebedo.pmsys.utils.DateUtils;
 @SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
-	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL }, types = {
-	Project.class, FieldAssignmentBean.class, ProjectFile.class,
-	ProjectPayroll.class, Delivery.class, Material.class })
+	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
+	RedisConstants.OBJECT_PULL_OUT }, types = { Project.class,
+	FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
+	Delivery.class, Material.class, PullOut.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -87,6 +89,7 @@ public class ProjectController {
     public static final String ATTR_PROJECT_AUX = RedisConstants.OBJECT_PROJECT_AUX;
     public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
+    public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
@@ -1054,6 +1057,39 @@ public class ProjectController {
 		+ delivery.getProject().getId();
     }
 
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/"
+	    + RedisConstants.OBJECT_MATERIAL + "/{"
+	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String pulloutMaterial(
+	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
+	    Model model, HttpSession session) {
+
+	// Construct the bean for the form.
+	Material material = this.materialService.get(key);
+	PullOut pullOut = new PullOut(material);
+	model.addAttribute(ATTR_PULL_OUT, pullOut);
+
+	// Get the list of staff in this project.
+	// This is for the selector.
+	// Who pulled-out the material?
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+
+	// Add the staff list to model.
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+
+	return RedisConstants.JSP_MATERIAL_PULLOUT;
+    }
+
+    /**
+     * Add a material to delivery.
+     * 
+     * @param material
+     * @param redirecAttrs
+     * @param status
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
 	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)

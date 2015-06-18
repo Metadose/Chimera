@@ -105,9 +105,9 @@ public class FormulaController {
     }
 
     @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
-	    + RedisConstants.UUID + "}-end" }, method = RequestMethod.GET)
+	    + RedisConstants.OBJECT_FORMULA + "}-end" }, method = RequestMethod.GET)
     public String editFormula(Model model,
-	    @PathVariable(RedisConstants.UUID) String key) {
+	    @PathVariable(RedisConstants.OBJECT_FORMULA) String key) {
 
 	if (key.equals("0")) {
 	    model.addAttribute(RedisConstants.OBJECT_FORMULA, new Formula(

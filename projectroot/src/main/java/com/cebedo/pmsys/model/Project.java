@@ -2,6 +2,7 @@ package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -24,6 +25,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
+import com.cebedo.pmsys.wrapper.StaffWrapper;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
@@ -311,6 +313,30 @@ public class Project implements Serializable {
 
     public void setReminders(Set<Reminder> reminders) {
 	this.reminders = reminders;
+    }
+
+    /**
+     * Get all staffs and managers.
+     * 
+     * @return
+     */
+    @Transient
+    public List<Staff> getAssignedStaffAndManagers() {
+
+	// Get the two lists.
+	Set<Staff> assignedStaff = getAssignedStaff();
+	Set<Staff> assignedManagers = getManagers();
+
+	// Wrap the two lists.
+	List<StaffWrapper> wrappedStaff = StaffWrapper.wrapSet(assignedStaff);
+	List<StaffWrapper> wrappedManagers = StaffWrapper
+		.wrapSet(assignedManagers);
+
+	// Add the two lists.
+	wrappedStaff.addAll(wrappedManagers);
+
+	// Return as one, unwrapped.
+	return StaffWrapper.unwrap(wrappedStaff);
     }
 
     // @ManyToMany

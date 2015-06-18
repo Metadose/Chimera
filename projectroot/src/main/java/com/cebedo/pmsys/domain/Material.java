@@ -232,6 +232,10 @@ public class Material implements IDomainObject {
 	return available;
     }
 
+    public String getAvailableAsString() {
+	return available + " " + unit;
+    }
+
     public void setAvailable(double available) {
 	this.available = available;
     }

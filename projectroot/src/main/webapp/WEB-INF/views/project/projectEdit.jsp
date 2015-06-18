@@ -109,7 +109,7 @@
 																	enctype="multipart/form-data">
 			                   										<table>
 			                   											<tr>
-			                   												<td>
+			                   												<td style="vertical-align: top">
 			                   													<label for="exampleInputFile">Update Photo</label>
 			                   												</td>
 			                   												<td>
@@ -117,6 +117,7 @@
 			                   												</td> 
 			                   												<td>
 			                   													<input type="file" id="file" name="file"/>
+			                   													<p class="help-block">Upload a photo of the project site</p>
 			                   												</td>
 			                   											</tr>
 			                   										</table>
@@ -162,6 +163,7 @@
 			                                            
 			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit Details</button>
+			                                            <p class="help-block">Edit the details above</p>
 			                                            </sec:authorize>
 			                                        </div>
 			                                        </c:if>
@@ -175,7 +177,8 @@
                   											action="${contextPath}/project/create">
 				                                            
 				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            <form:input type="text" placeholder="Sample: Mr. Brown Building" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the name of the project</p>
 				                                            
 				                                            <label>Status</label>
 				                                            <form:select class="form-control" id="project_status" path="status">
@@ -184,14 +187,17 @@
 						                                    	<form:option value="2" label="Completed"/>
 						                                    	<form:option value="3" label="Failed"/>
 						                                    	<form:option value="4" label="Cancelled"/>
-				                                            </form:select><br/>
+				                                            </form:select>
+				                                            <p class="help-block">Choose the status of this project</p>
 				                                            
 				                                            <label>Location</label>
-				                                            <form:input type="text" class="form-control" path="location"/><br/>
+				                                            <form:input type="text" placeholder="Sample: 123 Brown Avenue, New York City" class="form-control" path="location"/>
+				                                            <p class="help-block">Enter the project location</p>
 				                                            
 				                                            <label>Notes</label>
-				                                            <form:input type="text" class="form-control" path="notes"/><br/>
-				                                            
+				                                            <form:input type="text" placeholder="Sample: This is only the first phase" class="form-control" path="notes"/>
+				                                            <p class="help-block">Add additional notes and remarks</p>
+				                                            <br/>
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
@@ -261,22 +267,26 @@
 																
 																<label>Label</label><br/>
 																<form:input type="text" path="label" id="label" class="form-control"
-																	placeholder="Example: SSS, Building Permit No., Sub-contractor, etc..."/><br/>
+																	placeholder="Sample: SSS, Building Permit No., Sub-contractor, etc."/>
+																	<p class="help-block">Add a label for this information</p>
 																
 																<label>Information</label><br/>
 																<form:textarea class="form-control"
 																	rows="3" id="value" path="value"
-																	placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc..."></form:textarea>
+																	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction, etc."></form:textarea>
+																	<p class="help-block">Enter the information to be added</p>
 															
 															</form:form>
 															<br/>
 	                                           				<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add Information</button>
+	                                           				<c:if test="${!empty projectFields}">
 	                                           				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
 	                               								<a href="${urlProjectUnassignFieldAll}">
 																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Remove All</button>
 	       														</a>
 															</sec:authorize>
+															</c:if>
 	                                           				</sec:authorize>
 			                                        </div>
                    								</div>
@@ -833,13 +843,14 @@
 			                                    	<thead>
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
+			                                            	<th>Delivery</th>
 			                                                <th>Name</th>
-			                                                <th>Used</th>
+			                                                <th>Used / Pulled-Out</th>
 			                                                <th>Available</th>
 			                                            	<th>Quantity</th>
+			                                                <th>Unit</th>
 			                                                <th>Cost (Per Unit)</th>
 			                                                <th>Total Cost</th>
-			                                                <th>Unit</th>
 			                                                <th>Remarks</th>
 			                                            </tr>
 	                                        		</thead>
@@ -852,19 +863,24 @@
 			                                            			<a href="${urlEdit}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
+			                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
+								                                    <a href="${urlPullout}">
+	                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
+								                                    </a>
 								                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
 								                                    <a href="${urlDelete}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
 																</center>
 															</td>
+															<td>${row.delivery.name}</td>
 															<td>${row.name}</td>
-															<td>${row.used}</td>
-															<td>${row.available}</td>
-															<td>${row.quantity}</td>
+															<td align="right">${row.used}</td>
+															<td align="right">${row.available}</td>
+															<td align="right">${row.quantity}</td>
+															<td>${row.unit}</td>
 															<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 															<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
-															<td>${row.unit}</td>
 															<td>${row.remarks}</td>
 			                                            </tr>
 		                                            	</c:forEach>
@@ -888,7 +904,7 @@
 		                                	<table>
 		                                    	<tr>
 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
-		                                    		<td>
+		                                    		<td style="vertical-align: top;">
 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 		                                    			<a href="${urlCreateStaff}">
 				                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
@@ -910,21 +926,24 @@
                                      						<c:forEach items="${staffList}" var="staff"> 
                                      							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
                                      						</c:forEach> 
- 		                                    			</form:select> 
+ 		                                    			</form:select>
+ 		                                    			
+ 		                                    			<p class="help-block">Choose the staff who will manage this project&nbsp;&nbsp;&nbsp;&nbsp;</p> 
  		                                    			</td>
  		                                    			<td>
  		                                    				&nbsp;
  		                                    			</td>
  		                                    			<td>
- 		                                    			<form:input placeholder="e.g., Timekeeper, Foreman, etc..." 
+ 		                                    			<form:input placeholder="Sample: Constructor, Timekeeper, Foreman, Liason, etc." 
  		                                    				type="text" 
  															class="form-control" 
  															path="position"/>
+ 														<p class="help-block">Enter the position or title of the staff in this project</p>
  		                                    			</td>
  		                                    			<td>
  		                                    				&nbsp;
  		                                    			</td>
- 														<td>
+ 														<td style="vertical-align: top;">
  														<button class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
  		                                    			</td> 
  		                                    		</form:form> 

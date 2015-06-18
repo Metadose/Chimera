@@ -71,6 +71,18 @@
   background-color: #e5e5e5;
 }
 
+/* Pullout buttons */
+.btn.btn-cebedo-pullout {
+  background-color: #F1F1F1;
+  border-color: #ff8000;
+  color: #AB4316;
+}
+.btn.btn-cebedo-pullout:hover,
+.btn.btn-cebedo-pullout:active,
+.btn.btn-cebedo-pullout.hover {
+  background-color: #e5e5e5;
+}
+
 /* Upload buttons */
 .btn.btn-cebedo-upload {
   background-color: #E3F2CD;

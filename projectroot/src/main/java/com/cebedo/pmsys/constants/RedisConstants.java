@@ -11,8 +11,7 @@ public abstract class RedisConstants {
     public static final String OBJECT_FORMULA = "formula";
     public static final String OBJECT_DELIVERY = "delivery";
     public static final String OBJECT_PROJECT_AUX = "projectAux";
-
-    public static final String UUID = "uuid";
+    public static final String OBJECT_PULL_OUT = "pullOut";
 
     public static final String JSP_DELIVERY_EDIT = OBJECT_DELIVERY
 	    + "/deliveryEdit";
@@ -20,6 +19,10 @@ public abstract class RedisConstants {
 	    + "/attendanceEdit";
     public static final String JSP_PAYROLL_EDIT = OBJECT_PAYROLL
 	    + "/payrollEdit";
+    public static final String JSP_MATERIAL_EDIT = OBJECT_MATERIAL
+	    + "/materialEdit";
+    public static final String JSP_MATERIAL_PULLOUT = OBJECT_MATERIAL
+	    + "/materialPullout";
     public static final String JSP_ATTENDANCE_LIST = OBJECT_ATTENDANCE
 	    + "/attendanceList";
 

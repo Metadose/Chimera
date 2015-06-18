@@ -511,6 +511,14 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
+    <!-- Pull-Out -->
+    <beans:bean id="pullOutService" class="com.cebedo.pmsys.service.PullOutServiceImpl">
+        <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="pullOutValueRepo" class="com.cebedo.pmsys.repository.PullOutValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
     <!-- Formula -->
     <beans:bean id="formulaService" class="com.cebedo.pmsys.service.FormulaServiceImpl">
         <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>

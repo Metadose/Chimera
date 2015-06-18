@@ -41,7 +41,6 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	${delivery.project.name} <i class="fa fa-angle-double-right"></i> 
 	            	<c:choose>
 	            	<c:when test="${!isUpdating}">
 		            	New Delivery
@@ -155,12 +154,12 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                                <th>Name</th>
-				                                                <th>Used / Pulled-Out</th>
+				                                                <th>Used</th>
 				                                                <th>Available</th>
 				                                            	<th>Quantity</th>
-				                                                <th>Unit</th>
 				                                                <th>Cost (Per Unit)</th>
 				                                                <th>Total Cost</th>
+				                                                <th>Unit</th>
 				                                                <th>Remarks</th>
 				                                            </tr>
 		                                        		</thead>
@@ -180,9 +179,9 @@
 																	</center>
 																</td>
 																<td>${row.name}</td>
-																<td align="right">${row.used}</td>
-																<td align="right">${row.available}</td>
-																<td align="right">${row.quantity}</td>
+																<td>${row.used}</td>
+																<td>${row.available}</td>
+																<td>${row.quantity}</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
 																<td>${row.unit}</td>
