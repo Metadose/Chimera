@@ -7,20 +7,18 @@ import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.domain.ProjectAux;
 
-public class ProjectPayrollValueRepo implements
-	IValueRepository<ProjectPayroll> {
+public class ProjectAuxValueRepo implements IValueRepository<ProjectAux> {
 
-    private RedisTemplate<String, ProjectPayroll> redisTemplate;
+    private RedisTemplate<String, ProjectAux> redisTemplate;
 
-    public void setRedisTemplate(
-	    RedisTemplate<String, ProjectPayroll> redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<String, ProjectAux> redisTemplate) {
 	this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public void rename(ProjectPayroll obj, String newKey) {
+    public void rename(ProjectAux obj, String newKey) {
 	this.redisTemplate.rename(obj.getKey(), newKey);
     }
 
@@ -30,17 +28,17 @@ public class ProjectPayrollValueRepo implements
     }
 
     @Override
-    public void set(ProjectPayroll obj) {
+    public void set(ProjectAux obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);
     }
 
     @Override
-    public void setIfAbsent(ProjectPayroll obj) {
+    public void setIfAbsent(ProjectAux obj) {
 	this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
     }
 
     @Override
-    public ProjectPayroll get(String key) {
+    public ProjectAux get(String key) {
 	return this.redisTemplate.opsForValue().get(key);
     }
 
@@ -50,12 +48,12 @@ public class ProjectPayrollValueRepo implements
     }
 
     @Override
-    public void multiSet(Map<String, ProjectPayroll> m) {
+    public void multiSet(Map<String, ProjectAux> m) {
 	this.redisTemplate.opsForValue().multiSet(m);
     }
 
     @Override
-    public List<ProjectPayroll> multiGet(Collection<String> keys) {
+    public List<ProjectAux> multiGet(Collection<String> keys) {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 

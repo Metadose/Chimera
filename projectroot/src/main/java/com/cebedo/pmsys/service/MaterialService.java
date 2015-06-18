@@ -18,6 +18,8 @@ public interface MaterialService {
 
     public void delete(Collection<String> keys);
 
+    public void delete(String key);
+
     public void setIfAbsent(Material obj);
 
     public Material get(String key);

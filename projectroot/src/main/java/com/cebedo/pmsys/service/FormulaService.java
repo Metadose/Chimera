@@ -17,6 +17,8 @@ public interface FormulaService {
 
     public void delete(Collection<String> keys);
 
+    public void delete(String key);
+
     public void setIfAbsent(Formula obj);
 
     public Formula get(String key);

@@ -18,6 +18,8 @@ public interface DeliveryService {
 
     public void delete(Collection<String> keys);
 
+    public void delete(String key);
+
     public void setIfAbsent(Delivery obj);
 
     public Delivery get(String uuid);

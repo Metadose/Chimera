@@ -38,7 +38,7 @@ public class PayrollServiceImpl implements PayrollService {
 	this.projectService = projectService;
     }
 
-    public void setAttendanceZSetRepo(AttendanceValueRepo r) {
+    public void setAttendanceValueRepo(AttendanceValueRepo r) {
 	this.attendanceValueRepo = r;
     }
 

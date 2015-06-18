@@ -57,4 +57,9 @@ public class FormulaValueRepo implements IValueRepository<Formula> {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 
+    @Override
+    public void delete(String key) {
+	this.redisTemplate.delete(key);
+    }
+
 }

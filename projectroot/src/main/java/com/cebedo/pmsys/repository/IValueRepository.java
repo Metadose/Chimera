@@ -8,20 +8,22 @@ import com.cebedo.pmsys.domain.IDomainObject;
 
 public interface IValueRepository<V extends IDomainObject> {
 
-	void rename(V obj, String newKey);
+    void rename(V obj, String newKey);
 
-	void multiSet(Map<String, V> m);
+    void multiSet(Map<String, V> m);
 
-	void set(V obj);
+    void set(V obj);
 
-	void delete(Collection<String> keys);
+    void delete(Collection<String> keys);
 
-	void setIfAbsent(V obj);
+    void delete(String key);
 
-	V get(String key);
+    void setIfAbsent(V obj);
 
-	Set<String> keys(String pattern);
+    V get(String key);
 
-	Collection<V> multiGet(Collection<String> keys);
+    Set<String> keys(String pattern);
+
+    Collection<V> multiGet(Collection<String> keys);
 
 }

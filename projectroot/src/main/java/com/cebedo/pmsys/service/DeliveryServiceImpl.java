@@ -103,4 +103,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 	return this.deliveryValueRepo.multiGet(keys);
     }
 
+    @Override
+    @Transactional
+    public void delete(String key) {
+	this.deliveryValueRepo.delete(key);
+    }
+
 }

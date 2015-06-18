@@ -7,5 +7,6 @@ public class RedisKeyRegistry {
     public static final String KEY_DELIVERY = "company.fk:%s:project.fk:%s:delivery:%s";
     public static final String KEY_MATERIAL = "company.fk:%s:project.fk:%s:delivery.fk:%s:material:%s";
     public static final String KEY_PROJECT_PAYROLL = "company.fk:%s:project.fk:%s:payroll:%s";
+    public static final String KEY_PROJECT_AUX = "company.fk:%s:project:%s";
 
 }

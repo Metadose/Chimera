@@ -28,7 +28,6 @@ import com.wolfram.alpha.WASubpod;
 @Service
 public class FormulaServiceImpl implements FormulaService {
 
-    private static final String WA_APP_ID = "AU7QGR-T7QT7QVGKY";
     private AuthHelper authHelper = new AuthHelper();
     private FormulaValueRepo formulaValueRepo;
     private WAEngine wolframAlphaEngine = new WAEngine();
@@ -277,5 +276,11 @@ public class FormulaServiceImpl implements FormulaService {
 	    return variableNames;
 	}
 	return new ArrayList<String>();
+    }
+
+    @Transactional
+    @Override
+    public void delete(String key) {
+	this.formulaValueRepo.delete(key);
     }
 }

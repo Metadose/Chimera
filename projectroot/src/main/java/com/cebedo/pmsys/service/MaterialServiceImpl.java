@@ -126,4 +126,10 @@ public class MaterialServiceImpl implements MaterialService {
 	return this.materialValueRepo.multiGet(keys);
     }
 
+    @Transactional
+    @Override
+    public void delete(String key) {
+	this.materialValueRepo.delete(key);
+    }
+
 }
