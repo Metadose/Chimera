@@ -14,21 +14,17 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 @Entity
 @Table(name = Photo.TABLE_NAME)
 public class Photo implements Serializable {
 
+    private static final long serialVersionUID = 1177082952071817759L;
     public static final String OBJECT_NAME = "photo";
     public static final String TABLE_NAME = "photos";
     public static final String COLUMN_PRIMARY_KEY = "photo_id";
 
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_NAME = "name";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Photo");
 
     private long id;
     private String name;

@@ -5,12 +5,9 @@ import org.apache.commons.logging.Log;
 import org.springframework.aop.interceptor.AbstractMonitoringInterceptor;
 import org.springframework.util.StopWatch;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 public class CustomPerformanceInterceptor extends AbstractMonitoringInterceptor {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("CustomPerformanceInterceptor");
+    private static final long serialVersionUID = -2223777220091898111L;
     private static final int THRESHOLD_MIN = 500;
 
     /**

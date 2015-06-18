@@ -1069,7 +1069,7 @@ public class ProjectController {
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/"
 		+ RedisConstants.OBJECT_DELIVERY + "/"
-		+ material.getDelivery().getUuid();
+		+ material.getDelivery().getKey() + "-end";
     }
 
     /**
@@ -1229,7 +1229,7 @@ public class ProjectController {
     /**
      * Open an edit page to create/update an object.
      * 
-     * @param uuid
+     * @param key
      * @param model
      * @param session
      * @return
@@ -1237,23 +1237,23 @@ public class ProjectController {
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
 	    + RedisConstants.OBJECT_DELIVERY + "/{"
-	    + RedisConstants.OBJECT_DELIVERY + "}", method = RequestMethod.GET)
+	    + RedisConstants.OBJECT_DELIVERY + "}-end", method = RequestMethod.GET)
     public String editDelivery(
-	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String uuid,
+	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
 	    Model model, HttpSession session) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
 	// If we're creating.
 	// Return an empty object.
-	if (uuid.equals("0")) {
+	if (key.equals("0")) {
 	    model.addAttribute(ATTR_DELIVERY, new Delivery(proj));
 	    return RedisConstants.JSP_DELIVERY_EDIT;
 	}
 
 	// If we're updating,
 	// return the object from redis.
-	Delivery delivery = this.deliveryService.get(uuid);
+	Delivery delivery = this.deliveryService.get(key);
 	model.addAttribute(ATTR_DELIVERY, delivery);
 
 	// Get the list of materials this delivery has.
@@ -1289,8 +1289,6 @@ public class ProjectController {
 
 	// Required for key creation.
 	Company co = proj.getCompany();
-	Long companyID = co == null ? 0 : co.getId();
-	long projectID = proj.getId();
 
 	// If a new payroll object.
 	if (payrollKey.equals("0")) {
@@ -1304,25 +1302,16 @@ public class ProjectController {
 	    return RedisConstants.JSP_PAYROLL_EDIT;
 	}
 
-	// If existing payroll object.
-	String approverID = payrollKey.split("-")[0];
-	String creatorID = payrollKey.split("-")[1];
-	String statusID = payrollKey.split("-")[2];
-	String startDate = payrollKey.split("-")[3];
-	String endDate = payrollKey.split("-")[4];
-
-	// Get object based on key.
-	String key = ProjectPayroll.constructKeyWithStrings(companyID,
-		projectID, approverID, creatorID, statusID, startDate, endDate);
-
 	// Attach to response.
 	// If flash attribute was null,
 	// use the key.
-	ProjectPayroll projectPayroll = this.projectPayrollValueRepo.get(key);
+	ProjectPayroll projectPayroll = this.projectPayrollValueRepo
+		.get(payrollKey);
 	session.setAttribute(OLD_PAYROLL_START, projectPayroll.getStartDate());
 	session.setAttribute(OLD_PAYROLL_END, projectPayroll.getEndDate());
 
 	// Set the project structure.
+	Long companyID = co == null ? 0 : co.getId();
 	setModelAttributesOfPayroll(projectPayroll, proj, model, companyID);
 
 	return RedisConstants.JSP_PAYROLL_EDIT;

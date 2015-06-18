@@ -27,14 +27,12 @@ import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Task.TABLE_NAME)
 public class Task implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Task");
+    private static final long serialVersionUID = 2244337663166988762L;
     public static final String TABLE_NAME = "tasks";
     public static final String OBJECT_NAME = "task";
 

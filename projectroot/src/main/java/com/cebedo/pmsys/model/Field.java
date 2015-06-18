@@ -15,12 +15,12 @@ import javax.persistence.Table;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = Field.TABLE_NAME)
 public class Field implements Serializable {
 
+    private static final long serialVersionUID = -3047038623597170285L;
     public static final String TABLE_NAME = "fields";
     public static final String OBJECT_NAME = "field";
     public static final String IDENTIFIER_SEPARATOR = "-3edc-";
@@ -30,9 +30,6 @@ public class Field implements Serializable {
     public static final String COLUMN_VALUE = "value";
 
     public static final String PROPERTY_ID = "id";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Field");
 
     private long id;
     private String name;

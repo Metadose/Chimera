@@ -74,7 +74,7 @@ public class PayrollServiceImpl implements PayrollService {
     public void deleteAllInDate(Attendance attendance) {
 	// Delete all previously declared attendance in this date.
 	Staff staff = attendance.getStaff();
-	String key = Attendance.constructKey(staff, attendance.getTimestamp());
+	String key = Attendance.constructPattern(staff, attendance.getDate());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
 	this.attendanceValueRepo.delete(keys);
     }
@@ -203,14 +203,14 @@ public class PayrollServiceImpl implements PayrollService {
     @Transactional
     public Set<Attendance> rangeStaffAttendance(Staff staff, long min, long max) {
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance
-		.constructKey(staff));
+		.constructPattern(staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
 	for (String key : keys) {
 	    Attendance attn = this.attendanceValueRepo.get(key);
 
 	    // TODO Optimize this.
 	    // Leverage on the Date object. Don't use Timestamp millis.
-	    long timestamp = attn.getTimestamp().getTime();
+	    long timestamp = attn.getDate().getTime();
 	    if (timestamp <= max && timestamp >= min) {
 		attnSet.add(attn);
 	    }
@@ -282,7 +282,7 @@ public class PayrollServiceImpl implements PayrollService {
     @Transactional
     public List<Attendance> getAllAttendance(Staff staff) {
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance
-		.constructKey(staff));
+		.constructPattern(staff));
 	return this.attendanceValueRepo.multiGet(keys);
     }
 

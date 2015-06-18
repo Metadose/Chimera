@@ -100,6 +100,7 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${isUpdating}">
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
@@ -130,7 +131,9 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</c:if>
               						</div>
+              						<c:if test="${isUpdating}">
               						<div class="row">
                    						<div class="col-xs-12">
                    							<div class="box box-default">
@@ -165,11 +168,11 @@
 				                                            <tr>
 				                                            	<td>
 				                                            		<center>
-				                                            			<c:url var="urlEdit" value="/project/edit/material/${row.uuid}"/>
+				                                            			<c:url var="urlEdit" value="/project/edit/material/${row.getKey()}-end"/>
 				                                            			<a href="${urlEdit}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-									                                    <c:url var="urlDelete" value="/project/delete/material/${row.uuid}"/>
+									                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
 									                                    <a href="${urlDelete}">
 		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 									                                    </a>
@@ -191,6 +194,7 @@
                    							</div>
                    						</div>
               						</div>
+              						</c:if>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->

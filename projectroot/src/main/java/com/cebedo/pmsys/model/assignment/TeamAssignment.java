@@ -9,16 +9,14 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = TeamAssignment.TABLE_NAME)
 public class TeamAssignment implements Serializable {
 
-    public static final String TABLE_NAME = "assignments_project_team";
+    private static final long serialVersionUID = 5674740663119921189L;
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("TeamAssignment");
+    public static final String TABLE_NAME = "assignments_project_team";
 
     private long projectID;
     private long teamID;

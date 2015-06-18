@@ -3,21 +3,31 @@ package com.cebedo.pmsys.domain;
 import java.util.Date;
 import java.util.Map;
 
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Attendance implements IDomainObject {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Attendance");
+    private static final long serialVersionUID = -724701840751019923L;
+    /**
+     * Key: company:123:staff:123:attendance:date:2014.12.31:status:123
+     */
     private Company company;
     private Staff staff;
-    private Date timestamp;
+    private Date date;
     private AttendanceStatus status;
+
+    /**
+     * Specs.
+     */
     private double wage;
+
+    /**
+     * Extension map.
+     */
     private Map<String, Object> extMap;
 
     /**
@@ -46,13 +56,13 @@ public class Attendance implements IDomainObject {
 	setCompany(coID);
 	setStaff(stf);
 	setStatus(stat);
-	setTimestamp(new Date(System.currentTimeMillis()));
+	setDate(new Date(System.currentTimeMillis()));
     }
 
     public Attendance(Company coID, Staff stf, Date tstamp) {
 	setCompany(coID);
 	setStaff(stf);
-	setTimestamp(tstamp);
+	setDate(tstamp);
     }
 
     public Attendance(Company coID, Staff stf, AttendanceStatus stat,
@@ -60,7 +70,7 @@ public class Attendance implements IDomainObject {
 	setCompany(coID);
 	setStaff(stf);
 	setStatus(stat);
-	setTimestamp(tstamp);
+	setDate(tstamp);
     }
 
     public Attendance(Company coID, Staff stf, AttendanceStatus stat,
@@ -68,7 +78,7 @@ public class Attendance implements IDomainObject {
 	setCompany(coID);
 	setStaff(stf);
 	setStatus(stat);
-	setTimestamp(tstamp);
+	setDate(tstamp);
 	setWage(w);
     }
 
@@ -82,7 +92,7 @@ public class Attendance implements IDomainObject {
 	setCompany(staff.getCompany());
 	setStaff(staff);
 	setStatus(status);
-	setTimestamp(timestamp2);
+	setDate(timestamp2);
     }
 
     public Staff getStaff() {
@@ -101,16 +111,16 @@ public class Attendance implements IDomainObject {
 	this.company = companyID;
     }
 
-    public Date getTimestamp() {
-	return timestamp;
+    public Date getDate() {
+	return date;
     }
 
     public String getFormattedDateString(String pattern) {
-	return DateUtils.formatDate(this.timestamp, pattern);
+	return DateUtils.formatDate(this.date, pattern);
     }
 
-    public void setTimestamp(Date timestamp) {
-	this.timestamp = timestamp;
+    public void setDate(Date d) {
+	this.date = d;
     }
 
     public AttendanceStatus getStatus() {
@@ -139,65 +149,37 @@ public class Attendance implements IDomainObject {
 	this.extMap = extMap;
     }
 
-    public static String constructKey(Staff staff, Date tstamp) {
-	// Construct key.
-	Company co = staff.getCompany();
-	Long companyID = co == null ? 0 : co.getId();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
-
-	long staffID = staff.getId();
-	String date = DateUtils.formatDate(tstamp, "yyyy.MM.dd");
-	String key = companyPart + "staff:" + staffID
-		+ ":payroll:attendance:date:" + date + ":status:*";
-	return key;
+    public static String constructPattern(Staff staff, Date myDate) {
+	Company company = staff.getCompany();
+	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
+	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+		staff.getId(), date, "*");
     }
 
-    public static String constructKey(Staff staff) {
-	// Construct key.
-	Company co = staff.getCompany();
-	Long companyID = co == null ? 0 : co.getId();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
-
-	long staffID = staff.getId();
-	String key = companyPart + "staff:" + staffID
-		+ ":payroll:attendance:date:*:status:*";
-	return key;
+    public static String constructPattern(Staff staff) {
+	Company company = staff.getCompany();
+	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+		staff.getId(), "*", "*");
     }
 
-    public static String constructKey(Staff staff, Date timestamp,
-	    AttendanceStatus status) {
-
-	long staffID = staff.getId();
-	String date = DateUtils.formatDate(timestamp, "yyyy.MM.dd");
-
-	// Construct key.
-	Company co = staff.getCompany();
-	Long companyID = co == null ? 0 : co.getId();
-	String companyPart = Company.OBJECT_NAME + ":" + companyID + ":";
-	String key = companyPart + "staff:" + staffID
-		+ ":payroll:attendance:date:" + date + ":status:" + status.id();
-
-	return key;
+    public static String constructKey(Staff staff, Date myDate,
+	    AttendanceStatus myStatus) {
+	Company company = staff.getCompany();
+	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
+	int status = myStatus.id();
+	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+		staff.getId(), date, status);
     }
 
     /**
-     * Key sample:
-     * company:2123:staff:1123:payroll:attendance:timestamp:12345:status:123<br>
-     * company:2123:staff:1123:payroll:attendance:date:2015.03.15:status:123<br>
+     * Key: company:%s:staff:%s:attendance:date:%s:status:%s
      */
     @Override
     public String getKey() {
-
-	Date myDate = getTimestamp();
+	Date myDate = getDate();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
-
-	String companyPart = Company.OBJECT_NAME + ":" + this.company.getId()
-		+ ":";
-
-	String key = companyPart + "staff:" + this.staff.getId()
-		+ ":payroll:attendance:date:" + date + ":status:"
-		+ (getStatus() == null ? getStatusID() : getStatus().id());
-
-	return key;
+	int status = (getStatus() == null ? getStatusID() : getStatus().id());
+	return String.format(RedisKeyRegistry.KEY_ATTENDANCE,
+		this.company.getId(), this.staff.getId(), date, status);
     }
 }

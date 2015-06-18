@@ -19,14 +19,12 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.assignment.UserAccessAssignment;
 import com.cebedo.pmsys.model.assignment.UserRoleAssignment;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
 public class SystemUser implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("SystemUser");
+    private static final long serialVersionUID = -5847055437189444297L;
     public static final String TABLE_NAME = "system_users";
     public static final String OBJECT_NAME = "systemuser";
     public static final String COLUMN_PRIMARY_KEY = "user_id";

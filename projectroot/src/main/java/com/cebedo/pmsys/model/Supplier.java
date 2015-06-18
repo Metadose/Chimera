@@ -14,18 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 @Entity
 @Table(name = Supplier.TABLE_NAME)
 public class Supplier implements Serializable {
 
+    private static final long serialVersionUID = -4391406557966035290L;
     public static final String TABLE_NAME = "suppliers";
     public static final String OBJECT_NAME = "supplier";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Supplier");
 
     private long id;
     private String name;

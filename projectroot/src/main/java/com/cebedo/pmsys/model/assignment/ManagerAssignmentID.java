@@ -7,15 +7,13 @@ import javax.persistence.ManyToOne;
 
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Embeddable
 public class ManagerAssignmentID implements Serializable {
 
+    private static final long serialVersionUID = -6221696169093772976L;
     private Project project;
     private Staff manager;
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("ManagerAssignmentID");
 
     @ManyToOne
     public Project getProject() {

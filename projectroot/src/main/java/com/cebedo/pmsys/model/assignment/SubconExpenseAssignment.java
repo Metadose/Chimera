@@ -2,15 +2,13 @@ package com.cebedo.pmsys.model.assignment;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 //@Entity
 //@Table(name = SubconExpenseAssignment.TABLE_NAME)
 public class SubconExpenseAssignment implements Serializable {
 
+    private static final long serialVersionUID = -7126025190921443816L;
+
     public static final String TABLE_NAME = "assignments_subcon_expense";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("SubconExpenseAssignment");
 
     private long expenseID;
     private long subconID;

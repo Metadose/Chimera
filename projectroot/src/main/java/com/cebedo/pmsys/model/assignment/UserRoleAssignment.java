@@ -9,15 +9,14 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = UserRoleAssignment.TABLE_NAME)
 public class UserRoleAssignment implements Serializable {
 
+    private static final long serialVersionUID = 2032498358589028716L;
+
     public static final String TABLE_NAME = "assignments_user_role";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("UserRoleAssignment");
 
     private long userID;
     private long roleID;

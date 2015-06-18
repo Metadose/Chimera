@@ -5,26 +5,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Delivery implements IDomainObject {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Delivery");
-
+    private static final long serialVersionUID = 2539632179017470796L;
     /**
-     * Key:
-     * company:13:project:123:delivery:datetime:2015.12.31:14.22:uuid:123123
+     * Key: "company:%s:project:%s:delivery:uuid:%s"
      */
     private Company company;
     private Project project;
-    private Date datetime;
     private UUID uuid;
 
     /**
@@ -32,6 +26,7 @@ public class Delivery implements IDomainObject {
      */
     private String name;
     private String description;
+    private Date datetime;
 
     /**
      * More details.
@@ -66,20 +61,9 @@ public class Delivery implements IDomainObject {
 
     @Override
     public String getKey() {
-	// company:13:project:123:delivery:datetime:2015.12.31:14.22:uuid:123123
-	String companyPart = Company.OBJECT_NAME + ":" + this.company.getId()
-		+ ":";
-	String projectPart = Project.OBJECT_NAME + ":" + this.project.getId()
-		+ ":";
-	String deliveryPart = RedisConstants.OBJECT_CONVERSATION + ":";
-	String dateStr = DateUtils.formatDate(this.datetime,
-		"yyyy.MM.dd:hh.mm.ss");
-	String datetimePart = "datetime:" + dateStr + ":";
-	String uuidPart = "uuid:" + this.uuid;
-
-	String key = companyPart + projectPart + deliveryPart + datetimePart
-		+ uuidPart;
-	return key;
+	// "company:%s:project:%s:delivery:uuid:%s"
+	return String.format(RedisKeyRegistry.KEY_DELIVERY,
+		this.company.getId(), this.project.getId(), this.uuid);
     }
 
     public Company getCompany() {
@@ -159,40 +143,16 @@ public class Delivery implements IDomainObject {
 	this.staff = staff;
     }
 
-    public static String constructKey(Project project, Date datetime, UUID uuid) {
-	Company company = project.getCompany();
-	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
-	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
-	String deliveryPart = RedisConstants.OBJECT_CONVERSATION + ":";
-	String dateStr = DateUtils.formatDate(datetime, "yyyy.MM.dd:hh.mm.ss");
-	String datetimePart = "datetime:" + dateStr + ":";
-	String uuidPart = "uuid:" + uuid;
-	String key = companyPart + projectPart + deliveryPart + datetimePart
-		+ uuidPart;
-	return key;
-    }
-
+    /**
+     * company:%s:project:%s:delivery:uuid:%s
+     * 
+     * @param project
+     * @return
+     */
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
-	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
-	String deliveryPart = RedisConstants.OBJECT_CONVERSATION + ":";
-	String datetimePart = "datetime:*";
-	String uuidPart = "uuid:*";
-	String key = companyPart + projectPart + deliveryPart + datetimePart
-		+ uuidPart;
-	return key;
-    }
-
-    public static String constructPattern(String uuid2) {
-	String companyPart = Company.OBJECT_NAME + ":*:";
-	String projectPart = Project.OBJECT_NAME + ":*:";
-	String deliveryPart = RedisConstants.OBJECT_CONVERSATION + ":";
-	String datetimePart = "datetime:*";
-	String uuidPart = "uuid:" + uuid2;
-	String key = companyPart + projectPart + deliveryPart + datetimePart
-		+ uuidPart;
-	return key;
+	return String.format(RedisKeyRegistry.KEY_DELIVERY, company.getId(),
+		project.getId(), "*");
     }
 
 }

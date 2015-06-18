@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -687,8 +688,8 @@ public class ProjectServiceImpl implements ProjectService {
 	// Construct the key.
 	long companyID = proj.getCompany() == null ? 0 : proj.getCompany()
 		.getId();
-	String pattern = ProjectPayroll.constructKey(companyID, proj.getId(),
-		null, null, null, null, null);
+	String pattern = ProjectPayroll.constructPattern(companyID,
+		proj.getId());
 
 	// Get all keys based on pattern.
 	// Multi-get all objects based on keys.
@@ -759,15 +760,14 @@ public class ProjectServiceImpl implements ProjectService {
 	String response = "";
 	String datePart = getResponseDatePart(projectPayroll);
 
-	// If we are update, delete first the old entry.
-	// Because the date and time are used as key parts.
+	// Generate response.
 	if (isUpdating) {
-	    preUpdateClear(session, projectPayroll);
 	    response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
 		    RedisConstants.OBJECT_PAYROLL, datePart);
 	} else {
 	    response = AlertBoxFactory.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_PAYROLL, datePart);
+	    projectPayroll.setUuid(UUID.randomUUID());
 	}
 
 	// Set the new values.
@@ -788,9 +788,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    projectPayroll.setLastComputed(null);
 	}
 
-	// Do rename first before setting.
-	preUpdateClear(session, projectPayroll);
-
 	// Transform the selected ID's into actual objects.
 	// Store the actual objects in the payroll object.
 	long[] staffIDs = projectPayroll.getStaffIDs();
@@ -809,37 +806,6 @@ public class ProjectServiceImpl implements ProjectService {
 	String response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
 		RedisConstants.OBJECT_PAYROLL, datePart);
 	return response;
-    }
-
-    /**
-     * Rename first the object before updating.<br>
-     * If this process is not executed, will create duplicate entry of this
-     * object.
-     * 
-     * @param session
-     * @param projectPayroll
-     */
-    private void preUpdateClear(HttpSession session,
-	    ProjectPayroll projectPayroll) {
-	// If the start and end dates are the same,
-	// don't do anything.
-	Date oldStart = (Date) session
-		.getAttribute(ProjectController.OLD_PAYROLL_START);
-	Date oldEnd = (Date) session
-		.getAttribute(ProjectController.OLD_PAYROLL_END);
-	Date newStart = projectPayroll.getStartDate();
-	Date newEnd = projectPayroll.getEndDate();
-
-	// Else, delete old payroll.
-	// Clear the computational results.
-	// Before updating.
-	if (!oldStart.equals(newStart) || !oldEnd.equals(newEnd)) {
-	    projectPayroll.setLastComputed(null);
-	    projectPayroll.setPayrollJSON(null);
-	    Set<String> clearOlds = this.projectPayrollValueRepo
-		    .keys(projectPayroll.constructPattern(oldStart, oldEnd));
-	    this.projectPayrollValueRepo.delete(clearOlds);
-	}
     }
 
     @Transactional

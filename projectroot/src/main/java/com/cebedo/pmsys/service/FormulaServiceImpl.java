@@ -104,9 +104,7 @@ public class FormulaServiceImpl implements FormulaService {
 
     @Override
     @Transactional
-    public Formula get(String uuid) {
-	String key = Formula.constructKey(this.authHelper.getAuth()
-		.getCompany(), uuid);
+    public Formula get(String key) {
 	return this.formulaValueRepo.get(key);
     }
 

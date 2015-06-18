@@ -37,7 +37,7 @@
 									<div class="col-xs-12">
 										<div class="box">
 												<div class="box-body table-responsive">
-													<c:url var="urlCreateFormula" value="/formula/edit/0"/>
+													<c:url var="urlCreateFormula" value="/formula/edit/0-end"/>
 				                                	<a href="${urlCreateFormula}">
 				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Formula</button>
 				                                	</a>
@@ -57,11 +57,11 @@
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-						                                            			<c:url var="urlEditFormula" value="/formula/edit/${formula.uuid}"/>
+						                                            			<c:url var="urlEditFormula" value="/formula/edit/${formula.getKey()}-end"/>
 				                                								<a href="${urlEditFormula}">
 																					<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                								</a>
-																				<c:url var="urlDeleteFormula" value="/formula/delete/${formula.uuid}"/>
+																				<c:url var="urlDeleteFormula" value="/formula/delete/${formula.getKey()}-end"/>
 				                                								<a href="${urlDeleteFormula}">
 																					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                								</a>

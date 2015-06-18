@@ -17,12 +17,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 @Entity
 @Table(name = MaterialToRemove.TABLE_NAME)
 public class MaterialToRemove implements Serializable {
 
+    private static final long serialVersionUID = -7556543678779459364L;
     public static final String TABLE_NAME = "materials";
     public static final String OBJECT_NAME = "material";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
@@ -31,9 +30,6 @@ public class MaterialToRemove implements Serializable {
 
     public static final String MATERIALS_SUMMARY_KEY_TOTAL_COST = "totalCostOfMaterials";
     public static final String MATERIALS_SUMMARY_KEY_COUNT = "materialsCountMap";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Material");
 
     private long id;
     private String name;

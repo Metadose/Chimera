@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = FieldAssignment.TABLE_NAME)
@@ -21,12 +20,10 @@ import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 	@AssociationOverride(name = FieldAssignment.PRIMARY_KEY + ".field", joinColumns = @JoinColumn(name = Field.COLUMN_PRIMARY_KEY)) })
 public class FieldAssignment implements Serializable {
 
+    private static final long serialVersionUID = -6885137480392887691L;
     public static final String OBJECT_LABEL = "Field Assignment";
     public static final String TABLE_NAME = "assignments_project_field";
     public static final String PRIMARY_KEY = "assignmentID";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("FieldAssignment");
 
     private FieldAssignmentID assignmentID = new FieldAssignmentID();
 

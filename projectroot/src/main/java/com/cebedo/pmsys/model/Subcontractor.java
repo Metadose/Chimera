@@ -3,18 +3,15 @@ package com.cebedo.pmsys.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 //@Entity
 //@Table(name = Subcontractor.TABLE_NAME)
 public class Subcontractor implements Serializable {
 
+    private static final long serialVersionUID = -3419926408938506007L;
     public static final String OBJECT_NAME = "subcontractor";
     public static final String TABLE_NAME = "subcontractors";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Subcontractor");
 
     private long id;
     private String name;

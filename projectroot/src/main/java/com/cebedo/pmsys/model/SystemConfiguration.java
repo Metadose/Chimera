@@ -11,12 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 @Entity
 @Table(name = SystemConfiguration.TABLE_NAME)
 public class SystemConfiguration implements Serializable {
 
+    private static final long serialVersionUID = -1551965044511625142L;
     public static final String OBJECT_NAME = "config";
     public static final String TABLE_NAME = "system_configuration";
     public static final String COLUMN_PRIMARY_KEY = "sysconf_id";
@@ -24,9 +23,6 @@ public class SystemConfiguration implements Serializable {
 
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_NAME = "name";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("SystemConfiguration");
 
     private long id;
     private String name;

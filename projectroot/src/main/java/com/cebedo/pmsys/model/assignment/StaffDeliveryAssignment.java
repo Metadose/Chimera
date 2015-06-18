@@ -9,15 +9,14 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = StaffDeliveryAssignment.TABLE_NAME)
 public class StaffDeliveryAssignment implements Serializable {
 
+    private static final long serialVersionUID = 2283380966185220254L;
+
     public static final String TABLE_NAME = "assignments_staff_delivery";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("StaffDeliveryAssignment");
 
     private long staffID;
     private long deliveryID;

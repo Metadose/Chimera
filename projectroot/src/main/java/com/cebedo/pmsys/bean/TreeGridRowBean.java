@@ -3,12 +3,10 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 
 import com.cebedo.pmsys.utils.NumberFormatUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class TreeGridRowBean implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("TreeGridRowBean");
+    private static final long serialVersionUID = 3657789273539338468L;
     private long primaryKey;
     private long foreignKey;
     private String name;

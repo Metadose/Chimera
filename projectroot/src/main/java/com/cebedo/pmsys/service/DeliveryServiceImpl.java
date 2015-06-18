@@ -54,11 +54,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    obj.setUuid(UUID.randomUUID());
 	}
 
-	// Before setting,
-	// delete previous old object using uuid.
-	String pattern = Delivery.constructPattern(obj.getUuid().toString());
-	this.deliveryValueRepo.delete(this.deliveryValueRepo.keys(pattern));
-
 	// Do the action.
 	// Return success.
 	this.deliveryValueRepo.set(obj);
@@ -84,16 +79,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public Delivery get(String uuid) {
-	String pattern = Delivery.constructPattern(uuid);
-
-	// Below is assuming that the UUID is indeed unique.
-	Set<String> keys = this.deliveryValueRepo.keys(pattern);
-	for (String key : keys) {
-	    Delivery delivery = this.deliveryValueRepo.get(key);
-	    return delivery;
-	}
-	return new Delivery();
+    public Delivery get(String key) {
+	return this.deliveryValueRepo.get(key);
     }
 
     @Override

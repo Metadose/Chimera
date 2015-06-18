@@ -8,14 +8,11 @@ import javax.persistence.ManyToOne;
 
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Embeddable
 public class TaskFieldAssignmentID implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("TaskFieldAssignmentID");
-
+    private static final long serialVersionUID = -3860545942531877757L;
     private Task task;
     private Field field;
     private String label;

@@ -655,16 +655,16 @@
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
 				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-				                                				var="payrollKey"></c:set>
+				                                				var="payrollRow.getKey()"></c:set>
 				                                		
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollRow.getKey()}-end"/>
 			                                            			<a href="${urlEditPayroll}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <c:url value="/project/delete/payroll/${payrollRow.getKey()}-end" var="urlDeletePayroll"/>
 								                                    <a href="${urlDeletePayroll}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
@@ -719,7 +719,7 @@
                									<div class="callout callout-info callout-cebedo">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
-										  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0"/>
+										  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
 		                                  		<a href="${urlCreateDelivery}">
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
 		                                  		</a>
@@ -741,11 +741,11 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditDelivery" value="/project/edit/delivery/${deliveryRow.uuid}"/>
+			                                            			<c:url var="urlEditDelivery" value="/project/edit/delivery/${deliveryRow.getKey()}-end"/>
 			                                            			<a href="${urlEditDelivery}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/delivery/${deliveryRow.uuid}" var="urlDeleteDelivery"/>
+								                                    <c:url value="/project/delete/delivery/${deliveryRow.getKey()}-end" var="urlDeleteDelivery"/>
 								                                    <a href="${urlDeleteDelivery}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
@@ -788,16 +788,14 @@
 				                                		<c:forEach items="${payrollList}" var="payrollRow">
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-				                                				var="payrollKey"></c:set>
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollRow.getKey()}-end"/>
 			                                            			<a href="${urlEditPayroll}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <c:url value="/project/delete/payroll/${payrollRow.getKey()}-end" var="urlDeletePayroll"/>
 								                                    <a href="${urlDeletePayroll}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
@@ -844,17 +842,14 @@
 				                                		<c:forEach items="${payrollList}" var="payrollRow">
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-				                                				var="payrollKey"></c:set>
-				                                		
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollKey}-end"/>
+			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollRow.getKey()}-end"/>
 			                                            			<a href="${urlEditPayroll}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollKey}-end" var="urlDeletePayroll"/>
+								                                    <c:url value="/project/delete/payroll/${payrollRow.getKey()}-end" var="urlDeletePayroll"/>
 								                                    <a href="${urlDeletePayroll}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>

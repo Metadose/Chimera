@@ -9,15 +9,14 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = UserAccessAssignment.TABLE_NAME)
 public class UserAccessAssignment implements Serializable {
 
+    private static final long serialVersionUID = -3586182254147504448L;
+
     public static final String TABLE_NAME = "assignments_user_access";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("UserAccessAssignment");
 
     private long userID;
     private long accessID;

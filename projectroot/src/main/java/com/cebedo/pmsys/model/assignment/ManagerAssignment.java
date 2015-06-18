@@ -13,7 +13,6 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = ManagerAssignment.TABLE_NAME)
@@ -22,14 +21,12 @@ import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 	@AssociationOverride(name = ManagerAssignment.PRIMARY_KEY + ".manager", joinColumns = @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY)) })
 public class ManagerAssignment implements Serializable {
 
+    private static final long serialVersionUID = -1657266662898654573L;
     public static final String OBJECT_LABEL = "Manager Assignment";
     public static final String OBJECT_NAME = "managerAssignment";
     public static final String TABLE_NAME = "assignments_project_manager";
     public static final String PRIMARY_KEY = "assignmentID";
     public static final String COLUMN_PROJECT_POSITION = "project_position";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("ManagerAssignment");
 
     private ManagerAssignmentID assignmentID = new ManagerAssignmentID();
     private String projectPosition;

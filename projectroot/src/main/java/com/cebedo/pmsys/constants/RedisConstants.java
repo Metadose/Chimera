@@ -17,10 +17,9 @@ public abstract class RedisConstants {
 	    + "/deliveryEdit";
     public static final String JSP_ATTENDANCE_EDIT = OBJECT_ATTENDANCE
 	    + "/attendanceEdit";
-    public static final String JSP_ATTENDANCE_LIST = OBJECT_ATTENDANCE
-	    + "/attendanceList";
-
     public static final String JSP_PAYROLL_EDIT = OBJECT_PAYROLL
 	    + "/payrollEdit";
+    public static final String JSP_ATTENDANCE_LIST = OBJECT_ATTENDANCE
+	    + "/attendanceList";
 
 }

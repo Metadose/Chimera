@@ -261,7 +261,7 @@ public class StaffController {
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
-	return editStaffWithMaxDate(model, session, attendance.getTimestamp());
+	return editStaffWithMaxDate(model, session, attendance.getDate());
     }
 
     /**

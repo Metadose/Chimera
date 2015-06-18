@@ -817,7 +817,7 @@
 						action="${contextPath}/staff/add/attendance">
                         <div class="form-group">
                             <label>Date</label>
-                            <form:input type="text" class="form-control" id="modalDate" path="timestamp"/>
+                            <form:input type="text" class="form-control" id="modalDate" path="date"/>
                             
                             <br/>
                             <label>Status</label>

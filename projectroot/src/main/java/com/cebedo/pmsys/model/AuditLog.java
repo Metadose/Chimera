@@ -16,14 +16,12 @@ import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = AuditLog.TABLE_NAME)
 public class AuditLog implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("AuditLog");
+    private static final long serialVersionUID = -3443728849263419668L;
     public static final String OBJECT_NAME = "auditlog";
     public static final String TABLE_NAME = "audit_logs";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";

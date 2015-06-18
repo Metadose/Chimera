@@ -72,7 +72,8 @@ public class FormulaController {
 
 	return SystemConstants.CONTROLLER_REDIRECT
 		+ RedisConstants.OBJECT_FORMULA + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + formula.getUuid();
+		+ SystemConstants.REQUEST_EDIT + "/" + formula.getKey()
+		+ "-end";
     }
 
     /**
@@ -104,17 +105,17 @@ public class FormulaController {
     }
 
     @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
-	    + RedisConstants.UUID + "}" }, method = RequestMethod.GET)
+	    + RedisConstants.UUID + "}-end" }, method = RequestMethod.GET)
     public String editFormula(Model model,
-	    @PathVariable(RedisConstants.UUID) String uuid) {
+	    @PathVariable(RedisConstants.UUID) String key) {
 
-	if (uuid.equals("0")) {
+	if (key.equals("0")) {
 	    model.addAttribute(RedisConstants.OBJECT_FORMULA, new Formula(
 		    this.authHelper.getAuth().getCompany()));
 	    return JSP_EDIT;
 	}
 
-	Formula formula = this.formulaService.get(uuid);
+	Formula formula = this.formulaService.get(key);
 	model.addAttribute(RedisConstants.OBJECT_FORMULA, formula);
 	return JSP_EDIT;
     }

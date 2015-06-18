@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Formula implements IDomainObject {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Formula");
+    private static final long serialVersionUID = 1604488532064947576L;
     public static final String DELIMITER_OPEN_VARIABLE = "[[";
     public static final String DELIMITER_CLOSE_VARIABLE = "]]";
 
@@ -60,45 +58,16 @@ public class Formula implements IDomainObject {
 	this.extMap = extMap;
     }
 
-    public static String constructKey(Company company2, String uuid2) {
-	// company:12123:formula:uuid:123-123-123
-	String companyPart = Company.OBJECT_NAME + ":"
-		+ (company2 == null ? "*" : company2.getId()) + ":";
-	String formulaPart = RedisConstants.OBJECT_FORMULA + ":";
-	String uuidPart = "uuid:" + uuid2;
-	String key = companyPart + formulaPart + uuidPart;
-	return key;
-    }
-
-    public static String constructKey(Company company, UUID uuid) {
-	// company:12123:formula:uuid:123-123-123
-	String companyPart = Company.OBJECT_NAME + ":"
-		+ (company == null ? "*" : company.getId()) + ":";
-	String formulaPart = RedisConstants.OBJECT_FORMULA + ":";
-	String uuidPart = "uuid:" + uuid;
-	String key = companyPart + formulaPart + uuidPart;
-	return key;
-    }
-
     public static String constructPattern(Company company) {
-	// company:12123:formula:uuid:123-123-123
-	String companyPart = Company.OBJECT_NAME + ":"
-		+ (company == null ? "*" : company.getId()) + ":";
-	String formulaPart = RedisConstants.OBJECT_FORMULA + ":";
-	String uuidPart = "uuid:*";
-	String key = companyPart + formulaPart + uuidPart;
-	return key;
+	return String
+		.format(RedisKeyRegistry.KEY_FORMULA, company.getId(), "*");
     }
 
     @Override
     public String getKey() {
 	// company:12123:formula:uuid:123-123-123
-	String companyPart = Company.OBJECT_NAME + ":"
-		+ (this.company == null ? 0 : this.company.getId()) + ":";
-	String formulaPart = RedisConstants.OBJECT_FORMULA + ":";
-	String uuidPart = "uuid:" + this.uuid;
-	String key = companyPart + formulaPart + uuidPart;
-	return key;
+	return String.format(RedisKeyRegistry.KEY_FORMULA,
+		this.company.getId(), this.uuid);
     }
 
     public Company getCompany() {

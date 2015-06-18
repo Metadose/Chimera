@@ -14,12 +14,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
-
 @Entity
 @Table(name = ProjectFile.TABLE_NAME)
 public class ProjectFile implements Serializable {
 
+    private static final long serialVersionUID = -7800085024122819440L;
     public static final String OBJECT_NAME = "projectfile";
     public static final String TABLE_NAME = "project_files";
     public static final String COLUMN_PRIMARY_KEY = "projectfile_id";
@@ -29,9 +28,6 @@ public class ProjectFile implements Serializable {
     public static final String PROPERTY_NAME = "name";
 
     public static final String PARAM_FILE = "file";
-
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("ProjectFile");
 
     private long id;
     private String name;

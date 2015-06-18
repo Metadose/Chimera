@@ -3,20 +3,16 @@ package com.cebedo.pmsys.domain;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class Material implements IDomainObject {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("Material");
-
+    private static final long serialVersionUID = 2300406369596684113L;
     /**
-     * Keys:
-     * company:2321:project:1123:inventory:delivery:1123:material:12d1-123sd12
+     * Keys: company:%s:project:%s:delivery:%s:material:%s
      */
     private Company company;
     private Project project;
@@ -78,33 +74,12 @@ public class Material implements IDomainObject {
 	this.extMap = extMap;
     }
 
-    public static String constructKey(Company company, Project project,
-	    Delivery delivery, UUID uuid) {
-	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
-	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
-	String inventoryPart = "inventory:";
-	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
-		+ delivery.getUuid() + ":";
-	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + uuid;
-	String key = companyPart + projectPart + inventoryPart + deliveryPart
-		+ materialPart;
-	return key;
-    }
-
     @Override
     public String getKey() {
-	// company:2321:project:1123:inventory:delivery:1123:material:123-123
-	String companyPart = Company.OBJECT_NAME + ":" + this.company.getId()
-		+ ":";
-	String projectPart = Project.OBJECT_NAME + ":" + this.project.getId()
-		+ ":";
-	String inventoryPart = "inventory:";
-	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
-		+ this.delivery.getUuid() + ":";
-	String materialPart = RedisConstants.OBJECT_MATERIAL + ":" + this.uuid;
-	String key = companyPart + projectPart + inventoryPart + deliveryPart
-		+ materialPart;
-	return key;
+	// company:%s:project:%s:delivery:%s:material:%s
+	return String.format(RedisKeyRegistry.KEY_MATERIAL,
+		this.company.getId(), this.project.getId(),
+		this.delivery.getUuid(), this.uuid);
     }
 
     public Company getCompany() {
@@ -264,17 +239,8 @@ public class Material implements IDomainObject {
     public static String constructPattern(Delivery delivery2) {
 	Company company = delivery2.getCompany();
 	Project project = delivery2.getProject();
-
-	// company:2321:project:1123:inventory:delivery:1123:material:123-123
-	String companyPart = Company.OBJECT_NAME + ":" + company.getId() + ":";
-	String projectPart = Project.OBJECT_NAME + ":" + project.getId() + ":";
-	String inventoryPart = "inventory:";
-	String deliveryPart = RedisConstants.OBJECT_DELIVERY + ":"
-		+ delivery2.getUuid() + ":";
-	String materialPart = RedisConstants.OBJECT_MATERIAL + ":*";
-	String key = companyPart + projectPart + inventoryPart + deliveryPart
-		+ materialPart;
-	return key;
+	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(),
+		project.getId(), delivery2.getUuid(), "*");
     }
 
 }

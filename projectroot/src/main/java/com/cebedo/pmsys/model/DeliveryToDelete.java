@@ -20,18 +20,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.cebedo.pmsys.model.assignment.StaffDeliveryAssignment;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Entity
 @Table(name = DeliveryToDelete.TABLE_NAME)
 public class DeliveryToDelete implements Serializable {
 
+    private static final long serialVersionUID = -8212252379058366825L;
     public static final String TABLE_NAME = "deliveries";
     public static final String OBJECT_NAME = "delivery";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
     public static final String PROPERTY_ID = "id";
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("DeliveryToDelete");
 
     private long id;
     private String name;

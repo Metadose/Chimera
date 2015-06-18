@@ -8,14 +8,11 @@ import javax.persistence.ManyToOne;
 
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 @Embeddable
 public class StaffFieldAssignmentID implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("StaffFieldAssignmentID");
-
+    private static final long serialVersionUID = -7605636342024682621L;
     private Staff staff;
     private Field field;
     private String label;

@@ -10,12 +10,10 @@ import java.util.Map;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
-import com.cebedo.pmsys.utils.SerialVersionUIDUtils;
 
 public class PayrollComputationResult implements Serializable {
 
-    private static final long serialVersionUID = SerialVersionUIDUtils
-	    .convertStringToLong("PayrollComputationResult");
+    private static final long serialVersionUID = 6109887323126902978L;
     private Date startDate, endDate;
     private Map<Staff, String> staffToWageMap = new HashMap<Staff, String>();
     private double overallTotalOfStaff = 0;

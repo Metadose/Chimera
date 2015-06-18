@@ -677,7 +677,7 @@ public class StaffServiceImpl implements StaffService {
 
 	for (Attendance attendance : attendanceList) {
 
-	    Date myDate = attendance.getTimestamp();
+	    Date myDate = attendance.getDate();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
 	    AttendanceStatus attnStat = attendance.getStatus() == null ? AttendanceStatus
 		    .of(attendance.getStatusID()) : attendance.getStatus();
