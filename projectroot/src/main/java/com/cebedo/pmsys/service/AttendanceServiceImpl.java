@@ -26,7 +26,7 @@ import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
-public class PayrollServiceImpl implements PayrollService {
+public class AttendanceServiceImpl implements AttendanceService {
 
     private AttendanceValueRepo attendanceValueRepo;
     private ProjectService projectService;

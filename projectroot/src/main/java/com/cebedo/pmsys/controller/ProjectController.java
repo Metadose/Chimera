@@ -56,14 +56,15 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
+import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectFileService;
+import com.cebedo.pmsys.service.ProjectPayrollService;
+import com.cebedo.pmsys.service.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.service.ProjectService;
-import com.cebedo.pmsys.service.ProjectServiceImpl;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -147,9 +148,21 @@ public class ProjectController {
     private ProjectFileService projectFileService;
     private DeliveryService deliveryService;
     private MaterialService materialService;
+    private AttendanceService attendanceService;
+    private ProjectPayrollService projectPayrollService;
 
-    // TODO Put this in service layer.
-    private ProjectPayrollValueRepo projectPayrollValueRepo;
+    @Autowired(required = true)
+    @Qualifier(value = "projectPayrollService")
+    public void setProjectPayrollService(
+	    ProjectPayrollService projectPayrollService) {
+	this.projectPayrollService = projectPayrollService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "attendanceService")
+    public void setPayrollService(AttendanceService payrollService) {
+	this.attendanceService = payrollService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "materialService")
@@ -161,13 +174,6 @@ public class ProjectController {
     @Qualifier(value = "deliveryService")
     public void setDeliveryService(DeliveryService deliveryService) {
 	this.deliveryService = deliveryService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "projectPayrollValueRepo")
-    public void setProjectPayrollValueRepo(
-	    ProjectPayrollValueRepo projectPayrollValueRepo) {
-	this.projectPayrollValueRepo = projectPayrollValueRepo;
     }
 
     @Autowired(required = true)
@@ -1018,7 +1024,7 @@ public class ProjectController {
 	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) PayrollIncludeStaffBean includeStaffBean,
 	    RedirectAttributes redirectAttrs) {
 
-	String response = this.projectService.includeStaffToPayroll(
+	String response = this.projectPayrollService.includeStaffToPayroll(
 		projectPayroll, includeStaffBean);
 
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -1093,8 +1099,8 @@ public class ProjectController {
 	}
 
 	// Do service.
-	String response = this.projectService.createPayroll(session, proj,
-		projectPayroll);
+	String response = this.projectPayrollService.createPayroll(session,
+		proj, projectPayroll);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
 
@@ -1130,8 +1136,8 @@ public class ProjectController {
 	}
 
 	// Update the payroll then clear the computation.
-	String response = this.projectService.createPayrollClearComputation(
-		session, projectPayroll, toClear);
+	String response = this.projectPayrollService
+		.createPayrollClearComputation(session, projectPayroll, toClear);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
 
@@ -1166,15 +1172,13 @@ public class ProjectController {
 
 	// Get payroll maps.
 	// And assign to model.
-	String payrollJSON = this.projectService.getPayrollJSON(proj,
-		startDate, endDate, projectPayroll);
-	projectPayroll.setLastComputed(new Date(System.currentTimeMillis()));
-	projectPayroll.setPayrollJSON(payrollJSON);
-	this.projectPayrollValueRepo.set(projectPayroll);
+	String payrollJSON = this.projectPayrollService.setAndGetResultJSON(
+		proj, startDate, endDate, projectPayroll);
+
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 
 	// Construct response.
-	String datePart = ProjectServiceImpl
+	String datePart = ProjectPayrollServiceImpl
 		.getResponseDatePart(projectPayroll);
 	String response = AlertBoxFactory.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_PAYROLL, datePart);
@@ -1305,7 +1309,7 @@ public class ProjectController {
 	// Attach to response.
 	// If flash attribute was null,
 	// use the key.
-	ProjectPayroll projectPayroll = this.projectPayrollValueRepo
+	ProjectPayroll projectPayroll = this.projectPayrollService
 		.get(payrollKey);
 	session.setAttribute(OLD_PAYROLL_START, projectPayroll.getStartDate());
 	session.setAttribute(OLD_PAYROLL_END, projectPayroll.getEndDate());
@@ -1448,9 +1452,9 @@ public class ProjectController {
 	// Get all payrolls.
 	// Get the grandtotal of all payrolls.
 	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectService
+	List<ProjectPayroll> payrollList = this.projectPayrollService
 		.getAllPayrolls(proj);
-	String payrollGrandTotal = this.projectService
+	String payrollGrandTotal = this.projectPayrollService
 		.getPayrollGrandTotalAsString(payrollList);
 	model.addAttribute(ATTR_PAYROLL_LIST_TOTAL, payrollGrandTotal);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);

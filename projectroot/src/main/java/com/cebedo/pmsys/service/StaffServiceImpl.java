@@ -11,8 +11,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,8 +72,6 @@ public class StaffServiceImpl implements StaffService {
 	this.systemUserDAO = systemUserDAO;
     }
 
-    @Autowired(required = true)
-    @Qualifier(value = "projectFileService")
     public void setProjectFileService(ProjectFileService ps) {
 	this.projectFileService = ps;
     }

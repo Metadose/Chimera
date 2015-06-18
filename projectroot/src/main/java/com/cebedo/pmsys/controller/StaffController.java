@@ -38,8 +38,8 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
+import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.PayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
@@ -82,12 +82,12 @@ public class StaffController {
     private TeamService teamService;
     private FieldService fieldService;
     private ProjectService projectService;
-    private PayrollService payrollService;
+    private AttendanceService attendanceService;
 
     @Autowired(required = true)
-    @Qualifier(value = "payrollService")
-    public void setPayrollService(PayrollService s) {
-	this.payrollService = s;
+    @Qualifier(value = "attendanceService")
+    public void setAttendanceService(AttendanceService s) {
+	this.attendanceService = s;
     }
 
     @Autowired(required = true)
@@ -234,7 +234,7 @@ public class StaffController {
 	}
 
 	// Do service.
-	this.payrollService.multiSet(attendanceMass);
+	this.attendanceService.multiSet(attendanceMass);
 
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -256,7 +256,7 @@ public class StaffController {
 	    SessionStatus status) {
 
 	// Do service.
-	this.payrollService.set(attendance);
+	this.attendanceService.set(attendance);
 
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -286,7 +286,7 @@ public class StaffController {
 	    attendance = new Attendance(co, staff);
 	} else {
 	    // TODO Make function for this in service.
-	    attendance = this.payrollService.get(staff,
+	    attendance = this.attendanceService.get(staff,
 		    AttendanceStatus.of(status), new Date(timestamp));
 	}
 
@@ -583,13 +583,13 @@ public class StaffController {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	Set<Attendance> attendanceList = this.payrollService
+	Set<Attendance> attendanceList = this.attendanceService
 		.rangeStaffAttendance(staff, min, max);
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE,
-		this.payrollService.getTotalWageFromAttendance(attendanceList));
+	model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE, this.attendanceService
+		.getTotalWageFromAttendance(attendanceList));
 
 	// Get attendance status map based on enum.
 	model.addAttribute(ATTR_CALENDAR_STATUS_LIST,

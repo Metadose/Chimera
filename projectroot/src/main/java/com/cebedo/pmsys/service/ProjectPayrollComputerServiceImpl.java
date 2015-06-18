@@ -31,15 +31,15 @@ public class ProjectPayrollComputerServiceImpl implements
 
     private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
 
-    private PayrollService payrollService;
+    private AttendanceService attendanceService;
     private StaffService staffService;
 
     public void setStaffService(StaffService staffService) {
 	this.staffService = staffService;
     }
 
-    public void setPayrollService(PayrollService payrollService) {
-	this.payrollService = payrollService;
+    public void setAttendanceService(AttendanceService s) {
+	this.attendanceService = s;
     }
 
     public ProjectPayrollComputerServiceImpl() {
@@ -133,7 +133,7 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	    // Get wage then add to map.
 	    // Get the total of this guy.
-	    double staffWageTotal = this.payrollService
+	    double staffWageTotal = this.attendanceService
 		    .getTotalWageOfStaffInRange(staff, this.startDate,
 			    this.endDate);
 
@@ -162,7 +162,7 @@ public class ProjectPayrollComputerServiceImpl implements
     private Map<AttendanceStatus, Map<String, Double>> getStaffBreakdownMap(
 	    Staff manager, Date min, Date max) {
 	// Attendance count map.
-	Set<Attendance> attendanceList = this.payrollService
+	Set<Attendance> attendanceList = this.attendanceService
 		.rangeStaffAttendance(manager, min, max);
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = this.staffService
 		.getAttendanceStatusCountMap(attendanceList);

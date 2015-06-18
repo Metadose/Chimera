@@ -283,24 +283,23 @@
         </beans:property>
     </beans:bean>
      
+    <!-- Project -->
     <beans:bean id="projectDAO" class="com.cebedo.pmsys.dao.ProjectDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="projectService" class="com.cebedo.pmsys.service.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
-        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
-        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
-        <beans:property name="projectPayrollComputerService" ref="projectPayrollComputerService"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
-        <beans:property name="projectPayrollValueRepo" ref="projectPayrollValueRepo"></beans:property>
     </beans:bean>
     
+    <!-- Project Payroll Computer -->
     <beans:bean id="projectPayrollComputerService" class="com.cebedo.pmsys.service.ProjectPayrollComputerServiceImpl">
-    	<beans:property name="payrollService" ref="payrollService"></beans:property>
-        <beans:property name="staffService" ref="staffService"></beans:property>
+    	<beans:property name="attendanceService" ref="attendanceService"></beans:property>
+        <beans:property name="staffService" ref="staffService"></beans:property> 
     </beans:bean>
     
+    <!-- Staff -->
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.dao.StaffDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -310,8 +309,10 @@
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
+        <beans:property name="projectFileService" ref="projectFileService"></beans:property>
     </beans:bean>
     
+    <!-- Team -->
     <beans:bean id="teamDAO" class="com.cebedo.pmsys.dao.TeamDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -321,6 +322,7 @@
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
+    <!-- Supplier -->
     <beans:bean id="supplierDAO" class="com.cebedo.pmsys.dao.SupplierDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -328,10 +330,7 @@
         <beans:property name="supplierDAO" ref="supplierDAO"></beans:property>
     </beans:bean>
     
-    <beans:bean id="materialDAO" class="com.cebedo.pmsys.dao.MaterialDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    
+    <!-- Storage -->
     <beans:bean id="storageDAO" class="com.cebedo.pmsys.dao.StorageDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -339,6 +338,7 @@
         <beans:property name="storageDAO" ref="storageDAO"></beans:property>
     </beans:bean>
     
+    <!-- Expense -->
     <beans:bean id="expenseDAO" class="com.cebedo.pmsys.dao.ExpenseDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -346,6 +346,12 @@
         <beans:property name="expenseDAO" ref="expenseDAO"></beans:property>
     </beans:bean>
     
+    <!-- Material To Delete -->
+    <beans:bean id="materialDAO" class="com.cebedo.pmsys.dao.MaterialDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    
+    <!-- Delivery To Delete -->
     <beans:bean id="deliveryDAO" class="com.cebedo.pmsys.dao.DeliveryDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -353,6 +359,7 @@
         <beans:property name="deliveryDAO" ref="deliveryDAO"></beans:property>
     </beans:bean>
     
+    <!-- Reminder -->
     <beans:bean id="reminderDAO" class="com.cebedo.pmsys.dao.ReminderDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -360,6 +367,7 @@
         <beans:property name="reminderDAO" ref="reminderDAO"></beans:property>
     </beans:bean>
     
+    <!-- Milestone -->
     <beans:bean id="milestoneDAO" class="com.cebedo.pmsys.dao.MilestoneDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -367,6 +375,7 @@
         <beans:property name="milestoneDAO" ref="milestoneDAO"></beans:property>
     </beans:bean>
     
+    <!-- Security Access -->
     <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.dao.SecurityAccessDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -374,6 +383,7 @@
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
     </beans:bean>
     
+    <!-- Security Role -->
     <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.dao.SecurityRoleDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -381,6 +391,7 @@
         <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
     </beans:bean>
     
+    <!-- Task -->
     <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.TaskDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -391,6 +402,7 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
+    <!-- Search -->
     <beans:bean id="searchService" class="com.cebedo.pmsys.service.SearchServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
@@ -398,6 +410,7 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
+    <!-- Field -->
     <beans:bean id="fieldDAO" class="com.cebedo.pmsys.dao.FieldDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -408,6 +421,7 @@
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
     </beans:bean>
     
+    <!-- Project File -->
     <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.dao.ProjectFileDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -417,58 +431,7 @@
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
-    <!-- Redis object Notification -->
-    <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
-        <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
-        <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="deliveryService" class="com.cebedo.pmsys.service.DeliveryServiceImpl">
-        <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="deliveryValueRepo" class="com.cebedo.pmsys.repository.DeliveryValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.FormulaServiceImpl">
-        <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="formulaValueRepo" class="com.cebedo.pmsys.repository.FormulaValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.repository.NotificationZSetRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="notificationService" class="com.cebedo.pmsys.service.NotificationServiceImpl">
-        <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="conversationValueRepo" class="com.cebedo.pmsys.repository.ConversationValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="conversationService" class="com.cebedo.pmsys.service.ConversationServiceImpl">
-        <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
-        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
-    </beans:bean>
-    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.repository.MessageZSetRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="messageService" class="com.cebedo.pmsys.service.MessageServiceImpl">
-        <beans:property name="messageZSetRepo" ref="messageZSetRepo"></beans:property>
-        <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.ProjectPayrollValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
-    <beans:bean id="attendanceValueRepo" class="com.cebedo.pmsys.repository.AttendanceValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    <beans:bean id="payrollService" class="com.cebedo.pmsys.service.PayrollServiceImpl">
-        <beans:property name="attendanceValueRepo" ref="attendanceValueRepo"></beans:property>
-        <beans:property name="projectService" ref="projectService"></beans:property>
-    </beans:bean>
-    
+	<!-- System Configuration -->    
     <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.dao.SystemConfigurationDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -476,17 +439,12 @@
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
-<!--     <beans:bean id="subcontractorDAO" class="com.cebedo.pmsys.dao.SubcontractorDAOImpl"> -->
-<!--         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" /> -->
-<!--     </beans:bean> -->
-<!--     <beans:bean id="subcontractorService" class="com.cebedo.pmsys.service.SubcontractorServiceImpl"> -->
-<!--         <beans:property name="subcontractorDAO" ref="subcontractorDAO"></beans:property> -->
-<!--     </beans:bean> -->
-    
+    <!-- Audit Log -->
     <beans:bean id="auditLogService" class="com.cebedo.pmsys.service.AuditLogServiceImpl">
         <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>
     
+    <!-- System User -->
     <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.dao.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -498,6 +456,7 @@
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
+    <!-- Company -->
     <beans:bean id="companyDAO" class="com.cebedo.pmsys.dao.CompanyDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -505,6 +464,7 @@
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
+    <!-- Photo -->
     <beans:bean id="photoDAO" class="com.cebedo.pmsys.dao.PhotoDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
@@ -516,6 +476,102 @@
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
+    
+    
+    
+    <!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+ 	<!-- REDIS OBJECTS ********************************************* -->
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+ 	<!-- Material -->
+    <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
+        <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
+        <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Project Auxillary -->
+    <beans:bean id="projectAuxService" class="com.cebedo.pmsys.service.ProjectAuxServiceImpl">
+        <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="projectAuxValueRepo" class="com.cebedo.pmsys.repository.ProjectAuxValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Delivery -->
+    <beans:bean id="deliveryService" class="com.cebedo.pmsys.service.DeliveryServiceImpl">
+        <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="deliveryValueRepo" class="com.cebedo.pmsys.repository.DeliveryValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Formula -->
+    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.FormulaServiceImpl">
+        <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="formulaValueRepo" class="com.cebedo.pmsys.repository.FormulaValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+	<!-- Notification -->    
+    <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.repository.NotificationZSetRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="notificationService" class="com.cebedo.pmsys.service.NotificationServiceImpl">
+        <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
+    </beans:bean>
+    
+    <!-- Conversation -->
+    <beans:bean id="conversationValueRepo" class="com.cebedo.pmsys.repository.ConversationValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="conversationService" class="com.cebedo.pmsys.service.ConversationServiceImpl">
+        <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
+        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
+    </beans:bean>
+    
+    <!-- Message -->
+    <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.repository.MessageZSetRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="messageService" class="com.cebedo.pmsys.service.MessageServiceImpl">
+        <beans:property name="messageZSetRepo" ref="messageZSetRepo"></beans:property>
+        <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
+    </beans:bean>
+    
+    <!-- Project Payroll -->
+    <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.ProjectPayrollValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="projectPayrollService" class="com.cebedo.pmsys.service.ProjectPayrollServiceImpl"> 
+        <beans:property name="projectPayrollValueRepo" ref="projectPayrollValueRepo"></beans:property>
+        <beans:property name="projectService" ref="projectService"></beans:property>
+        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
+        <beans:property name="projectPayrollComputerService" ref="projectPayrollComputerService"></beans:property>
+        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+    </beans:bean>
+    
+    <!-- Attendance -->
+    <beans:bean id="attendanceValueRepo" class="com.cebedo.pmsys.repository.AttendanceValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    <beans:bean id="attendanceService" class="com.cebedo.pmsys.service.AttendanceServiceImpl"> 
+        <beans:property name="attendanceValueRepo" ref="attendanceValueRepo"></beans:property>
+        <beans:property name="projectService" ref="projectService"></beans:property>
+    </beans:bean>
+    
+    
+    
+    
+    <!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
+ 	<!-- ETC ******************************************************* -->
+ 	<!-- *********************************************************** -->
+ 	<!-- *********************************************************** -->
     <context:component-scan base-package="com.cebedo.pmsys" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
