@@ -128,6 +128,10 @@ public class PullOut implements IDomainObject {
 	return quantity;
     }
 
+    public String getQuantityWithUnitsAsString() {
+	return this.quantity + " " + this.material.getUnit();
+    }
+
     public void setQuantity(double quantity) {
 	this.quantity = quantity;
     }
@@ -154,6 +158,12 @@ public class PullOut implements IDomainObject {
 	Delivery delivery = material2.getDelivery();
 	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
 		project.getId(), delivery.getUuid(), material2.getUuid(), "*");
+    }
+
+    public static String constructPattern(Project project) {
+	Company company = project.getCompany();
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
+		project.getId(), "*", "*", "*");
     }
 
 }

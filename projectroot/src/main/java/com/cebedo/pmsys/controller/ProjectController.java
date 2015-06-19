@@ -98,6 +98,7 @@ public class ProjectController {
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
+    public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
@@ -1568,6 +1569,11 @@ public class ProjectController {
 	// Add to model.
 	List<Material> materialList = this.materialService.list(proj);
 	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
+
+	// Get all pull-outs.
+	// Add to model.
+	List<PullOut> pullOutList = this.pullOutService.list(proj);
+	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
 
 	// Do post-adding of attrs.
 	// Return to the edit page.

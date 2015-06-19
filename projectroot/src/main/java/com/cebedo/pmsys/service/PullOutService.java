@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.model.Project;
 
 public interface PullOutService {
 
@@ -25,5 +27,7 @@ public interface PullOutService {
     public Set<String> keys(String pattern);
 
     public Collection<PullOut> multiGet(Collection<String> keys);
+
+    public List<PullOut> list(Project proj);
 
 }

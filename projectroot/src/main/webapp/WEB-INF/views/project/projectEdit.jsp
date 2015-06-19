@@ -769,7 +769,7 @@
 															<td>${deliveryDateTime}</td>
 															<td>${deliveryRow.name}</td>
 															<td>${deliveryRow.description}</td>
-															<td>${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
+															<td align="right">${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
 			                                            </tr>
 		                                            	</c:forEach>
 				                                    </tbody>
@@ -790,32 +790,36 @@
 			                                    	<thead>
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
-<!-- 			                                                <th>Start Date</th> -->
-<!-- 			                                                <th>End Date</th> -->
-<!-- 			                                            	<th>Approver</th> -->
-<!-- 			                                                <th>Creator</th> -->
-<!-- 			                                                <th>Status</th> -->
-<!-- 			                                                <th>Payroll Total</th> -->
-<!-- 			                                                <th>Last Computed</th> -->
+			                                                <th>Date and Time</th>
+			                                                <th>Delivery</th>
+			                                                <th>Material</th>
+			                                                <th>Quantity</th>
+			                                                <th>Unit</th>
+			                                            	<th>Staff</th>
 			                                            </tr>
 	                                        		</thead>
 			                                        <tbody>
-				                                		<c:forEach items="${payrollList}" var="payrollRow">
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
-														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
+				                                		<c:forEach items="${pullOutList}" var="row">
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEditPayroll" value="/project/edit/payroll/${payrollRow.getKey()}-end"/>
-			                                            			<a href="${urlEditPayroll}">
+			                                            			<c:url var="urlEdit" value="/project/edit/payroll/${row.getKey()}-end"/>
+			                                            			<a href="${urlEdit}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${payrollRow.getKey()}-end" var="urlDeletePayroll"/>
-								                                    <a href="${urlDeletePayroll}">
+								                                    <c:url value="/project/delete/payroll/${row.getKey()}-end" var="urlDelete"/>
+								                                    <a href="${urlDelete}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
 																</center>
 															</td>
+															<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${row.datetime}" var="rowDatetime"/>
+															<td>${rowDatetime}</td>
+															<td>${row.delivery.name}</td>
+															<td>${row.material.name}</td>
+															<td align="right">${row.quantity}</td>
+															<td align="right">${row.material.unit}</td>
+															<td>${row.staff.getFullName()}</td>
 			                                            </tr>
 		                                            	</c:forEach>
 				                                    </tbody>
@@ -878,7 +882,7 @@
 															<td align="right">${row.used}</td>
 															<td align="right">${row.available}</td>
 															<td align="right">${row.quantity}</td>
-															<td>${row.unit}</td>
+															<td align="right">${row.unit}</td>
 															<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 															<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
 															<td>${row.remarks}</td>

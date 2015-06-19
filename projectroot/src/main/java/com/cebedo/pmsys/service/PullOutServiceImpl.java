@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
@@ -116,6 +118,14 @@ public class PullOutServiceImpl implements PullOutService {
     @Override
     public void delete(String key) {
 	this.pullOutValueRepo.delete(key);
+    }
+
+    @Override
+    @Transactional
+    public List<PullOut> list(Project proj) {
+	String pattern = PullOut.constructPattern(proj);
+	Set<String> keys = this.pullOutValueRepo.keys(pattern);
+	return this.pullOutValueRepo.multiGet(keys);
     }
 
 }
