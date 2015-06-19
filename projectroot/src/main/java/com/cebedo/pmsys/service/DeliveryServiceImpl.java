@@ -11,9 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
+import com.cebedo.pmsys.repository.MaterialValueRepo;
+import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.PullOutValueRepo;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
@@ -21,6 +27,21 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private AuthHelper authHelper = new AuthHelper();
     private DeliveryValueRepo deliveryValueRepo;
+    private ProjectAuxValueRepo projectAuxValueRepo;
+    private MaterialValueRepo materialValueRepo;
+    private PullOutValueRepo pullOutValueRepo;
+
+    public void setMaterialValueRepo(MaterialValueRepo materialValueRepo) {
+	this.materialValueRepo = materialValueRepo;
+    }
+
+    public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
+	this.pullOutValueRepo = pullOutValueRepo;
+    }
+
+    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+	this.projectAuxValueRepo = projectAuxValueRepo;
+    }
 
     public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
 	this.deliveryValueRepo = deliveryValueRepo;
@@ -105,8 +126,42 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public void delete(String key) {
+    public String delete(String key) {
+
+	// Get the necessary objects.
+	Delivery delivery = this.deliveryValueRepo.get(key);
+	Project proj = delivery.getProject();
+	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux
+		.constructKey(proj));
+
+	// Solve for the old grand total.
+	double deliveryTotal = delivery.getGrandTotalOfMaterials();
+	double grandTotal = projAux.getGrandTotalDelivery();
+	double newTotal = grandTotal - deliveryTotal;
+
+	// Revert the grand total.
+	projAux.setGrandTotalDelivery(newTotal);
+	this.projectAuxValueRepo.set(projAux);
+
+	// If we're deleting this delivery,
+	// delete also all materials inside,
+	// and all pullouts involved.
+	String materialsPattern = Material.constructPattern(delivery);
+	String pulloutPattern = PullOut.constructPattern(delivery);
+
+	// Get all keys.
+	// Delete all keys.
+	Set<String> materialKeys = this.deliveryValueRepo
+		.keys(materialsPattern);
+	Set<String> pulloutKeys = this.deliveryValueRepo.keys(pulloutPattern);
+	this.materialValueRepo.delete(materialKeys);
+	this.materialValueRepo.delete(pulloutKeys);
+
+	// Delete this object.
 	this.deliveryValueRepo.delete(key);
+
+	// TODO here
+	return "";
     }
 
 }

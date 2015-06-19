@@ -232,6 +232,41 @@ public class Material implements IDomainObject {
 	return available;
     }
 
+    public String getAvailableCSS() {
+	int avail = getAvailableAsInt();
+
+	if (avail >= 75 && avail <= 100) {
+	    return "success";
+	}
+
+	else if (avail >= 50 && avail < 75) {
+	    return "info";
+	}
+
+	else if (avail >= 25 && avail < 50) {
+	    return "warning";
+	}
+
+	return "danger";
+    }
+
+    private int getAvailableAsInt() {
+	return (int) ((available / quantity) * 100);
+    }
+
+    public String getAvailableAsPercentageForDisplay() {
+	int percentDisplay = getAvailableAsInt();
+	return percentDisplay + "%";
+    }
+
+    public String getAvailableAsPercentage() {
+	int percentDisplay = getAvailableAsInt();
+	if (percentDisplay <= 0) {
+	    return "100%";
+	}
+	return percentDisplay + "%";
+    }
+
     public String getAvailableAsString() {
 	return available + " " + unit;
     }

@@ -1066,6 +1066,80 @@ public class ProjectController {
 		+ delivery.getProject().getId();
     }
 
+    /**
+     * Delete a delivery.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
+	    + RedisConstants.OBJECT_DELIVERY + "/{"
+	    + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
+    public String deleteDelivery(
+	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status,
+	    HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.deliveryService.delete(key);
+
+	// Attach to redirect.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Set completed.
+	// Return.
+	status.setComplete();
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
+     * Delete a pull-out entry.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
+	    + RedisConstants.OBJECT_PULL_OUT + "/{"
+	    + RedisConstants.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
+    public String deletePullOut(
+	    @PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status,
+	    HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.pullOutService.delete(key);
+
+	// Attach to redirect.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Set completed.
+	// Return.
+	status.setComplete();
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
+     * Open a create page for a pull out.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/"
 	    + RedisConstants.OBJECT_MATERIAL + "/{"

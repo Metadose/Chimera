@@ -53,34 +53,43 @@ public class PullOutServiceImpl implements PullOutService {
     @Transactional
     public String create(PullOut obj) {
 
-	// If we're creating.
-	// Assign a new uuid.
 	Material material = obj.getMaterial();
 
-	if (obj.getUuid() == null) {
-	    obj.setUuid(UUID.randomUUID());
+	// You are not allowed to pull-out
+	// if quantity is greater than what is available.
+	double quantity = obj.getQuantity();
+	double available = material.getAvailable();
 
-	    // Assign the staff.
-	    Staff staff = this.staffDAO.getByID(obj.getStaffID());
-	    obj.setStaff(staff);
-
-	    // Get the pulled-out quantity.
-	    // Update the material's used and available.
-	    double pulledOut = obj.getQuantity();
-	    material.setUsed(material.getUsed() + pulledOut);
-	    material.setAvailable(material.getAvailable() - pulledOut);
-
-	    // Update the material object.
-	    // Set the pull-out.
-	    obj.setMaterial(material);
-	    this.pullOutValueRepo.set(obj);
-	    this.materialValueRepo.set(material);
-
-	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(),
+	// You're also not allowed if you already have a uuid.
+	// Only create requests are processed here.
+	if (obj.getDatetime() == null || available <= 0 || quantity > available
+		|| obj.getUuid() != null) {
+	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(),
 		    material.getUnit(), material.getName());
 	}
-	return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(),
+
+	// If we're creating.
+	// Assign a new uuid.
+	obj.setUuid(UUID.randomUUID());
+
+	// Assign the staff.
+	Staff staff = this.staffDAO.getByID(obj.getStaffID());
+	obj.setStaff(staff);
+
+	// Get the pulled-out quantity.
+	// Update the material's used and available.
+	double pulledOut = obj.getQuantity();
+	material.setUsed(material.getUsed() + pulledOut);
+	material.setAvailable(available - pulledOut);
+
+	// Update the material object.
+	// Set the pull-out.
+	obj.setMaterial(material);
+	this.pullOutValueRepo.set(obj);
+	this.materialValueRepo.set(material);
+
+	// Return.
+	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(),
 		material.getUnit(), material.getName());
     }
 
@@ -116,8 +125,29 @@ public class PullOutServiceImpl implements PullOutService {
 
     @Transactional
     @Override
-    public void delete(String key) {
+    public String delete(String key) {
+
+	// Get the object.
+	// And the material.
+	// The material's used and available will be updated.
+	// A revert of "how it was" before the pull-out was created.
+	PullOut obj = this.pullOutValueRepo.get(key);
+	Material material = obj.getMaterial();
+
+	// Get the pulled-out quantity.
+	// Update the material's used and available.
+	double pulledOut = obj.getQuantity();
+	material.setUsed(material.getUsed() - pulledOut);
+	material.setAvailable(material.getAvailable() + pulledOut);
+	this.materialValueRepo.set(material);
+
+	// Update the material object.
+	// Set the pull-out.
 	this.pullOutValueRepo.delete(key);
+
+	// Return.
+	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(
+		obj.getDatetime(), obj.getStaff().getFullName());
     }
 
     @Override

@@ -745,7 +745,7 @@
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
 			                                                <th>Date and Time</th>
-			                                                <th>Name</th>
+			                                                <th>Delivery</th>
 			                                                <th>Description</th>
 			                                                <th>Materials Cost</th>
 			                                            </tr>
@@ -803,11 +803,11 @@
 			                                            <tr>
 			                                            	<td>
 			                                            		<center>
-			                                            			<c:url var="urlEdit" value="/project/edit/payroll/${row.getKey()}-end"/>
+			                                            			<c:url var="urlEdit" value="/project/edit/pullout/${row.getKey()}-end"/>
 			                                            			<a href="${urlEdit}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
-								                                    <c:url value="/project/delete/payroll/${row.getKey()}-end" var="urlDelete"/>
+								                                    <c:url value="/project/delete/pullout/${row.getKey()}-end" var="urlDelete"/>
 								                                    <a href="${urlDelete}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 								                                    </a>
@@ -848,10 +848,10 @@
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
 			                                            	<th>Delivery</th>
-			                                                <th>Name</th>
+			                                                <th>Material</th>
 			                                                <th>Used / Pulled-Out</th>
 			                                                <th>Available</th>
-			                                            	<th>Quantity</th>
+			                                            	<th>Total Quantity</th>
 			                                                <th>Unit</th>
 			                                                <th>Cost (Per Unit)</th>
 			                                                <th>Total Cost</th>
@@ -867,10 +867,12 @@
 			                                            			<a href="${urlEdit}">
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
+			                                            			<c:if test="${row.available > 0}">
 			                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
 								                                    <a href="${urlPullout}">
 	                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 								                                    </a>
+								                                    </c:if>
 								                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
 								                                    <a href="${urlDelete}">
 	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
@@ -880,7 +882,23 @@
 															<td>${row.delivery.name}</td>
 															<td>${row.name}</td>
 															<td align="right">${row.used}</td>
-															<td align="right">${row.available}</td>
+															<td align="center">
+															<div class="progress">
+																<div class="progress-bar progress-bar-${row.getAvailableCSS()} progress-bar-striped" 
+																    role="progressbar" 
+																    aria-valuenow="${row.available}" 
+																    aria-valuemin="0" 
+																    aria-valuemax="${row.quantity}"
+																    style="width:${row.getAvailableAsPercentage()}">
+																    <c:if test="${row.available <= 0}">
+																    	Out of Stock
+																    </c:if>
+															    </div>
+															</div>
+														    <c:if test="${row.available > 0}">
+														      ${row.available} (${row.getAvailableAsPercentage()})
+														    </c:if>
+															</td>
 															<td align="right">${row.quantity}</td>
 															<td align="right">${row.unit}</td>
 															<td align="right">${row.getCostPerUnitMaterialAsString()}</td>

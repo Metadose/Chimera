@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>${pullOut.material.name} Pull-Out</title>
+	<title>${pullout.material.name} Pull-Out</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
 	<style>
@@ -32,16 +32,16 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	${pullOut.project.name} <i class="fa fa-angle-double-right"></i>
-	            	${pullOut.delivery.name} <i class="fa fa-angle-double-right"></i>
-	            	${pullOut.material.name}
+	            	${pullout.project.name} <i class="fa fa-angle-double-right"></i>
+	            	${pullout.delivery.name} <i class="fa fa-angle-double-right"></i>
+	            	${pullout.material.name}
 		            <small>Pull-Out Materials</small>
 	            </h1>
 	        </section>
 	        <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
-                    	<c:url var="urlBack" value="/project/edit/${pullOut.project.id}" />
+                    	<c:url var="urlBack" value="/project/edit/${pullout.project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 						</a><br/><br/>
@@ -67,12 +67,12 @@
 									                <tr>
 									                	<td><label>Delivery Name:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.delivery.name}</td>
+									                	<td>${pullout.delivery.name}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Material Name:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.material.name}</td>
+									                	<td>${pullout.material.name}</td>
 									                </tr>
 									                <tr>
 									                	<td>&nbsp;</td>
@@ -82,27 +82,44 @@
 									                <tr>
 									                	<td><label>Available:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td align="right">${pullOut.material.available}</td>
+									                	<td align="right">${pullout.material.available}
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Used:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td align="right">${pullOut.material.used}</td>
+									                	<td align="right">${pullout.material.used}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Total Quantity:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td align="right">${pullOut.material.quantity}</td>
+									                	<td align="right">${pullout.material.quantity}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Units:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td align="right">${pullOut.material.unit}</td>
+									                	<td align="right">${pullout.material.unit}</td>
 									                </tr>
 									                </table>
 									                <br/>
-                   									<form:form modelAttribute="pullOut"
-														id="pullOutForm"
+									                <div class="progress">
+														<div class="progress-bar progress-bar-${pullout.material.getAvailableCSS()} progress-bar-striped" 
+														    role="progressbar" 
+														    aria-valuenow="${pullout.material.available}" 
+														    aria-valuemin="0" 
+														    aria-valuemax="${pullout.material.quantity}"
+														    style="width:${pullout.material.getAvailableAsPercentage()}">
+														    <c:if test="${pullout.material.available <= 0}">
+														    	Out of Stock
+														    </c:if>
+														    <c:if test="${pullout.material.available > 0}">
+														    	${pullout.material.available} out of ${pullout.material.quantity} (${pullout.material.getAvailableAsPercentageForDisplay()})
+														    </c:if>
+													    </div>
+													</div>
+									                <br/>
+                   									<form:form modelAttribute="pullout"
+														id="pulloutForm"
 														method="post"
 														action="${contextPath}/project/do-pullout/material">
 				                                        <div class="form-group">
@@ -124,7 +141,7 @@
 				                                            <p class="help-block">Add additional remarks</p>
 				                                        </div>
 				                                    </form:form>
-                                            		<button onclick="submitForm('pullOutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Pull-Out</button>
+                                            		<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Pull-Out</button>
                    								</div>
                    							</div>
                    						</div>

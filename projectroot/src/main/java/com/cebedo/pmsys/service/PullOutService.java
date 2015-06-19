@@ -18,7 +18,7 @@ public interface PullOutService {
 
     public void delete(Collection<String> keys);
 
-    public void delete(String key);
+    public String delete(String key);
 
     public void setIfAbsent(PullOut obj);
 
