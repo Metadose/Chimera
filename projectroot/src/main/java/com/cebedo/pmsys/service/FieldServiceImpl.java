@@ -23,7 +23,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class FieldServiceImpl implements FieldService {
@@ -70,7 +70,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.create(field);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Field.OBJECT_NAME,
 		    field.getName());
 	}
 
@@ -79,7 +79,7 @@ public class FieldServiceImpl implements FieldService {
 		Field.OBJECT_NAME, field.getId(), field.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(Field.OBJECT_NAME,
 		field.getName());
     }
 
@@ -112,7 +112,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.update(field);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Field.OBJECT_NAME,
 		    field.getName());
 	}
 
@@ -121,7 +121,7 @@ public class FieldServiceImpl implements FieldService {
 		Field.OBJECT_NAME, field.getId(), field.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Field.OBJECT_NAME,
 		field.getName());
     }
 
@@ -143,7 +143,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(Field.OBJECT_NAME,
 		    field.getName());
 	}
 
@@ -152,7 +152,7 @@ public class FieldServiceImpl implements FieldService {
 		Field.OBJECT_NAME, field.getId(), field.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(Field.OBJECT_NAME,
 		field.getName());
     }
 
@@ -205,7 +205,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.assignFieldToProject(fieldAssignment);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Field.OBJECT_NAME,
 		    fieldAssignment.getLabel());
 	}
 
@@ -217,7 +217,7 @@ public class FieldServiceImpl implements FieldService {
 		fieldAssignment.getValue()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Field.OBJECT_NAME,
 		fieldAssignment.getLabel());
     }
 
@@ -244,7 +244,7 @@ public class FieldServiceImpl implements FieldService {
 		    value);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Field.OBJECT_NAME,
 		    fieldAssignment.getLabel());
 	}
 
@@ -256,7 +256,7 @@ public class FieldServiceImpl implements FieldService {
 		fieldAssignment.getValue()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUnassign(Field.OBJECT_NAME,
 		fieldAssignment.getLabel());
     }
 
@@ -278,7 +278,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.unassignAllFieldsFromProject(projectID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Field.OBJECT_NAME);
 	}
 
@@ -288,7 +288,7 @@ public class FieldServiceImpl implements FieldService {
 		proj.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Field.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Field.OBJECT_NAME);
     }
 
     /**
@@ -317,7 +317,7 @@ public class FieldServiceImpl implements FieldService {
 		    oldValue, label, value);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    FieldAssignment.OBJECT_LABEL, label);
 	}
 
@@ -326,7 +326,7 @@ public class FieldServiceImpl implements FieldService {
 		Project.OBJECT_NAME, proj.getId(), proj.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(
+	return AlertBoxGenerator.FAILED.generateUpdate(
 		FieldAssignment.OBJECT_LABEL, oldLabel);
     }
 
@@ -354,7 +354,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.assignFieldToTask(taskField);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Field.OBJECT_NAME,
 		    taskField.getLabel());
 	}
 
@@ -363,7 +363,7 @@ public class FieldServiceImpl implements FieldService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Field.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Field.OBJECT_NAME,
 		taskField.getLabel());
     }
 
@@ -386,7 +386,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.unassignAllFieldsFromTask(taskID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Field.OBJECT_NAME);
 	}
 
@@ -396,7 +396,7 @@ public class FieldServiceImpl implements FieldService {
 		task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Field.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Field.OBJECT_NAME);
     }
 
     /**
@@ -426,7 +426,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.unassignFieldFromTask(fieldID, taskID, label, value);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Field.OBJECT_NAME,
 		    label);
 	}
 
@@ -435,7 +435,7 @@ public class FieldServiceImpl implements FieldService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED
+	return AlertBoxGenerator.FAILED
 		.generateUnassign(Field.OBJECT_NAME, label);
     }
 
@@ -473,7 +473,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.assignFieldToTask(newFieldAssignment);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Field.OBJECT_NAME,
 		    label);
 	}
 
@@ -482,7 +482,7 @@ public class FieldServiceImpl implements FieldService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Field.OBJECT_NAME, label);
+	return AlertBoxGenerator.FAILED.generateUpdate(Field.OBJECT_NAME, label);
     }
 
     /**
@@ -507,7 +507,7 @@ public class FieldServiceImpl implements FieldService {
 		    .unassignFieldFromStaff(fieldID, staffID, label, value);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Field.OBJECT_NAME,
 		    label);
 	}
 
@@ -516,7 +516,7 @@ public class FieldServiceImpl implements FieldService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED
+	return AlertBoxGenerator.FAILED
 		.generateUnassign(Field.OBJECT_NAME, label);
     }
 
@@ -545,7 +545,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.assignFieldToStaff(fieldAssignment);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Field.OBJECT_NAME,
 		    label);
 	}
 
@@ -554,7 +554,7 @@ public class FieldServiceImpl implements FieldService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Field.OBJECT_NAME, label);
+	return AlertBoxGenerator.FAILED.generateAssign(Field.OBJECT_NAME, label);
     }
 
     /**
@@ -576,7 +576,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.unassignAllFieldsFromStaff(staffID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Field.OBJECT_NAME);
 	}
 
@@ -586,7 +586,7 @@ public class FieldServiceImpl implements FieldService {
 		staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Field.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Field.OBJECT_NAME);
     }
 
     /**
@@ -623,7 +623,7 @@ public class FieldServiceImpl implements FieldService {
 	    this.fieldDAO.assignFieldToStaff(newFieldAssignment);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Field.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Field.OBJECT_NAME,
 		    label);
 	}
 
@@ -632,6 +632,6 @@ public class FieldServiceImpl implements FieldService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Field.OBJECT_NAME, label);
+	return AlertBoxGenerator.FAILED.generateUpdate(Field.OBJECT_NAME, label);
     }
 }

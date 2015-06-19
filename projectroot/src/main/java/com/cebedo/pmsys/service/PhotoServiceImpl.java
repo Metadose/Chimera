@@ -28,7 +28,7 @@ import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -109,7 +109,7 @@ public class PhotoServiceImpl implements PhotoService {
 	    this.projectDAO.update(proj);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDeleteProfilePic(
+	    return AlertBoxGenerator.SUCCESS.generateDeleteProfilePic(
 		    Project.OBJECT_NAME, proj.getName());
 	}
 
@@ -119,7 +119,7 @@ public class PhotoServiceImpl implements PhotoService {
 		proj.getId(), proj.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDeleteProfilePic(
+	return AlertBoxGenerator.FAILED.generateDeleteProfilePic(
 		Project.OBJECT_NAME, proj.getName());
     }
 
@@ -141,7 +141,7 @@ public class PhotoServiceImpl implements PhotoService {
 		    staff.getId(), staff.getFullName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUploadProfilePic(
+	    return AlertBoxGenerator.FAILED.generateUploadProfilePic(
 		    Staff.OBJECT_NAME, staff.getFullName());
 	}
 
@@ -180,7 +180,7 @@ public class PhotoServiceImpl implements PhotoService {
 	this.fileHelper.fileUpload(file, fileLocation);
 	this.staffDAO.update(staff);
 
-	return AlertBoxFactory.SUCCESS.generateUploadProfilePic(
+	return AlertBoxGenerator.SUCCESS.generateUploadProfilePic(
 		Staff.OBJECT_NAME, staff.getFullName());
     }
 
@@ -212,7 +212,7 @@ public class PhotoServiceImpl implements PhotoService {
 		    proj.getId(), proj.getName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUploadProfilePic(
+	    return AlertBoxGenerator.FAILED.generateUploadProfilePic(
 		    Project.OBJECT_NAME, proj.getName());
 	}
 
@@ -262,7 +262,7 @@ public class PhotoServiceImpl implements PhotoService {
 	this.projectDAO.update(proj);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUploadProfilePic(
+	return AlertBoxGenerator.SUCCESS.generateUploadProfilePic(
 		Project.OBJECT_NAME, proj.getName());
     }
 
@@ -290,7 +290,7 @@ public class PhotoServiceImpl implements PhotoService {
 		    file.getOriginalFilename()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUpload(Photo.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateUpload(Photo.OBJECT_NAME,
 		    file.getOriginalFilename());
 	}
 
@@ -327,8 +327,8 @@ public class PhotoServiceImpl implements PhotoService {
 	if (fileTest.exists()) {
 	    // If exists,
 	    // Return fail.
-	    AlertBoxFactory alertFactory = new AlertBoxFactory();
-	    alertFactory = AlertBoxFactory.FAILED;
+	    AlertBoxGenerator alertFactory = new AlertBoxGenerator();
+	    alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory.setMessage("<b>" + file.getOriginalFilename()
 		    + " already exists</b> in project <b>" + proj.getName()
 		    + "</b>.");
@@ -348,7 +348,7 @@ public class PhotoServiceImpl implements PhotoService {
 	this.photoDAO.create(photo);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUpload(Photo.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUpload(Photo.OBJECT_NAME,
 		file.getOriginalFilename());
     }
 
@@ -397,7 +397,7 @@ public class PhotoServiceImpl implements PhotoService {
 	    this.photoDAO.update(photo);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Photo.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Photo.OBJECT_NAME,
 		    photo.getName());
 	}
 
@@ -406,7 +406,7 @@ public class PhotoServiceImpl implements PhotoService {
 		Photo.OBJECT_NAME, photo.getId(), photo.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Photo.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Photo.OBJECT_NAME,
 		photo.getName());
     }
 
@@ -435,7 +435,7 @@ public class PhotoServiceImpl implements PhotoService {
 	    this.photoDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Photo.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(Photo.OBJECT_NAME,
 		    photo.getName());
 	}
 
@@ -444,7 +444,7 @@ public class PhotoServiceImpl implements PhotoService {
 		Photo.OBJECT_NAME, id, photo.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Photo.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(Photo.OBJECT_NAME,
 		photo.getName());
     }
 

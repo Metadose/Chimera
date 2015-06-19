@@ -13,11 +13,13 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.repository.PullOutValueRepo;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -26,6 +28,11 @@ public class MaterialServiceImpl implements MaterialService {
     private MaterialValueRepo materialValueRepo;
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxService projectAuxService;
+    private PullOutValueRepo pullOutValueRepo;
+
+    public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
+	this.pullOutValueRepo = pullOutValueRepo;
+    }
 
     public void setProjectAuxService(ProjectAuxService projectAuxService) {
 	this.projectAuxService = projectAuxService;
@@ -53,7 +60,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public String set(Material obj) {
+    public String create(Material obj) {
 
 	// If company is null.
 	if (obj.getCompany() == null) {
@@ -61,9 +68,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// If we're creating.
-	boolean isCreate = false;
 	if (obj.getUuid() == null) {
-	    isCreate = true;
 	    obj.setUuid(UUID.randomUUID());
 
 	    // Set available = quantity.
@@ -71,34 +76,36 @@ public class MaterialServiceImpl implements MaterialService {
 
 	    // Set the total cost.
 	    // total = quantity * cost per unit.
-	    obj.setTotalCostPerUnitMaterial(obj.getQuantity()
-		    * obj.getCostPerUnitMaterial());
-	}
+	    double totalCost = obj.getQuantity() * obj.getCostPerUnitMaterial();
+	    obj.setTotalCostPerUnitMaterial(totalCost);
 
-	// Do actual service.
-	this.materialValueRepo.set(obj);
+	    // Do actual service.
+	    this.materialValueRepo.set(obj);
 
-	// Add the grand total to the delivery.
-	// Update the delivery object.
-	Delivery delivery = obj.getDelivery();
-	double newGrandTotal = delivery.getGrandTotalOfMaterials()
-		+ obj.getTotalCostPerUnitMaterial();
-	delivery.setGrandTotalOfMaterials(newGrandTotal);
-	this.deliveryValueRepo.set(delivery);
+	    // Add the grand total to the delivery.
+	    // Update the delivery object.
+	    Delivery delivery = obj.getDelivery();
+	    double newGrandTotal = delivery.getGrandTotalOfMaterials()
+		    + totalCost;
+	    delivery.setGrandTotalOfMaterials(newGrandTotal);
+	    this.deliveryValueRepo.set(delivery);
 
-	// Update the project auxillary.
-	ProjectAux projectAux = this.projectAuxService.get(delivery);
-	double projectTotalDelivery = projectAux.getGrandTotalDelivery()
-		+ obj.getTotalCostPerUnitMaterial();
-	projectAux.setGrandTotalDelivery(projectTotalDelivery);
-	this.projectAuxService.set(projectAux);
+	    // Update the project auxillary.
+	    // Add material total to project grand total.
+	    ProjectAux projectAux = this.projectAuxService.get(delivery);
+	    double projectTotalDelivery = projectAux.getGrandTotalDelivery()
+		    + totalCost;
+	    projectAux.setGrandTotalDelivery(projectTotalDelivery);
+	    this.projectAuxService.set(projectAux);
 
-	// Return.
-	if (isCreate) {
-	    return AlertBoxFactory.SUCCESS.generateAdd(
+	    // Return.
+	    return AlertBoxGenerator.SUCCESS.generateAdd(
 		    RedisConstants.OBJECT_MATERIAL, obj.getName());
 	}
-	return AlertBoxFactory.SUCCESS.generateAdd(
+
+	// This service used only for adding.
+	// Not updating.
+	return AlertBoxGenerator.FAILED.generateAdd(
 		RedisConstants.OBJECT_MATERIAL, obj.getName());
     }
 
@@ -140,12 +147,52 @@ public class MaterialServiceImpl implements MaterialService {
 	return this.materialValueRepo.multiGet(keys);
     }
 
+    /**
+     * Delete a material.
+     */
     @Transactional
     @Override
-    public void delete(String key) {
+    public String delete(String key) {
+
+	// Get the material.
+	Material material = this.materialValueRepo.get(key);
+
+	// Get the updated version of the objects.
+	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery()
+		.getKey());
+	ProjectAux projectAux = this.projectAuxService.get(material
+		.getProject());
+
+	// If the object will be deleted,
+	// remove this material's total from delivery,
+	// remove this material's total from project aux.
+	double materialTotal = material.getTotalCostPerUnitMaterial();
+	double deliveryTotal = delivery.getGrandTotalOfMaterials();
+	double grandTotal = projectAux.getGrandTotalDelivery();
+
+	// Set the values,
+	// then set it to repo.
+	delivery.setGrandTotalOfMaterials(deliveryTotal - materialTotal);
+	projectAux.setGrandTotalDelivery(grandTotal - materialTotal);
+	this.deliveryValueRepo.set(delivery);
+	this.projectAuxService.set(projectAux);
+
+	// Do the delete.
 	this.materialValueRepo.delete(key);
+
+	// Delete also all related pull-outs.
+	String pattern = PullOut.constructPattern(material);
+	Set<String> keys = this.pullOutValueRepo.keys(pattern);
+	this.pullOutValueRepo.delete(keys);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateDelete(
+		RedisConstants.OBJECT_MATERIAL, material.getName());
     }
 
+    /**
+     * List all materials in project.
+     */
     @Transactional
     @Override
     public List<Material> list(Project proj) {

@@ -28,7 +28,7 @@ import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.SecurityAccessService;
 import com.cebedo.pmsys.service.SecurityRoleService;
 import com.cebedo.pmsys.service.SystemUserService;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER,
@@ -106,7 +106,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate(
+		AlertBoxGenerator.SUCCESS.generateCreate(
 			SecurityAccess.OBJECT_NAME,
 			"ASSIGN " + secAccBean.toString()));
 	status.setComplete();
@@ -136,7 +136,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate(
+		AlertBoxGenerator.SUCCESS.generateCreate(
 			SecurityAccess.OBJECT_NAME,
 			"ASSIGN " + secRoleBean.toString()));
 	status.setComplete();
@@ -168,7 +168,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate(
+		AlertBoxGenerator.SUCCESS.generateCreate(
 			SecurityAccess.OBJECT_NAME, "UNASSIGN " + secAccID));
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
@@ -198,7 +198,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS
+		AlertBoxGenerator.SUCCESS
 			.generateCreate(SecurityAccess.OBJECT_NAME,
 				"UNASSIGN role" + secRoleID));
 	status.setComplete();
@@ -227,7 +227,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate(
+		AlertBoxGenerator.SUCCESS.generateCreate(
 			SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
@@ -255,7 +255,7 @@ public class SystemUserController {
 
 	// FIXME Fix this notification.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate(
+		AlertBoxGenerator.SUCCESS.generateCreate(
 			SecurityAccess.OBJECT_NAME, "UNASSIGN ALL"));
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
@@ -281,7 +281,7 @@ public class SystemUserController {
 	    @ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 
-	AlertBoxFactory alertFactory = new AlertBoxFactory();
+	AlertBoxGenerator alertFactory = new AlertBoxGenerator();
 
 	// If the passwords provided were not equal.
 	if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
@@ -352,7 +352,7 @@ public class SystemUserController {
 	    @RequestParam(SystemUser.COLUMN_PRIMARY_KEY) long userID,
 	    Model model) {
 
-	AlertBoxFactory alertFactory = new AlertBoxFactory();
+	AlertBoxGenerator alertFactory = new AlertBoxGenerator();
 
 	// Check if the passwords typed are equal.
 	if (passwordOld.equals(passwordOldRetype)) {

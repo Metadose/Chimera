@@ -44,7 +44,7 @@ import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.NotificationZSetRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.google.gson.Gson;
 
@@ -101,7 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectAuxValueRepo.set(new ProjectAux(project));
 
 	// Return success response.
-	return AlertBoxFactory.SUCCESS.generateCreate(Project.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateCreate(Project.OBJECT_NAME,
 		project.getName());
     }
 
@@ -136,7 +136,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    this.projectDAO.update(project);
 
 	    // Response for the user.
-	    response = AlertBoxFactory.SUCCESS.generateUpdate(
+	    response = AlertBoxGenerator.SUCCESS.generateUpdate(
 		    Project.OBJECT_NAME, project.getName());
 	} else {
 	    // Log a warning.
@@ -145,7 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    project.getName()));
 
 	    // Construct failed response
-	    response = AlertBoxFactory.FAILED.generateUpdate(
+	    response = AlertBoxGenerator.FAILED.generateUpdate(
 		    Project.OBJECT_NAME, project.getName());
 	}
 	return response;
@@ -221,7 +221,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
 
 	    // Success response.
-	    response = AlertBoxFactory.SUCCESS.generateDelete(
+	    response = AlertBoxGenerator.SUCCESS.generateDelete(
 		    Project.OBJECT_NAME, project.getName());
 	} else {
 	    // If not, log as warning.
@@ -230,7 +230,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    project.getName()));
 
 	    // Failed response.
-	    response = AlertBoxFactory.FAILED.generateDelete(
+	    response = AlertBoxGenerator.FAILED.generateDelete(
 		    Project.OBJECT_NAME, project.getName());
 	}
 	return response;

@@ -15,7 +15,7 @@ import com.cebedo.pmsys.domain.Formula;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.repository.FormulaValueRepo;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.StringUtils;
 import com.wolfram.alpha.WAEngine;
 import com.wolfram.alpha.WAException;
@@ -60,11 +60,11 @@ public class FormulaServiceImpl implements FormulaService {
 
 	    // If we're creating.
 	    if (obj.getUuid() == null) {
-		return AlertBoxFactory.FAILED.generateCreate(
+		return AlertBoxGenerator.FAILED.generateCreate(
 			RedisConstants.OBJECT_FORMULA, obj.getName());
 	    }
 	    // Else, we're updating.
-	    return AlertBoxFactory.FAILED.generateUpdate(
+	    return AlertBoxGenerator.FAILED.generateUpdate(
 		    RedisConstants.OBJECT_FORMULA, obj.getName());
 	}
 
@@ -81,11 +81,11 @@ public class FormulaServiceImpl implements FormulaService {
 	if (obj.getUuid() == null) {
 	    obj.setUuid(UUID.randomUUID());
 	    this.formulaValueRepo.set(obj);
-	    return AlertBoxFactory.SUCCESS.generateCreate(
+	    return AlertBoxGenerator.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_FORMULA, obj.getName());
 	}
 	this.formulaValueRepo.set(obj);
-	return AlertBoxFactory.SUCCESS.generateUpdate(
+	return AlertBoxGenerator.SUCCESS.generateUpdate(
 		RedisConstants.OBJECT_FORMULA, obj.getName());
     }
 
@@ -185,12 +185,12 @@ public class FormulaServiceImpl implements FormulaService {
 			+ "<br/>";
 		error += "<b>Error Message:</b> "
 			+ queryResult.getErrorMessage();
-		returnStr = AlertBoxFactory.FAILED.setMessage(error)
+		returnStr = AlertBoxGenerator.FAILED.setMessage(error)
 			.generateHTML();
 	    }
 	    // If general error, unknown cause.
 	    else if (!queryResult.isSuccess()) {
-		returnStr = AlertBoxFactory.FAILED.generateCompute(
+		returnStr = AlertBoxGenerator.FAILED.generateCompute(
 			RedisConstants.OBJECT_FORMULA, formula.getName());
 	    }
 	    // If the query was a success.
@@ -226,7 +226,7 @@ public class FormulaServiceImpl implements FormulaService {
 		}
 
 		// Success string.
-		returnStr = AlertBoxFactory.SUCCESS.setMessage(successStr)
+		returnStr = AlertBoxGenerator.SUCCESS.setMessage(successStr)
 			.generateHTML();
 	    }
 	} catch (WAException e) {

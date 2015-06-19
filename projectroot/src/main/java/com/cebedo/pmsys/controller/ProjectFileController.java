@@ -30,7 +30,7 @@ import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(value = { ProjectFileController.ATTR_PROJECTFILE }, types = { ProjectFile.class })
@@ -88,7 +88,7 @@ public class ProjectFileController {
     public String create(
 	    @ModelAttribute(ATTR_PROJECTFILE) ProjectFile projectFile,
 	    RedirectAttributes redirectAttrs) {
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	if (projectFile.getId() == 0) {
 	    // TODO Create function?
 	    // Do we need this?
@@ -119,7 +119,7 @@ public class ProjectFileController {
 	    RedirectAttributes redirectAttrs) {
 
 	String fileName = this.projectFileService.getNameByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> file <b>"
 		+ fileName + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -225,7 +225,7 @@ public class ProjectFileController {
 	    @RequestParam(ProjectFile.COLUMN_DESCRIPTION) String description,
 	    RedirectAttributes redirectAttrs) throws IOException {
 
-	AlertBoxFactory alertFactory = new AlertBoxFactory();
+	AlertBoxGenerator alertFactory = new AlertBoxGenerator();
 	// If file is not empty.
 	if (!file.isEmpty()) {
 	    this.projectFileService.uploadFileToStaff(file, description);
@@ -269,7 +269,7 @@ public class ProjectFileController {
 	}
 
 	String fileName = this.projectFileService.getNameByID(fileID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory
 		.setMessage("Successfully <b>updated description</b> of file <b>"
 			+ fileName + "</b>.");
@@ -297,7 +297,7 @@ public class ProjectFileController {
 
 	this.projectFileService.updateDescription(fileID, description);
 	String fileName = this.projectFileService.getNameByID(fileID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory
 		.setMessage("Successfully <b>updated description</b> of file <b>"
 			+ fileName + "</b>.");

@@ -24,7 +24,7 @@ import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(Photo.OBJECT_NAME)
@@ -89,7 +89,7 @@ public class PhotoController {
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_PHOTO) Photo photo,
 	    RedirectAttributes redirectAttrs) {
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	if (photo.getId() == 0) {
 	    // TODO
 	    // this.photoService.create(photo);

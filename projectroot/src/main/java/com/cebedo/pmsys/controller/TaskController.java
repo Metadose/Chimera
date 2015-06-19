@@ -37,7 +37,7 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.TeamService;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(value = { TaskController.ATTR_TASK,
@@ -135,7 +135,7 @@ public class TaskController {
 	    @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long originID,
 	    RedirectAttributes redirectAttrs) {
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 
 	// If the task is not here yet,
 	// Create it.
@@ -167,7 +167,7 @@ public class TaskController {
     public String create(@ModelAttribute(ATTR_TASK) Task task,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 
 	// If the task is not here yet,
 	// Create it.
@@ -209,7 +209,7 @@ public class TaskController {
 	    @PathVariable(SystemConstants.ORIGIN_ID) long originID,
 	    RedirectAttributes redirectAttrs) {
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 
 	if (task.getId() == 0) {
 	    this.taskService.create(task);
@@ -255,7 +255,7 @@ public class TaskController {
 	task.setProject(proj);
 	this.taskService.merge(task);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
 		+ task.getTitle() + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -310,7 +310,7 @@ public class TaskController {
 	task.assignStaff(staff);
 	this.taskService.merge(task);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>assigned</b> task <b>"
 		+ task.getTitle() + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -335,7 +335,7 @@ public class TaskController {
 	    RedirectAttributes redirectAttrs) {
 
 	String taskTitle = this.taskService.getTitleByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> task <b>"
 		+ taskTitle + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -363,7 +363,7 @@ public class TaskController {
 
 	this.taskService.mark(taskID, status);
 	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	// TODO Change the int value of "status" to a text.
 	alertFactory.setMessage("Successfully <b>marked</b> task <b>"
 		+ taskTitle + "</b> as <b>" + status + "</b>.");
@@ -394,7 +394,7 @@ public class TaskController {
 
 	this.taskService.mark(taskID, status);
 	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	// TODO Change the int value of "status" to a text.
 	alertFactory.setMessage("Successfully <b>marked</b> task <b>"
 		+ taskTitle + "</b> as <b>" + status + "</b>.");
@@ -529,7 +529,7 @@ public class TaskController {
 
 	// Error handling if staff was not set properly.
 	if (task == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory
 		    .setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -542,7 +542,7 @@ public class TaskController {
 	long taskID = task.getId();
 	this.taskService.unassignAllStaffTasks(taskID);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		alertFactory.generateHTML());
@@ -572,7 +572,7 @@ public class TaskController {
 	this.taskService.unassignAllTeamsInTask(taskID);
 
 	// Construct response.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		alertFactory.generateHTML());
@@ -602,7 +602,7 @@ public class TaskController {
 
 	// Error handling if staff was not set properly.
 	if (task == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory
 		    .setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -612,7 +612,7 @@ public class TaskController {
 		    + SystemConstants.REQUEST_LIST;
 	}
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("TOODOO Successfully <b>unassigned "
 		+ task.getTitle() + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -646,7 +646,7 @@ public class TaskController {
 
 	// Construct response.
 	String teamName = this.teamService.getNameByID(teamID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned</b> team <b>"
 		+ teamName + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -677,7 +677,7 @@ public class TaskController {
 
 	// Error handling if staff was not set properly.
 	if (task == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory
 		    .setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -688,7 +688,7 @@ public class TaskController {
 	}
 
 	// Fetch staff name, construct ui notifs.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 
 	// FIXME
 	alertFactory.setMessage("TODOOOOO Successfully <b>assigned "
@@ -787,7 +787,7 @@ public class TaskController {
 
 	// Construct response.
 	String teamName = this.teamService.getNameByID(teamID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>assigned</b> team <b>"
 		+ teamName + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -812,7 +812,7 @@ public class TaskController {
 	    RedirectAttributes redirectAttrs) {
 	this.taskService.unassignAllTeamsInTask(taskID);
 	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned " + taskTitle
 		+ "</b> from all teams.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -840,7 +840,7 @@ public class TaskController {
 	this.taskService.unassignTeamTask(taskID, teamID);
 
 	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
 		+ taskTitle + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -868,7 +868,7 @@ public class TaskController {
 	    RedirectAttributes redirectAttrs) {
 	this.taskService.unassignStaffTask(taskID, staffID);
 	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
 		+ taskTitle + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -893,7 +893,7 @@ public class TaskController {
 	    RedirectAttributes redirectAttrs) {
 	this.taskService.unassignTaskByProject(taskID, projectID);
 	String taskName = this.taskService.getTitleByID(taskID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
 		+ taskName + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -918,7 +918,7 @@ public class TaskController {
 	    RedirectAttributes redirectAttrs) {
 	this.taskService.unassignAllTasksByProject(projectID);
 	String projName = this.projectService.getNameByID(projectID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory
 		.setMessage("Successfully <b>unassigned all</b> tasks assigned to <b>"
 			+ projName + "</b>.");
@@ -945,7 +945,7 @@ public class TaskController {
 	this.taskService.deleteAllTasksByProject(projectID);
 
 	String projName = this.projectService.getNameByID(projectID);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory
 		.setMessage("Successfully <b>deleted all</b> tasks assigned to <b>"
 			+ projName + "</b>.");
@@ -974,7 +974,7 @@ public class TaskController {
 	this.taskService.unassignAllStaffTasks(id);
 
 	String taskTitle = this.taskService.getTitleByID(id);
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned</b> task <b>"
 		+ taskTitle + "</b> from all staff members.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,

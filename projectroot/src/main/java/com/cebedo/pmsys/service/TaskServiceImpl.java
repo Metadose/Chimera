@@ -24,7 +24,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -73,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.create(task);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -82,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -129,7 +129,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.update(task);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -138,7 +138,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -159,7 +159,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -168,7 +168,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, id, task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -245,7 +245,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.update(task);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateMarkAs(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateMarkAs(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -254,7 +254,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateMarkAs(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateMarkAs(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -282,7 +282,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.assignStaffTask(taskStaffAssign);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -293,7 +293,7 @@ public class TaskServiceImpl implements TaskService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -321,7 +321,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.assignTeamTask(taskTeamAssign);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -332,7 +332,7 @@ public class TaskServiceImpl implements TaskService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -384,7 +384,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignTeamTask(taskID, teamID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -395,7 +395,7 @@ public class TaskServiceImpl implements TaskService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -417,7 +417,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignAllTeamTasks(taskID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Team.OBJECT_NAME);
 	}
 
@@ -427,7 +427,7 @@ public class TaskServiceImpl implements TaskService {
 		task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Team.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Team.OBJECT_NAME);
     }
 
     /**
@@ -452,7 +452,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignStaffTask(taskID, staffID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -463,7 +463,7 @@ public class TaskServiceImpl implements TaskService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUnassign(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -484,7 +484,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignAllStaffTasks(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Staff.OBJECT_NAME);
 	}
 
@@ -493,7 +493,7 @@ public class TaskServiceImpl implements TaskService {
 		AuditAction.UNASSIGN_ALL, Task.OBJECT_NAME, id, task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Staff.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Staff.OBJECT_NAME);
     }
 
     /**
@@ -514,7 +514,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.deleteAllTasksByProject(projectID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
+	    return AlertBoxGenerator.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
 	}
 
 	// Log warn.
@@ -523,7 +523,7 @@ public class TaskServiceImpl implements TaskService {
 		project.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDeleteAll(Task.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateDeleteAll(Task.OBJECT_NAME);
     }
 
     /**
@@ -546,7 +546,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.create(task);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -555,7 +555,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -588,7 +588,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.merge(task);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -597,7 +597,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Task.OBJECT_NAME,
 		task.getTitle());
     }
 
@@ -627,7 +627,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignAllTasksByProject(project);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Task.OBJECT_NAME);
 	}
 
@@ -637,7 +637,7 @@ public class TaskServiceImpl implements TaskService {
 		project.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Task.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Task.OBJECT_NAME);
     }
 
     /**
@@ -662,7 +662,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.taskDAO.unassignTaskByProject(taskID, project);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Task.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Task.OBJECT_NAME,
 		    task.getTitle());
 	}
 
@@ -673,7 +673,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), task.getTitle()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(Task.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUnassign(Task.OBJECT_NAME,
 		task.getTitle());
     }
 }

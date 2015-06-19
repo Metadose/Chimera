@@ -28,7 +28,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
@@ -197,10 +197,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	if (isUpdating) {
-	    response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
+	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(
 		    RedisConstants.OBJECT_PAYROLL, datePart);
 	} else {
-	    response = AlertBoxFactory.SUCCESS.generateCreate(
+	    response = AlertBoxGenerator.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_PAYROLL, datePart);
 	    projectPayroll.setUuid(UUID.randomUUID());
 	}
@@ -311,7 +311,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	String datePart = getResponseDatePart(projectPayroll);
-	String response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(
+	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(
 		RedisConstants.OBJECT_PAYROLL, datePart);
 	return response;
     }
@@ -326,7 +326,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	projectPayroll.setStaffList(staffList);
 	this.projectPayrollValueRepo.set(projectPayroll);
 
-	return AlertBoxFactory.SUCCESS.generateInclude(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 

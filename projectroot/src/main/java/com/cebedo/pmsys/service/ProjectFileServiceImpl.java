@@ -26,7 +26,7 @@ import com.cebedo.pmsys.model.ProjectFile;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class ProjectFileServiceImpl implements ProjectFileService {
@@ -117,7 +117,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	this.projectFileDAO.create(projectFile);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUpload(ProjectFile.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUpload(ProjectFile.OBJECT_NAME,
 		projectFile.getName());
     }
 
@@ -144,7 +144,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		    proj.getName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUpload(
+	    return AlertBoxGenerator.FAILED.generateUpload(
 		    ProjectFile.OBJECT_NAME, file.getOriginalFilename());
 	}
 
@@ -190,7 +190,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	this.projectFileDAO.create(projectFile);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUpload(ProjectFile.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUpload(ProjectFile.OBJECT_NAME,
 		file.getOriginalFilename());
     }
 
@@ -240,7 +240,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	    this.projectFileDAO.update(projectFile);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    ProjectFile.OBJECT_NAME, projectFile.getName());
 	}
 
@@ -250,7 +250,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		projectFile.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(ProjectFile.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(ProjectFile.OBJECT_NAME,
 		projectFile.getName());
     }
 
@@ -275,7 +275,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	    this.projectFileDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(
+	    return AlertBoxGenerator.SUCCESS.generateDelete(
 		    ProjectFile.OBJECT_NAME, file.getName());
 	}
 
@@ -284,7 +284,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		ProjectFile.OBJECT_NAME, id, file.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(ProjectFile.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(ProjectFile.OBJECT_NAME,
 		file.getName());
     }
 
@@ -357,7 +357,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 	    this.projectFileDAO.updateDescription(fileID, description);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    ProjectFile.OBJECT_NAME, file.getName());
 	}
 
@@ -366,7 +366,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 		ProjectFile.OBJECT_NAME, file.getId(), file.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(ProjectFile.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(ProjectFile.OBJECT_NAME,
 		file.getName());
     }
 

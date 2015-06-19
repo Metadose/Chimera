@@ -12,7 +12,7 @@ public interface PullOutService {
 
     public void multiSet(Map<String, PullOut> m);
 
-    public void set(PullOut obj);
+    public String create(PullOut obj);
 
     public void delete(Collection<String> keys);
 

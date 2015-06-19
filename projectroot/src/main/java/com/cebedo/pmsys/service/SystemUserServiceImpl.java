@@ -28,7 +28,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class SystemUserServiceImpl implements SystemUserService {
@@ -155,7 +155,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(systemUser);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(
+	    return AlertBoxGenerator.SUCCESS.generateCreate(
 		    SystemUser.OBJECT_NAME, systemUser.getUsername());
 	}
 
@@ -165,7 +165,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		systemUser.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(SystemUser.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(SystemUser.OBJECT_NAME,
 		systemUser.getUsername());
     }
 
@@ -269,7 +269,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    SystemUser.OBJECT_NAME, user.getUsername());
 	}
 
@@ -278,7 +278,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SystemUser.OBJECT_NAME, user.getId(), user.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
 		user.getUsername());
     }
 
@@ -301,7 +301,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    SystemUser.OBJECT_NAME, user.getUsername());
 	}
 
@@ -310,7 +310,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SystemUser.OBJECT_NAME, user.getId(), user.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
 		user.getUsername());
     }
 
@@ -332,7 +332,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(
 		    SystemUser.OBJECT_NAME, obj.getUsername());
 	}
 
@@ -341,7 +341,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SystemUser.OBJECT_NAME, obj.getId(), obj.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME,
 		obj.getUsername());
     }
 
@@ -410,7 +410,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(
+	    return AlertBoxGenerator.SUCCESS.generateAssign(
 		    SecurityAccess.OBJECT_NAME, secAcc.getLabel());
 	}
 
@@ -421,7 +421,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SecurityAccess.OBJECT_NAME, secAcc.getId(), secAcc.getLabel()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(
+	return AlertBoxGenerator.FAILED.generateAssign(
 		SecurityAccess.OBJECT_NAME, secAcc.getLabel());
     }
 
@@ -452,7 +452,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(
+	    return AlertBoxGenerator.SUCCESS.generateAssign(
 		    SecurityRole.OBJECT_NAME, secRole.getLabel());
 	}
 
@@ -463,7 +463,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SecurityAccess.OBJECT_NAME, secRole.getId(), secRole.getLabel()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(SecurityRole.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(SecurityRole.OBJECT_NAME,
 		secRole.getLabel());
     }
 
@@ -506,7 +506,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(
 		    SecurityAccess.OBJECT_NAME, secAcc.getLabel());
 	}
 
@@ -517,7 +517,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SecurityAccess.OBJECT_NAME, secAcc.getId(), secAcc.getLabel()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(
+	return AlertBoxGenerator.FAILED.generateUnassign(
 		SecurityAccess.OBJECT_NAME, secAcc.getLabel());
     }
 
@@ -559,7 +559,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(
 		    SecurityRole.OBJECT_NAME, secRole.getLabel());
 	}
 
@@ -570,7 +570,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		SecurityRole.OBJECT_NAME, secRole.getId(), secRole.getLabel()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(
+	return AlertBoxGenerator.FAILED.generateUnassign(
 		SecurityRole.OBJECT_NAME, secRole.getLabel());
     }
 
@@ -596,7 +596,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(SecurityAccess.OBJECT_NAME);
 	}
 
@@ -606,7 +606,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		user.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED
+	return AlertBoxGenerator.FAILED
 		.generateUnassignAll(SecurityAccess.OBJECT_NAME);
     }
 
@@ -630,7 +630,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(SecurityRole.OBJECT_NAME);
 	}
 
@@ -640,7 +640,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		user.getUsername()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED
+	return AlertBoxGenerator.FAILED
 		.generateUnassignAll(SecurityRole.OBJECT_NAME);
     }
 

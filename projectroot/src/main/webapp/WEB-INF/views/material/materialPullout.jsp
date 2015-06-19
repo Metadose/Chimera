@@ -75,48 +75,53 @@
 									                	<td>${pullOut.material.name}</td>
 									                </tr>
 									                <tr>
+									                	<td>&nbsp;</td>
+									                	<td>&nbsp;</td>
+									                	<td>&nbsp;</td>
+									                </tr>
+									                <tr>
 									                	<td><label>Available:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.material.available}</td>
+									                	<td align="right">${pullOut.material.available}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Used:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.material.used}</td>
+									                	<td align="right">${pullOut.material.used}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Total Quantity:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.material.quantity}</td>
+									                	<td align="right">${pullOut.material.quantity}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Units:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullOut.material.unit}</td>
+									                	<td align="right">${pullOut.material.unit}</td>
 									                </tr>
 									                </table>
 									                <br/>
                    									<form:form modelAttribute="pullOut"
 														id="pullOutForm"
 														method="post"
-														action="${contextPath}/project/do-pullout/R">
+														action="${contextPath}/project/do-pullout/material">
 				                                        <div class="form-group">
 				                                            <label>Quantity</label>
 				                                            <form:input type="text" class="form-control" path="quantity"/>
-				                                            <p class="help-block">How many units were pulled-out or used?</p>
+				                                            <p class="help-block">Enter the number of units that was pulled-out</p>
 				                                            <label>Staff</label>
 				                                            <form:select class="form-control" path="staffID"> 
 	                                     						<c:forEach items="${staffList}" var="staff"> 
 	                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
 	                                     						</c:forEach> 
 	 		                                    			</form:select>
-	 		                                    			<p class="help-block">Who was the staff who pulled-out the material?</p>
+	 		                                    			<p class="help-block">Choose the staff who pulled-out the material</p>
 				                                            <label>Date and Time</label>
 				                                            <form:input type="text" placeholder="Sample: 2015/06/24 08:15" class="form-control" id="date-picker" path="datetime"/>
-				                                            <p class="help-block">When did the staff pulled-out the material?</p>
+				                                            <p class="help-block">Choose the date and time of the pull-out</p>
 				                                            <label>Remarks</label>
 				                                            <form:input type="text" placeholder="Sample: The pull-out was delayed due to rain." class="form-control" path="remarks"/>
-				                                            <p class="help-block">Do you have any remarks?</p>
+				                                            <p class="help-block">Add additional remarks</p>
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('pullOutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Pull-Out</button>

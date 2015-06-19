@@ -14,7 +14,7 @@ import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -42,12 +42,12 @@ public class CompanyServiceImpl implements CompanyService {
 
 	    // Do actual service and construct response.
 	    this.companyDAO.create(company);
-	    result = AlertBoxFactory.SUCCESS.generateCreate(
+	    result = AlertBoxGenerator.SUCCESS.generateCreate(
 		    Company.OBJECT_NAME, company.getName());
 	} else {
 	    // If you are not a super admin,
 	    // you're not allowed to create a new company.
-	    result = AlertBoxFactory.FAILED.generateCreate(Company.OBJECT_NAME,
+	    result = AlertBoxGenerator.FAILED.generateCreate(Company.OBJECT_NAME,
 		    company.getName());
 	    logger.warn(this.logHelper.logUnauthorized(auth,
 		    AuditAction.CREATE, Company.OBJECT_NAME, company.getId(),
@@ -92,7 +92,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    // Do actual update to object.
 	    // Construct alert box response.
 	    this.companyDAO.update(company);
-	    result = AlertBoxFactory.SUCCESS.generateUpdate(
+	    result = AlertBoxGenerator.SUCCESS.generateUpdate(
 		    Company.OBJECT_NAME, company.getName());
 	} else {
 	    // Warn
@@ -100,7 +100,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    logger.warn(this.logHelper.logUnauthorized(auth,
 		    AuditAction.UPDATE, Company.OBJECT_NAME, company.getId(),
 		    company.getName()));
-	    result = AlertBoxFactory.FAILED.generateUpdate(Company.OBJECT_NAME,
+	    result = AlertBoxGenerator.FAILED.generateUpdate(Company.OBJECT_NAME,
 		    company.getName());
 	}
 	return result;
@@ -123,7 +123,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    // Do actual service.
 	    // Generate response.
 	    this.companyDAO.delete(id);
-	    result = AlertBoxFactory.SUCCESS.generateDelete(
+	    result = AlertBoxGenerator.SUCCESS.generateDelete(
 		    Company.OBJECT_NAME, company.getName());
 	} else {
 	    // Log then
@@ -131,7 +131,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    logger.warn(this.logHelper.logUnauthorized(auth,
 		    AuditAction.DELETE, Company.OBJECT_NAME, company.getId(),
 		    company.getName()));
-	    result = AlertBoxFactory.FAILED.generateDelete(Company.OBJECT_NAME,
+	    result = AlertBoxGenerator.FAILED.generateDelete(Company.OBJECT_NAME,
 		    company.getName());
 	}
 	return result;

@@ -14,7 +14,7 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
@@ -58,10 +58,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Return success.
 	this.deliveryValueRepo.set(obj);
 	if (isCreate) {
-	    return AlertBoxFactory.SUCCESS.generateCreate(
+	    return AlertBoxGenerator.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_DELIVERY, obj.getName());
 	}
-	return AlertBoxFactory.SUCCESS.generateUpdate(
+	return AlertBoxGenerator.SUCCESS.generateUpdate(
 		RedisConstants.OBJECT_DELIVERY, obj.getName());
     }
 

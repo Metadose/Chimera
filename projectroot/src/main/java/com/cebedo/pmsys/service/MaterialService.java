@@ -15,11 +15,11 @@ public interface MaterialService {
 
     public void multiSet(Map<String, Material> m);
 
-    public String set(Material obj);
+    public String create(Material obj);
 
     public void delete(Collection<String> keys);
 
-    public void delete(String key);
+    public String delete(String key);
 
     public void setIfAbsent(Material obj);
 

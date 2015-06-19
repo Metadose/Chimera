@@ -41,7 +41,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.wrapper.StaffWrapper;
 import com.google.gson.Gson;
@@ -107,7 +107,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.create(staff);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateCreate(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -153,7 +153,7 @@ public class StaffServiceImpl implements StaffService {
 	    this.staffDAO.update(staff);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -162,7 +162,7 @@ public class StaffServiceImpl implements StaffService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -197,7 +197,7 @@ public class StaffServiceImpl implements StaffService {
 	    this.staffDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(Staff.OBJECT_NAME,
 		    stf.getFullName());
 	}
 
@@ -206,7 +206,7 @@ public class StaffServiceImpl implements StaffService {
 		Staff.OBJECT_NAME, stf.getId(), stf.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(Staff.OBJECT_NAME,
 		stf.getFullName());
     }
 
@@ -286,7 +286,7 @@ public class StaffServiceImpl implements StaffService {
 		    staff.getFullName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateAssign(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateAssign(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -302,7 +302,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.assignProjectManager(assignment);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateAssign(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -329,7 +329,7 @@ public class StaffServiceImpl implements StaffService {
 		    staff.getFullName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUnassign(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateUnassign(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -342,7 +342,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.unassignProjectManager(projectID, staffID);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -363,7 +363,7 @@ public class StaffServiceImpl implements StaffService {
 		    project.getId(), project.getName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED
+	    return AlertBoxGenerator.FAILED
 		    .generateUnassignAll(ManagerAssignment.OBJECT_LABEL);
 	}
 
@@ -375,7 +375,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.unassignAllProjectManagers(projectID);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS
+	return AlertBoxGenerator.SUCCESS
 		.generateUnassignAll(ManagerAssignment.OBJECT_LABEL);
     }
 
@@ -428,7 +428,7 @@ public class StaffServiceImpl implements StaffService {
 		    team.getName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUnassign(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateUnassign(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -440,7 +440,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.unassignTeam(teamID, staffID);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateUnassign(Team.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -460,7 +460,7 @@ public class StaffServiceImpl implements StaffService {
 		    staff.getFullName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateUnassignAll(Team.OBJECT_NAME);
+	    return AlertBoxGenerator.FAILED.generateUnassignAll(Team.OBJECT_NAME);
 	}
 
 	// Log and notify.
@@ -470,7 +470,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.unassignAllTeams(staffID);
 
 	// Log success.
-	return AlertBoxFactory.SUCCESS.generateUnassignAll(Team.OBJECT_NAME);
+	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Team.OBJECT_NAME);
     }
 
     /***
@@ -495,7 +495,7 @@ public class StaffServiceImpl implements StaffService {
 		    team.getName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateAssign(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateAssign(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -506,7 +506,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.assignTeam(stAssign);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateAssign(Team.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateAssign(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -609,7 +609,7 @@ public class StaffServiceImpl implements StaffService {
 		    this.staffDAO.create(staff);
 
 		    // Return success.
-		    return AlertBoxFactory.SUCCESS.generateCreate(
+		    return AlertBoxGenerator.SUCCESS.generateCreate(
 			    Staff.OBJECT_NAME, staff.getFullName());
 		}
 	    } else {
@@ -631,7 +631,7 @@ public class StaffServiceImpl implements StaffService {
 		    this.systemUserDAO.update(user);
 
 		    // Return success.
-		    return AlertBoxFactory.SUCCESS.generateCreate(
+		    return AlertBoxGenerator.SUCCESS.generateCreate(
 			    Staff.OBJECT_NAME, staff.getFullName());
 		}
 	    }
@@ -642,7 +642,7 @@ public class StaffServiceImpl implements StaffService {
 		    staff.getFullName()));
 
 	    // Return fail.
-	    return AlertBoxFactory.FAILED.generateCreate(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.FAILED.generateCreate(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -659,7 +659,7 @@ public class StaffServiceImpl implements StaffService {
 	    this.staffDAO.create(staff);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Staff.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME,
 		    staff.getFullName());
 	}
 
@@ -668,7 +668,7 @@ public class StaffServiceImpl implements StaffService {
 		Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -934,7 +934,7 @@ public class StaffServiceImpl implements StaffService {
 	// Update.
 	this.projectDAO.merge(project);
 
-	return AlertBoxFactory.SUCCESS.generateAssignEntries(Staff.OBJECT_NAME);
+	return AlertBoxGenerator.SUCCESS.generateAssignEntries(Staff.OBJECT_NAME);
     }
 
     @Transactional
@@ -957,7 +957,7 @@ public class StaffServiceImpl implements StaffService {
 
 	// Construct response.
 	Staff staff = this.staffDAO.getByID(staffID);
-	return AlertBoxFactory.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME,
 		staff.getFullName());
     }
 
@@ -966,7 +966,7 @@ public class StaffServiceImpl implements StaffService {
     public String unassignAllStaffMembers(Project project) {
 	project.setAssignedStaff(new HashSet<Staff>());
 	this.projectDAO.merge(project);
-	return AlertBoxFactory.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
+	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
     }
 
     @Transactional

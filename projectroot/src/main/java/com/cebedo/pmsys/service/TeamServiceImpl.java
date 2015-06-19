@@ -23,7 +23,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.wrapper.TeamWrapper;
 
 @Service
@@ -66,7 +66,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.create(team);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateCreate(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -75,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateCreate(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -124,7 +124,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.update(team);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -133,7 +133,7 @@ public class TeamServiceImpl implements TeamService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -154,7 +154,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(Team.OBJECT_NAME,
 		    team.getName());
 	}
 	// Log warn.
@@ -162,7 +162,7 @@ public class TeamServiceImpl implements TeamService {
 		Team.OBJECT_NAME, id, team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -214,7 +214,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.assignProjectTeam(assignment);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateAssign(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateAssign(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -225,7 +225,7 @@ public class TeamServiceImpl implements TeamService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateAssign(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateAssign(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -250,7 +250,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.unassignProjectTeam(projectID, teamID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUnassign(Team.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUnassign(Team.OBJECT_NAME,
 		    team.getName());
 	}
 
@@ -261,7 +261,7 @@ public class TeamServiceImpl implements TeamService {
 		Team.OBJECT_NAME, team.getId(), team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassign(Team.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUnassign(Team.OBJECT_NAME,
 		team.getName());
     }
 
@@ -283,7 +283,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.unassignAllProjectTeams(projectID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Team.OBJECT_NAME);
 	}
 
@@ -293,7 +293,7 @@ public class TeamServiceImpl implements TeamService {
 		project.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Team.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Team.OBJECT_NAME);
     }
 
     /**
@@ -340,7 +340,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.unassignAllMembers(teamID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Staff.OBJECT_NAME);
 	}
 
@@ -350,7 +350,7 @@ public class TeamServiceImpl implements TeamService {
 		team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Staff.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Staff.OBJECT_NAME);
     }
 
     /**
@@ -371,7 +371,7 @@ public class TeamServiceImpl implements TeamService {
 	    this.teamDAO.unassignAllTeamsFromProject(teamID);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS
+	    return AlertBoxGenerator.SUCCESS
 		    .generateUnassignAll(Project.OBJECT_NAME);
 	}
 
@@ -381,7 +381,7 @@ public class TeamServiceImpl implements TeamService {
 		team.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUnassignAll(Project.OBJECT_NAME);
+	return AlertBoxGenerator.FAILED.generateUnassignAll(Project.OBJECT_NAME);
     }
 
     /**

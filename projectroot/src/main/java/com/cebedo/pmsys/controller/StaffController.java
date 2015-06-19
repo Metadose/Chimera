@@ -43,7 +43,7 @@ import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
@@ -134,7 +134,7 @@ public class StaffController {
     public String create(@ModelAttribute(ATTR_STAFF) Staff staff,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 	// Add ui notifications.
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 
 	// Create staff.
 	if (staff.getId() == 0) {
@@ -177,7 +177,7 @@ public class StaffController {
 	    @PathVariable(value = SystemConstants.ORIGIN) String origin,
 	    @PathVariable(value = SystemConstants.ORIGIN_ID) String originID,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	if (staff.getId() == 0) {
 	    this.staffService.createFromOrigin(staff, origin, originID);
 
@@ -224,7 +224,7 @@ public class StaffController {
 	if (startDate.after(endDate)) {
 	    // TODO
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    AlertBoxFactory.FAILED.generateCreate("test", "TODO"));
+		    AlertBoxGenerator.FAILED.generateCreate("test", "TODO"));
 	    // Dont set completed.
 	    // Otherwise, min and max dates will be deleted in session.
 	    // status.setComplete();
@@ -238,7 +238,7 @@ public class StaffController {
 
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
+		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 
 	return editStaffWithMaxDate(model, session, startDate);
     }
@@ -260,7 +260,7 @@ public class StaffController {
 
 	// TODO
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		AlertBoxFactory.SUCCESS.generateCreate("test", "TODO"));
+		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 	return editStaffWithMaxDate(model, session, attendance.getDate());
     }
 
@@ -310,7 +310,7 @@ public class StaffController {
 
 	Staff staff = this.staffService.getByID(id);
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>"
 		+ staff.getFullName() + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -337,7 +337,7 @@ public class StaffController {
 
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 	if (staff == null) {
-	    AlertBoxFactory alertFactory = AlertBoxFactory.FAILED;
+	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory
 		    .setMessage("Error occured when you tried to <b>delete</b> staff. Please try again.");
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -347,7 +347,7 @@ public class StaffController {
 		    + SystemConstants.REQUEST_LIST;
 	}
 
-	AlertBoxFactory alertFactory = AlertBoxFactory.SUCCESS;
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>"
 		+ staff.getFullName() + "</b>.");
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,

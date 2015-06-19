@@ -148,4 +148,12 @@ public class PullOut implements IDomainObject {
 	this.remarks = remarks;
     }
 
+    public static String constructPattern(Material material2) {
+	Company company = material2.getCompany();
+	Project project = material2.getProject();
+	Delivery delivery = material2.getDelivery();
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
+		project.getId(), delivery.getUuid(), material2.getUuid(), "*");
+    }
+
 }

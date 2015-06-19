@@ -2,11 +2,11 @@ package com.cebedo.pmsys.ui;
 
 import com.cebedo.pmsys.constants.SystemConstants;
 
-public class AlertBoxFactory {
+public class AlertBoxGenerator {
 
-    public static AlertBoxFactory SUCCESS = new AlertBoxFactory(
+    public static AlertBoxGenerator SUCCESS = new AlertBoxGenerator(
 	    SystemConstants.UI_STATUS_SUCCESS);
-    public static AlertBoxFactory FAILED = new AlertBoxFactory(
+    public static AlertBoxGenerator FAILED = new AlertBoxGenerator(
 	    SystemConstants.UI_STATUS_DANGER);
 
     private final String CONFIG_ALERT_STATUS = "ALERT_STATUS";
@@ -25,6 +25,13 @@ public class AlertBoxFactory {
 
     private static String TEMPLATE_FAILED_ADD = "Failed to <b>add</b> the "
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
+     * Pull out.
+     */
+    private static String TEMPLATE_SUCCESS_PULL_OUT = "Successfully <b>pulled-out</b> %s %s of <b>%s</b>.";
+
+    private static String TEMPLATE_FAILED_PULL_OUT = "Failed to <b>pull-out</b> %s %s of <b>%s</b>.";
 
     /**
      * Create.
@@ -166,16 +173,16 @@ public class AlertBoxFactory {
     private String header;
     private String message;
 
-    public AlertBoxFactory(String stat) {
+    public AlertBoxGenerator(String stat) {
 	setStatus(stat);
     }
 
-    public AlertBoxFactory(String stat, String msg) {
+    public AlertBoxGenerator(String stat, String msg) {
 	setStatus(stat);
 	setMessage(msg);
     }
 
-    public AlertBoxFactory() {
+    public AlertBoxGenerator() {
 	;
     }
 
@@ -381,6 +388,21 @@ public class AlertBoxFactory {
 	return generateHTML();
     }
 
+    public String generatePullout(double quantity, String units,
+	    String materialName) {
+	String result = "";
+	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	    result = String.format(TEMPLATE_FAILED_PULL_OUT, quantity, units,
+		    materialName);
+
+	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	    result = String.format(TEMPLATE_SUCCESS_PULL_OUT, quantity, units,
+		    materialName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
     public String generateAdd(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
@@ -482,7 +504,7 @@ public class AlertBoxFactory {
 	return message;
     }
 
-    public AlertBoxFactory setMessage(String message) {
+    public AlertBoxGenerator setMessage(String message) {
 	this.message = message;
 	return this;
     }

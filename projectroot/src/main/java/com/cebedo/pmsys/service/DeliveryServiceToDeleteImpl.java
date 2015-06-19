@@ -14,7 +14,7 @@ import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.DeliveryToDelete;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
@@ -47,7 +47,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 	    this.deliveryDAO.create(delivery);
 
 	    // Return response.
-	    return AlertBoxFactory.SUCCESS.generateCreate(DeliveryToDelete.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(DeliveryToDelete.OBJECT_NAME,
 		    delivery.getName());
 	}
 
@@ -56,7 +56,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 		DeliveryToDelete.OBJECT_NAME, delivery.getId(), delivery.getName()));
 
 	// Return failed.
-	return AlertBoxFactory.FAILED.generateCreate(DeliveryToDelete.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateCreate(DeliveryToDelete.OBJECT_NAME,
 		delivery.getName());
     }
 
@@ -103,7 +103,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 	    this.deliveryDAO.update(delivery);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateUpdate(DeliveryToDelete.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(DeliveryToDelete.OBJECT_NAME,
 		    delivery.getName());
 	}
 
@@ -112,7 +112,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 		DeliveryToDelete.OBJECT_NAME, delivery.getId(), delivery.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateUpdate(DeliveryToDelete.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateUpdate(DeliveryToDelete.OBJECT_NAME,
 		delivery.getName());
     }
 
@@ -134,7 +134,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 	    this.deliveryDAO.delete(id);
 
 	    // Return success.
-	    return AlertBoxFactory.SUCCESS.generateDelete(DeliveryToDelete.OBJECT_NAME,
+	    return AlertBoxGenerator.SUCCESS.generateDelete(DeliveryToDelete.OBJECT_NAME,
 		    delivery.getName());
 	}
 
@@ -143,7 +143,7 @@ public class DeliveryServiceToDeleteImpl implements DeliveryServiceToDelete {
 		DeliveryToDelete.OBJECT_NAME, id, delivery.getName()));
 
 	// Return fail.
-	return AlertBoxFactory.FAILED.generateDelete(DeliveryToDelete.OBJECT_NAME,
+	return AlertBoxGenerator.FAILED.generateDelete(DeliveryToDelete.OBJECT_NAME,
 		delivery.getName());
     }
 

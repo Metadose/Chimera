@@ -21,6 +21,7 @@ public abstract class SystemConstants {
     public static final String REQUEST_TEST = "test";
     public static final String REQUEST_ADD = "add";
     public static final String REQUEST_PULL_OUT = "pullout";
+    public static final String REQUEST_DO_PULL_OUT = "do-pullout";
     public static final String REQUEST_INCLUDE = "include";
     public static final String REQUEST_DELETE = "delete";
     public static final String REQUEST_CHANGE_PASSWORD = "changepassword";

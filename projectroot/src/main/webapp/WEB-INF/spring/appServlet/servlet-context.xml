@@ -490,6 +490,7 @@
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
         <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
+        <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -514,6 +515,8 @@
     <!-- Pull-Out -->
     <beans:bean id="pullOutService" class="com.cebedo.pmsys.service.PullOutServiceImpl">
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
+        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
+        <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="pullOutValueRepo" class="com.cebedo.pmsys.repository.PullOutValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />

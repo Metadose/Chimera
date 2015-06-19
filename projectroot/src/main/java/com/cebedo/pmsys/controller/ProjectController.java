@@ -67,10 +67,11 @@ import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.service.ProjectService;
+import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxFactory;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
@@ -154,6 +155,13 @@ public class ProjectController {
     private MaterialService materialService;
     private ProjectPayrollService projectPayrollService;
     private ProjectAuxService projectAuxService;
+    private PullOutService pullOutService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "pullOutService")
+    public void setPullOutService(PullOutService pullOutService) {
+	this.pullOutService = pullOutService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "projectAuxService")
@@ -1083,6 +1091,71 @@ public class ProjectController {
     }
 
     /**
+     * Do the pull-out of materials.
+     * 
+     * @param pullOut
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/"
+	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String doPullOutMaterial(
+	    @ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service
+	// and get response.
+	String response = this.pullOutService.create(pullOut);
+
+	// Add to model.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the request.
+	status.setComplete();
+
+	// Return to the project.
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ pullOut.getProject().getId();
+    }
+
+    /**
+     * Delete a material.
+     * 
+     * @param material
+     * @param redirecAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
+	    + RedisConstants.OBJECT_MATERIAL + "/{"
+	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String deleteMaterial(
+	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
+	    RedirectAttributes redirecAttrs, SessionStatus status,
+	    HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.materialService.delete(key);
+
+	// Attach to redirect attributes.
+	redirecAttrs
+		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Then redirect back to the delivery.
+	status.setComplete();
+
+	// Return to the project.
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+    }
+
+    /**
      * Add a material to delivery.
      * 
      * @param material
@@ -1099,7 +1172,7 @@ public class ProjectController {
 
 	// Do service
 	// and get response.
-	String response = this.materialService.set(material);
+	String response = this.materialService.create(material);
 
 	// Attach to redirect attributes.
 	redirecAttrs
@@ -1213,7 +1286,7 @@ public class ProjectController {
 	// Construct response.
 	String datePart = ProjectPayrollServiceImpl
 		.getResponseDatePart(projectPayroll);
-	String response = AlertBoxFactory.SUCCESS.generateCompute(
+	String response = AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_PAYROLL, datePart);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
 		response);
