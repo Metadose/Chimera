@@ -84,12 +84,19 @@
 														method="post"
 														action="${contextPath}/project/create/delivery">
 				                                        <div class="form-group">
+				                                            
 				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            <form:input type="text" placeholder="Sample: Gravel for Flooring" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the name of this delivery</p>
+				                                            
 				                                            <label>Date and Time</label>
-				                                            <form:input type="text" class="form-control" id="date-picker" path="datetime"/><br/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/25 07:40" class="form-control" id="date-picker" path="datetime"/>
+				                                            <p class="help-block">Choose the date and time when the delivery was made</p>
+				                                            
 				                                            <label>Description</label>
-				                                            <form:input type="text" class="form-control" path="description"/>
+				                                            <form:input type="text" placeholder="Sample: Initial gravel delivery for flooring" class="form-control" path="description"/>
+				                                            <p class="help-block">Enter additional details</p>
+				                                            
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">
@@ -117,15 +124,25 @@
 														action="${contextPath}/project/add/material">
 				                                        <div class="form-group">
 				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            <form:input type="text" placeholder="Sample: Gravel" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the name of the material</p>
+				                                            
 				                                            <label>Quantity</label>
-				                                            <form:input type="text" class="form-control" path="quantity"/><br/>
+				                                            <form:input type="text" placeholder="Sample: 100, 200, 350, 500" class="form-control" path="quantity"/>
+				                                            <p class="help-block">Enter the total amount of materials</p>
+				                                            
 				                                            <label>Unit</label>
-				                                            <form:input type="text" class="form-control" path="unit"/><br/>
+				                                            <form:input type="text" placeholder="Sample: Cubic Meters, Bags, Square Foot" class="form-control" path="unit"/>
+				                                            <p class="help-block">Specify the unit of measure</p>
+				                                            
 				                                            <label>Cost (Per Unit)</label>
-				                                            <form:input type="text" class="form-control" path="costPerUnitMaterial"/><br/>
+				                                            <form:input type="text" placeholder="Sample: 30.50, 25.10, 100, 200" class="form-control" path="costPerUnitMaterial"/>
+				                                            <p class="help-block">Enter the cost of one material per unit</p>
+				                                            
 				                                            <label>Remarks</label>
-				                                            <form:input type="text" class="form-control" path="remarks"/>
+				                                            <form:input type="text" placeholder="Sample: Delivery was on time" class="form-control" path="remarks"/>
+				                                            <p class="help-block">Add more information regarding this material</p>
+				                                            
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Add</button>

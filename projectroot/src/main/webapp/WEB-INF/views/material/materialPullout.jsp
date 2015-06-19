@@ -63,6 +63,12 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
+									                <c:if test="${empty staffList}">
+									                <div class="callout callout-danger">
+									                    <p>Pull-outs must be linked to a specific staff assigned to this Project. Currently, there is no staff assigned.</p>
+									                </div>
+									                </c:if>
+									                <c:if test="${!empty staffList}">
 									                <table>
 									                <tr>
 									                	<td><label>Delivery Name:</label></td>
@@ -142,6 +148,7 @@
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Pull-Out</button>
+                                            		</c:if>
                    								</div>
                    							</div>
                    						</div>

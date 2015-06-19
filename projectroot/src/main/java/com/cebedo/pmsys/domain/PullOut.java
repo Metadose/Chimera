@@ -170,7 +170,7 @@ public class PullOut implements IDomainObject {
 	Company company = delivery2.getCompany();
 	Project project = delivery2.getProject();
 	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
-		project.getId(), delivery2, "*", "*");
+		project.getId(), delivery2.getUuid(), "*", "*");
     }
 
 }

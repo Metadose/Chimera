@@ -151,17 +151,17 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Get all keys.
 	// Delete all keys.
-	Set<String> materialKeys = this.deliveryValueRepo
+	Set<String> materialKeys = this.materialValueRepo
 		.keys(materialsPattern);
-	Set<String> pulloutKeys = this.deliveryValueRepo.keys(pulloutPattern);
+	Set<String> pulloutKeys = this.pullOutValueRepo.keys(pulloutPattern);
 	this.materialValueRepo.delete(materialKeys);
-	this.materialValueRepo.delete(pulloutKeys);
+	this.pullOutValueRepo.delete(pulloutKeys);
 
 	// Delete this object.
 	this.deliveryValueRepo.delete(key);
 
-	// TODO here
-	return "";
+	return AlertBoxGenerator.SUCCESS.generateDelete(
+		RedisConstants.OBJECT_DELIVERY, delivery.getName());
     }
 
 }

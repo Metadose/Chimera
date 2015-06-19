@@ -62,8 +62,8 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// You're also not allowed if you already have a uuid.
 	// Only create requests are processed here.
-	if (obj.getDatetime() == null || available <= 0 || quantity > available
-		|| obj.getUuid() != null) {
+	if (quantity <= 0 || obj.getDatetime() == null || available <= 0
+		|| quantity > available || obj.getUuid() != null) {
 	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(),
 		    material.getUnit(), material.getName());
 	}
