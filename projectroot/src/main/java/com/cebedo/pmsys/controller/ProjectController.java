@@ -1166,6 +1166,39 @@ public class ProjectController {
     }
 
     /**
+     * Delete a payroll entry.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
+	    + RedisConstants.OBJECT_PAYROLL + "/{"
+	    + RedisConstants.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
+    public String deleteProjectPayroll(
+	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status,
+	    HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.projectPayrollService.delete(key);
+
+	// Attach to redirect.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Set completed.
+	// Return.
+	status.setComplete();
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
      * Delete a pull-out entry.
      * 
      * @param key

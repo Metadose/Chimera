@@ -144,12 +144,42 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return this.projectPayrollValueRepo.multiGet(keys);
     }
 
+    /**
+     * Delete a payroll entry.
+     */
     @Transactional
     @Override
-    public void delete(String key) {
+    public String delete(String key) {
+
+	ProjectPayroll payroll = this.projectPayrollValueRepo.get(key);
+
+	// Revert the grand total in project auxillary.
+	// Get the aux obj.
+	ProjectAux projAux = this.projectAuxService.get(payroll.getProject());
+
+	// Get value.
+	// Recompute reverted value.
+	double totalAllPayrolls = projAux.getGrandTotalPayroll();
+	double totalThisPayroll = payroll.getPayrollComputationResult()
+		.getOverallTotalOfStaff();
+	double revertedTotal = totalAllPayrolls - totalThisPayroll;
+
+	// Set the reverted value.
+	// Save it.
+	projAux.setGrandTotalPayroll(revertedTotal);
+	this.projectAuxService.set(projAux);
+
+	// Delete the payroll object.
 	this.projectPayrollValueRepo.delete(key);
+
+	// Return.
+	return AlertBoxGenerator.SUCCESS.generateDelete(
+		RedisConstants.OBJECT_PAYROLL, payroll.getStartEndDisplay());
     }
 
+    /**
+     * Get the grand total value as string, formatted as currency.
+     */
     @Transactional
     @Override
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList) {

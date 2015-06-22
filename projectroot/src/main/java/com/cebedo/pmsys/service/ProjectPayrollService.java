@@ -22,7 +22,7 @@ public interface ProjectPayrollService {
 
     public void delete(Collection<String> keys);
 
-    public void delete(String key);
+    public String delete(String key);
 
     public void setIfAbsent(ProjectPayroll obj);
 

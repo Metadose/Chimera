@@ -14,6 +14,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.utils.DateUtils;
 
 public class ProjectPayroll implements IDomainObject {
 
@@ -155,6 +156,12 @@ public class ProjectPayroll implements IDomainObject {
 
     public void setCreator(SystemUser creatorID) {
 	this.creator = creatorID;
+    }
+
+    public String getStartEndDisplay() {
+	String start = DateUtils.formatDate(startDate, "yyyy/MM/dd");
+	String end = DateUtils.formatDate(endDate, "yyyy/MM/dd");
+	return start + " to " + end;
     }
 
     public Date getStartDate() {
