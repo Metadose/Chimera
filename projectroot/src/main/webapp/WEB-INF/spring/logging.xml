@@ -45,7 +45,7 @@
 		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor" />
 	    <aop:config>
 	        <aop:pointcut id="allServiceMethods"
-	        	expression="execution(* com.cebedo.pmsys.service.*.*(..))"/>
+	        	expression="execution(* com.cebedo.pmsys.service.impl.*.*(..))"/>
 	        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" order="2"/>
 	    </aop:config>
 		

@@ -287,7 +287,7 @@
     <beans:bean id="projectDAO" class="com.cebedo.pmsys.dao.ProjectDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="projectService" class="com.cebedo.pmsys.service.ProjectServiceImpl">
+    <beans:bean id="projectService" class="com.cebedo.pmsys.service.impl.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
@@ -295,7 +295,7 @@
     </beans:bean>
     
     <!-- Project Payroll Computer -->
-    <beans:bean id="projectPayrollComputerService" class="com.cebedo.pmsys.service.ProjectPayrollComputerServiceImpl">
+    <beans:bean id="projectPayrollComputerService" class="com.cebedo.pmsys.service.impl.ProjectPayrollComputerServiceImpl">
     	<beans:property name="attendanceService" ref="attendanceService"></beans:property>
         <beans:property name="staffService" ref="staffService"></beans:property> 
     </beans:bean>
@@ -304,7 +304,7 @@
     <beans:bean id="staffDAO" class="com.cebedo.pmsys.dao.StaffDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="staffService" class="com.cebedo.pmsys.service.StaffServiceImpl">
+    <beans:bean id="staffService" class="com.cebedo.pmsys.service.impl.StaffServiceImpl">
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
@@ -317,7 +317,7 @@
     <beans:bean id="teamDAO" class="com.cebedo.pmsys.dao.TeamDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="teamService" class="com.cebedo.pmsys.service.TeamServiceImpl">
+    <beans:bean id="teamService" class="com.cebedo.pmsys.service.impl.TeamServiceImpl">
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
@@ -327,7 +327,7 @@
     <beans:bean id="supplierDAO" class="com.cebedo.pmsys.dao.SupplierDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="supplierService" class="com.cebedo.pmsys.service.SupplierServiceImpl">
+    <beans:bean id="supplierService" class="com.cebedo.pmsys.service.impl.SupplierServiceImpl">
         <beans:property name="supplierDAO" ref="supplierDAO"></beans:property>
     </beans:bean>
     
@@ -335,7 +335,7 @@
     <beans:bean id="storageDAO" class="com.cebedo.pmsys.dao.StorageDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="storageService" class="com.cebedo.pmsys.service.StorageServiceImpl">
+    <beans:bean id="storageService" class="com.cebedo.pmsys.service.impl.StorageServiceImpl">
         <beans:property name="storageDAO" ref="storageDAO"></beans:property>
     </beans:bean>
     
@@ -343,7 +343,7 @@
     <beans:bean id="expenseDAO" class="com.cebedo.pmsys.dao.ExpenseDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="expenseService" class="com.cebedo.pmsys.service.ExpenseServiceImpl">
+    <beans:bean id="expenseService" class="com.cebedo.pmsys.service.impl.ExpenseServiceImpl">
         <beans:property name="expenseDAO" ref="expenseDAO"></beans:property>
     </beans:bean>
     
@@ -356,7 +356,7 @@
     <beans:bean id="deliveryDAO" class="com.cebedo.pmsys.dao.DeliveryDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="deliveryServiceToDelete" class="com.cebedo.pmsys.service.DeliveryServiceToDeleteImpl">
+    <beans:bean id="deliveryServiceToDelete" class="com.cebedo.pmsys.service.impl.DeliveryServiceToDeleteImpl">
         <beans:property name="deliveryDAO" ref="deliveryDAO"></beans:property>
     </beans:bean>
     
@@ -364,7 +364,7 @@
     <beans:bean id="reminderDAO" class="com.cebedo.pmsys.dao.ReminderDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="reminderService" class="com.cebedo.pmsys.service.ReminderServiceImpl">
+    <beans:bean id="reminderService" class="com.cebedo.pmsys.service.impl.ReminderServiceImpl">
         <beans:property name="reminderDAO" ref="reminderDAO"></beans:property>
     </beans:bean>
     
@@ -372,7 +372,7 @@
     <beans:bean id="milestoneDAO" class="com.cebedo.pmsys.dao.MilestoneDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="milestoneService" class="com.cebedo.pmsys.service.MilestoneServiceImpl">
+    <beans:bean id="milestoneService" class="com.cebedo.pmsys.service.impl.MilestoneServiceImpl">
         <beans:property name="milestoneDAO" ref="milestoneDAO"></beans:property>
     </beans:bean>
     
@@ -380,7 +380,7 @@
     <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.dao.SecurityAccessDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.service.SecurityAccessServiceImpl">
+    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.service.impl.SecurityAccessServiceImpl">
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
     </beans:bean>
     
@@ -388,7 +388,7 @@
     <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.dao.SecurityRoleDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.service.SecurityRoleServiceImpl">
+    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.service.impl.SecurityRoleServiceImpl">
         <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
     </beans:bean>
     
@@ -396,7 +396,7 @@
     <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.TaskDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="taskService" class="com.cebedo.pmsys.service.TaskServiceImpl">
+    <beans:bean id="taskService" class="com.cebedo.pmsys.service.impl.TaskServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
@@ -404,7 +404,7 @@
     </beans:bean>
     
     <!-- Search -->
-    <beans:bean id="searchService" class="com.cebedo.pmsys.service.SearchServiceImpl">
+    <beans:bean id="searchService" class="com.cebedo.pmsys.service.impl.SearchServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
@@ -415,7 +415,7 @@
     <beans:bean id="fieldDAO" class="com.cebedo.pmsys.dao.FieldDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="fieldService" class="com.cebedo.pmsys.service.FieldServiceImpl">
+    <beans:bean id="fieldService" class="com.cebedo.pmsys.service.impl.FieldServiceImpl">
         <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
@@ -426,7 +426,7 @@
     <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.dao.ProjectFileDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="projectFileService" class="com.cebedo.pmsys.service.ProjectFileServiceImpl">
+    <beans:bean id="projectFileService" class="com.cebedo.pmsys.service.impl.ProjectFileServiceImpl">
         <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
@@ -436,12 +436,12 @@
     <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.dao.SystemConfigurationDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.service.SystemConfigurationServiceImpl">
+    <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.service.impl.SystemConfigurationServiceImpl">
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
     <!-- Audit Log -->
-    <beans:bean id="auditLogService" class="com.cebedo.pmsys.service.AuditLogServiceImpl">
+    <beans:bean id="auditLogService" class="com.cebedo.pmsys.service.impl.AuditLogServiceImpl">
         <beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
     </beans:bean>
     
@@ -449,7 +449,7 @@
     <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.dao.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="systemUserService" class="com.cebedo.pmsys.service.SystemUserServiceImpl">
+    <beans:bean id="systemUserService" class="com.cebedo.pmsys.service.impl.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
@@ -461,7 +461,7 @@
     <beans:bean id="companyDAO" class="com.cebedo.pmsys.dao.CompanyDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="companyService" class="com.cebedo.pmsys.service.CompanyServiceImpl">
+    <beans:bean id="companyService" class="com.cebedo.pmsys.service.impl.CompanyServiceImpl">
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
@@ -469,7 +469,7 @@
     <beans:bean id="photoDAO" class="com.cebedo.pmsys.dao.PhotoDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="photoService" class="com.cebedo.pmsys.service.PhotoServiceImpl">
+    <beans:bean id="photoService" class="com.cebedo.pmsys.service.impl.PhotoServiceImpl">
         <beans:property name="photoDAO" ref="photoDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
@@ -486,7 +486,7 @@
  	<!-- *********************************************************** -->
  	<!-- *********************************************************** -->
  	<!-- Material -->
-    <beans:bean id="materialService" class="com.cebedo.pmsys.service.MaterialServiceImpl">
+    <beans:bean id="materialService" class="com.cebedo.pmsys.service.impl.MaterialServiceImpl">
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
         <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
@@ -496,8 +496,25 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
+    <!-- Material Category -->
+    <beans:bean id="materialCategoryService" class="com.cebedo.pmsys.service.impl.MaterialCategoryServiceImpl">
+        <beans:property name="materialCategoryValueRepo" ref="materialCategoryValueRepo"></beans:property>
+        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="materialCategoryValueRepo" class="com.cebedo.pmsys.repository.MaterialCategoryValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Units of Measure -->
+    <beans:bean id="unitService" class="com.cebedo.pmsys.service.impl.UnitServiceImpl">
+        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="unitValueRepo" class="com.cebedo.pmsys.repository.UnitValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
     <!-- Project Auxillary -->
-    <beans:bean id="projectAuxService" class="com.cebedo.pmsys.service.ProjectAuxServiceImpl">
+    <beans:bean id="projectAuxService" class="com.cebedo.pmsys.service.impl.ProjectAuxServiceImpl">
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="projectAuxValueRepo" class="com.cebedo.pmsys.repository.ProjectAuxValueRepo">
@@ -505,7 +522,7 @@
     </beans:bean>
     
     <!-- Delivery -->
-    <beans:bean id="deliveryService" class="com.cebedo.pmsys.service.DeliveryServiceImpl">
+    <beans:bean id="deliveryService" class="com.cebedo.pmsys.service.impl.DeliveryServiceImpl">
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
@@ -516,7 +533,7 @@
     </beans:bean>
     
     <!-- Pull-Out -->
-    <beans:bean id="pullOutService" class="com.cebedo.pmsys.service.PullOutServiceImpl">
+    <beans:bean id="pullOutService" class="com.cebedo.pmsys.service.impl.PullOutServiceImpl">
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
@@ -526,7 +543,7 @@
     </beans:bean>
     
     <!-- Formula -->
-    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.FormulaServiceImpl">
+    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.impl.FormulaServiceImpl">
         <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="formulaValueRepo" class="com.cebedo.pmsys.repository.FormulaValueRepo">
@@ -537,7 +554,7 @@
     <beans:bean id="notificationZSetRepo" class="com.cebedo.pmsys.repository.NotificationZSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="notificationService" class="com.cebedo.pmsys.service.NotificationServiceImpl">
+    <beans:bean id="notificationService" class="com.cebedo.pmsys.service.impl.NotificationServiceImpl">
         <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
     </beans:bean>
     
@@ -545,7 +562,7 @@
     <beans:bean id="conversationValueRepo" class="com.cebedo.pmsys.repository.ConversationValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="conversationService" class="com.cebedo.pmsys.service.ConversationServiceImpl">
+    <beans:bean id="conversationService" class="com.cebedo.pmsys.service.impl.ConversationServiceImpl">
         <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
     </beans:bean>
@@ -554,7 +571,7 @@
     <beans:bean id="messageZSetRepo" class="com.cebedo.pmsys.repository.MessageZSetRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="messageService" class="com.cebedo.pmsys.service.MessageServiceImpl">
+    <beans:bean id="messageService" class="com.cebedo.pmsys.service.impl.MessageServiceImpl">
         <beans:property name="messageZSetRepo" ref="messageZSetRepo"></beans:property>
         <beans:property name="conversationValueRepo" ref="conversationValueRepo"></beans:property>
     </beans:bean>
@@ -563,7 +580,7 @@
     <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.ProjectPayrollValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="projectPayrollService" class="com.cebedo.pmsys.service.ProjectPayrollServiceImpl"> 
+    <beans:bean id="projectPayrollService" class="com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl"> 
         <beans:property name="projectPayrollValueRepo" ref="projectPayrollValueRepo"></beans:property>
         <beans:property name="projectService" ref="projectService"></beans:property>
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
@@ -576,7 +593,7 @@
     <beans:bean id="attendanceValueRepo" class="com.cebedo.pmsys.repository.AttendanceValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    <beans:bean id="attendanceService" class="com.cebedo.pmsys.service.AttendanceServiceImpl"> 
+    <beans:bean id="attendanceService" class="com.cebedo.pmsys.service.impl.AttendanceServiceImpl"> 
         <beans:property name="attendanceValueRepo" ref="attendanceValueRepo"></beans:property>
         <beans:property name="projectService" ref="projectService"></beans:property>
     </beans:bean>

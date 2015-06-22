@@ -23,9 +23,18 @@ public class MaterialCategory implements IDomainObject {
     private Unit unit;
 
     /**
+     * Bean-backed form.
+     */
+    private String unitKey;
+
+    /**
      * Extension map.
      */
     private Map<String, Object> extMap;
+
+    public MaterialCategory(Company company2) {
+	setCompany(company2);
+    }
 
     public Map<String, Object> getExtMap() {
 	return extMap;
@@ -71,6 +80,19 @@ public class MaterialCategory implements IDomainObject {
 
     public void setUnit(Unit unit) {
 	this.unit = unit;
+    }
+
+    public static String constructPattern(Company company2) {
+	return String.format(RedisKeyRegistry.KEY_MATERIAL_CATEGORY,
+		company2.getId(), "*");
+    }
+
+    public String getUnitKey() {
+	return unitKey;
+    }
+
+    public void setUnitKey(String unitKey) {
+	this.unitKey = unitKey;
     }
 
 }

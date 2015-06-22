@@ -12,6 +12,9 @@ public abstract class RedisConstants {
     public static final String OBJECT_DELIVERY = "delivery";
     public static final String OBJECT_PROJECT_AUX = "projectAux";
     public static final String OBJECT_PULL_OUT = "pullout";
+    public static final String OBJECT_UNIT = "unit";
+    public static final String OBJECT_MATERIAL_CATEGORY = "materialcategory";
+    public static final String OBJECT_MATERIAL_CATEGORY_DISPLAY = "material category";
 
     public static final String JSP_DELIVERY_EDIT = OBJECT_DELIVERY
 	    + "/deliveryEdit";
@@ -25,5 +28,11 @@ public abstract class RedisConstants {
 	    + "/materialPullout";
     public static final String JSP_ATTENDANCE_LIST = OBJECT_ATTENDANCE
 	    + "/attendanceList";
+    public static final String JSP_UNIT_LIST = OBJECT_UNIT + "/unitList";
+    public static final String JSP_UNIT_EDIT = OBJECT_UNIT + "/unitEdit";
+    public static final String JSP_MATERIAL_CATEGORY_LIST = OBJECT_MATERIAL_CATEGORY
+	    + "/materialCategoryList";
+    public static final String JSP_MATERIAL_CATEGORY_EDIT = OBJECT_MATERIAL_CATEGORY
+	    + "/materialCategoryEdit";
 
 }

@@ -140,7 +140,7 @@ $(document).ready(function() {
 		                </a>
 		            </li>
 		            <li>
-		            	<c:url var="urlUnitsList" value="/units/list/"/>
+		            	<c:url var="urlUnitsList" value="/unit/list"/>
 		                <a href="${urlUnitsList}">
 		                    <i class="fa fa-cube"></i> <span>Units of Measure</span>
 		                </a>

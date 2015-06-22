@@ -27,6 +27,14 @@ public class Unit implements IDomainObject {
      */
     private Map<String, Object> extMap;
 
+    public Unit() {
+	;
+    }
+
+    public Unit(Company company2) {
+	setCompany(company2);
+    }
+
     public Map<String, Object> getExtMap() {
 	return extMap;
     }
@@ -63,6 +71,18 @@ public class Unit implements IDomainObject {
 
     public void setDetails(String details) {
 	this.details = details;
+    }
+
+    public static String constructPattern(Company company2) {
+	return String.format(RedisKeyRegistry.KEY_UNITS, company2.getId(), "*");
+    }
+
+    public Company getCompany() {
+	return company;
+    }
+
+    public void setCompany(Company company) {
+	this.company = company;
     }
 
 }
