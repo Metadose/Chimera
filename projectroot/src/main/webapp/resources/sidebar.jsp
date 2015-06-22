@@ -100,7 +100,7 @@ $(document).ready(function() {
             <li>
             	<c:url var="urlProjectList" value="/project/list/"/>
                 <a href="${urlProjectList}">
-                    <i class="fa fa-folder"></i> <span>Projects</span>
+                    <i class="fa fa-building"></i> <span>Projects</span>
                 </a>
             </li>
             </sec:authorize>
@@ -108,7 +108,7 @@ $(document).ready(function() {
             <li>
             	<c:url var="urlStaffList" value="/staff/list/"/>
                 <a href="${urlStaffList}">
-                    <i class="fa fa-user"></i> <span>Staff</span>
+                    <i class="fa fa-user"></i> <span>Company Staff</span>
                 </a>
             </li>
             </sec:authorize>
@@ -116,45 +116,38 @@ $(document).ready(function() {
             <li>
             	<c:url var="urlSystemUserList" value="/systemuser/list/"/>
                 <a href="${urlSystemUserList}">
-                    <i class="fa fa-male"></i> <span>Users</span>
+                    <i class="fa fa-male"></i> <span>User Accounts</span>
                 </a>
             </li>
             </sec:authorize>
-<%--             <sec:authorize access="hasRole('ACCESS_TEAM')"> --%>
-<!--             <li> -->
-<%--             	<c:url var="urlTeamList" value="/team/list/"/> --%>
-<%--                 <a href="${urlTeamList}"> --%>
-<!--                     <i class="fa fa-users"></i> <span>Teams</span> -->
-<!--                 </a>  -->
-<!--             </li> -->
-<%--             </sec:authorize> --%>
-            <sec:authorize access="hasRole('ACCESS_TASK')">
-            <li>
-            	<c:url var="urlTaskList" value="/task/list/"/>
-                <a href="${urlTaskList}">
-                    <i class="fa fa-tasks"></i> <span>Tasks</span>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>Company Settings</span>
+                    <i class="fa fa-angle-left pull-right"></i>
                 </a>
+                <ul class="treeview-menu">
+                	<li>
+		            	<c:url var="urlFormulaList" value="/materialcategory/list/"/>
+		                <a href="${urlFormulaList}">
+		                    <i class="fa fa-wrench"></i> <span>Material Categories</span>
+		                </a>
+		            </li>
+                    <li>
+		            	<c:url var="urlFormulaList" value="/formula/list/"/>
+		                <a href="${urlFormulaList}">
+		                    <i class="fa fa-connectdevelop"></i> <span>Math Formulas</span>
+		                </a>
+		            </li>
+		            <li>
+		            	<c:url var="urlUnitsList" value="/units/list/"/>
+		                <a href="${urlUnitsList}">
+		                    <i class="fa fa-cube"></i> <span>Units of Measure</span>
+		                </a>
+		            </li>
+                </ul>
             </li>
-            </sec:authorize>
-            <li>
-            	<c:url var="urlFormulaList" value="/formula/list/"/>
-                <a href="${urlFormulaList}">
-                    <i class="fa fa-connectdevelop"></i> <span>Formulas</span>
-                </a>
-            </li>
-<%--             <sec:authorize access="hasRole('ACCESS_PROJECTFILE')"> --%>
-<!--             <li> -->
-<%--             	<c:url var="urlProjFileList" value="/projectfile/list/"/> --%>
-<%--                 <a href="${urlProjFileList}"> --%>
-<!--                     <i class="fa fa-file"></i> <span>Files</span> -->
-<!--                 </a> -->
-<!--             </li> -->
-<%--             </sec:authorize> --%>
-<!--             <li> -->
-<!--                 <a href="pages/calendar.html"> -->
-<!--                     <i class="fa fa-calendar"></i> <span>Calendar</span> -->
-<!--                 </a> -->
-<!--             </li> -->
+            
             <c:if test="${authUser.superAdmin == true}">
             <li>
             	<c:url var="urlFieldList" value="/field/list/"/>
