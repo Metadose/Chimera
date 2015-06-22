@@ -208,7 +208,7 @@ public class ProjectPayrollComputerServiceImpl implements
 		: this.overallBreakdownCountMap.get(status);
 	this.overallBreakdownCountMap.put(status, oldValue + intValueOfCount);
 
-	return "(" + intValueOfCount + ")";
+	return intValueOfCount == 0 ? "-" : "(" + intValueOfCount + ")";
     }
 
     /**
@@ -233,6 +233,9 @@ public class ProjectPayrollComputerServiceImpl implements
 		: this.overallBreakdownWageMap.get(status);
 	this.overallBreakdownWageMap.put(status, oldValue + wage);
 
+	if (wage == 0.0) {
+	    return "-";
+	}
 	return this.formatter.format(wage);
     }
 
@@ -410,11 +413,14 @@ public class ProjectPayrollComputerServiceImpl implements
     }
 
     private String getOverallBreakdownWageStr(AttendanceStatus status) {
-	return this.formatter.format(this.overallBreakdownWageMap.get(status));
+	return this.overallBreakdownWageMap.get(status) == 0.0 ? "-"
+		: this.formatter.format(this.overallBreakdownWageMap
+			.get(status));
     }
 
     private String getOverallBreakdownCountStr(AttendanceStatus status) {
-	return "(" + this.overallBreakdownCountMap.get(status) + ")";
+	return this.overallBreakdownCountMap.get(status) == 0 ? "-" : "("
+		+ this.overallBreakdownCountMap.get(status) + ")";
     }
 
     @Transactional

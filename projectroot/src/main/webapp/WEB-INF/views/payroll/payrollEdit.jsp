@@ -106,7 +106,7 @@
 				                                            	<form:option class="form-control" value="${manager.user.id}" label="${manager.getFullName()}"/>
 				                                            	</c:forEach>
 				                                            </form:select>
-				                                            <br/>
+				                                            <p class="help-block">Set one of the project managers as the payroll approver</p>
 				                                            
 				                                            <!-- List of all in PayrollStatus enum -->
 				                                            <label>Status</label>
@@ -115,13 +115,17 @@
 				                                            	<form:option class="form-control" value="${payrollStatus.id()}" label="${payrollStatus.label()}"/>
 				                                            	</c:forEach>
 				                                            </form:select>
-				                                            <br/>
+				                                            <p class="help-block">Set the status of this payroll</p>
 				                                            
 				                                            <!-- Date pickers -->
 				                                            <label>Start Date</label>
-				                                            <form:input type="text" class="form-control date-picker" path="startDate" value="${startDate}"/><br/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/01" class="form-control date-picker" path="startDate" value="${startDate}"/>
+				                                            <p class="help-block">Choose the starting coverage date of this payroll</p>
+				                                            
 				                                            <label>End Date</label>
-				                                            <form:input type="text" class="form-control date-picker" path="endDate" value="${endDate}"/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/05" class="form-control date-picker" path="endDate" value="${endDate}"/>
+				                                            <p class="help-block">Choose the end date of this payroll</p>
+				                                            
 				                                        </div>
 				                                        <c:if test="${projectPayroll.saved}">
 	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
@@ -141,9 +145,8 @@
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                    <p>This feature can be used to manually add Staff members that are not part of this Project.</p>
 									                </div>
-                   									<p><i>This feature can be used to manually add Staff members that are not part of this Project.</i></p>
 			                                        <table>
 				                                    <form:form modelAttribute="payrollIncludeStaff"
 														id="detailsForm"
@@ -183,7 +186,7 @@
                    									<label>All</label>&nbsp;
 													<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 													<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
-													<br/>
+													<p class="help-block">Check or uncheck all staff members in the list below</p>
 													<br/>
 													<c:set value="" var="alreadyRendered"/>
                    									<form:form modelAttribute="projectPayroll"
@@ -197,7 +200,8 @@
 															<label>Managers</label>&nbsp;
 															<a href="#" onclick="checkAll('manager-checkboxes')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('manager-checkboxes')" class="general-link">Uncheck All</a>
-															<br/>
+															<p class="help-block">Check or uncheck all managers</p>
+															
 															<c:choose>
 															<c:when test="${empty managerList}">
 															<i>No manager assigned in project.</i><br/><br/>
@@ -242,16 +246,15 @@
 															
 															
 
-
 															<label>Staff</label>
 															
 															<c:if test="${!empty staffList}">
 															&nbsp;
 															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
+															<p class="help-block">Check or uncheck all other staff members</p>
 															</c:if>
 
-															<br/>
 															<c:choose>
 															<c:when test="${empty staffList}">
 															<div class="callout callout-warning">
@@ -260,7 +263,6 @@
 															</c:when>
 															
 															<c:when test="${!empty staffList}">
-															<br/><br/>
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>

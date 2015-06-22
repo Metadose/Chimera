@@ -72,25 +72,43 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Transactional
     public String setAndGetResultJSON(Project proj, Date startDate,
 	    Date endDate, ProjectPayroll projectPayroll) {
+
 	String payrollJSON = getPayrollJSON(proj, startDate, endDate,
 		projectPayroll);
+
+	// Get the resulting state of the computation.
+	// And save it.
+	PayrollComputationResult payrollComputationResult = this.projectPayrollComputerService
+		.getPayrollResult();
+	projectPayroll.setPayrollComputationResult(payrollComputationResult);
 	projectPayroll.setLastComputed(new Date(System.currentTimeMillis()));
 	projectPayroll.setPayrollJSON(payrollJSON);
-	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Add the total result to the
 	// grand total of the whole project.
-	PayrollComputationResult payrollComputationResult = projectPayroll
-		.getPayrollComputationResult();
 	ProjectAux projectAux = this.projectAuxService.get(proj);
-	double payrollResult = payrollComputationResult
-		.getOverallTotalOfStaff();
+
+	// Revert back to old grand total.
+	// Old payroll object.
+	ProjectPayroll oldPayroll = this.projectPayrollValueRepo
+		.get(projectPayroll.getKey());
 	double oldGrandTotal = projectAux.getGrandTotalPayroll();
+	double oldPayrollResult = oldPayroll.getPayrollComputationResult() == null ? 0
+		: oldPayroll.getPayrollComputationResult()
+			.getOverallTotalOfStaff();
+	double revertedGrandTotal = oldGrandTotal - oldPayrollResult;
+
+	// Get new payroll result.
+	// Construct new grand total.
+	double newPayrollResult = payrollComputationResult
+		.getOverallTotalOfStaff();
+	double newGrandTotal = revertedGrandTotal + newPayrollResult;
 
 	// The new grandtotal.
 	// Then save it.
-	projectAux.setGrandTotalPayroll(oldGrandTotal + payrollResult);
+	projectAux.setGrandTotalPayroll(newGrandTotal);
 	this.projectAuxService.set(projectAux);
+	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Return the result earlier.
 	return payrollJSON;
@@ -265,13 +283,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Do the computation.
 	this.projectPayrollComputerService.compute(startDate, endDate,
 		projectPayroll);
-
-	// Get the resulting state of the computation.
-	// And save it.
-	PayrollComputationResult payrollComputationResult = this.projectPayrollComputerService
-		.getPayrollResult();
-	projectPayroll.setPayrollComputationResult(payrollComputationResult);
-	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Return the JSON equivalent of the result.
 	return this.projectPayrollComputerService.getPayrollJSONResult();

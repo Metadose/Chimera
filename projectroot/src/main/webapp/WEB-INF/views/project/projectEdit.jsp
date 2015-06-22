@@ -66,9 +66,8 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
-		                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
+		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
-		                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 	</c:when>
@@ -80,11 +79,15 @@
                    						<div class="col-md-6">
                    							<div class="box box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
+                   									<h3 class="box-title">Basic</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                    <p>
+									                    In this section, we can examine the basic details of the project.<br/>
+									                    Name, Status, Location, and Notes for quick remarks.<br/>
+									                    A photo of the project site may also be uploaded in the section below.
+									                    </p>
 									                </div>
                    									<c:choose>
                                 						<c:when test="${project.id != 0}">
@@ -228,7 +231,9 @@
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                    <p>
+									                    This feature can be utilized to store extra fields.<br/>
+									                    </p>
 									                </div>
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
@@ -303,299 +308,364 @@
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
                                 <div class="tab-pane" id="tab_timeline">
-                                	<div class="row">
-                   						<div class="col-xs-12">
-		                                	<div class="box box-default">
-	              								<div class="box-header">
-	              									<h3 class="box-title">Timeline</h3>
-	              								</div>
-				                                <div class="box-body">
-				                                <div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
-								                <c:if test="${!empty project.assignedTasks}">
-				                                <table>
-               										<tr>
-           											<td>Legend:
-           											</td>
-           											<td>&nbsp;</td>
-           											<td>
-													<c:forEach items="${ganttElemTypeList}" var="ganttElem">
-														<c:set value="" var="border"></c:set>
-														<c:if test="${ganttElem.className().contains(\"btn-default\")}">
-															<c:set value="border: 1px solid #999999;" var="border"></c:set>
-														</c:if>
-														<span class="label ${ganttElem.className()}"
-														style="
-														color: ${ganttElem.color()};
-														background-color: ${ganttElem.backgroundColor()};
-														${border};
-														">
-														${ganttElem.label()}
-														</span>
-														&nbsp;
-													</c:forEach>
-           											</td>
-               										</tr>
-               									</table>
-               									<br/>
-               									</c:if>
-				                                <c:choose>
-				                                	<c:when test="${!empty project.assignedTasks}">
-						                                <div id="gantt-chart" class="gantt-holder">
-						                                </div><!-- /.box-body -->
-				                                	</c:when>
-				                                	<c:when test="${empty project.assignedTasks}">
-				                                		<div id="gantt-chart" class="gantt-holder">
-				                                			<div class="callout callout-warning">
-											                    <p>No tasks in this project.</p>
-											                </div>
-						                                </div><!-- /.box-body -->
-				                                	</c:when>
-				                                </c:choose>
-				                                </div>
+                                	
+                                	<div class="nav-tabs-custom">
+									<ul class="nav nav-tabs" id="subtabs-timeline">
+										<li class="active"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
+										<li><a href="#subtab_milestones" data-toggle="tab">Milestones</a></li>
+										<li><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
+									</ul>
+									<div class="tab-content">
+									
+										<div class="tab-pane active" id="subtab_chart">
+											<div class="row">
+		                   						<div class="col-xs-12">
+				                                	<div class="box box-default">
+			              								<div class="box-header">
+			              									<h3 class="box-title">Timeline</h3>
+			              								</div>
+						                                <div class="box-body">
+						                                <div class="callout callout-info callout-cebedo">
+										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+										                </div>
+										                <c:if test="${!empty project.assignedTasks}">
+						                                <table>
+		               										<tr>
+		           											<td>Legend:
+		           											</td>
+		           											<td>&nbsp;</td>
+		           											<td>
+															<c:forEach items="${ganttElemTypeList}" var="ganttElem">
+																<c:set value="" var="border"></c:set>
+																<c:if test="${ganttElem.className().contains(\"btn-default\")}">
+																	<c:set value="border: 1px solid #999999;" var="border"></c:set>
+																</c:if>
+																<span class="label ${ganttElem.className()}"
+																style="
+																color: ${ganttElem.color()};
+																background-color: ${ganttElem.backgroundColor()};
+																${border};
+																">
+																${ganttElem.label()}
+																</span>
+																&nbsp;
+															</c:forEach>
+		           											</td>
+		               										</tr>
+		               									</table>
+		               									<br/>
+		               									</c:if>
+						                                <c:choose>
+						                                	<c:when test="${!empty project.assignedTasks}">
+								                                <div id="gantt-chart" class="gantt-holder">
+								                                </div><!-- /.box-body -->
+						                                	</c:when>
+						                                	<c:when test="${empty project.assignedTasks}">
+						                                		<div id="gantt-chart" class="gantt-holder">
+						                                			<div class="callout callout-warning">
+													                    <p>No tasks in this project.</p>
+													                </div>
+								                                </div><!-- /.box-body -->
+						                                	</c:when>
+						                                </c:choose>
+						                                </div>
+						                            </div>
+					                            </div>
 				                            </div>
-			                            </div>
-		                            </div>
-                                	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Milestones</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
+										</div>
+										
+										<div class="tab-pane" id="subtab_milestones">
+											<div class="row">
+		                   						<div class="col-md-6">
+		                   							<div class="box box-default">
+		                   								<div class="box-header">
+		                   									<h3 class="box-title">Summary</h3>
+		                   								</div>
+		                   								<div class="box-body">
+		                   									<div class="callout callout-info callout-cebedo">
+											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+											                </div>
+		                   									<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
+															<b>Total Milestones:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
+															<b>Breakdown</b> of Total Milestones by Milestone Status:<br/><br/>
+															<table id="milestone-breakdown-table" class="table table-bordered table-striped">
+															<thead>
+					                                    		<tr>
+						                                            <th>Milestone Status</th>
+						                                            <th>Count</th>
+						                                        </tr>
+					                                    	</thead>
+															<tbody>
+																<tr>
+																	<c:set value="${idToMilestoneMap.get(\"NOT YET STARTED\").css()}" var="css"></c:set>
+																	<td><span class="label ${css}">${idToMilestoneMap.get("NOT YET STARTED").label()}</span></td>
+																	<td>${timelineSummaryMap.get("Total Milestones (Not Yet Started)")}</td>
+																</tr>
+																<tr>
+																	<c:set value="${idToMilestoneMap.get(\"ONGOING\").css()}" var="css"></c:set>
+																	<td><span class="label ${css}">${idToMilestoneMap.get("ONGOING")}</span></td>
+																	<td>${timelineSummaryMap.get("Total Milestones (Ongoing)")}</td>
+																</tr>
+																<tr>
+																	<c:set value="${idToMilestoneMap.get(\"DONE\").css()}" var="css"></c:set>
+																	<td><span class="label ${css}">${idToMilestoneMap.get("DONE")}</span></td>
+																	<td>${timelineSummaryMap.get("Total Milestones (Done)")}</td>
+																</tr>
+															</tbody>
+															</table>
+		                   								</div>
+	                   								</div>
+	                   							</div>
+	                   							<div class="col-md-6">
+		                   							<div class="box box-default">
+		                   								<div class="box-header">
+		                   									<h3 class="box-title">Graph</h3>
+		                   								</div>
+		                   								<div class="box-body">
+		                   								<div class="callout callout-info callout-cebedo">
+										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+										                </div>
+										                Graph sa summary sa mga milestones
+		                   								</div>
+	                   								</div>
+	                   							</div>
+	                   						</div>
+											<div class="row">
+		                   						<div class="col-xs-12">
+		                   							<div class="box box-default">
+		                   								<div class="box-header">
+		                   									<h3 class="box-title">Milestones</h3>
+		                   								</div>
+		                   								<div class="box-body">
+		                   									<div class="callout callout-info callout-cebedo">
+											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+											                </div>
+		                   									<button class="btn btn-cebedo-create btn-flat btn-sm" id="createMilestone">Create Milestone</button>
+		                   									<br/>
+		                   									<br/>
+		                   									<table id="milestones-table" class="table table-bordered table-striped">
+						                                    	<thead>
+						                                            <tr>
+			              											<th>&nbsp;</th>
+			              											<th>Milestone</th>
+			              											<th>Status</th>
+			              											<th>New Task</th>
+			              											<th>Ongoing Task</th>
+			              											<th>Done Task</th>
+			              											</tr>
+				                                        		</thead>
+							                                    <tbody>
+																	<c:forEach items="${milestoneSummary}" var="milestoneMap">
+																	<c:set value="${milestoneMap.key}" var="milestone"/>
+								                                	<c:set value="${milestoneMap.value}" var="msCount"/>
+																	<tr>
+																		<td>
+																		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+																		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+																		</td>
+																		<td>${milestone.name}</td>
+																		<td>
+																		<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
+																		<span class="label ${css}">${msCount.get("Status")}</span>
+																		</td>
+																		<td>${msCount.get("NOT YET STARTED")}</td>
+																		<td>${msCount.get("ONGOING")}</td>
+																		<td>${msCount.get("DONE")}</td>
+																	</tr>
+																	</c:forEach>
+																</tbody>
+							                                </table>
+		                   								</div>
+		                   							</div>
+		                   						</div>
+		              						</div>
+										</div>
+										
+										<div class="tab-pane" id="subtab_tasks">
+											<div class="row">
+	                   						<div class="col-md-6">
+	                   							<div class="box box-default">
+	                   								<div class="box-header">
+	                   									<h3 class="box-title">Summary</h3>
+	                   								</div>
+	                   								<div class="box-body">
+	                   								<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<button class="btn btn-cebedo-create btn-flat btn-sm" id="createMilestone">Create Milestone</button>
-                   									<br/>
-                   									<br/>
-                   									<table id="milestones-table" class="table table-bordered table-striped">
-				                                    	<thead>
-				                                            <tr>
-	              											<th>&nbsp;</th>
-	              											<th>Milestone</th>
-	              											<th>Status</th>
-	              											<th>New Task</th>
-	              											<th>Ongoing Task</th>
-	              											<th>Done Task</th>
-	              											</tr>
-		                                        		</thead>
-					                                    <tbody>
-															<c:forEach items="${milestoneSummary}" var="milestoneMap">
-															<c:set value="${milestoneMap.key}" var="milestone"/>
-						                                	<c:set value="${milestoneMap.value}" var="msCount"/>
-															<tr>
-																<td>
-																<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-																</td>
-																<td>${milestone.name}</td>
-																<td>
-																<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
-																<span class="label ${css}">${msCount.get("Status")}</span>
-																</td>
-																<td>${msCount.get("NOT YET STARTED")}</td>
-																<td>${msCount.get("ONGOING")}</td>
-																<td>${msCount.get("DONE")}</td>
-															</tr>
-															</c:forEach>
-														</tbody>
-					                                </table>
-                   									<br/>
-													<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
-													<b>Total Milestones:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
-													<b>Breakdown</b> of Total Milestones by Milestone Status:<br/><br/>
-													<table id="milestone-breakdown-table" class="table table-bordered table-striped">
+									                
+	                   								<b>Total Tasks:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
+	                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
+	                   								
+													<table id="task-status-table" class="table table-bordered table-striped">
 													<thead>
 			                                    		<tr>
-				                                            <th>Milestone Status</th>
+				                                            <th>Task Status</th>
 				                                            <th>Count</th>
 				                                        </tr>
 			                                    	</thead>
 													<tbody>
+													<c:forEach items="${taskStatusMap}" var="statusEntry">
+													<c:set value="${statusEntry.key}" var="entryKey"/>
+													<c:set value="${statusEntry.value}" var="entryValue"/>
 														<tr>
-															<c:set value="${idToMilestoneMap.get(\"NOT YET STARTED\").css()}" var="css"></c:set>
-															<td><span class="label ${css}">${idToMilestoneMap.get("NOT YET STARTED").label()}</span></td>
-															<td>${timelineSummaryMap.get("Total Milestones (Not Yet Started)")}</td>
+															<td>
+					                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+															</td>
+															<td>
+																${entryValue}
+															</td>
 														</tr>
-														<tr>
-															<c:set value="${idToMilestoneMap.get(\"ONGOING\").css()}" var="css"></c:set>
-															<td><span class="label ${css}">${idToMilestoneMap.get("ONGOING")}</span></td>
-															<td>${timelineSummaryMap.get("Total Milestones (Ongoing)")}</td>
-														</tr>
-														<tr>
-															<c:set value="${idToMilestoneMap.get(\"DONE\").css()}" var="css"></c:set>
-															<td><span class="label ${css}">${idToMilestoneMap.get("DONE")}</span></td>
-															<td>${timelineSummaryMap.get("Total Milestones (Done)")}</td>
-														</tr>
+													</c:forEach>
 													</tbody>
 													</table>
-													
-                   								</div>
-                   							</div>
-                   						</div>
-                   						<div class="col-md-6">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Summary of Tasks</h3>
-                   								</div>
-                   								<div class="box-body">
-                   								<div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
-								                
-                   								<b>Total Tasks:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
-                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
-                   								
-												<table id="task-status-table" class="table table-bordered table-striped">
-												<thead>
-		                                    		<tr>
-			                                            <th>Task Status</th>
-			                                            <th>Count</th>
-			                                        </tr>
-		                                    	</thead>
-												<tbody>
-												<c:forEach items="${taskStatusMap}" var="statusEntry">
-												<c:set value="${statusEntry.key}" var="entryKey"/>
-												<c:set value="${statusEntry.value}" var="entryValue"/>
-													<tr>
-														<td>
-				                                            <span class="label ${entryKey.css()}">${entryKey}</span>
-														</td>
-														<td>
-															${entryValue}
-														</td>
-													</tr>
-												</c:forEach>
-												</tbody>
-												</table>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
-		                            <div class="row">
-                   						<div class="col-xs-12">
-                   							<div class="box box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Tasks</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
+	                   								</div>
+	                   							</div>
+	                   						</div>
+	                   						<div class="col-md-6">
+	                   							<div class="box box-default">
+	                   								<div class="box-header">
+	                   									<h3 class="box-title">Graph</h3>
+	                   								</div>
+	                   								<div class="box-body">
+	                   								<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-			                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-					                                	<table>
-					                                    	<tr>
-					                                    		<td>
-					                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
-					                                    			<a href="${urlAddTask}">
-							                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Task</button>
-					                                    			</a>
-					                                    		</td>
-					                                    		<c:if test="${!empty project.assignedTasks}">
-					                                    		<td>
-					                                    			&nbsp;
-					                                    		</td>
-					                                    		<td>
-					                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
-					                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-			                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-			               											</form>
-					                                    		</td>
-					                                    		</c:if>
-					                                    	</tr>
-					                                    </table><br/>
-			                                    		</sec:authorize>
-					                                    <table id="tasks-table" class="table table-bordered table-striped">
-					                                    	<thead>
-					                                            <tr>
-						                                        	<th>&nbsp;</th>
-						                                            <th>Status</th>
-						                                            <th>Start</th>
-						                                            <th>End</th>
-						                                            <th>Duration</th>
-						                                            <th>Title</th>
-						                                            <th>Content</th>
-						                                            <th>Staff</th>
-						                                        </tr>
-			                                        		</thead>
-					                                        <tbody>
-						                                        <c:set var="taskList" value="${project.assignedTasks}"/>
-							                                	<c:if test="${!empty taskList}">
-					                                        		<c:forEach items="${taskList}" var="task">
-					                                        			<tr>
-					                                        				<td>
-					                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-					                                        					<div class="btn-group">
-										                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-										                                                Mark As&nbsp;
-										                                                <span class="caret"></span>
-										                                            </button>
-										                                            <ul class="dropdown-menu">
-										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
-										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
-										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
-										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
-										                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
-			<!-- 							                                                <li class="divider"></li> -->
-			<!-- 							                                                <li><a href="#">Separated link</a></li> -->
-										                                            </ul>
-										                                        </div>
-										                                        </sec:authorize>
-										                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
-										                                        <a href="${urlViewTask}">
-								                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-										                                        </a>
-								                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-								                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
-								                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-								                                            	<input type="hidden" name="task_id" value="${task.id}"/>
-								                                            	<input type="hidden" name="project_id" value="${project.id}"/>
-								                                            	<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-								                                            	</form> 
-								                                            	</sec:authorize>
-					                                        				</td>
-								                                            <td style="vertical-align: middle;">
-									                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
-																				<span class="label ${css}">${task.getStatusEnum()}</span>
-								                                            </td>
-								                                            <td>${task.dateStart}</td>
-								                                            <fmt:formatDate pattern="yyyy-MM-dd" value="${task.getEndDate()}" var="taskEndDate"/>
-								                                            <td>${taskEndDate}</td>
-								                                            <td>${task.duration}</td>
-								                                            <td>
-								                                            ${task.title}
-								                                            </td>
-								                                            <td>
-								                                            ${task.content}
-								                                            </td>
-								                                            <td>
-								                                            	<c:choose>
-								                                            		<c:when test="${!empty task.staff}">
-								                                            			<c:forEach items="${task.staff}" var="taskStaff">
-								                                            			<c:set var="taskStaffName" value="${taskStaff.getFullName()}"/>
-								                                            			<a class="general-link" href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
-										                                            	${taskStaffName}
-										                                            	</a>
-										                                            	<br/><br/>
-								                                            			</c:forEach>
-								                                            		</c:when>
-								                                            		<c:when test="${empty task.staff}">
-								                                            			No staff assigned.
-								                                            		</c:when>
-								                                            	</c:choose>					                                            
-								                                            </td>
-								                                        </tr>
-					                                        		</c:forEach>
-				                                        		</c:if>
-						                                    </tbody>
-						                                </table>
-					                                </div><!-- /.box-body -->
-					                            </div>
+									                
+	                   								Pie chart sa division sa summary (awa sa left side)
+	                   								
+	                   								</div>
+	                   							</div>
+	                   						</div>
+	              						</div>
+	              						<div class="row">
+	                   						<div class="col-xs-12">
+	                   							<div class="box box-default">
+	                   								<div class="box-header">
+	                   									<h3 class="box-title">Tasks</h3>
+	                   								</div>
+	                   								<div class="box-body">
+	                   									<div class="callout callout-info callout-cebedo">
+										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+										                </div>
+				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+						                                	<table>
+						                                    	<tr>
+						                                    		<td>
+						                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
+						                                    			<a href="${urlAddTask}">
+								                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Task</button>
+						                                    			</a>
+						                                    		</td>
+						                                    		<c:if test="${!empty project.assignedTasks}">
+						                                    		<td>
+						                                    			&nbsp;
+						                                    		</td>
+						                                    		<td>
+						                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
+						                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
+				                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
+				               											</form>
+						                                    		</td>
+						                                    		</c:if>
+						                                    	</tr>
+						                                    </table><br/>
+				                                    		</sec:authorize>
+						                                    <table id="tasks-table" class="table table-bordered table-striped">
+						                                    	<thead>
+						                                            <tr>
+							                                        	<th>&nbsp;</th>
+							                                            <th>Status</th>
+							                                            <th>Start</th>
+							                                            <th>End</th>
+							                                            <th>Duration</th>
+							                                            <th>Title</th>
+							                                            <th>Content</th>
+							                                            <th>Staff</th>
+							                                        </tr>
+				                                        		</thead>
+						                                        <tbody>
+							                                        <c:set var="taskList" value="${project.assignedTasks}"/>
+								                                	<c:if test="${!empty taskList}">
+						                                        		<c:forEach items="${taskList}" var="task">
+						                                        			<tr>
+						                                        				<td>
+						                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+						                                        					<div class="btn-group">
+											                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+											                                                Mark As&nbsp;
+											                                                <span class="caret"></span>
+											                                            </button>
+											                                            <ul class="dropdown-menu">
+											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
+											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
+											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
+											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
+											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
+				<!-- 							                                                <li class="divider"></li> -->
+				<!-- 							                                                <li><a href="#">Separated link</a></li> -->
+											                                            </ul>
+											                                        </div>
+											                                        </sec:authorize>
+											                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
+											                                        <a href="${urlViewTask}">
+									                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+											                                        </a>
+									                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+									                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
+									                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+									                                            	<input type="hidden" name="task_id" value="${task.id}"/>
+									                                            	<input type="hidden" name="project_id" value="${project.id}"/>
+									                                            	<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
+									                                            	</form> 
+									                                            	</sec:authorize>
+						                                        				</td>
+									                                            <td style="vertical-align: middle;">
+										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
+																					<span class="label ${css}">${task.getStatusEnum()}</span>
+									                                            </td>
+									                                            <td>${task.dateStart}</td>
+									                                            <fmt:formatDate pattern="yyyy-MM-dd" value="${task.getEndDate()}" var="taskEndDate"/>
+									                                            <td>${taskEndDate}</td>
+									                                            <td>${task.duration}</td>
+									                                            <td>
+									                                            ${task.title}
+									                                            </td>
+									                                            <td>
+									                                            ${task.content}
+									                                            </td>
+									                                            <td>
+									                                            	<c:choose>
+									                                            		<c:when test="${!empty task.staff}">
+									                                            			<c:forEach items="${task.staff}" var="taskStaff">
+									                                            			<c:set var="taskStaffName" value="${taskStaff.getFullName()}"/>
+									                                            			<a class="general-link" href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
+											                                            	${taskStaffName}
+											                                            	</a>
+											                                            	<br/><br/>
+									                                            			</c:forEach>
+									                                            		</c:when>
+									                                            		<c:when test="${empty task.staff}">
+									                                            			No staff assigned.
+									                                            		</c:when>
+									                                            	</c:choose>					                                            
+									                                            </td>
+									                                        </tr>
+						                                        		</c:forEach>
+					                                        		</c:if>
+							                                    </tbody>
+							                                </table>
+						                                </div><!-- /.box-body -->
+						                            </div>
+					                           	</div>
 				                           	</div>
-			                           	</div>
+										</div>
+									</div>
+									</div>
+                                
+                                	
+                                	
+		                            
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_calendar">
                                	<div class="row">
@@ -724,194 +794,239 @@
                						</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_inventory">
-                                	<div class="row">
-		                            <div class="col-md-6">
-               							<div class="box box-default">
-               								<div class="box-header">
-               									<h3 class="box-title">Deliveries</h3>
-               								</div>
-               								<div class="box-body">
-               									<div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
-										  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
-		                                  		<a href="${urlCreateDelivery}">
-		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
-		                                  		</a>
-		                                  		<br/>
-		                                  		<br/>
-			                                    <table id="delivery-table" class="table table-bordered table-striped">
-			                                    	<thead>
-			                                            <tr>
-			                                            	<th>&nbsp;</th>
-			                                                <th>Date and Time</th>
-			                                                <th>Delivery</th>
-			                                                <th>Description</th>
-			                                                <th>Materials Cost</th>
-			                                            </tr>
-	                                        		</thead>
-			                                        <tbody>
-				                                		<c:forEach items="${deliveryList}" var="deliveryRow">
-														<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${deliveryRow.datetime}" var="deliveryDateTime"/>
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlEditDelivery" value="/project/edit/delivery/${deliveryRow.getKey()}-end"/>
-			                                            			<a href="${urlEditDelivery}">
-							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-			                                            			</a>
-								                                    <c:url value="/project/delete/delivery/${deliveryRow.getKey()}-end" var="urlDeleteDelivery"/>
-								                                    <a href="${urlDeleteDelivery}">
-	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-								                                    </a>
-																</center>
-															</td>
-															<td>${deliveryDateTime}</td>
-															<td>${deliveryRow.name}</td>
-															<td>${deliveryRow.description}</td>
-															<td align="right">${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
-			                                            </tr>
-		                                            	</c:forEach>
-				                                    </tbody>
-				                                </table>
-			                                </div><!-- /.box-body -->
-               							</div>
-               						</div>
-               						<div class="col-md-6">
-               							<div class="box box-default">
-               								<div class="box-header">
-               									<h3 class="box-title">Pull-Outs</h3>
-               								</div>
-               								<div class="box-body">
-               									<div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
-			                                    <table id="pull-out-table" class="table table-bordered table-striped">
-			                                    	<thead>
-			                                            <tr>
-			                                            	<th>&nbsp;</th>
-			                                                <th>Date and Time</th>
-			                                                <th>Delivery</th>
-			                                                <th>Material</th>
-			                                                <th>Quantity</th>
-			                                                <th>Unit</th>
-			                                            	<th>Staff</th>
-			                                            </tr>
-	                                        		</thead>
-			                                        <tbody>
-				                                		<c:forEach items="${pullOutList}" var="row">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlEdit" value="/project/edit/pullout/${row.getKey()}-end"/>
-			                                            			<a href="${urlEdit}">
-							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-			                                            			</a>
-								                                    <c:url value="/project/delete/pullout/${row.getKey()}-end" var="urlDelete"/>
-								                                    <a href="${urlDelete}">
-	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-								                                    </a>
-																</center>
-															</td>
-															<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${row.datetime}" var="rowDatetime"/>
-															<td>${rowDatetime}</td>
-															<td>${row.delivery.name}</td>
-															<td>${row.material.name}</td>
-															<td align="right">${row.quantity}</td>
-															<td align="right">${row.material.unit}</td>
-															<td>${row.staff.getFullName()}</td>
-			                                            </tr>
-		                                            	</c:forEach>
-				                                    </tbody>
-				                                </table>
-			                                </div><!-- /.box-body -->
-               							</div>
-               						</div>
-               						</div>
-                                	<div class="row">
-		                            <div class="col-xs-12">
-               							<div class="box box-default">
-               								<div class="box-header">
-               									<h3 class="box-title">Inventory</h3>
-               								</div>
-               								<div class="box-body box-default">
-               									<div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
-								                <div class="pull-right">
-		                                  		<h3>Grand Total <b><u>
-			                                	${projectAux.getGrandTotalDeliveryAsString()}
-												</u></b></h3>
-												</div>
-			                                    <table id="material-table" class="table table-bordered table-striped">
-			                                    	<thead>
-			                                            <tr>
-			                                            	<th>&nbsp;</th>
-			                                            	<th>Delivery</th>
-			                                                <th>Material</th>
-			                                                <th>Used / Pulled-Out</th>
-			                                                <th>Available</th>
-			                                            	<th>Total Quantity</th>
-			                                                <th>Unit</th>
-			                                                <th>Cost (Per Unit)</th>
-			                                                <th>Total Cost</th>
-			                                                <th>Remarks</th>
-			                                            </tr>
-	                                        		</thead>
-			                                        <tbody>
-				                                		<c:forEach items="${materialList}" var="row">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlEdit" value="/project/edit/material/${row.getKey()}-end"/>
-			                                            			<a href="${urlEdit}">
-							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-			                                            			</a>
-			                                            			<c:if test="${row.available > 0}">
-			                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
-								                                    <a href="${urlPullout}">
-	                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
-								                                    </a>
-								                                    </c:if>
-								                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
-								                                    <a href="${urlDelete}">
-	                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-								                                    </a>
-																</center>
-															</td>
-															<td>${row.delivery.name}</td>
-															<td>${row.name}</td>
-															<td align="right">${row.used}</td>
-															<td align="center">
-															<div class="progress">
-																<div class="progress-bar progress-bar-${row.getAvailableCSS()} progress-bar-striped" 
-																    role="progressbar" 
-																    aria-valuenow="${row.available}" 
-																    aria-valuemin="0" 
-																    aria-valuemax="${row.quantity}"
-																    style="width:${row.getAvailableAsPercentage()}">
-																    <c:if test="${row.available <= 0}">
-																    	Out of Stock
-																    </c:if>
-															    </div>
-															</div>
-														    <c:if test="${row.available > 0}">
-														      ${row.available} (${row.getAvailableAsPercentage()})
-														    </c:if>
-															</td>
-															<td align="right">${row.quantity}</td>
-															<td align="right">${row.unit}</td>
-															<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
-															<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
-															<td>${row.remarks}</td>
-			                                            </tr>
-		                                            	</c:forEach>
-				                                    </tbody>
-				                                </table>
-			                                </div><!-- /.box-body -->
-               							</div>
-               						</div>
-               						</div>
+                                
+                                	<div class="nav-tabs-custom">
+		                            <ul class="nav nav-tabs" id="subtabs-inventory">
+		                                <li class="active"><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
+                                		<li><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
+		                                <li><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
+		                            </ul>
+		                            <div class="tab-content">
+		                                <div class="tab-pane active" id="subtab_inventory">
+	                                	<div class="row">
+			                            <div class="col-xs-12">
+	               							<div class="box box-default">
+	               								<div class="box-header">
+	               									<h3 class="box-title">Materials</h3>
+	               								</div>
+	               								<div class="box-body box-default">
+	               									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+									                <div class="pull-right">
+			                                  		<h3>Grand Total <b><u>
+				                                	${projectAux.getGrandTotalDeliveryAsString()}
+													</u></b></h3>
+													</div>
+				                                    <table id="material-table" class="table table-bordered table-striped">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                            	<th>Delivery</th>
+				                                                <th>Material</th>
+				                                                <th>Used / Pulled-Out</th>
+				                                                <th>Available</th>
+				                                            	<th>Total Quantity</th>
+				                                                <th>Unit</th>
+				                                                <th>Cost (Per Unit)</th>
+				                                                <th>Total Cost</th>
+				                                                <th>Remarks</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                		<c:forEach items="${materialList}" var="row">
+				                                            <tr>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlEdit" value="/project/edit/material/${row.getKey()}-end"/>
+				                                            			<a href="${urlEdit}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+				                                            			<c:if test="${row.available > 0}">
+				                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
+									                                    <a href="${urlPullout}">
+		                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
+									                                    </a>
+									                                    </c:if>
+									                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
+									                                    <a href="${urlDelete}">
+		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+									                                    </a>
+																	</center>
+																</td>
+																<td>
+																<c:url var="urlLink" value="/project/edit/delivery/${row.delivery.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.delivery.name}
+							                                    </a>
+																</td>
+																<td>${row.name}</td>
+																<td align="right">${row.used}</td>
+																<td align="center">
+																<div class="progress">
+																	<div class="progress-bar progress-bar-${row.getAvailableCSS()} progress-bar-striped" 
+																	    role="progressbar" 
+																	    aria-valuenow="${row.available}" 
+																	    aria-valuemin="0" 
+																	    aria-valuemax="${row.quantity}"
+																	    style="width:${row.getAvailableAsPercentage()}">
+																	    <c:if test="${row.available <= 0}">
+																	    	Out of Stock
+																	    </c:if>
+																    </div>
+																</div>
+															    <c:if test="${row.available > 0}">
+															      ${row.available} (${row.getAvailableAsPercentage()})
+															    </c:if>
+																</td>
+																<td align="right">${row.quantity}</td>
+																<td align="right">${row.unit}</td>
+																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
+																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
+																<td>${row.remarks}</td>
+				                                            </tr>
+			                                            	</c:forEach>
+					                                    </tbody>
+					                                </table>
+				                                </div><!-- /.box-body -->
+	               							</div>
+	               						</div>
+	               						</div>
+		                                </div>
+		                                
+		                                
+		                                <div class="tab-pane" id="subtab_delivery">
+		                                <div class="row">
+			                            <div class="col-xs-12">
+	               							<div class="box box-default">
+	               								<div class="box-header">
+	               									<h3 class="box-title">Deliveries</h3>
+	               								</div>
+	               								<div class="box-body">
+	               									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+											  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
+			                                  		<a href="${urlCreateDelivery}">
+			                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
+			                                  		</a>
+			                                  		<br/>
+			                                  		<br/>
+				                                    <table id="delivery-table" class="table table-bordered table-striped">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Date and Time</th>
+				                                                <th>Delivery</th>
+				                                                <th>Description</th>
+				                                                <th>Materials Cost</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                		<c:forEach items="${deliveryList}" var="deliveryRow">
+															<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${deliveryRow.datetime}" var="deliveryDateTime"/>
+				                                            <tr>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlEditDelivery" value="/project/edit/delivery/${deliveryRow.getKey()}-end"/>
+				                                            			<a href="${urlEditDelivery}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+									                                    <c:url value="/project/delete/delivery/${deliveryRow.getKey()}-end" var="urlDeleteDelivery"/>
+									                                    <a href="${urlDeleteDelivery}">
+		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+									                                    </a>
+																	</center>
+																</td>
+																<td>${deliveryDateTime}</td>
+																<td>${deliveryRow.name}</td>
+																<td>${deliveryRow.description}</td>
+																<td align="right">${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
+				                                            </tr>
+			                                            	</c:forEach>
+					                                    </tbody>
+					                                </table>
+				                                </div><!-- /.box-body -->
+	               							</div>
+	               						</div>
+	               						</div>
+		                                </div>
+		                                
+		                                
+		                                <div class="tab-pane" id="subtab_pullout">
+		                                <div class="row">
+	               						<div class="col-xs-12">
+	               							<div class="box box-default">
+	               								<div class="box-header">
+	               									<h3 class="box-title">Pull-Outs</h3>
+	               								</div>
+	               								<div class="box-body">
+	               									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+				                                    <table id="pull-out-table" class="table table-bordered table-striped">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Date and Time</th>
+				                                                <th>Delivery</th>
+				                                                <th>Material</th>
+				                                                <th>Quantity</th>
+				                                                <th>Unit</th>
+				                                            	<th>Staff</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                		<c:forEach items="${pullOutList}" var="row">
+				                                            <tr>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlEdit" value="/project/edit/pullout/${row.getKey()}-end"/>
+				                                            			<a href="${urlEdit}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+									                                    <c:url value="/project/delete/pullout/${row.getKey()}-end" var="urlDelete"/>
+									                                    <a href="${urlDelete}">
+		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+									                                    </a>
+																	</center>
+																</td>
+																<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${row.datetime}" var="rowDatetime"/>
+																<td>${rowDatetime}</td>
+																<td>
+																<c:url var="urlLink" value="/project/edit/delivery/${row.delivery.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.delivery.name}
+							                                    </a>
+																</td>
+																
+																<td>
+																<c:url var="urlLink" value="/project/edit/material/${row.material.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.material.name}
+							                                    </a>
+																</td>
+																
+																<td align="right">${row.quantity}</td>
+																<td align="right">${row.material.unit}</td>
+																
+																<td>
+																<c:url var="urlLink" value="/staff/edit/${row.staff.id}/from/project/${project.id}"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.staff.getFullName()}
+							                                    </a>
+																</td>
+				                                            </tr>
+			                                            	</c:forEach>
+					                                    </tbody>
+					                                </table>
+				                                </div><!-- /.box-body -->
+	               							</div>
+	               						</div>
+	               						</div>
+		                                </div>
+		                            </div>
+		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_managers">
                                 	<div class="box">
@@ -1049,136 +1164,143 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_expenses">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_staff">
-                                	<div class="row">
-                   						<div class="col-xs-12">
-		                                	<div class="box box-default">
-		                                		<div class="box-header">
-	              									<h3 class="box-title">Staff Members</h3>
-	              								</div>
-				                                <div class="box-body table-responsive">
-				                                	<div class="callout callout-info callout-cebedo">
-									                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-									                </div>
-				                                    <table id="assigned-staff-table" class="table table-bordered table-striped">
-				                                    	<thead>
-				                                            <tr>
-				                                            	<th>&nbsp;</th>
-				                                                <th>Full Name</th>
+                                
+                                	<div class="nav-tabs-custom">
+									<ul class="nav nav-tabs" id="subtabs-staff">
+										<li class="active"><a href="#subtab_members" data-toggle="tab">Members</a></li>
+										<li><a href="#subtab_controls" data-toggle="tab">Assignment Constrols</a></li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active" id="subtab_members">
+											<div class="row">
+		                   						<div class="col-xs-12">
+				                                	<div class="box box-default">
+				                                		<div class="box-header">
+			              									<h3 class="box-title">Staff Members</h3>
+			              								</div>
+						                                <div class="box-body table-responsive">
+						                                	<div class="callout callout-info callout-cebedo">
+											                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+											                </div>
+						                                    <table id="assigned-staff-table" class="table table-bordered table-striped">
+						                                    	<thead>
+						                                            <tr>
+						                                            	<th>&nbsp;</th>
+						                                                <th>Full Name</th>
+						                                                <th>Company Position</th>
+						                                                <th>Salary (Daily)</th>
+						                                                <th>E-Mail</th>
+						                                                <th>Contact Number</th>
+						                                            </tr>
+				                                        		</thead>
+						                                        <tbody>
+							                                        <c:set var="assignedStaff" value="${project.assignedStaff}"/>
+								                                	<c:if test="${!empty assignedStaff}">
+								                                		<c:forEach items="${assignedStaff}" var="assignedStaffMember">
+							                                            <tr>
+							                                            	<td>
+							                                            		<center>
+							                                            			<c:url var="urlViewStaff" value="/staff/edit/${assignedStaffMember.id}/from/project/${project.id}"/>
+							                                            			<a href="${urlViewStaff}">
+											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+							                                            			</a>
+												                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+												                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
+												                                    <a href="${urlUnassignStaff}">
+					                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
+												                                    </a>
+					                   												</sec:authorize>
+																				</center>
+																			</td>
+						                                                	<td>${assignedStaffMember.getFullName()}</td>
+						                                                	<td>${assignedStaffMember.companyPosition}</td>
+						                                                	<td>${assignedStaffMember.getWageAsString()}</td>
+						                                                	<td>${assignedStaffMember.email}</td>
+						                                                	<td>${assignedStaffMember.contactNumber}</td>
+							                                            </tr>
+						                                            </c:forEach>
+					                                        		</c:if>
+							                                    </tbody>
+							                                </table>
+						                                </div><!-- /.box-body -->
+						                             </div>
+						                        </div>
+						                   	</div>
+										</div>
+										<div class="tab-pane" id="subtab_controls">
+						                   	<div class="row">
+		                   						<div class="col-xs-12">
+				                                	<div class="box box-default">
+			              								<div class="box-header">
+			              									<h3 class="box-title">Staff Assignment Controls</h3>
+			              								</div>
+						                                <div class="box-body">
+						                                	<div class="callout callout-info callout-cebedo">
+											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+											                </div>
+				                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
+				                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
+				                                    			<a href="${urlCreateStaff}">
+						                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
+				                                    			</a>
+				                                    		</sec:authorize>
+				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
+				                                    		<c:if test="${!empty availableStaffToAssign}">
+				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
+				                                    		</c:if>
+				                                    		<c:if test="${!empty project.assignedStaff}">
+		              											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
+							                                    <a href="${urlUnassignStaffAll}">
+		              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
+							                                    </a>
+				                                    		</c:if>
+				                                    		<c:if test="${!empty availableStaffToAssign}">
+				                                    		&nbsp;&nbsp;
+				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
+															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
+				                                    		</c:if>
+							                                <br/>
+							                                <br/>
+				                                    		</sec:authorize>
+				                                    		<form:form modelAttribute="project" 
+				                                    		method="post" 
+				                                    		id="assignStaffForm"
+				                                    		action="${contextPath}/project/assign/staff/mass">
+				                                    		<table id="assign-staff-table" class="table table-bordered table-striped">
+				                                    			<thead>
+				                                    			<tr>
+				                                    			<th>Check/Uncheck</th>
+				                                    			<th>Full Name</th>
 				                                                <th>Company Position</th>
 				                                                <th>Salary (Daily)</th>
 				                                                <th>E-Mail</th>
 				                                                <th>Contact Number</th>
-				                                            </tr>
-		                                        		</thead>
-				                                        <tbody>
-					                                        <c:set var="assignedStaff" value="${project.assignedStaff}"/>
-						                                	<c:if test="${!empty assignedStaff}">
-						                                		<c:forEach items="${assignedStaff}" var="assignedStaffMember">
-					                                            <tr>
-					                                            	<td>
-					                                            		<center>
-					                                            			<c:url var="urlViewStaff" value="/staff/edit/${assignedStaffMember.id}/from/project/${project.id}"/>
-					                                            			<a href="${urlViewStaff}">
-									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-					                                            			</a>
-										                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-										                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
-										                                    <a href="${urlUnassignStaff}">
-			                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-										                                    </a>
-			                   												</sec:authorize>
-																		</center>
-																	</td>
-				                                                	<td>${assignedStaffMember.getFullName()}</td>
-				                                                	<td>${assignedStaffMember.companyPosition}</td>
-				                                                	<td>${assignedStaffMember.getWageAsString()}</td>
-				                                                	<td>${assignedStaffMember.email}</td>
-				                                                	<td>${assignedStaffMember.contactNumber}</td>
-					                                            </tr>
-				                                            </c:forEach>
-			                                        		</c:if>
-					                                    </tbody>
-					                                </table>
-				                                </div><!-- /.box-body -->
-				                             </div>
-				                        </div>
-				                   	</div>
-				                   	<div class="row">
-                   						<div class="col-xs-12">
-		                                	<div class="box box-default">
-	              								<div class="box-header">
-	              									<h3 class="box-title">Staff Assignment Controls</h3>
-	              								</div>
-				                                <div class="box-body">
-				                                	<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
-		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
-		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
-		                                    			<a href="${urlCreateStaff}">
-				                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
-		                                    			</a>
-		                                    		</sec:authorize>
-		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                    		<c:if test="${!empty availableStaffToAssign}">
-		                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
-		                                    		</c:if>
-		                                    		<c:if test="${!empty project.assignedStaff}">
-              											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
-					                                    <a href="${urlUnassignStaffAll}">
-              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-					                                    </a>
-		                                    		</c:if>
-		                                    		<c:if test="${!empty availableStaffToAssign}">
-		                                    		&nbsp;&nbsp;
-		                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
-													<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
-		                                    		</c:if>
-					                                <br/>
-					                                <br/>
-		                                    		</sec:authorize>
-		                                    		<form:form modelAttribute="project" 
-		                                    		method="post" 
-		                                    		id="assignStaffForm"
-		                                    		action="${contextPath}/project/assign/staff/mass">
-		                                    		<table id="assign-staff-table" class="table table-bordered table-striped">
-		                                    			<thead>
-		                                    			<tr>
-		                                    			<th>Check/Uncheck</th>
-		                                    			<th>Full Name</th>
-		                                                <th>Company Position</th>
-		                                                <th>Salary (Daily)</th>
-		                                                <th>E-Mail</th>
-		                                                <th>Contact Number</th>
-		                                    			</tr>
-		                                    			</thead>
-		                                    			<tbody>
-		                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
-		                                    			<tr>
-		                                    			<td align="center">
-			                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
-		                                    			</td>
-		                                    			<td>${staff.getFullName()}</td>
-		                                    			<td>${staff.companyPosition}</td>
-	                                                	<td>${staff.getWageAsString()}</td>
-	                                                	<td>${staff.email}</td>
-	                                                	<td>${staff.contactNumber}</td>
-		                                    			</tr>
-			                                    		</c:forEach>
-		                                    			</tbody>
-		                                    		</table>
-		                                    		</form:form>
-				                                </div>
-				                             </div>
-				                        </div>
-				                   	</div>
+				                                    			</tr>
+				                                    			</thead>
+				                                    			<tbody>
+				                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
+				                                    			<tr>
+				                                    			<td align="center">
+					                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
+				                                    			</td>
+				                                    			<td>${staff.getFullName()}</td>
+				                                    			<td>${staff.companyPosition}</td>
+			                                                	<td>${staff.getWageAsString()}</td>
+			                                                	<td>${staff.email}</td>
+			                                                	<td>${staff.contactNumber}</td>
+				                                    			</tr>
+					                                    		</c:forEach>
+				                                    			</tbody>
+				                                    		</table>
+				                                    		</form:form>
+						                                </div>
+						                             </div>
+						                        </div>
+						                   	</div>
+										</div>
+									</div>
+									</div>	
 				                </div>
                                 </c:when>
                                 </c:choose>
