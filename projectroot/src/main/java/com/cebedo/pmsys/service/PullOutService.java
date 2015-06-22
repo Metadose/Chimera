@@ -30,4 +30,6 @@ public interface PullOutService {
 
     public List<PullOut> list(Project proj);
 
+    public String update(PullOut pullout);
+
 }

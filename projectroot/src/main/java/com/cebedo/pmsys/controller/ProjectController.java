@@ -1045,6 +1045,72 @@ public class ProjectController {
 	return payrollEndState(projectPayroll);
     }
 
+    /**
+     * Do Update a pull out.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/"
+	    + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
+    public String updatePullout(
+	    @ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.pullOutService.update(pullout);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ pullout.getProject().getId();
+    }
+
+    /**
+     * Update a material object.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/"
+	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String updateMaterial(
+	    @ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.materialService.update(material);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ material.getProject().getId();
+    }
+
+    /**
+     * Create a delivery object.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
 	    + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
@@ -1130,6 +1196,38 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
+     * Open an edit page for a material.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_MATERIAL + "/{"
+	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String editMaterial(
+	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
+	    Model model, HttpSession session) {
+
+	// Construct the bean for the form.
+	Material material = this.materialService.get(key);
+	model.addAttribute(ATTR_MATERIAL, material);
+
+	// Get the list of staff in this project.
+	// This is for the selector.
+	// Who pulled-out the material?
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+
+	// Add the staff list to model.
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+
+	return RedisConstants.JSP_MATERIAL_EDIT;
     }
 
     /**
@@ -1407,6 +1505,39 @@ public class ProjectController {
 	payrollKey += DateUtils.formatDate(projectPayroll.getEndDate());
 
 	return payrollKey;
+    }
+
+    /**
+     * Open an edit page for a pull-out.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_PULL_OUT + "/{"
+	    + RedisConstants.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
+    public String editPullOut(
+	    @PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
+	    Model model, HttpSession session) {
+
+	// Get the object.
+	PullOut pullOut = this.pullOutService.get(key);
+	model.addAttribute(ATTR_PULL_OUT, pullOut);
+
+	// Get the list of staff in this project.
+	// This is for the selector.
+	// Who pulled-out the material?
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+
+	// Add the staff list to model.
+	model.addAttribute(ATTR_STAFF_LIST, staffList);
+
+	// redirect to edit page.
+	return RedisConstants.JSP_MATERIAL_PULLOUT;
     }
 
     /**

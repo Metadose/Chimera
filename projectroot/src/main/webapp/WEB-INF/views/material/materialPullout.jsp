@@ -7,7 +7,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>${pullout.material.name} Pull-Out</title>
+	<c:set value="${true}" var="isUpdating" />
+	<c:if test="${empty pullout.uuid}">
+		<c:set value="${false}" var="isUpdating" />
+	</c:if>
+	
+	<c:choose>
+	<c:when test="${isUpdating}">
+	<title>${pullout.material.name} Edit Pull-Out</title>
+	</c:when>
+	<c:when test="${!isUpdating}">
+	<title>${pullout.material.name} Add Pull-Out</title>
+	</c:when>
+	</c:choose>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
 	<style>
@@ -81,11 +93,6 @@
 									                	<td>${pullout.material.name}</td>
 									                </tr>
 									                <tr>
-									                	<td>&nbsp;</td>
-									                	<td>&nbsp;</td>
-									                	<td>&nbsp;</td>
-									                </tr>
-									                <tr>
 									                	<td><label>Available:</label></td>
 									                	<td>&nbsp;</td>
 									                	<td align="right">${pullout.material.available}
@@ -107,7 +114,6 @@
 									                	<td align="right">${pullout.material.unit}</td>
 									                </tr>
 									                </table>
-									                <br/>
 									                <div class="progress">
 														<div class="progress-bar progress-bar-${pullout.material.getAvailableCSS()} progress-bar-striped" 
 														    role="progressbar" 
@@ -123,11 +129,16 @@
 														    </c:if>
 													    </div>
 													</div>
-									                <br/>
+									                
+													<c:set value="${contextPath}/project/do-pullout/material" var="formURL" />
+													<c:if test="${isUpdating}">
+														<c:set value="${contextPath}/project/update/pullout" var="formURL" />
+													</c:if>
+													
                    									<form:form modelAttribute="pullout"
 														id="pulloutForm"
 														method="post"
-														action="${contextPath}/project/do-pullout/material">
+														action="${formURL}">
 				                                        <div class="form-group">
 				                                            <label>Quantity</label>
 				                                            <form:input type="text" class="form-control" path="quantity"/>
@@ -147,7 +158,14 @@
 				                                            <p class="help-block">Add additional remarks</p>
 				                                        </div>
 				                                    </form:form>
-                                            		<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Pull-Out</button>
+				                                    <c:choose>
+													<c:when test="${isUpdating}">
+													<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update Pull-Out</button>
+													</c:when>
+													<c:when test="${!isUpdating}">
+                                            		<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-pullout btn-flat btn-sm" id="detailsButton">Add Pull-Out</button>
+													</c:when>
+													</c:choose>
                                             		</c:if>
                    								</div>
                    							</div>

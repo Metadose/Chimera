@@ -33,4 +33,6 @@ public interface MaterialService {
 
     public List<Material> list(Project proj);
 
+    public String update(Material material);
+
 }

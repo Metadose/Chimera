@@ -201,4 +201,12 @@ public class MaterialServiceImpl implements MaterialService {
 	return this.materialValueRepo.multiGet(keys);
     }
 
+    @Override
+    @Transactional
+    public String update(Material material) {
+	this.materialValueRepo.set(material);
+	return AlertBoxGenerator.SUCCESS.generateUpdate(
+		RedisConstants.OBJECT_MATERIAL, material.getName());
+    }
+
 }
