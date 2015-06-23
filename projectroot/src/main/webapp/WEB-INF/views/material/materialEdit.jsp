@@ -73,14 +73,14 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Used / Pulled-Out:</label></td>
-									                	<td>&nbsp;</td>
-									                	<td align="right">${material.used}</td>
-									                </tr>
-									                <tr>
 									                	<td><label>Available:</label></td>
 									                	<td>&nbsp;</td>
 									                	<td align="right">${material.available}</td>
+									                </tr>
+									                <tr>
+									                	<td><label>Used / Pulled-Out:</label></td>
+									                	<td>&nbsp;</td>
+									                	<td align="right">${material.used}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Total Quantity:</label></td>

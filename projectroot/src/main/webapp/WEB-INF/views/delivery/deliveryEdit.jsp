@@ -187,12 +187,12 @@
 																<th>Material Category</th>
 																<th>Specific Name</th>
 																<th>Unit</th>
-																<th>Used / Pulled-Out</th>
+																<th>Remarks</th>
 																<th>Available</th>
+																<th>Used / Pulled-Out</th>
 																<th>Total Quantity</th>
 																<th>Cost (Per Unit)</th>
 																<th>Total Cost</th>
-																<th>Remarks</th>
 				                                            </tr>
 		                                        		</thead>
 				                                        <tbody>
@@ -229,7 +229,9 @@
 																${row.unit.name}
 							                                    </a>
 																</td>
-																<td align="right">${row.used}</td>
+																
+																<td>${row.remarks}</td>
+																
 																<td align="center">
 																<div class="progress">
 																	<div class="progress-bar progress-bar-${row.getAvailableCSS()} progress-bar-striped" 
@@ -247,10 +249,12 @@
 															      ${row.available} (${row.getAvailableAsPercentage()})
 															    </c:if>
 																</td>
+																
+																<td align="right">${row.used}</td>
+																
 																<td align="right">${row.quantity}</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
-																<td>${row.remarks}</td>
 				                                            </tr>
 			                                            	</c:forEach>
 					                                    </tbody>
