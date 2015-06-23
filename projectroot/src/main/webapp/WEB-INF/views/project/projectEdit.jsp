@@ -759,8 +759,21 @@
 			                                                <td>${payrollStartDate}</td>
 			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
 			                                                <td>${payrollEndDate}</td>
-			                                                <td>${payrollRow.approver.staff.getFullName()}</td>
-			                                                <td>${payrollRow.creator.staff.getFullName()}</td>
+			                                                
+			                                                <td>
+			                                                <c:url var="urlLink" value="/staff/edit/${payrollRow.approver.staff.id}/from/project/${project.id}"/>
+						                                    <a href="${urlLink}" class="general-link">
+			                                                ${payrollRow.approver.staff.getFullName()}
+						                                    </a>
+			                                                </td>
+			                                                
+			                                                <td>
+			                                                <c:url var="urlLink" value="/staff/edit/${payrollRow.creator.staff.id}/from/project/${project.id}"/>
+						                                    <a href="${urlLink}" class="general-link">
+			                                                ${payrollRow.creator.staff.getFullName()}
+						                                    </a>
+			                                                </td>
+			                                                
 			                                                <td>
 			                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
 			                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
