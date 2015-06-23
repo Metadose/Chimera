@@ -128,21 +128,27 @@ $(document).ready(function() {
                 </a>
                 <ul class="treeview-menu">
                 	<li>
-		            	<c:url var="urlShapeList" value="/materialcategory/list/"/>
-		                <a href="${urlShapeList}">
+		            	<c:url var="urlList" value="/materialcategory/list/"/>
+		                <a href="${urlList}">
 		                    <i class="fa fa-wrench"></i> <span>Material Categories</span>
 		                </a>
 		            </li>
                     <li>
-		            	<c:url var="urlShapeList" value="/shape/list/"/>
-		                <a href="${urlShapeList}">
+		            	<c:url var="urlList" value="/shape/list/"/>
+		                <a href="${urlList}">
 		                    <i class="fa fa-cube"></i> <span>Shapes</span>
 		                </a>
 		            </li>
 		            <li>
-		            	<c:url var="urlUnitsList" value="/unit/list"/>
-		                <a href="${urlUnitsList}">
+		            	<c:url var="urlList" value="/unit/list"/>
+		                <a href="${urlList}">
 		                    <i class="fa fa-connectdevelop"></i> <span>Units of Measure</span>
+		                </a>
+		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/concretemixingratio/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-tint"></i> <span>Concrete Mixing Ratio</span>
 		                </a>
 		            </li>
                 </ul>

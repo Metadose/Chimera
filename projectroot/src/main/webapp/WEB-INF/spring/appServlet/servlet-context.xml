@@ -498,6 +498,23 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
+    <!-- Estimate -->
+    <beans:bean id="estimateService" class="com.cebedo.pmsys.service.impl.EstimateServiceImpl">
+        <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
+        <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Concrete Mixing Ratio -->
+    <beans:bean id="concreteMixingRatioService" class="com.cebedo.pmsys.service.impl.ConcreteMixingRatioServiceImpl">
+        <beans:property name="concreteMixingRatioValueRepo" ref="concreteMixingRatioValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="concreteMixingRatioValueRepo" class="com.cebedo.pmsys.repository.ConcreteMixingRatioValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
     <!-- Material Category -->
     <beans:bean id="materialCategoryService" class="com.cebedo.pmsys.service.impl.MaterialCategoryServiceImpl">
         <beans:property name="materialCategoryValueRepo" ref="materialCategoryValueRepo"></beans:property>

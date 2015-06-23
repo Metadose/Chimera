@@ -3,30 +3,9 @@ package com.cebedo.pmsys.domain;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 
-/**
- * C = number of bags of cement per cubic meter of concrete work (bag/m3)<br>
- * S = volume of sand per cubic meter of concrete work (m3 of sand /m3)<br>
- * G = volume of gravel per cubic meter of concrete work (m3 of gravel /m3)<br>
- * c,s,g = cement-sand-gravel ratio<br>
- * (relative amounts of solids by volume in a mixture)
- * 
- * 
- * Cement C = 55 / (c+s+g)<br>
- * Sand S   = 0.028*C*s<br>
- * Gravel G = 0.028*C*g
- * 
- * 
- * The classes of concrete mixture depends on the cement-sand-gravel ratio
- * (c:s:g).
- * 
- * 
- * Class A (1:2:4) = for beams, slabs, columns, all members subjected to bending<br>
- * Class B (1:2.5:5) = member not reinforced for bending stress<br>
- * Class C (1:3:6) = for footing (not under water)
- * 
- */
 public class ConcreteMixingRatio implements IDomainObject {
 
     private static final long serialVersionUID = -2080215320887737760L;
@@ -47,10 +26,28 @@ public class ConcreteMixingRatio implements IDomainObject {
     private double ratioGravel;
     private double ratioSand;
 
+    private double partCement40kg;
+    private double partCement50kg;
+    private double partSand;
+    private double partGravel;
+
     /**
      * Extension map.
      */
     private Map<String, Object> extMap;
+
+    public String getDisplayName() {
+	return name + "  ( " + ratioCement + " : " + ratioSand + " : "
+		+ ratioGravel + " )";
+    }
+
+    public ConcreteMixingRatio() {
+	;
+    }
+
+    public ConcreteMixingRatio(Company company2) {
+	setCompany(company2);
+    }
 
     public Map<String, Object> getExtMap() {
 	return extMap;
@@ -118,8 +115,45 @@ public class ConcreteMixingRatio implements IDomainObject {
 
     @Override
     public String getKey() {
-	// TODO Auto-generated method stub
-	return null;
+	return String.format(RedisKeyRegistry.KEY_CONCRETE_MIXING_RATIO,
+		this.company.getId(), this.uuid);
+    }
+
+    public static String constructPattern(Company company2) {
+	return String.format(RedisKeyRegistry.KEY_CONCRETE_MIXING_RATIO,
+		company2.getId(), "*");
+    }
+
+    public double getPartCement40kg() {
+	return partCement40kg;
+    }
+
+    public void setPartCement40kg(double partCement40kg) {
+	this.partCement40kg = partCement40kg;
+    }
+
+    public double getPartCement50kg() {
+	return partCement50kg;
+    }
+
+    public void setPartCement50kg(double partCement50kg) {
+	this.partCement50kg = partCement50kg;
+    }
+
+    public double getPartSand() {
+	return partSand;
+    }
+
+    public void setPartSand(double partSand) {
+	this.partSand = partSand;
+    }
+
+    public double getPartGravel() {
+	return partGravel;
+    }
+
+    public void setPartGravel(double partGravel) {
+	this.partGravel = partGravel;
     }
 
 }

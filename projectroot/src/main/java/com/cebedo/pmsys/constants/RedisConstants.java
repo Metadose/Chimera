@@ -10,10 +10,13 @@ public abstract class RedisConstants {
     public static final String OBJECT_MATERIAL = "material";
     public static final String OBJECT_SHAPE = "shape";
     public static final String OBJECT_DELIVERY = "delivery";
+    public static final String OBJECT_ESTIMATE = "estimate";
     public static final String OBJECT_PROJECT_AUX = "projectAux";
     public static final String OBJECT_PULL_OUT = "pullout";
     public static final String OBJECT_UNIT = "unit";
     public static final String OBJECT_MATERIAL_CATEGORY = "materialcategory";
+    public static final String OBJECT_CONCRETE_MIXING_RATIO = "concretemixingratio";
+    public static final String OBJECT_CONCRETE_MIXING_RATIO_DISPLAY = "concrete mixing ratio";
     public static final String OBJECT_MATERIAL_CATEGORY_DISPLAY = "material category";
 
     public static final String JSP_DELIVERY_EDIT = OBJECT_DELIVERY
@@ -30,9 +33,15 @@ public abstract class RedisConstants {
 	    + "/attendanceList";
     public static final String JSP_UNIT_LIST = OBJECT_UNIT + "/unitList";
     public static final String JSP_UNIT_EDIT = OBJECT_UNIT + "/unitEdit";
+    public static final String JSP_ESTIMATE_EDIT = OBJECT_ESTIMATE
+	    + "/estimateEdit";
     public static final String JSP_MATERIAL_CATEGORY_LIST = OBJECT_MATERIAL_CATEGORY
 	    + "/materialCategoryList";
     public static final String JSP_MATERIAL_CATEGORY_EDIT = OBJECT_MATERIAL_CATEGORY
 	    + "/materialCategoryEdit";
+    public static final String JSP_CONCRETE_MIXING_RATIO_LIST = OBJECT_CONCRETE_MIXING_RATIO
+	    + "/concreteMixingRatioList";
+    public static final String JSP_CONCRETE_MIXING_RATIO_EDIT = OBJECT_CONCRETE_MIXING_RATIO
+	    + "/concreteMixingRatioEdit";
 
 }

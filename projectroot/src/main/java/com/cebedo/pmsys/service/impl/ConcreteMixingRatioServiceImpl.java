@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteMixingRatio;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.repository.ConcreteMixingRatioValueRepo;
 import com.cebedo.pmsys.service.ConcreteMixingRatioService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -52,13 +53,15 @@ public class ConcreteMixingRatioServiceImpl implements
 	    obj.setUuid(UUID.randomUUID());
 	    this.concreteMixingRatioValueRepo.set(obj);
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_UNIT, obj.getName());
+		    RedisConstants.OBJECT_CONCRETE_MIXING_RATIO_DISPLAY,
+		    obj.getName());
 	}
 
 	// If update.
 	this.concreteMixingRatioValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_UNIT, obj.getName());
+		RedisConstants.OBJECT_CONCRETE_MIXING_RATIO_DISPLAY,
+		obj.getName());
     }
 
     @Override
@@ -101,7 +104,10 @@ public class ConcreteMixingRatioServiceImpl implements
     @Override
     @Transactional
     public List<ConcreteMixingRatio> list() {
-	return null;
+	Company company = this.authHelper.getAuth().getCompany();
+	String pattern = ConcreteMixingRatio.constructPattern(company);
+	Set<String> keys = this.concreteMixingRatioValueRepo.keys(pattern);
+	return this.concreteMixingRatioValueRepo.multiGet(keys);
     }
 
 }

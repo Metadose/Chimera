@@ -1,13 +1,16 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
-public class ConcreteEstimate implements IDomainObject {
+public class Estimate implements IDomainObject {
 
     private static final long serialVersionUID = -3521975517764441834L;
 
@@ -29,13 +32,44 @@ public class ConcreteEstimate implements IDomainObject {
      * Computational specs.
      */
     private Shape shape;
+    private List<EstimateType> estimateTypes;
+
+    /**
+     * Bean-backed form.
+     */
+    // First commit.
+    private String shapeKey;
+    private int[] estimateType;
+
+    // Second commit.
     private String[] formulaInputs;
+    private String concreteMixingRatioKey;
+
+    /**
+     * Concrete.
+     */
     private ConcreteMixingRatio concreteMixingRatio;
+    private double resultCement;
+    private double resultSand;
+    private double resultGravel;
 
     /**
      * Extension map.
      */
     private Map<String, Object> extMap;
+
+    public Estimate() {
+	;
+    }
+
+    public Estimate(Project proj) {
+	setCompany(proj.getCompany());
+	setProject(proj);
+    }
+
+    public boolean willComputeConcrete() {
+	return this.estimateTypes.contains(EstimateType.CONCRETE);
+    }
 
     public Company getCompany() {
 	return company;
@@ -119,8 +153,69 @@ public class ConcreteEstimate implements IDomainObject {
 
     @Override
     public String getKey() {
-	// TODO Auto-generated method stub
-	return null;
+	return String.format(RedisKeyRegistry.KEY_ESTIMATE,
+		this.company.getId(), this.project.getId(), this.uuid);
+    }
+
+    public String getConcreteMixingRatioKey() {
+	return concreteMixingRatioKey;
+    }
+
+    public void setConcreteMixingRatioKey(String concreteMixingRatioKey) {
+	this.concreteMixingRatioKey = concreteMixingRatioKey;
+    }
+
+    public String getShapeKey() {
+	return shapeKey;
+    }
+
+    public void setShapeKey(String shapeKey) {
+	this.shapeKey = shapeKey;
+    }
+
+    public int[] getEstimateType() {
+	return estimateType;
+    }
+
+    public void setEstimateType(int[] estimateType) {
+	this.estimateType = estimateType;
+    }
+
+    public List<EstimateType> getEstimateTypes() {
+	return estimateTypes;
+    }
+
+    public void setEstimateTypes(List<EstimateType> estimateTypes) {
+	this.estimateTypes = estimateTypes;
+    }
+
+    public double getResultSand() {
+	return resultSand;
+    }
+
+    public void setResultSand(double resultSand) {
+	this.resultSand = resultSand;
+    }
+
+    public double getResultGravel() {
+	return resultGravel;
+    }
+
+    public void setResultGravel(double resultGravel) {
+	this.resultGravel = resultGravel;
+    }
+
+    public double getResultCement() {
+	return resultCement;
+    }
+
+    public void setResultCement(double resultCement) {
+	this.resultCement = resultCement;
+    }
+
+    public static String constructPattern(Project proj) {
+	return String.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany()
+		.getId(), proj.getId(), "*");
     }
 
 }

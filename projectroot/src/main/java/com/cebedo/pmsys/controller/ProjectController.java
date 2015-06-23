@@ -3,6 +3,7 @@ package com.cebedo.pmsys.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +36,18 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.ConcreteMixingRatio;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
+import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
@@ -60,7 +65,9 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.service.ConcreteMixingRatioService;
 import com.cebedo.pmsys.service.DeliveryService;
+import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
@@ -70,6 +77,7 @@ import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
+import com.cebedo.pmsys.service.ShapeService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.service.UnitService;
@@ -83,9 +91,10 @@ import com.cebedo.pmsys.utils.DateUtils;
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
 	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT }, types = { Project.class,
-	FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
-	Delivery.class, Material.class, PullOut.class })
+	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE }, types = {
+	Project.class, FieldAssignmentBean.class, ProjectFile.class,
+	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
+	Estimate.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -95,14 +104,20 @@ public class ProjectController {
     public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
+    public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
+    public static final String ATTR_CONCRETE_MIXING_RATIO_LIST = "concreteMixingRatioList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
+    public static final String ATTR_SHAPE_LIST = "shapeList";
+    public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
+    public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
+    public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_UNIT_LIST = "unitList";
@@ -165,6 +180,28 @@ public class ProjectController {
     private PullOutService pullOutService;
     private MaterialCategoryService materialCategoryService;
     private UnitService unitService;
+    private EstimateService estimateService;
+    private ShapeService shapeService;
+    private ConcreteMixingRatioService concreteMixingRatioService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "concreteMixingRatioService")
+    public void setConcreteMixingRatioService(
+	    ConcreteMixingRatioService concreteMixingRatioService) {
+	this.concreteMixingRatioService = concreteMixingRatioService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "shapeService")
+    public void setShapeService(ShapeService shapeService) {
+	this.shapeService = shapeService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "estimateService")
+    public void setEstimateService(EstimateService estimateService) {
+	this.estimateService = estimateService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "unitService")
@@ -1154,6 +1191,65 @@ public class ProjectController {
     }
 
     /**
+     * Do create/update on an estimate.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
+	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
+    public String createEstimate(
+	    @ModelAttribute(RedisConstants.OBJECT_ESTIMATE) Estimate estimate,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.estimateService.set(estimate);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ estimate.getProject().getId();
+    }
+
+    /**
+     * Add estimate inputs.
+     * 
+     * @param estimate
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_COMPUTE + "/"
+	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
+    public String computeEstimate(
+	    @ModelAttribute(RedisConstants.OBJECT_ESTIMATE) Estimate estimate,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.estimateService.computeEstimate(estimate);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ RedisConstants.OBJECT_ESTIMATE + "/" + estimate.getKey()
+		+ "-end";
+    }
+
+    /**
      * Delete a delivery.
      * 
      * @param key
@@ -1604,6 +1700,55 @@ public class ProjectController {
     }
 
     /**
+     * Open a page to create/edit an estimate.
+     * 
+     * @param key
+     * @param session
+     * @param model
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
+	    + RedisConstants.OBJECT_ESTIMATE + "/{"
+	    + RedisConstants.OBJECT_ESTIMATE + "}-end", method = RequestMethod.GET)
+    public String editEstimate(
+	    @PathVariable(RedisConstants.OBJECT_ESTIMATE) String key,
+	    HttpSession session, Model model) {
+
+	// Get proj.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// List of shapes.
+	List<Shape> shapeList = this.shapeService.list();
+	model.addAttribute(ATTR_SHAPE_LIST, shapeList);
+
+	// Add the list of estimate types.
+	model.addAttribute(ATTR_ESTIMATE_TYPES,
+		EstimateType.class.getEnumConstants());
+
+	// If we're creating.
+	if (key.equals("0")) {
+	    model.addAttribute(ATTR_ESTIMATE, new Estimate(proj));
+	    return RedisConstants.JSP_ESTIMATE_EDIT;
+	}
+
+	// If we're updating.
+	Estimate estimate = this.estimateService.get(key);
+	model.addAttribute(ATTR_ESTIMATE, estimate);
+
+	// For second commit,
+	// if computing concrete.
+	if (estimate.willComputeConcrete()) {
+	    List<ConcreteMixingRatio> concreteMixingRatioList = this.concreteMixingRatioService
+		    .list();
+	    model.addAttribute(ATTR_CONCRETE_MIXING_RATIO_LIST,
+		    concreteMixingRatioList);
+	}
+
+	return RedisConstants.JSP_ESTIMATE_EDIT;
+    }
+
+    /**
      * Open an edit page to create/update an object.
      * 
      * @param key
@@ -1851,6 +1996,37 @@ public class ProjectController {
 	// Add to model.
 	List<PullOut> pullOutList = this.pullOutService.list(proj);
 	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
+
+	// TODO Put a check box in List Page "Load Estimates"
+	// If checked, load below.
+	// Get all estimates.
+	// Add to model.
+	List<Estimate> estimateList = this.estimateService.list(proj);
+
+	// Segregate by type of estimate.
+	List<Estimate> concreteEstimateList = new ArrayList<Estimate>();
+	List<Estimate> masonryEstimateList = new ArrayList<Estimate>();
+
+	// TODO Extend this loop to other types..
+	for (Estimate estimate : estimateList) {
+
+	    List<EstimateType> estimateTypes = estimate.getEstimateTypes();
+
+	    // If the estimate has an estimation for concrete,
+	    // add to concrete list.
+	    if (estimateTypes.contains(EstimateType.CONCRETE)) {
+		concreteEstimateList.add(estimate);
+	    }
+
+	    // If has estimation for masonry.
+	    if (estimateTypes.contains(EstimateType.MASONRY)) {
+		masonryEstimateList.add(estimate);
+	    }
+	}
+
+	// Add segregated estimates to model.
+	model.addAttribute(ATTR_ESTIMATE_CONCRETE_LIST, concreteEstimateList);
+	model.addAttribute(ATTR_ESTIMATE_MASONRY_LIST, masonryEstimateList);
 
 	// Do post-adding of attrs.
 	// Return to the edit page.

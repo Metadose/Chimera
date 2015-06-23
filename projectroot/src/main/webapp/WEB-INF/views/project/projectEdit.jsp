@@ -66,10 +66,11 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
+                                		<li><a href="#tab_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
-		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
+		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
                                 	</c:when>
                                 </c:choose>
                             </ul>
@@ -1210,6 +1211,109 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                
+                                <div class="tab-pane" id="tab_estimate">
+                                	<div class="box">
+                                		<div class="box-header">
+          									<h3 class="box-title">Estimates</h3>
+          								</div>
+		                                <div class="box-body table-responsive">
+          									<div class="callout callout-info callout-cebedo">
+							                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+							                </div>
+							                
+                                   			<c:url var="urlCreate" value="/project/edit/estimate/0-end"/>
+                                   			<a href="${urlCreate}">
+	                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>
+                                   			</a>
+                                   			<br/>
+                                   			<br/>
+                                   			
+                                   			<div class="nav-tabs-custom">
+				                            <ul class="nav nav-tabs" id="subtabs-estimate">
+				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
+		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
+				                            </ul>
+				                            <div class="tab-content">
+				                                <div class="tab-pane active" id="subtab_concrete">
+			                                	<div class="row">
+					                            <div class="col-xs-12">
+			               							<div class="box box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Concrete</h3>
+			               								</div>
+			               								<div class="box-body box-default">
+			               								<div class="box-body table-responsive">
+						                                	<div class="callout callout-info callout-cebedo">
+											                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+											                </div>
+						                                    <table id="concrete-table" class="table table-bordered table-striped">
+						                                    	<thead>
+						                                            <tr>
+						                                            	<th>&nbsp;</th>
+						                                            	<th>Name</th>
+						                                            	<th>Remarks</th>
+						                                                <th>Shape</th>
+						                                                <th>Inputs</th>
+						                                                <th>Mixing Ratio</th>
+						                                                <th>Cement</th>
+						                                                <th>Sand</th>
+						                                                <th>Gravel</th>
+						                                            </tr>
+				                                        		</thead>
+						                                        <tbody>
+							                                		<c:forEach items="${concreteEstimateList}" var="concrete">
+							                                            <tr>
+							                                            	<td>
+							                                            		<center>
+							                                            			<c:url var="urlLink" value="/project/edit/estimate/${concrete.getKey()}-end"/>
+							                                            			<a href="${urlLink}">
+											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+							                                            			</a>
+												                                    <c:url var="urlLink" value=""/>
+												                                    <a href="${urlLink}">
+					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+												                                    </a>
+																				</center>
+																			</td>
+																			<td>${concrete.name}</td>
+																			<td>${concrete.remarks}</td>
+						                                                	<td>${concrete.shape.name}</td>
+						                                                	<td>${concrete.formulaInputs}</td>
+						                                                	<td>${concrete.concreteMixingRatio.name}</td>
+						                                                	<td>${concrete.resultCement}</td>
+						                                                	<td>${concrete.resultSand}</td>
+						                                                	<td>${concrete.resultGravel}</td>
+							                                            </tr>
+						                                            </c:forEach>
+							                                    </tbody>
+							                                </table>
+						                                </div><!-- /.box-body -->
+			               								</div>
+			               							</div>
+			               						</div>
+			               						</div>
+			               						</div>
+			               						<div class="tab-pane" id="subtab_masonry">
+			                                	<div class="row">
+					                            <div class="col-xs-12">
+			               							<div class="box box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Masonry</h3>
+			               								</div>
+			               								<div class="box-body box-default">
+			               								</div>
+			               							</div>
+			               						</div>
+			               						</div>
+			               						</div>
+			               					</div>
+			               					</div>
+                                   			
+			                                
+		                                </div><!-- /.box-body -->
+		                            </div>
+                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_staff">
                                 
                                 	<div class="nav-tabs-custom">
@@ -1469,6 +1573,7 @@
 	    });
 		
 		$(document).ready(function() {
+			$("#concrete-table").dataTable();
 			$("#material-table").dataTable();
 			$("#pull-out-table").dataTable();
 			$("#delivery-table").dataTable();
