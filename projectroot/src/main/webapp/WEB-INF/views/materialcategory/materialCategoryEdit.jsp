@@ -80,13 +80,13 @@
 				                                            <form:input type="text" placeholder="Sample: 40kg Bags, Cubic Meters, Tons" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the material category of measure</p>
 				                                            
-				                                            <label>Details</label>
+				                                            <label>Default Unit of Measure</label>
 				                                            <form:select class="form-control" path="unitKey"> 
 	                                     						<c:forEach items="${unitList}" var="unit"> 
 	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
 	                                     						</c:forEach> 
 	 		                                    			</form:select>
-				                                            <p class="help-block">Add more details about this material category</p>
+				                                            <p class="help-block">Choose the default unit of measure</p>
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">

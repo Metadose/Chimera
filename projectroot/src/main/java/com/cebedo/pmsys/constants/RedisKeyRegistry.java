@@ -14,7 +14,7 @@ public class RedisKeyRegistry {
      * 2nd-level dependents.
      */
     public static final String KEY_PROJECT_PAYROLL = "company.fk:%s:project.fk:%s:payroll:%s";
-    public static final String KEY_FORMULA = "company.fk:%s:formula:%s";
+    public static final String KEY_SHAPE = "company.fk:%s:shape:%s";
 
     /**
      * Order of dependency. 2nd, 3rd, 4th.

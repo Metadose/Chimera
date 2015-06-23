@@ -37,9 +37,11 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -60,6 +62,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.FieldService;
+import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectAuxService;
@@ -69,6 +72,7 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
+import com.cebedo.pmsys.service.UnitService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -101,6 +105,8 @@ public class ProjectController {
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
+    public static final String ATTR_UNIT_LIST = "unitList";
+    public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
     public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
@@ -157,6 +163,21 @@ public class ProjectController {
     private ProjectPayrollService projectPayrollService;
     private ProjectAuxService projectAuxService;
     private PullOutService pullOutService;
+    private MaterialCategoryService materialCategoryService;
+    private UnitService unitService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "unitService")
+    public void setUnitService(UnitService unitService) {
+	this.unitService = unitService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "materialCategoryService")
+    public void setMaterialCategoryService(
+	    MaterialCategoryService materialCategoryService) {
+	this.materialCategoryService = materialCategoryService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "pullOutService")
@@ -1257,6 +1278,15 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	List<Staff> staffList = proj.getAssignedStaffAndManagers();
 
+	// Get list of units.
+	List<Unit> unitList = this.unitService.list();
+	model.addAttribute(ATTR_UNIT_LIST, unitList);
+
+	// Get list of material categories.
+	List<MaterialCategory> materialCategoryList = this.materialCategoryService
+		.list();
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
+
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
@@ -1602,6 +1632,15 @@ public class ProjectController {
 	// return the object from redis.
 	Delivery delivery = this.deliveryService.get(key);
 	model.addAttribute(ATTR_DELIVERY, delivery);
+
+	// Get list of units.
+	List<Unit> unitList = this.unitService.list();
+	model.addAttribute(ATTR_UNIT_LIST, unitList);
+
+	// Get list of material categories.
+	List<MaterialCategory> materialCategoryList = this.materialCategoryService
+		.list();
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
 
 	// Get the list of materials this delivery has.
 	// Then add to model.

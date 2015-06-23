@@ -31,7 +31,14 @@ public class Material implements IDomainObject {
     private double quantity;
     private double used;
     private double available;
-    private String unit;
+    private Unit unit;
+    private MaterialCategory materialCategory;
+
+    /**
+     * Bean-backed form.
+     */
+    private String materialCategoryKey;
+    private String unitKey;
 
     /**
      * Cost per unit.
@@ -130,11 +137,27 @@ public class Material implements IDomainObject {
 	this.quantity = quantity;
     }
 
-    public String getUnit() {
+    public String getUnitKey() {
+	return unitKey;
+    }
+
+    public void setUnitKey(String unit) {
+	this.unitKey = unit;
+    }
+
+    public String getMaterialCategoryKey() {
+	return materialCategoryKey;
+    }
+
+    public void setMaterialCategoryKey(String materialCategoryKey) {
+	this.materialCategoryKey = materialCategoryKey;
+    }
+
+    public Unit getUnit() {
 	return unit;
     }
 
-    public void setUnit(String unit) {
+    public void setUnit(Unit unit) {
 	this.unit = unit;
     }
 
@@ -267,12 +290,16 @@ public class Material implements IDomainObject {
 	return percentDisplay + "%";
     }
 
-    public String getAvailableAsString() {
-	return available + " " + unit;
-    }
-
     public void setAvailable(double available) {
 	this.available = available;
+    }
+
+    public MaterialCategory getMaterialCategory() {
+	return materialCategory;
+    }
+
+    public void setMaterialCategory(MaterialCategory materialCategory) {
+	this.materialCategory = materialCategory;
     }
 
     public static String constructPattern(Delivery delivery2) {

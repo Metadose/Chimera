@@ -12,13 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
+import com.cebedo.pmsys.repository.MaterialCategoryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
+import com.cebedo.pmsys.repository.UnitValueRepo;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -31,6 +35,17 @@ public class MaterialServiceImpl implements MaterialService {
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxService projectAuxService;
     private PullOutValueRepo pullOutValueRepo;
+    private UnitValueRepo unitValueRepo;
+    private MaterialCategoryValueRepo materialCategoryValueRepo;
+
+    public void setMaterialCategoryValueRepo(
+	    MaterialCategoryValueRepo materialCategoryValueRepo) {
+	this.materialCategoryValueRepo = materialCategoryValueRepo;
+    }
+
+    public void setUnitValueRepo(UnitValueRepo unitValueRepo) {
+	this.unitValueRepo = unitValueRepo;
+    }
 
     public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
@@ -71,7 +86,18 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// If we're creating.
 	if (obj.getUuid() == null) {
+
+	    // Set the UUID.
 	    obj.setUuid(UUID.randomUUID());
+
+	    // Set the units.
+	    Unit unit = this.unitValueRepo.get(obj.getUnitKey());
+	    obj.setUnit(unit);
+
+	    // Set the material category.
+	    MaterialCategory category = this.materialCategoryValueRepo.get(obj
+		    .getMaterialCategoryKey());
+	    obj.setMaterialCategory(category);
 
 	    // Set available = quantity.
 	    obj.setAvailable(obj.getQuantity());
@@ -206,6 +232,17 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public String update(Material material) {
+
+	// Update also the unit.
+	Unit unit = this.unitValueRepo.get(material.getUnitKey());
+	material.setUnit(unit);
+
+	// Update the category.
+	MaterialCategory category = this.materialCategoryValueRepo.get(material
+		.getMaterialCategoryKey());
+	material.setMaterialCategory(category);
+
+	// Set the material.
 	this.materialValueRepo.set(material);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
 		RedisConstants.OBJECT_MATERIAL, material.getName());

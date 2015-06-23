@@ -7,14 +7,14 @@ import java.util.UUID;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 
-public class Formula implements IDomainObject {
+public class Shape implements IDomainObject {
 
     private static final long serialVersionUID = 1604488532064947576L;
     public static final String DELIMITER_OPEN_VARIABLE = "[[";
     public static final String DELIMITER_CLOSE_VARIABLE = "]]";
 
     /**
-     * Keys: company:12123:formula:uuid:123-123-123
+     * Keys.
      */
     private Company company;
     private UUID uuid;
@@ -37,16 +37,16 @@ public class Formula implements IDomainObject {
      */
     private Map<String, Object> extMap;
 
-    public Formula() {
+    public Shape() {
 	;
     }
 
-    public Formula(Company company2, UUID uuid2) {
+    public Shape(Company company2, UUID uuid2) {
 	setCompany(company2);
 	setUuid(uuid2);
     }
 
-    public Formula(Company company2) {
+    public Shape(Company company2) {
 	setCompany(company2);
     }
 
@@ -59,15 +59,13 @@ public class Formula implements IDomainObject {
     }
 
     public static String constructPattern(Company company) {
-	return String
-		.format(RedisKeyRegistry.KEY_FORMULA, company.getId(), "*");
+	return String.format(RedisKeyRegistry.KEY_SHAPE, company.getId(), "*");
     }
 
     @Override
     public String getKey() {
-	// company:12123:formula:uuid:123-123-123
-	return String.format(RedisKeyRegistry.KEY_FORMULA,
-		this.company.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_SHAPE, this.company.getId(),
+		this.uuid);
     }
 
     public Company getCompany() {

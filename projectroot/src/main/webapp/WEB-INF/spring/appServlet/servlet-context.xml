@@ -491,6 +491,8 @@
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
         <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
+        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
+        <beans:property name="materialCategoryValueRepo" ref="materialCategoryValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -542,11 +544,11 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
-    <!-- Formula -->
-    <beans:bean id="formulaService" class="com.cebedo.pmsys.service.impl.FormulaServiceImpl">
-        <beans:property name="formulaValueRepo" ref="formulaValueRepo"></beans:property>
+    <!-- Shape -->
+    <beans:bean id="shapeService" class="com.cebedo.pmsys.service.impl.ShapeServiceImpl">
+        <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="formulaValueRepo" class="com.cebedo.pmsys.repository.FormulaValueRepo">
+    <beans:bean id="shapeValueRepo" class="com.cebedo.pmsys.repository.ShapeValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     

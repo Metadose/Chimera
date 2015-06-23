@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.constants.RedisConstants;
-import com.cebedo.pmsys.domain.Formula;
+import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.repository.FormulaValueRepo;
-import com.cebedo.pmsys.service.FormulaService;
+import com.cebedo.pmsys.repository.ShapeValueRepo;
+import com.cebedo.pmsys.service.ShapeService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.StringUtils;
@@ -27,26 +27,26 @@ import com.wolfram.alpha.WAQueryResult;
 import com.wolfram.alpha.WASubpod;
 
 @Service
-public class FormulaServiceImpl implements FormulaService {
+public class ShapeServiceImpl implements ShapeService {
 
     private AuthHelper authHelper = new AuthHelper();
-    private FormulaValueRepo formulaValueRepo;
+    private ShapeValueRepo shapeValueRepo;
     private WAEngine wolframAlphaEngine = new WAEngine();
 
-    public void setFormulaValueRepo(FormulaValueRepo formulaValueRepo) {
-	this.formulaValueRepo = formulaValueRepo;
+    public void setShapeValueRepo(ShapeValueRepo repo) {
+	this.shapeValueRepo = repo;
     }
 
     @Override
     @Transactional
-    public void rename(Formula obj, String newKey) {
-	this.formulaValueRepo.rename(obj, newKey);
+    public void rename(Shape obj, String newKey) {
+	this.shapeValueRepo.rename(obj, newKey);
     }
 
     @Override
     @Transactional
-    public void multiSet(Map<String, Formula> m) {
-	this.formulaValueRepo.multiSet(m);
+    public void multiSet(Map<String, Shape> m) {
+	this.shapeValueRepo.multiSet(m);
     }
 
     /**
@@ -54,7 +54,7 @@ public class FormulaServiceImpl implements FormulaService {
      */
     @Override
     @Transactional
-    public String set(Formula obj) {
+    public String set(Shape obj) {
 
 	// If the object is not valid.
 	if (!obj.isValid()) {
@@ -62,11 +62,11 @@ public class FormulaServiceImpl implements FormulaService {
 	    // If we're creating.
 	    if (obj.getUuid() == null) {
 		return AlertBoxGenerator.FAILED.generateCreate(
-			RedisConstants.OBJECT_FORMULA, obj.getName());
+			RedisConstants.OBJECT_SHAPE, obj.getName());
 	    }
 	    // Else, we're updating.
 	    return AlertBoxGenerator.FAILED.generateUpdate(
-		    RedisConstants.OBJECT_FORMULA, obj.getName());
+		    RedisConstants.OBJECT_SHAPE, obj.getName());
 	}
 
 	// If company is null,
@@ -81,63 +81,63 @@ public class FormulaServiceImpl implements FormulaService {
 	// If we're creating.
 	if (obj.getUuid() == null) {
 	    obj.setUuid(UUID.randomUUID());
-	    this.formulaValueRepo.set(obj);
+	    this.shapeValueRepo.set(obj);
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_FORMULA, obj.getName());
+		    RedisConstants.OBJECT_SHAPE, obj.getName());
 	}
-	this.formulaValueRepo.set(obj);
+	this.shapeValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_FORMULA, obj.getName());
+		RedisConstants.OBJECT_SHAPE, obj.getName());
     }
 
     @Override
     @Transactional
     public void delete(Collection<String> keys) {
-	this.formulaValueRepo.delete(keys);
+	this.shapeValueRepo.delete(keys);
     }
 
     @Override
     @Transactional
-    public void setIfAbsent(Formula obj) {
-	this.formulaValueRepo.setIfAbsent(obj);
+    public void setIfAbsent(Shape obj) {
+	this.shapeValueRepo.setIfAbsent(obj);
     }
 
     @Override
     @Transactional
-    public Formula get(String key) {
-	return this.formulaValueRepo.get(key);
+    public Shape get(String key) {
+	return this.shapeValueRepo.get(key);
     }
 
     @Override
     @Transactional
     public Set<String> keys(String pattern) {
-	return this.formulaValueRepo.keys(pattern);
+	return this.shapeValueRepo.keys(pattern);
     }
 
     @Override
     @Transactional
-    public Collection<Formula> multiGet(Collection<String> keys) {
-	return this.formulaValueRepo.multiGet(keys);
+    public Collection<Shape> multiGet(Collection<String> keys) {
+	return this.shapeValueRepo.multiGet(keys);
     }
 
     @Override
     @Transactional
-    public List<Formula> list() {
+    public List<Shape> list() {
 	AuthenticationToken auth = this.authHelper.getAuth();
-	String pattern = Formula.constructPattern(auth.getCompany());
-	Set<String> keys = this.formulaValueRepo.keys(pattern);
-	List<Formula> fList = this.formulaValueRepo.multiGet(keys);
+	String pattern = Shape.constructPattern(auth.getCompany());
+	Set<String> keys = this.shapeValueRepo.keys(pattern);
+	List<Shape> fList = this.shapeValueRepo.multiGet(keys);
 	return fList;
     }
 
     @Override
     @Transactional
-    public String getReadyToSolveEquation(Formula formula) {
+    public String getReadyToSolveEquation(Shape shape) {
 
 	// Get all ingredients.
-	String[] formulaInputs = formula.getFormulaInputs();
-	List<String> variableNames = formula.getVariableNames();
-	String formulaStr = formula.getFormula();
+	String[] formulaInputs = shape.getFormulaInputs();
+	List<String> variableNames = shape.getVariableNames();
+	String formulaStr = shape.getFormula();
 
 	for (int i = 0; i < variableNames.size(); i++) {
 
@@ -152,20 +152,20 @@ public class FormulaServiceImpl implements FormulaService {
 
 	// Clean the string.
 	formulaStr = org.apache.commons.lang.StringUtils.remove(formulaStr,
-		Formula.DELIMITER_OPEN_VARIABLE);
+		Shape.DELIMITER_OPEN_VARIABLE);
 	formulaStr = org.apache.commons.lang.StringUtils.remove(formulaStr,
-		Formula.DELIMITER_CLOSE_VARIABLE);
+		Shape.DELIMITER_CLOSE_VARIABLE);
 	return formulaStr;
     }
 
     @Override
     @Transactional
-    public String test(Formula formula) {
+    public String test(Shape shape) {
 
 	// Get the input.
 	// Configure the format.
 	// Create the query.
-	String input = getReadyToSolveEquation(formula);
+	String input = getReadyToSolveEquation(shape);
 	WAQuery query = this.wolframAlphaEngine.createQuery();
 
 	// Set properties of the query.
@@ -192,7 +192,7 @@ public class FormulaServiceImpl implements FormulaService {
 	    // If general error, unknown cause.
 	    else if (!queryResult.isSuccess()) {
 		returnStr = AlertBoxGenerator.FAILED.generateCompute(
-			RedisConstants.OBJECT_FORMULA, formula.getName());
+			RedisConstants.OBJECT_SHAPE, shape.getName());
 	    }
 	    // If the query was a success.
 	    else {
@@ -244,13 +244,13 @@ public class FormulaServiceImpl implements FormulaService {
      */
     @Transactional
     @Override
-    public List<String> getAllVariableNames(Formula formula) {
+    public List<String> getAllVariableNames(Shape shape) {
 
 	// Get all indices of open and close variables.
 	List<Integer> openIndices = StringUtils.getAllIndicesOfSubstring(
-		formula.getFormula(), Formula.DELIMITER_OPEN_VARIABLE);
+		shape.getFormula(), Shape.DELIMITER_OPEN_VARIABLE);
 	List<Integer> closeIndices = StringUtils.getAllIndicesOfSubstring(
-		formula.getFormula(), Formula.DELIMITER_CLOSE_VARIABLE);
+		shape.getFormula(), Shape.DELIMITER_CLOSE_VARIABLE);
 
 	// Proceed only if legal.
 	if (openIndices.size() == closeIndices.size()) {
@@ -262,14 +262,14 @@ public class FormulaServiceImpl implements FormulaService {
 		// Get the variable name.
 		int indexOpen = openIndices.get(i);
 		int indexClose = closeIndices.get(i);
-		String variableName = formula.getFormula().substring(indexOpen,
+		String variableName = shape.getFormula().substring(indexOpen,
 			indexClose);
 
 		// Clean the variable name.
 		variableName = org.apache.commons.lang.StringUtils.remove(
-			variableName, Formula.DELIMITER_OPEN_VARIABLE);
+			variableName, Shape.DELIMITER_OPEN_VARIABLE);
 		variableName = org.apache.commons.lang.StringUtils.remove(
-			variableName, Formula.DELIMITER_CLOSE_VARIABLE);
+			variableName, Shape.DELIMITER_CLOSE_VARIABLE);
 
 		// Add the name to the output list.
 		variableNames.add(variableName);
@@ -282,6 +282,6 @@ public class FormulaServiceImpl implements FormulaService {
     @Transactional
     @Override
     public void delete(String key) {
-	this.formulaValueRepo.delete(key);
+	this.shapeValueRepo.delete(key);
     }
 }

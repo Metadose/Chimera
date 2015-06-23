@@ -66,7 +66,7 @@ public class PullOutServiceImpl implements PullOutService {
 	if (quantity <= 0 || obj.getDatetime() == null || available <= 0
 		|| quantity > available) {
 	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(),
-		    material.getUnit(), material.getName());
+		    material.getUnit().getName(), material.getName());
 	}
 
 	// If we're creating.
@@ -95,7 +95,7 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Return.
 	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(),
-		material.getUnit(), material.getName());
+		material.getUnit().getName(), material.getName());
     }
 
     @Override

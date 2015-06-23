@@ -83,14 +83,44 @@
 									                <c:if test="${!empty staffList}">
 									                <table>
 									                <tr>
-									                	<td><label>Delivery Name:</label></td>
+									                	<td><label>Delivery:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullout.delivery.name}</td>
+									                	<td>
+									                	<c:url var="urlLink" value="/project/edit/delivery/${pullout.delivery.getKey()}-end"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	${pullout.delivery.name}
+									                	</a>
+									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Material Name:</label></td>
+									                	<td><label>Material Category:</label></td>
 									                	<td>&nbsp;</td>
-									                	<td>${pullout.material.name}</td>
+									                	<td>
+									                	<c:url var="urlLink" value="/materialcategory/edit/${pullout.material.materialCategory.getKey()}-end"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	${pullout.material.materialCategory.name}
+									                	</a>
+									                	</td>
+									                </tr>
+									                <tr>
+									                	<td><label>Specific Name:</label></td>
+									                	<td>&nbsp;</td>
+									                	<td>
+									                	<c:url var="urlLink" value="/project/edit/material/${pullout.material.getKey()}-end"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	${pullout.material.name}
+									                	</a>
+									                	</td>
+									                </tr>
+									                <tr>
+									                	<td><label>Units:</label></td>
+									                	<td>&nbsp;</td>
+									                	<td>
+									                	<c:url var="urlLink" value="/unit/edit/${pullout.material.unit.getKey()}-end"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	${pullout.material.unit.name}
+									                	</a>
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Available:</label></td>
@@ -107,11 +137,6 @@
 									                	<td><label>Total Quantity:</label></td>
 									                	<td>&nbsp;</td>
 									                	<td align="right">${pullout.material.quantity}</td>
-									                </tr>
-									                <tr>
-									                	<td><label>Units:</label></td>
-									                	<td>&nbsp;</td>
-									                	<td align="right">${pullout.material.unit}</td>
 									                </tr>
 									                </table>
 									                <div class="progress">

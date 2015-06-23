@@ -8,7 +8,7 @@ public abstract class RedisConstants {
     public static final String OBJECT_NOTIFICATION = "notification";
     public static final String OBJECT_PAYROLL = "payroll";
     public static final String OBJECT_MATERIAL = "material";
-    public static final String OBJECT_FORMULA = "formula";
+    public static final String OBJECT_SHAPE = "shape";
     public static final String OBJECT_DELIVERY = "delivery";
     public static final String OBJECT_PROJECT_AUX = "projectAux";
     public static final String OBJECT_PULL_OUT = "pullout";

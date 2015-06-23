@@ -10,11 +10,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
 	<c:choose>
-   	<c:when test="${empty formula.uuid}">
-    	<title>Formula Create</title>
+   	<c:when test="${empty shape.uuid}">
+    	<title>Shape Create</title>
    	</c:when>
-   	<c:when test="${!empty formula.uuid}">
-		<title>Formula Edit</title>
+   	<c:when test="${!empty shape.uuid}">
+		<title>Shape Edit</title>
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>
@@ -42,12 +42,12 @@
 	            <h1>
 	            	<c:choose>
 	            	<c:when test="${!isUpdating}">
-		            	New Formula
-		                <small>Create Formula</small>
+		            	New Shape
+		                <small>Create Shape</small>
 	            	</c:when>
 	            	<c:when test="${isUpdating}">
-	            		${formula.name}
-		                <small>Edit Formula</small>
+	            		${shape.name}
+		                <small>Edit Shape</small>
 	            	</c:when>
 	            	</c:choose>
 	            </h1>
@@ -73,16 +73,16 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<form:form modelAttribute="formula"
+                   									<form:form modelAttribute="shape"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/formula/create">
+														action="${contextPath}/shape/create">
 				                                        <div class="form-group">
 				                                            
 				                                            <label>Name</label>
 				                                            <form:input type="text" class="form-control" path="name"/><br/>
 				                                            <label>Formula</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formula"/><br/>
+				                                            <form:input type="text" id="shape" class="form-control" path="formula"/><br/>
 				                                            <label>Description</label>
 				                                            <form:input type="text" class="form-control" path="description"/>
 				                                        </div>
@@ -106,16 +106,16 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<form:form modelAttribute="formula"
+                   									<form:form modelAttribute="shape"
 														method="post"
-														action="${contextPath}/formula/test">
+														action="${contextPath}/shape/test">
 				                                        <div class="form-group">
-				                                            <label>Formula</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formula"/>
-				                                            <c:forEach items="${formula.variableNames}" var="variableName">
+				                                            <label>Shape</label>
+				                                            <form:input type="text" id="shape" class="form-control" path="formula"/>
+				                                            <c:forEach items="${shape.variableNames}" var="variableName">
 				                                            <br/>
 				                                            <label>${variableName}</label>
-				                                            <form:input type="text" id="formula" class="form-control" path="formulaInputs"/>
+				                                            <form:input type="text" id="shape" class="form-control" path="formulaInputs"/>
 				                                            </c:forEach>
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Test Formula</button>

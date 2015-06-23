@@ -7,18 +7,18 @@ import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.domain.Formula;
+import com.cebedo.pmsys.domain.Shape;
 
-public class FormulaValueRepo implements IValueRepository<Formula> {
+public class ShapeValueRepo implements IValueRepository<Shape> {
 
-    private RedisTemplate<String, Formula> redisTemplate;
+    private RedisTemplate<String, Shape> redisTemplate;
 
-    public void setRedisTemplate(RedisTemplate<String, Formula> redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<String, Shape> redisTemplate) {
 	this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public void rename(Formula obj, String newKey) {
+    public void rename(Shape obj, String newKey) {
 	this.redisTemplate.rename(obj.getKey(), newKey);
     }
 
@@ -28,17 +28,17 @@ public class FormulaValueRepo implements IValueRepository<Formula> {
     }
 
     @Override
-    public void set(Formula obj) {
+    public void set(Shape obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);
     }
 
     @Override
-    public void setIfAbsent(Formula obj) {
+    public void setIfAbsent(Shape obj) {
 	this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
     }
 
     @Override
-    public Formula get(String key) {
+    public Shape get(String key) {
 	return this.redisTemplate.opsForValue().get(key);
     }
 
@@ -48,12 +48,12 @@ public class FormulaValueRepo implements IValueRepository<Formula> {
     }
 
     @Override
-    public void multiSet(Map<String, Formula> m) {
+    public void multiSet(Map<String, Shape> m) {
 	this.redisTemplate.opsForValue().multiSet(m);
     }
 
     @Override
-    public List<Formula> multiGet(Collection<String> keys) {
+    public List<Shape> multiGet(Collection<String> keys) {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 

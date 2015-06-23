@@ -8,7 +8,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Formula List</title>
+	<title>Shape List</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -18,8 +18,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Formula List
-	                <small>Complete list of all formulas</small>
+	                Shape List
+	                <small>Complete list of all shapes</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -37,9 +37,9 @@
 									<div class="col-xs-12">
 										<div class="box">
 												<div class="box-body table-responsive">
-													<c:url var="urlCreateFormula" value="/formula/edit/0-end"/>
-				                                	<a href="${urlCreateFormula}">
-				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Formula</button>
+													<c:url var="urlCreateShape" value="/shape/edit/0-end"/>
+				                                	<a href="${urlCreateShape}">
+				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Shape</button>
 				                                	</a>
 				                                	<br/><br/>
 				                                    <table id="example-1" class="table table-bordered table-striped">
@@ -52,24 +52,24 @@
 				                                            </tr>
 				                                        </thead>
 				                                        <tbody>
-				                                        	<c:if test="${!empty formulaList}">
-				                                        		<c:forEach items="${formulaList}" var="formula">
+				                                        	<c:if test="${!empty shapeList}">
+				                                        		<c:forEach items="${shapeList}" var="shape">
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-						                                            			<c:url var="urlEditFormula" value="/formula/edit/${formula.getKey()}-end"/>
-				                                								<a href="${urlEditFormula}">
+						                                            			<c:url var="urlEditShape" value="/shape/edit/${shape.getKey()}-end"/>
+				                                								<a href="${urlEditShape}">
 																					<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                								</a>
-																				<c:url var="urlDeleteFormula" value="/formula/delete/${formula.getKey()}-end"/>
-				                                								<a href="${urlDeleteFormula}">
+																				<c:url var="urlDeleteShape" value="/shape/delete/${shape.getKey()}-end"/>
+				                                								<a href="${urlDeleteShape}">
 																					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                								</a>
 																			</center>
 																		</td>
-						                                                <td>${formula.name}</td>
-						                                                <td>${formula.formula}</td>
-						                                                <td>${formula.description}</td>
+						                                                <td>${shape.name}</td>
+						                                                <td>${shape.formula}</td>
+						                                                <td>${shape.description}</td>
 						                                            </tr>
 					                                            </c:forEach>
 				                                            </c:if>

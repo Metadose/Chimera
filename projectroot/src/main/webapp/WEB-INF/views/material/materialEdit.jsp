@@ -63,6 +63,16 @@
 									                </div>
 									                <table>
 									                <tr>
+									                	<td><label>Delivery:</label></td>
+									                	<td>&nbsp;</td>
+									                	<td>
+									                	<c:url var="urlLink" value="/project/edit/delivery/${material.delivery.getKey()}-end"/>
+									                	<a href="${urlLink}" class="general-link">
+									                	${material.delivery.name}
+									                	</a>
+									                	</td>
+									                </tr>
+									                <tr>
 									                	<td><label>Used / Pulled-Out:</label></td>
 									                	<td>&nbsp;</td>
 									                	<td align="right">${material.used}</td>
@@ -109,14 +119,30 @@
 														method="post"
 														action="${contextPath}/project/update/material">
 				                                        <div class="form-group">
-				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                        
+				                                        	<label>Material Category</label>
+				                                            <form:select class="form-control" path="materialCategoryKey"> 
+	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
+	                                     							<form:option value="${materialCategory.getKey()}" label="${materialCategory.name}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <p class="help-block">Choose the category of the material</p>
+				                                        
+				                                            <label>Specific Name</label>
+				                                            <form:input type="text" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the specific name of the material</p>
 				                                            
-				                                            <label>Unit</label>
-				                                            <form:input type="text" class="form-control" path="unit"/><br/>
+				                                            <label>Unit of Measure</label>
+				                                            <form:select class="form-control" path="unitKey"> 
+	                                     						<c:forEach items="${unitList}" var="unit"> 
+	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <p class="help-block">Choose the unit of measure</p>
 				                                            
 				                                            <label>Remarks</label>
 				                                            <form:input type="text" class="form-control" path="remarks"/>
+				                                            <p class="help-block">Add more information regarding this material</p>
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Update</button>

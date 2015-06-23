@@ -123,17 +123,30 @@
 														method="post"
 														action="${contextPath}/project/add/material">
 				                                        <div class="form-group">
-				                                            <label>Name</label>
-				                                            <form:input type="text" placeholder="Sample: Gravel" class="form-control" path="name"/>
-				                                            <p class="help-block">Enter the name of the material</p>
+				                                        
+				                                        	<label>Material Category</label>
+				                                            <form:select class="form-control" path="materialCategoryKey"> 
+	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
+	                                     							<form:option value="${materialCategory.getKey()}" label="${materialCategory.name}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <p class="help-block">Choose the category of the material</p>
+				                                            
+				                                            <label>Specific Name</label>
+				                                            <form:input type="text" placeholder="Sample: Ordinary Portland Cement" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the specific name of the material</p>
+				                                            
+				                                            <label>Unit of Measure</label>
+				                                            <form:select class="form-control" path="unitKey"> 
+	                                     						<c:forEach items="${unitList}" var="unit"> 
+	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <p class="help-block">Choose the unit of measure</p>
 				                                            
 				                                            <label>Quantity</label>
 				                                            <form:input type="text" placeholder="Sample: 100, 200, 350, 500" class="form-control" path="quantity"/>
 				                                            <p class="help-block">Enter the total amount of materials</p>
-				                                            
-				                                            <label>Unit</label>
-				                                            <form:input type="text" placeholder="Sample: Cubic Meters, Bags, Square Foot" class="form-control" path="unit"/>
-				                                            <p class="help-block">Specify the unit of measure</p>
 				                                            
 				                                            <label>Cost (Per Unit)</label>
 				                                            <form:input type="text" placeholder="Sample: 30.50, 25.10, 100, 200" class="form-control" path="costPerUnitMaterial"/>
@@ -163,7 +176,7 @@
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 									                <div class="pull-right">
-									                <h3>Grand Total <b><u>
+									                <h3>Delivered Materials Total <b><u>
 				                                	${delivery.getGrandTotalOfMaterialsAsString()}
 													</u></b></h3>
 									                </div>
@@ -171,14 +184,15 @@
 				                                    	<thead>
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
-				                                                <th>Name</th>
-				                                                <th>Used / Pulled-Out</th>
-				                                                <th>Available</th>
-				                                            	<th>Quantity</th>
-				                                                <th>Unit</th>
-				                                                <th>Cost (Per Unit)</th>
-				                                                <th>Total Cost</th>
-				                                                <th>Remarks</th>
+																<th>Material Category</th>
+																<th>Specific Name</th>
+																<th>Unit</th>
+																<th>Used / Pulled-Out</th>
+																<th>Available</th>
+																<th>Total Quantity</th>
+																<th>Cost (Per Unit)</th>
+																<th>Total Cost</th>
+																<th>Remarks</th>
 				                                            </tr>
 		                                        		</thead>
 				                                        <tbody>
@@ -190,19 +204,52 @@
 				                                            			<a href="${urlEdit}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
+				                                            			<c:if test="${row.available > 0}">
+				                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
+									                                    <a href="${urlPullout}">
+		                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
+									                                    </a>
+									                                    </c:if>
 									                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
 									                                    <a href="${urlDelete}">
 		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 									                                    </a>
 																	</center>
 																</td>
+																<td>
+																<c:url var="urlLink" value="/materialcategory/edit/${row.materialCategory.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.materialCategory.name}
+							                                    </a>
+																</td>
 																<td>${row.name}</td>
+																<td>
+																<c:url var="urlLink" value="/unit/edit/${row.unit.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.unit.name}
+							                                    </a>
+																</td>
 																<td align="right">${row.used}</td>
-																<td align="right">${row.available}</td>
+																<td align="center">
+																<div class="progress">
+																	<div class="progress-bar progress-bar-${row.getAvailableCSS()} progress-bar-striped" 
+																	    role="progressbar" 
+																	    aria-valuenow="${row.available}" 
+																	    aria-valuemin="0" 
+																	    aria-valuemax="${row.quantity}"
+																	    style="width:${row.getAvailableAsPercentage()}">
+																	    <c:if test="${row.available <= 0}">
+																	    	Out of Stock
+																	    </c:if>
+																    </div>
+																</div>
+															    <c:if test="${row.available > 0}">
+															      ${row.available} (${row.getAvailableAsPercentage()})
+															    </c:if>
+																</td>
 																<td align="right">${row.quantity}</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
-																<td>${row.unit}</td>
 																<td>${row.remarks}</td>
 				                                            </tr>
 			                                            	</c:forEach>

@@ -823,11 +823,12 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                            	<th>Delivery</th>
-				                                                <th>Material</th>
+				                                            	<th>Material Category</th>
+				                                                <th>Specific Name</th>
+				                                                <th>Unit</th>
 				                                                <th>Used / Pulled-Out</th>
 				                                                <th>Available</th>
 				                                            	<th>Total Quantity</th>
-				                                                <th>Unit</th>
 				                                                <th>Cost (Per Unit)</th>
 				                                                <th>Total Cost</th>
 				                                                <th>Remarks</th>
@@ -860,7 +861,19 @@
 																${row.delivery.name}
 							                                    </a>
 																</td>
+																<td>
+																<c:url var="urlLink" value="/materialcategory/edit/${row.materialCategory.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.materialCategory.name}
+							                                    </a>
+																</td>
 																<td>${row.name}</td>
+																<td>
+																<c:url var="urlLink" value="/unit/edit/${row.unit.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.unit.name}
+							                                    </a>
+																</td>
 																<td align="right">${row.used}</td>
 																<td align="center">
 																<div class="progress">
@@ -880,7 +893,6 @@
 															    </c:if>
 																</td>
 																<td align="right">${row.quantity}</td>
-																<td align="right">${row.unit}</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
 																<td>${row.remarks}</td>
@@ -970,9 +982,10 @@
 				                                            	<th>&nbsp;</th>
 				                                                <th>Date and Time</th>
 				                                                <th>Delivery</th>
-				                                                <th>Material</th>
-				                                                <th>Quantity</th>
+																<th>Material Category</th>
+																<th>Specific Name</th>
 				                                                <th>Unit</th>
+				                                                <th>Quantity</th>
 				                                            	<th>Staff</th>
 				                                            </tr>
 		                                        		</thead>
@@ -1001,14 +1014,27 @@
 																</td>
 																
 																<td>
+																<c:url var="urlLink" value="/materialcategory/edit/${row.material.materialCategory.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.material.materialCategory.name}
+							                                    </a>
+																</td>
+																
+																<td>
 																<c:url var="urlLink" value="/project/edit/material/${row.material.getKey()}-end"/>
 							                                    <a href="${urlLink}" class="general-link">
 																${row.material.name}
 							                                    </a>
 																</td>
 																
+																<td>
+																<c:url var="urlLink" value="/unit/edit/${row.material.unit.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.material.unit.name}
+							                                    </a>
+																</td>
+																
 																<td align="right">${row.quantity}</td>
-																<td align="right">${row.material.unit}</td>
 																
 																<td>
 																<c:url var="urlLink" value="/staff/edit/${row.staff.id}/from/project/${project.id}"/>

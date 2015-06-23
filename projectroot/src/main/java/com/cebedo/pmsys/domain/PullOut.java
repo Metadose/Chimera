@@ -129,7 +129,7 @@ public class PullOut implements IDomainObject {
     }
 
     public String getQuantityWithUnitsAsString() {
-	return this.quantity + " " + this.material.getUnit();
+	return this.quantity + " " + this.material.getUnit().getName();
     }
 
     public void setQuantity(double quantity) {
