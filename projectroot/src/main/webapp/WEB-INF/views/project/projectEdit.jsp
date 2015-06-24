@@ -1236,14 +1236,39 @@
 				                            </ul>
 				                            <div class="tab-content">
 				                                <div class="tab-pane active" id="subtab_concrete">
+				                                <div class="row">
+					                            <div class="col-md-6">
+			               							<div class="box box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Cost & Estimate</h3>
+			               								</div>
+			               								<div class="box-body box-default">
+			               								<div class="callout callout-info callout-cebedo">
+										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+										                </div>
+			               								</div>
+			               							</div>
+			               						</div>
+			               						<div class="col-md-6">
+			               							<div class="box box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Compute Costing</h3>
+			               								</div>
+			               								<div class="box-body box-default">
+			               								<div class="callout callout-info callout-cebedo">
+										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+										                </div>
+			               								</div>
+			               							</div>
+			               						</div>
+			               						</div>
 			                                	<div class="row">
 					                            <div class="col-xs-12">
 			               							<div class="box box-default">
 			               								<div class="box-header">
-			               									<h3 class="box-title">Concrete</h3>
+			               									<h3 class="box-title">Breakdown</h3>
 			               								</div>
 			               								<div class="box-body box-default">
-			               								<div class="box-body table-responsive">
 						                                	<div class="callout callout-info callout-cebedo">
 											                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 											                </div>
@@ -1296,15 +1321,14 @@
 						                                                	${concrete.concreteProportion.getDisplayName()}
 					                                            			</a>
 						                                                	</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.cement40kg} ${concrete.concreteProportion.unitCement40kgUnit.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.cement50kg} ${concrete.concreteProportion.unitCement50kgUnit.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.sand} ${concrete.concreteProportion.unitSandUnit.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.gravel} ${concrete.concreteProportion.unitGravelUnit.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.cement40kg} ${concrete.concreteProportion.unitCement40kg.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.cement50kg} ${concrete.concreteProportion.unitCement50kg.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.sand} ${concrete.concreteProportion.unitSand.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.gravel} ${concrete.concreteProportion.unitGravel.name}</td>
 							                                            </tr>
 						                                            </c:forEach>
 							                                    </tbody>
 							                                </table>
-						                                </div><!-- /.box-body -->
 			               								</div>
 			               							</div>
 			               						</div>

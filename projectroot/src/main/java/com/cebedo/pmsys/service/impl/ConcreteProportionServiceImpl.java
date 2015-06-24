@@ -59,17 +59,17 @@ public class ConcreteProportionServiceImpl implements ConcreteProportionService 
     public String set(ConcreteProportion obj) {
 
 	// Set the units.
-	Unit cement40Unit = getUnitObj(obj.getUnitKeyCement40kgUnit());
-	obj.setUnitCement40kgUnit(cement40Unit);
+	Unit cement40Unit = getUnitObj(obj.getUnitKeyCement40kg());
+	obj.setUnitCement40kg(cement40Unit);
 
-	Unit cement50Unit = getUnitObj(obj.getUnitKeyCement50kgUnit());
-	obj.setUnitCement50kgUnit(cement50Unit);
+	Unit cement50Unit = getUnitObj(obj.getUnitKeyCement50kg());
+	obj.setUnitCement50kg(cement50Unit);
 
-	Unit sandUnit = getUnitObj(obj.getUnitKeySandUnit());
-	obj.setUnitSandUnit(sandUnit);
+	Unit sandUnit = getUnitObj(obj.getUnitKeySand());
+	obj.setUnitSand(sandUnit);
 
-	Unit gravelUnit = getUnitObj(obj.getUnitKeyGravelUnit());
-	obj.setUnitGravelUnit(gravelUnit);
+	Unit gravelUnit = getUnitObj(obj.getUnitKeyGravel());
+	obj.setUnitGravel(gravelUnit);
 
 	// If create.
 	if (obj.getUuid() == null) {

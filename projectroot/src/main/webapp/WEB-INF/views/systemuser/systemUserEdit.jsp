@@ -115,7 +115,6 @@
                                 <c:if test="${systemuser.id != 0}">
                                 <div class="tab-pane" id="tab_data_access">
                                 	<div class="box box-default">
-		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
 <%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
@@ -189,12 +188,10 @@
 		                                            </c:forEach>
 			                                    </tbody>
 			                                </table>
-		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_authority">
                                 	<div class="box box-default">
-		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
 <%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
@@ -259,7 +256,6 @@
 		                                            </c:forEach>
 			                                    </tbody>
 			                                </table>
-		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 </c:if>

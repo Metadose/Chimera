@@ -31,18 +31,18 @@ public class ConcreteProportion implements IDomainObject {
     private double partSand;
     private double partGravel;
 
-    private Unit unitCement40kgUnit;
-    private Unit unitCement50kgUnit;
-    private Unit unitSandUnit;
-    private Unit unitGravelUnit;
+    private Unit unitCement40kg;
+    private Unit unitCement50kg;
+    private Unit unitSand;
+    private Unit unitGravel;
 
     /**
      * Bean-backed form.
      */
-    private String unitKeyCement40kgUnit;
-    private String unitKeyCement50kgUnit;
-    private String unitKeySandUnit;
-    private String unitKeyGravelUnit;
+    private String unitKeyCement40kg;
+    private String unitKeyCement50kg;
+    private String unitKeySand;
+    private String unitKeyGravel;
 
     /**
      * Extension map.
@@ -169,68 +169,68 @@ public class ConcreteProportion implements IDomainObject {
 	this.partGravel = partGravel;
     }
 
-    public Unit getUnitCement40kgUnit() {
-	return unitCement40kgUnit;
+    public Unit getUnitCement40kg() {
+	return unitCement40kg;
     }
 
-    public void setUnitCement40kgUnit(Unit unitCement40kgUnit) {
-	this.unitCement40kgUnit = unitCement40kgUnit;
+    public void setUnitCement40kg(Unit u) {
+	this.unitCement40kg = u;
     }
 
-    public Unit getUnitCement50kgUnit() {
-	return unitCement50kgUnit;
+    public Unit getUnitCement50kg() {
+	return unitCement50kg;
     }
 
-    public void setUnitCement50kgUnit(Unit unitCement50kgUnit) {
-	this.unitCement50kgUnit = unitCement50kgUnit;
+    public void setUnitCement50kg(Unit u) {
+	this.unitCement50kg = u;
     }
 
-    public Unit getUnitSandUnit() {
-	return unitSandUnit;
+    public Unit getUnitSand() {
+	return unitSand;
     }
 
-    public void setUnitSandUnit(Unit unitSandUnit) {
-	this.unitSandUnit = unitSandUnit;
+    public void setUnitSand(Unit u) {
+	this.unitSand = u;
     }
 
-    public Unit getUnitGravelUnit() {
-	return unitGravelUnit;
+    public Unit getUnitGravel() {
+	return unitGravel;
     }
 
-    public void setUnitGravelUnit(Unit unitGravelUnit) {
-	this.unitGravelUnit = unitGravelUnit;
+    public void setUnitGravel(Unit u) {
+	this.unitGravel = u;
     }
 
-    public String getUnitKeyCement40kgUnit() {
-	return unitKeyCement40kgUnit;
+    public String getUnitKeyCement40kg() {
+	return unitKeyCement40kg;
     }
 
-    public void setUnitKeyCement40kgUnit(String unitKeyCement40kgUnit) {
-	this.unitKeyCement40kgUnit = unitKeyCement40kgUnit;
+    public void setUnitKeyCement40kg(String u) {
+	this.unitKeyCement40kg = u;
     }
 
-    public String getUnitKeyCement50kgUnit() {
-	return unitKeyCement50kgUnit;
+    public String getUnitKeyCement50kg() {
+	return unitKeyCement50kg;
     }
 
-    public void setUnitKeyCement50kgUnit(String unitKeyCement50kgUnit) {
-	this.unitKeyCement50kgUnit = unitKeyCement50kgUnit;
+    public void setUnitKeyCement50kg(String u) {
+	this.unitKeyCement50kg = u;
     }
 
-    public String getUnitKeySandUnit() {
-	return unitKeySandUnit;
+    public String getUnitKeySand() {
+	return unitKeySand;
     }
 
-    public void setUnitKeySandUnit(String unitKeySandUnit) {
-	this.unitKeySandUnit = unitKeySandUnit;
+    public void setUnitKeySand(String u) {
+	this.unitKeySand = u;
     }
 
-    public String getUnitKeyGravelUnit() {
-	return unitKeyGravelUnit;
+    public String getUnitKeyGravel() {
+	return unitKeyGravel;
     }
 
-    public void setUnitKeyGravelUnit(String unitKeyGravelUnit) {
-	this.unitKeyGravelUnit = unitKeyGravelUnit;
+    public void setUnitKeyGravel(String u) {
+	this.unitKeyGravel = u;
     }
 
 }

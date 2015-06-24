@@ -103,7 +103,7 @@
 				                                            <h4>Value and Result Unit</h4>
 				                                            <label>Cement (40kg)</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partCement40kg"/>
-				                                            <form:select class="form-control" path="unitKeyCement40kgUnit"> 
+				                                            <form:select class="form-control" path="unitKeyCement40kg"> 
 								           						<c:forEach items="${unitList}" var="unit"> 
 								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
 								           						</c:forEach>
@@ -112,7 +112,7 @@
 				                                            
 				                                            <label>Cement (50kg)</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partCement50kg"/>
-				                                            <form:select class="form-control" path="unitKeyCement50kgUnit"> 
+				                                            <form:select class="form-control" path="unitKeyCement50kg"> 
 								           						<c:forEach items="${unitList}" var="unit"> 
 								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
 								           						</c:forEach>
@@ -121,7 +121,7 @@
 				                                            
 				                                            <label>Sand</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partSand"/>
-				                                            <form:select class="form-control" path="unitKeySandUnit"> 
+				                                            <form:select class="form-control" path="unitKeySand"> 
 								           						<c:forEach items="${unitList}" var="unit"> 
 								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
 								           						</c:forEach>
@@ -130,7 +130,7 @@
 				                                            
 				                                            <label>Gravel</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partGravel"/>
-				                                            <form:select class="form-control" path="unitKeyGravelUnit"> 
+				                                            <form:select class="form-control" path="unitKeyGravel"> 
 								           						<c:forEach items="${unitList}" var="unit"> 
 								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
 								           						</c:forEach>

@@ -226,22 +226,22 @@
 									                <tr>
 										                <td><label>Cement (40kg)</label></td>
 										                <td align="right">${estimate.resultEstimateConcrete.cement40kg}</td>
-										                <td>${estimate.concreteProportion.unitCement40kgUnit.name}</td>
+										                <td>${estimate.concreteProportion.unitCement40kg.name}</td>
 									                </tr>
 									                <tr>
 										                <td><label>Cement (50kg)</label></td>
 										                <td align="right">${estimate.resultEstimateConcrete.cement50kg}</td>
-										                <td>${estimate.concreteProportion.unitCement50kgUnit.name}</td>
+										                <td>${estimate.concreteProportion.unitCement50kg.name}</td>
 									                </tr>
 									                <tr>
 										                <td><label>Sand</label></td>
 										                <td align="right">${estimate.resultEstimateConcrete.sand}</td>
-										                <td>${estimate.concreteProportion.unitSandUnit.name}</td>
+										                <td>${estimate.concreteProportion.unitSand.name}</td>
 									                </tr>
 									                <tr>
 										                <td><label>Gravel</label></td>
 										                <td align="right">${estimate.resultEstimateConcrete.gravel}</td>
-										                <td>${estimate.concreteProportion.unitGravelUnit.name}</td>
+										                <td>${estimate.concreteProportion.unitGravel.name}</td>
 									                </tr>
 									                </table>
 									                
