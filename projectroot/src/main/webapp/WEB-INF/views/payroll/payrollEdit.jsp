@@ -153,7 +153,12 @@
 														method="post"
 														action="${contextPath}/project/edit/payroll/include/staff">
 				                                        	<tr>
-				                                        	<td><label>Staff</label></td>
+				                                        	<td><label>
+				                                        	<c:url value="/staff/list" var="urlLink"/>
+				                                        	<a href="${urlLink}" class="general-link">
+				                                        	Staff
+				                                        	</a>
+				                                        	</label></td>
 				                                        	<td>&nbsp;</td>
 				                                        	<td style="width: 100%">
 				                                            <form:select class="form-control" path="staffID">

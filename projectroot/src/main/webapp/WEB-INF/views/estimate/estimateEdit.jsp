@@ -89,7 +89,12 @@
 				                                            <form:input type="text" placeholder="Sample: Estimating concrete hollowblocks needed for the fence" class="form-control" path="remarks"/>
 				                                            <p class="help-block">Add extra information</p>
 				                                            
-				                                            <label>Shape</label>
+				                                            <label>
+											                <c:url var="urlLink" value="/shape/list"/>
+											                <a href="${urlLink}" class="general-link">
+											                Shape
+											                </a>
+											                </label>
 				                                            <form:select class="form-control" path="shapeKey"> 
 	                                     						<c:forEach items="${shapeList}" var="shape"> 
 	                                     							<form:option value="${shape.getKey()}" label="${shape.name}"/> 
@@ -156,7 +161,12 @@
 				                                        <p class="help-block">Input the value for each variable in the shape formula</p>
 				                                        
 				                                        <c:if test="${estimate.willComputeConcrete()}">
-			                                            <label>Concrete Proportion</label>
+				                                        <label>
+										                <c:url var="urlLink" value="/concreteproportion/list"/>
+										                <a href="${urlLink}" class="general-link">
+										                Concrete Proportion
+										                </a>
+										                </label>
 			                                            <form:select class="form-control" path="concreteProportionKey"> 
                                      						<c:forEach items="${concreteProportionList}" var="ratio"> 
                                      							<form:option value="${ratio.getKey()}" label="${ratio.getDisplayName()}"/> 

@@ -1185,9 +1185,15 @@ public class ProjectController {
 
 	// Complete the transaction.
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ delivery.getProject().getId();
+	return getSubmoduleEditRedirect(RedisConstants.OBJECT_DELIVERY,
+		delivery.getKey());
+    }
+
+    private String getSubmoduleEditRedirect(String submodule, String key) {
+	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT
+		+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
+		+ "/" + submodule + "/" + key + "-end";
+	return deliveryEdit;
     }
 
     /**
@@ -1214,9 +1220,8 @@ public class ProjectController {
 
 	// Complete the transaction.
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ estimate.getProject().getId();
+	return getSubmoduleEditRedirect(RedisConstants.OBJECT_ESTIMATE,
+		estimate.getKey());
     }
 
     /**
@@ -1243,10 +1248,8 @@ public class ProjectController {
 
 	// Complete the transaction.
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ RedisConstants.OBJECT_ESTIMATE + "/" + estimate.getKey()
-		+ "-end";
+	return getSubmoduleEditRedirect(RedisConstants.OBJECT_ESTIMATE,
+		estimate.getKey());
     }
 
     /**

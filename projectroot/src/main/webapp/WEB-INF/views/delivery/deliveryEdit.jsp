@@ -124,7 +124,12 @@
 														action="${contextPath}/project/add/material">
 				                                        <div class="form-group">
 				                                        
-				                                        	<label>Material Category</label>
+				                                        	<label>
+				                                        	<c:url var="urlLink" value="/materialcategory/list"/>
+											                <a href="${urlLink}" class="general-link">
+				                                        	Material Category
+											                </a>
+				                                        	</label>
 				                                            <form:select class="form-control" path="materialCategoryKey"> 
 	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
 	                                     							<form:option value="${materialCategory.getKey()}" label="${materialCategory.name}"/> 
@@ -136,7 +141,12 @@
 				                                            <form:input type="text" placeholder="Sample: Ordinary Portland Cement" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the specific name of the material</p>
 				                                            
-				                                            <label>Unit of Measure</label>
+				                                            <label>
+				                                            <c:url var="urlLink" value="/unit/list"/>
+											                <a href="${urlLink}" class="general-link">
+				                                            Unit of Measure
+											                </a>
+				                                            </label>
 				                                            <form:select class="form-control" path="unitKey"> 
 	                                     						<c:forEach items="${unitList}" var="unit"> 
 	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 

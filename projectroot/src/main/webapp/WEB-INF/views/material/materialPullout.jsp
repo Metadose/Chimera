@@ -81,10 +81,13 @@
 									                </div>
 									                </c:if>
 									                <c:if test="${!empty staffList}">
-									                <table>
+									                <table class="table table-bordered table-striped">
 									                <tr>
-									                	<td><label>Delivery:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Label</label></td>
+									                	<td><label>Data</label></td>
+									                </tr>
+									                <tr>
+									                	<td><label>Delivery</label></td>
 									                	<td>
 									                	<c:url var="urlLink" value="/project/edit/delivery/${pullout.delivery.getKey()}-end"/>
 									                	<a class="general-link" href="${urlLink}">
@@ -93,8 +96,14 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Material Category:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td>
+									                	<label>
+									                	<c:url var="urlLink" value="/materialcategory/list"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	Material Category
+									                	</a>
+									                	</label>
+									                	</td>
 									                	<td>
 									                	<c:url var="urlLink" value="/materialcategory/edit/${pullout.material.materialCategory.getKey()}-end"/>
 									                	<a class="general-link" href="${urlLink}">
@@ -103,8 +112,7 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Specific Name:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Specific Name</label></td>
 									                	<td>
 									                	<c:url var="urlLink" value="/project/edit/material/${pullout.material.getKey()}-end"/>
 									                	<a class="general-link" href="${urlLink}">
@@ -113,8 +121,12 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Units:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>
+									                	<c:url var="urlLink" value="/unit/list"/>
+									                	<a class="general-link" href="${urlLink}">
+									                	Units
+									                	</a>
+									                	</label></td>
 									                	<td>
 									                	<c:url var="urlLink" value="/unit/edit/${pullout.material.unit.getKey()}-end"/>
 									                	<a class="general-link" href="${urlLink}">
@@ -123,22 +135,20 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Available:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Available</label></td>
 									                	<td align="right">${pullout.material.available}
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Used:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Used</label></td>
 									                	<td align="right">${pullout.material.used}</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Total Quantity:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Total Quantity</label></td>
 									                	<td align="right">${pullout.material.quantity}</td>
 									                </tr>
 									                </table>
+									                <br/>
 									                <div class="progress">
 														<div class="progress-bar progress-bar-${pullout.material.getAvailableCSS()} progress-bar-striped" 
 														    role="progressbar" 
@@ -168,7 +178,12 @@
 				                                            <label>Quantity</label>
 				                                            <form:input type="text" class="form-control" path="quantity"/>
 				                                            <p class="help-block">Enter the number of units that was pulled-out</p>
-				                                            <label>Staff</label>
+				                                            <label>
+				                                            <c:url var="urlLink" value="/staff/list"/>
+										                	<a class="general-link" href="${urlLink}">
+				                                            Staff
+										                	</a>
+				                                            </label>
 				                                            <form:select class="form-control" path="staffID"> 
 	                                     						<c:forEach items="${staffList}" var="staff"> 
 	                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 

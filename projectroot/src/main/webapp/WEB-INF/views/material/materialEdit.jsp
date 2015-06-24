@@ -61,10 +61,13 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-									                <table>
+									                <table class="table table-bordered table-striped">
 									                <tr>
-									                	<td><label>Delivery:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Label</label></td>
+									                	<td><label>Data</label></td>
+									                </tr>
+									                <tr>
+									                	<td><label>Delivery</label></td>
 									                	<td>
 									                	<c:url var="urlLink" value="/project/edit/delivery/${material.delivery.getKey()}-end"/>
 									                	<a href="${urlLink}" class="general-link">
@@ -73,31 +76,27 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Available:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Available</label></td>
 									                	<td align="right">${material.available}</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Used / Pulled-Out:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Used / Pulled-Out</label></td>
 									                	<td align="right">${material.used}</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Total Quantity:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Total Quantity</label></td>
 									                	<td align="right">${material.quantity}</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Cost (Per Unit):</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Cost (Per Unit)</label></td>
 									                	<td align="right">${material.getCostPerUnitMaterialAsString()}</td>
 									                </tr>
 									                <tr>
-									                	<td><label>Total Cost:</label></td>
-									                	<td>&nbsp;</td>
+									                	<td><label>Total Cost</label></td>
 									                	<td align="right">${material.getTotalCostPerUnitMaterialAsString()}</td>
 									                </tr>
 									                </table>
+									                <br/>
 									                <div class="progress">
 														<div class="progress-bar progress-bar-${material.getAvailableCSS()} progress-bar-striped" 
 														    role="progressbar" 
@@ -120,7 +119,12 @@
 														action="${contextPath}/project/update/material">
 				                                        <div class="form-group">
 				                                        
-				                                        	<label>Material Category</label>
+				                                        	<label>
+				                                        	<c:url var="urlLink" value="/materialcategory/list"/>
+										                	<a href="${urlLink}" class="general-link">
+				                                        	Material Category
+										                	</a>
+				                                        	</label>
 				                                            <form:select class="form-control" path="materialCategoryKey"> 
 	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
 	                                     							<form:option value="${materialCategory.getKey()}" label="${materialCategory.name}"/> 
@@ -132,7 +136,12 @@
 				                                            <form:input type="text" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the specific name of the material</p>
 				                                            
-				                                            <label>Unit of Measure</label>
+				                                            <label>
+				                                            <c:url var="urlLink" value="/unit/list"/>
+										                	<a href="${urlLink}" class="general-link">
+				                                            Unit of Measure
+										                	</a>
+				                                            </label>
 				                                            <form:select class="form-control" path="unitKey"> 
 	                                     						<c:forEach items="${unitList}" var="unit"> 
 	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
