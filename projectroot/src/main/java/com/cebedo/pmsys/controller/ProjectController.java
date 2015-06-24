@@ -36,6 +36,7 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
@@ -66,6 +67,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
@@ -92,10 +94,11 @@ import com.cebedo.pmsys.utils.DateUtils;
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
 	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE }, types = {
+	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE,
+	RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY }, types = {
 	Project.class, FieldAssignmentBean.class, ProjectFile.class,
 	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
-	Estimate.class })
+	Estimate.class, ConcreteEstimationSummary.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -106,6 +109,7 @@ public class ProjectController {
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
     public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
+    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARY = RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
@@ -115,6 +119,7 @@ public class ProjectController {
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
+    public static final String ATTR_ESTIMATION_SUMMARIES = "estimationSummaries";
     public static final String ATTR_SHAPE_LIST = "shapeList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
@@ -185,6 +190,14 @@ public class ProjectController {
     private EstimateService estimateService;
     private ShapeService shapeService;
     private ConcreteProportionService concreteProportionService;
+    private ConcreteEstimationSummaryService concreteEstimationSummaryService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "concreteEstimationSummaryService")
+    public void setConcreteEstimationSummaryService(
+	    ConcreteEstimationSummaryService concreteEstimationSummaryService) {
+	this.concreteEstimationSummaryService = concreteEstimationSummaryService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "concreteProportionService")
@@ -1199,6 +1212,36 @@ public class ProjectController {
     }
 
     /**
+     * Do create/update on an estimate summary.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
+	    + RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY }, method = RequestMethod.POST)
+    public String createConcreteEstimationSummary(
+	    @ModelAttribute(RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY) ConcreteEstimationSummary estimationSummary,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.concreteEstimationSummaryService
+		.set(estimationSummary);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/"
+		+ estimationSummary.getProject().getId();
+    }
+
+    /**
      * Do create/update on an estimate.
      * 
      * @param delivery
@@ -1984,6 +2027,14 @@ public class ProjectController {
 
 	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+
+	// Empty bean of concrete estimation summary.
+	// List of all estimation summaries.
+	model.addAttribute(ATTR_CONCRETE_ESTIMATION_SUMMARY,
+		new ConcreteEstimationSummary(proj));
+	List<ConcreteEstimationSummary> estimationSummaries = this.concreteEstimationSummaryService
+		.list(proj);
+	model.addAttribute(ATTR_ESTIMATION_SUMMARIES, estimationSummaries);
 
 	// Get all payrolls.
 	// Add to model.

@@ -12,6 +12,8 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ESTIMATE = "company.fk:%s:project.fk:%s:estimate:%s";
 
+    public static final String KEY_CONCRETE_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:concreteestimationsummary:%s";
+
     public static final String KEY_PROJECT_AUX = "company.fk:%s:project:%s";
 
     /**
