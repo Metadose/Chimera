@@ -1255,8 +1255,9 @@
 						                                            	<th>Remarks</th>
 						                                                <th>Shape</th>
 						                                                <th>Inputs</th>
-						                                                <th>Mixing Ratio</th>
-						                                                <th>Cement</th>
+						                                                <th>Proportion</th>
+						                                                <th>Cement (40kg)</th>
+						                                                <th>Cement (50kg)</th>
 						                                                <th>Sand</th>
 						                                                <th>Gravel</th>
 						                                            </tr>
@@ -1278,12 +1279,27 @@
 																			</td>
 																			<td>${concrete.name}</td>
 																			<td>${concrete.remarks}</td>
-						                                                	<td>${concrete.shape.name}</td>
-						                                                	<td>${concrete.formulaInputs}</td>
-						                                                	<td>${concrete.concreteMixingRatio.name}</td>
-						                                                	<td>${concrete.resultCement}</td>
-						                                                	<td>${concrete.resultSand}</td>
-						                                                	<td>${concrete.resultGravel}</td>
+						                                                	<td>
+						                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
+					                                            			<a href="${urlLink}" class="general-link">
+						                                                	${concrete.shape.name}
+					                                            			</a>
+						                                                	</td>
+						                                                	<td>
+						                                                	<c:forEach items="${concrete.formulaInputs}" var="input">
+						                                                	${input.key} = ${input.value}<br/>
+						                                                	</c:forEach>
+						                                                	</td>
+						                                                	<td>
+						                                                	<c:url var="urlLink" value="/concreteproportion/edit/${concrete.concreteProportion.getKey()}-end"/>
+					                                            			<a href="${urlLink}" class="general-link">
+						                                                	${concrete.concreteProportion.getDisplayName()}
+					                                            			</a>
+						                                                	</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.cement40kg} ${concrete.concreteProportion.unitCement40kgUnit.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.cement50kg} ${concrete.concreteProportion.unitCement50kgUnit.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.sand} ${concrete.concreteProportion.unitSandUnit.name}</td>
+						                                                	<td align="right">${concrete.resultEstimateConcrete.gravel} ${concrete.concreteProportion.unitGravelUnit.name}</td>
 							                                            </tr>
 						                                            </c:forEach>
 							                                    </tbody>

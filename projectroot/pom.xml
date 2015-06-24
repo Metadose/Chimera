@@ -22,6 +22,7 @@
 		<java-mail>1.4.7</java-mail>
 		<javax-valid>1.1.0.Final</javax-valid>
 		<hibernate-valid>5.1.3.Final</hibernate-valid>
+		<eval-ex>1.0</eval-ex>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -79,6 +80,13 @@
 			<artifactId>xbean-spring</artifactId>
 			<version>4.2</version>
 		</dependency>
+		
+		<!-- Java Math Evaluator -->
+	    <dependency>
+	        <groupId>com.udojava</groupId>
+	        <artifactId>EvalEx</artifactId>
+	        <version>${eval-ex}</version>
+	    </dependency>
 		
 		<!-- Java Mail -->
 		<dependency>

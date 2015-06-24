@@ -7,20 +7,20 @@ import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.domain.ConcreteMixingRatio;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 
-public class ConcreteMixingRatioValueRepo implements
-	IValueRepository<ConcreteMixingRatio> {
+public class ConcreteProportionValueRepo implements
+	IValueRepository<ConcreteProportion> {
 
-    private RedisTemplate<String, ConcreteMixingRatio> redisTemplate;
+    private RedisTemplate<String, ConcreteProportion> redisTemplate;
 
     public void setRedisTemplate(
-	    RedisTemplate<String, ConcreteMixingRatio> redisTemplate) {
+	    RedisTemplate<String, ConcreteProportion> redisTemplate) {
 	this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public void rename(ConcreteMixingRatio obj, String newKey) {
+    public void rename(ConcreteProportion obj, String newKey) {
 	this.redisTemplate.rename(obj.getKey(), newKey);
     }
 
@@ -30,17 +30,17 @@ public class ConcreteMixingRatioValueRepo implements
     }
 
     @Override
-    public void set(ConcreteMixingRatio obj) {
+    public void set(ConcreteProportion obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);
     }
 
     @Override
-    public void setIfAbsent(ConcreteMixingRatio obj) {
+    public void setIfAbsent(ConcreteProportion obj) {
 	this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
     }
 
     @Override
-    public ConcreteMixingRatio get(String key) {
+    public ConcreteProportion get(String key) {
 	return this.redisTemplate.opsForValue().get(key);
     }
 
@@ -50,12 +50,12 @@ public class ConcreteMixingRatioValueRepo implements
     }
 
     @Override
-    public void multiSet(Map<String, ConcreteMixingRatio> m) {
+    public void multiSet(Map<String, ConcreteProportion> m) {
 	this.redisTemplate.opsForValue().multiSet(m);
     }
 
     @Override
-    public List<ConcreteMixingRatio> multiGet(Collection<String> keys) {
+    public List<ConcreteProportion> multiGet(Collection<String> keys) {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 

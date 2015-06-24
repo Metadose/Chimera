@@ -146,9 +146,9 @@ $(document).ready(function() {
 		                </a>
 		            </li>
 		            <li>
-		            	<c:url var="urlList" value="/concretemixingratio/list"/>
+		            	<c:url var="urlList" value="/concreteproportion/list"/>
 		                <a href="${urlList}">
-		                    <i class="fa fa-tint"></i> <span>Concrete Mixing Ratio</span>
+		                    <i class="fa fa-tint"></i> <span>Concrete Proportion</span>
 		                </a>
 		            </li>
                 </ul>

@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -123,7 +124,7 @@
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 									                
-									                <table>
+									                <table class="table table-bordered table-striped">
 									                <tr>
 									                <td><label>Shape</label></td>
 									                <td>
@@ -140,19 +141,24 @@
 									                </table>
 			                                            
 			                                        <br/>
+			                                        <h4>Formula Variables</h4>
                    									<form:form modelAttribute="estimate"
 														method="post"
 														action="${contextPath}/project/compute/estimate">
 				                                        <div class="form-group">
+				                                        
+				                                        <!-- Formula Inputs -->
 			                                            <c:forEach items="${estimate.shape.variableNames}" var="variableName">
 			                                            <label>${variableName}</label>
-			                                            <form:input type="text" id="shape" class="form-control" path="formulaInputs"/>
+			                                            <form:input type="text" class="form-control" path="formulaInputs['${variableName}']"></form:input>
 			                                            </c:forEach>
+			                                            
 				                                        <p class="help-block">Input the value for each variable in the shape formula</p>
+				                                        
 				                                        <c:if test="${estimate.willComputeConcrete()}">
-			                                            <label>Concrete Mixing Ratio</label>
-			                                            <form:select class="form-control" path="concreteMixingRatioKey"> 
-                                     						<c:forEach items="${concreteMixingRatioList}" var="ratio"> 
+			                                            <label>Concrete Proportion</label>
+			                                            <form:select class="form-control" path="concreteProportionKey"> 
+                                     						<c:forEach items="${concreteProportionList}" var="ratio"> 
                                      							<form:option value="${ratio.getKey()}" label="${ratio.getDisplayName()}"/> 
                                      						</c:forEach> 
  		                                    			</form:select>
@@ -162,11 +168,73 @@
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Compute</button>
 				                                    </form:form>
+				                                    <br/>
+				                                    <c:choose>
+													<c:when test="${empty estimate.lastComputed}">
+														<div class="callout callout-info">
+										                    <p>Not yet computed.</p>
+										                </div>
+													</c:when>
+													
+													<c:when test="${!empty estimate.lastComputed}">
+														<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${estimate.lastComputed}" var="lastComputed"/>
+														<div class="callout callout-info">
+										                    <p>Last Computed: ${lastComputed}</p>
+										                </div>
+													</c:when>
+													</c:choose>
+													
                    								</div>
                    							</div>
                    						</div>
                    						</c:if>
               						</div>
+              						<c:if test="${!empty estimate.lastComputed}">
+              						<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Results</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+									                
+									                <h4>Cement</h4>
+									                <table class="table table-bordered table-striped">
+									                <tr>
+									                <td><label>Component</label></td>
+									                <td><label>Estimate</label></td>
+									                <td><label>Unit of Measure</label></td>
+									                </tr>
+									                <tr>
+										                <td><label>Cement (40kg)</label></td>
+										                <td align="right">${estimate.resultEstimateConcrete.cement40kg}</td>
+										                <td>${estimate.concreteProportion.unitCement40kgUnit.name}</td>
+									                </tr>
+									                <tr>
+										                <td><label>Cement (50kg)</label></td>
+										                <td align="right">${estimate.resultEstimateConcrete.cement50kg}</td>
+										                <td>${estimate.concreteProportion.unitCement50kgUnit.name}</td>
+									                </tr>
+									                <tr>
+										                <td><label>Sand</label></td>
+										                <td align="right">${estimate.resultEstimateConcrete.sand}</td>
+										                <td>${estimate.concreteProportion.unitSandUnit.name}</td>
+									                </tr>
+									                <tr>
+										                <td><label>Gravel</label></td>
+										                <td align="right">${estimate.resultEstimateConcrete.gravel}</td>
+										                <td>${estimate.concreteProportion.unitGravelUnit.name}</td>
+									                </tr>
+									                </table>
+									                
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+              						</c:if>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->

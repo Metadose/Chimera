@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Concrete Mixing Ratio List</title>
+	<title>Concrete Proportion List</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -15,7 +15,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Concrete Mixing Ratio List
+	                Concrete Proportion List
 	                <small>Complete list of all mixing ratios for concrete estimation</small>
 	            </h1>
 	        </section>
@@ -34,9 +34,9 @@
 									<div class="col-xs-12">
 										<div class="box">
 												<div class="box-body table-responsive">
-													<c:url var="urlCreate" value="/concretemixingratio/edit/0-end"/>
+													<c:url var="urlCreate" value="/concreteproportion/edit/0-end"/>
 				                                	<a href="${urlCreate}">
-				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Ratio</button>
+				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Proportion</button>
 				                                	</a>
 				                                	<br/><br/>
 				                                    <table id="example-1" class="table table-bordered table-striped">
@@ -51,16 +51,16 @@
 				                                            </tr>
 				                                        </thead>
 				                                        <tbody>
-				                                        	<c:if test="${!empty concreteMixingRatioList}">
-				                                        		<c:forEach items="${concreteMixingRatioList}" var="ratio">
+				                                        	<c:if test="${!empty concreteProportionList}">
+				                                        		<c:forEach items="${concreteProportionList}" var="ratio">
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-						                                            			<c:url var="urlEdit" value="/concretemixingratio/edit/${ratio.getKey()}-end"/>
+						                                            			<c:url var="urlEdit" value="/concreteproportion/edit/${ratio.getKey()}-end"/>
 				                                								<a href="${urlEdit}">
 																					<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                								</a>
-																				<c:url var="urlDelete" value="/concretemixingratio/delete/${ratio.getKey()}-end"/>
+																				<c:url var="urlDelete" value="/concreteproportion/delete/${ratio.getKey()}-end"/>
 				                                								<a href="${urlDelete}">
 																					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                								</a>

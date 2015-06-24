@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Company;
@@ -42,16 +44,18 @@ public class Estimate implements IDomainObject {
     private int[] estimateType;
 
     // Second commit.
-    private String[] formulaInputs;
-    private String concreteMixingRatioKey;
+    private Map<String, String> formulaInputs = new HashMap<String, String>();
+    private String concreteProportionKey;
+
+    /**
+     * Results
+     */
+    private ConcreteEstimateResults resultEstimateConcrete;
 
     /**
      * Concrete.
      */
-    private ConcreteMixingRatio concreteMixingRatio;
-    private double resultCement;
-    private double resultSand;
-    private double resultGravel;
+    private ConcreteProportion concreteProportion;
 
     /**
      * Extension map.
@@ -127,20 +131,12 @@ public class Estimate implements IDomainObject {
 	this.shape = shape;
     }
 
-    public String[] getFormulaInputs() {
-	return formulaInputs;
+    public ConcreteProportion getConcreteProportion() {
+	return concreteProportion;
     }
 
-    public void setFormulaInputs(String[] formulaInputs) {
-	this.formulaInputs = formulaInputs;
-    }
-
-    public ConcreteMixingRatio getConcreteMixingRatio() {
-	return concreteMixingRatio;
-    }
-
-    public void setConcreteMixingRatio(ConcreteMixingRatio concreteMixingRatio) {
-	this.concreteMixingRatio = concreteMixingRatio;
+    public void setConcreteProportion(ConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
     }
 
     public Map<String, Object> getExtMap() {
@@ -157,12 +153,20 @@ public class Estimate implements IDomainObject {
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
-    public String getConcreteMixingRatioKey() {
-	return concreteMixingRatioKey;
+    public String getConcreteProportionKey() {
+	return concreteProportionKey;
     }
 
-    public void setConcreteMixingRatioKey(String concreteMixingRatioKey) {
-	this.concreteMixingRatioKey = concreteMixingRatioKey;
+    public Map<String, String> getFormulaInputs() {
+	return formulaInputs;
+    }
+
+    public void setFormulaInputs(Map<String, String> formulaInputs) {
+	this.formulaInputs = formulaInputs;
+    }
+
+    public void setConcreteProportionKey(String concreteProportionKey) {
+	this.concreteProportionKey = concreteProportionKey;
     }
 
     public String getShapeKey() {
@@ -189,33 +193,18 @@ public class Estimate implements IDomainObject {
 	this.estimateTypes = estimateTypes;
     }
 
-    public double getResultSand() {
-	return resultSand;
-    }
-
-    public void setResultSand(double resultSand) {
-	this.resultSand = resultSand;
-    }
-
-    public double getResultGravel() {
-	return resultGravel;
-    }
-
-    public void setResultGravel(double resultGravel) {
-	this.resultGravel = resultGravel;
-    }
-
-    public double getResultCement() {
-	return resultCement;
-    }
-
-    public void setResultCement(double resultCement) {
-	this.resultCement = resultCement;
-    }
-
     public static String constructPattern(Project proj) {
 	return String.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany()
 		.getId(), proj.getId(), "*");
+    }
+
+    public ConcreteEstimateResults getResultEstimateConcrete() {
+	return resultEstimateConcrete;
+    }
+
+    public void setResultEstimateConcrete(
+	    ConcreteEstimateResults resultEstimateConcrete) {
+	this.resultEstimateConcrete = resultEstimateConcrete;
     }
 
 }

@@ -7,11 +7,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
 	<c:choose>
-   	<c:when test="${empty concretemixingratio.uuid}">
-    	<title>Concrete Mixing Ratio Create</title>
+   	<c:when test="${empty concreteproportion.uuid}">
+    	<title>Concrete Proportion Create</title>
    	</c:when>
-   	<c:when test="${!empty concretemixingratio.uuid}">
-		<title>Concrete Mixing Ratio Edit</title>
+   	<c:when test="${!empty concreteproportion.uuid}">
+		<title>Concrete Proportion Edit</title>
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>
@@ -39,12 +39,12 @@
 	            <h1>
 	            	<c:choose>
 	            	<c:when test="${!isUpdating}">
-		            	New Concrete Mixing Ratio
-		                <small>Create Concrete Mixing Ratio</small>
+		            	New Concrete Proportion
+		                <small>Create Concrete Proportion</small>
 	            	</c:when>
 	            	<c:when test="${isUpdating}">
-	            		${concretemixingratio.name}
-		                <small>Edit Concrete Mixing Ratio</small>
+	            		${concreteproportion.name}
+		                <small>Edit Concrete Proportion</small>
 	            	</c:when>
 	            	</c:choose>
 	            </h1>
@@ -70,47 +70,72 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<form:form modelAttribute="concretemixingratio"
+                   									<form:form modelAttribute="concreteproportion"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/concretemixingratio/create">
+														action="${contextPath}/concreteproportion/create">
 				                                        <div class="form-group">
 				                                            
+				                                            <h4>Basic</h4>
 				                                            <label>Name</label>
 				                                            <form:input type="text" placeholder="Sample: AAA, A, B, C" class="form-control" path="name"/>
-				                                            <p class="help-block">Enter the name or class of this mixing ratio</p>
+				                                            <p class="help-block">Enter the name or class of this mixing proportion</p>
 				                                            
 				                                            <label>Description</label>
 				                                            <form:input type="text" placeholder="Sample: For beams, slabs, columns, all members subjected to bending" class="form-control" path="description"/>
-				                                            <p class="help-block">Add more details about this mix</p>
+				                                            <p class="help-block">Add more details about this proportion</p>
+				                                            <br/>
 				                                            
+				                                            <h4>Ratio</h4>
 				                                            <label>Cement Ratio</label>
 				                                            <form:input type="text" placeholder="Sample: 1" class="form-control" path="ratioCement"/>
-				                                            <p class="help-block">Specify the cement part of the ratio</p>
+				                                            <p class="help-block">Specify the cement part of the proportion</p>
 				                                            
 				                                            <label>Sand Ratio</label>
 				                                            <form:input type="text" placeholder="Sample: 2" class="form-control" path="ratioSand"/>
-				                                            <p class="help-block">Specify the sand part of the ratio</p>
+				                                            <p class="help-block">Specify the sand part of the proportion</p>
 				                                            
 				                                            <label>Gravel Ratio</label>
 				                                            <form:input type="text" placeholder="Sample: 4" class="form-control" path="ratioGravel"/>
-				                                            <p class="help-block">Specify the gravel part of the ratio</p>
+				                                            <p class="help-block">Specify the gravel part of the proportion</p>
+				                                            <br/>
 				                                            
+				                                            <h4>Value and Result Unit</h4>
 				                                            <label>Cement (40kg)</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partCement40kg"/>
-				                                            <p class="help-block">Specify the gravel part of the ratio</p>
+				                                            <form:select class="form-control" path="unitKeyCement40kgUnit"> 
+								           						<c:forEach items="${unitList}" var="unit"> 
+								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+				                                            <p class="help-block">Specify the gravel part of the proportion</p>
 				                                            
 				                                            <label>Cement (50kg)</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partCement50kg"/>
-				                                            <p class="help-block">Specify the gravel part of the ratio</p>
+				                                            <form:select class="form-control" path="unitKeyCement50kgUnit"> 
+								           						<c:forEach items="${unitList}" var="unit"> 
+								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+				                                            <p class="help-block">Specify the gravel part of the proportion</p>
 				                                            
 				                                            <label>Sand</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partSand"/>
-				                                            <p class="help-block">Specify the gravel part of the ratio</p>
+				                                            <form:select class="form-control" path="unitKeySandUnit"> 
+								           						<c:forEach items="${unitList}" var="unit"> 
+								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+				                                            <p class="help-block">Specify the gravel part of the proportion</p>
 				                                            
 				                                            <label>Gravel</label>
 				                                            <form:input type="text" placeholder="Sample: 4TODO" class="form-control" path="partGravel"/>
-				                                            <p class="help-block">Specify the gravel part of the ratio</p>
+				                                            <form:select class="form-control" path="unitKeyGravelUnit"> 
+								           						<c:forEach items="${unitList}" var="unit"> 
+								           							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
+				                                            <p class="help-block">Specify the gravel part of the proportion</p>
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">

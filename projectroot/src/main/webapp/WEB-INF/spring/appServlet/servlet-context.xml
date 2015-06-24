@@ -502,16 +502,18 @@
     <beans:bean id="estimateService" class="com.cebedo.pmsys.service.impl.EstimateServiceImpl">
         <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
         <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
+        <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
-    <!-- Concrete Mixing Ratio -->
-    <beans:bean id="concreteMixingRatioService" class="com.cebedo.pmsys.service.impl.ConcreteMixingRatioServiceImpl">
-        <beans:property name="concreteMixingRatioValueRepo" ref="concreteMixingRatioValueRepo"></beans:property>
+    <!-- Concrete Proportion -->
+    <beans:bean id="concreteProportionService" class="com.cebedo.pmsys.service.impl.ConcreteProportionServiceImpl">
+        <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
+        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="concreteMixingRatioValueRepo" class="com.cebedo.pmsys.repository.ConcreteMixingRatioValueRepo">
+    <beans:bean id="concreteProportionValueRepo" class="com.cebedo.pmsys.repository.ConcreteProportionValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     

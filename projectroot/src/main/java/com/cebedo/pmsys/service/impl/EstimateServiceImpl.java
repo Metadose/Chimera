@@ -1,30 +1,43 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.udojava.evalex.Expression;
 
 @Service
 public class EstimateServiceImpl implements EstimateService {
 
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
+    private ConcreteProportionValueRepo concreteProportionValueRepo;
+
+    public void setConcreteProportionValueRepo(
+	    ConcreteProportionValueRepo concreteProportionValueRepo) {
+	this.concreteProportionValueRepo = concreteProportionValueRepo;
+    }
 
     public void setShapeValueRepo(ShapeValueRepo shapeValueRepo) {
 	this.shapeValueRepo = shapeValueRepo;
@@ -129,16 +142,71 @@ public class EstimateServiceImpl implements EstimateService {
     @Transactional
     public String computeEstimate(Estimate estimate) {
 
-	// TODO Evaluate the the math expression using a java library.
+	// Map where we store our results.
+
+	// Evaluate the the math expression using a java library.
 	// Not wolfram. Use wolfram only when complicated.
+
 	// If computing concrete,
 	// compute.
 	if (estimate.willComputeConcrete()) {
 
+	    // Set the concrete proportion.
+	    ConcreteProportion proportion = this.concreteProportionValueRepo
+		    .get(estimate.getConcreteProportionKey());
+	    estimate.setConcreteProportion(proportion);
+
+	    // Get the shape of the slab.
 	    Shape shape = estimate.getShape();
+
+	    // Clean the formula.
+	    // Convert string to an expression object.
+	    String formula = shape.getFormula();
+	    formula = StringUtils
+		    .remove(formula, Shape.DELIMITER_OPEN_VARIABLE);
+	    formula = StringUtils.remove(formula,
+		    Shape.DELIMITER_CLOSE_VARIABLE);
+	    Expression mathExp = new Expression(formula);
+
+	    // Get the formula inputs.
+	    Map<String, String> inputs = estimate.getFormulaInputs();
+
+	    // Loop through each variable and replace each variable.
+	    for (String variable : shape.getVariableNames()) {
+		mathExp = mathExp.with(
+			variable,
+			inputs.get(variable) == null ? "0" : inputs
+				.get(variable));
+	    }
+
+	    // Get the ingredients.
+	    // Now, compute the estimated concrete.
+	    BigDecimal volume = mathExp.eval();
+	    double cement40kg = proportion.getPartCement40kg();
+	    double cement50kg = proportion.getPartCement50kg();
+	    double sand = proportion.getPartSand();
+	    double gravel = proportion.getPartGravel();
+
+	    // Compute.
+	    double estCement40kg = volume.doubleValue() * cement40kg;
+	    double estCement50kg = volume.doubleValue() * cement50kg;
+	    double estSand = volume.doubleValue() * sand;
+	    double estGravel = volume.doubleValue() * gravel;
+
+	    // Save the results.
+	    ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
+		    estCement40kg, estCement50kg, estSand, estGravel);
+	    estimate.setResultEstimateConcrete(concreteResults);
 	}
 
-	return null;
+	// Set last computed.
+	estimate.setLastComputed(new Date(System.currentTimeMillis()));
+
+	// Save the object.
+	this.estimateValueRepo.set(estimate);
+
+	return AlertBoxGenerator.SUCCESS.generateCompute(
+		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
     }
 
 }

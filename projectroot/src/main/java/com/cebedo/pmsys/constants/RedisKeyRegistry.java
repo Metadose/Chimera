@@ -4,7 +4,7 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 
-    public static final String KEY_CONCRETE_MIXING_RATIO = "company.fk:%s:concretemixingratio:%s";
+    public static final String KEY_CONCRETE_PROPORTION = "company.fk:%s:concreteproportion:%s";
 
     public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
 

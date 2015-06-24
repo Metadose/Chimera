@@ -36,7 +36,7 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
-import com.cebedo.pmsys.domain.ConcreteMixingRatio;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.Material;
@@ -65,7 +65,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.service.ConcreteMixingRatioService;
+import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.FieldService;
@@ -110,7 +110,7 @@ public class ProjectController {
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
-    public static final String ATTR_CONCRETE_MIXING_RATIO_LIST = "concreteMixingRatioList";
+    public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
@@ -182,13 +182,13 @@ public class ProjectController {
     private UnitService unitService;
     private EstimateService estimateService;
     private ShapeService shapeService;
-    private ConcreteMixingRatioService concreteMixingRatioService;
+    private ConcreteProportionService concreteProportionService;
 
     @Autowired(required = true)
-    @Qualifier(value = "concreteMixingRatioService")
-    public void setConcreteMixingRatioService(
-	    ConcreteMixingRatioService concreteMixingRatioService) {
-	this.concreteMixingRatioService = concreteMixingRatioService;
+    @Qualifier(value = "concreteProportionService")
+    public void setConcreteProportionService(
+	    ConcreteProportionService concreteProportionService) {
+	this.concreteProportionService = concreteProportionService;
     }
 
     @Autowired(required = true)
@@ -1739,10 +1739,10 @@ public class ProjectController {
 	// For second commit,
 	// if computing concrete.
 	if (estimate.willComputeConcrete()) {
-	    List<ConcreteMixingRatio> concreteMixingRatioList = this.concreteMixingRatioService
+	    List<ConcreteProportion> concreteProportionList = this.concreteProportionService
 		    .list();
-	    model.addAttribute(ATTR_CONCRETE_MIXING_RATIO_LIST,
-		    concreteMixingRatioList);
+	    model.addAttribute(ATTR_CONCRETE_PROPORTION_LIST,
+		    concreteProportionList);
 	}
 
 	return RedisConstants.JSP_ESTIMATE_EDIT;
