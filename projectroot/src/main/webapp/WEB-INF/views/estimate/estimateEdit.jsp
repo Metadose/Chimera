@@ -156,6 +156,11 @@
 			                                            <c:forEach items="${estimate.shape.variableNames}" var="variableName">
 			                                            <label>${variableName}</label>
 			                                            <form:input type="text" class="form-control" path="formulaInputs['${variableName}']"></form:input>
+			                                            <form:select class="form-control" path="formulaInputsUnits['${variableName}']"> 
+                                     						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
+                                     							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
+                                     						</c:forEach> 
+ 		                                    			</form:select>
 			                                            </c:forEach>
 			                                            
 				                                        <p class="help-block">Input the value for each variable in the shape formula</p>

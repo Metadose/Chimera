@@ -47,6 +47,7 @@ import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -120,6 +121,7 @@ public class ProjectController {
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
+    public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
     public static final String ATTR_UNIT_LIST = "unitList";
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
@@ -1742,10 +1744,16 @@ public class ProjectController {
 	// For second commit,
 	// if computing concrete.
 	if (estimate.willComputeConcrete()) {
+
+	    // Add list of proportions.
 	    List<ConcreteProportion> concreteProportionList = this.concreteProportionService
 		    .list();
 	    model.addAttribute(ATTR_CONCRETE_PROPORTION_LIST,
 		    concreteProportionList);
+
+	    // Add list of common units.
+	    model.addAttribute(ATTR_COMMON_UNITS_LIST,
+		    CommonLengthUnit.class.getEnumConstants());
 	}
 
 	return RedisConstants.JSP_ESTIMATE_EDIT;

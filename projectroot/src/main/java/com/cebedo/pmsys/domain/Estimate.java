@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -45,6 +46,7 @@ public class Estimate implements IDomainObject {
 
     // Second commit.
     private Map<String, String> formulaInputs = new HashMap<String, String>();
+    private Map<String, CommonLengthUnit> formulaInputsUnits = new HashMap<String, CommonLengthUnit>();
     private String concreteProportionKey;
 
     /**
@@ -205,6 +207,15 @@ public class Estimate implements IDomainObject {
     public void setResultEstimateConcrete(
 	    ConcreteEstimateResults resultEstimateConcrete) {
 	this.resultEstimateConcrete = resultEstimateConcrete;
+    }
+
+    public Map<String, CommonLengthUnit> getFormulaInputsUnits() {
+	return formulaInputsUnits;
+    }
+
+    public void setFormulaInputsUnits(
+	    Map<String, CommonLengthUnit> formulaInputsUnits) {
+	this.formulaInputsUnits = formulaInputsUnits;
     }
 
 }

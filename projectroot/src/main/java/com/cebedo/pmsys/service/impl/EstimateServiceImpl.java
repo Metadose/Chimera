@@ -18,6 +18,7 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.Shape;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
@@ -169,14 +170,30 @@ public class EstimateServiceImpl implements EstimateService {
 	    Expression mathExp = new Expression(formula);
 
 	    // Get the formula inputs.
+	    // And the units.
 	    Map<String, String> inputs = estimate.getFormulaInputs();
+	    Map<String, CommonLengthUnit> inputUnits = estimate
+		    .getFormulaInputsUnits();
 
 	    // Loop through each variable and replace each variable.
 	    for (String variable : shape.getVariableNames()) {
-		mathExp = mathExp.with(
-			variable,
-			inputs.get(variable) == null ? "0" : inputs
-				.get(variable));
+
+		// Get the value and the unit.
+		String rawValue = inputs.get(variable);
+		String value = (rawValue == null || !StringUtils
+			.isNumeric(rawValue)) ? "0" : rawValue;
+		CommonLengthUnit lengthUnit = inputUnits.get(variable);
+
+		// If the unit is not meter,
+		// convert it.
+		if (lengthUnit != CommonLengthUnit.METER) {
+		    double meterConvert = lengthUnit.conversionToMeter();
+		    double valueDbl = Double.parseDouble(value);
+		    double convertedValue = meterConvert * valueDbl;
+		    value = convertedValue + "";
+		}
+
+		mathExp = mathExp.with(variable, value);
 	    }
 
 	    // Get the ingredients.
