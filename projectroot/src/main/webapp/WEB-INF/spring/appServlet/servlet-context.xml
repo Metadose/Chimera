@@ -501,7 +501,7 @@
     <!-- Concrete Estimation Summary -->
     <beans:bean id="concreteEstimationSummaryService" class="com.cebedo.pmsys.service.impl.ConcreteEstimationSummaryServiceImpl">
         <beans:property name="concreteEstimationSummaryValueRepo" ref="concreteEstimationSummaryValueRepo"></beans:property>
-        <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
+        <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="concreteEstimationSummaryValueRepo" class="com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -512,7 +512,6 @@
         <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
         <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
         <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
-        <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />

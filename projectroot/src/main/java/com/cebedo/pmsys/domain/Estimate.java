@@ -47,7 +47,7 @@ public class Estimate implements IDomainObject {
     // Second commit.
     private Map<String, String> formulaInputs = new HashMap<String, String>();
     private Map<String, CommonLengthUnit> formulaInputsUnits = new HashMap<String, CommonLengthUnit>();
-    private String concreteProportionKey;
+    private String concreteProportionKeys[];
 
     /**
      * Results
@@ -155,20 +155,12 @@ public class Estimate implements IDomainObject {
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
-    public String getConcreteProportionKey() {
-	return concreteProportionKey;
-    }
-
     public Map<String, String> getFormulaInputs() {
 	return formulaInputs;
     }
 
     public void setFormulaInputs(Map<String, String> formulaInputs) {
 	this.formulaInputs = formulaInputs;
-    }
-
-    public void setConcreteProportionKey(String concreteProportionKey) {
-	this.concreteProportionKey = concreteProportionKey;
     }
 
     public String getShapeKey() {
@@ -216,6 +208,14 @@ public class Estimate implements IDomainObject {
     public void setFormulaInputsUnits(
 	    Map<String, CommonLengthUnit> formulaInputsUnits) {
 	this.formulaInputsUnits = formulaInputsUnits;
+    }
+
+    public String[] getConcreteProportionKeys() {
+	return concreteProportionKeys;
+    }
+
+    public void setConcreteProportionKeys(String[] concreteProportionKeys) {
+	this.concreteProportionKeys = concreteProportionKeys;
     }
 
 }

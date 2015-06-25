@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.domain;
 
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
@@ -22,19 +21,6 @@ public class ProjectAux implements IDomainObject {
     private double grandTotalPayroll;
 
     /**
-     * Estimation.
-     */
-    private double totalCement40kg;
-    private double totalCement50kg;
-    private double totalSand;
-    private double totalGravel;
-
-    private Unit unitCement40kg;
-    private Unit unitCement50kg;
-    private Unit unitSand;
-    private Unit unitGravel;
-
-    /**
      * Extension map.
      */
     private Map<String, Object> extMap;
@@ -47,45 +33,6 @@ public class ProjectAux implements IDomainObject {
 	Company co = project2.getCompany();
 	setCompany(co);
 	setProject(project2);
-    }
-
-    /**
-     * Formatted quantity text display.
-     */
-    public String getTotalCement40kgAsString() {
-	return getFormattedQuantityAsString(totalCement40kg);
-    }
-
-    public String getTotalCement50kgAsString() {
-	return getFormattedQuantityAsString(totalCement50kg);
-    }
-
-    public String getTotalSandAsString() {
-	return getFormattedQuantityAsString(totalSand);
-    }
-
-    public String getTotalGravelAsString() {
-	return getFormattedQuantityAsString(totalGravel);
-    }
-
-    /**
-     * Format function.
-     */
-    private String getFormattedQuantityAsString(double dblVal) {
-	double displayDbl = Math.ceil(dblVal);
-	DecimalFormat df = new DecimalFormat();
-	return df.format(displayDbl);
-    }
-
-    public boolean unitsAreSet() {
-
-	// If any of the following are null,
-	// return false.
-	if (getUnitCement40kg() == null || getUnitCement50kg() == null
-		|| getUnitSand() == null || getUnitGravel() == null) {
-	    return false;
-	}
-	return true;
     }
 
     public Map<String, Object> getExtMap() {
@@ -151,70 +98,6 @@ public class ProjectAux implements IDomainObject {
 
     public void setGrandTotalPayroll(double grandTotalPayroll) {
 	this.grandTotalPayroll = grandTotalPayroll;
-    }
-
-    public double getTotalCement40kg() {
-	return totalCement40kg;
-    }
-
-    public void setTotalCement40kg(double totalCement40kg) {
-	this.totalCement40kg = totalCement40kg;
-    }
-
-    public double getTotalCement50kg() {
-	return totalCement50kg;
-    }
-
-    public void setTotalCement50kg(double totalCement50kg) {
-	this.totalCement50kg = totalCement50kg;
-    }
-
-    public double getTotalSand() {
-	return totalSand;
-    }
-
-    public void setTotalSand(double totalSand) {
-	this.totalSand = totalSand;
-    }
-
-    public double getTotalGravel() {
-	return totalGravel;
-    }
-
-    public void setTotalGravel(double totalGravel) {
-	this.totalGravel = totalGravel;
-    }
-
-    public Unit getUnitCement40kg() {
-	return unitCement40kg;
-    }
-
-    public void setUnitCement40kg(Unit unitCement40kg) {
-	this.unitCement40kg = unitCement40kg;
-    }
-
-    public Unit getUnitCement50kg() {
-	return unitCement50kg;
-    }
-
-    public void setUnitCement50kg(Unit unitCement50kg) {
-	this.unitCement50kg = unitCement50kg;
-    }
-
-    public Unit getUnitSand() {
-	return unitSand;
-    }
-
-    public void setUnitSand(Unit unitSand) {
-	this.unitSand = unitSand;
-    }
-
-    public Unit getUnitGravel() {
-	return unitGravel;
-    }
-
-    public void setUnitGravel(Unit unitGravel) {
-	this.unitGravel = unitGravel;
     }
 
 }

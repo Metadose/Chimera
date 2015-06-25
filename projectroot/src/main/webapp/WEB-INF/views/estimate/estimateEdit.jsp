@@ -172,12 +172,22 @@
 										                Concrete Proportion
 										                </a>
 										                </label>
-			                                            <form:select class="form-control" path="concreteProportionKey"> 
-                                     						<c:forEach items="${concreteProportionList}" var="ratio"> 
-                                     							<form:option value="${ratio.getKey()}" label="${ratio.getDisplayName()}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select>
- 		                                    			<p class="help-block">Choose the ratio of cement, sand and gravel for the concrete</p>
+										                
+										                <c:choose>
+														<c:when test="${empty estimate.lastComputed}">
+	                                   						<c:forEach items="${concreteProportionList}" var="ratio"> 
+	                                   							<form:checkbox path="concreteProportionKeys" value="${ratio.getKey()}"/>
+	                                   							&nbsp;${ratio.getDisplayName()}
+	                                   							<br/>
+	                                   						</c:forEach> 
+	 		                                    			<p class="help-block">Choose the ratio of cement, sand and gravel for the concrete</p>
+														</c:when>
+														
+														<c:when test="${!empty estimate.lastComputed}">
+															<label>${estimate.concreteProportion.getDisplayName()}</label>
+														</c:when>
+														</c:choose>
+										                
 				                                        </c:if>
 				                                        
 				                                        </div>

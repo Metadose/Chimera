@@ -1285,7 +1285,7 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
-	String response = this.estimateService.computeEstimate(estimate);
+	String response = this.estimateService.computeQuantityEstimate(estimate);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,

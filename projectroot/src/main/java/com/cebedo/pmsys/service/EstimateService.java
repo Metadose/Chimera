@@ -30,6 +30,6 @@ public interface EstimateService {
 
     public List<Estimate> list(Project proj);
 
-    public String computeEstimate(Estimate estimate);
+    public String computeQuantityEstimate(Estimate estimate);
 
 }

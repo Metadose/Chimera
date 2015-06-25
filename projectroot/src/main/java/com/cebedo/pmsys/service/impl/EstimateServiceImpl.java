@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +18,12 @@ import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -36,11 +35,6 @@ public class EstimateServiceImpl implements EstimateService {
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
     private ConcreteProportionValueRepo concreteProportionValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
-
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
-	this.projectAuxValueRepo = projectAuxValueRepo;
-    }
 
     public void setConcreteProportionValueRepo(
 	    ConcreteProportionValueRepo concreteProportionValueRepo) {
@@ -148,30 +142,16 @@ public class EstimateServiceImpl implements EstimateService {
 
     @Override
     @Transactional
-    public String computeEstimate(Estimate estimate) {
+    public String computeQuantityEstimate(Estimate estimate) {
+
+	// To be used later.
+	UUID originalUUID = estimate.getUuid();
 
 	// Evaluate the the math expression using a java library.
 	// Not wolfram. Use wolfram only when complicated.
 	// If computing concrete,
 	// compute.
 	if (estimate.willComputeConcrete()) {
-
-	    // Set the concrete proportion.
-	    ConcreteProportion proportion = this.concreteProportionValueRepo
-		    .get(estimate.getConcreteProportionKey());
-	    estimate.setConcreteProportion(proportion);
-
-	    // Get the project auxillary.
-	    String projAuxKey = ProjectAux.constructKey(estimate.getProject());
-	    ProjectAux projAux = this.projectAuxValueRepo.get(projAuxKey);
-
-	    // Set the units of the project auxillary.
-	    if (!projAux.unitsAreSet()) {
-		projAux.setUnitCement40kg(proportion.getUnitCement40kg());
-		projAux.setUnitCement50kg(proportion.getUnitCement50kg());
-		projAux.setUnitSand(proportion.getUnitSand());
-		projAux.setUnitGravel(proportion.getUnitGravel());
-	    }
 
 	    // Get the shape of the slab.
 	    Shape shape = estimate.getShape();
@@ -212,63 +192,54 @@ public class EstimateServiceImpl implements EstimateService {
 		mathExp = mathExp.with(variable, value);
 	    }
 
-	    // Get the ingredients.
-	    // Now, compute the estimated concrete.
-	    BigDecimal volume = mathExp.eval();
-	    double cement40kg = proportion.getPartCement40kg();
-	    double cement50kg = proportion.getPartCement50kg();
-	    double sand = proportion.getPartSand();
-	    double gravel = proportion.getPartGravel();
+	    for (String proportionKey : estimate.getConcreteProportionKeys()) {
 
-	    // Compute.
-	    double estCement40kg = volume.doubleValue() * cement40kg;
-	    double estCement50kg = volume.doubleValue() * cement50kg;
-	    double estSand = volume.doubleValue() * sand;
-	    double estGravel = volume.doubleValue() * gravel;
+		// Set the concrete proportion based on key.
+		ConcreteProportion proportion = this.concreteProportionValueRepo
+			.get(proportionKey);
+		estimate.setConcreteProportion(proportion);
 
-	    // Save the results.
-	    ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
-		    estCement40kg, estCement50kg, estSand, estGravel);
-	    estimate.setResultEstimateConcrete(concreteResults);
+		// Set new keys where the only entry is "proportionKey".
+		// So that when we "Edit" this Estimate in JSP,
+		// only "proportionKey" is checked in checkboxes.
+		estimate.setConcreteProportionKeys((String[]) ArrayUtils.add(
+			ArrayUtils.EMPTY_STRING_ARRAY, proportionKey));
 
-	    // If this is a new computation,
-	    // add directly to project auxillary.
-	    // Else, if this is a re-compute,
-	    // revert old result then replace with this result.
-	    if (estimate.getLastComputed() != null) {
+		// Get the ingredients.
+		// Now, compute the estimated concrete.
+		double cement40kg = proportion.getPartCement40kg();
+		double cement50kg = proportion.getPartCement50kg();
+		double sand = proportion.getPartSand();
+		double gravel = proportion.getPartGravel();
 
-		// Get the old values.
-		Estimate oldEstimate = this.estimateValueRepo.get(estimate
-			.getKey());
-		ConcreteEstimateResults oldEstimateResults = oldEstimate
-			.getResultEstimateConcrete();
+		// Compute.
+		BigDecimal volume = mathExp.eval();
+		double estCement40kg = volume.doubleValue() * cement40kg;
+		double estCement50kg = volume.doubleValue() * cement50kg;
+		double estSand = volume.doubleValue() * sand;
+		double estGravel = volume.doubleValue() * gravel;
 
-		// Revert to old values.
-		setOldConcreteComponentValues(projAux,
-			oldEstimateResults.getCement40kg(),
-			oldEstimateResults.getCement50kg(),
-			oldEstimateResults.getSand(),
-			oldEstimateResults.getGravel());
+		// Save the results.
+		ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
+			estCement40kg, estCement50kg, estSand, estGravel);
+		estimate.setResultEstimateConcrete(concreteResults);
 
+		// Set last computed.
+		estimate.setLastComputed(new Date(System.currentTimeMillis()));
+
+		// Save the object.
+		this.estimateValueRepo.set(estimate);
+
+		// Change the UUID for the other concrete proportions.
+		estimate.setUuid(UUID.randomUUID());
 	    }
-	    // Then add new values.
-	    setNewConcreteComponentValues(projAux, estCement40kg,
-		    estCement50kg, estSand, estGravel);
-
-	    // Set the updated project aux.
-	    this.projectAuxValueRepo.set(projAux);
 	}
 
-	// Set last computed.
-	estimate.setLastComputed(new Date(System.currentTimeMillis()));
-
-	// Save the object.
-	this.estimateValueRepo.set(estimate);
+	estimate.setUuid(originalUUID);
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
     }
-
     /**
      * Set old totals of concrete estimation.
      * 
@@ -279,21 +250,21 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estGravel
      * @return
      */
-    private ProjectAux setOldConcreteComponentValues(ProjectAux projAux,
-	    double estCement40kg, double estCement50kg, double estSand,
-	    double estGravel) {
-	double newTotalCement40 = projAux.getTotalCement40kg() - estCement40kg;
-	double newTotalCement50 = projAux.getTotalCement50kg() - estCement50kg;
-	double newTotalSand = projAux.getTotalSand() - estSand;
-	double newTotalGravel = projAux.getTotalGravel() - estGravel;
-
-	projAux.setTotalCement40kg(newTotalCement40);
-	projAux.setTotalCement50kg(newTotalCement50);
-	projAux.setTotalSand(newTotalSand);
-	projAux.setTotalGravel(newTotalGravel);
-
-	return projAux;
-    }
+    // private ProjectAux setOldConcreteComponentValues(ProjectAux projAux,
+    // double estCement40kg, double estCement50kg, double estSand,
+    // double estGravel) {
+    // double newTotalCement40 = projAux.getTotalCement40kg() - estCement40kg;
+    // double newTotalCement50 = projAux.getTotalCement50kg() - estCement50kg;
+    // double newTotalSand = projAux.getTotalSand() - estSand;
+    // double newTotalGravel = projAux.getTotalGravel() - estGravel;
+    //
+    // projAux.setTotalCement40kg(newTotalCement40);
+    // projAux.setTotalCement50kg(newTotalCement50);
+    // projAux.setTotalSand(newTotalSand);
+    // projAux.setTotalGravel(newTotalGravel);
+    //
+    // return projAux;
+    // }
 
     /**
      * Set new totals of concrete estimation.
@@ -305,20 +276,20 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estGravel
      * @return
      */
-    private ProjectAux setNewConcreteComponentValues(ProjectAux projAux,
-	    double estCement40kg, double estCement50kg, double estSand,
-	    double estGravel) {
-	double newTotalCement40 = projAux.getTotalCement40kg() + estCement40kg;
-	double newTotalCement50 = projAux.getTotalCement50kg() + estCement50kg;
-	double newTotalSand = projAux.getTotalSand() + estSand;
-	double newTotalGravel = projAux.getTotalGravel() + estGravel;
-
-	projAux.setTotalCement40kg(newTotalCement40);
-	projAux.setTotalCement50kg(newTotalCement50);
-	projAux.setTotalSand(newTotalSand);
-	projAux.setTotalGravel(newTotalGravel);
-
-	return projAux;
-    }
+    // private ProjectAux setNewConcreteComponentValues(ProjectAux projAux,
+    // double estCement40kg, double estCement50kg, double estSand,
+    // double estGravel) {
+    // double newTotalCement40 = projAux.getTotalCement40kg() + estCement40kg;
+    // double newTotalCement50 = projAux.getTotalCement50kg() + estCement50kg;
+    // double newTotalSand = projAux.getTotalSand() + estSand;
+    // double newTotalGravel = projAux.getTotalGravel() + estGravel;
+    //
+    // projAux.setTotalCement40kg(newTotalCement40);
+    // projAux.setTotalCement50kg(newTotalCement50);
+    // projAux.setTotalSand(newTotalSand);
+    // projAux.setTotalGravel(newTotalGravel);
+    //
+    // return projAux;
+    // }
 
 }

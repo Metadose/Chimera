@@ -10,24 +10,26 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
-import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DataStructUtils;
 
 @Service
 public class ConcreteEstimationSummaryServiceImpl implements
 	ConcreteEstimationSummaryService {
 
     private ConcreteEstimationSummaryValueRepo concreteEstimationSummaryValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private EstimateValueRepo estimateValueRepo;
 
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
-	this.projectAuxValueRepo = projectAuxValueRepo;
+    public void setEstimateValueRepo(EstimateValueRepo estimateValueRepo) {
+	this.estimateValueRepo = estimateValueRepo;
     }
 
     public void setConcreteEstimationSummaryValueRepo(
@@ -54,15 +56,30 @@ public class ConcreteEstimationSummaryServiceImpl implements
     @Transactional
     public String set(ConcreteEstimationSummary obj) {
 
-	// Get total units from project aux.
+	// Get total units.
 	// Set to summary object.
-	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux
-		.constructKey(obj.getProject()));
+	double unitsCement40kg = 0;
+	double unitsCement50kg = 0;
+	double unitsSand = 0;
+	double unitsGravel = 0;
 
-	double unitsCement40kg = projAux.getTotalCement40kg();
-	double unitsCement50kg = projAux.getTotalCement50kg();
-	double unitsSand = projAux.getTotalSand();
-	double unitsGravel = projAux.getTotalGravel();
+	// Loop through each checked quantity estimate.
+	// Then get the sum.
+	List<Estimate> estimateList = this.estimateValueRepo
+		.multiGet(DataStructUtils.convertArrayToList(obj
+			.getEstimationToCompute()));
+
+	for (Estimate estimate : estimateList) {
+	    ConcreteEstimateResults estimateQuantityResults = estimate
+		    .getResultEstimateConcrete();
+	    unitsCement40kg += estimateQuantityResults.getCement40kg();
+	    unitsCement50kg += estimateQuantityResults.getCement50kg();
+	    unitsSand += estimateQuantityResults.getSand();
+	    unitsGravel += estimateQuantityResults.getGravel();
+	}
+
+	// Set the values as the object's
+	// quantity estimate.
 
 	obj.setTotalUnitsCement40kg(unitsCement40kg);
 	obj.setTotalUnitsCement50kg(unitsCement50kg);

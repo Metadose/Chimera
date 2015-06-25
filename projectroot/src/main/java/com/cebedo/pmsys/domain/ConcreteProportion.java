@@ -50,8 +50,8 @@ public class ConcreteProportion implements IDomainObject {
     private Map<String, Object> extMap;
 
     public String getDisplayName() {
-	return name + "  ( " + ratioCement + " : " + ratioSand + " : "
-		+ ratioGravel + " )";
+	return name + " (" + ratioCement + ":" + ratioSand + ":" + ratioGravel
+		+ ")";
     }
 
     public ConcreteProportion() {

@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,15 @@ public class DataStructUtils {
 	List<Staff> staffList = new ArrayList<Staff>();
 	staffList.addAll(staffSet);
 	return staffList;
+    }
+
+    public static Collection<String> convertArrayToList(
+	    String[] estimationToCompute) {
+	List<String> strList = new ArrayList<String>();
+	for (String str : estimationToCompute) {
+	    strList.add(str);
+	}
+	return strList;
     }
 
 }
