@@ -70,7 +70,7 @@
                                 	</c:choose>
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -114,7 +114,7 @@
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${systemuser.id != 0}">
                                 <div class="tab-pane" id="tab_data_access">
-                                	<div class="box box-default">
+                                	<div class="box box-body box-default">
 		                                	<table>
 		                                    	<tr>
 <%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
@@ -191,7 +191,7 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_authority">
-                                	<div class="box box-default">
+                                	<div class="box box-body box-default">
 		                                	<table>
 		                                    	<tr>
 <%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>

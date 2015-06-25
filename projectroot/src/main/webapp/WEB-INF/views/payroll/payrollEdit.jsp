@@ -77,7 +77,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -139,7 +139,7 @@
                    								</div>
                    							</div>
                    							<c:if test="${projectPayroll.saved}">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Include to Payroll</h3>
                    								</div>
@@ -180,7 +180,7 @@
                    						</div>
                    						<c:if test="${projectPayroll.saved}">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Payroll Checklist</h3>
                    								</div>  
@@ -341,7 +341,7 @@
                                 <div class="tab-pane" id="tab_computation">
               						<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
                    									<h3 class="box-title">Computation as of ${lastComputed}</h3>

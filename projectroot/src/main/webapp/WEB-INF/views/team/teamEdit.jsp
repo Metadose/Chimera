@@ -55,7 +55,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -88,7 +88,7 @@
                    							</div>
                    						</div>
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Fields</h3>
                    								</div>
@@ -484,7 +484,7 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
-                                	<div class="box box-default">
+                                	<div class="box box-body box-default">
 		                                <div class="box-body">
 		                                <div id="gantt-chart" style='width:1000px; height:400px;'>
 <!-- 		                                <div id="gantt-chart" class="box-body table-responsive"> -->

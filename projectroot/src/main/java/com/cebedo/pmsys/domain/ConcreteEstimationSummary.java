@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.domain;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ConcreteEstimationSummary implements IDomainObject {
 
@@ -71,6 +73,91 @@ public class ConcreteEstimationSummary implements IDomainObject {
 	setProject(proj);
     }
 
+    /**
+     * Formatted cost text display.
+     */
+    public String getTotalCostCement40kgAsString() {
+	return getFormattedCostAsString(totalCostCement40kg);
+    }
+
+    public String getTotalCostCement50kgAsString() {
+	return getFormattedCostAsString(totalCostCement50kg);
+    }
+
+    public String getTotalCostSandAsString() {
+	return getFormattedCostAsString(totalCostSand);
+    }
+
+    public String getTotalCostGravelAsString() {
+	return getFormattedCostAsString(totalCostGravel);
+    }
+
+    public String getGrandTotalCostIf40kgAsString() {
+	return getFormattedCostAsString(grandTotalCostIf40kg);
+    }
+
+    public String getGrandTotalCostIf50kgAsString() {
+	return getFormattedCostAsString(grandTotalCostIf50kg);
+    }
+
+    /**
+     * Formatted quantity text display.
+     */
+    public String getTotalUnitsCement40kgAsString() {
+	return getFormattedQuantityAsString(totalUnitsCement40kg);
+    }
+
+    public String getTotalUnitsCement50kgAsString() {
+	return getFormattedQuantityAsString(totalUnitsCement50kg);
+    }
+
+    public String getTotalUnitsSandAsString() {
+	return getFormattedQuantityAsString(totalUnitsSand);
+    }
+
+    public String getTotalUnitsGravelAsString() {
+	return getFormattedQuantityAsString(totalUnitsGravel);
+    }
+
+    /**
+     * Format functions.
+     */
+    private String getFormattedCostAsString(double dblVal) {
+	double displayDbl = Math.ceil(dblVal);
+	return NumberFormatUtils.getCurrencyFormatter().format(displayDbl);
+    }
+
+    private String getFormattedQuantityAsString(double dblVal) {
+	double displayDbl = Math.ceil(dblVal);
+	DecimalFormat df = new DecimalFormat();
+	return df.format(displayDbl);
+    }
+
+    /**
+     * Per unit displays.
+     */
+    public String getCostPerUnitCement40kgAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		costPerUnitCement40kg);
+    }
+
+    public String getCostPerUnitCement50kgAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		costPerUnitCement50kg);
+    }
+
+    public String getCostPerUnitSandAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costPerUnitSand);
+    }
+
+    public String getCostPerUnitGravelAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		costPerUnitGravel);
+    }
+
+    /**
+     * Other functions.
+     */
     public Map<String, Object> getExtMap() {
 	return extMap;
     }

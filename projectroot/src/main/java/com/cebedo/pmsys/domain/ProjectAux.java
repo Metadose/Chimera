@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.domain;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
@@ -46,6 +47,34 @@ public class ProjectAux implements IDomainObject {
 	Company co = project2.getCompany();
 	setCompany(co);
 	setProject(project2);
+    }
+
+    /**
+     * Formatted quantity text display.
+     */
+    public String getTotalCement40kgAsString() {
+	return getFormattedQuantityAsString(totalCement40kg);
+    }
+
+    public String getTotalCement50kgAsString() {
+	return getFormattedQuantityAsString(totalCement50kg);
+    }
+
+    public String getTotalSandAsString() {
+	return getFormattedQuantityAsString(totalSand);
+    }
+
+    public String getTotalGravelAsString() {
+	return getFormattedQuantityAsString(totalGravel);
+    }
+
+    /**
+     * Format function.
+     */
+    private String getFormattedQuantityAsString(double dblVal) {
+	double displayDbl = Math.ceil(dblVal);
+	DecimalFormat df = new DecimalFormat();
+	return df.format(displayDbl);
     }
 
     public boolean unitsAreSet() {

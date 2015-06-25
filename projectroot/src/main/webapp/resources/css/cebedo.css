@@ -139,6 +139,18 @@
   background-color: #cbe7a3;
 }
 
+/* Compute buttons */
+.btn.btn-cebedo-compute {
+  background-color: #E3F2CD;
+  border-color: #79BD9A;
+  color: #0B486B;
+}
+.btn.btn-cebedo-compute:hover,
+.btn.btn-cebedo-compute:active,
+.btn.btn-cebedo-compute.hover {
+  background-color: #cbe7a3;
+}
+
 /* Assign buttons */
 .btn.btn-cebedo-assign {
   background-color: #E3F2CD;

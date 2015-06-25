@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +87,9 @@ public class ConcreteEstimationSummaryServiceImpl implements
 		+ totalCostGravel);
 	obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
 		+ totalCostGravel);
+
+	// Set last computed.
+	obj.setLastComputed(new Date(System.currentTimeMillis()));
 
 	// If create.
 	if (obj.getUuid() == null) {

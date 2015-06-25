@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 public class ConcreteEstimateResults implements Serializable {
 
@@ -21,6 +22,34 @@ public class ConcreteEstimateResults implements Serializable {
 	setCement50kg(estCement50kg);
 	setSand(estSand);
 	setGravel(estGravel);
+    }
+
+    /**
+     * Formatted quantity text display.
+     */
+    public String getCement40kgAsString() {
+	return getFormattedQuantityAsString(cement40kg);
+    }
+
+    public String getCement50kgAsString() {
+	return getFormattedQuantityAsString(cement50kg);
+    }
+
+    public String getSandAsString() {
+	return getFormattedQuantityAsString(sand);
+    }
+
+    public String getGravelAsString() {
+	return getFormattedQuantityAsString(gravel);
+    }
+
+    /**
+     * Format function.
+     */
+    private String getFormattedQuantityAsString(double dblVal) {
+	double displayDbl = Math.ceil(dblVal);
+	DecimalFormat df = new DecimalFormat();
+	return df.format(displayDbl);
     }
 
     public double getCement40kg() {

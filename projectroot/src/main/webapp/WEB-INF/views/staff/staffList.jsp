@@ -127,7 +127,7 @@
                                	<div class="tab-pane" id="tab_timeline">
 									<div class="row">
 										<div class="col-xs-12">
-											<div class="box box-default">
+											<div class="box box-body box-default">
 												<div class="box-header">
 <!-- 													<h3 class="box-title">Staff Tasks & Schedules</h3> -->
 												</div>

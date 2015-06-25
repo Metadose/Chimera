@@ -45,7 +45,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-body">
                    									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/milestone/create">
                    										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

@@ -70,7 +70,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -161,7 +161,7 @@
                    						</div>
                    						<c:if test="${staff.id != 0}">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">More Info</h3>
                    								</div>
@@ -279,7 +279,7 @@
               						<h2 class="page-header">Assignments</h2>
               						<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Teams</h3>
                    								</div>
@@ -446,7 +446,7 @@
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Timeline</h3>
                    								</div>
@@ -459,7 +459,7 @@
               						</div>
               						<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    							<div class="box-header">
                    								<table>
                    								<tr>
@@ -558,7 +558,7 @@
               						</div>
               						<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Summary</h3>
                    								</div>
@@ -594,7 +594,7 @@
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Attendance</h3>
                    								</div>
@@ -606,7 +606,7 @@
               						</div>
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Data Range</h3>
                    								</div>
@@ -694,7 +694,7 @@
                    							</div>
                    						</div>
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Summary</h3>
                    								</div>
@@ -752,7 +752,7 @@
               						</div>
               						<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Breakdown</h3>
                    								</div>

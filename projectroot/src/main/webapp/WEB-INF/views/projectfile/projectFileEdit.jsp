@@ -46,7 +46,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-body">
 				                                    <c:choose>
 		                                            	<c:when test="${projectfile.id == 0}">

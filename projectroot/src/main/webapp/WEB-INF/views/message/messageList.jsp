@@ -134,7 +134,7 @@
 
                                             <div class="table-responsive">
                                                 <!-- Chat box -->
-					                            <div class="box box-default">
+					                            <div class="box box-body box-default">
 					                                <div class="box-header">
 					                                    <i class="fa fa-comments-o"></i>
 					                                    <h3 class="box-title">${recipientDisplayName}</h3>

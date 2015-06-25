@@ -53,7 +53,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-body">
                    									<c:set var="formAction" value="${contextPath}/task/create"/>
                    									<c:if test="${!empty origin && !empty originID}">
@@ -107,7 +107,7 @@
                                 <div class="tab-pane" id="tab_expenses">
 	                               	<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    							<div class="box-header">
                    								<table>
                    								<tr>

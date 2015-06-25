@@ -30,6 +30,9 @@
 		ul li img {
 		    cursor: pointer;
 		}
+		#concrete-estimation-summary-table, #concrete-table {
+			font-size: 11px;
+		}
 	</style>
 </head>
 <body class="skin-blue">
@@ -78,7 +81,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Basic</h3>
                    								</div>
@@ -226,7 +229,7 @@
                    						<c:choose>
                    						<c:when test="${project.id != 0}">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">More Information</h3>
                    								</div>
@@ -321,7 +324,7 @@
 										<div class="tab-pane active" id="subtab_chart">
 											<div class="row">
 		                   						<div class="col-xs-12">
-				                                	<div class="box box-default">
+				                                	<div class="box box-body box-default">
 			              								<div class="box-header">
 			              									<h3 class="box-title">Timeline</h3>
 			              								</div>
@@ -378,7 +381,7 @@
 										<div class="tab-pane" id="subtab_milestones">
 											<div class="row">
 		                   						<div class="col-md-6">
-		                   							<div class="box box-default">
+		                   							<div class="box box-body box-default">
 		                   								<div class="box-header">
 		                   									<h3 class="box-title">Summary</h3>
 		                   								</div>
@@ -418,7 +421,7 @@
 	                   								</div>
 	                   							</div>
 	                   							<div class="col-md-6">
-		                   							<div class="box box-default">
+		                   							<div class="box box-body box-default">
 		                   								<div class="box-header">
 		                   									<h3 class="box-title">Graph</h3>
 		                   								</div>
@@ -433,7 +436,7 @@
 	                   						</div>
 											<div class="row">
 		                   						<div class="col-xs-12">
-		                   							<div class="box box-default">
+		                   							<div class="box box-body box-default">
 		                   								<div class="box-header">
 		                   									<h3 class="box-title">Milestones</h3>
 		                   								</div>
@@ -485,7 +488,7 @@
 										<div class="tab-pane" id="subtab_tasks">
 											<div class="row">
 	                   						<div class="col-md-6">
-	                   							<div class="box box-default">
+	                   							<div class="box box-body box-default">
 	                   								<div class="box-header">
 	                   									<h3 class="box-title">Summary</h3>
 	                   								</div>
@@ -523,7 +526,7 @@
 	                   							</div>
 	                   						</div>
 	                   						<div class="col-md-6">
-	                   							<div class="box box-default">
+	                   							<div class="box box-body box-default">
 	                   								<div class="box-header">
 	                   									<h3 class="box-title">Graph</h3>
 	                   								</div>
@@ -540,7 +543,7 @@
 	              						</div>
 	              						<div class="row">
 	                   						<div class="col-xs-12">
-	                   							<div class="box box-default">
+	                   							<div class="box box-body box-default">
 	                   								<div class="box-header">
 	                   									<h3 class="box-title">Tasks</h3>
 	                   								</div>
@@ -671,7 +674,7 @@
                                 <div class="tab-pane" id="tab_calendar">
                                	<div class="row">
                						<div class="col-xs-12">
-               							<div class="box box-default">
+               							<div class="box box-body box-default">
                								<div class="box-header">
 <!--                    									List<Map<String, String>> getEventTypePropertyMaps -->
                									<h3 class="box-title">Calendar</h3>
@@ -704,7 +707,7 @@
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
 		                            <div class="col-xs-12">
-               							<div class="box box-default">
+               							<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Payroll List</h3>
                								</div>
@@ -793,7 +796,7 @@
                						</div>
 		                            <div class="row">
 		                            <div class="col-md-6">
-               							<div class="box box-default">
+               							<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Graph</h3>
                								</div>
@@ -819,7 +822,7 @@
 		                                <div class="tab-pane active" id="subtab_inventory">
 	                                	<div class="row">
 			                            <div class="col-xs-12">
-	               							<div class="box box-default">
+	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Materials</h3>
 	               								</div>
@@ -930,7 +933,7 @@
 		                                <div class="tab-pane" id="subtab_delivery">
 		                                <div class="row">
 			                            <div class="col-xs-12">
-	               							<div class="box box-default">
+	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Deliveries</h3>
 	               								</div>
@@ -988,7 +991,7 @@
 		                                <div class="tab-pane" id="subtab_pullout">
 		                                <div class="row">
 	               						<div class="col-xs-12">
-	               							<div class="box box-default">
+	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Pull-Outs</h3>
 	               								</div>
@@ -1238,201 +1241,301 @@
 				                                <div class="tab-pane active" id="subtab_concrete">
 				                                <div class="row">
 					                            <div class="col-xs-12">
-			               							<div class="box box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">Total Quantity & Cost</h3>
-			               								</div>
-			               								<div class="box-body box-default">
-			               								<div class="callout callout-info callout-cebedo">
-										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-										                </div>
-										                <table id="concrete-estimation-summary-table" class="table table-bordered table-striped">
-					                                        <thead>
-					                                            <tr>
-					                                            	<th>&nbsp;</th>
-					                                            	<th>Name</th>
-					                                                <th>Description</th>
-					                                                <th>Units (Cement 40kg)</th>
-					                                                <th>Units (Cement 50kg)</th>
-					                                                <th>Units (Sand)</th>
-					                                                <th>Units (Gravel)</th>
-					                                                <th>Cost (Cement 40kg)</th>
-					                                                <th>Cost (Cement 50kg)</th>
-					                                                <th>Cost (Sand)</th>
-					                                                <th>Cost (Gravel)</th>
-					                                                <th>Total (Cement 40kg)</th>
-					                                                <th>Total (Cement 50kg)</th>
-					                                                <th>Total (Sand)</th>
-					                                                <th>Total (Gravel)</th>
-					                                                <th>Grand Total (If Cement 40kg)</th>
-					                                                <th>Grand Total (If Cement 50kg)</th>
-					                                            </tr>
-					                                        </thead>
-					                                        <tbody>
-					                                        		<c:forEach items="${estimationSummaries}" var="summary">
-							                                            <tr>
-							                                            	<td>
-							                                            		<center>
-							                                            			<c:url var="urlLink" value=""/>
-					                                								<a href="${urlLink}">
-																						<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-					                                								</a>
-																					<c:url var="urlLink" value=""/>
-					                                								<a href="${urlLink}">
-																						<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-					                                								</a>
-																				</center>
-																			</td>
-							                                                <td>${summary.name}</td>
-							                                                <td>${summary.description}</td>
-							                                                <td>${summary.totalUnitsCement40kg}</td>
-							                                                <td>${summary.totalUnitsCement50kg}</td>
-							                                                <td>${summary.totalUnitsSand}</td>
-							                                                <td>${summary.totalUnitsGravel}</td>
-							                                                <td>${summary.costPerUnitCement40kg}</td>
-							                                                <td>${summary.costPerUnitCement50kg}</td>
-							                                                <td>${summary.costPerUnitSand}</td>
-							                                                <td>${summary.costPerUnitGravel}</td>
-							                                                <td>${summary.totalCostCement40kg}</td>
-							                                                <td>${summary.totalCostCement50kg}</td>
-							                                                <td>${summary.totalCostSand}</td>
-							                                                <td>${summary.totalCostGravel}</td>
-							                                                <td>${summary.grandTotalCostIf40kg}</td>
-							                                                <td>${summary.grandTotalCostIf50kg}</td>
-							                                            </tr>
-						                                            </c:forEach>
-					                                        </tbody>
-					                                    </table>
-			               								</div>
+			               							<div class="box box-body box-default">
+			               							
+			               							
+			               								<div class="nav-tabs-custom">
+							                            <ul class="nav nav-tabs" id="subtabs-inventory">
+							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Quantity & Cost</a></li>
+					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Quantity Breakdown</a></li>
+							                            </ul>
+							                            <div class="tab-content">
+							                            
+							                            	<!-- Subsubtab for Quantity & Cost -->
+							                                <div class="tab-pane active" id="subsubtab_summary">
+						                                	<div class="row">
+								                            <div class="col-xs-12">
+						               							<div class="box box-body box-default">
+						               								<div class="box-header">
+						               									<h3 class="box-title">Cost Estimation</h3>
+						               								</div>
+						               								<div class="box-body box-default">
+						               								<div class="callout callout-info callout-cebedo">
+													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+													                </div>
+													                <button class="btn btn-cebedo-delete btn-flat btn-sm" id="detailsButton">Delete</button>
+													                <button class="btn btn-cebedo-compute btn-flat btn-sm" id="detailsButton">Compute</button>
+													                <br/><br/>
+													                <form:form modelAttribute="project"
+																	id="detailsForm"
+																	method="post"
+																	action="${contextPath}/project/create/concreteestimationsummary">
+													                <table id="concrete-estimation-summary-table" class="table table-bordered table-striped">
+								                                        <thead>
+								                                        	<tr>
+								                                            	<th rowspan="2" style="text-align: center; vertical-align: middle;">DETAILS</th>
+								                                                <th colspan="4" style="text-align: center;">COST PER UNIT</th>
+								                                                
+								                                                <th colspan="4" style="text-align: center;">TOTAL COST</th>
+								                                                
+								                                                <th colspan="2" style="text-align: center;">GRAND TOTAL</th>
+								                                            </tr>
+								                                            <tr>
+								                                                <th>Cement (${projectAux.unitCement40kg.name})</th>
+								                                                <th>Cement (${projectAux.unitCement50kg.name})</th>
+								                                                <th>Sand (${projectAux.unitSand.name})</th>
+								                                                <th>Gravel  (${projectAux.unitGravel.name})</th>
+								                                                
+								                                                <th>Cement (${projectAux.unitCement40kg.name})</th>
+								                                                <th>Cement (${projectAux.unitCement50kg.name})</th>
+								                                                <th>Sand (${projectAux.unitSand.name})</th>
+								                                                <th>Gravel  (${projectAux.unitGravel.name})</th>
+								                                                
+								                                                <th>Using Cement (${projectAux.unitCement40kg.name})</th>
+								                                                <th>Using Cement (${projectAux.unitCement50kg.name})</th>
+								                                            </tr>
+								                                        </thead>
+								                                        <tbody>
+								                                        		<c:forEach items="${estimationSummaries}" var="summary">
+										                                            <tr>
+										                                            	<td>
+										                                            		<center>
+								                                								<form:checkbox path="staffIDs" value="0"/><br/>
+										                                            			<c:url var="urlLink" value=""/>
+								                                								<a class="general-link" href="${urlLink}">
+												                                            		${summary.name}
+								                                								</a>
+																							</center>
+																						</td>
+										                                                <td align="right">${summary.getCostPerUnitCement40kgAsString()}</td>
+										                                                <td align="right">${summary.getCostPerUnitCement50kgAsString()}</td>
+										                                                <td align="right">${summary.getCostPerUnitSandAsString()}</td>
+										                                                <td align="right">${summary.getCostPerUnitGravelAsString()}</td>
+										                                                <td align="right">${summary.getTotalCostCement40kgAsString()}</td>
+										                                                <td align="right">${summary.getTotalCostCement50kgAsString()}</td>
+										                                                <td align="right">${summary.getTotalCostSandAsString()}</td>
+										                                                <td align="right">${summary.getTotalCostGravelAsString()}</td>
+										                                                <td align="right">${summary.getGrandTotalCostIf40kgAsString()}</td>
+										                                                <td align="right">${summary.getGrandTotalCostIf50kgAsString()}</td>
+										                                            </tr>
+									                                            </c:forEach>
+								                                        </tbody>
+								                                    </table>
+								                                    </form:form>
+						               								</div>
+						               							</div>
+						               						</div>
+						               						</div>
+						               						<div class="row">
+						               						<div class="col-md-6">
+						               							<div class="box box-body box-default">
+						               								
+						               								<div class="box-header">
+						               									<h3 class="box-title">Quantity Estimation</h3>
+						               								</div>
+						               								<div class="box-body box-default">
+						               								<div class="callout callout-info callout-cebedo">
+													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+													                </div>
+													                <table class="table table-bordered table-striped">
+													                <tr>
+													                	<td><label>Component</label></td>
+													                	<td><label>
+													                	<c:url var="urlLink" value="/unit/list"/>
+																		<a class="general-link" href="${urlLink}">
+														                	Unit of Measure
+		                                								</a>
+													                	</label></td>
+													                	<td><label>Total Quantity /<br/>No. of Units</label></td>
+													                </tr>
+													                <tr>
+													                	<td>Cement (40kg)</td>
+													                	<td>
+													                	<c:url var="urlLink" value="/unit/edit/${projectAux.unitCement40kg.getKey()}-end"/>
+																		<a class="general-link" href="${urlLink}">
+														                	${projectAux.unitCement40kg.name}
+		                                								</a>
+													                	</td>
+													                	<td align="right">${projectAux.getTotalCement40kgAsString()}</td>
+													                </tr>
+													                <tr>
+													                	<td>Cement (50kg)</td>
+													                	<td>
+													                	<c:url var="urlLink" value="/unit/edit/${projectAux.unitCement50kg.getKey()}-end"/>
+																		<a class="general-link" href="${urlLink}">
+														                	${projectAux.unitCement50kg.name}
+		                                								</a>
+													                	</td>
+													                	<td align="right">${projectAux.getTotalCement50kgAsString()}</td>
+													                </tr>
+													                <tr>
+													                	<td>Sand</td>
+													                	<td>
+													                	<c:url var="urlLink" value="/unit/edit/${projectAux.unitSand.getKey()}-end"/>
+																		<a class="general-link" href="${urlLink}">
+														                	${projectAux.unitSand.name}
+		                                								</a>
+													                	</td>
+													                	<td align="right">${projectAux.getTotalSandAsString()}</td>
+													                </tr>
+													                <tr>
+													                	<td>Gravel</td>
+													                	<td>
+													                	<c:url var="urlLink" value="/unit/edit/${projectAux.unitGravel.getKey()}-end"/>
+																		<a class="general-link" href="${urlLink}">
+														                	${projectAux.unitGravel.name}
+		                                								</a>
+													                	</td>
+													                	<td align="right">${projectAux.getTotalGravelAsString()}</td>
+													                </tr>
+													                </table>
+						               								</div>
+						               								
+						               								
+						               							</div>
+						               						</div>
+								                            <div class="col-md-6">
+						               							<div class="box box-body box-default">
+						               								
+						               								<div class="box-header">
+						               									<h3 class="box-title">Compute Costs</h3>
+						               								</div>
+						               								<div class="box-body box-default">
+						               								<div class="callout callout-info callout-cebedo">
+													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+													                </div>
+													                <form:form modelAttribute="concreteestimationsummary"
+																	id="detailsForm"
+																	method="post"
+																	action="${contextPath}/project/create/concreteestimationsummary">
+								                                        <div class="form-group">
+								                                        
+							                                            <label>Name</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="name"/>
+							                                            <p class="help-block">Enter the unit of measure</p>
+							                                            
+							                                            <label>Description</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="description"/>
+									                                    <p class="help-block">Add more details about this unit</p>
+									                                    
+									                                    <label>Cost per ${projectAux.unitCement40kg.name} (Cement 40kg)</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitCement40kg"/>
+									                                    <p class="help-block">Add more details about this unit</p>
+									                                    
+									                                    <label>Cost per ${projectAux.unitCement50kg.name} (Cement 50kg)</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitCement50kg"/>
+									                                    <p class="help-block">Add more details about this unit</p>
+									                                    
+									                                    <label>Cost per ${projectAux.unitSand.name} (Sand)</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitSand"/>
+									                                    <p class="help-block">Add more details about this unit</p>
+									                                    
+									                                    <label>Cost per ${projectAux.unitGravel.name} (Gravel)</label>
+							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitGravel"/>
+									                                    <p class="help-block">Add more details about this unit</p>
+									                                    TODO Include or Exclude an Item from Quantity Breakdown tab
+					                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Compute</button>
+								                                        </div>
+									                                    </form:form>
+						               								</div>
+						               								
+						               								
+						               							</div>
+						               						</div>
+						               						</div>
+						               						</div>
+						               						
+						               						<!-- Subsubtab for Quantity Breakdown -->
+							                                <div class="tab-pane" id="subsubtab_breakdown">
+						                                	<div class="row">
+								                            <div class="col-xs-12">
+						               							<div class="box box-body box-default">
+						               								<div class="box-header">
+						               									<h3 class="box-title">Quantity Breakdown</h3>
+						               								</div>
+						               								<div class="box-body box-default">
+									                                	<div class="callout callout-info callout-cebedo">
+														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+														                </div>
+									                                    <table id="concrete-table" class="table table-bordered table-striped">
+									                                    	<thead>
+									                                            <tr>
+									                                            	<th>&nbsp;</th>
+									                                            	<th>Name</th>
+									                                            	<th>Remarks</th>
+									                                                <th>Shape</th>
+									                                                <th>Inputs</th>
+									                                                <th>Proportion</th>
+									                                                <th>Cement (${projectAux.unitCement40kg.name})</th>
+									                                                <th>Cement (${projectAux.unitCement50kg.name})</th>
+									                                                <th>Sand (${projectAux.unitSand.name})</th>
+									                                                <th>Gravel (${projectAux.unitGravel.name})</th>
+									                                            </tr>
+							                                        		</thead>
+									                                        <tbody>
+										                                		<c:forEach items="${concreteEstimateList}" var="concrete">
+										                                            <tr>
+										                                            	<td>
+										                                            		<center>
+										                                            			<c:url var="urlLink" value="/project/edit/estimate/${concrete.getKey()}-end"/>
+										                                            			<a href="${urlLink}">
+														                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+										                                            			</a>
+															                                    <c:url var="urlLink" value=""/>
+															                                    <a href="${urlLink}">
+								                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+															                                    </a>
+																							</center>
+																						</td>
+																						<td>${concrete.name}</td>
+																						<td>${concrete.remarks}</td>
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${concrete.shape.name}
+								                                            			</a>
+									                                                	</td>
+									                                                	<td>
+									                                                	<c:forEach items="${concrete.formulaInputs}" var="input">
+									                                                	${input.key} = ${input.value}<br/>
+									                                                	</c:forEach>
+									                                                	</td>
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/concreteproportion/edit/${concrete.concreteProportion.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${concrete.concreteProportion.getDisplayName()}
+								                                            			</a>
+									                                                	</td>
+									                                                	<td align="right">${concrete.resultEstimateConcrete.getCement40kgAsString()}</td>
+									                                                	<td align="right">${concrete.resultEstimateConcrete.getCement50kgAsString()}</td>
+									                                                	<td align="right">${concrete.resultEstimateConcrete.getSandAsString()}</td>
+									                                                	<td align="right">${concrete.resultEstimateConcrete.getGravelAsString()}</td>
+										                                            </tr>
+									                                            </c:forEach>
+										                                    </tbody>
+										                                </table>
+						               								</div>
+						               							</div>
+						               						</div>
+						               						</div>
+						               						</div>
+						               					</div>
+						               					</div>
+			               							
+			               							
+			               							
+				               								
 			               							</div>
 			               						</div>
 			               						</div>
 			               						
-			                                	<div class="row">
-					                            <div class="col-xs-12">
-			               							<div class="box box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">Quantity Breakdown</h3>
-			               								</div>
-			               								<div class="box-body box-default">
-						                                	<div class="callout callout-info callout-cebedo">
-											                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-											                </div>
-						                                    <table id="concrete-table" class="table table-bordered table-striped">
-						                                    	<thead>
-						                                            <tr>
-						                                            	<th>&nbsp;</th>
-						                                            	<th>Name</th>
-						                                            	<th>Remarks</th>
-						                                                <th>Shape</th>
-						                                                <th>Inputs</th>
-						                                                <th>Proportion</th>
-						                                                <th>Cement (40kg)</th>
-						                                                <th>Cement (50kg)</th>
-						                                                <th>Sand</th>
-						                                                <th>Gravel</th>
-						                                            </tr>
-				                                        		</thead>
-						                                        <tbody>
-							                                		<c:forEach items="${concreteEstimateList}" var="concrete">
-							                                            <tr>
-							                                            	<td>
-							                                            		<center>
-							                                            			<c:url var="urlLink" value="/project/edit/estimate/${concrete.getKey()}-end"/>
-							                                            			<a href="${urlLink}">
-											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-							                                            			</a>
-												                                    <c:url var="urlLink" value=""/>
-												                                    <a href="${urlLink}">
-					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-												                                    </a>
-																				</center>
-																			</td>
-																			<td>${concrete.name}</td>
-																			<td>${concrete.remarks}</td>
-						                                                	<td>
-						                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
-					                                            			<a href="${urlLink}" class="general-link">
-						                                                	${concrete.shape.name}
-					                                            			</a>
-						                                                	</td>
-						                                                	<td>
-						                                                	<c:forEach items="${concrete.formulaInputs}" var="input">
-						                                                	${input.key} = ${input.value}<br/>
-						                                                	</c:forEach>
-						                                                	</td>
-						                                                	<td>
-						                                                	<c:url var="urlLink" value="/concreteproportion/edit/${concrete.concreteProportion.getKey()}-end"/>
-					                                            			<a href="${urlLink}" class="general-link">
-						                                                	${concrete.concreteProportion.getDisplayName()}
-					                                            			</a>
-						                                                	</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.cement40kg} ${concrete.concreteProportion.unitCement40kg.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.cement50kg} ${concrete.concreteProportion.unitCement50kg.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.sand} ${concrete.concreteProportion.unitSand.name}</td>
-						                                                	<td align="right">${concrete.resultEstimateConcrete.gravel} ${concrete.concreteProportion.unitGravel.name}</td>
-							                                            </tr>
-						                                            </c:forEach>
-							                                    </tbody>
-							                                </table>
-			               								</div>
-			               							</div>
-			               						</div>
-			               						</div>
 			               						
-			               						<div class="row">
-			               						<div class="col-md-6">
-			               							<div class="box box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">Estimate Costs</h3>
-			               								</div>
-			               								<div class="box-body box-default">
-			               								<div class="callout callout-info callout-cebedo">
-										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-										                </div>
-										                <form:form modelAttribute="concreteestimationsummary"
-														id="detailsForm"
-														method="post"
-														action="${contextPath}/project/create/concreteestimationsummary">
-					                                        <div class="form-group">
-					                                        
-				                                            <label>Name</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="name"/>
-				                                            <p class="help-block">Enter the unit of measure</p>
-				                                            
-				                                            <label>Description</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="description"/>
-						                                    <p class="help-block">Add more details about this unit</p>
-						                                    
-						                                    <label>Cost per Unit (Cement 40kg)</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitCement40kg"/>
-						                                    <p class="help-block">Add more details about this unit</p>
-						                                    
-						                                    <label>Cost per Unit (Cement 50kg)</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitCement50kg"/>
-						                                    <p class="help-block">Add more details about this unit</p>
-						                                    
-						                                    <label>Cost per Unit (Sand)</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitSand"/>
-						                                    <p class="help-block">Add more details about this unit</p>
-						                                    
-						                                    <label>Cost per Unit (Gravel)</label>
-				                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitGravel"/>
-						                                    <p class="help-block">Add more details about this unit</p>
-						                                    
-		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Estimate Costs</button>
-					                                        </div>
-						                                    </form:form>
-			               								</div>
-			               							</div>
-			               						</div>
-			               						</div>
 			               						
 			               						</div>
 			               						<div class="tab-pane" id="subtab_masonry">
 			                                	<div class="row">
 					                            <div class="col-xs-12">
-			               							<div class="box box-default">
+			               							<div class="box box-body box-default">
 			               								<div class="box-header">
 			               									<h3 class="box-title">Masonry</h3>
 			               								</div>
@@ -1460,7 +1563,7 @@
 										<div class="tab-pane active" id="subtab_members">
 											<div class="row">
 		                   						<div class="col-xs-12">
-				                                	<div class="box box-default">
+				                                	<div class="box box-body box-default">
 				                                		<div class="box-header">
 			              									<h3 class="box-title">Staff Members</h3>
 			              								</div>
@@ -1516,7 +1619,7 @@
 										<div class="tab-pane" id="subtab_controls">
 						                   	<div class="row">
 		                   						<div class="col-xs-12">
-				                                	<div class="box box-default">
+				                                	<div class="box box-body box-default">
 			              								<div class="box-header">
 			              									<h3 class="box-title">Staff Assignment Controls</h3>
 			              								</div>

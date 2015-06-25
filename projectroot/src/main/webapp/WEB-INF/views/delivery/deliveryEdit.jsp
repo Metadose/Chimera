@@ -71,7 +71,7 @@
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Details</h3>
                    								</div>
@@ -110,7 +110,7 @@
                    						</div>
                    						<c:if test="${isUpdating}">
                    						<div class="col-md-6">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Add Materials</h3>
                    								</div>
@@ -177,7 +177,7 @@
               						<c:if test="${isUpdating}">
               						<div class="row">
                    						<div class="col-xs-12">
-                   							<div class="box box-default">
+                   							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">List of Materials</h3>
                    								</div>
