@@ -59,7 +59,7 @@
 	        </section>
 	        <section class="content">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                         <c:url var="urlBack" value="/project/edit/${projectPayroll.project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
@@ -340,7 +340,7 @@
                                 <c:if test="${!empty payrollJSON}">
                                 <div class="tab-pane" id="tab_computation">
               						<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>

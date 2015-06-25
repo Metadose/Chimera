@@ -21,7 +21,7 @@
 	        </section>
 	        <section class="content">
 			<div class="row">
-				<div class="col-xs-12">
+				<div class="col-md-12">
 					${uiParamAlert}
 					<!-- Custom Tabs -->
 					<div class="nav-tabs-custom">
@@ -31,7 +31,7 @@
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab_list">
 								<div class="row">
-									<div class="col-xs-12">
+									<div class="col-md-12">
 										<div class="box-body box-default">
 													<c:url var="urlCreateUnit" value="/unit/edit/0-end"/>
 				                                	<a href="${urlCreateUnit}">

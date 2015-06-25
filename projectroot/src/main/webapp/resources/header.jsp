@@ -199,13 +199,13 @@
                         </li>
                         <!-- Menu Body -->
                         <li class="user-body">
-                            <div class="col-xs-4 text-center">
+                            <div class="col-md-4 text-center">
                                 <a href="${contextPath}/systemuser/changepassword">Change Password</a>
                             </div>
-<!--                             <div class="col-xs-4 text-center"> -->
+<!--                             <div class="col-md-4 text-center"> -->
 <!--                                 <a href="#">Sales</a> -->
 <!--                             </div> -->
-<!--                             <div class="col-xs-4 text-center"> -->
+<!--                             <div class="col-md-4 text-center"> -->
 <!--                                 <a href="#">Friends</a> -->
 <!--                             </div> -->
                         </li>

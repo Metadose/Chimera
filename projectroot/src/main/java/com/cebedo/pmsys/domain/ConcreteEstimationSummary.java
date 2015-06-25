@@ -35,14 +35,6 @@ public class ConcreteEstimationSummary implements IDomainObject {
     private Unit unitGravel;
 
     /**
-     * Cost per unit.
-     */
-    private double costPerUnitCement40kg;
-    private double costPerUnitCement50kg;
-    private double costPerUnitSand;
-    private double costPerUnitGravel;
-
-    /**
      * Total of cost per component.
      */
     private double totalCostCement40kg;
@@ -53,10 +45,19 @@ public class ConcreteEstimationSummary implements IDomainObject {
     private double grandTotalCostIf50kg;
 
     /**
-     * Other specs.
+     * Bean-backed form.
      */
     private String name;
     private String description;
+    private double costPerUnitCement40kg;
+    private double costPerUnitCement50kg;
+    private double costPerUnitSand;
+    private double costPerUnitGravel;
+    private String[] estimationToCompute;
+
+    /**
+     * Other specs.
+     */
     private Date lastComputed;
 
     /**
@@ -356,6 +357,14 @@ public class ConcreteEstimationSummary implements IDomainObject {
 
     public void setGrandTotalCostIf50kg(double grandTotalCostIf50kg) {
 	this.grandTotalCostIf50kg = grandTotalCostIf50kg;
+    }
+
+    public String[] getEstimationToCompute() {
+	return estimationToCompute;
+    }
+
+    public void setEstimationToCompute(String[] estimationToCompute) {
+	this.estimationToCompute = estimationToCompute;
     }
 
     @Override

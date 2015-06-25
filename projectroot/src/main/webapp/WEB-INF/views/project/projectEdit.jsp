@@ -59,7 +59,7 @@
 	        </section>
 	        <section class="content">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -323,7 +323,7 @@
 									
 										<div class="tab-pane active" id="subtab_chart">
 											<div class="row">
-		                   						<div class="col-xs-12">
+		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
 			              								<div class="box-header">
 			              									<h3 class="box-title">Timeline</h3>
@@ -435,7 +435,7 @@
 	                   							</div>
 	                   						</div>
 											<div class="row">
-		                   						<div class="col-xs-12">
+		                   						<div class="col-md-12">
 		                   							<div class="box box-body box-default">
 		                   								<div class="box-header">
 		                   									<h3 class="box-title">Milestones</h3>
@@ -542,7 +542,7 @@
 	                   						</div>
 	              						</div>
 	              						<div class="row">
-	                   						<div class="col-xs-12">
+	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
 	                   								<div class="box-header">
 	                   									<h3 class="box-title">Tasks</h3>
@@ -673,7 +673,7 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_calendar">
                                	<div class="row">
-               						<div class="col-xs-12">
+               						<div class="col-md-12">
                							<div class="box box-body box-default">
                								<div class="box-header">
 <!--                    									List<Map<String, String>> getEventTypePropertyMaps -->
@@ -706,7 +706,7 @@
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
-		                            <div class="col-xs-12">
+		                            <div class="col-md-12">
                							<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Payroll List</h3>
@@ -821,7 +821,7 @@
 		                            <div class="tab-content">
 		                                <div class="tab-pane active" id="subtab_inventory">
 	                                	<div class="row">
-			                            <div class="col-xs-12">
+			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Materials</h3>
@@ -932,7 +932,7 @@
 		                                
 		                                <div class="tab-pane" id="subtab_delivery">
 		                                <div class="row">
-			                            <div class="col-xs-12">
+			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Deliveries</h3>
@@ -990,7 +990,7 @@
 		                                
 		                                <div class="tab-pane" id="subtab_pullout">
 		                                <div class="row">
-	               						<div class="col-xs-12">
+	               						<div class="col-md-12">
 	               							<div class="box box-body box-default">
 	               								<div class="box-header">
 	               									<h3 class="box-title">Pull-Outs</h3>
@@ -1240,7 +1240,7 @@
 				                            <div class="tab-content">
 				                                <div class="tab-pane active" id="subtab_concrete">
 				                                <div class="row">
-					                            <div class="col-xs-12">
+					                            <div class="col-md-12">
 			               							<div class="box box-body box-default">
 			               							
 			               							
@@ -1254,7 +1254,7 @@
 							                            	<!-- Subsubtab for Quantity & Cost -->
 							                                <div class="tab-pane active" id="subsubtab_summary">
 						                                	<div class="row">
-								                            <div class="col-xs-12">
+								                            <div class="col-md-12">
 						               							<div class="box box-body box-default">
 						               								<div class="box-header">
 						               									<h3 class="box-title">Cost Estimation</h3>
@@ -1433,7 +1433,29 @@
 									                                    <label>Cost per ${projectAux.unitGravel.name} (Gravel)</label>
 							                                            <form:input type="text" placeholder="Sample: TODO" class="form-control" path="costPerUnitGravel"/>
 									                                    <p class="help-block">Add more details about this unit</p>
-									                                    TODO Include or Exclude an Item from Quantity Breakdown tab
+									                                    
+									                                    <label>Quantity Estimations</label>
+									                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
+									                                    <thead>
+														                <tr>
+														                	<th>Check / Uncheck</th>
+														                	<th>Quantity Estimate</th>
+														                </tr>
+									                                    </thead>
+									                                    <tbody>
+			                                     						<c:forEach items="${concreteEstimateList}" var="quantityEstimate"> 
+									                                    <tr>
+									                                    	<td align="center">
+			                                     							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/>
+									                                    	</td>
+									                                    	<td>
+			                                     							${quantityEstimate.name}
+									                                    	</td>
+									                                    </tr>
+			                                     						</c:forEach> 
+									                                    </tbody>
+														                </table>
+									                                    
 					                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Compute</button>
 								                                        </div>
 									                                    </form:form>
@@ -1448,7 +1470,7 @@
 						               						<!-- Subsubtab for Quantity Breakdown -->
 							                                <div class="tab-pane" id="subsubtab_breakdown">
 						                                	<div class="row">
-								                            <div class="col-xs-12">
+								                            <div class="col-md-12">
 						               							<div class="box box-body box-default">
 						               								<div class="box-header">
 						               									<h3 class="box-title">Quantity Breakdown</h3>
@@ -1534,7 +1556,7 @@
 			               						</div>
 			               						<div class="tab-pane" id="subtab_masonry">
 			                                	<div class="row">
-					                            <div class="col-xs-12">
+					                            <div class="col-md-12">
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
 			               									<h3 class="box-title">Masonry</h3>
@@ -1562,7 +1584,7 @@
 									<div class="tab-content">
 										<div class="tab-pane active" id="subtab_members">
 											<div class="row">
-		                   						<div class="col-xs-12">
+		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
 				                                		<div class="box-header">
 			              									<h3 class="box-title">Staff Members</h3>
@@ -1618,7 +1640,7 @@
 										</div>
 										<div class="tab-pane" id="subtab_controls">
 						                   	<div class="row">
-		                   						<div class="col-xs-12">
+		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
 			              								<div class="box-header">
 			              									<h3 class="box-title">Staff Assignment Controls</h3>
@@ -1811,6 +1833,7 @@
 	    });
 		
 		$(document).ready(function() {
+			$("#form-estimate-cost").dataTable();
 			$("#concrete-estimation-summary-table").dataTable();
 			$("#concrete-table").dataTable();
 			$("#material-table").dataTable();

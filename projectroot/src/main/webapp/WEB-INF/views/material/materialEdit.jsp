@@ -38,7 +38,7 @@
 	        </section>
 	        <section class="content">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                     	<c:url var="urlBack" value="/project/edit/${material.project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>

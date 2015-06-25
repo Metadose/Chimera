@@ -54,7 +54,7 @@
 	        </section>
 	        <section class="content">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -445,7 +445,7 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Timeline</h3>
@@ -458,7 +458,7 @@
                    						</div>
               						</div>
               						<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    							<div class="box-header">
                    								<table>
@@ -593,7 +593,7 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_payroll">
                                 	<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Attendance</h3>
@@ -751,7 +751,7 @@
                    						</div>
               						</div>
               						<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Breakdown</h3>

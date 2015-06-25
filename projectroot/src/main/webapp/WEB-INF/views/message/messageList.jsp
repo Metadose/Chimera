@@ -52,11 +52,11 @@
                 <section class="content">
                     <!-- MAILBOX BEGIN -->
                     <div class="mailbox row">
-                        <div class="col-xs-12">
+                        <div class="col-md-12">
                             <div class="box box-solid">
                                 <div class="box-body">
                                     <div class="row">
-                                        <div class="col-md-3 col-sm-4">
+                                        <div class="col-md-3 col-md-4">
                                             <!-- BOXES are complex enough to move the .box-header around.
                                                  This is an example of having the box header within the box body -->
 <!--                                             <div class="box-header"> -->
@@ -118,9 +118,9 @@
                                                 </ul>
                                             </div>
                                         </div><!-- /.col (LEFT) -->
-                                        <div class="col-md-9 col-sm-8">
+                                        <div class="col-md-9 col-md-8">
 <!--                                             <div class="row pad"> -->
-<!--                                                 <div class="col-sm-6 search-form"> -->
+<!--                                                 <div class="col-md-6 search-form"> -->
 <!--                                                     <form action="#" class="text-right"> -->
 <!--                                                         <div class="input-group"> -->
 <!--                                                             <input type="text" class="form-control input-sm" placeholder="Search"> -->

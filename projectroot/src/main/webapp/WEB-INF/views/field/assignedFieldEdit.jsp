@@ -40,7 +40,7 @@
 					<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 				</a><br/><br/>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">

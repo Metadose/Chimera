@@ -26,7 +26,7 @@
 	        </section>
 	        <section class="content">
 			<div class="row">
-				<div class="col-xs-12">
+				<div class="col-md-12">
 					<!-- Custom Tabs -->
 					${uiParamAlert}
 					<div class="nav-tabs-custom">
@@ -37,7 +37,7 @@
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab_list">
 								<div class="row">
-									<div class="col-xs-12">
+									<div class="col-md-12">
 										<div class="box">
 												<div class="box-header">
 				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
@@ -97,7 +97,7 @@
 							</div>
 							<div class="tab-pane" id="tab_timeline">
 								<div class="row">
-									<div class="col-xs-12">
+									<div class="col-md-12">
 										<div class="box box-body box-default">
 											<div class="box-header">
 			<!-- 													<h3 class="box-title">Staff Tasks & Schedules</h3> -->

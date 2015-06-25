@@ -56,7 +56,7 @@
 	        </section>
 	        <section class="content">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                     	<c:url var="urlBack" value="/project/edit/${delivery.project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
@@ -176,7 +176,7 @@
               						</div>
               						<c:if test="${isUpdating}">
               						<div class="row">
-                   						<div class="col-xs-12">
+                   						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">List of Materials</h3>
