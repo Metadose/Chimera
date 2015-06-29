@@ -1425,8 +1425,20 @@
 									                                    		<tr>
 									                                            	<th rowspan="2">&nbsp;</th>
 									                                            	<th rowspan="2">Estimation Name</th>
-									                                                <th colspan="3">Formula Inputs / Estimation Parameters</th>
-									                                                <th colspan="4">Total Quantity / No. of Units per Component</th>
+									                                                <th colspan="3" style="text-align: center;">
+									                                                <a class="toggle-vis" data-column="2,3,4" data-table="concrete-table">
+																					<span class="label btn-success">
+																					FORMULA INPUTS / ESTIMATION PARAMETERS
+																					</span>
+																					</a>
+									                                                </th>
+									                                                <th colspan="4" style="text-align: center;">
+									                                                <a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-table">
+																					<span class="label btn-primary">
+																					TOTAL QUANTITY / NO. OF UNITS PER COMPONENT
+																					</span>
+																					</a>
+									                                                </th>
 									                                            </tr>
 									                                            <tr>
 									                                                <th>Shape</th>
