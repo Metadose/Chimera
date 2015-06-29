@@ -151,6 +151,12 @@ $(document).ready(function() {
 		                    <i class="fa fa-tint"></i> <span>Concrete Proportion</span>
 		                </a>
 		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/chb/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-tint"></i> <span>CHB</span>
+		                </a>
+		            </li>
                 </ul>
             </li>
             

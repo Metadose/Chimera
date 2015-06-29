@@ -6,6 +6,8 @@ public class RedisKeyRegistry {
 
     public static final String KEY_CONCRETE_PROPORTION = "company.fk:%s:concreteproportion:%s";
 
+    public static final String KEY_CHB = "company.fk:%s:chb:%s";
+
     public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
 
     public static final String KEY_UNITS = "company.fk:%s:units:%s";

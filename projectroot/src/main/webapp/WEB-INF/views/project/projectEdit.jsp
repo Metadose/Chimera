@@ -1236,6 +1236,7 @@
 				                            <ul class="nav nav-tabs" id="subtabs-estimate">
 				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
 		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
+		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Cost Estimate Controls</a></li>
 				                            </ul>
 				                            <div class="tab-content">
 				                                <div class="tab-pane active" id="subtab_concrete">
@@ -1246,9 +1247,8 @@
 			               							
 			               								<div class="nav-tabs-custom">
 							                            <ul class="nav nav-tabs" id="subtabs-inventory">
-							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Summary of Quantity & Cost</a></li>
-					                                		<li><a href="#subsubtab_compute_costs" data-toggle="tab">Summarize Estimates</a></li>
-					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Quantity Estimates</a></li>
+							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Quantity & Cost</a></li>
+					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Quantity Breakdown</a></li>
 							                            </ul>
 							                            <div class="tab-content">
 							                            
@@ -1268,25 +1268,25 @@
 													                <button class="btn btn-cebedo-compute btn-flat btn-sm" id="detailsButton">Compute</button>
 													                <br/><br/>
 					<label>Show/Hide Column</label>&nbsp;
-					<a class="toggle-vis" data-column="1,2,3,4">
+					<a class="toggle-vis" data-column="1,2,3,4" data-table="concrete-estimation-summary-table">
 					<span class="label btn-success">
 					TOTAL QUANTITY / NO. OF UNITS
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="5,6,7,8">
+					<a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-estimation-summary-table">
 					<span class="label btn-primary">
 					COST PER UNIT
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="9,10,11,12">
+					<a class="toggle-vis" data-column="9,10,11,12" data-table="concrete-estimation-summary-table">
 					<span class="label btn-warning">
 					TOTAL COST
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="13,14">
+					<a class="toggle-vis" data-column="13,14" data-table="concrete-estimation-summary-table">
 					<span class="label btn-danger">
 					GRAND TOTAL
 					</span>
@@ -1304,7 +1304,7 @@
 								                                            	DETAILS
 								                                            	</th>
 								                                            	<th colspan="4" style="text-align: center;">
-								                                            	<a class="toggle-vis" data-column="1,2,3,4">
+								                                            	<a class="toggle-vis" data-column="1,2,3,4" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-success">
 																				TOTAL QUANTITY / NO. OF UNITS
 																				</span>
@@ -1312,7 +1312,7 @@
 								                                            	</th>
 								                                            	
 								                                                <th colspan="4" style="text-align: center;">
-								                                                <a class="toggle-vis" data-column="5,6,7,8">
+								                                                <a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-primary">
 																				COST PER UNIT
 																				</span>
@@ -1320,7 +1320,7 @@
 																				</th>
 								                                                
 								                                                <th colspan="4" style="text-align: center;">
-								                                                <a class="toggle-vis" data-column="9,10,11,12">
+								                                                <a class="toggle-vis" data-column="9,10,11,12" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-warning">
 																				TOTAL COST
 																				</span>
@@ -1328,7 +1328,7 @@
 								                                                </th>
 								                                                
 								                                                <th colspan="2" style="text-align: center;">
-								                                                <a class="toggle-vis" data-column="13,14">
+								                                                <a class="toggle-vis" data-column="13,14" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-danger">
 																				GRAND TOTAL
 																				</span>
@@ -1405,14 +1405,32 @@
 									                                	<div class="callout callout-info callout-cebedo">
 														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 														                </div>
+														                
+														                <label>Show/Hide Column</label>&nbsp;
+					<a class="toggle-vis" data-column="2,3,4" data-table="concrete-table">
+					<span class="label btn-success">
+					FORMULA INPUTS / ESTIMATION PARAMETERS
+					</span>
+					</a>
+					&nbsp;
+					<a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-table">
+					<span class="label btn-primary">
+					TOTAL QUANTITY / NO. OF UNITS PER COMPONENT
+					</span>
+					</a>
+					<p class="help-block">Click to show/hide</p>
+														                
 									                                    <table id="concrete-table" class="table table-bordered table-striped">
 									                                    	<thead>
+									                                    		<tr>
+									                                            	<th rowspan="2">&nbsp;</th>
+									                                            	<th rowspan="2">Estimation Name</th>
+									                                                <th colspan="3">Formula Inputs / Estimation Parameters</th>
+									                                                <th colspan="4">Total Quantity / No. of Units per Component</th>
+									                                            </tr>
 									                                            <tr>
-									                                            	<th>&nbsp;</th>
-									                                            	<th>Name</th>
-									                                            	<th>Remarks</th>
 									                                                <th>Shape</th>
-									                                                <th>Inputs</th>
+									                                                <th>Formula Inputs</th>
 									                                                <th>Proportion</th>
 									                                                <th>Cement (40kg)</th>
 									                                                <th>Cement (50kg)</th>
@@ -1436,7 +1454,6 @@
 																							</center>
 																						</td>
 																						<td>${concrete.name}</td>
-																						<td>${concrete.remarks}</td>
 									                                                	<td>
 									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
@@ -1444,7 +1461,7 @@
 								                                            			</a>
 									                                                	</td>
 									                                                	<td>
-									                                                	<c:forEach items="${concrete.formulaInputs}" var="input">
+									                                                	<c:forEach items="${concrete.volumeFormulaInputs}" var="input">
 									                                                	${input.key} = ${input.value}<br/>
 									                                                	</c:forEach>
 									                                                	</td>
@@ -1468,125 +1485,6 @@
 						               						</div>
 						               						</div>
 						               						
-						               						
-						               						<!-- Subtab for compute costs -->
-						               						<div class="tab-pane" id="subsubtab_compute_costs">
-						               						<form:form modelAttribute="concreteestimationsummary"
-																	id="detailsForm"
-																	method="post"
-																	action="${contextPath}/project/create/concreteestimationsummary">
-						                                	<div class="row">
-								                            <div class="col-md-4">
-						               							<div class="box box-body box-default">
-						               								
-						               								<div class="box-header">
-						               									<h3 class="box-title">Concrete Component Costs</h3>
-						               								</div>
-						               								<div class="box-body box-default">
-						               								<div class="callout callout-info callout-cebedo">
-													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-													                </div>
-								                                        <div class="form-group">
-								                                        
-							                                            <label>Name</label>
-							                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/>
-							                                            <p class="help-block">Enter the name of this estimate summary</p>
-							                                            
-							                                            <label>Description</label>
-							                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/>
-									                                    <p class="help-block">Add a description to this summary</p>
-									                                    
-									                                    <label>Cost per Unit (Cement 40kg)</label>
-							                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/>
-									                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p>
-									                                    
-									                                    <label>Cost per Unit (Cement 50kg)</label>
-							                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement50kg"/>
-									                                    <p class="help-block">Specify the cost per 50kg bag of Cement</p>
-									                                    
-									                                    <label>Cost per Unit (Sand)</label>
-							                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitSand"/>
-									                                    <p class="help-block">Specify the cost per unit of Sand</p>
-									                                    
-									                                    <label>Cost per Unit (Gravel)</label>
-							                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitGravel"/>
-									                                    <p class="help-block">Specify the cost per unit of Gravel</p>
-									                                    
-								                                        </div>
-						               								</div>
-						               								
-						               								
-						               							</div>
-						               						</div>
-						               						<div class="col-md-8">
-						               							<div class="box box-body box-default">
-						               								
-						               								<div class="box-header">
-						               									<h3 class="box-title">Summary Controls</h3>
-						               								</div>
-						               								<div class="box-body box-default">
-						               								<div class="callout callout-info callout-cebedo">
-													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-													                </div>
-													                
-								                                        <div class="form-group">
-								                                        
-									                                    <label>Quantity Estimations</label>
-									                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
-									                                    <thead>
-														                <tr>
-														                	<th>Check / Uncheck</th>
-														                	<th>Name</th>
-														                	<th>Shape</th>
-														                	<th>Inputs</th>
-														                	<th>Proportion</th>
-														                </tr>
-									                                    </thead>
-									                                    <tbody>
-			                                     						<c:forEach items="${concreteEstimateList}" var="quantityEstimate"> 
-									                                    <tr>
-									                                    	<td align="center">
-			                                     							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/>
-									                                    	</td>
-									                                    	<td>
-									                                    	<c:url var="urlLink" value="/project/edit/estimate/${quantityEstimate.getKey()}-end"/>
-					                                            			<a href="${urlLink}" class="general-link">
-									                                    	${quantityEstimate.name}
-					                                            			</a>
-									                                    	</td>
-									                                    	<td>
-									                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/>
-					                                            			<a href="${urlLink}" class="general-link">
-									                                    	${quantityEstimate.shape.name}
-					                                            			</a>
-									                                    	</td>
-									                                    	<td>
-									                                    	<c:forEach items="${quantityEstimate.formulaInputs}" var="input">
-						                                                	${input.key} = ${input.value}<br/>
-						                                                	</c:forEach>
-									                                    	</td>
-									                                    	<td>
-									                                    	<c:url var="urlLink" value="/concreteproportion/edit/${quantityEstimate.concreteProportion.getKey()}-end"/>
-					                                            			<a href="${urlLink}" class="general-link">
-									                                    	${quantityEstimate.concreteProportion.getDisplayName()}
-					                                            			</a>
-									                                    	</td>
-									                                    </tr>
-			                                     						</c:forEach> 
-									                                    </tbody>
-														                </table>
-									                                    
-					                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Compute Costs & Summarize</button>
-								                                        </div>
-								                                    
-						               								</div>
-						               								
-						               								
-						               							</div>
-						               						</div>
-						               						</div>
-						               						</form:form>
-						               						</div>
 						               					</div>
 						               					</div>
 			               							
@@ -1604,14 +1502,223 @@
 			                                	<div class="row">
 					                            <div class="col-md-12">
 			               							<div class="box box-body box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">Masonry</h3>
-			               								</div>
-			               								<div class="box-body box-default">
-			               								</div>
+			               								<div class="nav-tabs-custom">
+														<ul class="nav nav-tabs">
+															<li class="active"><a href="#subsubtab_chb" data-toggle="tab">CHB Quantity</a></li>
+															<li><a href="#subsubtab_block-laying" data-toggle="tab">Block Laying</a></li>
+															<li><a href="#subsubtab_paster" data-toggle="tab">Plaster</a></li>
+														</ul>
+														<div class="tab-content">
+															<div class="tab-pane active" id="subsubtab_chb">
+																<div class="row">
+									                            <div class="col-md-12">
+							               							<div class="box box-body box-default">
+							               								<div class="box-header">
+							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity Estimate</h3>
+							               								</div>
+							               								<div class="box-body box-default">
+							               								<div class="callout callout-info callout-cebedo">
+														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+														                </div>
+							               								<table id="chb-quantity-table" class="table table-bordered table-striped">
+									                                    	<thead>
+									                                            <tr>
+									                                            	<th>&nbsp;</th>
+									                                            	<th>Name</th>
+									                                            	<th>Remarks</th>
+									                                                <th>Shape</th>
+									                                                <th>Area Inputs</th>
+									                                                 <!-- private double totalCHB;
+									                                                 private CHB chbMeasurement; -->
+									                                                <th>CHB</th>
+									                                                <th>No. of Pieces</th>
+									                                            </tr>
+							                                        		</thead>
+									                                        <tbody>
+										                                		<c:forEach items="${masonryEstimateList}" var="thisEstimate">
+										                                            <tr>
+										                                            	<td>
+										                                            		<center>
+										                                            			<c:url var="urlLink" value="/project/edit/estimate/${thisEstimate.getKey()}-end"/>
+										                                            			<a href="${urlLink}">
+														                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+										                                            			</a>
+															                                    <c:url var="urlLink" value=""/>
+															                                    <a href="${urlLink}">
+								                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+															                                    </a>
+																							</center>
+																						</td>
+																						<td>${thisEstimate.name}</td>
+																						<td>${thisEstimate.remarks}</td>
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/shape/edit/${thisEstimate.shape.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${thisEstimate.shape.name}
+								                                            			</a>
+									                                                	</td>
+									                                                	<td>
+									                                                	<c:forEach items="${thisEstimate.areaFormulaInputs}" var="input">
+									                                                	${input.key} = ${input.value}<br/>
+									                                                	</c:forEach>
+									                                                	</td>
+									                                                	<!-- private double totalCHB;
+									                                                	private CHB chbMeasurement; -->
+									                                                	<td>${thisEstimate.resultEstimateMasonry.chbMeasurement.name}</td>
+									                                                	<td align="right">${thisEstimate.resultEstimateMasonry.getTotalCHBAsString()}</td>
+										                                            </tr>
+									                                            </c:forEach>
+										                                    </tbody>
+										                                </table>
+							               								</div>
+							               							</div>
+							               						</div>
+							               						</div>
+															</div>
+															<div class="tab-pane" id="subsubtab_block-laying">
+																<div class="row">
+									                            <div class="col-md-12">
+							               							<div class="box box-body box-default">
+							               								<div class="box-body box-default">
+							               								
+							               								
+							               								</div>
+							               							</div>
+							               						</div>
+							               						</div>
+															</div>
+															<div class="tab-pane" id="subsubtab_paster">
+																<div class="row">
+									                            <div class="col-md-12">
+							               							<div class="box box-body box-default">
+							               								<div class="box-body box-default">
+							               								
+							               								
+							               								</div>
+							               							</div>
+							               						</div>
+							               						</div>
+															</div>
+														</div>
+														</div>
 			               							</div>
 			               						</div>
 			               						</div>
+			               						</div>
+			               						
+			               						
+			               						<div class="tab-pane" id="subtab_cost-estimate-controls">
+			               						<form:form modelAttribute="concreteestimationsummary"
+														id="detailsForm"
+														method="post"
+														action="${contextPath}/project/create/concreteestimationsummary">
+			                                	<div class="row">
+					                            <div class="col-md-4">
+			               							<div class="box box-body box-default">
+			               								
+			               								<div class="box-header">
+			               									<h3 class="box-title">Cost Inputs</h3>
+			               								</div>
+			               								<div class="box-body box-default">
+			               								<div class="callout callout-info callout-cebedo">
+										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+										                </div>
+					                                        <div class="form-group">
+					                                        
+				                                            <label>Name</label>
+				                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/>
+				                                            <p class="help-block">Enter the name of this estimate summary</p>
+				                                            
+				                                            <label>Description</label>
+				                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/>
+						                                    <p class="help-block">Add a description to this summary</p>
+						                                    
+						                                    <br/>
+						                                    <h4>Concrete Estimation</h4>
+						                                    <label>Cost per Unit (Cement 40kg)</label>
+				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/>
+						                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p>
+						                                    
+						                                    <label>Cost per Unit (Cement 50kg)</label>
+				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement50kg"/>
+						                                    <p class="help-block">Specify the cost per 50kg bag of Cement</p>
+						                                    
+						                                    <label>Cost per Unit (Sand)</label>
+				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitSand"/>
+						                                    <p class="help-block">Specify the cost per unit of Sand</p>
+						                                    
+						                                    <label>Cost per Unit (Gravel)</label>
+				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitGravel"/>
+						                                    <p class="help-block">Specify the cost per unit of Gravel</p>
+						                                    
+					                                        </div>
+			               								</div>
+			               								
+			               								
+			               							</div>
+			               						</div>
+			               						<div class="col-md-8">
+			               							<div class="box box-body box-default">
+			               								
+			               								<div class="box-body box-default">
+										                
+					                                        <div class="form-group">
+					                                        
+						                                    <label>Quantity Estimations</label>
+						                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
+						                                    <thead>
+											                <tr>
+											                	<th>Check / Uncheck</th>
+											                	<th>Name</th>
+											                	<th>Shape</th>
+											                	<th>Inputs</th>
+											                	<th>Proportion</th>
+											                </tr>
+						                                    </thead>
+						                                    <tbody>
+                                     						<c:forEach items="${concreteEstimateList}" var="quantityEstimate"> 
+						                                    <tr>
+						                                    	<td align="center">
+                                     							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/>
+						                                    	</td>
+						                                    	<td>
+						                                    	<c:url var="urlLink" value="/project/edit/estimate/${quantityEstimate.getKey()}-end"/>
+		                                            			<a href="${urlLink}" class="general-link">
+						                                    	${quantityEstimate.name}
+		                                            			</a>
+						                                    	</td>
+						                                    	<td>
+						                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/>
+		                                            			<a href="${urlLink}" class="general-link">
+						                                    	${quantityEstimate.shape.name}
+		                                            			</a>
+						                                    	</td>
+						                                    	<td>
+						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input">
+			                                                	${input.key} = ${input.value}<br/>
+			                                                	</c:forEach>
+						                                    	</td>
+						                                    	<td>
+						                                    	<c:url var="urlLink" value="/concreteproportion/edit/${quantityEstimate.concreteProportion.getKey()}-end"/>
+		                                            			<a href="${urlLink}" class="general-link">
+						                                    	${quantityEstimate.concreteProportion.getDisplayName()}
+		                                            			</a>
+						                                    	</td>
+						                                    </tr>
+                                     						</c:forEach> 
+						                                    </tbody>
+											                </table>
+						                                    
+		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Estimate Costs</button>
+					                                        </div>
+					                                    
+			               								</div>
+			               								
+			               								
+			               							</div>
+			               						</div>
+			               						</div>
+			               						</form:form>
 			               						</div>
 			               					</div>
 			               					</div>
@@ -1881,6 +1988,7 @@
 	    
 		$(document).ready(function() {
 		    var estimationTable = $('#concrete-estimation-summary-table').DataTable();
+		    var concreteBreakdownTable = $("#concrete-table").DataTable();
 		 
 		    $('a.toggle-vis').on( 'click', function (e) {
 		        e.preventDefault();
@@ -1888,12 +1996,19 @@
 		        // Get the column API object.
 		        // Loop through each ID in data-column attr.
 		        // Hide each.
-		        
 		        var dataColIDs = $(this).attr('data-column');
 		        var colsToHide = dataColIDs.split(",");
+		        var dataTable = $(this).attr('data-table');
+		        var targetTable;
+
+		        if(dataTable == "concrete-estimation-summary-table"){
+		        	targetTable = estimationTable;
+		        } else if(dataTable == "concrete-table"){
+		        	targetTable = concreteBreakdownTable;
+		        }
 		        
 		        for(var i = 0; i < colsToHide.length; i++){
-			        var column = estimationTable.column(colsToHide[i]);
+			        var column = targetTable.column(colsToHide[i]);
 			 
 			        // Toggle the visibility
 			        column.visible( ! column.visible() );
@@ -1911,8 +2026,8 @@
 		});
 		
 		$(document).ready(function() {
+			$("#chb-quantity-table").dataTable();
 			$("#form-estimate-cost").dataTable();
-			$("#concrete-table").dataTable();
 			$("#material-table").dataTable();
 			$("#pull-out-table").dataTable();
 			$("#delivery-table").dataTable();

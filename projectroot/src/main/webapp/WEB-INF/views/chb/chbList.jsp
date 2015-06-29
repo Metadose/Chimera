@@ -1,14 +1,11 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Shape List</title>
+	<title>Concrete Hollow Blocks Measurements List</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -18,8 +15,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Shape List
-	                <small>Complete list of all shapes</small>
+	                Concrete Hollow Blocks Measurements List
+	                <small>Complete list of all measurements of a Concrete Hollow Block</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -35,11 +32,10 @@
 							<div class="tab-pane active" id="tab_list">
 								<div class="row">
 									<div class="col-md-12">
-										<div class="box">
-												<div class="box-body table-responsive">
-													<c:url var="urlCreateShape" value="/shape/edit/0-end"/>
-				                                	<a href="${urlCreateShape}">
-				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Shape</button>
+										<div class="box-body box-default">
+													<c:url var="urlCreateCHB" value="/chb/edit/0-end"/>
+				                                	<a href="${urlCreateCHB}">
+				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create CHB Measurement</button>
 				                                	</a>
 				                                	<br/><br/>
 				                                    <table id="example-1" class="table table-bordered table-striped">
@@ -47,31 +43,35 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                            	<th>Name</th>
-				                                            	<th>Area Formula</th>
-				                                                <th>Volume Formula</th>
 				                                                <th>Description</th>
+				                                                <th>Length</th>
+				                                                <th>Height</th>
+				                                                <th>Thickness</th>
+				                                                <th>CHB per Sq. Meter</th>
 				                                            </tr>
 				                                        </thead>
 				                                        <tbody>
-				                                        	<c:if test="${!empty shapeList}">
-				                                        		<c:forEach items="${shapeList}" var="shape">
+				                                        	<c:if test="${!empty chbList}">
+				                                        		<c:forEach items="${chbList}" var="chb">
 						                                            <tr>
 						                                            	<td>
 						                                            		<center>
-						                                            			<c:url var="urlEditShape" value="/shape/edit/${shape.getKey()}-end"/>
-				                                								<a href="${urlEditShape}">
+						                                            			<c:url var="urlEditCHB" value="/chb/edit/${chb.getKey()}-end"/>
+				                                								<a href="${urlEditCHB}">
 																					<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                								</a>
-																				<c:url var="urlDeleteShape" value="/shape/delete/${shape.getKey()}-end"/>
-				                                								<a href="${urlDeleteShape}">
+																				<c:url var="urlDeleteCHB" value="/chb/delete/${chb.getKey()}-end"/>
+				                                								<a href="${urlDeleteCHB}">
 																					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                								</a>
 																			</center>
 																		</td>
-						                                                <td>${shape.name}</td>
-						                                                <td>${shape.areaFormula}</td>
-						                                                <td>${shape.volumeFormula}</td>
-						                                                <td>${shape.description}</td>
+						                                                <td>${chb.name}</td>
+						                                                <td>${chb.description}</td>
+						                                                <td>${chb.length}</td>
+						                                                <td>${chb.height}</td>
+						                                                <td>${chb.thickness}</td>
+						                                                <td>${chb.getPerSqM()}</td>
 						                                            </tr>
 					                                            </c:forEach>
 				                                            </c:if>
@@ -80,13 +80,14 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                            	<th>Name</th>
-				                                            	<th>Area Formula</th>
-				                                                <th>Volume Formula</th>
 				                                                <th>Description</th>
+				                                                <th>Length</th>
+				                                                <th>Height</th>
+				                                                <th>Thickness</th>
+				                                                <th>CHB per Sq. Meter</th>
 				                                            </tr>
 				                                        </tfoot>
 				                                    </table>
-				                                </div><!-- /.box-body -->
 											</div><!-- /.box -->
 									</div>
 								</div>

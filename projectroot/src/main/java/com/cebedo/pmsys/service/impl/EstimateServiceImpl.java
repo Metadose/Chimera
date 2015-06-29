@@ -15,13 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.MasonryEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.repository.CHBValueRepo;
 import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
@@ -35,6 +38,11 @@ public class EstimateServiceImpl implements EstimateService {
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
     private ConcreteProportionValueRepo concreteProportionValueRepo;
+    private CHBValueRepo chbValueRepo;
+
+    public void setChbValueRepo(CHBValueRepo chbValueRepo) {
+	this.chbValueRepo = chbValueRepo;
+    }
 
     public void setConcreteProportionValueRepo(
 	    ConcreteProportionValueRepo concreteProportionValueRepo) {
@@ -144,8 +152,23 @@ public class EstimateServiceImpl implements EstimateService {
     @Transactional
     public String computeQuantityEstimate(Estimate estimate) {
 
+	// Shape to compute.
+	Shape shape = estimate.getShape();
+
 	// To be used later.
 	UUID originalUUID = estimate.getUuid();
+
+	// If we're estimating masonry.
+	if (estimate.willComputeMasonry()) {
+
+	    // Results of the estimate.
+	    MasonryEstimateResults masonryEstimateResults = getMasonryEstimateResults(
+		    estimate, shape);
+	    estimate.setResultEstimateMasonry(masonryEstimateResults);
+
+	    // Save the object.
+	    this.estimateValueRepo.set(estimate);
+	}
 
 	// Evaluate the the math expression using a java library.
 	// Not wolfram. Use wolfram only when complicated.
@@ -153,143 +176,160 @@ public class EstimateServiceImpl implements EstimateService {
 	// compute.
 	if (estimate.willComputeConcrete()) {
 
-	    // Get the shape of the slab.
-	    Shape shape = estimate.getShape();
-
 	    // Clean the formula.
 	    // Convert string to an expression object.
-	    String formula = shape.getFormula();
-	    formula = StringUtils
-		    .remove(formula, Shape.DELIMITER_OPEN_VARIABLE);
-	    formula = StringUtils.remove(formula,
-		    Shape.DELIMITER_CLOSE_VARIABLE);
-	    Expression mathExp = new Expression(formula);
+	    String volumeFormula = shape.getVolumeFormulaWithoutDelimiters();
 
-	    // Get the formula inputs.
-	    // And the units.
-	    Map<String, String> inputs = estimate.getFormulaInputs();
-	    Map<String, CommonLengthUnit> inputUnits = estimate
-		    .getFormulaInputsUnits();
-
-	    // Loop through each variable and replace each variable.
-	    for (String variable : shape.getVariableNames()) {
-
-		// Get the value and the unit.
-		String rawValue = inputs.get(variable);
-		String value = (rawValue == null || !StringUtils
-			.isNumeric(rawValue)) ? "0" : rawValue;
-		CommonLengthUnit lengthUnit = inputUnits.get(variable);
-
-		// If the unit is not meter,
-		// convert it.
-		if (lengthUnit != CommonLengthUnit.METER) {
-		    double meterConvert = lengthUnit.conversionToMeter();
-		    double valueDbl = Double.parseDouble(value);
-		    double convertedValue = meterConvert * valueDbl;
-		    value = convertedValue + "";
-		}
-
-		mathExp = mathExp.with(variable, value);
-	    }
+	    // Replace all variables with the inputs given by the user.
+	    Expression mathExp = replaceVariablesWithInputs(volumeFormula,
+		    estimate.getVolumeFormulaInputs(), estimate.getShape()
+			    .getVolumeVariableNames(),
+		    estimate.getVolumeFormulaInputsUnits());
 
 	    for (String proportionKey : estimate.getConcreteProportionKeys()) {
 
 		// Set the concrete proportion based on key.
 		ConcreteProportion proportion = this.concreteProportionValueRepo
 			.get(proportionKey);
-		estimate.setConcreteProportion(proportion);
+		setConcreteProportions(estimate, proportion);
 
-		// Set new keys where the only entry is "proportionKey".
-		// So that when we "Edit" this Estimate in JSP,
-		// only "proportionKey" is checked in checkboxes.
-		estimate.setConcreteProportionKeys((String[]) ArrayUtils.add(
-			ArrayUtils.EMPTY_STRING_ARRAY, proportionKey));
-
-		// Get the ingredients.
 		// Now, compute the estimated concrete.
-		double cement40kg = proportion.getPartCement40kg();
-		double cement50kg = proportion.getPartCement50kg();
-		double sand = proportion.getPartSand();
-		double gravel = proportion.getPartGravel();
+		ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
+			proportion, mathExp);
 
-		// Compute.
-		BigDecimal volume = mathExp.eval();
-		double estCement40kg = volume.doubleValue() * cement40kg;
-		double estCement50kg = volume.doubleValue() * cement50kg;
-		double estSand = volume.doubleValue() * sand;
-		double estGravel = volume.doubleValue() * gravel;
-
-		// Save the results.
-		ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
-			estCement40kg, estCement50kg, estSand, estGravel);
-		estimate.setResultEstimateConcrete(concreteResults);
-
+		// Set the results.
 		// Set last computed.
-		estimate.setLastComputed(new Date(System.currentTimeMillis()));
-
 		// Save the object.
+		estimate.setResultEstimateConcrete(concreteResults);
+		estimate.setLastComputed(new Date(System.currentTimeMillis()));
 		this.estimateValueRepo.set(estimate);
 
 		// Change the UUID for the other concrete proportions.
 		estimate.setUuid(UUID.randomUUID());
+		estimate.setCopy(true);
 	    }
 	}
 
+	// Set original UUID.
 	estimate.setUuid(originalUUID);
+	estimate.setCopy(false);
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
     }
-    /**
-     * Set old totals of concrete estimation.
-     * 
-     * @param projAux
-     * @param estCement40kg
-     * @param estCement50kg
-     * @param estSand
-     * @param estGravel
-     * @return
-     */
-    // private ProjectAux setOldConcreteComponentValues(ProjectAux projAux,
-    // double estCement40kg, double estCement50kg, double estSand,
-    // double estGravel) {
-    // double newTotalCement40 = projAux.getTotalCement40kg() - estCement40kg;
-    // double newTotalCement50 = projAux.getTotalCement50kg() - estCement50kg;
-    // double newTotalSand = projAux.getTotalSand() - estSand;
-    // double newTotalGravel = projAux.getTotalGravel() - estGravel;
-    //
-    // projAux.setTotalCement40kg(newTotalCement40);
-    // projAux.setTotalCement50kg(newTotalCement50);
-    // projAux.setTotalSand(newTotalSand);
-    // projAux.setTotalGravel(newTotalGravel);
-    //
-    // return projAux;
-    // }
 
     /**
-     * Set new totals of concrete estimation.
+     * Get quantity estimation of masonry.
      * 
-     * @param projAux
-     * @param estCement40kg
-     * @param estCement50kg
-     * @param estSand
-     * @param estGravel
+     * @param estimate
+     * @param shape
      * @return
      */
-    // private ProjectAux setNewConcreteComponentValues(ProjectAux projAux,
-    // double estCement40kg, double estCement50kg, double estSand,
-    // double estGravel) {
-    // double newTotalCement40 = projAux.getTotalCement40kg() + estCement40kg;
-    // double newTotalCement50 = projAux.getTotalCement50kg() + estCement50kg;
-    // double newTotalSand = projAux.getTotalSand() + estSand;
-    // double newTotalGravel = projAux.getTotalGravel() + estGravel;
-    //
-    // projAux.setTotalCement40kg(newTotalCement40);
-    // projAux.setTotalCement50kg(newTotalCement50);
-    // projAux.setTotalSand(newTotalSand);
-    // projAux.setTotalGravel(newTotalGravel);
-    //
-    // return projAux;
-    // }
+    private MasonryEstimateResults getMasonryEstimateResults(Estimate estimate,
+	    Shape shape) {
+	// Get how many CHB per square meter.
+	// Set CHB object.
+	CHB chb = this.chbValueRepo.get(estimate.getChbMeasurementKey());
+
+	// Compute for area.
+	Expression mathExp = replaceVariablesWithInputs(
+		shape.getAreaFormulaWithoutDelimiters(),
+		estimate.getAreaFormulaInputs(), shape.getAreaVariableNames(),
+		estimate.getAreaFormulaInputsUnits());
+	BigDecimal area = mathExp.eval();
+
+	// Get total CHBs.
+	double totalCHB = area.doubleValue() * chb.getPerSqM();
+
+	// Results of the estimate.
+	MasonryEstimateResults masonryEstimateResults = new MasonryEstimateResults(
+		chb, totalCHB);
+
+	return masonryEstimateResults;
+    }
+
+    /**
+     * Set the proportion of concrete components.
+     * 
+     * @param estimate
+     * @param proportion
+     */
+    private void setConcreteProportions(Estimate estimate,
+	    ConcreteProportion proportion) {
+	estimate.setConcreteProportion(proportion);
+
+	// Set new keys where the only entry is "proportionKey".
+	// So that when we "Edit" this Estimate in JSP,
+	// only "proportionKey" is checked in checkboxes.
+	estimate.setConcreteProportionKeys((String[]) ArrayUtils.add(
+		ArrayUtils.EMPTY_STRING_ARRAY, proportion.getKey()));
+    }
+
+    /**
+     * Compute the estimated concrete.
+     * 
+     * @param proportion
+     * @param mathExp
+     * @return
+     */
+    private ConcreteEstimateResults getConcreteEstimateResults(
+	    ConcreteProportion proportion, Expression mathExp) {
+	// Get the ingredients.
+	// Now, compute the estimated concrete.
+	double cement40kg = proportion.getPartCement40kg();
+	double cement50kg = proportion.getPartCement50kg();
+	double sand = proportion.getPartSand();
+	double gravel = proportion.getPartGravel();
+
+	// Compute.
+	BigDecimal volume = mathExp.eval();
+	double estCement40kg = volume.doubleValue() * cement40kg;
+	double estCement50kg = volume.doubleValue() * cement50kg;
+	double estSand = volume.doubleValue() * sand;
+	double estGravel = volume.doubleValue() * gravel;
+
+	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
+		estCement40kg, estCement50kg, estSand, estGravel);
+
+	return concreteResults;
+    }
+
+    /**
+     * Replace all variables with the inputs given by the user.
+     * 
+     * @param formula
+     * @param formulaInputs
+     * @param variableNames
+     * @param formulaInputUnits
+     * @return
+     */
+    private Expression replaceVariablesWithInputs(String formula,
+	    Map<String, String> formulaInputs, List<String> variableNames,
+	    Map<String, CommonLengthUnit> formulaInputUnits) {
+	Expression mathExp = new Expression(formula);
+
+	// Loop through each variable and replace each variable.
+	for (String variable : variableNames) {
+
+	    // Get the value and the unit.
+	    String rawValue = formulaInputs.get(variable);
+	    BigDecimal value = (rawValue == null || !StringUtils
+		    .isNumeric(rawValue)) ? new BigDecimal(0.0)
+		    : new BigDecimal(rawValue);
+	    CommonLengthUnit lengthUnit = formulaInputUnits.get(variable);
+
+	    // If the unit is not meter,
+	    // convert it.
+	    if (lengthUnit != CommonLengthUnit.METER) {
+		double meterConvert = lengthUnit.conversionToMeter();
+		double convertedValue = meterConvert * value.doubleValue();
+		value = new BigDecimal(convertedValue);
+	    }
+
+	    mathExp = mathExp.with(variable, value);
+	}
+
+	return mathExp;
+    }
 
 }

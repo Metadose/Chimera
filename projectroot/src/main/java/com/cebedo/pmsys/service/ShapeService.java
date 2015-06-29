@@ -31,7 +31,7 @@ public interface ShapeService {
 
     public String test(Shape shape);
 
-    public List<String> getAllVariableNames(Shape shape);
+    public List<String> getAllVariableNames(String formula);
 
     public String getReadyToSolveEquation(Shape shape);
 

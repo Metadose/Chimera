@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.MasonryEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -30,6 +31,7 @@ public class Estimate implements IDomainObject {
     private String name;
     private String remarks;
     private Date lastComputed;
+    private boolean copy;
 
     /**
      * Computational specs.
@@ -45,14 +47,22 @@ public class Estimate implements IDomainObject {
     private int[] estimateType;
 
     // Second commit.
-    private Map<String, String> formulaInputs = new HashMap<String, String>();
-    private Map<String, CommonLengthUnit> formulaInputsUnits = new HashMap<String, CommonLengthUnit>();
+    private Map<String, String> areaFormulaInputs = new HashMap<String, String>();
+    private Map<String, String> volumeFormulaInputs = new HashMap<String, String>();
+    private Map<String, CommonLengthUnit> areaFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
+    private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
+
+    // Concrete estimate.
     private String concreteProportionKeys[];
+
+    // Masonry estimate;
+    private String chbMeasurementKey;
 
     /**
      * Results
      */
     private ConcreteEstimateResults resultEstimateConcrete;
+    private MasonryEstimateResults resultEstimateMasonry;
 
     /**
      * Concrete.
@@ -75,6 +85,10 @@ public class Estimate implements IDomainObject {
 
     public boolean willComputeConcrete() {
 	return this.estimateTypes.contains(EstimateType.CONCRETE);
+    }
+
+    public boolean willComputeMasonry() {
+	return this.estimateTypes.contains(EstimateType.MASONRY);
     }
 
     public Company getCompany() {
@@ -155,12 +169,29 @@ public class Estimate implements IDomainObject {
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
-    public Map<String, String> getFormulaInputs() {
-	return formulaInputs;
+    public Map<String, String> getVolumeFormulaInputs() {
+	return volumeFormulaInputs;
     }
 
-    public void setFormulaInputs(Map<String, String> formulaInputs) {
-	this.formulaInputs = formulaInputs;
+    public void setVolumeFormulaInputs(Map<String, String> formulaInputs) {
+	this.volumeFormulaInputs = formulaInputs;
+    }
+
+    public Map<String, String> getAreaFormulaInputs() {
+	return areaFormulaInputs;
+    }
+
+    public void setAreaFormulaInputs(Map<String, String> areaFormulaInputs) {
+	this.areaFormulaInputs = areaFormulaInputs;
+    }
+
+    public Map<String, CommonLengthUnit> getAreaFormulaInputsUnits() {
+	return areaFormulaInputsUnits;
+    }
+
+    public void setAreaFormulaInputsUnits(
+	    Map<String, CommonLengthUnit> areaFormulaInputsUnits) {
+	this.areaFormulaInputsUnits = areaFormulaInputsUnits;
     }
 
     public String getShapeKey() {
@@ -201,13 +232,13 @@ public class Estimate implements IDomainObject {
 	this.resultEstimateConcrete = resultEstimateConcrete;
     }
 
-    public Map<String, CommonLengthUnit> getFormulaInputsUnits() {
-	return formulaInputsUnits;
+    public Map<String, CommonLengthUnit> getVolumeFormulaInputsUnits() {
+	return volumeFormulaInputsUnits;
     }
 
-    public void setFormulaInputsUnits(
+    public void setVolumeFormulaInputsUnits(
 	    Map<String, CommonLengthUnit> formulaInputsUnits) {
-	this.formulaInputsUnits = formulaInputsUnits;
+	this.volumeFormulaInputsUnits = formulaInputsUnits;
     }
 
     public String[] getConcreteProportionKeys() {
@@ -216,6 +247,31 @@ public class Estimate implements IDomainObject {
 
     public void setConcreteProportionKeys(String[] concreteProportionKeys) {
 	this.concreteProportionKeys = concreteProportionKeys;
+    }
+
+    public String getChbMeasurementKey() {
+	return chbMeasurementKey;
+    }
+
+    public void setChbMeasurementKey(String chbMeasurementKey) {
+	this.chbMeasurementKey = chbMeasurementKey;
+    }
+
+    public MasonryEstimateResults getResultEstimateMasonry() {
+	return resultEstimateMasonry;
+    }
+
+    public void setResultEstimateMasonry(
+	    MasonryEstimateResults resultEstimateMasonry) {
+	this.resultEstimateMasonry = resultEstimateMasonry;
+    }
+
+    public boolean isCopy() {
+	return copy;
+    }
+
+    public void setCopy(boolean copy) {
+	this.copy = copy;
     }
 
 }

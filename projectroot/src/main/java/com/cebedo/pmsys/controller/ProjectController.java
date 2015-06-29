@@ -36,6 +36,7 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
@@ -67,6 +68,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.service.CHBService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.DeliveryService;
@@ -116,6 +118,7 @@ public class ProjectController {
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
+    public static final String ATTR_CHB_LIST = "chbList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
@@ -191,6 +194,13 @@ public class ProjectController {
     private ShapeService shapeService;
     private ConcreteProportionService concreteProportionService;
     private ConcreteEstimationSummaryService concreteEstimationSummaryService;
+    private CHBService chbService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "chbService")
+    public void setChbService(CHBService chbService) {
+	this.chbService = chbService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "concreteEstimationSummaryService")
@@ -1285,7 +1295,8 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
-	String response = this.estimateService.computeQuantityEstimate(estimate);
+	String response = this.estimateService
+		.computeQuantityEstimate(estimate);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -1784,6 +1795,10 @@ public class ProjectController {
 	Estimate estimate = this.estimateService.get(key);
 	model.addAttribute(ATTR_ESTIMATE, estimate);
 
+	// Add list of common units.
+	model.addAttribute(ATTR_COMMON_UNITS_LIST,
+		CommonLengthUnit.class.getEnumConstants());
+
 	// For second commit,
 	// if computing concrete.
 	if (estimate.willComputeConcrete()) {
@@ -1793,10 +1808,12 @@ public class ProjectController {
 		    .list();
 	    model.addAttribute(ATTR_CONCRETE_PROPORTION_LIST,
 		    concreteProportionList);
+	}
 
-	    // Add list of common units.
-	    model.addAttribute(ATTR_COMMON_UNITS_LIST,
-		    CommonLengthUnit.class.getEnumConstants());
+	// If will compute masonry.
+	if (estimate.willComputeMasonry()) {
+	    List<CHB> chbList = this.chbService.list();
+	    model.addAttribute(ATTR_CHB_LIST, chbList);
 	}
 
 	return RedisConstants.JSP_ESTIMATE_EDIT;
@@ -2069,7 +2086,7 @@ public class ProjectController {
 	List<Estimate> concreteEstimateList = new ArrayList<Estimate>();
 	List<Estimate> masonryEstimateList = new ArrayList<Estimate>();
 
-	// TODO Extend this loop to other types..
+	// Extend this loop to other types..
 	for (Estimate estimate : estimateList) {
 
 	    List<EstimateType> estimateTypes = estimate.getEstimateTypes();
@@ -2081,7 +2098,9 @@ public class ProjectController {
 	    }
 
 	    // If has estimation for masonry.
-	    if (estimateTypes.contains(EstimateType.MASONRY)) {
+	    // We do not provide multiple estimations for masonry.
+	    if (estimateTypes.contains(EstimateType.MASONRY)
+		    && !estimate.isCopy()) {
 		masonryEstimateList.add(estimate);
 	    }
 	}

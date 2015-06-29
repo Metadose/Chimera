@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 
@@ -28,8 +30,10 @@ public class Shape implements IDomainObject {
     /**
      * Specs.
      */
-    private String formula;
-    private List<String> variableNames;
+    private String areaFormula;
+    private String volumeFormula;
+    private List<String> areaVariableNames;
+    private List<String> volumeVariableNames;
     private String[] formulaInputs;
 
     /**
@@ -100,12 +104,20 @@ public class Shape implements IDomainObject {
 	this.description = description;
     }
 
-    public String getFormula() {
-	return formula;
+    public String getVolumeFormula() {
+	return volumeFormula;
     }
 
-    public void setFormula(String formula) {
-	this.formula = formula;
+    public void setVolumeFormula(String formula) {
+	this.volumeFormula = formula;
+    }
+
+    public String getAreaFormula() {
+	return areaFormula;
+    }
+
+    public void setAreaFormula(String areaFormula) {
+	this.areaFormula = areaFormula;
     }
 
     public String[] getFormulaInputs() {
@@ -116,12 +128,20 @@ public class Shape implements IDomainObject {
 	this.formulaInputs = formulaInputs;
     }
 
-    public List<String> getVariableNames() {
-	return variableNames;
+    public List<String> getVolumeVariableNames() {
+	return volumeVariableNames;
     }
 
-    public void setVariableNames(List<String> variableNames) {
-	this.variableNames = variableNames;
+    public void setVolumeVariableNames(List<String> variableNames) {
+	this.volumeVariableNames = variableNames;
+    }
+
+    public List<String> getAreaVariableNames() {
+	return areaVariableNames;
+    }
+
+    public void setAreaVariableNames(List<String> areaVariableNames) {
+	this.areaVariableNames = areaVariableNames;
     }
 
     /**
@@ -133,12 +153,30 @@ public class Shape implements IDomainObject {
 
 	// Check if open brackets are equal to close brackets.
 	int openIndices = org.apache.commons.lang.StringUtils.countMatches(
-		this.formula, DELIMITER_OPEN_VARIABLE);
+		this.volumeFormula, DELIMITER_OPEN_VARIABLE);
 	int closeIndices = org.apache.commons.lang.StringUtils.countMatches(
-		this.formula, DELIMITER_CLOSE_VARIABLE);
+		this.volumeFormula, DELIMITER_CLOSE_VARIABLE);
 	if (openIndices == closeIndices) {
 	    return true;
 	}
 	return false;
+    }
+
+    public String getAreaFormulaWithoutDelimiters() {
+	String areaFormula = this.areaFormula;
+	areaFormula = StringUtils.remove(areaFormula,
+		Shape.DELIMITER_OPEN_VARIABLE);
+	areaFormula = StringUtils.remove(areaFormula,
+		Shape.DELIMITER_CLOSE_VARIABLE);
+	return areaFormula;
+    }
+
+    public String getVolumeFormulaWithoutDelimiters() {
+	String volFormula = this.volumeFormula;
+	volFormula = StringUtils.remove(volFormula,
+		Shape.DELIMITER_OPEN_VARIABLE);
+	volFormula = StringUtils.remove(volFormula,
+		Shape.DELIMITER_CLOSE_VARIABLE);
+	return volFormula;
     }
 }

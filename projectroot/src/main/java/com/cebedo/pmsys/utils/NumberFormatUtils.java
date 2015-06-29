@@ -12,6 +12,12 @@ public class NumberFormatUtils {
 		.replaceAll(",", ", ");
     }
 
+    public static String getFormattedCeilingQuantity(double dblVal) {
+	double displayDbl = Math.ceil(dblVal);
+	DecimalFormat df = new DecimalFormat();
+	return df.format(displayDbl);
+    }
+
     public static NumberFormat getCurrencyFormatter() {
 	NumberFormat df = NumberFormat.getCurrencyInstance();
 	DecimalFormatSymbols dfs = new DecimalFormatSymbols();

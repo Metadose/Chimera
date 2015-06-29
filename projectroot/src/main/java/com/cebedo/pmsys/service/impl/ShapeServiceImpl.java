@@ -76,7 +76,8 @@ public class ShapeServiceImpl implements ShapeService {
 	}
 
 	// Set the variable names in this formula.
-	obj.setVariableNames(getAllVariableNames(obj));
+	obj.setAreaVariableNames(getAllVariableNames(obj.getAreaFormula()));
+	obj.setVolumeVariableNames(getAllVariableNames(obj.getVolumeFormula()));
 
 	// If we're creating.
 	if (obj.getUuid() == null) {
@@ -130,14 +131,15 @@ public class ShapeServiceImpl implements ShapeService {
 	return fList;
     }
 
+    @Deprecated
     @Override
     @Transactional
     public String getReadyToSolveEquation(Shape shape) {
 
 	// Get all ingredients.
 	String[] formulaInputs = shape.getFormulaInputs();
-	List<String> variableNames = shape.getVariableNames();
-	String formulaStr = shape.getFormula();
+	List<String> variableNames = shape.getVolumeVariableNames();
+	String formulaStr = shape.getVolumeFormula();
 
 	for (int i = 0; i < variableNames.size(); i++) {
 
@@ -158,6 +160,7 @@ public class ShapeServiceImpl implements ShapeService {
 	return formulaStr;
     }
 
+    @Deprecated
     @Override
     @Transactional
     public String test(Shape shape) {
@@ -244,13 +247,13 @@ public class ShapeServiceImpl implements ShapeService {
      */
     @Transactional
     @Override
-    public List<String> getAllVariableNames(Shape shape) {
+    public List<String> getAllVariableNames(String formula) {
 
 	// Get all indices of open and close variables.
 	List<Integer> openIndices = StringUtils.getAllIndicesOfSubstring(
-		shape.getFormula(), Shape.DELIMITER_OPEN_VARIABLE);
+		formula, Shape.DELIMITER_OPEN_VARIABLE);
 	List<Integer> closeIndices = StringUtils.getAllIndicesOfSubstring(
-		shape.getFormula(), Shape.DELIMITER_CLOSE_VARIABLE);
+		formula, Shape.DELIMITER_CLOSE_VARIABLE);
 
 	// Proceed only if legal.
 	if (openIndices.size() == closeIndices.size()) {
@@ -262,8 +265,7 @@ public class ShapeServiceImpl implements ShapeService {
 		// Get the variable name.
 		int indexOpen = openIndices.get(i);
 		int indexClose = closeIndices.get(i);
-		String variableName = shape.getFormula().substring(indexOpen,
-			indexClose);
+		String variableName = formula.substring(indexOpen, indexClose);
 
 		// Clean the variable name.
 		variableName = org.apache.commons.lang.StringUtils.remove(
