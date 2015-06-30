@@ -1543,12 +1543,80 @@
 			               							<div class="box box-body box-default">
 			               								<div class="nav-tabs-custom">
 														<ul class="nav nav-tabs">
-															<li class="active"><a href="#subsubtab_chb" data-toggle="tab">CHB Quantity</a></li>
+															<li class="active"><a href="#subsubtab_chb_summary" data-toggle="tab">CHB Quantity & Cost</a></li>
+															<li><a href="#subsubtab_chb" data-toggle="tab">CHB Quantity Breakdown</a></li>
 															<li><a href="#subsubtab_block-laying" data-toggle="tab">Block Laying</a></li>
 															<li><a href="#subsubtab_paster" data-toggle="tab">Plaster</a></li>
 														</ul>
 														<div class="tab-content">
-															<div class="tab-pane active" id="subsubtab_chb">
+															<div class="tab-pane active" id="subsubtab_chb_summary">
+																<div class="row">
+									                            <div class="col-md-12">
+							               							<div class="box box-body box-default">
+							               								<div class="box-header">
+							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity Estimate</h3>
+							               								</div>
+							               								<div class="box-body box-default">
+							               								<div class="callout callout-info callout-cebedo">
+														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+														                </div>
+							               								<table id="chb-cost-quantity-table" class="table table-bordered table-striped">
+									                                    	<thead>
+									                                            <tr>
+									                                            	<th>&nbsp;</th>
+									                                            	<th>Name</th>
+									                                            	<th>CHB</th>
+									                                                <th>Area Inputs</th>
+									                                                <th>No. of Pieces</th>
+									                                                <th>Cost per Piece</th>
+									                                                <th>Total Cost</th>
+									                                            </tr>
+							                                        		</thead>
+									                                        <tbody>
+										                                		<c:forEach items="${masonryEstimationSummaries}" var="thisEstimate">
+										                                            <tr>
+										                                            	<!-- Buttons -->
+										                                            	<td>
+										                                            		<center>
+										                                            			<c:url var="urlLink" value="/project/edit/estimate/${thisEstimate.getKey()}-end"/>
+										                                            			<a href="${urlLink}">
+														                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+										                                            			</a>
+															                                    <c:url var="urlLink" value=""/>
+															                                    <a href="${urlLink}">
+								                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+															                                    </a>
+																							</center>
+																						</td>
+																						
+																						<!-- Name -->
+																						<td>${thisEstimate.name}</td>
+																						
+																						<!-- CHB -->
+																						<td>${thisEstimate.chbMeasurement.name}</td>
+																						
+									                                                	<!-- Area inputs -->
+									                                                	<td align="right">
+									                                                	<c:forEach items="${thisEstimate.areaFormulaInputs}" var="input">
+									                                                	${input.key} = ${input.value} TODO Add Units<br/>
+									                                                	</c:forEach> <!-- End of loop of all formula inputs -->
+									                                                	Area = ${thisEstimate.area}
+									                                                	</td>
+									                                                	
+									                                                	<td align="right">${thisEstimate.totalPiecesCHB}</td>
+									                                                	<td align="right">${thisEstimate.costPerPieceCHB}</td>
+									                                                	<td align="right">${thisEstimate.totalCostOfCHB}</td>
+    																					
+										                                            </tr> <!-- End of one "Estimate" -->
+									                                            </c:forEach> <!-- Loop all "Estimate" -->
+										                                    </tbody>
+										                                </table>
+							               								</div>
+							               							</div>
+							               						</div>
+							               						</div>
+															</div>
+															<div class="tab-pane" id="subsubtab_chb">
 																<div class="row">
 									                            <div class="col-md-12">
 							               							<div class="box box-body box-default">
@@ -2134,6 +2202,7 @@
 		});
 		
 		$(document).ready(function() {
+			$("#chb-cost-quantity-table").dataTable();
 			$("#chb-quantity-table").dataTable();
 			$("#form-estimate-cost").dataTable();
 			$("#material-table").dataTable();

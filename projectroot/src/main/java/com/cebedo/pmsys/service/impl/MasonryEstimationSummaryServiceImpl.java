@@ -70,17 +70,24 @@ public class MasonryEstimationSummaryServiceImpl implements
 	    Map<CHB, MasonryEstimateResults> masonryResultMap = estimate
 		    .getResultMapMasonry();
 
+	    // Set the area specifics.
+	    obj.setAreaFormulaInputs(estimate.getAreaFormulaInputs());
+	    obj.setArea(estimate.getShape().getArea());
+
 	    // For every type of CHB type selected,
 	    // there is an individual cost estimate.
 	    for (CHB chb : masonryResultMap.keySet()) {
+
+		obj.setChbMeasurement(chb);
 
 		// Get the result.
 		// Get total cost =
 		// cost per piece * no. of pieces
 		MasonryEstimateResults estimateResult = masonryResultMap
 			.get(chb);
-		double totalCost = obj.getCostPerPieceCHB()
-			* estimateResult.getTotalCHB();
+		double totalPiecesCHB = estimateResult.getTotalCHB();
+		obj.setTotalPiecesCHB(totalPiecesCHB);
+		double totalCost = obj.getCostPerPieceCHB() * totalPiecesCHB;
 
 		// Set the total cost.
 		obj.setTotalCostOfCHB(totalCost);
