@@ -127,6 +127,7 @@ public class ProjectController {
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
+    public static final String ATTR_ESTIMATE_COMBINED_LIST = "combinedEstimateList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
@@ -2099,8 +2100,7 @@ public class ProjectController {
 
 	    // If has estimation for masonry.
 	    // We do not provide multiple estimations for masonry.
-	    if (estimateTypes.contains(EstimateType.MASONRY)
-		    && !estimate.isCopy()) {
+	    if (estimateTypes.contains(EstimateType.MASONRY)) {
 		masonryEstimateList.add(estimate);
 	    }
 	}
@@ -2108,6 +2108,7 @@ public class ProjectController {
 	// Add segregated estimates to model.
 	model.addAttribute(ATTR_ESTIMATE_CONCRETE_LIST, concreteEstimateList);
 	model.addAttribute(ATTR_ESTIMATE_MASONRY_LIST, masonryEstimateList);
+	model.addAttribute(ATTR_ESTIMATE_COMBINED_LIST, estimateList);
 
 	// Do post-adding of attrs.
 	// Return to the edit page.

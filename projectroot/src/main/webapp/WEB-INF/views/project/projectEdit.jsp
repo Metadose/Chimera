@@ -1442,7 +1442,7 @@
 									                                            </tr>
 									                                            <tr>
 									                                                <th>Shape</th>
-									                                                <th>Formula Inputs</th>
+									                                                <th>Volume Inputs</th>
 									                                                <th>Proportion</th>
 									                                                <th>Cement (40kg)</th>
 									                                                <th>Cement (50kg)</th>
@@ -1452,43 +1452,66 @@
 							                                        		</thead>
 									                                        <tbody>
 										                                		<c:forEach items="${concreteEstimateList}" var="concrete">
+										                                			
+										                                			<c:forEach items="${concrete.resultMapConcrete}" var="estimateEntry">
+										                                			
 										                                            <tr>
+										                                            	<!-- Buttons -->
 										                                            	<td>
 										                                            		<center>
-										                                            			<c:url var="urlLink" value="/project/edit/estimate/${concrete.getKey()}-end"/>
-										                                            			<a href="${urlLink}">
-														                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-										                                            			</a>
-															                                    <c:url var="urlLink" value=""/>
-															                                    <a href="${urlLink}">
-								                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-															                                    </a>
+									                                            			<c:url var="urlLink" value="/project/edit/estimate/${concrete.getKey()}-end"/>
+									                                            			<a href="${urlLink}">
+													                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+									                                            			</a>
+														                                    <c:url var="urlLink" value=""/>
+														                                    <a href="${urlLink}">
+							                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+														                                    </a>
 																							</center>
 																						</td>
+																						
+																						<!-- Basic and Inputs -->
 																						<td>${concrete.name}</td>
+																						
+																						<!-- Shape -->
 									                                                	<td>
 									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
 									                                                	${concrete.shape.name}
 								                                            			</a>
 									                                                	</td>
-									                                                	<td>
+									                                                	
+									                                                	<!-- Formula inputs -->
+									                                                	<td align="right">
 									                                                	<c:forEach items="${concrete.volumeFormulaInputs}" var="input">
 									                                                	${input.key} = ${input.value}<br/>
 									                                                	</c:forEach>
+									                                                	Volume = ${concrete.shape.volume}
 									                                                	</td>
+	<!--
+	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    
+	    																				<c:set value="${estimateEntry.key}" var="estimateKeyProportion"/>
+											                                			<c:set value="${estimateEntry.value}" var="estimateValueResult"/>
+									                                                	
+									                                                	<!-- Multiple fields -->
 									                                                	<td>
-									                                                	<c:url var="urlLink" value="/concreteproportion/edit/${concrete.concreteProportion.getKey()}-end"/>
+									                                                	<c:url var="urlLink" value="/concreteproportion/edit/${estimateKeyProportion.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
-									                                                	${concrete.concreteProportion.getDisplayName()}
+									                                                	${estimateKeyProportion.getDisplayName()}
 								                                            			</a>
 									                                                	</td>
-									                                                	<td align="right">${concrete.resultEstimateConcrete.getCement40kgAsString()}</td>
-									                                                	<td align="right">${concrete.resultEstimateConcrete.getCement50kgAsString()}</td>
-									                                                	<td align="right">${concrete.resultEstimateConcrete.getSandAsString()}</td>
-									                                                	<td align="right">${concrete.resultEstimateConcrete.getGravelAsString()}</td>
-										                                            </tr>
-									                                            </c:forEach>
+									                                                	
+									                                                	<td align="right">${estimateValueResult.getCement40kgAsString()}</td>
+									                                                	<td align="right">${estimateValueResult.getCement50kgAsString()}</td>
+									                                                	<td align="right">${estimateValueResult.getSandAsString()}</td>
+									                                                	<td align="right">${estimateValueResult.getGravelAsString()}</td>
+									                                                	
+										                                            </tr> <!-- End of one "Estimate" object -->
+										                                			</c:forEach> <!-- Loop the "Estimate" according to "Results" -->
+										                                            
+									                                            </c:forEach> <!-- End of loop of all "Estimate" -->
 										                                    </tbody>
 										                                </table>
 						               								</div>
@@ -1548,6 +1571,7 @@
 							                                        		</thead>
 									                                        <tbody>
 										                                		<c:forEach items="${masonryEstimateList}" var="thisEstimate">
+										                                			<c:forEach items="${thisEstimate.resultMapMasonry}" var="masonryEntry">
 										                                            <tr>
 										                                            	<td>
 										                                            		<center>
@@ -1563,23 +1587,32 @@
 																						</td>
 																						<td>${thisEstimate.name}</td>
 																						<td>${thisEstimate.remarks}</td>
+																						
+																						<!-- Shape -->
 									                                                	<td>
 									                                                	<c:url var="urlLink" value="/shape/edit/${thisEstimate.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
 									                                                	${thisEstimate.shape.name}
 								                                            			</a>
 									                                                	</td>
-									                                                	<td>
+									                                                	
+									                                                	<!-- Formula inputs -->
+									                                                	<td align="right">
 									                                                	<c:forEach items="${thisEstimate.areaFormulaInputs}" var="input">
-									                                                	${input.key} = ${input.value}<br/>
-									                                                	</c:forEach>
+									                                                	${input.key} = ${input.value} TODO Add Units<br/>
+									                                                	</c:forEach> <!-- End of loop of all formula inputs -->
+									                                                	Area = ${thisEstimate.shape.area}
 									                                                	</td>
-									                                                	<!-- private double totalCHB;
-									                                                	private CHB chbMeasurement; -->
-									                                                	<td>${thisEstimate.resultEstimateMasonry.chbMeasurement.name}</td>
-									                                                	<td align="right">${thisEstimate.resultEstimateMasonry.getTotalCHBAsString()}</td>
-										                                            </tr>
-									                                            </c:forEach>
+									                                                	
+    <!-- Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    																					<c:set value="${masonryEntry.key}" var="estimateKeyCHB"></c:set>
+    																					<c:set value="${masonryEntry.value}" var="estimateValueResult"></c:set>
+									                                                	<td>${estimateKeyCHB.name}</td>
+									                                                	<td align="right">${estimateValueResult.getTotalCHBAsString()}</td>
+    																					
+										                                            </tr> <!-- End of one "Estimate" -->
+   																					</c:forEach> <!-- Loop all "Estimate" according to "Result" -->
+									                                            </c:forEach> <!-- Loop all "Estimate" -->
 										                                    </tbody>
 										                                </table>
 							               								</div>
@@ -1683,12 +1716,13 @@
 											                	<th>Check / Uncheck</th>
 											                	<th>Name</th>
 											                	<th>Shape</th>
-											                	<th>Inputs</th>
-											                	<th>Proportion</th>
+											                	<th>Area Inputs</th>
+											                	<th>Volume Inputs</th>
+											                	<th>Estimations</th>
 											                </tr>
 						                                    </thead>
 						                                    <tbody>
-                                     						<c:forEach items="${concreteEstimateList}" var="quantityEstimate"> 
+                                     						<c:forEach items="${combinedEstimateList}" var="quantityEstimate"> 
 						                                    <tr>
 						                                    	<td align="center">
                                      							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/>
@@ -1699,22 +1733,32 @@
 						                                    	${quantityEstimate.name}
 		                                            			</a>
 						                                    	</td>
+						                                    	
 						                                    	<td>
 						                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/>
 		                                            			<a href="${urlLink}" class="general-link">
 						                                    	${quantityEstimate.shape.name}
 		                                            			</a>
 						                                    	</td>
-						                                    	<td>
+						                                    	
+						                                    	<td align="right">
+						                                    	<c:forEach items="${quantityEstimate.areaFormulaInputs}" var="input">
+			                                                	${input.key} = ${input.value}<br/>
+			                                                	</c:forEach>
+			                                                	Area = ${quantityEstimate.shape.area}
+						                                    	</td>
+						                                    	
+						                                    	<td align="right">
 						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input">
 			                                                	${input.key} = ${input.value}<br/>
 			                                                	</c:forEach>
+			                                                	Volume = ${quantityEstimate.shape.volume}
 						                                    	</td>
+						                                    	
 						                                    	<td>
-						                                    	<c:url var="urlLink" value="/concreteproportion/edit/${quantityEstimate.concreteProportion.getKey()}-end"/>
-		                                            			<a href="${urlLink}" class="general-link">
-						                                    	${quantityEstimate.concreteProportion.getDisplayName()}
-		                                            			</a>
+						                                    	<c:forEach items="${quantityEstimate.estimateTypes}" var="estimateType">
+						                                    	- ${estimateType.label()}<br/>
+						                                    	</c:forEach>
 						                                    	</td>
 						                                    </tr>
                                      						</c:forEach> 

@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,19 +155,32 @@ public class EstimateServiceImpl implements EstimateService {
 	// Shape to compute.
 	Shape shape = estimate.getShape();
 
-	// To be used later.
-	UUID originalUUID = estimate.getUuid();
+	// Compute for area and volume.
+	double area = getArea(estimate, shape);
+	double volume = getVolume(estimate, shape);
+	shape.setArea(area);
+	shape.setVolume(volume);
 
 	// If we're estimating masonry.
 	if (estimate.willComputeMasonry()) {
 
-	    // Results of the estimate.
-	    MasonryEstimateResults masonryEstimateResults = getMasonryEstimateResults(
-		    estimate, shape);
-	    estimate.setResultEstimateMasonry(masonryEstimateResults);
+	    // Result map.
+	    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>();
 
-	    // Save the object.
-	    this.estimateValueRepo.set(estimate);
+	    // Loop through all inputs.
+	    for (String chbKey : estimate.getChbMeasurementKeys()) {
+
+		// Get CHB object.
+		// Set results of the estimate, given the CHB.
+		CHB chb = this.chbValueRepo.get(chbKey);
+
+		// Get results.
+		MasonryEstimateResults masonryEstimateResults = getMasonryEstimateResults(
+			estimate, shape, chb);
+		resultMapMasonry.put(chb, masonryEstimateResults);
+	    }
+
+	    estimate.setResultMapMasonry(resultMapMasonry);
 	}
 
 	// Evaluate the the math expression using a java library.
@@ -176,60 +189,79 @@ public class EstimateServiceImpl implements EstimateService {
 	// compute.
 	if (estimate.willComputeConcrete()) {
 
-	    // Clean the formula.
-	    // Convert string to an expression object.
-	    String volumeFormula = shape.getVolumeFormulaWithoutDelimiters();
+	    Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
 
-	    // Replace all variables with the inputs given by the user.
-	    Expression mathExp = replaceVariablesWithInputs(volumeFormula,
-		    estimate.getVolumeFormulaInputs(), estimate.getShape()
-			    .getVolumeVariableNames(),
-		    estimate.getVolumeFormulaInputsUnits());
-
+	    // Loop through all concrete proportion keys.
 	    for (String proportionKey : estimate.getConcreteProportionKeys()) {
 
 		// Set the concrete proportion based on key.
 		ConcreteProportion proportion = this.concreteProportionValueRepo
 			.get(proportionKey);
-		setConcreteProportions(estimate, proportion);
 
 		// Now, compute the estimated concrete.
 		ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
-			proportion, mathExp);
+			proportion, shape);
 
 		// Set the results.
 		// Set last computed.
 		// Save the object.
-		estimate.setResultEstimateConcrete(concreteResults);
+		resultMapConcrete.put(proportion, concreteResults);
 		estimate.setLastComputed(new Date(System.currentTimeMillis()));
-		this.estimateValueRepo.set(estimate);
-
-		// Change the UUID for the other concrete proportions.
-		estimate.setUuid(UUID.randomUUID());
-		estimate.setCopy(true);
 	    }
-	}
 
-	// Set original UUID.
-	estimate.setUuid(originalUUID);
-	estimate.setCopy(false);
+	    estimate.setResultMapConcrete(resultMapConcrete);
+
+	} // End of will compute concrete.
+
+	this.estimateValueRepo.set(estimate);
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
     }
 
     /**
-     * Get quantity estimation of masonry.
+     * Get the volume of the shape.
      * 
      * @param estimate
      * @param shape
      * @return
      */
-    private MasonryEstimateResults getMasonryEstimateResults(Estimate estimate,
-	    Shape shape) {
-	// Get how many CHB per square meter.
-	// Set CHB object.
-	CHB chb = this.chbValueRepo.get(estimate.getChbMeasurementKey());
+    private double getVolume(Estimate estimate, Shape shape) {
+
+	// If any of the following is null, can't compute area.
+	if (shape.getVolumeFormula() == null
+		|| estimate.getVolumeFormulaInputs() == null
+		|| shape.getVolumeVariableNames() == null
+		|| estimate.getVolumeFormulaInputsUnits() == null) {
+	    return 0.0;
+	}
+
+	// Replace all variables with the inputs given by the user.
+	Expression mathExp = replaceVariablesWithInputs(
+		shape.getVolumeFormulaWithoutDelimiters(),
+		estimate.getVolumeFormulaInputs(), estimate.getShape()
+			.getVolumeVariableNames(),
+		estimate.getVolumeFormulaInputsUnits());
+
+	return mathExp.eval().doubleValue();
+    }
+
+    /**
+     * Get the area of the shape.
+     * 
+     * @param estimate
+     * @param shape
+     * @return
+     */
+    private double getArea(Estimate estimate, Shape shape) {
+
+	// If any of the following is null, can't compute area.
+	if (shape.getAreaFormula() == null
+		|| estimate.getAreaFormulaInputs() == null
+		|| shape.getAreaVariableNames() == null
+		|| estimate.getAreaFormulaInputsUnits() == null) {
+	    return 0.0;
+	}
 
 	// Compute for area.
 	Expression mathExp = replaceVariablesWithInputs(
@@ -238,31 +270,28 @@ public class EstimateServiceImpl implements EstimateService {
 		estimate.getAreaFormulaInputsUnits());
 	BigDecimal area = mathExp.eval();
 
+	return area.doubleValue();
+    }
+
+    /**
+     * Get quantity estimation of masonry.
+     * 
+     * @param estimate
+     * @param shape
+     * @param chb
+     * @return
+     */
+    private MasonryEstimateResults getMasonryEstimateResults(Estimate estimate,
+	    Shape shape, CHB chb) {
+
 	// Get total CHBs.
-	double totalCHB = area.doubleValue() * chb.getPerSqM();
+	double totalCHB = shape.getArea() * chb.getPerSqM();
 
 	// Results of the estimate.
 	MasonryEstimateResults masonryEstimateResults = new MasonryEstimateResults(
 		chb, totalCHB);
 
 	return masonryEstimateResults;
-    }
-
-    /**
-     * Set the proportion of concrete components.
-     * 
-     * @param estimate
-     * @param proportion
-     */
-    private void setConcreteProportions(Estimate estimate,
-	    ConcreteProportion proportion) {
-	estimate.setConcreteProportion(proportion);
-
-	// Set new keys where the only entry is "proportionKey".
-	// So that when we "Edit" this Estimate in JSP,
-	// only "proportionKey" is checked in checkboxes.
-	estimate.setConcreteProportionKeys((String[]) ArrayUtils.add(
-		ArrayUtils.EMPTY_STRING_ARRAY, proportion.getKey()));
     }
 
     /**
@@ -273,7 +302,10 @@ public class EstimateServiceImpl implements EstimateService {
      * @return
      */
     private ConcreteEstimateResults getConcreteEstimateResults(
-	    ConcreteProportion proportion, Expression mathExp) {
+	    ConcreteProportion proportion, Shape shape) {
+
+	double volume = shape.getVolume();
+
 	// Get the ingredients.
 	// Now, compute the estimated concrete.
 	double cement40kg = proportion.getPartCement40kg();
@@ -282,11 +314,10 @@ public class EstimateServiceImpl implements EstimateService {
 	double gravel = proportion.getPartGravel();
 
 	// Compute.
-	BigDecimal volume = mathExp.eval();
-	double estCement40kg = volume.doubleValue() * cement40kg;
-	double estCement50kg = volume.doubleValue() * cement50kg;
-	double estSand = volume.doubleValue() * sand;
-	double estGravel = volume.doubleValue() * gravel;
+	double estCement40kg = volume * cement40kg;
+	double estCement50kg = volume * cement50kg;
+	double estSand = volume * sand;
+	double estGravel = volume * gravel;
 
 	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
 		estCement40kg, estCement50kg, estSand, estGravel);

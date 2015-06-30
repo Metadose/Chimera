@@ -111,9 +111,11 @@
 	 		                                    			</form:select>
 				                                            <p class="help-block">TODO Add more details about this chb</p>
 				                                            
+				                                            <c:if test="${!empty chb.uuid}">
 				                                            <label>CHB per Sq. Meter</label>
 				                                            ${chb.getPerSqM()}
 				                                            <p class="help-block">TODO Add more details about this chb</p>
+				                                            </c:if>
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">

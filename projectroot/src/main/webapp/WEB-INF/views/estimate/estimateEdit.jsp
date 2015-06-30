@@ -62,6 +62,9 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <c:if test="${!empty estimate.lastComputed}">
+                                <li><a href="#tab_results" data-toggle="tab">Quantity Estimation Results</a></li>
+                                </c:if>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -69,7 +72,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
+                   									<h3 class="box-title">Basic Details</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
@@ -128,67 +131,6 @@
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
 			                                        </c:if>
                    								</div>
-                   								
-                   								<c:if test="${!empty estimate.lastComputed}">
-                   								<br/>
-                   								<div class="box-header">
-                   									<h3 class="box-title">Results</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
-									                
-									                <!-- Result of concrete estimation -->
-									                <c:if test="${!empty estimate.resultEstimateConcrete}">
-									                <h4>Concrete Estimation Results</h4>
-									                <table class="table table-bordered table-striped">
-									                <tr>
-									                <td><label>Component</label></td>
-									                <td><label>Quantity Estimate</label></td>
-									                <td><label>Unit of Measure</label></td>
-									                </tr>
-									                <tr>
-										                <td><label>Cement (40kg)</label></td>
-										                <td align="right">${estimate.resultEstimateConcrete.getCement40kgAsString()}</td>
-										                <td>${estimate.concreteProportion.unitCement40kg.name}</td>
-									                </tr>
-									                <tr>
-										                <td><label>Cement (50kg)</label></td>
-										                <td align="right">${estimate.resultEstimateConcrete.getCement50kgAsString()}</td>
-										                <td>${estimate.concreteProportion.unitCement50kg.name}</td>
-									                </tr>
-									                <tr>
-										                <td><label>Sand</label></td>
-										                <td align="right">${estimate.resultEstimateConcrete.getSandAsString()}</td>
-										                <td>${estimate.concreteProportion.unitSand.name}</td>
-									                </tr>
-									                <tr>
-										                <td><label>Gravel</label></td>
-										                <td align="right">${estimate.resultEstimateConcrete.getGravelAsString()}</td>
-										                <td>${estimate.concreteProportion.unitGravel.name}</td>
-									                </tr>
-									                </table>
-									                </c:if>
-									                
-									                <!-- Result of masonry estimation -->
-									                <c:if test="${!empty estimate.resultEstimateMasonry}">
-									                <br/>
-									                <h4>Masonry Estimation Results</h4>
-									                <table class="table table-bordered table-striped">
-									                <tr>
-									                <td><label>CHB Measurement</label></td>
-									                <td><label>Estimated No. of Pieces</label></td>
-									                </tr>
-									                <tr>
-										                <td><label>${estimate.resultEstimateMasonry.chbMeasurement.name}</label></td>
-										                <td align="right">${estimate.resultEstimateMasonry.getTotalCHBAsString()}</td>
-									                </tr>
-									                </table>
-									                </c:if>
-									                
-                   								</div>
-			              						</c:if>
                    							</div>
                    						</div>
                    						<c:if test="${isUpdating}">
@@ -269,15 +211,15 @@
 										                </a>
 										                </label>
 										                
-										                <!-- If not yet computed, let them choose which proportion -->
-										                <c:choose>
-														<c:when test="${empty estimate.lastComputed}">
-														
 				                                        <table class="table table-bordered table-striped">
 				                                        <tr>
 				                                        	<td><label>Check / Uncheck</label></td>
 				                                        	<td><label>Concrete Proportion / Class</label></td>
 				                                        </tr>
+				                                        
+	<!-- Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+				                                        
                                    						<c:forEach items="${concreteProportionList}" var="ratio"> 
 				                                        <tr>
 				                                        <td align="center"><form:checkbox path="concreteProportionKeys" value="${ratio.getKey()}"/></td>
@@ -291,16 +233,7 @@
                                    						</c:forEach> 
 				                                        </table>
  		                                    			<p class="help-block">Choose the ratio of cement, sand and gravel for the concrete</p>
-														</c:when>
 														
-														<c:when test="${!empty estimate.lastComputed}">
-															<c:url var="urlLink" value="/concreteproportion/edit/${estimate.concreteProportion.getKey()}-end"/>
-											                <a href="${urlLink}" class="general-link">
-															${estimate.concreteProportion.getDisplayName()}
-											                </a>
-											                <br/>
-														</c:when>
-														</c:choose>
 				                                        </c:if> <!-- End of "if will compute Concrete" -->
 				                                        
 				                                        <c:if test="${estimate.willComputeMasonry()}">
@@ -312,16 +245,30 @@
 										                CHB Measurements
 										                </a>
 										                </label>
-										                <form:select class="form-control" path="chbMeasurementKey"> 
-	                                     						<c:forEach items="${chbList}" var="chb"> 
-	                                     							<form:option value="${chb.getKey()}" label="${chb.name}"/> 
-	                                     						</c:forEach> 
-	 		                                    			</form:select>
-	 		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
+										                
+										                <table class="table table-bordered table-striped">
+										                	<tr>
+										                	<td><label>Check / Uncheck</label></td>
+										                	<td><label>Proportion Name</label></td>
+										                	</tr>
+										                	
+										                	<c:forEach items="${chbList}" var="chb">
+										                	<tr>
+										                	<td align="center"><form:checkbox path="chbMeasurementKeys" class="form-control" value="${chb.getKey()}"/></td>
+										                	<td>
+										                	<c:url var="urlLink" value="/chb/edit/${chb.getKey()}-end"/>
+											                <a href="${urlLink}" class="general-link">
+										                	${chb.name}
+											                </a>
+										                	</td>
+										                	</tr>
+										                	</c:forEach>
+										                </table>
+ 		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
 				                                        </c:if> <!-- End of "if will compute Masonry" -->
 				                                        
 				                                        </div>
-			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Compute</button>
+			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>
 				                                    </form:form>
 				                                    <br/>
 				                                    <c:choose>
@@ -345,6 +292,118 @@
                    						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
+                   				<c:if test="${!empty estimate.lastComputed}">
+                                <div class="tab-pane" id="tab_results">
+                                	<div class="row">
+									    <c:if test="${!empty estimate.resultMapConcrete}">
+                   						<div class="col-md-6">
+               								<div class="box box-body box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Concrete</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+						                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+							                </div>
+							                
+							                <!-- Result of concrete estimation -->
+							                <table class="table table-bordered table-striped">
+							                <tr>
+							                <td><label>Concrete Proportion</label></td>
+							                <td><label>Component</label></td>
+							                <td><label>Quantity Estimate</label></td>
+							                <td><label>Unit of Measure</label></td>
+							                </tr>
+							                
+<!-- Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>(); -->
+  
+							                
+							                <c:forEach items="${estimate.resultMapConcrete}" var="resultEntry">
+							                <c:set value="${false}" var="renderedProportion"></c:set>
+							                
+							                <c:set var="entryConcreteProportion" value="${resultEntry.key}"></c:set>
+							                <c:set var="entryResult" value="${resultEntry.value}"></c:set>
+							                <tr>
+							                
+							                	<c:if test="${!renderedProportion}">
+							                	<td rowspan="4"><label>
+							                	<c:url var="urlLink" value="/concreteproportion/edit/${entryConcreteProportion.getKey()}-end"/>
+								                <a href="${urlLink}" class="general-link">
+							                	${entryConcreteProportion.getDisplayName()}
+								                </a>
+							                	</label></td>
+							                	<c:set value="${true}" var="renderedProportion"></c:set>
+							                	</c:if>
+							                	
+								                <td><label>Cement (40kg)</label></td>
+								                <td align="right">${entryResult.getCement40kgAsString()}</td>
+								                <td>${entryConcreteProportion.unitCement40kg.name}</td>
+							                </tr>
+							                <tr>
+								                <td><label>Cement (50kg)</label></td>
+								                <td align="right">${entryResult.getCement50kgAsString()}</td>
+								                <td>${entryConcreteProportion.unitCement50kg.name}</td>
+							                </tr>
+							                <tr>
+								                <td><label>Sand</label></td>
+								                <td align="right">${entryResult.getSandAsString()}</td>
+								                <td>${entryConcreteProportion.unitSand.name}</td>
+							                </tr>
+							                <tr>
+								                <td><label>Gravel</label></td>
+								                <td align="right">${entryResult.getGravelAsString()}</td>
+								                <td>${entryConcreteProportion.unitGravel.name}</td>
+							                </tr>
+							                </c:forEach> <!-- End of "Result" entries loop -->
+							                
+							                </table>
+                 								</div>
+                 								</div>
+									    </div>
+									    </c:if>
+									    
+									    <c:if test="${!empty estimate.resultMapMasonry}">
+									    <div class="col-md-6">
+								    		<div class="box box-body box-default">
+               								<div class="box-header">
+               									<h3 class="box-title">Masonry</h3>
+               								</div>
+               								<div class="box-body">
+               									<div class="callout callout-info callout-cebedo">
+						                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+							                </div>
+							                
+							                <!-- Result of masonry estimation -->
+							                <!-- Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+							                <table class="table table-bordered table-striped">
+							                <tr>
+							                <td><label>CHB Measurement</label></td>
+							                <td><label>Pieces per Sq. Meter</label></td>
+							                <td><label>Estimated No. of Pieces</label></td>
+							                </tr>
+							                
+							                <c:forEach items="${estimate.resultMapMasonry}" var="resultEntry">
+							                <c:set value="${resultEntry.key}" var="entryCHB"></c:set>
+							                <c:set value="${resultEntry.value}" var="entryResult"></c:set>
+							                <tr>
+								                <td><label>
+								                <c:url var="urlLink" value="/chb/edit/${entryCHB.getKey()}-end"/>
+								                <a href="${urlLink}" class="general-link">
+								                ${entryCHB.name}
+								                </a>
+								                </label></td>
+								                <td align="right"><label>${entryCHB.getPerSqM()}</label></td>
+								                <td align="right">${entryResult.getTotalCHBAsString()}</td>
+							                </tr>
+							                </c:forEach>
+							                </table>
+                 								</div>
+                 								</div>
+									    </div>
+									    </c:if>
+									</div>
+								</div>
+								</c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->

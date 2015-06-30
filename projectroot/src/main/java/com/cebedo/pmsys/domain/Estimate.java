@@ -31,7 +31,6 @@ public class Estimate implements IDomainObject {
     private String name;
     private String remarks;
     private Date lastComputed;
-    private boolean copy;
 
     /**
      * Computational specs.
@@ -52,22 +51,16 @@ public class Estimate implements IDomainObject {
     private Map<String, CommonLengthUnit> areaFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
     private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
 
-    // Concrete estimate.
+    // Concrete inputs.
+    // Masonry inputs.
     private String concreteProportionKeys[];
-
-    // Masonry estimate;
-    private String chbMeasurementKey;
+    private String chbMeasurementKeys[];
 
     /**
      * Results
      */
-    private ConcreteEstimateResults resultEstimateConcrete;
-    private MasonryEstimateResults resultEstimateMasonry;
-
-    /**
-     * Concrete.
-     */
-    private ConcreteProportion concreteProportion;
+    private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+    private Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>();
 
     /**
      * Extension map.
@@ -147,14 +140,6 @@ public class Estimate implements IDomainObject {
 	this.shape = shape;
     }
 
-    public ConcreteProportion getConcreteProportion() {
-	return concreteProportion;
-    }
-
-    public void setConcreteProportion(ConcreteProportion concreteProportion) {
-	this.concreteProportion = concreteProportion;
-    }
-
     public Map<String, Object> getExtMap() {
 	return extMap;
     }
@@ -223,15 +208,6 @@ public class Estimate implements IDomainObject {
 		.getId(), proj.getId(), "*");
     }
 
-    public ConcreteEstimateResults getResultEstimateConcrete() {
-	return resultEstimateConcrete;
-    }
-
-    public void setResultEstimateConcrete(
-	    ConcreteEstimateResults resultEstimateConcrete) {
-	this.resultEstimateConcrete = resultEstimateConcrete;
-    }
-
     public Map<String, CommonLengthUnit> getVolumeFormulaInputsUnits() {
 	return volumeFormulaInputsUnits;
     }
@@ -249,29 +225,30 @@ public class Estimate implements IDomainObject {
 	this.concreteProportionKeys = concreteProportionKeys;
     }
 
-    public String getChbMeasurementKey() {
-	return chbMeasurementKey;
+    public Map<ConcreteProportion, ConcreteEstimateResults> getResultMapConcrete() {
+	return resultMapConcrete;
     }
 
-    public void setChbMeasurementKey(String chbMeasurementKey) {
-	this.chbMeasurementKey = chbMeasurementKey;
+    public void setResultMapConcrete(
+	    Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete) {
+	this.resultMapConcrete = resultMapConcrete;
     }
 
-    public MasonryEstimateResults getResultEstimateMasonry() {
-	return resultEstimateMasonry;
+    public Map<CHB, MasonryEstimateResults> getResultMapMasonry() {
+	return resultMapMasonry;
     }
 
-    public void setResultEstimateMasonry(
-	    MasonryEstimateResults resultEstimateMasonry) {
-	this.resultEstimateMasonry = resultEstimateMasonry;
+    public void setResultMapMasonry(
+	    Map<CHB, MasonryEstimateResults> resultMapMasonry) {
+	this.resultMapMasonry = resultMapMasonry;
     }
 
-    public boolean isCopy() {
-	return copy;
+    public String[] getChbMeasurementKeys() {
+	return chbMeasurementKeys;
     }
 
-    public void setCopy(boolean copy) {
-	this.copy = copy;
+    public void setChbMeasurementKeys(String[] chbMeasurementKeys) {
+	this.chbMeasurementKeys = chbMeasurementKeys;
     }
 
 }

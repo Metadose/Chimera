@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo;
@@ -70,12 +71,17 @@ public class ConcreteEstimationSummaryServiceImpl implements
 			.getEstimationToCompute()));
 
 	for (Estimate estimate : estimateList) {
-	    ConcreteEstimateResults estimateQuantityResults = estimate
-		    .getResultEstimateConcrete();
-	    unitsCement40kg += estimateQuantityResults.getCement40kg();
-	    unitsCement50kg += estimateQuantityResults.getCement50kg();
-	    unitsSand += estimateQuantityResults.getSand();
-	    unitsGravel += estimateQuantityResults.getGravel();
+
+	    Map<ConcreteProportion, ConcreteEstimateResults> resultMap = estimate
+		    .getResultMapConcrete();
+	    for (ConcreteProportion proportion : resultMap.keySet()) {
+		ConcreteEstimateResults estimateQuantityResults = resultMap
+			.get(proportion);
+		unitsCement40kg += estimateQuantityResults.getCement40kg();
+		unitsCement50kg += estimateQuantityResults.getCement50kg();
+		unitsSand += estimateQuantityResults.getSand();
+		unitsGravel += estimateQuantityResults.getGravel();
+	    }
 	}
 
 	// Set the values as the object's

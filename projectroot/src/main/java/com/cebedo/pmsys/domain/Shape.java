@@ -37,6 +37,12 @@ public class Shape implements IDomainObject {
     private String[] formulaInputs;
 
     /**
+     * Computed.
+     */
+    private double area;
+    private double volume;
+
+    /**
      * Extension map.
      */
     private Map<String, Object> extMap;
@@ -178,5 +184,21 @@ public class Shape implements IDomainObject {
 	volFormula = StringUtils.remove(volFormula,
 		Shape.DELIMITER_CLOSE_VARIABLE);
 	return volFormula;
+    }
+
+    public double getArea() {
+	return area;
+    }
+
+    public void setArea(double area) {
+	this.area = area;
+    }
+
+    public double getVolume() {
+	return volume;
+    }
+
+    public void setVolume(double volume) {
+	this.volume = volume;
     }
 }
