@@ -1249,8 +1249,8 @@
 			               							
 			               								<div class="nav-tabs-custom">
 							                            <ul class="nav nav-tabs" id="subtabs-inventory">
-							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Quantity & Cost</a></li>
-					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Quantity Breakdown</a></li>
+							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Component Quantity & Cost</a></li>
+					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Component Quantity Breakdown</a></li>
 							                            </ul>
 							                            <div class="tab-content">
 							                            
@@ -1359,7 +1359,7 @@
 								                                            </tr>
 								                                        </thead>
 								                                        <tbody>
-								                                        		<c:forEach items="${estimationSummaries}" var="summary">
+								                                        		<c:forEach items="${concreteEstimationSummaries}" var="summary">
 										                                            <tr>
 										                                            	<td>
 										                                            		<center>

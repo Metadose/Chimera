@@ -19,6 +19,8 @@ public abstract class RedisConstants {
     public static final String OBJECT_UNIT = "unit";
     public static final String OBJECT_CHB = "chb";
     public static final String OBJECT_MATERIAL_CATEGORY = "materialcategory";
+    public static final String OBJECT_MASONRY_ESTIMATION_SUMMARY = "masonryestimationsummary";
+    public static final String OBJECT_MASONRY_ESTIMATION_SUMMARY_DISPLAY = "masonry estimation summary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY_DISPLAY = "concrete estimation summary";
     public static final String OBJECT_CONCRETE_PROPORTION = "concreteproportion";

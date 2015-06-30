@@ -42,6 +42,7 @@ import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
+import com.cebedo.pmsys.domain.MasonryEstimationSummary;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -72,9 +73,11 @@ import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.CHBService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
+import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.FieldService;
+import com.cebedo.pmsys.service.MasonryEstimationSummaryService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
@@ -122,7 +125,8 @@ public class ProjectController {
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
-    public static final String ATTR_ESTIMATION_SUMMARIES = "estimationSummaries";
+    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARIES = "concreteEstimationSummaries";
+    public static final String ATTR_MASONRY_ESTIMATION_SUMMARIES = "masonryEstimationSummaries";
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
@@ -197,6 +201,22 @@ public class ProjectController {
     private ConcreteProportionService concreteProportionService;
     private ConcreteEstimationSummaryService concreteEstimationSummaryService;
     private CHBService chbService;
+    private CostEstimationService costEstimationService;
+    private MasonryEstimationSummaryService masonryEstimationSummaryService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "masonryEstimationSummaryService")
+    public void setMasonryEstimationSummaryService(
+	    MasonryEstimationSummaryService masonryEstimationSummaryService) {
+	this.masonryEstimationSummaryService = masonryEstimationSummaryService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "costEstimationService")
+    public void setCostEstimationService(
+	    CostEstimationService costEstimationService) {
+	this.costEstimationService = costEstimationService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "chbService")
@@ -1239,16 +1259,14 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, SessionStatus status,
 	    HttpSession session) {
 
-	// TODO Put this in service layer.
+	// Do service, get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	ConcreteEstimationSummary estimationSummary = new ConcreteEstimationSummary(
-		proj, costEstimationBean);
-
-	// Do service and get response.
-	this.concreteEstimationSummaryService.set(estimationSummary);
+	String response = this.costEstimationService.estimateCosts(proj,
+		costEstimationBean);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, "");
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		response);
 
 	// Complete the transaction.
 	status.setComplete();
@@ -2053,9 +2071,18 @@ public class ProjectController {
 	// Empty bean of concrete estimation summary.
 	// List of all estimation summaries.
 	model.addAttribute(ATTR_COST_ESTIMATION_BEAN, new CostEstimationBean());
-	List<ConcreteEstimationSummary> estimationSummaries = this.concreteEstimationSummaryService
+
+	// List of concrete estimation summaries.
+	List<ConcreteEstimationSummary> concreteEstimationSummaries = this.concreteEstimationSummaryService
 		.list(proj);
-	model.addAttribute(ATTR_ESTIMATION_SUMMARIES, estimationSummaries);
+	model.addAttribute(ATTR_CONCRETE_ESTIMATION_SUMMARIES,
+		concreteEstimationSummaries);
+
+	// List of masonry estimation summaries.
+	List<MasonryEstimationSummary> masonryEstimationSummaries = this.masonryEstimationSummaryService
+		.list(proj);
+	model.addAttribute(ATTR_MASONRY_ESTIMATION_SUMMARIES,
+		masonryEstimationSummaries);
 
 	// Get all payrolls.
 	// Add to model.

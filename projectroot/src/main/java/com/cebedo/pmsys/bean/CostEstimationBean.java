@@ -3,6 +3,7 @@ package com.cebedo.pmsys.bean;
 public class CostEstimationBean {
 
     public static final String BEAN_NAME = "costestimation";
+    public static final String BEAN_NAME_DISPLAY = "cost estimation";
 
     /**
      * Bean-backed form.
