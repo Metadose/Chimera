@@ -57,12 +57,7 @@ public class ConcreteEstimationSummaryServiceImpl implements
     @Transactional
     public String set(ConcreteEstimationSummary obj) {
 
-	// Get total units.
-	// Set to summary object.
-	double unitsCement40kg = 0;
-	double unitsCement50kg = 0;
-	double unitsSand = 0;
-	double unitsGravel = 0;
+	boolean isCreate = obj.getUuid() == null;
 
 	// Loop through each checked quantity estimate.
 	// Then get the sum.
@@ -70,54 +65,68 @@ public class ConcreteEstimationSummaryServiceImpl implements
 		.multiGet(DataStructUtils.convertArrayToList(obj
 			.getEstimationToCompute()));
 
+	// For each estimate chosen in JSP.
 	for (Estimate estimate : estimateList) {
 
+	    // Get result map for concrete.
 	    Map<ConcreteProportion, ConcreteEstimateResults> resultMap = estimate
 		    .getResultMapConcrete();
+
+	    // For every summary, every proportion must have a different
+	    // total and grand total.
 	    for (ConcreteProportion proportion : resultMap.keySet()) {
+
+		obj.setConcreteProportion(proportion);
+
+		// Get the values.
 		ConcreteEstimateResults estimateQuantityResults = resultMap
 			.get(proportion);
-		unitsCement40kg += estimateQuantityResults.getCement40kg();
-		unitsCement50kg += estimateQuantityResults.getCement50kg();
-		unitsSand += estimateQuantityResults.getSand();
-		unitsGravel += estimateQuantityResults.getGravel();
+		double unitsCement40kg = estimateQuantityResults
+			.getCement40kg();
+		double unitsCement50kg = estimateQuantityResults
+			.getCement50kg();
+		double unitsSand = estimateQuantityResults.getSand();
+		double unitsGravel = estimateQuantityResults.getGravel();
+
+		// Set the values as the object's
+		// quantity estimate.
+		obj.setTotalUnitsCement40kg(unitsCement40kg);
+		obj.setTotalUnitsCement50kg(unitsCement50kg);
+		obj.setTotalUnitsSand(unitsSand);
+		obj.setTotalUnitsGravel(unitsGravel);
+
+		// Compute for the total cost of each component.
+		double totalCostCement40kg = unitsCement40kg
+			* obj.getCostPerUnitCement40kg();
+		double totalCostCement50kg = unitsCement50kg
+			* obj.getCostPerUnitCement50kg();
+		double totalCostSand = unitsSand * obj.getCostPerUnitSand();
+		double totalCostGravel = unitsGravel
+			* obj.getCostPerUnitGravel();
+
+		// Set the costs.
+		obj.setTotalCostCement40kg(totalCostCement40kg);
+		obj.setTotalCostCement50kg(totalCostCement50kg);
+		obj.setTotalCostSand(totalCostSand);
+		obj.setTotalCostGravel(totalCostGravel);
+
+		// Compute for the grand total.
+		obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand
+			+ totalCostGravel);
+		obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
+			+ totalCostGravel);
+
+		// Set last computed.
+		obj.setLastComputed(new Date(System.currentTimeMillis()));
+
+		// Commit.
+		obj.setUuid(UUID.randomUUID());
+		this.concreteEstimationSummaryValueRepo.set(obj);
 	    }
 	}
 
-	// Set the values as the object's
-	// quantity estimate.
-
-	obj.setTotalUnitsCement40kg(unitsCement40kg);
-	obj.setTotalUnitsCement50kg(unitsCement50kg);
-	obj.setTotalUnitsSand(unitsSand);
-	obj.setTotalUnitsGravel(unitsGravel);
-
-	// Compute for the total cost of each component.
-	double totalCostCement40kg = unitsCement40kg
-		* obj.getCostPerUnitCement40kg();
-	double totalCostCement50kg = unitsCement50kg
-		* obj.getCostPerUnitCement50kg();
-	double totalCostSand = unitsSand * obj.getCostPerUnitSand();
-	double totalCostGravel = unitsGravel * obj.getCostPerUnitGravel();
-
-	obj.setTotalCostCement40kg(totalCostCement40kg);
-	obj.setTotalCostCement50kg(totalCostCement50kg);
-	obj.setTotalCostSand(totalCostSand);
-	obj.setTotalCostGravel(totalCostGravel);
-
-	// Compute for the grand total.
-	obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand
-		+ totalCostGravel);
-	obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
-		+ totalCostGravel);
-
-	// Set last computed.
-	obj.setLastComputed(new Date(System.currentTimeMillis()));
-
 	// If create.
-	if (obj.getUuid() == null) {
-	    obj.setUuid(UUID.randomUUID());
-	    this.concreteEstimationSummaryValueRepo.set(obj);
+	if (isCreate) {
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_UNIT, obj.getName());
 	}

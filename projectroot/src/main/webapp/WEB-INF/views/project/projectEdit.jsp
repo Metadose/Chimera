@@ -1236,7 +1236,9 @@
 				                            <ul class="nav nav-tabs" id="subtabs-estimate">
 				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
 		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
-		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Cost Estimate Controls</a></li>
+		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Cost Estimate Controls
+		                                		<i class="fa fa-connectdevelop"></i>
+		                                		</a></li>
 				                            </ul>
 				                            <div class="tab-content">
 				                                <div class="tab-pane active" id="subtab_concrete">
@@ -1303,6 +1305,7 @@
 								                                            	<th rowspan="2" style="text-align: center; vertical-align: middle;">
 								                                            	DETAILS
 								                                            	</th>
+								                                            	
 								                                            	<th colspan="4" style="text-align: center;">
 								                                            	<a class="toggle-vis" data-column="1,2,3,4" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-success">
@@ -1365,6 +1368,7 @@
 								                                								<a class="general-link" href="${urlLink}">
 												                                            		${summary.name}
 								                                								</a>
+								                                								${summary.concreteProportion.getDisplayName()}
 																							</center>
 																						</td>
 																						<td align="right">${summary.getTotalUnitsCement40kgAsString()}</td>
@@ -1652,34 +1656,60 @@
 			               						</div>
 			               						
 			               						
+			               						<!-- // Basic details.
+											    private String name;
+											    private String description;
+											    private String[] estimationToCompute;
+											
+											    // Concrete estimation.
+											    private double costPerUnitCement40kg;
+											    private double costPerUnitCement50kg;
+											    private double costPerUnitSand;
+											    private double costPerUnitGravel;
+											
+											    // Masonry estimation.
+											    private double costPerPieceCHB; -->
+			               						
 			               						<div class="tab-pane" id="subtab_cost-estimate-controls">
-			               						<form:form modelAttribute="concreteestimationsummary"
+			               						<form:form modelAttribute="costEstimationBean"
 														id="detailsForm"
 														method="post"
-														action="${contextPath}/project/create/concreteestimationsummary">
+														action="${contextPath}/project/create/costestimation">
 			                                	<div class="row">
 					                            <div class="col-md-4">
 			               							<div class="box box-body box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Basic Details</h3>
+			               								</div>
+			               								<div class="box-body">
+			               								<div class="callout callout-info callout-cebedo">
+										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+										                </div>
+				                                        <div class="form-group">
+				                                        
+			                                            <label>Name</label>
+			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/>
+			                                            <p class="help-block">Enter the name of this estimate summary</p>
+			                                            
+			                                            <label>Description</label>
+			                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/>
+					                                    <p class="help-block">Add a description to this summary</p>
+					                                    
+				                                        </div>
+			               								</div>
+			               							</div>
+			               						</div>
+			               						<div class="col-md-4">
+			               							<div class="box box-body box-default">
 			               								
 			               								<div class="box-header">
-			               									<h3 class="box-title">Cost Inputs</h3>
+			               									<h3 class="box-title">Concrete Cost</h3>
 			               								</div>
-			               								<div class="box-body box-default">
+			               								<div class="box-body">
 			               								<div class="callout callout-info callout-cebedo">
 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 										                </div>
 					                                        <div class="form-group">
-					                                        
-				                                            <label>Name</label>
-				                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/>
-				                                            <p class="help-block">Enter the name of this estimate summary</p>
-				                                            
-				                                            <label>Description</label>
-				                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/>
-						                                    <p class="help-block">Add a description to this summary</p>
-						                                    
-						                                    <br/>
-						                                    <h4>Concrete Estimation</h4>
 						                                    <label>Cost per Unit (Cement 40kg)</label>
 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/>
 						                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p>
@@ -1702,14 +1732,36 @@
 			               								
 			               							</div>
 			               						</div>
-			               						<div class="col-md-8">
+			               						<div class="col-md-4">
 			               							<div class="box box-body box-default">
-			               								
-			               								<div class="box-body box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Masonry Cost</h3>
+			               								</div>
+			               								<div class="box-body">
+			               								<div class="callout callout-info callout-cebedo">
+										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+										                </div>
+				                                        <div class="form-group">
+				                                        
+			                                            <label>Cost per Piece of Concrete Hollow Blocks (CHB)</label>
+			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="costPerPieceCHB"/>
+			                                            <p class="help-block">Enter the name of this estimate summary</p>
+				                                        </div>
+			               								</div>
+			               							</div>
+			               						</div>
+			               						</div>
+			               						
+			               						<div class="row">
+			               						<div class="col-md-12">
+			               							<div class="box box-body box-default">
+			               								<div class="box-header">
+			               									<h3 class="box-title">Quantity Estimations</h3>
+			               								</div>
+			               								<div class="box-body">
 										                
 					                                        <div class="form-group">
 					                                        
-						                                    <label>Quantity Estimations</label>
 						                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
 						                                    <thead>
 											                <tr>

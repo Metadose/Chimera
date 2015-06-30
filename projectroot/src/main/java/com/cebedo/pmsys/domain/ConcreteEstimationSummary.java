@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -24,18 +25,18 @@ public class ConcreteEstimationSummary implements IDomainObject {
     /**
      * Number of units and their unit of measure.
      */
+    private ConcreteProportion concreteProportion;
     private double totalUnitsCement40kg;
     private double totalUnitsCement50kg;
     private double totalUnitsSand;
     private double totalUnitsGravel;
-
     private Unit unitCement40kg;
     private Unit unitCement50kg;
     private Unit unitSand;
     private Unit unitGravel;
 
     /**
-     * Total of cost per component.
+     * Total of cost.
      */
     private double totalCostCement40kg;
     private double totalCostCement50kg;
@@ -49,11 +50,12 @@ public class ConcreteEstimationSummary implements IDomainObject {
      */
     private String name;
     private String description;
+    private String[] estimationToCompute;
+
     private double costPerUnitCement40kg;
     private double costPerUnitCement50kg;
     private double costPerUnitSand;
     private double costPerUnitGravel;
-    private String[] estimationToCompute;
 
     /**
      * Other specs.
@@ -72,6 +74,22 @@ public class ConcreteEstimationSummary implements IDomainObject {
     public ConcreteEstimationSummary(Project proj) {
 	setCompany(proj.getCompany());
 	setProject(proj);
+    }
+
+    public ConcreteEstimationSummary(Project proj,
+	    CostEstimationBean costEstimationBean) {
+	setCompany(proj.getCompany());
+	setProject(proj);
+
+	this.costPerUnitCement40kg = costEstimationBean
+		.getCostPerUnitCement40kg();
+	this.costPerUnitCement50kg = costEstimationBean
+		.getCostPerUnitCement50kg();
+	this.costPerUnitGravel = costEstimationBean.getCostPerUnitGravel();
+	this.costPerUnitSand = costEstimationBean.getCostPerUnitSand();
+	this.description = costEstimationBean.getDescription();
+	this.estimationToCompute = costEstimationBean.getEstimationToCompute();
+	this.name = costEstimationBean.getName();
     }
 
     /**
@@ -378,4 +396,11 @@ public class ConcreteEstimationSummary implements IDomainObject {
 		proj.getCompany().getId(), proj.getId(), "*");
     }
 
+    public ConcreteProportion getConcreteProportion() {
+	return concreteProportion;
+    }
+
+    public void setConcreteProportion(ConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
+    }
 }

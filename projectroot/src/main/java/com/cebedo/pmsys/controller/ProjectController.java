@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
@@ -96,11 +97,10 @@ import com.cebedo.pmsys.utils.DateUtils;
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
 	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE,
-	RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY }, types = {
+	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE }, types = {
 	Project.class, FieldAssignmentBean.class, ProjectFile.class,
 	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
-	Estimate.class, ConcreteEstimationSummary.class })
+	Estimate.class })
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -123,6 +123,7 @@ public class ProjectController {
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_ESTIMATION_SUMMARIES = "estimationSummaries";
+    public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
@@ -1232,24 +1233,27 @@ public class ProjectController {
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY }, method = RequestMethod.POST)
+	    + CostEstimationBean.BEAN_NAME }, method = RequestMethod.POST)
     public String createConcreteEstimationSummary(
-	    @ModelAttribute(RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY) ConcreteEstimationSummary estimationSummary,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    @ModelAttribute(ATTR_COST_ESTIMATION_BEAN) CostEstimationBean costEstimationBean,
+	    RedirectAttributes redirectAttrs, SessionStatus status,
+	    HttpSession session) {
+
+	// TODO Put this in service layer.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	ConcreteEstimationSummary estimationSummary = new ConcreteEstimationSummary(
+		proj, costEstimationBean);
 
 	// Do service and get response.
-	String response = this.concreteEstimationSummaryService
-		.set(estimationSummary);
+	this.concreteEstimationSummaryService.set(estimationSummary);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, "");
 
 	// Complete the transaction.
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ estimationSummary.getProject().getId();
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
     /**
@@ -2048,8 +2052,7 @@ public class ProjectController {
 
 	// Empty bean of concrete estimation summary.
 	// List of all estimation summaries.
-	model.addAttribute(ATTR_CONCRETE_ESTIMATION_SUMMARY,
-		new ConcreteEstimationSummary(proj));
+	model.addAttribute(ATTR_COST_ESTIMATION_BEAN, new CostEstimationBean());
 	List<ConcreteEstimationSummary> estimationSummaries = this.concreteEstimationSummaryService
 		.list(proj);
 	model.addAttribute(ATTR_ESTIMATION_SUMMARIES, estimationSummaries);
