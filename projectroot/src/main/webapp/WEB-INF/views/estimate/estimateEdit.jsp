@@ -63,7 +63,9 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:if test="${!empty estimate.lastComputed}">
-                                <li><a href="#tab_results" data-toggle="tab">Quantity Estimation Results</a></li>
+                                <li><a href="#tab_results" data-toggle="tab">Quantity Estimation
+                                <span class="badge bg-blue">Results</span>
+                                </a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -72,7 +74,9 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Basic Details</h3>
+                   									<h3 class="box-title">
+                   									<span class="badge bg-green">Step 1</span>
+                   									Basic Details</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
@@ -122,6 +126,21 @@
 	 		                                    			</c:forEach>
 	 		                                    			</table>
 	 		                                    			<p class="help-block">Specify the type of estimation</p>
+	 		                                    			
+	 		                                    			<!-- Allowance -->
+	 		                                    			<label>
+											                <c:url var="urlLink" value="/estimationallowance/list"/>
+											                <a href="${urlLink}" class="general-link">
+											                Estimation Allowance
+											                </a>
+											                </label>
+				                                            <form:select class="form-control" path="estimationAllowanceKey"> 
+	                                     						<c:forEach items="${allowanceList}" var="allowance"> 
+	                                     							<form:option value="${allowance.getKey()}" label="${allowance.name} (${allowance.getEstimationAllowanceAsString()})"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+	 		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
+	 		                                    			
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">
@@ -137,7 +156,9 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Formula & Inputs</h3>
+                   									<h3 class="box-title">
+                   									<span class="badge bg-green">Step 2</span>
+                   									Formula & Inputs</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">

@@ -42,6 +42,7 @@ import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
+import com.cebedo.pmsys.domain.EstimationAllowance;
 import com.cebedo.pmsys.domain.MasonryEstimationSummary;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
@@ -76,6 +77,7 @@ import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
+import com.cebedo.pmsys.service.EstimationAllowanceService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MasonryEstimationSummaryService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
@@ -129,6 +131,7 @@ public class ProjectController {
     public static final String ATTR_MASONRY_ESTIMATION_SUMMARIES = "masonryEstimationSummaries";
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
+    public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
@@ -203,6 +206,14 @@ public class ProjectController {
     private CHBService chbService;
     private CostEstimationService costEstimationService;
     private MasonryEstimationSummaryService masonryEstimationSummaryService;
+    private EstimationAllowanceService estimationAllowanceService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "estimationAllowanceService")
+    public void setEstimationAllowanceService(
+	    EstimationAllowanceService estimationAllowanceService) {
+	this.estimationAllowanceService = estimationAllowanceService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "masonryEstimationSummaryService")
@@ -1799,6 +1810,11 @@ public class ProjectController {
 
 	// Get proj.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// List of allowances.
+	List<EstimationAllowance> allowanceList = this.estimationAllowanceService
+		.list();
+	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST, allowanceList);
 
 	// List of shapes.
 	List<Shape> shapeList = this.shapeService.list();

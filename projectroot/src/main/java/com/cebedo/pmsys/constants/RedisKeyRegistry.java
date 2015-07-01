@@ -8,6 +8,8 @@ public class RedisKeyRegistry {
 
     public static final String KEY_CHB = "company.fk:%s:chb:%s";
 
+    public static final String KEY_ESTIMATION_ALLOWANCE = "company.fk:%sestimationallowance:%s";
+
     public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
 
     public static final String KEY_UNITS = "company.fk:%s:units:%s";

@@ -713,7 +713,9 @@
 		                            <div class="col-md-12">
                							<div class="box box-body box-default">
                								<div class="box-header">
-               									<h3 class="box-title">Payroll List</h3>
+               									<h3 class="box-title">
+               									<span class="badge bg-blue">Results</span>
+               									Payroll List</h3>
                								</div>
                								<div class="box-body">
                									<div class="callout callout-info callout-cebedo">
@@ -1225,10 +1227,18 @@
 <!--           									<h3 class="box-title">Estimates</h3> -->
 <!--           								</div> -->
 		                                <div class="box-body table-responsive">
+                                   			<div class="callout callout-info callout-cebedo">
+							                    <p>
+							                    <span class="badge bg-green">1</span> Click Estimate Quantity<br/>
+							                    <span class="badge bg-green">2</span> Results will display<br/>
+							                    <span class="badge bg-green">3</span> Estimate Costs<br/>
+							                    </p>
+							                </div>
                                    			<c:url var="urlCreate" value="/project/edit/estimate/0-end"/>
                                    			<a href="${urlCreate}">
 	                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate Quantity</button>
                                    			</a>
+                                   			<span class="badge bg-red">Step A</span>
                                    			<br/>
                                    			<br/>
                                    			
@@ -1236,8 +1246,8 @@
 				                            <ul class="nav nav-tabs" id="subtabs-estimate">
 				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
 		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
-		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Cost Estimate Controls
-		                                		<i class="fa fa-calculator"></i>
+		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Estimate Cost
+		                                		<span class="badge bg-red">Step B</span>
 		                                		</a></li>
 				                            </ul>
 				                            <div class="tab-content">
@@ -1249,8 +1259,14 @@
 			               							
 			               								<div class="nav-tabs-custom">
 							                            <ul class="nav nav-tabs" id="subtabs-inventory">
-							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">Component Quantity & Cost</a></li>
-					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">Component Quantity Breakdown</a></li>
+							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">
+							                                Component Quantity & Cost
+							                                <span class="badge bg-blue">Cost Results</span>
+							                                </a></li>
+					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">
+					                                		Component Breakdown
+					                                		<span class="badge bg-blue">Quantity Results</span>
+					                                		</a></li>
 							                            </ul>
 							                            <div class="tab-content">
 							                            
@@ -1559,8 +1575,13 @@
 			               							<div class="box box-body box-default">
 			               								<div class="nav-tabs-custom">
 														<ul class="nav nav-tabs">
-															<li class="active"><a href="#subsubtab_chb_summary" data-toggle="tab">CHB Quantity & Cost</a></li>
-															<li><a href="#subsubtab_chb" data-toggle="tab">CHB Quantity Breakdown</a></li>
+															<li class="active"><a href="#subsubtab_chb_summary" data-toggle="tab">CHB Quantity & Cost
+															<span class="badge bg-blue">Cost Results</span>
+															</a></li>
+															<li><a href="#subsubtab_chb" data-toggle="tab">
+															CHB Breakdown
+															<span class="badge bg-blue">Quantity Results</span>
+															</a></li>
 															<li><a href="#subsubtab_block-laying" data-toggle="tab">Block Laying</a></li>
 															<li><a href="#subsubtab_paster" data-toggle="tab">Plaster</a></li>
 														</ul>
@@ -1803,7 +1824,9 @@
 					                            <div class="col-md-4">
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
-			               									<h3 class="box-title">Basic Details</h3>
+			               									<h3 class="box-title">
+			               									<span class="badge bg-green">Step 1</span>
+			               									Basic Details</h3>
 			               								</div>
 			               								<div class="box-body">
 			               								<div class="callout callout-info callout-cebedo">
@@ -1827,7 +1850,9 @@
 			               							<div class="box box-body box-default">
 			               								
 			               								<div class="box-header">
-			               									<h3 class="box-title">Concrete Component Cost</h3>
+			               									<h3 class="box-title">
+			               									<span class="badge bg-green">Step 2</span>
+			               									Concrete Cost</h3>
 			               								</div>
 			               								<div class="box-body">
 			               								<div class="callout callout-info callout-cebedo">
@@ -1859,7 +1884,9 @@
 			               						<div class="col-md-4">
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
-			               									<h3 class="box-title">Masonry Cost</h3>
+			               									<h3 class="box-title">
+			               									<span class="badge bg-green">Step 3</span>
+			               									Masonry Cost</h3>
 			               								</div>
 			               								<div class="box-body">
 			               								<div class="callout callout-info callout-cebedo">
@@ -1880,7 +1907,9 @@
 			               						<div class="col-md-12">
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
-			               									<h3 class="box-title">Quantity Estimations</h3>
+			               									<h3 class="box-title">
+			               									<span class="badge bg-green">Step 4</span>
+			               									Quantity Estimations</h3>
 			               								</div>
 			               								<div class="box-body">
 										                

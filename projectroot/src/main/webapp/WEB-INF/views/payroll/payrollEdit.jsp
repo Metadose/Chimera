@@ -70,7 +70,9 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:if test="${!empty payrollJSON}">
-                                <li><a href="#tab_computation" data-toggle="tab">Computation</a></li>
+                                <li><a href="#tab_computation" data-toggle="tab">Computation
+                                <span class="badge bg-blue">Results</span>
+                                </a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -79,7 +81,10 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
+                   									<h3 class="box-title">
+                   									<span class="badge bg-green">Step 1</span>
+                   									Details
+                   									</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
@@ -128,7 +133,9 @@
 				                                            
 				                                        </div>
 				                                        <c:if test="${projectPayroll.saved}">
-	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
+	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">
+	                                            		Update
+	                                            		</button>
 				                                        </c:if>
 				                                        <c:if test="${!projectPayroll.saved}">
 	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
@@ -182,7 +189,9 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Payroll Checklist</h3>
+                   									<h3 class="box-title">
+                   									<span class="badge bg-green">Step 2</span>
+                   									Payroll Checklist</h3>
                    								</div>  
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
@@ -303,7 +312,9 @@
 				                                    </form:form>
 				                                    
 			                                        <c:if test="${!empty staffList || !empty managerList}">
-                                            		<button onclick="submitForm('checkboxesForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		<button onclick="submitForm('checkboxesForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">
+                                            		Update
+                                            		</button>
 			                                        </c:if>
 			                                        
 				                                    <c:if test="${!empty projectPayroll.assignedStaffList && fn:length(projectPayroll.assignedStaffList) > 0}">
@@ -311,6 +322,7 @@
                                             		<a href="${urlCompute}">
 														<button class="btn btn-cebedo-update btn-flat btn-sm">Compute Payroll</button>
 													</a>
+													<span class="badge bg-green">Step 3</span>
 													<br/>
 													<br/>
 													

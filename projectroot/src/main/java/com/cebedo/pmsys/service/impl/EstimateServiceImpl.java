@@ -20,6 +20,7 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
+import com.cebedo.pmsys.domain.EstimationAllowance;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -27,6 +28,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.CHBValueRepo;
 import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
+import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -39,6 +41,12 @@ public class EstimateServiceImpl implements EstimateService {
     private ShapeValueRepo shapeValueRepo;
     private ConcreteProportionValueRepo concreteProportionValueRepo;
     private CHBValueRepo chbValueRepo;
+    private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
+
+    public void setEstimationAllowanceValueRepo(
+	    EstimationAllowanceValueRepo estimationAllowanceValueRepo) {
+	this.estimationAllowanceValueRepo = estimationAllowanceValueRepo;
+    }
 
     public void setChbValueRepo(CHBValueRepo chbValueRepo) {
 	this.chbValueRepo = chbValueRepo;
@@ -155,6 +163,11 @@ public class EstimateServiceImpl implements EstimateService {
 	// Shape to compute.
 	Shape shape = estimate.getShape();
 
+	// Set allowances.
+	EstimationAllowance allowance = this.estimationAllowanceValueRepo
+		.get(estimate.getEstimationAllowanceKey());
+	estimate.setEstimationAllowance(allowance);
+
 	// Compute for area and volume.
 	double area = getArea(estimate, shape);
 	double volume = getVolume(estimate, shape);
@@ -200,7 +213,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 		// Now, compute the estimated concrete.
 		ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
-			proportion, shape);
+			allowance, proportion, shape);
 
 		// Set the results.
 		// Set last computed.
@@ -284,8 +297,15 @@ public class EstimateServiceImpl implements EstimateService {
     private MasonryEstimateResults getMasonryEstimateResults(Estimate estimate,
 	    Shape shape, CHB chb) {
 
+	// Get the area.
+	// Add allowance.
+	double allowance = estimate.getEstimationAllowance()
+		.getEstimationAllowance();
+	double area = shape.getArea();
+	area += (area * allowance);
+
 	// Get total CHBs.
-	double totalCHB = shape.getArea() * chb.getPerSqM();
+	double totalCHB = area * chb.getPerSqM();
 
 	// Results of the estimate.
 	MasonryEstimateResults masonryEstimateResults = new MasonryEstimateResults(
@@ -297,14 +317,18 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Compute the estimated concrete.
      * 
+     * @param allowance
+     * 
      * @param proportion
      * @param mathExp
      * @return
      */
     private ConcreteEstimateResults getConcreteEstimateResults(
-	    ConcreteProportion proportion, Shape shape) {
+	    EstimationAllowance allowance, ConcreteProportion proportion,
+	    Shape shape) {
 
 	double volume = shape.getVolume();
+	volume += (volume * allowance.getEstimationAllowance());
 
 	// Get the ingredients.
 	// Now, compute the estimated concrete.

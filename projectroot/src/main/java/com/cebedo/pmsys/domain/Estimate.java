@@ -37,12 +37,14 @@ public class Estimate implements IDomainObject {
      */
     private Shape shape;
     private List<EstimateType> estimateTypes;
+    private EstimationAllowance estimationAllowance;
 
     /**
      * Bean-backed form.
      */
     // First commit.
     private String shapeKey;
+    private String estimationAllowanceKey;
     private int[] estimateType;
 
     // Second commit.
@@ -249,6 +251,22 @@ public class Estimate implements IDomainObject {
 
     public void setChbMeasurementKeys(String[] chbMeasurementKeys) {
 	this.chbMeasurementKeys = chbMeasurementKeys;
+    }
+
+    public String getEstimationAllowanceKey() {
+	return estimationAllowanceKey;
+    }
+
+    public void setEstimationAllowanceKey(String estimationAllowanceKey) {
+	this.estimationAllowanceKey = estimationAllowanceKey;
+    }
+
+    public EstimationAllowance getEstimationAllowance() {
+	return estimationAllowance;
+    }
+
+    public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
+	this.estimationAllowance = estimationAllowance;
     }
 
 }

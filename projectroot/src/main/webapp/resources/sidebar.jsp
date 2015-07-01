@@ -122,11 +122,17 @@ $(document).ready(function() {
             </sec:authorize>
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-laptop"></i>
-                    <span>Company Settings</span>
+                    <i class="fa fa-cog"></i>
+                    <span>Settings</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
+                	<li>
+		            	<c:url var="urlList" value="/estimationallowance/list/"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-plus"></i> <span>Estimation Allowance</span>
+		                </a>
+		            </li>
                 	<li>
 		            	<c:url var="urlList" value="/materialcategory/list/"/>
 		                <a href="${urlList}">
@@ -142,7 +148,7 @@ $(document).ready(function() {
 		            <li>
 		            	<c:url var="urlList" value="/unit/list"/>
 		                <a href="${urlList}">
-		                    <i class="fa fa-connectdevelop"></i> <span>Units of Measure</span>
+		                    <i class="fa fa-expand"></i> <span>Units of Measure</span>
 		                </a>
 		            </li>
 		            <li>
