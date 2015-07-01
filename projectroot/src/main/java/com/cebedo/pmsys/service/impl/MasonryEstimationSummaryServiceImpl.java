@@ -73,6 +73,7 @@ public class MasonryEstimationSummaryServiceImpl implements
 	    // Set the area specifics.
 	    obj.setAreaFormulaInputs(estimate.getAreaFormulaInputs());
 	    obj.setArea(estimate.getShape().getArea());
+	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 
 	    // For every type of CHB type selected,
 	    // there is an individual cost estimate.

@@ -61,6 +61,11 @@ public class ConcreteEstimationSummary implements IDomainObject {
     private double costPerUnitGravel;
 
     /**
+     * To set during estimation.
+     */
+    private EstimationAllowance estimationAllowance;
+
+    /**
      * Other specs.
      */
     private Date lastComputed;
@@ -405,5 +410,13 @@ public class ConcreteEstimationSummary implements IDomainObject {
 
     public void setConcreteProportion(ConcreteProportion concreteProportion) {
 	this.concreteProportion = concreteProportion;
+    }
+
+    public EstimationAllowance getEstimationAllowance() {
+	return estimationAllowance;
+    }
+
+    public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
+	this.estimationAllowance = estimationAllowance;
     }
 }

@@ -71,6 +71,7 @@ public class ConcreteEstimationSummaryServiceImpl implements
 	    // Get result map for concrete.
 	    Map<ConcreteProportion, ConcreteEstimateResults> resultMap = estimate
 		    .getResultMapConcrete();
+	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 
 	    // For every summary, every proportion must have a different
 	    // total and grand total.

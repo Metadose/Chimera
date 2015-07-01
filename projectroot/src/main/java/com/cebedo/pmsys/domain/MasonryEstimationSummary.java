@@ -54,6 +54,7 @@ public class MasonryEstimationSummary implements IDomainObject {
     private CHB chbMeasurement;
     private Map<String, String> areaFormulaInputs;
     private double area;
+    private EstimationAllowance estimationAllowance;
 
     public MasonryEstimationSummary() {
 	;
@@ -195,6 +196,14 @@ public class MasonryEstimationSummary implements IDomainObject {
 
     public void setArea(double area) {
 	this.area = area;
+    }
+
+    public EstimationAllowance getEstimationAllowance() {
+	return estimationAllowance;
+    }
+
+    public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
+	this.estimationAllowance = estimationAllowance;
     }
 
 }

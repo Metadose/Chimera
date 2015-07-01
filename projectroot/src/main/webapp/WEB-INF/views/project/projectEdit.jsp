@@ -1286,25 +1286,25 @@
 													                <button class="btn btn-cebedo-compute btn-flat btn-sm" id="detailsButton">Compute</button>
 													                <br/><br/>
 					<label>Show/Hide Column</label>&nbsp;
-					<a class="toggle-vis" data-column="1,2,3,4" data-table="concrete-estimation-summary-table">
+					<a class="toggle-vis" data-column="2,3,4,5" data-table="concrete-estimation-summary-table">
 					<span class="label btn-success">
 					TOTAL QUANTITY / NO. OF UNITS
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-estimation-summary-table">
+					<a class="toggle-vis" data-column="6,7,8,9" data-table="concrete-estimation-summary-table">
 					<span class="label btn-primary">
 					COST PER UNIT
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="9,10,11,12" data-table="concrete-estimation-summary-table">
+					<a class="toggle-vis" data-column="10,11,12,13" data-table="concrete-estimation-summary-table">
 					<span class="label btn-warning">
 					TOTAL COST PER COMPONENT
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="13,14" data-table="concrete-estimation-summary-table">
+					<a class="toggle-vis" data-column="14,15" data-table="concrete-estimation-summary-table">
 					<span class="label btn-danger">
 					TOTAL COST
 					</span>
@@ -1318,7 +1318,7 @@
 													                <table id="concrete-estimation-summary-table" class="table table-bordered table-striped">
 								                                        <thead>
 								                                        	<tr>
-								                                            	<th rowspan="1" style="text-align: center;">
+								                                            	<th rowspan="1" colspan="2" style="text-align: center;">
 								                                            	<span class="label btn-info">
 								                                            	DETAILS
 																				</span>
@@ -1357,7 +1357,8 @@
 								                                                </th>
 								                                            </tr>
 								                                            <tr>
-								                                            	<th>Name & Proportion</th>
+								                                            	<th>Name</th>
+								                                            	<th>Proportion & Allowance</th>
 								                                            	
 								                                            	<th>Cement 40kg (bags)</th>
 								                                                <th>Cement 50kg (bags)</th>
@@ -1388,13 +1389,23 @@
 								                                								<a class="general-link" href="${urlLink}">
 												                                            		${summary.name}
 								                                								</a>
-								                                								<br/>
+																							</center>
+																						</td>
+																						
+																						<td>
+										                                            		<center>
 								                                								<c:url var="urlLink" value="/concreteproportion/edit/${summary.concreteProportion.getKey()}-end"/>
 								                                								<a class="general-link" href="${urlLink}">
 								                                								${summary.concreteProportion.getDisplayName()}
 								                                								</a>
+								                                								<br/>
+								                                								<c:url var="urlLink" value="/estimationallowance/edit/${summary.estimationAllowance.getKey()}-end"/>
+								                                								<a class="general-link" href="${urlLink}">
+								                                								${summary.estimationAllowance.getDisplayName()}
+								                                								</a>
 																							</center>
 																						</td>
+																						
 																						<td align="right">${summary.getTotalUnitsCement40kgAsString()}</td>
 										                                                <td align="right">${summary.getTotalUnitsCement50kgAsString()}</td>
 										                                                <td align="right">${summary.getTotalUnitsSandAsString()}</td>
@@ -1435,13 +1446,13 @@
 														                </div>
 														                
 														                <label>Show/Hide Column</label>&nbsp;
-					<a class="toggle-vis" data-column="2,3,4" data-table="concrete-table">
+					<a class="toggle-vis" data-column="2,3,4,5" data-table="concrete-table">
 					<span class="label btn-success">
 					FORMULA INPUTS / ESTIMATION PARAMETERS
 					</span>
 					</a>
 					&nbsp;
-					<a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-table">
+					<a class="toggle-vis" data-column="6,7,8,9" data-table="concrete-table">
 					<span class="label btn-primary">
 					TOTAL QUANTITY / NO. OF UNITS PER COMPONENT
 					</span>
@@ -1456,15 +1467,15 @@
 									                                            	DETAILS
 																					</span>
 									                                            	</th>
-									                                                <th colspan="3" style="text-align: center;">
-									                                                <a class="toggle-vis" data-column="2,3,4" data-table="concrete-table">
+									                                                <th colspan="4" style="text-align: center;">
+									                                                <a class="toggle-vis" data-column="2,3,4,5" data-table="concrete-table">
 																					<span class="label btn-success">
 																					FORMULA INPUTS / ESTIMATION PARAMETERS
 																					</span>
 																					</a>
 									                                                </th>
 									                                                <th colspan="4" style="text-align: center;">
-									                                                <a class="toggle-vis" data-column="5,6,7,8" data-table="concrete-table">
+									                                                <a class="toggle-vis" data-column="6,7,8,9" data-table="concrete-table">
 																					<span class="label btn-primary">
 																					TOTAL QUANTITY / NO. OF UNITS PER COMPONENT
 																					</span>
@@ -1475,6 +1486,7 @@
 									                                            	<th>&nbsp;</th>
 									                                            	<th>Estimation Name</th>
 									                                                <th>Concrete Proportion</th>
+									                                                <th>Estimation Allowance</th>
 									                                                <th>Shape</th>
 									                                                <th>Volume Inputs</th>
 									                                                <th>Cement 40kg (bags)</th>
@@ -1517,7 +1529,15 @@
 								                                            			</a>
 									                                                	</td>
 									                                                	
-																						<!-- Shape -->
+									                                                	<!-- Estimation Allowance -->
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/estimationallowance/edit/${concrete.estimationAllowance.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${concrete.estimationAllowance.getDisplayName()}
+								                                            			</a>
+									                                                	</td>
+									                                                	
+									                                                	<!-- Shape -->
 									                                                	<td>
 									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
@@ -1534,6 +1554,7 @@
 									                                                	</c:forEach>
 									                                                	Volume = ${concrete.shape.volume} cu.m.
 									                                                	</td>
+									                                                	
 	<!--
 	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
     Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
@@ -1600,7 +1621,7 @@
 							               								<table id="chb-cost-quantity-table" class="table table-bordered table-striped">
 									                                    	<thead>
 									                                    		<tr>
-									                                            	<th rowspan="1" colspan="3" style="text-align: center;">
+									                                            	<th rowspan="1" colspan="4" style="text-align: center;">
 									                                            	<span class="label btn-info">
 									                                            	DETAILS
 									                                            	</span>
@@ -1620,6 +1641,7 @@
 									                                            	<th>&nbsp;</th>
 									                                            	<th>Name</th>
 									                                            	<th>CHB</th>
+									                                            	<th>Estimation Allowance</th>
 									                                                <th>No. of Pieces</th>
 									                                                <th>Cost per Piece (&#8369;)</th>
 									                                                <th>Total Cost (&#8369;)</th>
@@ -1656,6 +1678,14 @@
 								                                            			(${thisEstimate.chbMeasurement.getPerSqM()} CHB/sq.m.)
 																						</td>
 																						
+																						<!-- Estimation Allowance -->
+																						<td>
+																						<c:url var="urlLink" value="/estimationallowance/edit/${thisEstimate.estimationAllowance.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+																						${thisEstimate.estimationAllowance.getDisplayName()}
+								                                            			</a>
+																						</td>
+																						
 									                                                	<td align="right">${thisEstimate.getTotalPiecesCHBAsString()}</td>
 									                                                	<td align="right">${thisEstimate.getCostPerPieceCHBAsString()}</td>
 									                                                	<td align="right">${thisEstimate.getTotalCostOfCHBAsString()}</td>
@@ -1688,7 +1718,7 @@
 									                                            	DETAILS
 									                                            	</span>
 									                                            	</th>
-									                                                <th colspan="3" style="text-align: center;">
+									                                                <th colspan="4" style="text-align: center;">
 									                                                <span class="label btn-success">
 									                                                FORMULA INPUTS / ESTIMATION PARAMETERS
 									                                            	</span>
@@ -1703,6 +1733,7 @@
 									                                            	<th>&nbsp;</th>
 									                                            	<th>Name</th>
 									                                            	<th>Remarks</th>
+									                                                <th>Estimation Allowance</th>
 									                                                <th>Shape</th>
 									                                                <th>Area Inputs</th>
 									                                                 <!-- private double totalCHB;
@@ -1730,7 +1761,15 @@
 																						<td>${thisEstimate.name}</td>
 																						<td>${thisEstimate.remarks}</td>
 																						
-																						<!-- Shape -->
+									                                                	<!-- Estimation Allowance -->
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/estimationallowance/edit/${thisEstimate.estimationAllowance.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${thisEstimate.estimationAllowance.getDisplayName()}
+								                                            			</a>
+									                                                	</td>
+									                                                	
+									                                                	<!-- Shape -->
 									                                                	<td>
 									                                                	<c:url var="urlLink" value="/shape/edit/${thisEstimate.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
@@ -1976,14 +2015,14 @@
 						                                    	<c:forEach items="${quantityEstimate.areaFormulaInputs}" var="input">
 			                                                	${input.key} = ${input.value} ${quantityEstimate.areaFormulaInputsUnits.get(input.key).symbol()}<br/>
 			                                                	</c:forEach>
-			                                                	Area = ${quantityEstimate.shape.area}
+			                                                	Area = ${quantityEstimate.shape.area} sq.m.
 						                                    	</td>
 						                                    	
 						                                    	<td align="right">
 						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input">
 			                                                	${input.key} = ${input.value} ${quantityEstimate.volumeFormulaInputsUnits.get(input.key).symbol()}<br/>
 			                                                	</c:forEach>
-			                                                	Volume = ${quantityEstimate.shape.volume}
+			                                                	Volume = ${quantityEstimate.shape.volume} cu.m.
 						                                    	</td>
 						                                    	
 						                                    	<td>
@@ -2304,7 +2343,7 @@
 		    });
 		    
 		    // Hide the column TOTAL QUANTITY / NO. OF UNITS.
-		    var dataColIDs = "1,2,3,4";
+		    var dataColIDs = "2,3,4,5";
 	        var colsToHide = dataColIDs.split(",");
 	        for(var i = 0; i < colsToHide.length; i++){
 		        var column = estimationTable.column(colsToHide[i]);

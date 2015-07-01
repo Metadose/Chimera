@@ -89,6 +89,10 @@ public class EstimationAllowance implements IDomainObject {
 	return (estimationAllowance * 100) + "%";
     }
 
+    public String getDisplayName() {
+	return this.name + " (" + (estimationAllowance * 100) + "%)";
+    }
+
     public void setEstimationAllowance(double estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
