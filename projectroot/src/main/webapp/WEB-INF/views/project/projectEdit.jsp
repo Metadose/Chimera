@@ -1867,7 +1867,7 @@
 										                </div>
 				                                        <div class="form-group">
 				                                        
-			                                            <label>Cost per Piece of Concrete Hollow Blocks (CHB)</label>
+			                                            <label>Cost per Piece of Concrete Hollow Block (CHB)</label>
 			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="costPerPieceCHB"/>
 			                                            <p class="help-block">Enter the name of this estimate summary</p>
 				                                        </div>
@@ -1888,13 +1888,32 @@
 					                                        
 						                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
 						                                    <thead>
+						                                    <tr>
+											                	<th colspan="3" style="text-align: center;">
+											                	<span class="label btn-info">
+											                	DETAILS
+											                	</span>
+											                	</th>
+											                	
+											                	<th colspan="3" style="text-align: center;">
+											                	<span class="label btn-success">
+																FORMULA INPUTS / ESTIMATION PARAMETERS
+																</span>
+											                	</th>
+											                	
+											                	<th rowspan="2" colspan="1" style="text-align: center; vertical-align: middle;">
+											                	<span class="label btn-danger">
+											                	TYPES OF ESTIMATIONS
+											                	</span>
+											                	</th>
+											                </tr>
 											                <tr>
 											                	<th>Check / Uncheck</th>
 											                	<th>Name</th>
+											                	<th>Remarks</th>
 											                	<th>Shape</th>
 											                	<th>Area Inputs</th>
 											                	<th>Volume Inputs</th>
-											                	<th>Estimations</th>
 											                </tr>
 						                                    </thead>
 						                                    <tbody>
@@ -1911,22 +1930,29 @@
 						                                    	</td>
 						                                    	
 						                                    	<td>
+						                                    	${quantityEstimate.remarks}
+						                                    	</td>
+						                                    	
+						                                    	<td>
 						                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/>
 		                                            			<a href="${urlLink}" class="general-link">
 						                                    	${quantityEstimate.shape.name}
-		                                            			</a>
+		                                            			</a><br/>
+		                                            			Area = ${quantityEstimate.shape.areaFormula}
+		                                            			<br/>
+		                                            			Volume = ${quantityEstimate.shape.volumeFormula}
 						                                    	</td>
 						                                    	
 						                                    	<td align="right">
 						                                    	<c:forEach items="${quantityEstimate.areaFormulaInputs}" var="input">
-			                                                	${input.key} = ${input.value}<br/>
+			                                                	${input.key} = ${input.value} ${quantityEstimate.areaFormulaInputsUnits.get(input.key).symbol()}<br/>
 			                                                	</c:forEach>
 			                                                	Area = ${quantityEstimate.shape.area}
 						                                    	</td>
 						                                    	
 						                                    	<td align="right">
 						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input">
-			                                                	${input.key} = ${input.value}<br/>
+			                                                	${input.key} = ${input.value} ${quantityEstimate.volumeFormulaInputsUnits.get(input.key).symbol()}<br/>
 			                                                	</c:forEach>
 			                                                	Volume = ${quantityEstimate.shape.volume}
 						                                    	</td>
