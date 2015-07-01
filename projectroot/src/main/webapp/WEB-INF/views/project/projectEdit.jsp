@@ -1237,7 +1237,7 @@
 				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
 		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
 		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Cost Estimate Controls
-		                                		<i class="fa fa-connectdevelop"></i>
+		                                		<i class="fa fa-calculator"></i>
 		                                		</a></li>
 				                            </ul>
 				                            <div class="tab-content">
@@ -1284,13 +1284,13 @@
 					&nbsp;
 					<a class="toggle-vis" data-column="9,10,11,12" data-table="concrete-estimation-summary-table">
 					<span class="label btn-warning">
-					TOTAL COST
+					TOTAL COST PER COMPONENT
 					</span>
 					</a>
 					&nbsp;
 					<a class="toggle-vis" data-column="13,14" data-table="concrete-estimation-summary-table">
 					<span class="label btn-danger">
-					GRAND TOTAL
+					TOTAL COST
 					</span>
 					</a>
 					<p class="help-block">Click to show/hide</p>
@@ -1302,8 +1302,10 @@
 													                <table id="concrete-estimation-summary-table" class="table table-bordered table-striped">
 								                                        <thead>
 								                                        	<tr>
-								                                            	<th rowspan="2" style="text-align: center; vertical-align: middle;">
+								                                            	<th rowspan="1" style="text-align: center;">
+								                                            	<span class="label btn-info">
 								                                            	DETAILS
+																				</span>
 								                                            	</th>
 								                                            	
 								                                            	<th colspan="4" style="text-align: center;">
@@ -1325,7 +1327,7 @@
 								                                                <th colspan="4" style="text-align: center;">
 								                                                <a class="toggle-vis" data-column="9,10,11,12" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-warning">
-																				TOTAL COST
+																				TOTAL COST PER COMPONENT
 																				</span>
 																				</a>
 								                                                </th>
@@ -1333,29 +1335,31 @@
 								                                                <th colspan="2" style="text-align: center;">
 								                                                <a class="toggle-vis" data-column="13,14" data-table="concrete-estimation-summary-table">
 																				<span class="label btn-danger">
-																				GRAND TOTAL
+																				TOTAL COST
 																				</span>
 																				</a>
 								                                                </th>
 								                                            </tr>
 								                                            <tr>
-								                                            	<th>Cement (40kg)</th>
-								                                                <th>Cement (50kg)</th>
-								                                                <th>Sand</th>
-								                                                <th>Gravel </th>
+								                                            	<th>Name & Proportion</th>
+								                                            	
+								                                            	<th>Cement 40kg (bags)</th>
+								                                                <th>Cement 50kg (bags)</th>
+								                                                <th>Sand (cu.m.)</th>
+								                                                <th>Gravel (cu.m.)</th>
 								                                            
-								                                                <th>Cement (40kg)</th>
-								                                                <th>Cement (50kg)</th>
-								                                                <th>Sand</th>
-								                                                <th>Gravel </th>
+								                                                <th>Cement 40kg (&#8369;)</th>
+								                                                <th>Cement 50kg (&#8369;)</th>
+								                                                <th>Sand (&#8369;)</th>
+								                                                <th>Gravel (&#8369;)</th>
 								                                                
-								                                                <th>Cement (40kg)</th>
-								                                                <th>Cement (50kg)</th>
-								                                                <th>Sand</th>
-								                                                <th>Gravel </th>
+								                                                <th>Cement 40kg (&#8369;)</th>
+								                                                <th>Cement 50kg (&#8369;)</th>
+								                                                <th>Sand (&#8369;)</th>
+								                                                <th>Gravel (&#8369;)</th>
 								                                                
-								                                                <th>Using Cement (40kg)</th>
-								                                                <th>Using Cement (50kg)</th>
+								                                                <th>Using Cement 40kg (&#8369;)</th>
+								                                                <th>Using Cement 50kg (&#8369;)</th>
 								                                            </tr>
 								                                        </thead>
 								                                        <tbody>
@@ -1368,7 +1372,11 @@
 								                                								<a class="general-link" href="${urlLink}">
 												                                            		${summary.name}
 								                                								</a>
+								                                								<br/>
+								                                								<c:url var="urlLink" value="/concreteproportion/edit/${summary.concreteProportion.getKey()}-end"/>
+								                                								<a class="general-link" href="${urlLink}">
 								                                								${summary.concreteProportion.getDisplayName()}
+								                                								</a>
 																							</center>
 																						</td>
 																						<td align="right">${summary.getTotalUnitsCement40kgAsString()}</td>
@@ -1427,8 +1435,11 @@
 									                                    <table id="concrete-table" class="table table-bordered table-striped">
 									                                    	<thead>
 									                                    		<tr>
-									                                            	<th rowspan="2">&nbsp;</th>
-									                                            	<th rowspan="2">Estimation Name</th>
+									                                            	<th colspan="2" style="text-align: center;">
+									                                            	<span class="label btn-info">
+									                                            	DETAILS
+																					</span>
+									                                            	</th>
 									                                                <th colspan="3" style="text-align: center;">
 									                                                <a class="toggle-vis" data-column="2,3,4" data-table="concrete-table">
 																					<span class="label btn-success">
@@ -1445,13 +1456,15 @@
 									                                                </th>
 									                                            </tr>
 									                                            <tr>
+									                                            	<th>&nbsp;</th>
+									                                            	<th>Estimation Name</th>
+									                                                <th>Concrete Proportion</th>
 									                                                <th>Shape</th>
 									                                                <th>Volume Inputs</th>
-									                                                <th>Proportion</th>
-									                                                <th>Cement (40kg)</th>
-									                                                <th>Cement (50kg)</th>
-									                                                <th>Sand</th>
-									                                                <th>Gravel</th>
+									                                                <th>Cement 40kg (bags)</th>
+									                                                <th>Cement 50kg (bags)</th>
+									                                                <th>Sand (cu.m.)</th>
+									                                                <th>Gravel (cu.m.)</th>
 									                                            </tr>
 							                                        		</thead>
 									                                        <tbody>
@@ -1477,25 +1490,6 @@
 																						<!-- Basic and Inputs -->
 																						<td>${concrete.name}</td>
 																						
-																						<!-- Shape -->
-									                                                	<td>
-									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
-								                                            			<a href="${urlLink}" class="general-link">
-									                                                	${concrete.shape.name}
-								                                            			</a>
-									                                                	</td>
-									                                                	
-									                                                	<!-- Formula inputs -->
-									                                                	<td align="right">
-									                                                	<c:forEach items="${concrete.volumeFormulaInputs}" var="input">
-									                                                	${input.key} = ${input.value}<br/>
-									                                                	</c:forEach>
-									                                                	Volume = ${concrete.shape.volume}
-									                                                	</td>
-	<!--
-	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
-    
 	    																				<c:set value="${estimateEntry.key}" var="estimateKeyProportion"/>
 											                                			<c:set value="${estimateEntry.value}" var="estimateValueResult"/>
 									                                                	
@@ -1506,6 +1500,28 @@
 									                                                	${estimateKeyProportion.getDisplayName()}
 								                                            			</a>
 									                                                	</td>
+									                                                	
+																						<!-- Shape -->
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/shape/edit/${concrete.shape.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${concrete.shape.name}
+								                                            			</a>
+								                                            			<br/>
+								                                            			Volume = ${concrete.shape.volumeFormula}
+									                                                	</td>
+									                                                	
+									                                                	<!-- Formula inputs -->
+									                                                	<td align="right">
+									                                                	<c:forEach items="${concrete.volumeFormulaInputs}" var="input">
+									                                                	${input.key} = ${input.value} ${concrete.volumeFormulaInputsUnits.get(input.key).symbol()}<br/>
+									                                                	</c:forEach>
+									                                                	Volume = ${concrete.shape.volume} cu.m.
+									                                                	</td>
+	<!--
+	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    
 									                                                	
 									                                                	<td align="right">${estimateValueResult.getCement40kgAsString()}</td>
 									                                                	<td align="right">${estimateValueResult.getCement50kgAsString()}</td>
@@ -1554,7 +1570,7 @@
 									                            <div class="col-md-12">
 							               							<div class="box box-body box-default">
 							               								<div class="box-header">
-							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity Estimate</h3>
+							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity & Cost</h3>
 							               								</div>
 							               								<div class="box-body box-default">
 							               								<div class="callout callout-info callout-cebedo">
@@ -1562,14 +1578,30 @@
 														                </div>
 							               								<table id="chb-cost-quantity-table" class="table table-bordered table-striped">
 									                                    	<thead>
+									                                    		<tr>
+									                                            	<th rowspan="1" colspan="3" style="text-align: center;">
+									                                            	<span class="label btn-info">
+									                                            	DETAILS
+									                                            	</span>
+									                                            	</th>
+									                                                <th colspan="1" style="text-align: center;">
+									                                                <span class="label btn-success">
+									                                                QUANTITY
+									                                            	</span>
+									                                                </th>
+									                                                <th colspan="2" style="text-align: center;">
+									                                                <span class="label btn-danger">
+									                                                COST
+									                                            	</span>
+									                                                </th>
+									                                            </tr>
 									                                            <tr>
 									                                            	<th>&nbsp;</th>
 									                                            	<th>Name</th>
 									                                            	<th>CHB</th>
-									                                                <th>Area Inputs</th>
 									                                                <th>No. of Pieces</th>
-									                                                <th>Cost per Piece</th>
-									                                                <th>Total Cost</th>
+									                                                <th>Cost per Piece (&#8369;)</th>
+									                                                <th>Total Cost (&#8369;)</th>
 									                                            </tr>
 							                                        		</thead>
 									                                        <tbody>
@@ -1590,22 +1622,22 @@
 																						</td>
 																						
 																						<!-- Name -->
-																						<td>${thisEstimate.name}</td>
+																						<td>
+																						${thisEstimate.name}
+																						</td>
 																						
 																						<!-- CHB -->
-																						<td>${thisEstimate.chbMeasurement.name}</td>
+																						<td>
+																						<c:url var="urlLink" value="/chb/edit/${thisEstimate.chbMeasurement.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+																						${thisEstimate.chbMeasurement.name}
+								                                            			</a><br/>
+								                                            			(${thisEstimate.chbMeasurement.getPerSqM()} CHB/sq.m.)
+																						</td>
 																						
-									                                                	<!-- Area inputs -->
-									                                                	<td align="right">
-									                                                	<c:forEach items="${thisEstimate.areaFormulaInputs}" var="input">
-									                                                	${input.key} = ${input.value} TODO Add Units<br/>
-									                                                	</c:forEach> <!-- End of loop of all formula inputs -->
-									                                                	Area = ${thisEstimate.area}
-									                                                	</td>
-									                                                	
-									                                                	<td align="right">${thisEstimate.totalPiecesCHB}</td>
-									                                                	<td align="right">${thisEstimate.costPerPieceCHB}</td>
-									                                                	<td align="right">${thisEstimate.totalCostOfCHB}</td>
+									                                                	<td align="right">${thisEstimate.getTotalPiecesCHBAsString()}</td>
+									                                                	<td align="right">${thisEstimate.getCostPerPieceCHBAsString()}</td>
+									                                                	<td align="right">${thisEstimate.getTotalCostOfCHBAsString()}</td>
     																					
 										                                            </tr> <!-- End of one "Estimate" -->
 									                                            </c:forEach> <!-- Loop all "Estimate" -->
@@ -1629,6 +1661,23 @@
 														                </div>
 							               								<table id="chb-quantity-table" class="table table-bordered table-striped">
 									                                    	<thead>
+									                                    		<tr>
+									                                            	<th colspan="3" style="text-align: center;">
+									                                            	<span class="label btn-info">
+									                                            	DETAILS
+									                                            	</span>
+									                                            	</th>
+									                                                <th colspan="3" style="text-align: center;">
+									                                                <span class="label btn-success">
+									                                                FORMULA INPUTS / ESTIMATION PARAMETERS
+									                                            	</span>
+									                                                </th>
+									                                                <th colspan="1" style="text-align: center;">
+									                                                <span class="label btn-primary">
+									                                                TOTAL QUANTITY / NO. OF PIECES
+									                                            	</span>
+									                                                </th>
+									                                            </tr>
 									                                            <tr>
 									                                            	<th>&nbsp;</th>
 									                                            	<th>Name</th>
@@ -1665,21 +1714,28 @@
 									                                                	<c:url var="urlLink" value="/shape/edit/${thisEstimate.shape.getKey()}-end"/>
 								                                            			<a href="${urlLink}" class="general-link">
 									                                                	${thisEstimate.shape.name}
-								                                            			</a>
+								                                            			</a><br/>
+								                                            			Area = ${thisEstimate.shape.areaFormula}
 									                                                	</td>
 									                                                	
 									                                                	<!-- Formula inputs -->
 									                                                	<td align="right">
 									                                                	<c:forEach items="${thisEstimate.areaFormulaInputs}" var="input">
-									                                                	${input.key} = ${input.value} TODO Add Units<br/>
+									                                                	${input.key} = ${input.value} ${thisEstimate.areaFormulaInputsUnits.get(input.key).symbol()}<br/>
 									                                                	</c:forEach> <!-- End of loop of all formula inputs -->
-									                                                	Area = ${thisEstimate.shape.area}
+									                                                	Area = ${thisEstimate.shape.area} sq.m.
 									                                                	</td>
 									                                                	
     <!-- Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
     																					<c:set value="${masonryEntry.key}" var="estimateKeyCHB"></c:set>
     																					<c:set value="${masonryEntry.value}" var="estimateValueResult"></c:set>
-									                                                	<td>${estimateKeyCHB.name}</td>
+									                                                	<td>
+									                                                	<c:url var="urlLink" value="/chb/edit/${estimateKeyCHB.getKey()}-end"/>
+								                                            			<a href="${urlLink}" class="general-link">
+									                                                	${estimateKeyCHB.name}
+								                                            			</a><br/>
+								                                            			(${estimateKeyCHB.getPerSqM()} CHB/sq.m.)
+									                                                	</td>
 									                                                	<td align="right">${estimateValueResult.getTotalCHBAsString()}</td>
     																					
 										                                            </tr> <!-- End of one "Estimate" -->
@@ -1771,7 +1827,7 @@
 			               							<div class="box box-body box-default">
 			               								
 			               								<div class="box-header">
-			               									<h3 class="box-title">Concrete Cost</h3>
+			               									<h3 class="box-title">Concrete Component Cost</h3>
 			               								</div>
 			               								<div class="box-body">
 			               								<div class="callout callout-info callout-cebedo">

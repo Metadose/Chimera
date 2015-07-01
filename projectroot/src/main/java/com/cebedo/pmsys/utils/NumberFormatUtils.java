@@ -18,6 +18,21 @@ public class NumberFormatUtils {
 	return df.format(displayDbl);
     }
 
+    public static NumberFormat getQuantityFormatter() {
+	DecimalFormat df = new DecimalFormat();
+	return df;
+    }
+
+    public static NumberFormat getCostFormatter() {
+	NumberFormat df = NumberFormat.getCurrencyInstance();
+	DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+	dfs.setCurrencySymbol("");
+	dfs.setGroupingSeparator(',');
+	dfs.setMonetaryDecimalSeparator('.');
+	((DecimalFormat) df).setDecimalFormatSymbols(dfs);
+	return df;
+    }
+
     public static NumberFormat getCurrencyFormatter() {
 	NumberFormat df = NumberFormat.getCurrencyInstance();
 	DecimalFormatSymbols dfs = new DecimalFormatSymbols();

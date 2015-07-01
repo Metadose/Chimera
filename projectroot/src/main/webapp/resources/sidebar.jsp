@@ -148,13 +148,13 @@ $(document).ready(function() {
 		            <li>
 		            	<c:url var="urlList" value="/concreteproportion/list"/>
 		                <a href="${urlList}">
-		                    <i class="fa fa-tint"></i> <span>Concrete Proportion</span>
+		                    <i class="fa">&#65285;</i> <span>Concrete Proportion</span>
 		                </a>
 		            </li>
 		            <li>
 		            	<c:url var="urlList" value="/chb/list"/>
 		                <a href="${urlList}">
-		                    <i class="fa fa-tint"></i> <span>CHB</span>
+		                    <i class="fa fa-cubes"></i> <span>Hollow Blocks (CHB)</span>
 		                </a>
 		            </li>
                 </ul>

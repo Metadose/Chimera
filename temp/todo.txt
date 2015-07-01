@@ -56,6 +56,16 @@ sa taskEdit.jsp ug teamEdit.jsp nag-dobli ang box-body
 
 remove cache 15mins kill, persist cache forever
 
+Put max lengths in fields?
+
+Dual boot the laptop: dev/deployment. Arch/win7
+
+Allowance %, pila ka percnt ipalapas ang estimate? Usual kay 8-10%
+
+Directly input area or volume of a wall or slab
+
+Brosures for marketing
+
 
 
 

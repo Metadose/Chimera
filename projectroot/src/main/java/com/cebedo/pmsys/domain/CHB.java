@@ -49,7 +49,7 @@ public class CHB implements IDomainObject {
     }
 
     /**
-     * Number of CHB for every 1 square meter.
+     * Number of CHB for every 1 square meter. TODO Cache this function.
      * 
      * @return
      */

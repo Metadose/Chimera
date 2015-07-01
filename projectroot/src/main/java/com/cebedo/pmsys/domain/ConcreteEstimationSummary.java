@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.domain;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ConcreteEstimationSummary implements IDomainObject {
 
+    private static NumberFormat costFormatter = NumberFormatUtils
+	    .getCostFormatter();
     private static final long serialVersionUID = -8209296327109938266L;
 
     /**
@@ -143,7 +146,7 @@ public class ConcreteEstimationSummary implements IDomainObject {
      */
     private String getFormattedCostAsString(double dblVal) {
 	double displayDbl = Math.ceil(dblVal);
-	return NumberFormatUtils.getCurrencyFormatter().format(displayDbl);
+	return costFormatter.format(displayDbl);
     }
 
     private String getFormattedQuantityAsString(double dblVal) {
@@ -156,22 +159,22 @@ public class ConcreteEstimationSummary implements IDomainObject {
      * Per unit displays.
      */
     public String getCostPerUnitCement40kgAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		costPerUnitCement40kg);
+
+	// Declare this formatter locally so that we don't make the same
+	// object for every call of this function.
+	return costFormatter.format(Math.ceil(costPerUnitCement40kg));
     }
 
     public String getCostPerUnitCement50kgAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		costPerUnitCement50kg);
+	return costFormatter.format(Math.ceil(costPerUnitCement50kg));
     }
 
     public String getCostPerUnitSandAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(costPerUnitSand);
+	return costFormatter.format(Math.ceil(costPerUnitSand));
     }
 
     public String getCostPerUnitGravelAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		costPerUnitGravel);
+	return costFormatter.format(Math.ceil(costPerUnitGravel));
     }
 
     /**

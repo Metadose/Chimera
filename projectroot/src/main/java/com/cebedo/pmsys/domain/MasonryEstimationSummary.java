@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.domain;
 
+import java.text.NumberFormat;
 import java.util.Map;
 import java.util.UUID;
 
@@ -7,9 +8,14 @@ import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class MasonryEstimationSummary implements IDomainObject {
 
+    private static NumberFormat quantityFormatter = NumberFormatUtils
+	    .getQuantityFormatter();
+    private static NumberFormat costFormatter = NumberFormatUtils
+	    .getCostFormatter();
     private static final long serialVersionUID = -946543461997147334L;
 
     /**
@@ -111,6 +117,10 @@ public class MasonryEstimationSummary implements IDomainObject {
 	return totalPiecesCHB;
     }
 
+    public String getTotalPiecesCHBAsString() {
+	return quantityFormatter.format(Math.ceil(totalPiecesCHB));
+    }
+
     public void setTotalPiecesCHB(double totalPiecesCHB) {
 	this.totalPiecesCHB = totalPiecesCHB;
     }
@@ -119,12 +129,20 @@ public class MasonryEstimationSummary implements IDomainObject {
 	return totalCostOfCHB;
     }
 
+    public String getTotalCostOfCHBAsString() {
+	return costFormatter.format(Math.ceil(totalCostOfCHB));
+    }
+
     public void setTotalCostOfCHB(double totalCostPerCHB) {
 	this.totalCostOfCHB = totalCostPerCHB;
     }
 
     public double getCostPerPieceCHB() {
 	return costPerPieceCHB;
+    }
+
+    public String getCostPerPieceCHBAsString() {
+	return costFormatter.format(Math.ceil(costPerPieceCHB));
     }
 
     public void setCostPerPieceCHB(double costPerPieceCHB) {
