@@ -37,13 +37,14 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationAllowance;
-import com.cebedo.pmsys.domain.MasonryEstimationSummary;
+import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -71,6 +72,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
+import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.service.CHBService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
@@ -79,7 +81,7 @@ import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationAllowanceService;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.MasonryEstimationSummaryService;
+import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
@@ -124,11 +126,12 @@ public class ProjectController {
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
     public static final String ATTR_CHB_LIST = "chbList";
+    public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_CONCRETE_ESTIMATION_SUMMARIES = "concreteEstimationSummaries";
-    public static final String ATTR_MASONRY_ESTIMATION_SUMMARIES = "masonryEstimationSummaries";
+    public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
@@ -205,8 +208,16 @@ public class ProjectController {
     private ConcreteEstimationSummaryService concreteEstimationSummaryService;
     private CHBService chbService;
     private CostEstimationService costEstimationService;
-    private MasonryEstimationSummaryService masonryEstimationSummaryService;
+    private MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService;
     private EstimationAllowanceService estimationAllowanceService;
+    private BlockLayingMixtureService blockLayingMixtureService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "blockLayingMixtureService")
+    public void setBlockLayingMixtureService(
+	    BlockLayingMixtureService blockLayingMixtureService) {
+	this.blockLayingMixtureService = blockLayingMixtureService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "estimationAllowanceService")
@@ -216,10 +227,10 @@ public class ProjectController {
     }
 
     @Autowired(required = true)
-    @Qualifier(value = "masonryEstimationSummaryService")
-    public void setMasonryEstimationSummaryService(
-	    MasonryEstimationSummaryService masonryEstimationSummaryService) {
-	this.masonryEstimationSummaryService = masonryEstimationSummaryService;
+    @Qualifier(value = "masonryCHBEstimationSummaryService")
+    public void setMasonryCHBEstimationSummaryService(
+	    MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService) {
+	this.masonryCHBEstimationSummaryService = masonryCHBEstimationSummaryService;
     }
 
     @Autowired(required = true)
@@ -1793,6 +1804,26 @@ public class ProjectController {
     }
 
     /**
+     * Set selector items for new objects.
+     * 
+     * @param model
+     */
+    private void setSelectorsEditEstimateNew(Model model) {
+	// List of allowances.
+	List<EstimationAllowance> allowanceList = this.estimationAllowanceService
+		.list();
+	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST, allowanceList);
+
+	// List of shapes.
+	List<Shape> shapeList = this.shapeService.list();
+	model.addAttribute(ATTR_SHAPE_LIST, shapeList);
+
+	// Add the list of estimate types.
+	model.addAttribute(ATTR_ESTIMATE_TYPES,
+		EstimateType.class.getEnumConstants());
+    }
+
+    /**
      * Open a page to create/edit an estimate.
      * 
      * @param key
@@ -1811,18 +1842,8 @@ public class ProjectController {
 	// Get proj.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
-	// List of allowances.
-	List<EstimationAllowance> allowanceList = this.estimationAllowanceService
-		.list();
-	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST, allowanceList);
-
-	// List of shapes.
-	List<Shape> shapeList = this.shapeService.list();
-	model.addAttribute(ATTR_SHAPE_LIST, shapeList);
-
-	// Add the list of estimate types.
-	model.addAttribute(ATTR_ESTIMATE_TYPES,
-		EstimateType.class.getEnumConstants());
+	// Set step 1 selectors.
+	setSelectorsEditEstimateNew(model);
 
 	// If we're creating.
 	if (key.equals("0")) {
@@ -1834,6 +1855,19 @@ public class ProjectController {
 	Estimate estimate = this.estimateService.get(key);
 	model.addAttribute(ATTR_ESTIMATE, estimate);
 
+	// Set step 2 selectors.
+	setSelectorsEditEstimateExisting(model, estimate);
+
+	return RedisConstants.JSP_ESTIMATE_EDIT;
+    }
+
+    /**
+     * Set selector items if we're updating.
+     * 
+     * @param model
+     * @param estimate
+     */
+    private void setSelectorsEditEstimateExisting(Model model, Estimate estimate) {
 	// Add list of common units.
 	model.addAttribute(ATTR_COMMON_UNITS_LIST,
 		CommonLengthUnit.class.getEnumConstants());
@@ -1849,13 +1883,20 @@ public class ProjectController {
 		    concreteProportionList);
 	}
 
-	// If will compute masonry.
-	if (estimate.willComputeMasonry()) {
+	// If will compute masonry CHB.
+	if (estimate.willComputeMasonryCHB()) {
 	    List<CHB> chbList = this.chbService.list();
 	    model.addAttribute(ATTR_CHB_LIST, chbList);
 	}
 
-	return RedisConstants.JSP_ESTIMATE_EDIT;
+	// If will compute masonry block laying.
+	if (estimate.willComputeMasonryBlockLaying()) {
+	    List<BlockLayingMixture> blockLayingMixtureList = this.blockLayingMixtureService
+		    .list();
+	    model.addAttribute(ATTR_BLOCK_LAYING_MIXTURE_LIST,
+		    blockLayingMixtureList);
+	}
+
     }
 
     /**
@@ -2095,10 +2136,10 @@ public class ProjectController {
 		concreteEstimationSummaries);
 
 	// List of masonry estimation summaries.
-	List<MasonryEstimationSummary> masonryEstimationSummaries = this.masonryEstimationSummaryService
+	List<MasonryCHBEstimationSummary> masonryCHBEstimationSummaries = this.masonryCHBEstimationSummaryService
 		.list(proj);
-	model.addAttribute(ATTR_MASONRY_ESTIMATION_SUMMARIES,
-		masonryEstimationSummaries);
+	model.addAttribute(ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES,
+		masonryCHBEstimationSummaries);
 
 	// Get all payrolls.
 	// Add to model.
@@ -2146,7 +2187,7 @@ public class ProjectController {
 
 	    // If has estimation for masonry.
 	    // We do not provide multiple estimations for masonry.
-	    if (estimateTypes.contains(EstimateType.MASONRY)) {
+	    if (estimateTypes.contains(EstimateType.MASONRY_CHB)) {
 		masonryEstimateList.add(estimate);
 	    }
 	}

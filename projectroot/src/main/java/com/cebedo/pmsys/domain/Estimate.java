@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.MasonryEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -54,15 +54,19 @@ public class Estimate implements IDomainObject {
     private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
 
     // Concrete inputs.
-    // Masonry inputs.
     private String concreteProportionKeys[];
+
+    // Masonry (CHB) inputs.
     private String chbMeasurementKeys[];
+
+    // Masonry (Block Laying) inputs.
+    private String blockLayingMixtureKeys[];
 
     /**
      * Results
      */
     private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-    private Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>();
+    private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
 
     /**
      * Extension map.
@@ -82,8 +86,16 @@ public class Estimate implements IDomainObject {
 	return this.estimateTypes.contains(EstimateType.CONCRETE);
     }
 
-    public boolean willComputeMasonry() {
-	return this.estimateTypes.contains(EstimateType.MASONRY);
+    public boolean willComputeMasonryCHB() {
+	return this.estimateTypes.contains(EstimateType.MASONRY_CHB);
+    }
+
+    public boolean willComputeMasonryBlockLaying() {
+	return this.estimateTypes.contains(EstimateType.MASONRY_BLOCK_LAYING);
+    }
+
+    public boolean willComputeMasonryPlastering() {
+	return this.estimateTypes.contains(EstimateType.MASONRY_PLASTERING);
     }
 
     public Company getCompany() {
@@ -236,13 +248,13 @@ public class Estimate implements IDomainObject {
 	this.resultMapConcrete = resultMapConcrete;
     }
 
-    public Map<CHB, MasonryEstimateResults> getResultMapMasonry() {
-	return resultMapMasonry;
+    public Map<CHB, MasonryCHBEstimateResults> getResultMapMasonryCHB() {
+	return resultMapMasonryCHB;
     }
 
-    public void setResultMapMasonry(
-	    Map<CHB, MasonryEstimateResults> resultMapMasonry) {
-	this.resultMapMasonry = resultMapMasonry;
+    public void setResultMapMasonryCHB(
+	    Map<CHB, MasonryCHBEstimateResults> resultMapMasonry) {
+	this.resultMapMasonryCHB = resultMapMasonry;
     }
 
     public String[] getChbMeasurementKeys() {
@@ -267,6 +279,14 @@ public class Estimate implements IDomainObject {
 
     public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
+    }
+
+    public String[] getBlockLayingMixtureKeys() {
+	return blockLayingMixtureKeys;
+    }
+
+    public void setBlockLayingMixtureKeys(String[] blockLayingMixtureKeys) {
+	this.blockLayingMixtureKeys = blockLayingMixtureKeys;
     }
 
 }

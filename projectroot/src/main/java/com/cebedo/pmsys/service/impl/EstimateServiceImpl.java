@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.MasonryEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteProportion;
@@ -175,10 +175,10 @@ public class EstimateServiceImpl implements EstimateService {
 	shape.setVolume(volume);
 
 	// If we're estimating masonry.
-	if (estimate.willComputeMasonry()) {
+	if (estimate.willComputeMasonryCHB()) {
 
 	    // Result map.
-	    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>();
+	    Map<CHB, MasonryCHBEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryCHBEstimateResults>();
 
 	    // Loop through all inputs.
 	    for (String chbKey : estimate.getChbMeasurementKeys()) {
@@ -188,12 +188,12 @@ public class EstimateServiceImpl implements EstimateService {
 		CHB chb = this.chbValueRepo.get(chbKey);
 
 		// Get results.
-		MasonryEstimateResults masonryEstimateResults = getMasonryEstimateResults(
+		MasonryCHBEstimateResults masonryCHBEstimateResults = getMasonryEstimateResults(
 			estimate, shape, chb);
-		resultMapMasonry.put(chb, masonryEstimateResults);
+		resultMapMasonry.put(chb, masonryCHBEstimateResults);
 	    }
 
-	    estimate.setResultMapMasonry(resultMapMasonry);
+	    estimate.setResultMapMasonryCHB(resultMapMasonry);
 	}
 
 	// Evaluate the the math expression using a java library.
@@ -294,7 +294,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param chb
      * @return
      */
-    private MasonryEstimateResults getMasonryEstimateResults(Estimate estimate,
+    private MasonryCHBEstimateResults getMasonryEstimateResults(Estimate estimate,
 	    Shape shape, CHB chb) {
 
 	// Get the area.
@@ -308,10 +308,10 @@ public class EstimateServiceImpl implements EstimateService {
 	double totalCHB = area * chb.getPerSqM();
 
 	// Results of the estimate.
-	MasonryEstimateResults masonryEstimateResults = new MasonryEstimateResults(
+	MasonryCHBEstimateResults masonryCHBEstimateResults = new MasonryCHBEstimateResults(
 		chb, totalCHB);
 
-	return masonryEstimateResults;
+	return masonryCHBEstimateResults;
     }
 
     /**

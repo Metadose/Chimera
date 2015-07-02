@@ -158,6 +158,12 @@ $(document).ready(function() {
 		                </a>
 		            </li>
 		            <li>
+		            	<c:url var="urlList" value="/blocklayingmixture/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa">&#65285;</i> <span>Block Laying Mixture</span>
+		                </a>
+		            </li>
+		            <li>
 		            	<c:url var="urlList" value="/chb/list"/>
 		                <a href="${urlList}">
 		                    <i class="fa fa-cubes"></i> <span>Hollow Blocks (CHB)</span>

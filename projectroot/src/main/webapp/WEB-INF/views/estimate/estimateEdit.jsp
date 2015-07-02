@@ -190,7 +190,7 @@
 														action="${contextPath}/project/compute/estimate">
 				                                        <div class="form-group">
 				                                        
-				                                        <c:if test="${estimate.willComputeMasonry()}">
+				                                        <c:if test="${estimate.willComputeMasonryCHB()}">
 				                                        <br/>
 				                                        <!-- Area Formula Inputs -->
 				                                        <h4>Area Formula Inputs</h4>
@@ -257,9 +257,9 @@
 														
 				                                        </c:if> <!-- End of "if will compute Concrete" -->
 				                                        
-				                                        <c:if test="${estimate.willComputeMasonry()}">
+				                                        <c:if test="${estimate.willComputeMasonryCHB()}">
 				                                        <br/>
-				                                        <h4>Masonry Estimation Inputs</h4>
+				                                        <h4>Masonry (CHB) Estimation Inputs</h4>
 				                                        <label>
 										                <c:url var="urlLink" value="/chb/list"/>
 										                <a href="${urlLink}" class="general-link">
@@ -280,6 +280,38 @@
 										                	<c:url var="urlLink" value="/chb/edit/${chb.getKey()}-end"/>
 											                <a href="${urlLink}" class="general-link">
 										                	${chb.name}
+											                </a>
+										                	</td>
+										                	</tr>
+										                	</c:forEach>
+										                </table>
+ 		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
+				                                        </c:if> <!-- End of "if will compute Masonry" -->
+				                                        
+				                                        <!-- If we're computing Masonry Block Laying Mixture -->
+				                                        <!-- blockLayingMixtureList -->
+				                                        <c:if test="${estimate.willComputeMasonryBlockLaying()}">
+				                                        <br/>
+				                                        <h4>Masonry (Block Laying) Estimation Inputs</h4>
+				                                        <label>
+										                <c:url var="urlLink" value="/blocklayingmixture/list"/>
+										                <a href="${urlLink}" class="general-link">
+										                Block Laying Mixtures
+										                </a>
+										                </label>
+										                
+										                <table class="table table-bordered table-striped">
+										                	<tr>
+										                	<td><label>Check / Uncheck</label></td>
+										                	<td><label>Mixture Name</label></td>
+										                	</tr>
+										                	<c:forEach items="${blockLayingMixtureList}" var="layingMixture">
+										                	<tr><td align="center">
+										                	<form:checkbox path="blockLayingMixtureKeys" class="form-control" value="${layingMixture.getKey()}"/>
+										                	</td><td>
+										                	<c:url var="urlLink" value="/blocklayingmixture/edit/${layingMixture.getKey()}-end"/>
+											                <a href="${urlLink}" class="general-link">
+										                	${layingMixture.name}
 											                </a>
 										                	</td>
 										                	</tr>

@@ -48,6 +48,10 @@ public class CHB implements IDomainObject {
 	this.company = company;
     }
 
+    public String getDisplayName() {
+	return this.name + " (" + getPerSqM() + " CHB/sq.m.)";
+    }
+
     /**
      * Number of CHB for every 1 square meter. TODO Cache this function.
      * 

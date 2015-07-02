@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class MasonryEstimateResults implements Serializable {
+public class MasonryCHBEstimateResults implements Serializable {
 
     private static NumberFormat quantityFormatter = NumberFormatUtils
 	    .getQuantityFormatter();
@@ -15,11 +15,11 @@ public class MasonryEstimateResults implements Serializable {
     private double totalCHB;
     private CHB chbMeasurement;
 
-    public MasonryEstimateResults() {
+    public MasonryCHBEstimateResults() {
 	;
     }
 
-    public MasonryEstimateResults(CHB chb, double totalCHB2) {
+    public MasonryCHBEstimateResults(CHB chb, double totalCHB2) {
 	setChbMeasurement(chb);
 	setTotalCHB(totalCHB2);
     }

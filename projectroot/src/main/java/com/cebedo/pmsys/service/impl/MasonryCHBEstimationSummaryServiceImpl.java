@@ -9,52 +9,52 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.bean.MasonryEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.MasonryEstimationSummary;
+import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
-import com.cebedo.pmsys.repository.MasonryEstimationSummaryValueRepo;
-import com.cebedo.pmsys.service.MasonryEstimationSummaryService;
+import com.cebedo.pmsys.repository.MasonryCHBEstimationSummaryValueRepo;
+import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DataStructUtils;
 
 @Service
-public class MasonryEstimationSummaryServiceImpl implements
-	MasonryEstimationSummaryService {
+public class MasonryCHBEstimationSummaryServiceImpl implements
+	MasonryCHBEstimationSummaryService {
 
-    private MasonryEstimationSummaryValueRepo masonryEstimationSummaryValueRepo;
+    private MasonryCHBEstimationSummaryValueRepo masonryCHBEstimationSummaryValueRepo;
     private EstimateValueRepo estimateValueRepo;
 
     public void setEstimateValueRepo(EstimateValueRepo estimateValueRepo) {
 	this.estimateValueRepo = estimateValueRepo;
     }
 
-    public void setMasonryEstimationSummaryValueRepo(
-	    MasonryEstimationSummaryValueRepo masonryEstimationSummaryValueRepo) {
-	this.masonryEstimationSummaryValueRepo = masonryEstimationSummaryValueRepo;
+    public void setMasonryCHBEstimationSummaryValueRepo(
+	    MasonryCHBEstimationSummaryValueRepo masonryCHBEstimationSummaryValueRepo) {
+	this.masonryCHBEstimationSummaryValueRepo = masonryCHBEstimationSummaryValueRepo;
     }
 
     @Override
     @Transactional
-    public void rename(MasonryEstimationSummary obj, String newKey) {
-	this.masonryEstimationSummaryValueRepo.rename(obj, newKey);
+    public void rename(MasonryCHBEstimationSummary obj, String newKey) {
+	this.masonryCHBEstimationSummaryValueRepo.rename(obj, newKey);
     }
 
     @Override
     @Transactional
-    public void multiSet(Map<String, MasonryEstimationSummary> m) {
-	this.masonryEstimationSummaryValueRepo.multiSet(m);
+    public void multiSet(Map<String, MasonryCHBEstimationSummary> m) {
+	this.masonryCHBEstimationSummaryValueRepo.multiSet(m);
     }
 
     /**
-     * Set the masonryEstimationSummary.
+     * Set the estimationSummary.
      */
     @Override
     @Transactional
-    public String set(MasonryEstimationSummary obj) {
+    public String set(MasonryCHBEstimationSummary obj) {
 
 	// If we're creating.
 	boolean isCreate = obj.getUuid() == null;
@@ -67,8 +67,8 @@ public class MasonryEstimationSummaryServiceImpl implements
 	for (Estimate estimate : estimateList) {
 
 	    // Get the estimated quantity.
-	    Map<CHB, MasonryEstimateResults> masonryResultMap = estimate
-		    .getResultMapMasonry();
+	    Map<CHB, MasonryCHBEstimateResults> masonryResultMap = estimate
+		    .getResultMapMasonryCHB();
 
 	    // Set the area specifics.
 	    obj.setAreaFormulaInputs(estimate.getAreaFormulaInputs());
@@ -84,7 +84,7 @@ public class MasonryEstimationSummaryServiceImpl implements
 		// Get the result.
 		// Get total cost =
 		// cost per piece * no. of pieces
-		MasonryEstimateResults estimateResult = masonryResultMap
+		MasonryCHBEstimateResults estimateResult = masonryResultMap
 			.get(chb);
 		double totalPiecesCHB = estimateResult.getTotalCHB();
 		obj.setTotalPiecesCHB(totalPiecesCHB);
@@ -95,67 +95,70 @@ public class MasonryEstimationSummaryServiceImpl implements
 
 		// Commit this cost estimate.
 		obj.setUuid(UUID.randomUUID());
-		this.masonryEstimationSummaryValueRepo.set(obj);
+		this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	    }
 	}
 
 	// If create.
 	if (isCreate) {
-	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_MASONRY_ESTIMATION_SUMMARY_DISPLAY,
-		    obj.getName());
+	    return AlertBoxGenerator.SUCCESS
+		    .generateCreate(
+			    RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY,
+			    obj.getName());
 	}
 
 	// If update.
-	this.masonryEstimationSummaryValueRepo.set(obj);
+	this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_MASONRY_ESTIMATION_SUMMARY_DISPLAY,
+		RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY,
 		obj.getName());
     }
 
     @Override
     @Transactional
     public void delete(Collection<String> keys) {
-	this.masonryEstimationSummaryValueRepo.delete(keys);
+	this.masonryCHBEstimationSummaryValueRepo.delete(keys);
     }
 
     @Override
     @Transactional
-    public void setIfAbsent(MasonryEstimationSummary obj) {
-	this.masonryEstimationSummaryValueRepo.setIfAbsent(obj);
+    public void setIfAbsent(MasonryCHBEstimationSummary obj) {
+	this.masonryCHBEstimationSummaryValueRepo.setIfAbsent(obj);
     }
 
     @Override
     @Transactional
-    public MasonryEstimationSummary get(String key) {
-	return this.masonryEstimationSummaryValueRepo.get(key);
+    public MasonryCHBEstimationSummary get(String key) {
+	return this.masonryCHBEstimationSummaryValueRepo.get(key);
     }
 
     @Override
     @Transactional
     public Set<String> keys(String pattern) {
-	return this.masonryEstimationSummaryValueRepo.keys(pattern);
+	return this.masonryCHBEstimationSummaryValueRepo.keys(pattern);
     }
 
     @Override
     @Transactional
-    public Collection<MasonryEstimationSummary> multiGet(Collection<String> keys) {
-	return this.masonryEstimationSummaryValueRepo.multiGet(keys);
+    public Collection<MasonryCHBEstimationSummary> multiGet(
+	    Collection<String> keys) {
+	return this.masonryCHBEstimationSummaryValueRepo.multiGet(keys);
     }
 
     @Override
     @Transactional
     public String delete(String key) {
-	this.masonryEstimationSummaryValueRepo.delete(key);
+	this.masonryCHBEstimationSummaryValueRepo.delete(key);
 	return "";
     }
 
     @Override
     @Transactional
-    public List<MasonryEstimationSummary> list(Project proj) {
-	String pattern = MasonryEstimationSummary.constructPattern(proj);
-	Set<String> keys = this.masonryEstimationSummaryValueRepo.keys(pattern);
-	return this.masonryEstimationSummaryValueRepo.multiGet(keys);
+    public List<MasonryCHBEstimationSummary> list(Project proj) {
+	String pattern = MasonryCHBEstimationSummary.constructPattern(proj);
+	Set<String> keys = this.masonryCHBEstimationSummaryValueRepo
+		.keys(pattern);
+	return this.masonryCHBEstimationSummaryValueRepo.multiGet(keys);
     }
 
 }

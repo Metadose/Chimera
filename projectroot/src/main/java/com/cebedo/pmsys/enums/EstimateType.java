@@ -1,8 +1,16 @@
 package com.cebedo.pmsys.enums;
 
 public enum EstimateType {
-    CONCRETE(1, "Concrete"), MASONRY(2, "Masonry"), METAL_REINFORCEMENT(3,
-	    "Metal Reinforcement");
+
+    CONCRETE(1, "Concrete"),
+
+    MASONRY_CHB(2, "Masonry (CHB)"),
+
+    MASONRY_BLOCK_LAYING(3, "Masonry (Block Laying)"),
+
+    MASONRY_PLASTERING(4, "Masonry (Plastering)"),
+
+    METAL_REINFORCEMENT(5, "Metal Reinforcement");
 
     int id;
     String label;
@@ -13,8 +21,16 @@ public enum EstimateType {
     }
 
     public static EstimateType of(int typeID) {
-	if (typeID == MASONRY.id()) {
-	    return MASONRY;
+	if (typeID == MASONRY_CHB.id()) {
+	    return MASONRY_CHB;
+	}
+
+	if (typeID == MASONRY_BLOCK_LAYING.id()) {
+	    return MASONRY_BLOCK_LAYING;
+	}
+
+	if (typeID == MASONRY_PLASTERING.id()) {
+	    return MASONRY_PLASTERING;
 	}
 
 	else if (typeID == CONCRETE.id()) {
@@ -25,7 +41,7 @@ public enum EstimateType {
 	    return METAL_REINFORCEMENT;
 	}
 
-	return MASONRY;
+	return MASONRY_CHB;
     }
 
     public String label() {

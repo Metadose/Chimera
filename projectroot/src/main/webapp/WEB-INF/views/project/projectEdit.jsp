@@ -1229,9 +1229,9 @@
 		                                <div class="box-body table-responsive">
                                    			<div class="callout callout-info callout-cebedo">
 							                    <p>
-							                    <span class="badge bg-green">1</span> Click Estimate Quantity<br/>
-							                    <span class="badge bg-green">2</span> Results will display<br/>
-							                    <span class="badge bg-green">3</span> Estimate Costs<br/>
+							                    Click Estimate Quantity<br/>
+							                    Results will display<br/>
+							                    Estimate Costs<br/>
 							                    </p>
 							                </div>
                                    			<c:url var="urlCreate" value="/project/edit/estimate/0-end"/>
@@ -1648,7 +1648,7 @@
 									                                            </tr>
 							                                        		</thead>
 									                                        <tbody>
-										                                		<c:forEach items="${masonryEstimationSummaries}" var="thisEstimate">
+										                                		<c:forEach items="${masonryCHBEstimationSummaries}" var="thisEstimate">
 										                                            <tr>
 										                                            	<!-- Buttons -->
 										                                            	<td>

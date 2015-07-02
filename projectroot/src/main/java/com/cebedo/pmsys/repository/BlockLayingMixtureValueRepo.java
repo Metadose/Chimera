@@ -7,20 +7,20 @@ import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.domain.MasonryEstimationSummary;
+import com.cebedo.pmsys.domain.BlockLayingMixture;
 
-public class MasonryEstimationSummaryValueRepo implements
-	IValueRepository<MasonryEstimationSummary> {
+public class BlockLayingMixtureValueRepo implements
+	IValueRepository<BlockLayingMixture> {
 
-    private RedisTemplate<String, MasonryEstimationSummary> redisTemplate;
+    private RedisTemplate<String, BlockLayingMixture> redisTemplate;
 
     public void setRedisTemplate(
-	    RedisTemplate<String, MasonryEstimationSummary> redisTemplate) {
+	    RedisTemplate<String, BlockLayingMixture> redisTemplate) {
 	this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public void rename(MasonryEstimationSummary obj, String newKey) {
+    public void rename(BlockLayingMixture obj, String newKey) {
 	this.redisTemplate.rename(obj.getKey(), newKey);
     }
 
@@ -30,17 +30,17 @@ public class MasonryEstimationSummaryValueRepo implements
     }
 
     @Override
-    public void set(MasonryEstimationSummary obj) {
+    public void set(BlockLayingMixture obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);
     }
 
     @Override
-    public void setIfAbsent(MasonryEstimationSummary obj) {
+    public void setIfAbsent(BlockLayingMixture obj) {
 	this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
     }
 
     @Override
-    public MasonryEstimationSummary get(String key) {
+    public BlockLayingMixture get(String key) {
 	return this.redisTemplate.opsForValue().get(key);
     }
 
@@ -50,12 +50,12 @@ public class MasonryEstimationSummaryValueRepo implements
     }
 
     @Override
-    public void multiSet(Map<String, MasonryEstimationSummary> m) {
+    public void multiSet(Map<String, BlockLayingMixture> m) {
 	this.redisTemplate.opsForValue().multiSet(m);
     }
 
     @Override
-    public List<MasonryEstimationSummary> multiGet(Collection<String> keys) {
+    public List<BlockLayingMixture> multiGet(Collection<String> keys) {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 

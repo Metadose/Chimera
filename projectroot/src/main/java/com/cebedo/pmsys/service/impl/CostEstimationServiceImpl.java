@@ -2,26 +2,26 @@ package com.cebedo.pmsys.service.impl;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
-import com.cebedo.pmsys.domain.MasonryEstimationSummary;
+import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.CostEstimationService;
-import com.cebedo.pmsys.service.MasonryEstimationSummaryService;
+import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 public class CostEstimationServiceImpl implements CostEstimationService {
 
     private ConcreteEstimationSummaryService concreteEstimationSummaryService;
-    private MasonryEstimationSummaryService masonryEstimationSummaryService;
+    private MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService;
 
     public void setConcreteEstimationSummaryService(
 	    ConcreteEstimationSummaryService concreteEstimationSummaryService) {
 	this.concreteEstimationSummaryService = concreteEstimationSummaryService;
     }
 
-    public void setMasonryEstimationSummaryService(
-	    MasonryEstimationSummaryService masonryEstimationSummaryService) {
-	this.masonryEstimationSummaryService = masonryEstimationSummaryService;
+    public void setMasonryCHBEstimationSummaryService(
+	    MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService) {
+	this.masonryCHBEstimationSummaryService = masonryCHBEstimationSummaryService;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CostEstimationServiceImpl implements CostEstimationService {
 	// Construct objects.
 	ConcreteEstimationSummary estimationSummary = new ConcreteEstimationSummary(
 		proj, costEstimationBean);
-	MasonryEstimationSummary masonryEstimationSummary = new MasonryEstimationSummary(
+	MasonryCHBEstimationSummary masonryCHBEstimationSummary = new MasonryCHBEstimationSummary(
 		proj, costEstimationBean);
 
 	// Do service.
@@ -39,7 +39,7 @@ public class CostEstimationServiceImpl implements CostEstimationService {
 	this.concreteEstimationSummaryService.set(estimationSummary);
 
 	// Masonry.
-	this.masonryEstimationSummaryService.set(masonryEstimationSummary);
+	this.masonryCHBEstimationSummaryService.set(masonryCHBEstimationSummary);
 
 	return AlertBoxGenerator.SUCCESS.generateCreate(
 		CostEstimationBean.BEAN_NAME_DISPLAY,

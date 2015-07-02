@@ -10,7 +10,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class MasonryEstimationSummary implements IDomainObject {
+public class MasonryCHBEstimationSummary implements IDomainObject {
 
     private static NumberFormat quantityFormatter = NumberFormatUtils
 	    .getQuantityFormatter();
@@ -56,11 +56,11 @@ public class MasonryEstimationSummary implements IDomainObject {
     private double area;
     private EstimationAllowance estimationAllowance;
 
-    public MasonryEstimationSummary() {
+    public MasonryCHBEstimationSummary() {
 	;
     }
 
-    public MasonryEstimationSummary(Project proj,
+    public MasonryCHBEstimationSummary(Project proj,
 	    CostEstimationBean costEstimationBean) {
 	setCompany(proj.getCompany());
 	setProject(proj);
@@ -81,12 +81,12 @@ public class MasonryEstimationSummary implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_MASONRY_ESTIMATION_SUMMARY,
+	return String.format(RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY,
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
     public static String constructPattern(Project proj) {
-	return String.format(RedisKeyRegistry.KEY_MASONRY_ESTIMATION_SUMMARY,
+	return String.format(RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY,
 		proj.getCompany().getId(), proj.getId(), "*");
     }
 

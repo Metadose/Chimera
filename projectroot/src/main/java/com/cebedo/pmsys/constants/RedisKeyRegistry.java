@@ -10,13 +10,15 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ESTIMATION_ALLOWANCE = "company.fk:%sestimationallowance:%s";
 
+    public static final String KEY_BLOCK_LAYING_MIXTURE = "company.fk:%sblocklayingmixture:%s";
+
     public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
 
     public static final String KEY_UNITS = "company.fk:%s:units:%s";
 
     public static final String KEY_ESTIMATE = "company.fk:%s:project.fk:%s:estimate:%s";
 
-    public static final String KEY_MASONRY_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:masonryestimationsummary:%s";
+    public static final String KEY_MASONRY_CHB_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:masonrychbestimationsummary:%s";
 
     public static final String KEY_CONCRETE_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:concreteestimationsummary:%s";
 

@@ -18,11 +18,15 @@ public abstract class RedisConstants {
     public static final String OBJECT_PULL_OUT = "pullout";
     public static final String OBJECT_UNIT = "unit";
     public static final String OBJECT_CHB = "chb";
+    public static final String OBJECT_BLOCK_LAYING_MIXTURE = "blocklayingmixture";
+    public static final String OBJECT_BLOCK_LAYING_MIXTURE_DISPLAY = "block laying mixture";
     public static final String OBJECT_ESTIMATION_ALLOWANCE = "estimationallowance";
     public static final String OBJECT_ESTIMATION_ALLOWANCE_DISPLAY = "estimation allowance";
     public static final String OBJECT_MATERIAL_CATEGORY = "materialcategory";
-    public static final String OBJECT_MASONRY_ESTIMATION_SUMMARY = "masonryestimationsummary";
-    public static final String OBJECT_MASONRY_ESTIMATION_SUMMARY_DISPLAY = "masonry estimation summary";
+
+    public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
+    public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY = "masonry (CHB) estimation summary";
+
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY_DISPLAY = "concrete estimation summary";
     public static final String OBJECT_CONCRETE_PROPORTION = "concreteproportion";
@@ -46,6 +50,10 @@ public abstract class RedisConstants {
 	    + "/attendanceList";
     public static final String JSP_CHB_LIST = OBJECT_CHB + "/chbList";
     public static final String JSP_CHB_EDIT = OBJECT_CHB + "/chbEdit";
+    public static final String JSP_BLOCK_LAYING_MIXTURE_LIST = OBJECT_BLOCK_LAYING_MIXTURE
+	    + "/blockLayingMixtureList";
+    public static final String JSP_BLOCK_LAYING_MIXTURE_EDIT = OBJECT_BLOCK_LAYING_MIXTURE
+	    + "/blockLayingMixtureEdit";
     public static final String JSP_UNIT_LIST = OBJECT_UNIT + "/unitList";
     public static final String JSP_UNIT_EDIT = OBJECT_UNIT + "/unitEdit";
     public static final String JSP_ESTIMATION_ALLOWANCE_LIST = OBJECT_ESTIMATION_ALLOWANCE
