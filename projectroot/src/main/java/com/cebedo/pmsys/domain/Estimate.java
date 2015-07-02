@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
@@ -59,14 +60,12 @@ public class Estimate implements IDomainObject {
     // Masonry (CHB) inputs.
     private String chbMeasurementKeys[];
 
-    // Masonry (Block Laying) inputs.
-    private String blockLayingMixtureKeys[];
-
     /**
      * Results
      */
     private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
     private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
+    private Map<CHB, MasonryBlockLayingEstimateResults> resultMapMasonryBlockLaying = new HashMap<CHB, MasonryBlockLayingEstimateResults>();
 
     /**
      * Extension map.
@@ -281,12 +280,13 @@ public class Estimate implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public String[] getBlockLayingMixtureKeys() {
-	return blockLayingMixtureKeys;
+    public Map<CHB, MasonryBlockLayingEstimateResults> getResultMapMasonryBlockLaying() {
+	return resultMapMasonryBlockLaying;
     }
 
-    public void setBlockLayingMixtureKeys(String[] blockLayingMixtureKeys) {
-	this.blockLayingMixtureKeys = blockLayingMixtureKeys;
+    public void setResultMapMasonryBlockLaying(
+	    Map<CHB, MasonryBlockLayingEstimateResults> resultMapMasonryBlockLaying) {
+	this.resultMapMasonryBlockLaying = resultMapMasonryBlockLaying;
     }
 
 }

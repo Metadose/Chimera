@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -178,6 +179,26 @@ public class CHB implements IDomainObject {
 
     public static String constructPattern(Company company2) {
 	return String.format(RedisKeyRegistry.KEY_CHB, company2.getId(), "*");
+    }
+
+    /**
+     * Get the block laying mix for this CHB.
+     * 
+     * @param mixList
+     * @return
+     */
+    public BlockLayingMixture getBlockLayingMixture(
+	    List<BlockLayingMixture> mixList) {
+
+	for (BlockLayingMixture mix : mixList) {
+
+	    // If we have found the mix for this CHB, then use it.
+	    String thisCHBKey = mix.getChbMeasurement().getKey();
+	    if (getKey().equals(thisCHBKey)) {
+		return mix;
+	    }
+	}
+	return null;
     }
 
 }

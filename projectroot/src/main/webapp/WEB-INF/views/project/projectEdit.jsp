@@ -714,7 +714,7 @@
                							<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">
-               									<span class="badge bg-blue">Results</span>
+               									<span class="badge">Results</span>
                									Payroll List</h3>
                								</div>
                								<div class="box-body">
@@ -1238,7 +1238,7 @@
                                    			<a href="${urlCreate}">
 	                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate Quantity</button>
                                    			</a>
-                                   			<span class="badge bg-red">Step A</span>
+                                   			<span class="badge bg-green">Step A</span>
                                    			<br/>
                                    			<br/>
                                    			
@@ -1247,7 +1247,7 @@
 				                                <li class="active"><a href="#subtab_concrete" data-toggle="tab">Concrete</a></li>
 		                                		<li><a href="#subtab_masonry" data-toggle="tab">Masonry</a></li>
 		                                		<li><a href="#subtab_cost-estimate-controls" data-toggle="tab">Estimate Cost
-		                                		<span class="badge bg-red">Step B</span>
+		                                		<span class="badge bg-green">Step B</span>
 		                                		</a></li>
 				                            </ul>
 				                            <div class="tab-content">
@@ -1261,11 +1261,11 @@
 							                            <ul class="nav nav-tabs" id="subtabs-inventory">
 							                                <li class="active"><a href="#subsubtab_summary" data-toggle="tab">
 							                                Component Quantity & Cost
-							                                <span class="badge bg-blue">Cost Results</span>
+							                                <span class="badge">Cost Results</span>
 							                                </a></li>
 					                                		<li><a href="#subsubtab_breakdown" data-toggle="tab">
 					                                		Component Breakdown
-					                                		<span class="badge bg-blue">Quantity Results</span>
+					                                		<span class="badge">Quantity Results</span>
 					                                		</a></li>
 							                            </ul>
 							                            <div class="tab-content">
@@ -1557,7 +1557,7 @@
 									                                                	
 	<!--
 	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
     
 									                                                	
 									                                                	<td align="right">${estimateValueResult.getCement40kgAsString()}</td>
@@ -1597,11 +1597,11 @@
 			               								<div class="nav-tabs-custom">
 														<ul class="nav nav-tabs">
 															<li class="active"><a href="#subsubtab_chb_summary" data-toggle="tab">CHB Quantity & Cost
-															<span class="badge bg-blue">Cost Results</span>
+															<span class="badge">Cost Results</span>
 															</a></li>
 															<li><a href="#subsubtab_chb" data-toggle="tab">
 															CHB Breakdown
-															<span class="badge bg-blue">Quantity Results</span>
+															<span class="badge">Quantity Results</span>
 															</a></li>
 															<li><a href="#subsubtab_block-laying" data-toggle="tab">Block Laying</a></li>
 															<li><a href="#subsubtab_paster" data-toggle="tab">Plaster</a></li>
@@ -1744,7 +1744,7 @@
 							                                        		</thead>
 									                                        <tbody>
 										                                		<c:forEach items="${masonryEstimateList}" var="thisEstimate">
-										                                			<c:forEach items="${thisEstimate.resultMapMasonry}" var="masonryEntry">
+										                                			<c:forEach items="${thisEstimate.resultMapMasonryCHB}" var="masonryEntry">
 										                                            <tr>
 										                                            	<td>
 										                                            		<center>
@@ -1786,7 +1786,7 @@
 									                                                	Area = ${thisEstimate.shape.area} sq.m.
 									                                                	</td>
 									                                                	
-    <!-- Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    <!-- Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
     																					<c:set value="${masonryEntry.key}" var="estimateKeyCHB"></c:set>
     																					<c:set value="${masonryEntry.value}" var="estimateValueResult"></c:set>
 									                                                	<td>
@@ -1864,7 +1864,7 @@
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
 			               									<h3 class="box-title">
-			               									<span class="badge bg-green">Step 1</span>
+			               									<span class="badge bg-blue">Input</span>
 			               									Basic Details</h3>
 			               								</div>
 			               								<div class="box-body">
@@ -1890,7 +1890,7 @@
 			               								
 			               								<div class="box-header">
 			               									<h3 class="box-title">
-			               									<span class="badge bg-green">Step 2</span>
+			               									<span class="badge bg-blue">Input</span>
 			               									Concrete Cost</h3>
 			               								</div>
 			               								<div class="box-body">
@@ -1924,7 +1924,7 @@
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
 			               									<h3 class="box-title">
-			               									<span class="badge bg-green">Step 3</span>
+			               									<span class="badge bg-blue">Input</span>
 			               									Masonry Cost</h3>
 			               								</div>
 			               								<div class="box-body">
@@ -1947,7 +1947,7 @@
 			               							<div class="box box-body box-default">
 			               								<div class="box-header">
 			               									<h3 class="box-title">
-			               									<span class="badge bg-green">Step 4</span>
+			               									<span class="badge bg-blue">Input</span>
 			               									Quantity Estimations</h3>
 			               								</div>
 			               								<div class="box-body">

@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
+import com.cebedo.pmsys.constants.MessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
@@ -30,6 +33,7 @@ import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
+import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.udojava.evalex.Expression;
@@ -42,6 +46,12 @@ public class EstimateServiceImpl implements EstimateService {
     private ConcreteProportionValueRepo concreteProportionValueRepo;
     private CHBValueRepo chbValueRepo;
     private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
+    private BlockLayingMixtureService blockLayingMixtureService;
+
+    public void setBlockLayingMixtureService(
+	    BlockLayingMixtureService blockLayingMixtureService) {
+	this.blockLayingMixtureService = blockLayingMixtureService;
+    }
 
     public void setEstimationAllowanceValueRepo(
 	    EstimationAllowanceValueRepo estimationAllowanceValueRepo) {
@@ -156,80 +166,231 @@ public class EstimateServiceImpl implements EstimateService {
 	return this.estimateValueRepo.multiGet(keys);
     }
 
-    @Override
-    @Transactional
-    public String computeQuantityEstimate(Estimate estimate) {
+    /**
+     * Compute for area and volume.
+     * 
+     * @param shape
+     * @param estimate
+     */
+    private void setAreaVolume(Estimate estimate, Shape shape) {
 
-	// Shape to compute.
-	Shape shape = estimate.getShape();
+	// Allowance.
+	double allowance = estimate.getEstimationAllowance()
+		.getEstimationAllowance();
 
+	// Area.
+	double area = getArea(estimate, shape);
+	area += (area * allowance);
+
+	// Volume.
+	double volume = getVolume(estimate, shape);
+	volume += (volume * allowance);
+
+	shape.setArea(area);
+	shape.setVolume(volume);
+    }
+
+    /**
+     * Set the estimation allowance.
+     * 
+     * @param estimate
+     */
+    private void setEstimationAllowance(Estimate estimate) {
 	// Set allowances.
 	EstimationAllowance allowance = this.estimationAllowanceValueRepo
 		.get(estimate.getEstimationAllowanceKey());
 	estimate.setEstimationAllowance(allowance);
+    }
+
+    /**
+     * Prepare inputs.
+     * 
+     * @param estimate
+     * @param shape
+     * @param chbList
+     * @param blockLayingList
+     */
+    private void prepareInputs(Estimate estimate, Shape shape, List<CHB> chbList) {
+
+	// Set allowances.
+	setEstimationAllowance(estimate);
 
 	// Compute for area and volume.
-	double area = getArea(estimate, shape);
-	double volume = getVolume(estimate, shape);
-	shape.setArea(area);
-	shape.setVolume(volume);
+	setAreaVolume(estimate, shape);
 
-	// If we're estimating masonry.
-	if (estimate.willComputeMasonryCHB()) {
+	// Prepare estimation inputs.
+	prepareMasonryCHBEstimationInputs(estimate, chbList);
+    }
 
-	    // Result map.
-	    Map<CHB, MasonryCHBEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryCHBEstimateResults>();
+    /**
+     * Estimate a project's quantity of materials.
+     */
+    @Override
+    @Transactional
+    public String computeQuantityEstimate(Estimate estimate) {
 
-	    // Loop through all inputs.
-	    for (String chbKey : estimate.getChbMeasurementKeys()) {
-
-		// Get CHB object.
-		// Set results of the estimate, given the CHB.
-		CHB chb = this.chbValueRepo.get(chbKey);
-
-		// Get results.
-		MasonryCHBEstimateResults masonryCHBEstimateResults = getMasonryEstimateResults(
-			estimate, shape, chb);
-		resultMapMasonry.put(chb, masonryCHBEstimateResults);
-	    }
-
-	    estimate.setResultMapMasonryCHB(resultMapMasonry);
+	// If we're computing block laying,
+	// but didn't specify any block at all,
+	// return fail.
+	if (estimate.willComputeMasonryBlockLaying()
+		&& estimate.getChbMeasurementKeys().length == 0) {
+	    return AlertBoxGenerator.FAILED.setMessage(
+		    MessageRegistry.ESTIMATE_MASONRY_BLM_NO_CHB_LIST)
+		    .generateHTML();
 	}
 
-	// Evaluate the the math expression using a java library.
-	// Not wolfram. Use wolfram only when complicated.
-	// If computing concrete,
-	// compute.
+	// Shape to compute.
+	Shape shape = estimate.getShape();
+
+	// List of CHB's chosen.
+	List<CHB> chbList = new ArrayList<CHB>();
+
+	// Prepare inputs.
+	prepareInputs(estimate, shape, chbList);
+
+	// If we're estimating masonry CHB.
+	if (estimate.willComputeMasonryCHB()) {
+	    computeMasonryCHB(estimate, shape, chbList);
+	}
+
+	// If we're estimating masonry block laying.
+	if (estimate.willComputeMasonryBlockLaying()) {
+	    computeMasonryBlockLaying(estimate, shape, chbList);
+	}
+
+	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
-
-	    Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-
-	    // Loop through all concrete proportion keys.
-	    for (String proportionKey : estimate.getConcreteProportionKeys()) {
-
-		// Set the concrete proportion based on key.
-		ConcreteProportion proportion = this.concreteProportionValueRepo
-			.get(proportionKey);
-
-		// Now, compute the estimated concrete.
-		ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
-			allowance, proportion, shape);
-
-		// Set the results.
-		// Set last computed.
-		// Save the object.
-		resultMapConcrete.put(proportion, concreteResults);
-		estimate.setLastComputed(new Date(System.currentTimeMillis()));
-	    }
-
-	    estimate.setResultMapConcrete(resultMapConcrete);
-
-	} // End of will compute concrete.
+	    computeConcrete(estimate, shape);
+	}
 
 	this.estimateValueRepo.set(estimate);
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
+    }
+
+    /**
+     * Estimate the block laying.
+     * 
+     * @param estimate
+     * @param shape
+     * @param chbList
+     */
+    private void computeMasonryBlockLaying(Estimate estimate, Shape shape,
+	    List<CHB> chbList) {
+
+	// Prepare the map,
+	// and the BLM list.
+	Map<CHB, MasonryBlockLayingEstimateResults> blockLayingResults = new HashMap<CHB, MasonryBlockLayingEstimateResults>();
+	List<BlockLayingMixture> mixList = this.blockLayingMixtureService
+		.list();
+
+	// Loop through all mixtures.
+	for (CHB chb : chbList) {
+
+	    // If a mixture does not exist for this CHB,
+	    // continue.
+	    BlockLayingMixture mixture = chb.getBlockLayingMixture(mixList);
+	    if (mixture == null) {
+		continue;
+	    }
+
+	    // Get the inputs.
+	    double area = shape.getArea();
+	    double bags = mixture.getCementBags();
+	    double sand = mixture.getSand();
+
+	    // Compute.
+	    double bagsNeeded = area * bags;
+	    double sandNeeded = area * sand;
+
+	    // Set the results.
+	    MasonryBlockLayingEstimateResults layingResults = new MasonryBlockLayingEstimateResults(
+		    chb, mixture, bagsNeeded, sandNeeded);
+	    blockLayingResults.put(chb, layingResults);
+	}
+
+	// Set results.
+	estimate.setResultMapMasonryBlockLaying(blockLayingResults);
+    }
+
+    /**
+     * Estimate the number of components needed for this concrete.
+     * 
+     * @param estimate
+     * @param shape
+     */
+    private void computeConcrete(Estimate estimate, Shape shape) {
+
+	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+
+	// Loop through all concrete proportion keys.
+	for (String proportionKey : estimate.getConcreteProportionKeys()) {
+
+	    // Set the concrete proportion based on key.
+	    ConcreteProportion proportion = this.concreteProportionValueRepo
+		    .get(proportionKey);
+
+	    // Now, compute the estimated concrete.
+	    ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
+		    proportion, shape);
+
+	    // Set the results.
+	    // Set last computed.
+	    // Save the object.
+	    resultMapConcrete.put(proportion, concreteResults);
+	    estimate.setLastComputed(new Date(System.currentTimeMillis()));
+	}
+
+	estimate.setResultMapConcrete(resultMapConcrete);
+    }
+
+    /**
+     * Estimate number of CHB.
+     * 
+     * @param estimate
+     * @param shape
+     * @param chbList
+     */
+    private void computeMasonryCHB(Estimate estimate, Shape shape,
+	    List<CHB> chbList) {
+
+	// Result map.
+	Map<CHB, MasonryCHBEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryCHBEstimateResults>();
+
+	// Loop through all inputs.
+	// Get results.
+	for (CHB chb : chbList) {
+	    MasonryCHBEstimateResults masonryCHBEstimateResults = getMasonryEstimateResults(
+		    shape, chb);
+	    resultMapMasonry.put(chb, masonryCHBEstimateResults);
+	}
+
+	// Set the result map.
+	estimate.setResultMapMasonryCHB(resultMapMasonry);
+    }
+
+    /**
+     * Prepare the needed estimation inputs.
+     * 
+     * @param estimate
+     * @param chbList
+     * @param blockLayingList
+     */
+    private void prepareMasonryCHBEstimationInputs(Estimate estimate,
+	    List<CHB> chbList) {
+
+	// If we are computing CHB OR
+	// block laying, go here.
+	if (estimate.willComputeMasonryCHB()) {
+
+	    // Loop through all inputs.
+	    // Get CHB object.
+	    for (String chbKey : estimate.getChbMeasurementKeys()) {
+		CHB chb = this.chbValueRepo.get(chbKey);
+		chbList.add(chb);
+	    }
+	}
     }
 
     /**
@@ -294,15 +455,10 @@ public class EstimateServiceImpl implements EstimateService {
      * @param chb
      * @return
      */
-    private MasonryCHBEstimateResults getMasonryEstimateResults(Estimate estimate,
-	    Shape shape, CHB chb) {
+    private MasonryCHBEstimateResults getMasonryEstimateResults(Shape shape,
+	    CHB chb) {
 
-	// Get the area.
-	// Add allowance.
-	double allowance = estimate.getEstimationAllowance()
-		.getEstimationAllowance();
 	double area = shape.getArea();
-	area += (area * allowance);
 
 	// Get total CHBs.
 	double totalCHB = area * chb.getPerSqM();
@@ -324,11 +480,9 @@ public class EstimateServiceImpl implements EstimateService {
      * @return
      */
     private ConcreteEstimateResults getConcreteEstimateResults(
-	    EstimationAllowance allowance, ConcreteProportion proportion,
-	    Shape shape) {
+	    ConcreteProportion proportion, Shape shape) {
 
 	double volume = shape.getVolume();
-	volume += (volume * allowance.getEstimationAllowance());
 
 	// Get the ingredients.
 	// Now, compute the estimated concrete.

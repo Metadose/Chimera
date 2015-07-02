@@ -62,9 +62,12 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                <c:if test="${isUpdating}">
+                                <li><a href="#tab_inputs" data-toggle="tab">Inputs</a></li>
+                                </c:if>
                                 <c:if test="${!empty estimate.lastComputed}">
-                                <li><a href="#tab_results" data-toggle="tab">Quantity Estimation
-                                <span class="badge bg-blue">Results</span>
+                                <li><a href="#tab_results" data-toggle="tab">Estimation
+                                <span class="badge">Quantity Results</span>
                                 </a></li>
                                 </c:if>
                             </ul>
@@ -152,13 +155,20 @@
                    								</div>
                    							</div>
                    						</div>
-                   						<c:if test="${isUpdating}">
-                   						<div class="col-md-6">
+              						</div>
+                                </div><!-- /.tab-pane -->
+                   				<c:if test="${isUpdating}">
+                                <div class="tab-pane" id="tab_inputs">
+                                	<form:form modelAttribute="estimate"
+												method="post"
+												action="${contextPath}/project/compute/estimate">
+                                	<div class="row">
+                   						<div class="col-md-4">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">
                    									<span class="badge bg-green">Step 2</span>
-                   									Formula & Inputs</h3>
+                   									Formula Inputs</h3>
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info callout-cebedo">
@@ -185,46 +195,71 @@
 									                </tr>
 									                </table>
 									                <p class="help-block">Area and Volume formula of the shape</p>
-                   									<form:form modelAttribute="estimate"
-														method="post"
-														action="${contextPath}/project/compute/estimate">
+													
+													<!-- Start of form group -->
+			                                        <div class="form-group">
+			                                        
+			                                        <!-- Area Formula Inputs -->
+			                                        <c:if test="${estimate.willComputeMasonryCHB() || estimate.willComputeMasonryBlockLaying() || estimate.willComputeMasonryPlastering()}">
+			                                        <br/>
+			                                        <h4>
+			                                        <span class="badge bg-blue">Input</span>
+			                                        Area</h4>
+		                                            <c:forEach items="${estimate.shape.areaVariableNames}" var="variableName">
+		                                            <label>${variableName}</label>
+		                                            <form:input type="text" class="form-control" path="areaFormulaInputs['${variableName}']"></form:input>
+		                                            <form:select class="form-control" path="areaFormulaInputsUnits['${variableName}']"> 
+                                    						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
+                                    							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+		                                            </c:forEach>
+			                                        <p class="help-block">Input the value for each variable in the area formula</p>
+			                                        </c:if>
+			                                        
+			                                        <!-- Volume Formula Inputs -->
+			                                        <c:if test="${estimate.willComputeConcrete()}">
+			                                        <br/>
+			                                        <h4>
+			                                        <span class="badge bg-blue">Input</span>
+			                                        Volume</h4>
+		                                            <c:forEach items="${estimate.shape.volumeVariableNames}" var="variableName">
+		                                            <label>${variableName}</label>
+		                                            <form:input type="text" class="form-control" path="volumeFormulaInputs['${variableName}']"></form:input>
+		                                            <form:select class="form-control" path="volumeFormulaInputsUnits['${variableName}']"> 
+                                    						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
+                                    							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+		                                            </c:forEach>
+			                                        <p class="help-block">Input the value for each variable in the volume formula</p>
+			                                        </c:if> <!-- End of "if will compute Concrete" -->
+			                                        
+			                                        </div> <!-- End of form group div -->
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-4">
+                   							<div class="box box-body box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">
+                   									<span class="badge bg-green">Step 3</span>
+                   									Estimation Inputs</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+									                
+														
 				                                        <div class="form-group">
 				                                        
-				                                        <c:if test="${estimate.willComputeMasonryCHB()}">
-				                                        <br/>
-				                                        <!-- Area Formula Inputs -->
-				                                        <h4>Area Formula Inputs</h4>
-			                                            <c:forEach items="${estimate.shape.areaVariableNames}" var="variableName">
-			                                            <label>${variableName}</label>
-			                                            <form:input type="text" class="form-control" path="areaFormulaInputs['${variableName}']"></form:input>
-			                                            <form:select class="form-control" path="areaFormulaInputsUnits['${variableName}']"> 
-                                     						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
-                                     							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select>
-			                                            </c:forEach>
-				                                        <p class="help-block">Input the value for each variable in the area formula</p>
-				                                        </c:if>
-				                                        
 				                                        <c:if test="${estimate.willComputeConcrete()}">
-				                                        <br/>
-				                                        <!-- Volume Formula Inputs -->
-				                                        <h4>Volume Formula Inputs</h4>
-			                                            <c:forEach items="${estimate.shape.volumeVariableNames}" var="variableName">
-			                                            <label>${variableName}</label>
-			                                            <form:input type="text" class="form-control" path="volumeFormulaInputs['${variableName}']"></form:input>
-			                                            <form:select class="form-control" path="volumeFormulaInputsUnits['${variableName}']"> 
-                                     						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
-                                     							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select>
-			                                            </c:forEach>
-				                                        <p class="help-block">Input the value for each variable in the volume formula</p>
-				                                        
 				                                        
 				                                        <!-- Label & hyperlink -->
-				                                        <br/>
-				                                        <h4>Concrete Estimation Inputs</h4>
+				                                        <h4>
+				                                        <span class="badge bg-blue">Input</span>
+				                                        Concrete</h4>
 				                                        <label>
 										                <c:url var="urlLink" value="/concreteproportion/list"/>
 										                <a href="${urlLink}" class="general-link">
@@ -239,7 +274,7 @@
 				                                        </tr>
 				                                        
 	<!-- Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-    Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+    Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
 				                                        
                                    						<c:forEach items="${concreteProportionList}" var="ratio"> 
 				                                        <tr>
@@ -259,7 +294,9 @@
 				                                        
 				                                        <c:if test="${estimate.willComputeMasonryCHB()}">
 				                                        <br/>
-				                                        <h4>Masonry (CHB) Estimation Inputs</h4>
+				                                        <h4>
+				                                        <span class="badge bg-blue">Input</span>
+				                                        Masonry (CHB)</h4>
 				                                        <label>
 										                <c:url var="urlLink" value="/chb/list"/>
 										                <a href="${urlLink}" class="general-link">
@@ -270,7 +307,7 @@
 										                <table class="table table-bordered table-striped">
 										                	<tr>
 										                	<td><label>Check / Uncheck</label></td>
-										                	<td><label>Proportion Name</label></td>
+										                	<td><label>CHB Measurement</label></td>
 										                	</tr>
 										                	
 										                	<c:forEach items="${chbList}" var="chb">
@@ -279,39 +316,7 @@
 										                	<td>
 										                	<c:url var="urlLink" value="/chb/edit/${chb.getKey()}-end"/>
 											                <a href="${urlLink}" class="general-link">
-										                	${chb.name}
-											                </a>
-										                	</td>
-										                	</tr>
-										                	</c:forEach>
-										                </table>
- 		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
-				                                        </c:if> <!-- End of "if will compute Masonry" -->
-				                                        
-				                                        <!-- If we're computing Masonry Block Laying Mixture -->
-				                                        <!-- blockLayingMixtureList -->
-				                                        <c:if test="${estimate.willComputeMasonryBlockLaying()}">
-				                                        <br/>
-				                                        <h4>Masonry (Block Laying) Estimation Inputs</h4>
-				                                        <label>
-										                <c:url var="urlLink" value="/blocklayingmixture/list"/>
-										                <a href="${urlLink}" class="general-link">
-										                Block Laying Mixtures
-										                </a>
-										                </label>
-										                
-										                <table class="table table-bordered table-striped">
-										                	<tr>
-										                	<td><label>Check / Uncheck</label></td>
-										                	<td><label>Mixture Name</label></td>
-										                	</tr>
-										                	<c:forEach items="${blockLayingMixtureList}" var="layingMixture">
-										                	<tr><td align="center">
-										                	<form:checkbox path="blockLayingMixtureKeys" class="form-control" value="${layingMixture.getKey()}"/>
-										                	</td><td>
-										                	<c:url var="urlLink" value="/blocklayingmixture/edit/${layingMixture.getKey()}-end"/>
-											                <a href="${urlLink}" class="general-link">
-										                	${layingMixture.name}
+										                	${chb.getDisplayName()}
 											                </a>
 										                	</td>
 										                	</tr>
@@ -322,7 +327,8 @@
 				                                        
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>
-				                                    </form:form>
+				                                    
+				                                    <br/>
 				                                    <br/>
 				                                    <c:choose>
 													<c:when test="${empty estimate.lastComputed}">
@@ -342,9 +348,10 @@
                    								</div>
                    							</div>
                    						</div>
-                   						</c:if>
               						</div>
+              						</form:form>
                                 </div><!-- /.tab-pane -->
+                   				</c:if>
                    				<c:if test="${!empty estimate.lastComputed}">
                                 <div class="tab-pane" id="tab_results">
                                 	<div class="row">
@@ -415,7 +422,7 @@
 									    </div>
 									    </c:if>
 									    
-									    <c:if test="${!empty estimate.resultMapMasonry}">
+									    <c:if test="${!empty estimate.resultMapMasonryCHB}">
 									    <div class="col-md-6">
 								    		<div class="box box-body box-default">
                								<div class="box-header">
@@ -427,18 +434,28 @@
 							                </div>
 							                
 							                <!-- Result of masonry estimation -->
-							                <!-- Map<CHB, MasonryEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryEstimateResults>(); -->
+							                <!-- Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
 							                <table class="table table-bordered table-striped">
 							                <tr>
-							                <td><label>CHB Measurement</label></td>
+							                <td colspan="3"><label>Concrete Hollow Blocks (CHB)</label></td>
+							                <td colspan="3"><label>Block Laying</label></td>
+							                </tr>
+							                <tr>
+							                <td><label>Measurement</label></td>
 							                <td><label>Pieces per Sq. Meter</label></td>
 							                <td><label>Estimated No. of Pieces</label></td>
+							                <td><label>Mixture</label></td>
+							                <td><label>Cement (bags)</label></td>
+							                <td><label>Sand (cu.m.)</label></td>
 							                </tr>
 							                
-							                <c:forEach items="${estimate.resultMapMasonry}" var="resultEntry">
+							                <tbody>
+							                <c:forEach items="${estimate.resultMapMasonryCHB}" var="resultEntry">
 							                <c:set value="${resultEntry.key}" var="entryCHB"></c:set>
 							                <c:set value="${resultEntry.value}" var="entryResult"></c:set>
 							                <tr>
+							                
+							                	<!-- CHB -->
 								                <td><label>
 								                <c:url var="urlLink" value="/chb/edit/${entryCHB.getKey()}-end"/>
 								                <a href="${urlLink}" class="general-link">
@@ -447,11 +464,20 @@
 								                </label></td>
 								                <td align="right"><label>${entryCHB.getPerSqM()}</label></td>
 								                <td align="right">${entryResult.getTotalCHBAsString()}</td>
+								                
+								                <!-- Block Laying -->
+								                <c:set value="${estimate.resultMapMasonryBlockLaying.get(entryCHB)}" var="layingResult"></c:set>
+								                <c:set value="${layingResult.blockLayingMixture}" var="layingMix"></c:set>
+								                <td>${layingMix.name}</td>
+								                <td align="right">${layingResult.bags}</td>
+								                <td align="right">${layingResult.sand}</td>
 							                </tr>
 							                </c:forEach>
+							                </tbody>
+							                
 							                </table>
-                 								</div>
-                 								</div>
+               								</div>
+                 							</div>
 									    </div>
 									    </c:if>
 									</div>
