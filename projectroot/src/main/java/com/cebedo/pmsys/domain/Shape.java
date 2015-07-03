@@ -35,6 +35,7 @@ public class Shape implements IDomainObject {
     private List<String> areaVariableNames;
     private List<String> volumeVariableNames;
     private String[] formulaInputs;
+    private boolean withSides;
 
     /**
      * Computed.
@@ -200,5 +201,24 @@ public class Shape implements IDomainObject {
 
     public void setVolume(double volume) {
 	this.volume = volume;
+    }
+
+    public boolean isWithSides() {
+	return withSides;
+    }
+
+    public void setWithSides(boolean withSides) {
+	this.withSides = withSides;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Shape ? ((Shape) obj).getKey().equals(getKey())
+		: false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
     }
 }

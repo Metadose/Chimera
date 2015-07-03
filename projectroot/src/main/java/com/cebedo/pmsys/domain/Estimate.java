@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
+import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -57,8 +58,16 @@ public class Estimate implements IDomainObject {
     // Concrete inputs.
     private String concreteProportionKeys[];
 
-    // Masonry (CHB) inputs.
+    // Masonry inputs.
     private String chbMeasurementKeys[];
+
+    // Masonry (Plastering) inputs.
+    private boolean plasterBackToBack; // Compute the needed plaster for the two
+				       // sides of the area. If we have a 20
+				       // sqm. wall, and we plaster back to
+				       // back, then we compute 20sqm x 2sides =
+				       // 40sqm total.
+    private boolean plasterTopSide; // Plaster the top side of the shape.
 
     /**
      * Results
@@ -66,6 +75,7 @@ public class Estimate implements IDomainObject {
     private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
     private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
     private Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
+    private Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
 
     /**
      * Extension map.
@@ -287,6 +297,42 @@ public class Estimate implements IDomainObject {
     public void setResultMapMasonryBlockLaying(
 	    Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying) {
 	this.resultMapMasonryBlockLaying = resultMapMasonryBlockLaying;
+    }
+
+    public boolean isPlasterBackToBack() {
+	return plasterBackToBack;
+    }
+
+    public void setPlasterBackToBack(boolean plasterBackToBack) {
+	this.plasterBackToBack = plasterBackToBack;
+    }
+
+    public boolean isPlasterTopSide() {
+	return plasterTopSide;
+    }
+
+    public void setPlasterTopSide(boolean plasterTopSide) {
+	this.plasterTopSide = plasterTopSide;
+    }
+
+    public Map<ConcreteProportion, MasonryPlasteringEstimateResults> getResultMapMasonryPlastering() {
+	return resultMapMasonryPlastering;
+    }
+
+    public void setResultMapMasonryPlastering(
+	    Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering) {
+	this.resultMapMasonryPlastering = resultMapMasonryPlastering;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Estimate ? ((Estimate) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
     }
 
 }

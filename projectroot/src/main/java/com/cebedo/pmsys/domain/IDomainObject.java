@@ -11,4 +11,8 @@ public interface IDomainObject extends Serializable {
 
     String getKey();
 
+    public boolean equals(Object obj);
+
+    public int hashCode();
+
 }

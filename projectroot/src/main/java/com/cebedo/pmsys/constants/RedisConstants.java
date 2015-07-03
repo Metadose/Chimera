@@ -17,6 +17,7 @@ public abstract class RedisConstants {
     public static final String OBJECT_PROJECT_AUX = "projectAux";
     public static final String OBJECT_PULL_OUT = "pullout";
     public static final String OBJECT_UNIT = "unit";
+    public static final String OBJECT_PLASTER_MIXTURE = "plastermixture";
     public static final String OBJECT_CHB = "chb";
     public static final String OBJECT_BLOCK_LAYING_MIXTURE = "blocklayingmixture";
     public static final String OBJECT_BLOCK_LAYING_MIXTURE_DISPLAY = "block laying mixture";
@@ -50,6 +51,10 @@ public abstract class RedisConstants {
 	    + "/attendanceList";
     public static final String JSP_CHB_LIST = OBJECT_CHB + "/chbList";
     public static final String JSP_CHB_EDIT = OBJECT_CHB + "/chbEdit";
+    public static final String JSP_PLASTER_MIXTURE_LIST = OBJECT_PLASTER_MIXTURE
+	    + "/plasterMixtureList";
+    public static final String JSP_PLASTER_MIXTURE_EDIT = OBJECT_PLASTER_MIXTURE
+	    + "/plasterMixtureEdit";
     public static final String JSP_BLOCK_LAYING_MIXTURE_LIST = OBJECT_BLOCK_LAYING_MIXTURE
 	    + "/blockLayingMixtureList";
     public static final String JSP_BLOCK_LAYING_MIXTURE_EDIT = OBJECT_BLOCK_LAYING_MIXTURE

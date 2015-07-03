@@ -150,4 +150,15 @@ public class BlockLayingMixture implements IDomainObject {
 	this.concreteProportion = concreteProportion;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof BlockLayingMixture ? ((BlockLayingMixture) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

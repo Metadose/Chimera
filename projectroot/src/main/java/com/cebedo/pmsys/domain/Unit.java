@@ -85,4 +85,15 @@ public class Unit implements IDomainObject {
 	this.company = company;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Unit ? ((Unit) obj).getKey().equals(getKey())
+		: false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

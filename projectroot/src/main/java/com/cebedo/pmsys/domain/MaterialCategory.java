@@ -95,4 +95,15 @@ public class MaterialCategory implements IDomainObject {
 	this.unitKey = unitKey;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof MaterialCategory ? ((MaterialCategory) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

@@ -182,4 +182,15 @@ public class Attendance implements IDomainObject {
 	return String.format(RedisKeyRegistry.KEY_ATTENDANCE,
 		this.company.getId(), this.staff.getId(), date, status);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Attendance ? ((Attendance) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
 }

@@ -155,4 +155,15 @@ public class Delivery implements IDomainObject {
 		project.getId(), "*");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Delivery ? ((Delivery) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

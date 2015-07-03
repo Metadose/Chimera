@@ -325,6 +325,35 @@
  		                                    			<p class="help-block">Specify the shape of the object to be estimated</p>
 				                                        </c:if> <!-- End of "if will compute Masonry" -->
 				                                        
+				                                        <c:if test="${estimate.willComputeMasonryPlastering()}">
+				                                        <br/>
+				                                        <h4><span class="badge bg-blue">Input</span>Masonry (Plastering)</h4>
+										                <table class="table table-bordered table-striped">
+										                
+										                	<tr>
+										                	<td><label>Check / Uncheck</label></td>
+										                	<td><label>Specifications</label></td>
+										                	</tr>
+										                	
+										                	<c:if test="${estimate.shape.withSides}">
+										                	<tr>
+										                	<td align="center">
+										                	<form:checkbox path="plasterBackToBack" class="form-control"/>
+										                	</td>
+										                	<td>Plaster Front & Back (2 Sides)</td>
+										                	</tr>
+										                	</c:if>
+										                	
+										                	<tr>
+										                	<td align="center">
+										                	<form:checkbox path="plasterTopSide" class="form-control"/>
+										                	</td>
+										                	<td>Include Top Side</td>
+										                	</tr>
+										                	
+										                </table>
+				                                        </c:if>
+				                                        
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>
 				                                    
@@ -460,7 +489,7 @@
 							                <!-- Get the list of block laying results given CHB -->
 							                <c:set value="${estimate.resultMapMasonryBlockLaying.get(entryCHB)}" 
 							                		var="blockLayingResultList"></c:set>
-							                		
+							               
 							                <c:forEach items="${blockLayingResultList}" var="blockLayingResult">
 							                <c:set value="${false}" var="rendered"></c:set>
 							                <tr>

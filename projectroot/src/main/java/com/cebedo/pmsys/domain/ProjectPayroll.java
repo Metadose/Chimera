@@ -273,4 +273,15 @@ public class ProjectPayroll implements IDomainObject {
     public void setUuid(UUID uuid) {
 	this.uuid = uuid;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof ProjectPayroll ? ((ProjectPayroll) obj).getKey()
+		.equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
 }

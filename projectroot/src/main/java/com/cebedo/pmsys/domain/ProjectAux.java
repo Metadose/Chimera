@@ -100,4 +100,15 @@ public class ProjectAux implements IDomainObject {
 	this.grandTotalPayroll = grandTotalPayroll;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof ProjectAux ? ((ProjectAux) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

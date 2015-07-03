@@ -233,4 +233,15 @@ public class ConcreteProportion implements IDomainObject {
 	this.unitKeyGravel = u;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof ConcreteProportion ? ((ConcreteProportion) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

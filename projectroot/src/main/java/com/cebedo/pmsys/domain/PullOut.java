@@ -173,4 +173,15 @@ public class PullOut implements IDomainObject {
 		project.getId(), delivery2.getUuid(), "*", "*");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof PullOut ? ((PullOut) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

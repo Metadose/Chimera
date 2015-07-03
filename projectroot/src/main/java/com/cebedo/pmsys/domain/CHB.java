@@ -205,4 +205,15 @@ public class CHB implements IDomainObject {
 	return null;
     }
 
+    // TODO Override the others.
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof CHB ? ((CHB) obj).getKey().equals(getKey())
+		: false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
 }

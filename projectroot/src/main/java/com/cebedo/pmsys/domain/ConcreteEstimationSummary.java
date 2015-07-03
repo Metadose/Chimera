@@ -419,4 +419,15 @@ public class ConcreteEstimationSummary implements IDomainObject {
     public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof ConcreteEstimationSummary ? ((ConcreteEstimationSummary) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
 }

@@ -108,4 +108,15 @@ public class EstimationAllowance implements IDomainObject {
 		company2.getId(), "*");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof EstimationAllowance ? ((EstimationAllowance) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

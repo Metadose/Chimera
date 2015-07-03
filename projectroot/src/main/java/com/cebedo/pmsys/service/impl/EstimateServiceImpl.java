@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
+import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.MessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.BlockLayingMixture;
@@ -24,6 +25,7 @@ import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationAllowance;
+import com.cebedo.pmsys.domain.PlasterMixture;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -35,6 +37,7 @@ import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.service.EstimateService;
+import com.cebedo.pmsys.service.PlasterMixtureService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.udojava.evalex.Expression;
 
@@ -47,6 +50,12 @@ public class EstimateServiceImpl implements EstimateService {
     private CHBValueRepo chbValueRepo;
     private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
     private BlockLayingMixtureService blockLayingMixtureService;
+    private PlasterMixtureService plasterMixtureService;
+
+    public void setPlasterMixtureService(
+	    PlasterMixtureService plasterMixtureService) {
+	this.plasterMixtureService = plasterMixtureService;
+    }
 
     public void setBlockLayingMixtureService(
 	    BlockLayingMixtureService blockLayingMixtureService) {
@@ -279,6 +288,11 @@ public class EstimateServiceImpl implements EstimateService {
 	    computeMasonryBlockLaying(estimate, shape, chbList, proportions);
 	}
 
+	// If we're estimating masonry plastering.
+	if (estimate.willComputeMasonryPlastering()) {
+	    computeMasonryPlastering(estimate, shape, proportions);
+	}
+
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
 	    computeConcrete(estimate, shape, proportions);
@@ -288,6 +302,74 @@ public class EstimateServiceImpl implements EstimateService {
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
+    }
+
+    /**
+     * Estimate amount of plastering.
+     * 
+     * @param estimate
+     * @param shape
+     * @param proportions
+     */
+    private void computeMasonryPlastering(Estimate estimate, Shape shape,
+	    List<ConcreteProportion> proportions) {
+
+	// If a shape has no sides,
+	// then automatically, the number of sides to plaster will be 1.
+	if (!shape.isWithSides()) {
+	    estimate.setPlasterBackToBack(false);
+	}
+
+	// If we're plastering back to back,
+	// multiply the area by 2.
+	// Else, plaster only 1 side.
+	boolean plasterBackToBack = estimate.isPlasterBackToBack();
+	double shapeArea = shape.getArea();
+	double area = plasterBackToBack ? shapeArea * 2 : shape.getArea();
+	double volume = area * 0.016; // 0.016 is the standard thickness of
+				      // plaster.
+
+	// TODO If we're plastering the top side,
+	// get the thickness area then plaster it.
+	boolean plasterTopSide = estimate.isPlasterTopSide();
+	if (plasterTopSide) {
+	    double thickness = shape.getVolume() / shapeArea;
+	}
+
+	// Get the list of plaster mixtures.
+	List<PlasterMixture> plasterMixtures = this.plasterMixtureService
+		.list();
+	Map<ConcreteProportion, MasonryPlasteringEstimateResults> plasteringEstimateResults = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
+
+	for (ConcreteProportion proportion : proportions) {
+
+	    // Find the appropriate plaster mixture
+	    // given this proportion.
+	    String propKey = proportion.getKey();
+	    PlasterMixture plasterMixture = new PlasterMixture();
+	    for (PlasterMixture plasterMix : plasterMixtures) {
+		String plasterMixProportionKey = plasterMix
+			.getConcreteProportion().getKey();
+		if (propKey.equals(plasterMixProportionKey)) {
+		    plasterMixture = plasterMix;
+		    break;
+		}
+	    }
+
+	    double bags40kg = volume * plasterMixture.getCement40kg();
+	    double bags50kg = volume * plasterMixture.getCement50kg();
+	    double sand = volume * plasterMixture.getSand();
+
+	    // Set the results, concrete proportion, plaster mixture,
+	    // is back to back, plaster top side.
+	    MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
+		    bags40kg, bags50kg, sand, proportion, plasterMixture,
+		    plasterBackToBack, plasterTopSide);
+	    plasteringEstimateResults.put(proportion, plasteringResults);
+	}
+
+	// Set all results.
+	estimate.setResultMapMasonryPlastering(plasteringEstimateResults);
     }
 
     /**

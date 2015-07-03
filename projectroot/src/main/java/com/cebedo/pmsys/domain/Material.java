@@ -315,4 +315,15 @@ public class Material implements IDomainObject {
 		project.getId(), "*", "*");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Material ? ((Material) obj).getKey().equals(
+		getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
 }

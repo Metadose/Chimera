@@ -81,13 +81,15 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY,
+	return String.format(
+		RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY,
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
     public static String constructPattern(Project proj) {
-	return String.format(RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY,
-		proj.getCompany().getId(), proj.getId(), "*");
+	return String.format(
+		RedisKeyRegistry.KEY_MASONRY_CHB_ESTIMATION_SUMMARY, proj
+			.getCompany().getId(), proj.getId(), "*");
     }
 
     public Company getCompany() {
@@ -204,6 +206,17 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
 
     public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof MasonryCHBEstimationSummary ? ((MasonryCHBEstimationSummary) obj)
+		.getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
     }
 
 }
