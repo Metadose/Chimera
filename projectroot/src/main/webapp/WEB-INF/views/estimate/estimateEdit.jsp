@@ -467,9 +467,19 @@
 							                <!-- Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
 							                <table class="table table-bordered table-striped">
 							                <tr>
-							                <td colspan="4"><label>Concrete Hollow Blocks (CHB)</label></td>
-							                <td colspan="3"><label>Block Laying</label></td>
-							                <td colspan="6"><label>Plastering</label></td>
+							                <td colspan="4" class="table-cebedo-top-header">
+							                <span class="label btn-success">CONCRETE HOLLOW BLOCKS (CHB)</span>
+							                </td>
+							                <td colspan="3" class="table-cebedo-top-header">
+							                <span class="label btn-primary">
+							                BLOCK LAYING
+							                </span>
+							                </td>
+							                <td colspan="6" class="table-cebedo-top-header">
+							                <span class="label btn-danger">
+							                PLASTERING
+							                </span>
+							                </td>
 							                </tr>
 							                <tr>
 							                <td><label>Measurement</label></td>
