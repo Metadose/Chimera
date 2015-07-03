@@ -547,6 +547,7 @@
     <beans:bean id="blockLayingMixtureService" class="com.cebedo.pmsys.service.impl.BlockLayingMixtureServiceImpl">
         <beans:property name="blockLayingMixtureValueRepo" ref="blockLayingMixtureValueRepo"></beans:property>
         <beans:property name="chbValueRepo" ref="chbValueRepo"></beans:property>
+        <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="blockLayingMixtureValueRepo" class="com.cebedo.pmsys.repository.BlockLayingMixtureValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />

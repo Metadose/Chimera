@@ -45,6 +45,7 @@
 				                                            	<th>Name</th>
 				                                                <th>Description</th>
 				                                                <th>CHB Measurement</th>
+				                                                <th>Concrete Proportion</th>
 				                                                <th>No. of Cement Bags</th>
 				                                                <th>Sand (cu.m.)</th>
 				                                            </tr>
@@ -68,6 +69,7 @@
 						                                                <td>${blockLayingMixture.name}</td>
 						                                                <td>${blockLayingMixture.description}</td>
 						                                                <td>${blockLayingMixture.chbMeasurement.getDisplayName()}</td>
+						                                                <td>${blockLayingMixture.concreteProportion.getDisplayName()}</td>
 						                                                <td>${blockLayingMixture.cementBags}</td>
 						                                                <td>${blockLayingMixture.sand}</td>
 						                                            </tr>

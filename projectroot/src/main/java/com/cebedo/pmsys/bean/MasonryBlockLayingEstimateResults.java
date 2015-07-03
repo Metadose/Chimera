@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 
 public class MasonryBlockLayingEstimateResults implements Serializable {
 
@@ -16,6 +17,11 @@ public class MasonryBlockLayingEstimateResults implements Serializable {
     private CHB chbMeasurement;
 
     /**
+     * Assigned input.
+     */
+    private ConcreteProportion concreteProportion;
+
+    /**
      * Results.
      */
     private double bags;
@@ -26,11 +32,13 @@ public class MasonryBlockLayingEstimateResults implements Serializable {
     }
 
     public MasonryBlockLayingEstimateResults(CHB chb,
-	    BlockLayingMixture mixture, double bagsNeeded, double sandNeeded) {
+	    BlockLayingMixture mixture, double bagsNeeded, double sandNeeded,
+	    ConcreteProportion proportion) {
 	setBags(bagsNeeded);
 	setSand(sandNeeded);
 	setBlockLayingMixture(mixture);
 	setChbMeasurement(chb);
+	setConcreteProportion(proportion);
     }
 
     public BlockLayingMixture getBlockLayingMixture() {
@@ -63,6 +71,14 @@ public class MasonryBlockLayingEstimateResults implements Serializable {
 
     public void setSand(double sand) {
 	this.sand = sand;
+    }
+
+    public ConcreteProportion getConcreteProportion() {
+	return concreteProportion;
+    }
+
+    public void setConcreteProportion(ConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
     }
 
 }

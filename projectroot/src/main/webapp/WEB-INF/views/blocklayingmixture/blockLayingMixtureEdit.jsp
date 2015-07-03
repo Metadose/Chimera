@@ -92,6 +92,14 @@
 	 		                                    			</form:select>
 	 		                                    			<p class="help-block">Add more details about this blockLayingMixture</p>
 	 		                                    			
+	 		                                    			<label>Concrete Proportion</label>
+				                                            <form:select class="form-control" path="concreteProportionKey"> 
+	                                     						<c:forEach items="${concreteProportionList}" var="proportion"> 
+	                                     							<form:option value="${proportion.getKey()}" label="${proportion.getDisplayName()}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+	 		                                    			<p class="help-block">Add more details about this blockLayingMixture</p>
+	 		                                    			
 				                                            <label>No. of Cement Bags</label>
 				                                            <form:input type="text" placeholder="Sample: Typically used as a blockLayingMixture for measuring cement" class="form-control" path="cementBags"/>
 				                                            <p class="help-block">Add more details about this blockLayingMixture</p>

@@ -185,16 +185,20 @@ public class CHB implements IDomainObject {
      * Get the block laying mix for this CHB.
      * 
      * @param mixList
+     * @param proportion
      * @return
      */
     public BlockLayingMixture getBlockLayingMixture(
-	    List<BlockLayingMixture> mixList) {
+	    List<BlockLayingMixture> mixList, ConcreteProportion proportion) {
 
+	String proportionKey = proportion.getKey();
+	String chbKey = getKey();
 	for (BlockLayingMixture mix : mixList) {
 
 	    // If we have found the mix for this CHB, then use it.
-	    String thisCHBKey = mix.getChbMeasurement().getKey();
-	    if (getKey().equals(thisCHBKey)) {
+	    String mixCHBKey = mix.getChbMeasurement().getKey();
+	    if (chbKey.equals(mixCHBKey)
+		    && mix.getConcreteProportionKey().equals(proportionKey)) {
 		return mix;
 	    }
 	}

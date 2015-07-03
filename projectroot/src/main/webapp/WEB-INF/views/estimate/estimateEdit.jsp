@@ -296,7 +296,7 @@
 				                                        <br/>
 				                                        <h4>
 				                                        <span class="badge bg-blue">Input</span>
-				                                        Masonry (CHB)</h4>
+				                                        Masonry</h4>
 				                                        <label>
 										                <c:url var="urlLink" value="/chb/list"/>
 										                <a href="${urlLink}" class="general-link">
@@ -356,7 +356,7 @@
                                 <div class="tab-pane" id="tab_results">
                                 	<div class="row">
 									    <c:if test="${!empty estimate.resultMapConcrete}">
-                   						<div class="col-md-6">
+                   						<div class="col-md-4">
                								<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Concrete</h3>
@@ -423,7 +423,7 @@
 									    </c:if>
 									    
 									    <c:if test="${!empty estimate.resultMapMasonryCHB}">
-									    <div class="col-md-6">
+									    <div class="col-md-8">
 								    		<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Masonry</h3>
@@ -437,11 +437,12 @@
 							                <!-- Map<CHB, MasonryEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryEstimateResults>(); -->
 							                <table class="table table-bordered table-striped">
 							                <tr>
-							                <td colspan="3"><label>Concrete Hollow Blocks (CHB)</label></td>
+							                <td colspan="4"><label>Concrete Hollow Blocks (CHB)</label></td>
 							                <td colspan="3"><label>Block Laying</label></td>
 							                </tr>
 							                <tr>
 							                <td><label>Measurement</label></td>
+							                <td><label>Concrete Proportion</label></td>
 							                <td><label>Pieces per Sq. Meter</label></td>
 							                <td><label>Estimated No. of Pieces</label></td>
 							                <td><label>Mixture</label></td>
@@ -451,10 +452,20 @@
 							                
 							                <tbody>
 							                <c:forEach items="${estimate.resultMapMasonryCHB}" var="resultEntry">
+							                
+							                <!-- CHB and CHB result -->
 							                <c:set value="${resultEntry.key}" var="entryCHB"></c:set>
 							                <c:set value="${resultEntry.value}" var="entryResult"></c:set>
+							                
+							                <!-- Get the list of block laying results given CHB -->
+							                <c:set value="${estimate.resultMapMasonryBlockLaying.get(entryCHB)}" 
+							                		var="blockLayingResultList"></c:set>
+							                		
+							                <c:forEach items="${blockLayingResultList}" var="blockLayingResult">
+							                <c:set value="${false}" var="rendered"></c:set>
 							                <tr>
 							                
+							                	<c:if test="${!rendered && blockLayingResultList.size() > 0}">
 							                	<!-- CHB -->
 								                <td><label>
 								                <c:url var="urlLink" value="/chb/edit/${entryCHB.getKey()}-end"/>
@@ -462,16 +473,26 @@
 								                ${entryCHB.name}
 								                </a>
 								                </label></td>
-								                <td align="right"><label>${entryCHB.getPerSqM()}</label></td>
-								                <td align="right">${entryResult.getTotalCHBAsString()}</td>
+								                </c:if>
+								                
+								                <td>${blockLayingResult.concreteProportion.getDisplayName()}</td>
+								                
+								                <c:if test="${!rendered && blockLayingResultList.size() > 0}">
+								                <td align="right">
+								                ${entryCHB.getPerSqM()}</td>
+								                <td align="right">
+								                ${entryResult.getTotalCHBAsString()}</td>
+								                <c:set value="${true}" var="rendered"></c:set>
+								                </c:if>
 								                
 								                <!-- Block Laying -->
-								                <c:set value="${estimate.resultMapMasonryBlockLaying.get(entryCHB)}" var="layingResult"></c:set>
-								                <c:set value="${layingResult.blockLayingMixture}" var="layingMix"></c:set>
-								                <td>${layingMix.name}</td>
-								                <td align="right">${layingResult.bags}</td>
-								                <td align="right">${layingResult.sand}</td>
+								                <td>${blockLayingResult.blockLayingMixture.name}</td>
+								                <td>${blockLayingResult.bags}</td>
+								                <td>${blockLayingResult.sand}</td>
+								                
 							                </tr>
+							                </c:forEach> <!-- End of loop of all block laying result in this CHB -->
+							                
 							                </c:forEach>
 							                </tbody>
 							                

@@ -12,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.repository.BlockLayingMixtureValueRepo;
 import com.cebedo.pmsys.repository.CHBValueRepo;
+import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
@@ -25,6 +27,12 @@ public class BlockLayingMixtureServiceImpl implements BlockLayingMixtureService 
     private AuthHelper authHelper = new AuthHelper();
     private BlockLayingMixtureValueRepo blockLayingMixtureValueRepo;
     private CHBValueRepo chbValueRepo;
+    private ConcreteProportionValueRepo concreteProportionValueRepo;
+
+    public void setConcreteProportionValueRepo(
+	    ConcreteProportionValueRepo concreteProportionValueRepo) {
+	this.concreteProportionValueRepo = concreteProportionValueRepo;
+    }
 
     public void setChbValueRepo(CHBValueRepo chbValueRepo) {
 	this.chbValueRepo = chbValueRepo;
@@ -57,6 +65,11 @@ public class BlockLayingMixtureServiceImpl implements BlockLayingMixtureService 
 	// Set the CHB object from key.
 	CHB chbMeasurement = this.chbValueRepo.get(obj.getChbKey());
 	obj.setChbMeasurement(chbMeasurement);
+
+	// Set the concrete proportion.
+	ConcreteProportion proportion = this.concreteProportionValueRepo
+		.get(obj.getConcreteProportionKey());
+	obj.setConcreteProportion(proportion);
 
 	// If create.
 	if (obj.getUuid() == null) {

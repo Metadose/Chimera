@@ -65,7 +65,7 @@ public class Estimate implements IDomainObject {
      */
     private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
     private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
-    private Map<CHB, MasonryBlockLayingEstimateResults> resultMapMasonryBlockLaying = new HashMap<CHB, MasonryBlockLayingEstimateResults>();
+    private Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
 
     /**
      * Extension map.
@@ -280,12 +280,12 @@ public class Estimate implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public Map<CHB, MasonryBlockLayingEstimateResults> getResultMapMasonryBlockLaying() {
+    public Map<CHB, List<MasonryBlockLayingEstimateResults>> getResultMapMasonryBlockLaying() {
 	return resultMapMasonryBlockLaying;
     }
 
     public void setResultMapMasonryBlockLaying(
-	    Map<CHB, MasonryBlockLayingEstimateResults> resultMapMasonryBlockLaying) {
+	    Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying) {
 	this.resultMapMasonryBlockLaying = resultMapMasonryBlockLaying;
     }
 

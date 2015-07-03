@@ -18,10 +18,12 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.service.CHBService;
+import com.cebedo.pmsys.service.ConcreteProportionService;
 
 @Controller
 @RequestMapping(RedisConstants.OBJECT_BLOCK_LAYING_MIXTURE)
@@ -31,10 +33,19 @@ public class BlockLayingMixtureController {
     private static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
     private static final String ATTR_BLOCK_LAYING_MIXTURE = "blockLayingMixture";
     private static final String ATTR_CHB_LIST = "chbList";
+    private static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
 
     private AuthHelper authHelper = new AuthHelper();
     private BlockLayingMixtureService blockLayingMixtureService;
     private CHBService chbService;
+    private ConcreteProportionService concreteProportionService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "concreteProportionService")
+    public void setConcreteProportionService(
+	    ConcreteProportionService concreteProportionService) {
+	this.concreteProportionService = concreteProportionService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "chbService")
@@ -92,6 +103,13 @@ public class BlockLayingMixtureController {
 	// Add to model.
 	List<CHB> chbList = this.chbService.list();
 	model.addAttribute(ATTR_CHB_LIST, chbList);
+
+	// List of concrete proportions.
+	// Add to model.
+	List<ConcreteProportion> concreteProportionList = this.concreteProportionService
+		.list();
+	model.addAttribute(ATTR_CONCRETE_PROPORTION_LIST,
+		concreteProportionList);
 
 	// If we're creating.
 	if (key.equals("0")) {

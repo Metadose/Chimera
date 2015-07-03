@@ -27,12 +27,16 @@ public class BlockLayingMixture implements IDomainObject {
      */
     private double cementBags; // TODO Not sure if this is 40kg or 50kg bag?
     private double sand; // In cubic meters.
+
     private CHB chbMeasurement; // Generated using the key from form.
+    private ConcreteProportion concreteProportion; // Generated using the key
+						   // from form.
 
     /**
      * Bean-backed form.
      */
     private String chbKey;
+    private String concreteProportionKey;
 
     public BlockLayingMixture() {
 	;
@@ -128,6 +132,22 @@ public class BlockLayingMixture implements IDomainObject {
     public static String constructPattern(Company company2) {
 	return String.format(RedisKeyRegistry.KEY_BLOCK_LAYING_MIXTURE,
 		company2.getId(), "*");
+    }
+
+    public String getConcreteProportionKey() {
+	return concreteProportionKey;
+    }
+
+    public void setConcreteProportionKey(String concreteProportionKey) {
+	this.concreteProportionKey = concreteProportionKey;
+    }
+
+    public ConcreteProportion getConcreteProportion() {
+	return concreteProportion;
+    }
+
+    public void setConcreteProportion(ConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
     }
 
 }

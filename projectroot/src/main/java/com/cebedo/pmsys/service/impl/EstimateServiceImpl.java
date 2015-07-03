@@ -208,9 +208,11 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimate
      * @param shape
      * @param chbList
+     * @param proportions
      * @param blockLayingList
      */
-    private void prepareInputs(Estimate estimate, Shape shape, List<CHB> chbList) {
+    private void prepareInputs(Estimate estimate, Shape shape,
+	    List<CHB> chbList, List<ConcreteProportion> proportions) {
 
 	// Set allowances.
 	setEstimationAllowance(estimate);
@@ -220,6 +222,24 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Prepare estimation inputs.
 	prepareMasonryCHBEstimationInputs(estimate, chbList);
+
+	// Prepare the concrete proportions.
+	prepareConcreteEstimationInputs(estimate, proportions);
+    }
+
+    /**
+     * Prepare the concrete proportions.
+     * 
+     * @param estimate
+     * @param proportions
+     */
+    private void prepareConcreteEstimationInputs(Estimate estimate,
+	    List<ConcreteProportion> proportions) {
+	for (String proportionKey : estimate.getConcreteProportionKeys()) {
+	    ConcreteProportion prop = this.concreteProportionValueRepo
+		    .get(proportionKey);
+	    proportions.add(prop);
+	}
     }
 
     /**
@@ -242,11 +262,12 @@ public class EstimateServiceImpl implements EstimateService {
 	// Shape to compute.
 	Shape shape = estimate.getShape();
 
-	// List of CHB's chosen.
+	// List of chosen inputs.
 	List<CHB> chbList = new ArrayList<CHB>();
+	List<ConcreteProportion> proportions = new ArrayList<ConcreteProportion>();
 
 	// Prepare inputs.
-	prepareInputs(estimate, shape, chbList);
+	prepareInputs(estimate, shape, chbList, proportions);
 
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
@@ -255,12 +276,12 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If we're estimating masonry block laying.
 	if (estimate.willComputeMasonryBlockLaying()) {
-	    computeMasonryBlockLaying(estimate, shape, chbList);
+	    computeMasonryBlockLaying(estimate, shape, chbList, proportions);
 	}
 
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
-	    computeConcrete(estimate, shape);
+	    computeConcrete(estimate, shape, proportions);
 	}
 
 	this.estimateValueRepo.set(estimate);
@@ -277,37 +298,52 @@ public class EstimateServiceImpl implements EstimateService {
      * @param chbList
      */
     private void computeMasonryBlockLaying(Estimate estimate, Shape shape,
-	    List<CHB> chbList) {
+	    List<CHB> chbList, List<ConcreteProportion> concreteProportions) {
 
 	// Prepare the map,
 	// and the BLM list.
-	Map<CHB, MasonryBlockLayingEstimateResults> blockLayingResults = new HashMap<CHB, MasonryBlockLayingEstimateResults>();
+	Map<CHB, List<MasonryBlockLayingEstimateResults>> blockLayingResults = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
 	List<BlockLayingMixture> mixList = this.blockLayingMixtureService
 		.list();
 
 	// Loop through all mixtures.
 	for (CHB chb : chbList) {
 
-	    // If a mixture does not exist for this CHB,
-	    // continue.
-	    BlockLayingMixture mixture = chb.getBlockLayingMixture(mixList);
-	    if (mixture == null) {
-		continue;
+	    // For every CHB,
+	    // you have a list of results depending on your list of proportions.
+	    List<MasonryBlockLayingEstimateResults> results = new ArrayList<MasonryBlockLayingEstimateResults>();
+
+	    for (ConcreteProportion proportion : concreteProportions) {
+
+		// Given a CHB and proportion,
+		// get the block laying mix.
+		BlockLayingMixture mixture = chb.getBlockLayingMixture(mixList,
+			proportion);
+
+		// If a mixture does not exist for this CHB,
+		// continue.
+		if (mixture == null) {
+		    continue;
+		}
+
+		// Get the inputs.
+		double area = shape.getArea();
+		double bags = mixture.getCementBags();
+		double sand = mixture.getSand();
+
+		// Compute.
+		double bagsNeeded = area * bags;
+		double sandNeeded = area * sand;
+
+		// Set the results.
+		MasonryBlockLayingEstimateResults layingResults = new MasonryBlockLayingEstimateResults(
+			chb, mixture, bagsNeeded, sandNeeded, proportion);
+		results.add(layingResults);
 	    }
 
-	    // Get the inputs.
-	    double area = shape.getArea();
-	    double bags = mixture.getCementBags();
-	    double sand = mixture.getSand();
-
-	    // Compute.
-	    double bagsNeeded = area * bags;
-	    double sandNeeded = area * sand;
-
-	    // Set the results.
-	    MasonryBlockLayingEstimateResults layingResults = new MasonryBlockLayingEstimateResults(
-		    chb, mixture, bagsNeeded, sandNeeded);
-	    blockLayingResults.put(chb, layingResults);
+	    // Set to map of CHB,
+	    // to list of proportion results.
+	    blockLayingResults.put(chb, results);
 	}
 
 	// Set results.
@@ -320,16 +356,13 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimate
      * @param shape
      */
-    private void computeConcrete(Estimate estimate, Shape shape) {
+    private void computeConcrete(Estimate estimate, Shape shape,
+	    List<ConcreteProportion> concreteProportions) {
 
 	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
 
 	// Loop through all concrete proportion keys.
-	for (String proportionKey : estimate.getConcreteProportionKeys()) {
-
-	    // Set the concrete proportion based on key.
-	    ConcreteProportion proportion = this.concreteProportionValueRepo
-		    .get(proportionKey);
+	for (ConcreteProportion proportion : concreteProportions) {
 
 	    // Now, compute the estimated concrete.
 	    ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
