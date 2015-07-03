@@ -450,9 +450,10 @@
                  								</div>
 									    </div>
 									    </c:if>
-									    
+									</div>
+									<div class="row">
 									    <c:if test="${!empty estimate.resultMapMasonryCHB}">
-									    <div class="col-md-8">
+									    <div class="col-md-12">
 								    		<div class="box box-body box-default">
                								<div class="box-header">
                									<h3 class="box-title">Masonry</h3>
@@ -468,6 +469,7 @@
 							                <tr>
 							                <td colspan="4"><label>Concrete Hollow Blocks (CHB)</label></td>
 							                <td colspan="3"><label>Block Laying</label></td>
+							                <td colspan="6"><label>Plastering</label></td>
 							                </tr>
 							                <tr>
 							                <td><label>Measurement</label></td>
@@ -477,6 +479,13 @@
 							                <td><label>Mixture</label></td>
 							                <td><label>Cement (bags)</label></td>
 							                <td><label>Sand (cu.m.)</label></td>
+							                
+							                <td><label>Mixture</label></td>
+							                <td><label>Cement (If 40kg)</label></td>
+							                <td><label>Cement (If 50kg)</label></td>
+							                <td><label>Sand (cu.m.)</label></td>
+							                <td><label>Front and Back</label></td>
+							                <td><label>Top Side Included</label></td>
 							                </tr>
 							                
 							                <tbody>
@@ -504,6 +513,8 @@
 								                </label></td>
 								                </c:if>
 								                
+								                <c:set value="${estimate.resultMapMasonryPlastering.get(blockLayingResult.concreteProportion)}" 
+							                		var="plasteringResult"></c:set>
 								                <td>${blockLayingResult.concreteProportion.getDisplayName()}</td>
 								                
 								                <c:if test="${!rendered && blockLayingResultList.size() > 0}">
@@ -518,6 +529,14 @@
 								                <td>${blockLayingResult.blockLayingMixture.name}</td>
 								                <td>${blockLayingResult.bags}</td>
 								                <td>${blockLayingResult.sand}</td>
+								                
+								                <!-- Plastering -->
+								                <td>${plasteringResult.plasterMixture.getDisplayName()}</td>
+								                <td>${plasteringResult.cement40kg}</td>
+								                <td>${plasteringResult.cement50kg}</td>
+								                <td>${plasteringResult.sand}</td>
+								                <td>${plasteringResult.plasterBackToBack}</td>
+								                <td>${plasteringResult.plasterTopSide}</td>
 								                
 							                </tr>
 							                </c:forEach> <!-- End of loop of all block laying result in this CHB -->

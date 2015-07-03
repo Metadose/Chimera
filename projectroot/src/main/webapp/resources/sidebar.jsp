@@ -133,6 +133,12 @@ $(document).ready(function() {
 		                    <i class="fa fa-plus"></i> <span>Estimation Allowance</span>
 		                </a>
 		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/unit/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-expand"></i> <span>Units of Measure</span>
+		                </a>
+		            </li>
                 	<li>
 		            	<c:url var="urlList" value="/materialcategory/list/"/>
 		                <a href="${urlList}">
@@ -146,15 +152,15 @@ $(document).ready(function() {
 		                </a>
 		            </li>
 		            <li>
-		            	<c:url var="urlList" value="/unit/list"/>
-		                <a href="${urlList}">
-		                    <i class="fa fa-expand"></i> <span>Units of Measure</span>
-		                </a>
-		            </li>
-		            <li>
 		            	<c:url var="urlList" value="/concreteproportion/list"/>
 		                <a href="${urlList}">
 		                    <i class="fa">&#65285;</i> <span>Concrete Proportion</span>
+		                </a>
+		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/chb/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-cubes"></i> <span>Hollow Blocks (CHB)</span>
 		                </a>
 		            </li>
 		            <li>
@@ -167,12 +173,6 @@ $(document).ready(function() {
 		            	<c:url var="urlList" value="/plastermixture/list"/>
 		                <a href="${urlList}">
 		                    <i class="fa">&#65285;</i> <span>Plaster Mixture</span>
-		                </a>
-		            </li>
-		            <li>
-		            	<c:url var="urlList" value="/chb/list"/>
-		                <a href="${urlList}">
-		                    <i class="fa fa-cubes"></i> <span>Hollow Blocks (CHB)</span>
 		                </a>
 		            </li>
                 </ul>
