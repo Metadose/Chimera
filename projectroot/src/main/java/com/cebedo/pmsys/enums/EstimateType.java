@@ -2,7 +2,7 @@ package com.cebedo.pmsys.enums;
 
 public enum EstimateType {
 
-    CONCRETE(1, "Concrete"),
+    CONCRETE(1, "Concrete Slabs & Columns"),
 
     MASONRY_CHB(2, "Masonry (CHB)"),
 

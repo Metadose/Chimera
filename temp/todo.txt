@@ -78,7 +78,7 @@ Make 0.016 config plastering kay what if multiple layers of plaster
 
 gitterchat instead of irc for support?
 
-
+remove table-responsive classes
 
 
 
