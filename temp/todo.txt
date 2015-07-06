@@ -68,6 +68,16 @@ Brosures for marketing
 
 Remove upload foto of project??
 
+Provide support via Irc, put irc to clients
+
+Nver put font size in pixels
+
+Gremlins.js, fuzz testing. In moderngrade repo
+
+Make 0.016 config plastering kay what if multiple layers of plaster
+
+gitterchat instead of irc for support?
+
 
 
 

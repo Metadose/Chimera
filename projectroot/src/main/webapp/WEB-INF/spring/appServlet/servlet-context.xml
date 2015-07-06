@@ -544,6 +544,24 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
+    <!-- CHB Footing Mixture -->
+    <beans:bean id="chbFootingMixtureService" class="com.cebedo.pmsys.service.impl.CHBFootingMixtureServiceImpl">
+        <beans:property name="chbFootingMixtureValueRepo" ref="chbFootingMixtureValueRepo"></beans:property>
+        <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
+        <beans:property name="chbFootingDimensionValueRepo" ref="chbFootingDimensionValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="chbFootingMixtureValueRepo" class="com.cebedo.pmsys.repository.CHBFootingMixtureValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- CHB Footing Dimension -->
+    <beans:bean id="chbFootingDimensionService" class="com.cebedo.pmsys.service.impl.CHBFootingDimensionServiceImpl">
+        <beans:property name="chbFootingDimensionValueRepo" ref="chbFootingDimensionValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="chbFootingDimensionValueRepo" class="com.cebedo.pmsys.repository.CHBFootingDimensionValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
     <!-- Plaster Mixture -->
     <beans:bean id="plasterMixtureService" class="com.cebedo.pmsys.service.impl.PlasterMixtureServiceImpl">
         <beans:property name="plasterMixtureValueRepo" ref="plasterMixtureValueRepo"></beans:property>

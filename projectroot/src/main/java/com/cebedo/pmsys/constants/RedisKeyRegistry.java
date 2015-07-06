@@ -10,6 +10,10 @@ public class RedisKeyRegistry {
 
     public static final String KEY_PLASTER_MIXTURE = "company.fk:%s:plastermixture:%s";
 
+    public static final String KEY_CHB_FOOTING_DIMENSION = "company.fk:%s:chbfootingdimension:%s";
+
+    public static final String KEY_CHB_FOOTING_MIXTURE = "company.fk:%s:chbfootingmixture:%s";
+
     public static final String KEY_ESTIMATION_ALLOWANCE = "company.fk:%s:estimationallowance:%s";
 
     public static final String KEY_BLOCK_LAYING_MIXTURE = "company.fk:%s:blocklayingmixture:%s";

@@ -139,6 +139,12 @@ $(document).ready(function() {
 		                    <i class="fa fa-expand"></i> <span>Units of Measure</span>
 		                </a>
 		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/chbfootingdimension/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-expand"></i> <span>CHB Footing Dimension</span>
+		                </a>
+		            </li>
                 	<li>
 		            	<c:url var="urlList" value="/materialcategory/list/"/>
 		                <a href="${urlList}">
@@ -167,6 +173,12 @@ $(document).ready(function() {
 		            	<c:url var="urlList" value="/blocklayingmixture/list"/>
 		                <a href="${urlList}">
 		                    <i class="fa">&#65285;</i> <span>Block Laying Mixture</span>
+		                </a>
+		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/chbfootingmixture/list"/>
+		                <a href="${urlList}">
+		                    <i class="fa">&#65285;</i> <span>CHB Footing Mixture</span>
 		                </a>
 		            </li>
 		            <li>
