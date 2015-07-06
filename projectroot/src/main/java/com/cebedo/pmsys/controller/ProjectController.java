@@ -73,6 +73,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
+import com.cebedo.pmsys.service.CHBFootingDimensionService;
 import com.cebedo.pmsys.service.CHBService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
@@ -127,6 +128,7 @@ public class ProjectController {
     public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
     public static final String ATTR_CHB_LIST = "chbList";
     public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
+    public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
@@ -211,6 +213,14 @@ public class ProjectController {
     private MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService;
     private EstimationAllowanceService estimationAllowanceService;
     private BlockLayingMixtureService blockLayingMixtureService;
+    private CHBFootingDimensionService chbFootingDimensionService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "chbFootingDimensionService")
+    public void setChbFootingDimensionService(
+	    CHBFootingDimensionService chbFootingDimensionService) {
+	this.chbFootingDimensionService = chbFootingDimensionService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "blockLayingMixtureService")
@@ -1895,6 +1905,11 @@ public class ProjectController {
 		    .list();
 	    model.addAttribute(ATTR_BLOCK_LAYING_MIXTURE_LIST,
 		    blockLayingMixtureList);
+	}
+
+	if (estimate.willComputeMasonryCHBFooting()) {
+	    model.addAttribute(ATTR_CHB_FOOTING_DIMENSION_LIST,
+		    this.chbFootingDimensionService.list());
 	}
 
     }

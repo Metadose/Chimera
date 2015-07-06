@@ -17,11 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.MessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
+import com.cebedo.pmsys.domain.CHBFootingDimension;
+import com.cebedo.pmsys.domain.CHBFootingMixture;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationAllowance;
@@ -36,6 +39,8 @@ import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
+import com.cebedo.pmsys.service.CHBFootingDimensionService;
+import com.cebedo.pmsys.service.CHBFootingMixtureService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.PlasterMixtureService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -51,6 +56,18 @@ public class EstimateServiceImpl implements EstimateService {
     private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
     private BlockLayingMixtureService blockLayingMixtureService;
     private PlasterMixtureService plasterMixtureService;
+    private CHBFootingMixtureService chbFootingMixtureService;
+    private CHBFootingDimensionService chbFootingDimensionService;
+
+    public void setChbFootingDimensionService(
+	    CHBFootingDimensionService chbFootingDimensionService) {
+	this.chbFootingDimensionService = chbFootingDimensionService;
+    }
+
+    public void setChbFootingMixtureService(
+	    CHBFootingMixtureService chbFootingMixtureService) {
+	this.chbFootingMixtureService = chbFootingMixtureService;
+    }
 
     public void setPlasterMixtureService(
 	    PlasterMixtureService plasterMixtureService) {
@@ -297,7 +314,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If we're estimating masonry CHB footing.
 	if (estimate.willComputeMasonryCHBFooting()) {
-
+	    computeMasonryCHBFooting(estimate, proportions);
 	}
 
 	// If computing concrete.
@@ -309,6 +326,86 @@ public class EstimateServiceImpl implements EstimateService {
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
+    }
+
+    /**
+     * Estimate the CHB footings.
+     * 
+     * @param estimate
+     * @param proportions
+     */
+    private void computeMasonryCHBFooting(Estimate estimate,
+	    List<ConcreteProportion> proportions) {
+
+	// Get the dimension key.
+	// And the footing mixes.
+	String dimensionKey = estimate.getChbFootingDimensionKey();
+	CHBFootingDimension footingDimension = this.chbFootingDimensionService
+		.get(dimensionKey);
+	List<CHBFootingMixture> footingMixes = this.chbFootingMixtureService
+		.list();
+
+	// For every proportion,
+	// there is a corresponding footing mix.
+	Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapCHBFooting = new HashMap<ConcreteProportion, MasonryCHBFootingEstimateResults>();
+	for (ConcreteProportion prop : proportions) {
+
+	    // Get the footing mixture, based on the concrete proportion
+	    // and dimension.
+	    CHBFootingMixture chbFootingMix = getCHBFootingMixture(
+		    footingMixes, dimensionKey, prop);
+	    if (chbFootingMix.getUuid() == null) {
+		continue;
+	    }
+
+	    double footingThickness = convertToMeter(
+		    footingDimension.getThicknessUnit(),
+		    footingDimension.getThickness());
+	    double footingWidth = convertToMeter(
+		    footingDimension.getWidthUnit(),
+		    footingDimension.getWidth());
+
+	    // TODO Optimize below code.
+	    // getLength(estimate) is called somewhere else in this class.
+	    double length = getLength(estimate);
+	    double footingVolume = footingThickness * footingWidth * length;
+
+	    // Estimations.
+	    double cement = footingVolume * chbFootingMix.getCement();
+	    double sand = footingVolume * chbFootingMix.getSand();
+	    double gravel = footingVolume * chbFootingMix.getGravel();
+
+	    // Put the results.
+	    MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(
+		    cement, gravel, sand, prop, footingDimension, chbFootingMix);
+	    resultMapCHBFooting.put(prop, footingResults);
+	}
+	// Set the result map of the CHB footing estimate.
+	estimate.setResultMapMasonryCHBFooting(resultMapCHBFooting);
+    }
+
+    /**
+     * Get the CHB footing mixture.
+     * 
+     * @param footingMixes
+     * @param dimensionKey
+     * @param prop
+     * @return
+     */
+    private CHBFootingMixture getCHBFootingMixture(
+	    List<CHBFootingMixture> footingMixes, String dimensionKey,
+	    ConcreteProportion prop) {
+	for (CHBFootingMixture footingMix : footingMixes) {
+
+	    String footingMixKey = footingMix.getFootingDimension().getKey();
+	    // If the dimension keys are equal.
+	    // If the concrete proportions are equal.
+	    if (dimensionKey.equals(footingMixKey)
+		    && prop.equals(footingMix.getConcreteProportion())) {
+		return footingMix;
+	    }
+	}
+	return new CHBFootingMixture();
     }
 
     /**

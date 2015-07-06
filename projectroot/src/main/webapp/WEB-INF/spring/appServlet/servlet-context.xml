@@ -539,6 +539,8 @@
         <beans:property name="estimationAllowanceValueRepo" ref="estimationAllowanceValueRepo"></beans:property>
         <beans:property name="blockLayingMixtureService" ref="blockLayingMixtureService"></beans:property>
         <beans:property name="plasterMixtureService" ref="plasterMixtureService"></beans:property>
+        <beans:property name="chbFootingMixtureService" ref="chbFootingMixtureService"></beans:property>
+        <beans:property name="chbFootingDimensionService" ref="chbFootingDimensionService"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />

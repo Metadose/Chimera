@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
@@ -71,6 +72,9 @@ public class Estimate implements IDomainObject {
 				       // 40sqm total.
     private boolean plasterTopSide; // Plaster the top side of the shape.
 
+    // Masonry (Footing) inputs.
+    private String chbFootingDimensionKey;
+
     /**
      * Results
      */
@@ -78,6 +82,7 @@ public class Estimate implements IDomainObject {
     private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
     private Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
     private Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
+    private Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting = new HashMap<ConcreteProportion, MasonryCHBFootingEstimateResults>();
 
     /**
      * Extension map.
@@ -355,6 +360,23 @@ public class Estimate implements IDomainObject {
 
     public void setChbFoundationUnit(CommonLengthUnit chbFoundationUnit) {
 	this.chbFoundationUnit = chbFoundationUnit;
+    }
+
+    public String getChbFootingDimensionKey() {
+	return chbFootingDimensionKey;
+    }
+
+    public void setChbFootingDimensionKey(String chbFootingDimensionKey) {
+	this.chbFootingDimensionKey = chbFootingDimensionKey;
+    }
+
+    public Map<ConcreteProportion, MasonryCHBFootingEstimateResults> getResultMapMasonryCHBFooting() {
+	return resultMapMasonryCHBFooting;
+    }
+
+    public void setResultMapMasonryCHBFooting(
+	    Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting) {
+	this.resultMapMasonryCHBFooting = resultMapMasonryCHBFooting;
     }
 
 }

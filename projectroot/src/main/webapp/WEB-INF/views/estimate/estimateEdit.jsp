@@ -364,6 +364,17 @@
 				                                        
 				                                        </c:if>
 				                                        
+				                                        <c:if test="${estimate.willComputeMasonryCHBFooting()}">
+				                                        <br/>
+				                                        <h4><span class="badge bg-blue">Input</span>Masonry (CHB Footing)</h4>
+				                                        <label>CHB Footing Dimension</label>
+				                                        <form:select class="form-control" path="chbFootingDimensionKey"> 
+                                    						<c:forEach items="${chbFootingDimensionList}" var="dimension"> 
+                                    							<form:option value="${dimension.getKey()}" label="${dimension.getName()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+				                                        </c:if>
+				                                        
 				                                        
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>
@@ -469,7 +480,7 @@
                								<div class="box-header">
                									<h3 class="box-title">Masonry</h3>
                								</div>
-               								<div class="box-body">
+               								<div class="box-body table-responsive">
                									<div class="callout callout-info callout-cebedo">
 						                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 							                </div>
@@ -487,8 +498,13 @@
 							                </span>
 							                </td>
 							                <td colspan="6" class="table-cebedo-top-header">
-							                <span class="label btn-danger">
+							                <span class="label btn-warning">
 							                PLASTERING
+							                </span>
+							                </td>
+							                <td colspan="5" class="table-cebedo-top-header">
+							                <span class="label btn-danger">
+							                CONCRETE HOLLOW BLOCKS (CHB) FOOTING
 							                </span>
 							                </td>
 							                </tr>
@@ -507,6 +523,12 @@
 							                <td><label>Sand (cu.m.)</label></td>
 							                <td><label>Front and Back</label></td>
 							                <td><label>Top Side Included</label></td>
+							                
+							                <td><label>Mixture</label></td>
+							                <td><label>Dimension</label></td>
+							                <td><label>Cement (50kg)</label></td>
+							                <td><label>Sand (cu.m.)</label></td>
+							                <td><label>Gravel (cu.m.)</label></td>
 							                </tr>
 							                
 							                <tbody>
@@ -536,6 +558,10 @@
 								                
 								                <c:set value="${estimate.resultMapMasonryPlastering.get(blockLayingResult.concreteProportion)}" 
 							                		var="plasteringResult"></c:set>
+							                	<c:set value="${estimate.resultMapMasonryCHBFooting.get(blockLayingResult.concreteProportion)}" 
+							                		var="footingResult"></c:set>
+							                		
+							                		
 								                <td>${blockLayingResult.concreteProportion.getDisplayName()}</td>
 								                
 								                <c:if test="${!rendered && blockLayingResultList.size() > 0}">
@@ -558,6 +584,13 @@
 								                <td>${plasteringResult.sand}</td>
 								                <td>${plasteringResult.plasterBackToBack}</td>
 								                <td>${plasteringResult.plasterTopSide}</td>
+								                
+								                <!-- CHB Footing -->
+								                <td>${footingResult.chbFootingMixture.name}</td>
+								                <td>${footingResult.chbFootingDimension.getName()}</td>
+								                <td>${footingResult.cement}</td>
+								                <td>${footingResult.sand}</td>
+								                <td>${footingResult.gravel}</td>
 								                
 							                </tr>
 							                </c:forEach> <!-- End of loop of all block laying result in this CHB -->
