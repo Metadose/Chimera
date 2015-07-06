@@ -62,6 +62,8 @@ public class Estimate implements IDomainObject {
     private String chbMeasurementKeys[];
 
     // Masonry (Plastering) inputs.
+    private double chbFoundationHeight;
+    private CommonLengthUnit chbFoundationUnit;
     private boolean plasterBackToBack; // Compute the needed plaster for the two
 				       // sides of the area. If we have a 20
 				       // sqm. wall, and we plaster back to
@@ -105,6 +107,10 @@ public class Estimate implements IDomainObject {
 
     public boolean willComputeMasonryPlastering() {
 	return this.estimateTypes.contains(EstimateType.MASONRY_PLASTERING);
+    }
+
+    public boolean willComputeMasonryCHBFooting() {
+	return this.estimateTypes.contains(EstimateType.MASONRY_CHB_FOOTING);
     }
 
     public Company getCompany() {
@@ -333,6 +339,22 @@ public class Estimate implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    public double getChbFoundationHeight() {
+	return chbFoundationHeight;
+    }
+
+    public void setChbFoundationHeight(double chbFoundationHeight) {
+	this.chbFoundationHeight = chbFoundationHeight;
+    }
+
+    public CommonLengthUnit getChbFoundationUnit() {
+	return chbFoundationUnit;
+    }
+
+    public void setChbFoundationUnit(CommonLengthUnit chbFoundationUnit) {
+	this.chbFoundationUnit = chbFoundationUnit;
     }
 
 }

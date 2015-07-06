@@ -194,7 +194,7 @@
 									                <td>${estimate.shape.volumeFormula}</td>
 									                </tr>
 									                </table>
-									                <p class="help-block">Area and Volume formula of the shape</p>
+									                <p class="help-block">Area and Volume formula of the shape. When indicating the height, include the height below the ground.</p>
 													
 													<!-- Start of form group -->
 			                                        <div class="form-group">
@@ -352,7 +352,18 @@
 										                	</tr>
 										                	
 										                </table>
+										                
+				                                        <label>Height Below Ground</label>
+				                                        <form:input type="text" placeholder="Sample: Fence, Wall 1, Wall 2" class="form-control" path="chbFoundationHeight"/>
+				                                        <form:select class="form-control" path="chbFoundationUnit"> 
+                                    						<c:forEach items="${commonUnitsList}" var="commonUnit"> 
+                                    							<form:option value="${commonUnit}" label="${commonUnit.label()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+				                                        <p class="help-block">The height below the ground. Will not be included in plastering.</p>
+				                                        
 				                                        </c:if>
+				                                        
 				                                        
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>

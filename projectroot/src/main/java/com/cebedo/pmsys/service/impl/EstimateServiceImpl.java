@@ -275,6 +275,8 @@ public class EstimateServiceImpl implements EstimateService {
 	List<CHB> chbList = new ArrayList<CHB>();
 	List<ConcreteProportion> proportions = new ArrayList<ConcreteProportion>();
 
+	// TODO What if area is negative?
+
 	// Prepare inputs.
 	prepareInputs(estimate, shape, chbList, proportions);
 
@@ -293,6 +295,11 @@ public class EstimateServiceImpl implements EstimateService {
 	    computeMasonryPlastering(estimate, shape, proportions);
 	}
 
+	// If we're estimating masonry CHB footing.
+	if (estimate.willComputeMasonryCHBFooting()) {
+
+	}
+
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
 	    computeConcrete(estimate, shape, proportions);
@@ -302,6 +309,70 @@ public class EstimateServiceImpl implements EstimateService {
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
 		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
+    }
+
+    /**
+     * Get the length (longest side) from the user input.
+     * 
+     * @param estimate
+     * @return
+     */
+    private double getLength(Estimate estimate) {
+	double length = 0.0;
+	for (String value : estimate.getAreaFormulaInputs().values()) {
+	    double formulaVal = Double.valueOf(value);
+	    if (formulaVal > length) {
+		length = formulaVal;
+	    }
+	}
+	return length;
+    }
+
+    /**
+     * Don't include the area below ground when plastering.
+     * 
+     * @param estimate
+     * @param length
+     * @param area
+     */
+    private double minusAreaBelowGround(Estimate estimate, double length,
+	    double area) {
+
+	// If the unit is not meter,
+	// convert it.
+	double foundationHeight = estimate.getChbFoundationHeight();
+	CommonLengthUnit lengthUnit = estimate.getChbFoundationUnit();
+	if (lengthUnit != CommonLengthUnit.METER) {
+	    foundationHeight = convertToMeter(lengthUnit, foundationHeight);
+	}
+
+	double areaBelowGround = length * foundationHeight;
+	area -= areaBelowGround;
+	return area;
+    }
+
+    /**
+     * Add the area of the top side.
+     * 
+     * @param estimate
+     * @param shape
+     * @param shapeArea
+     * @param length
+     * @param area
+     */
+    private double addAreaTopSide(Estimate estimate, Shape shape,
+	    double shapeArea, double length, double area) {
+	boolean plasterTopSide = estimate.isPlasterTopSide();
+	if (plasterTopSide) {
+
+	    // Get the thickness.
+	    double thickness = shape.getVolume() / shapeArea;
+
+	    // Get the area and add to overall area.
+	    double topSideArea = length * thickness;
+	    area += topSideArea;
+	}
+	return area;
     }
 
     /**
@@ -326,15 +397,21 @@ public class EstimateServiceImpl implements EstimateService {
 	boolean plasterBackToBack = estimate.isPlasterBackToBack();
 	double shapeArea = shape.getArea();
 	double area = plasterBackToBack ? shapeArea * 2 : shape.getArea();
+
+	// Get the length "longest side of the shape".
+	double length = getLength(estimate);
+
+	// Consider the height below ground.
+	// Get the height of foundation (height of wall below the
+	// ground) and don't include that to the area to be plastered.
+	area = minusAreaBelowGround(estimate, length, area);
+
+	// If we're plastering the top side,
+	// get the thickness area then plaster it.
+	area = addAreaTopSide(estimate, shape, shapeArea, length, area);
+
 	double volume = area * 0.016; // 0.016 is the standard thickness of
 				      // plaster.
-
-	// TODO If we're plastering the top side,
-	// get the thickness area then plaster it.
-	boolean plasterTopSide = estimate.isPlasterTopSide();
-	if (plasterTopSide) {
-	    double thickness = shape.getVolume() / shapeArea;
-	}
 
 	// Get the list of plaster mixtures.
 	List<PlasterMixture> plasterMixtures = this.plasterMixtureService
@@ -364,7 +441,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    // is back to back, plaster top side.
 	    MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
 		    bags40kg, bags50kg, sand, proportion, plasterMixture,
-		    plasterBackToBack, plasterTopSide);
+		    plasterBackToBack, estimate.isPlasterTopSide());
 	    plasteringEstimateResults.put(proportion, plasteringResults);
 	}
 
@@ -645,15 +722,32 @@ public class EstimateServiceImpl implements EstimateService {
 	    // If the unit is not meter,
 	    // convert it.
 	    if (lengthUnit != CommonLengthUnit.METER) {
-		double meterConvert = lengthUnit.conversionToMeter();
-		double convertedValue = meterConvert * value.doubleValue();
-		value = new BigDecimal(convertedValue);
+		value = convertToMeter(lengthUnit, value);
 	    }
 
 	    mathExp = mathExp.with(variable, value);
 	}
 
 	return mathExp;
+    }
+
+    /**
+     * Convert the value to meter.
+     * 
+     * @param lengthUnit
+     * @param value
+     * @return
+     */
+    private BigDecimal convertToMeter(CommonLengthUnit lengthUnit,
+	    BigDecimal value) {
+	double meterConvert = lengthUnit.conversionToMeter();
+	double convertedValue = meterConvert * value.doubleValue();
+	value = new BigDecimal(convertedValue);
+	return value;
+    }
+
+    private double convertToMeter(CommonLengthUnit lengthUnit, double value) {
+	return convertToMeter(lengthUnit, new BigDecimal(value)).doubleValue();
     }
 
 }
