@@ -375,6 +375,26 @@
 		                                    			</form:select>
 				                                        </c:if>
 				                                        
+				                                        <c:if test="${estimate.willComputeMRCHB()}">
+				                                        <br/>
+				                                        <h4><span class="badge bg-blue">Input</span>Metal Reinforcement (CHB)</h4>
+				                                        <label>Horizontal Reinforcement</label>
+				                                        <form:select class="form-control" path="chbHorizontalReinforcementKey"> 
+                                    						<c:forEach items="${chbHorizontalReinforcementList}" var="horizontalMR"> 
+                                    							<form:option value="${horizontalMR.getKey()}" label="${horizontalMR.getName()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+		                                    			<p class="help-block">The height below the ground. Will not be included in plastering.</p>
+		                                    			
+		                                    			<label>Vertical Reinforcement</label>
+				                                        <form:select class="form-control" path="chbVerticalReinforcementKey"> 
+                                    						<c:forEach items="${chbVerticalReinforcementList}" var="verticalMR"> 
+                                    							<form:option value="${verticalMR.getKey()}" label="${verticalMR.getName()}"/> 
+                                    						</c:forEach> 
+		                                    			</form:select>
+		                                    			<p class="help-block">The height below the ground. Will not be included in plastering.</p>
+				                                        </c:if>
+				                                        
 				                                        
 				                                        </div>
 			                                            <button class="btn btn-cebedo-create btn-flat btn-sm">Create Estimate</button>

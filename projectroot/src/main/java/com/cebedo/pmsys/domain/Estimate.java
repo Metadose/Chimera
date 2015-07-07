@@ -75,6 +75,10 @@ public class Estimate implements IDomainObject {
     // Masonry (Footing) inputs.
     private String chbFootingDimensionKey;
 
+    // Metal reinforcement (CHB).
+    private String chbVerticalReinforcementKey;
+    private String chbHorizontalReinforcementKey;
+
     /**
      * Results
      */
@@ -116,6 +120,11 @@ public class Estimate implements IDomainObject {
 
     public boolean willComputeMasonryCHBFooting() {
 	return this.estimateTypes.contains(EstimateType.MASONRY_CHB_FOOTING);
+    }
+
+    public boolean willComputeMRCHB() {
+	return this.estimateTypes
+		.contains(EstimateType.METAL_REINFORCEMENT_CHB);
     }
 
     public Company getCompany() {
@@ -377,6 +386,24 @@ public class Estimate implements IDomainObject {
     public void setResultMapMasonryCHBFooting(
 	    Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting) {
 	this.resultMapMasonryCHBFooting = resultMapMasonryCHBFooting;
+    }
+
+    public String getChbVerticalReinforcementKey() {
+	return chbVerticalReinforcementKey;
+    }
+
+    public void setChbVerticalReinforcementKey(
+	    String chbVerticalReinforcementKey) {
+	this.chbVerticalReinforcementKey = chbVerticalReinforcementKey;
+    }
+
+    public String getChbHorizontalReinforcementKey() {
+	return chbHorizontalReinforcementKey;
+    }
+
+    public void setChbHorizontalReinforcementKey(
+	    String chbHorizontalReinforcementKey) {
+	this.chbHorizontalReinforcementKey = chbHorizontalReinforcementKey;
     }
 
 }

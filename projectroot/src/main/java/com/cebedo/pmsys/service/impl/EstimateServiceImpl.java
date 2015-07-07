@@ -25,6 +25,8 @@ import com.cebedo.pmsys.domain.BlockLayingMixture;
 import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.CHBFootingDimension;
 import com.cebedo.pmsys.domain.CHBFootingMixture;
+import com.cebedo.pmsys.domain.CHBHorizontalReinforcement;
+import com.cebedo.pmsys.domain.CHBVerticalReinforcement;
 import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationAllowance;
@@ -33,7 +35,9 @@ import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.repository.CHBHorizontalReinforcementValueRepo;
 import com.cebedo.pmsys.repository.CHBValueRepo;
+import com.cebedo.pmsys.repository.CHBVerticalReinforcementValueRepo;
 import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
@@ -58,6 +62,18 @@ public class EstimateServiceImpl implements EstimateService {
     private PlasterMixtureService plasterMixtureService;
     private CHBFootingMixtureService chbFootingMixtureService;
     private CHBFootingDimensionService chbFootingDimensionService;
+    private CHBVerticalReinforcementValueRepo chbVerticalReinforcementValueRepo;
+    private CHBHorizontalReinforcementValueRepo chbHorizontalReinforcementValueRepo;
+
+    public void setChbVerticalReinforcementValueRepo(
+	    CHBVerticalReinforcementValueRepo chbVerticalReinforcementValueRepo) {
+	this.chbVerticalReinforcementValueRepo = chbVerticalReinforcementValueRepo;
+    }
+
+    public void setChbHorizontalReinforcementValueRepo(
+	    CHBHorizontalReinforcementValueRepo chbHorizontalReinforcementValueRepo) {
+	this.chbHorizontalReinforcementValueRepo = chbHorizontalReinforcementValueRepo;
+    }
 
     public void setChbFootingDimensionService(
 	    CHBFootingDimensionService chbFootingDimensionService) {
@@ -320,6 +336,21 @@ public class EstimateServiceImpl implements EstimateService {
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
 	    computeConcrete(estimate, shape, proportions);
+	}
+
+	// TODO If computing metal reinforcement in CHB.
+	if (estimate.willComputeMRCHB()) {
+	    CHBVerticalReinforcement vertReinforcement = this.chbVerticalReinforcementValueRepo
+		    .get(estimate.getChbVerticalReinforcementKey());
+
+	    CHBHorizontalReinforcement horizReinforcement = this.chbHorizontalReinforcementValueRepo
+		    .get(estimate.getChbHorizontalReinforcementKey());
+
+	    vertReinforcement.getBarLengthPerSqm();
+	    vertReinforcement.getBarsSpacing().spacing();
+
+	    horizReinforcement.getBarLengthPerSqm();
+	    horizReinforcement.getBarsLayer().layer();
 	}
 
 	this.estimateValueRepo.set(estimate);

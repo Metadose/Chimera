@@ -74,7 +74,9 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.BlockLayingMixtureService;
 import com.cebedo.pmsys.service.CHBFootingDimensionService;
+import com.cebedo.pmsys.service.CHBHorizontalReinforcementService;
 import com.cebedo.pmsys.service.CHBService;
+import com.cebedo.pmsys.service.CHBVerticalReinforcementService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.CostEstimationService;
@@ -144,6 +146,8 @@ public class ProjectController {
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
+    public static final String ATTR_CHB_MR_HORIZONTAL_LIST = "chbHorizontalReinforcementList";
+    public static final String ATTR_CHB_MR_VERTICAL_LIST = "chbVerticalReinforcementList";
     public static final String ATTR_UNIT_LIST = "unitList";
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
@@ -214,6 +218,22 @@ public class ProjectController {
     private EstimationAllowanceService estimationAllowanceService;
     private BlockLayingMixtureService blockLayingMixtureService;
     private CHBFootingDimensionService chbFootingDimensionService;
+    private CHBVerticalReinforcementService chbVerticalReinforcementService;
+    private CHBHorizontalReinforcementService chbHorizontalReinforcementService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "chbVerticalReinforcementService")
+    public void setChbVerticalReinforcementService(
+	    CHBVerticalReinforcementService chbVerticalReinforcementService) {
+	this.chbVerticalReinforcementService = chbVerticalReinforcementService;
+    }
+
+    @Autowired(required = true)
+    @Qualifier(value = "chbHorizontalReinforcementService")
+    public void setChbHorizontalReinforcementService(
+	    CHBHorizontalReinforcementService chbHorizontalReinforcementService) {
+	this.chbHorizontalReinforcementService = chbHorizontalReinforcementService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "chbFootingDimensionService")
@@ -1907,9 +1927,18 @@ public class ProjectController {
 		    blockLayingMixtureList);
 	}
 
+	// If we compute masonry CHB footing.
 	if (estimate.willComputeMasonryCHBFooting()) {
 	    model.addAttribute(ATTR_CHB_FOOTING_DIMENSION_LIST,
 		    this.chbFootingDimensionService.list());
+	}
+
+	// If we compute CHB metal reinforcement.
+	if (estimate.willComputeMRCHB()) {
+	    model.addAttribute(ATTR_CHB_MR_HORIZONTAL_LIST,
+		    this.chbHorizontalReinforcementService.list());
+	    model.addAttribute(ATTR_CHB_MR_VERTICAL_LIST,
+		    this.chbVerticalReinforcementService.list());
 	}
 
     }
