@@ -14,6 +14,10 @@ public class RedisKeyRegistry {
 
     public static final String KEY_CHB_FOOTING_MIXTURE = "company.fk:%s:chbfootingmixture:%s";
 
+    public static final String KEY_CHB_HORIZONTAL_REINFORCEMENT = "company.fk:%s:chbhorizontalreinforcement:%s";
+
+    public static final String KEY_CHB_VERTICAL_REINFORCEMENT = "company.fk:%s:chbverticalreinforcement:%s";
+
     public static final String KEY_ESTIMATION_ALLOWANCE = "company.fk:%s:estimationallowance:%s";
 
     public static final String KEY_BLOCK_LAYING_MIXTURE = "company.fk:%s:blocklayingmixture:%s";

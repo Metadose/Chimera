@@ -128,6 +128,18 @@ $(document).ready(function() {
                 </a>
                 <ul class="treeview-menu">
                 	<li>
+		            	<c:url var="urlList" value="/chbverticalreinforcement/list/"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-plus"></i> <span>CHB Vertical Reinforcement</span>
+		                </a>
+		            </li>
+		            <li>
+		            	<c:url var="urlList" value="/chbhorizontalreinforcement/list/"/>
+		                <a href="${urlList}">
+		                    <i class="fa fa-plus"></i> <span>CHB Horizontal Reinforcement</span>
+		                </a>
+		            </li>
+                	<li>
 		            	<c:url var="urlList" value="/estimationallowance/list/"/>
 		                <a href="${urlList}">
 		                    <i class="fa fa-plus"></i> <span>Estimation Allowance</span>

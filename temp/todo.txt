@@ -80,7 +80,7 @@ gitterchat instead of irc for support?
 
 remove table-responsive classes
 
-
+Mass uploader of estimates, staff, staff attendances
 
 
 

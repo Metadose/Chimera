@@ -522,6 +522,22 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
+    <!-- CHB Vertical Reinforcement -->
+    <beans:bean id="chbVerticalReinforcementService" class="com.cebedo.pmsys.service.impl.CHBVerticalReinforcementServiceImpl">
+        <beans:property name="chbVerticalReinforcementValueRepo" ref="chbVerticalReinforcementValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="chbVerticalReinforcementValueRepo" class="com.cebedo.pmsys.repository.CHBVerticalReinforcementValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- CHB Horizontal Reinforcement -->
+    <beans:bean id="chbHorizontalReinforcementService" class="com.cebedo.pmsys.service.impl.CHBHorizontalReinforcementServiceImpl">
+        <beans:property name="chbHorizontalReinforcementValueRepo" ref="chbHorizontalReinforcementValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="chbHorizontalReinforcementValueRepo" class="com.cebedo.pmsys.repository.CHBHorizontalReinforcementValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
     <!-- CHB -->
     <beans:bean id="chbService" class="com.cebedo.pmsys.service.impl.CHBServiceImpl">
         <beans:property name="chbValueRepo" ref="chbValueRepo"></beans:property>
