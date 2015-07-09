@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.cebedo.pmsys.domain.BlockLayingMixture;
+import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.EstimationAllowance;
 import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -140,14 +141,18 @@ public class PopulatorServiceImpl implements PopulatorService {
 	this.unitService.set(unit);
     }
 
+    private void deleteKeys(String pattern) {
+	Set<String> keys = this.blockLayingMixtureService.keys(pattern);
+	this.blockLayingMixtureService.delete(keys);
+    }
+
     @Transactional
     @Override
     public void populateBlockLayingMixture() {
 	// Delete all.
 	Company myCom = this.authHelper.getAuth().getCompany();
 	String pattern = BlockLayingMixture.constructPattern(myCom);
-	Set<String> keys = this.blockLayingMixtureService.keys(pattern);
-	this.blockLayingMixtureService.delete(keys);
+	deleteKeys(pattern);
 
 	// Construct.
 	BlockLayingMixture mix = new BlockLayingMixture(myCom);
@@ -277,8 +282,47 @@ public class PopulatorServiceImpl implements PopulatorService {
     @Transactional
     @Override
     public void populateConcreteProportion() {
-	// TODO Auto-generated method stub
+	// Delete all.
+	Company myCom = this.authHelper.getAuth().getCompany();
+	String pattern = ConcreteProportion.constructPattern(myCom);
+	deleteKeys(pattern);
 
+	// Concstruct.
+	ConcreteProportion proportion = new ConcreteProportion(myCom);
+
+	// Populate.
+	proportion.setName("Class AA");
+	proportion
+		.setDescription("Class AA proportion of concrete components.");
+
+	proportion.setRatioCement(1.0);
+	proportion.setRatioSand(1.5);
+	proportion.setRatioGravel(3.0);
+
+	proportion.setPartCement40kg(12.0);
+	proportion.setPartCement50kg(9.5);
+	proportion.setPartSand(0.50);
+	proportion.setPartGravel(1.0);
+
+	// Populate.
+	proportion.setName("Class A");
+	proportion.setDescription("Class A proportion of concrete components.");
+
+	proportion.setRatioSand(2.0);
+	proportion.setRatioGravel(4.0);
+
+	proportion.setPartCement40kg(9.0);
+	proportion.setPartCement50kg(7.0);
+
+	// Populate.
+	proportion.setName("Class B");
+	proportion.setDescription("Class B proportion of concrete components.");
+
+	proportion.setRatioSand(2.5);
+	proportion.setRatioGravel(5.0);
+
+	proportion.setPartCement40kg(7.5);
+	proportion.setPartCement50kg(6.0);
     }
 
     @Transactional
