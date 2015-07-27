@@ -1,6 +1,10 @@
 package com.cebedo.pmsys.enums;
 
-public enum PlainDeformedRoundSteelBars {
+/**
+ * Plain Deformed Round Steel Bars.
+ */
+
+public enum TablePDRSteelBars {
 
     BAR_8_5(8.0, 5.0, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER,
 	    1.98, CommonMassUnit.KILOGRAM),
@@ -33,7 +37,7 @@ public enum PlainDeformedRoundSteelBars {
     private double weight;
     private CommonMassUnit weightUnit;
 
-    PlainDeformedRoundSteelBars(double d, double l, CommonLengthUnit dU,
+    TablePDRSteelBars(double d, double l, CommonLengthUnit dU,
 	    CommonLengthUnit lU, double w, CommonMassUnit wU) {
 	this.diameter = d;
 	this.length = l;
