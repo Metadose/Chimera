@@ -2,68 +2,39 @@ package com.cebedo.pmsys.enums;
 
 public enum TablePlasterMixture {
 
-    CLASS_A_10_20_40("Class A (10 x 20 x 40)", TableCHB.CHB_10_20_40, 0.792,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435,
-	    CommonVolumeUnit.CUBIC_METER),
+    CLASS_A("Class A", 1, 2, 18.0, CommonMassUnit.CEMENT_BAG_40KG, 14.5,
+	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_B_10_20_40("Class B (10 x 20 x 40)", TableCHB.CHB_10_20_40, 0.522,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435,
-	    CommonVolumeUnit.CUBIC_METER),
+    CLASS_B("Class B", 1, 3, 12.0, CommonMassUnit.CEMENT_BAG_40KG, 9.5,
+	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_C_10_20_40("Class C (10 x 20 x 40)", TableCHB.CHB_10_20_40, 0.394,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435,
-	    CommonVolumeUnit.CUBIC_METER),
+    CLASS_C("Class C", 1, 4, 9.0, CommonMassUnit.CEMENT_BAG_40KG, 7.0,
+	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_D_10_20_40("Class D (10 x 20 x 40)", TableCHB.CHB_10_20_40, 0.328,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_A_15_20_40("Class A (15 x 20 x 40)", TableCHB.CHB_15_20_40, 1.526,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_B_15_20_40("Class B (15 x 20 x 40)", TableCHB.CHB_15_20_40, 1.018,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_C_15_20_40("Class C (15 x 20 x 40)", TableCHB.CHB_15_20_40, 0.763,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_D_15_20_40("Class D (15 x 20 x 40)", TableCHB.CHB_15_20_40, 0.633,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_A_20_20_40("Class A (20 x 20 x 40)", TableCHB.CHB_20_20_40, 2.260,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_B_20_20_40("Class B (20 x 20 x 40)", TableCHB.CHB_20_20_40, 1.500,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_C_20_20_40("Class C (20 x 20 x 40)", TableCHB.CHB_20_20_40, 1.125,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250,
-	    CommonVolumeUnit.CUBIC_METER),
-
-    CLASS_D_20_20_40("Class D (20 x 20 x 40)", TableCHB.CHB_20_20_40, 0.938,
-	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250,
-	    CommonVolumeUnit.CUBIC_METER);
+    CLASS_D("Class D", 1, 5, 7.5, CommonMassUnit.CEMENT_BAG_40KG, 6.0,
+	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER);
 
     private String label;
-    private TableCHB chb;
-    private double partCement40kgBag;
-    private CommonMassUnit partCement40kgBagUnit;
+    private double ratioCement;
+    private double ratioSand;
+    private double partCement40kg;
+    private CommonMassUnit partCement40kgUnit;
+    private double partCement50kg;
+    private CommonMassUnit partCement50kgUnit;
     private double partSand;
     private CommonVolumeUnit partSandUnit;
 
-    TablePlasterMixture(String label, TableCHB chb, double partCement40kgBag,
-	    CommonMassUnit partCement40kgBagUnit, double partSand,
-	    CommonVolumeUnit partSandUnit) {
+    TablePlasterMixture(String label, double ratioCement, double ratioSand,
+	    double partCement40kg, CommonMassUnit partCement40kgUnit,
+	    double partCement50kg, CommonMassUnit partCement50kgUnit,
+	    double partSand, CommonVolumeUnit partSandUnit) {
 	this.label = label;
-	this.chb = chb;
-	this.partCement40kgBag = partCement40kgBag;
-	this.partCement40kgBagUnit = partCement40kgBagUnit;
+	this.ratioCement = ratioCement;
+	this.ratioSand = ratioSand;
+	this.partCement40kg = partCement40kg;
+	this.partCement40kgUnit = partCement40kgUnit;
+	this.partCement50kg = partCement50kg;
+	this.partCement50kgUnit = partCement50kgUnit;
 	this.partSand = partSand;
 	this.partSandUnit = partSandUnit;
     }
