@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
-import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo;

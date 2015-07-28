@@ -37,23 +37,17 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
-import com.cebedo.pmsys.domain.BlockLayingMixture;
-import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
-import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.EstimationAllowance;
 import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
-import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
-import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -72,17 +66,10 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.service.BlockLayingMixtureService;
-import com.cebedo.pmsys.service.CHBFootingDimensionService;
-import com.cebedo.pmsys.service.CHBHorizontalReinforcementService;
-import com.cebedo.pmsys.service.CHBService;
-import com.cebedo.pmsys.service.CHBVerticalReinforcementService;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
-import com.cebedo.pmsys.service.ConcreteProportionService;
 import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
-import com.cebedo.pmsys.service.EstimationAllowanceService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
@@ -93,7 +80,6 @@ import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
-import com.cebedo.pmsys.service.ShapeService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.service.UnitService;
@@ -209,52 +195,9 @@ public class ProjectController {
     private MaterialCategoryService materialCategoryService;
     private UnitService unitService;
     private EstimateService estimateService;
-    private ShapeService shapeService;
-    private ConcreteProportionService concreteProportionService;
     private ConcreteEstimationSummaryService concreteEstimationSummaryService;
-    private CHBService chbService;
     private CostEstimationService costEstimationService;
     private MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService;
-    private EstimationAllowanceService estimationAllowanceService;
-    private BlockLayingMixtureService blockLayingMixtureService;
-    private CHBFootingDimensionService chbFootingDimensionService;
-    private CHBVerticalReinforcementService chbVerticalReinforcementService;
-    private CHBHorizontalReinforcementService chbHorizontalReinforcementService;
-
-    @Autowired(required = true)
-    @Qualifier(value = "chbVerticalReinforcementService")
-    public void setChbVerticalReinforcementService(
-	    CHBVerticalReinforcementService chbVerticalReinforcementService) {
-	this.chbVerticalReinforcementService = chbVerticalReinforcementService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "chbHorizontalReinforcementService")
-    public void setChbHorizontalReinforcementService(
-	    CHBHorizontalReinforcementService chbHorizontalReinforcementService) {
-	this.chbHorizontalReinforcementService = chbHorizontalReinforcementService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "chbFootingDimensionService")
-    public void setChbFootingDimensionService(
-	    CHBFootingDimensionService chbFootingDimensionService) {
-	this.chbFootingDimensionService = chbFootingDimensionService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "blockLayingMixtureService")
-    public void setBlockLayingMixtureService(
-	    BlockLayingMixtureService blockLayingMixtureService) {
-	this.blockLayingMixtureService = blockLayingMixtureService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "estimationAllowanceService")
-    public void setEstimationAllowanceService(
-	    EstimationAllowanceService estimationAllowanceService) {
-	this.estimationAllowanceService = estimationAllowanceService;
-    }
 
     @Autowired(required = true)
     @Qualifier(value = "masonryCHBEstimationSummaryService")
@@ -271,29 +214,10 @@ public class ProjectController {
     }
 
     @Autowired(required = true)
-    @Qualifier(value = "chbService")
-    public void setChbService(CHBService chbService) {
-	this.chbService = chbService;
-    }
-
-    @Autowired(required = true)
     @Qualifier(value = "concreteEstimationSummaryService")
     public void setConcreteEstimationSummaryService(
 	    ConcreteEstimationSummaryService concreteEstimationSummaryService) {
 	this.concreteEstimationSummaryService = concreteEstimationSummaryService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "concreteProportionService")
-    public void setConcreteProportionService(
-	    ConcreteProportionService concreteProportionService) {
-	this.concreteProportionService = concreteProportionService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "shapeService")
-    public void setShapeService(ShapeService shapeService) {
-	this.shapeService = shapeService;
     }
 
     @Autowired(required = true)
@@ -1831,116 +1755,6 @@ public class ProjectController {
 
 	// redirect to edit page.
 	return RedisConstants.JSP_MATERIAL_PULLOUT;
-    }
-
-    /**
-     * Set selector items for new objects.
-     * 
-     * @param model
-     */
-    private void setSelectorsEditEstimateNew(Model model) {
-	// List of allowances.
-	List<EstimationAllowance> allowanceList = this.estimationAllowanceService
-		.list();
-	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST, allowanceList);
-
-	// List of shapes.
-	List<Shape> shapeList = this.shapeService.list();
-	model.addAttribute(ATTR_SHAPE_LIST, shapeList);
-
-	// Add the list of estimate types.
-	model.addAttribute(ATTR_ESTIMATE_TYPES,
-		EstimateType.class.getEnumConstants());
-    }
-
-    /**
-     * Open a page to create/edit an estimate.
-     * 
-     * @param key
-     * @param session
-     * @param model
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_ESTIMATE + "/{"
-	    + RedisConstants.OBJECT_ESTIMATE + "}-end", method = RequestMethod.GET)
-    public String editEstimate(
-	    @PathVariable(RedisConstants.OBJECT_ESTIMATE) String key,
-	    HttpSession session, Model model) {
-
-	// Get proj.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-
-	// Set step 1 selectors.
-	setSelectorsEditEstimateNew(model);
-
-	// If we're creating.
-	if (key.equals("0")) {
-	    model.addAttribute(ATTR_ESTIMATE, new Estimate(proj));
-	    return RedisConstants.JSP_ESTIMATE_EDIT;
-	}
-
-	// If we're updating.
-	Estimate estimate = this.estimateService.get(key);
-	model.addAttribute(ATTR_ESTIMATE, estimate);
-
-	// Set step 2 selectors.
-	setSelectorsEditEstimateExisting(model, estimate);
-
-	return RedisConstants.JSP_ESTIMATE_EDIT;
-    }
-
-    /**
-     * Set selector items if we're updating.
-     * 
-     * @param model
-     * @param estimate
-     */
-    private void setSelectorsEditEstimateExisting(Model model, Estimate estimate) {
-	// Add list of common units.
-	model.addAttribute(ATTR_COMMON_UNITS_LIST,
-		CommonLengthUnit.class.getEnumConstants());
-
-	// For second commit,
-	// if computing concrete.
-	if (estimate.willComputeConcrete()) {
-
-	    // Add list of proportions.
-	    List<ConcreteProportion> concreteProportionList = this.concreteProportionService
-		    .list();
-	    model.addAttribute(ATTR_CONCRETE_PROPORTION_LIST,
-		    concreteProportionList);
-	}
-
-	// If will compute masonry CHB.
-	if (estimate.willComputeMasonryCHB()) {
-	    List<CHB> chbList = this.chbService.list();
-	    model.addAttribute(ATTR_CHB_LIST, chbList);
-	}
-
-	// If will compute masonry block laying.
-	if (estimate.willComputeMasonryBlockLaying()) {
-	    List<BlockLayingMixture> blockLayingMixtureList = this.blockLayingMixtureService
-		    .list();
-	    model.addAttribute(ATTR_BLOCK_LAYING_MIXTURE_LIST,
-		    blockLayingMixtureList);
-	}
-
-	// If we compute masonry CHB footing.
-	if (estimate.willComputeMasonryCHBFooting()) {
-	    model.addAttribute(ATTR_CHB_FOOTING_DIMENSION_LIST,
-		    this.chbFootingDimensionService.list());
-	}
-
-	// If we compute CHB metal reinforcement.
-	if (estimate.willComputeMRCHB()) {
-	    model.addAttribute(ATTR_CHB_MR_HORIZONTAL_LIST,
-		    this.chbHorizontalReinforcementService.list());
-	    model.addAttribute(ATTR_CHB_MR_VERTICAL_LIST,
-		    this.chbVerticalReinforcementService.list());
-	}
-
     }
 
     /**

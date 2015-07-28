@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
-import com.cebedo.pmsys.domain.CHB;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.model.Project;

@@ -81,13 +81,6 @@ public class Estimate implements IDomainObject {
     /**
      * Results
      */
-    private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
-    private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
-    private Map<CHB, List<MasonryCHBLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryCHBLayingEstimateResults>>();
-    private Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
-    private Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting = new HashMap<ConcreteProportion, MasonryCHBFootingEstimateResults>();
-
-    // Estimation results.
     private MasonryCHBEstimateResults resultCHBEstimate = new MasonryCHBEstimateResults();
     private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
     private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
@@ -266,24 +259,6 @@ public class Estimate implements IDomainObject {
 	this.volumeFormulaInputsUnits = formulaInputsUnits;
     }
 
-    public Map<ConcreteProportion, ConcreteEstimateResults> getResultMapConcrete() {
-	return resultMapConcrete;
-    }
-
-    public void setResultMapConcrete(
-	    Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete) {
-	this.resultMapConcrete = resultMapConcrete;
-    }
-
-    public Map<CHB, MasonryCHBEstimateResults> getResultMapMasonryCHB() {
-	return resultMapMasonryCHB;
-    }
-
-    public void setResultMapMasonryCHB(
-	    Map<CHB, MasonryCHBEstimateResults> resultMapMasonry) {
-	this.resultMapMasonryCHB = resultMapMasonry;
-    }
-
     public String getEstimationAllowanceKey() {
 	return estimationAllowanceKey;
     }
@@ -300,15 +275,6 @@ public class Estimate implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public Map<CHB, List<MasonryCHBLayingEstimateResults>> getResultMapMasonryBlockLaying() {
-	return resultMapMasonryBlockLaying;
-    }
-
-    public void setResultMapMasonryBlockLaying(
-	    Map<CHB, List<MasonryCHBLayingEstimateResults>> resultMapMasonryBlockLaying) {
-	this.resultMapMasonryBlockLaying = resultMapMasonryBlockLaying;
-    }
-
     public boolean isPlasterBackToBack() {
 	return plasterBackToBack;
     }
@@ -323,15 +289,6 @@ public class Estimate implements IDomainObject {
 
     public void setPlasterTopSide(boolean plasterTopSide) {
 	this.plasterTopSide = plasterTopSide;
-    }
-
-    public Map<ConcreteProportion, MasonryPlasteringEstimateResults> getResultMapMasonryPlastering() {
-	return resultMapMasonryPlastering;
-    }
-
-    public void setResultMapMasonryPlastering(
-	    Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering) {
-	this.resultMapMasonryPlastering = resultMapMasonryPlastering;
     }
 
     @Override
@@ -359,15 +316,6 @@ public class Estimate implements IDomainObject {
 
     public void setChbFoundationUnit(CommonLengthUnit chbFoundationUnit) {
 	this.chbFoundationUnit = chbFoundationUnit;
-    }
-
-    public Map<ConcreteProportion, MasonryCHBFootingEstimateResults> getResultMapMasonryCHBFooting() {
-	return resultMapMasonryCHBFooting;
-    }
-
-    public void setResultMapMasonryCHBFooting(
-	    Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting) {
-	this.resultMapMasonryCHBFooting = resultMapMasonryCHBFooting;
     }
 
     public String getChbVerticalReinforcementKey() {

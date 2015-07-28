@@ -4,23 +4,11 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 
-    public static final String KEY_CONCRETE_PROPORTION = "company.fk:%s:concreteproportion:%s";
-
-    public static final String KEY_CHB = "company.fk:%s:chb:%s";
-
-    public static final String KEY_PLASTER_MIXTURE = "company.fk:%s:plastermixture:%s";
-
-    public static final String KEY_CHB_FOOTING_DIMENSION = "company.fk:%s:chbfootingdimension:%s";
-
-    public static final String KEY_CHB_FOOTING_MIXTURE = "company.fk:%s:chbfootingmixture:%s";
-
     public static final String KEY_CHB_HORIZONTAL_REINFORCEMENT = "company.fk:%s:chbhorizontalreinforcement:%s";
 
     public static final String KEY_CHB_VERTICAL_REINFORCEMENT = "company.fk:%s:chbverticalreinforcement:%s";
 
     public static final String KEY_ESTIMATION_ALLOWANCE = "company.fk:%s:estimationallowance:%s";
-
-    public static final String KEY_BLOCK_LAYING_MIXTURE = "company.fk:%s:blocklayingmixture:%s";
 
     public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
 

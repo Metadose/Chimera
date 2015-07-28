@@ -31,18 +31,10 @@ import com.cebedo.pmsys.enums.TableCHBLayingMixture;
 import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.enums.TablePlasterMixture;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.CHBHorizontalReinforcementValueRepo;
-import com.cebedo.pmsys.repository.CHBValueRepo;
-import com.cebedo.pmsys.repository.CHBVerticalReinforcementValueRepo;
-import com.cebedo.pmsys.repository.ConcreteProportionValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
-import com.cebedo.pmsys.service.BlockLayingMixtureService;
-import com.cebedo.pmsys.service.CHBFootingDimensionService;
-import com.cebedo.pmsys.service.CHBFootingMixtureService;
 import com.cebedo.pmsys.service.EstimateService;
-import com.cebedo.pmsys.service.PlasterMixtureService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.udojava.evalex.Expression;
 
@@ -51,58 +43,11 @@ public class EstimateServiceImpl implements EstimateService {
 
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
-    private ConcreteProportionValueRepo concreteProportionValueRepo;
-    private CHBValueRepo chbValueRepo;
     private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
-    private BlockLayingMixtureService blockLayingMixtureService;
-    private PlasterMixtureService plasterMixtureService;
-    private CHBFootingMixtureService chbFootingMixtureService;
-    private CHBFootingDimensionService chbFootingDimensionService;
-    private CHBVerticalReinforcementValueRepo chbVerticalReinforcementValueRepo;
-    private CHBHorizontalReinforcementValueRepo chbHorizontalReinforcementValueRepo;
-
-    public void setChbVerticalReinforcementValueRepo(
-	    CHBVerticalReinforcementValueRepo chbVerticalReinforcementValueRepo) {
-	this.chbVerticalReinforcementValueRepo = chbVerticalReinforcementValueRepo;
-    }
-
-    public void setChbHorizontalReinforcementValueRepo(
-	    CHBHorizontalReinforcementValueRepo chbHorizontalReinforcementValueRepo) {
-	this.chbHorizontalReinforcementValueRepo = chbHorizontalReinforcementValueRepo;
-    }
-
-    public void setChbFootingDimensionService(
-	    CHBFootingDimensionService chbFootingDimensionService) {
-	this.chbFootingDimensionService = chbFootingDimensionService;
-    }
-
-    public void setChbFootingMixtureService(
-	    CHBFootingMixtureService chbFootingMixtureService) {
-	this.chbFootingMixtureService = chbFootingMixtureService;
-    }
-
-    public void setPlasterMixtureService(
-	    PlasterMixtureService plasterMixtureService) {
-	this.plasterMixtureService = plasterMixtureService;
-    }
-
-    public void setBlockLayingMixtureService(
-	    BlockLayingMixtureService blockLayingMixtureService) {
-	this.blockLayingMixtureService = blockLayingMixtureService;
-    }
 
     public void setEstimationAllowanceValueRepo(
 	    EstimationAllowanceValueRepo estimationAllowanceValueRepo) {
 	this.estimationAllowanceValueRepo = estimationAllowanceValueRepo;
-    }
-
-    public void setChbValueRepo(CHBValueRepo chbValueRepo) {
-	this.chbValueRepo = chbValueRepo;
-    }
-
-    public void setConcreteProportionValueRepo(
-	    ConcreteProportionValueRepo concreteProportionValueRepo) {
-	this.concreteProportionValueRepo = concreteProportionValueRepo;
     }
 
     public void setShapeValueRepo(ShapeValueRepo shapeValueRepo) {
