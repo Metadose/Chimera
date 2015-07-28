@@ -1,12 +1,13 @@
 package com.cebedo.pmsys.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
+import com.cebedo.pmsys.enums.TableCHBLayingMixture;
+import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.model.Company;
 import com.udojava.evalex.Expression;
 
@@ -188,21 +189,19 @@ public class CHB implements IDomainObject {
      * @param proportion
      * @return
      */
-    public BlockLayingMixture getBlockLayingMixture(
-	    List<BlockLayingMixture> mixList, ConcreteProportion proportion) {
+    public TableCHBLayingMixture getCHBLayingMixture(
+	    TableConcreteProportion proportion) {
 
-	String proportionKey = proportion.getKey();
-	String chbKey = getKey();
-	for (BlockLayingMixture mix : mixList) {
+	for (TableCHBLayingMixture mix : TableCHBLayingMixture.class
+		.getEnumConstants()) {
 
-	    // If we have found the mix for this CHB, then use it.
-	    String mixCHBKey = mix.getChbMeasurement().getKey();
-	    if (chbKey.equals(mixCHBKey)
-		    && mix.getConcreteProportionKey().equals(proportionKey)) {
+	    String proportionMixClass = proportion.getMixClass();
+	    String layingMixClass = mix.getMixClass();
+	    if (layingMixClass.equals(proportionMixClass)) {
 		return mix;
 	    }
 	}
-	return null;
+	return TableCHBLayingMixture.CLASS_A_20_20_40;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.NumberFormat;
 
-import com.cebedo.pmsys.domain.CHB;
+import com.cebedo.pmsys.enums.TableCHBDimensions;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class MasonryCHBEstimateResults implements Serializable {
@@ -13,14 +13,14 @@ public class MasonryCHBEstimateResults implements Serializable {
     private static final long serialVersionUID = -5533583947231752985L;
 
     private double totalCHB;
-    private CHB chbMeasurement;
+    private TableCHBDimensions chbDimensions;
 
     public MasonryCHBEstimateResults() {
 	;
     }
 
-    public MasonryCHBEstimateResults(CHB chb, double totalCHB2) {
-	setChbMeasurement(chb);
+    public MasonryCHBEstimateResults(TableCHBDimensions chb, double totalCHB2) {
+	setChbDimensions(chb);
 	setTotalCHB(totalCHB2);
     }
 
@@ -36,11 +36,11 @@ public class MasonryCHBEstimateResults implements Serializable {
 	this.totalCHB = totalCHB;
     }
 
-    public CHB getChbMeasurement() {
-	return chbMeasurement;
+    public TableCHBDimensions getChbDimensions() {
+	return chbDimensions;
     }
 
-    public void setChbMeasurement(CHB chbMeasurement) {
-	this.chbMeasurement = chbMeasurement;
+    public void setChbDimensions(TableCHBDimensions chbDimensions) {
+	this.chbDimensions = chbDimensions;
     }
 }

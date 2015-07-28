@@ -7,13 +7,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
+import com.cebedo.pmsys.enums.MappingEstimationClass;
+import com.cebedo.pmsys.enums.TableCHBDimensions;
+import com.cebedo.pmsys.enums.TableCHBFootingDimensions;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
@@ -45,6 +48,11 @@ public class Estimate implements IDomainObject {
     /**
      * Bean-backed form.
      */
+    // Standard constants.
+    private MappingEstimationClass estimationClass;
+    private TableCHBDimensions chbDimensions;
+    private TableCHBFootingDimensions chbFootingDimensions;
+
     // First commit.
     private String shapeKey;
     private String estimationAllowanceKey;
@@ -56,12 +64,6 @@ public class Estimate implements IDomainObject {
     private Map<String, CommonLengthUnit> areaFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
     private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
 
-    // Concrete inputs.
-    private String concreteProportionKeys[];
-
-    // Masonry inputs.
-    private String chbMeasurementKeys[];
-
     // Masonry (Plastering) inputs.
     private double chbFoundationHeight;
     private CommonLengthUnit chbFoundationUnit;
@@ -72,9 +74,6 @@ public class Estimate implements IDomainObject {
 				       // 40sqm total.
     private boolean plasterTopSide; // Plaster the top side of the shape.
 
-    // Masonry (Footing) inputs.
-    private String chbFootingDimensionKey;
-
     // Metal reinforcement (CHB).
     private String chbVerticalReinforcementKey;
     private String chbHorizontalReinforcementKey;
@@ -84,9 +83,16 @@ public class Estimate implements IDomainObject {
      */
     private Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
     private Map<CHB, MasonryCHBEstimateResults> resultMapMasonryCHB = new HashMap<CHB, MasonryCHBEstimateResults>();
-    private Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
+    private Map<CHB, List<MasonryCHBLayingEstimateResults>> resultMapMasonryBlockLaying = new HashMap<CHB, List<MasonryCHBLayingEstimateResults>>();
     private Map<ConcreteProportion, MasonryPlasteringEstimateResults> resultMapMasonryPlastering = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
     private Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapMasonryCHBFooting = new HashMap<ConcreteProportion, MasonryCHBFootingEstimateResults>();
+
+    // Estimation results.
+    private MasonryCHBEstimateResults resultCHBEstimate = new MasonryCHBEstimateResults();
+    private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
+    private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
+    private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
+    private ConcreteEstimateResults resultConcreteEstimate = new ConcreteEstimateResults();
 
     /**
      * Extension map.
@@ -260,14 +266,6 @@ public class Estimate implements IDomainObject {
 	this.volumeFormulaInputsUnits = formulaInputsUnits;
     }
 
-    public String[] getConcreteProportionKeys() {
-	return concreteProportionKeys;
-    }
-
-    public void setConcreteProportionKeys(String[] concreteProportionKeys) {
-	this.concreteProportionKeys = concreteProportionKeys;
-    }
-
     public Map<ConcreteProportion, ConcreteEstimateResults> getResultMapConcrete() {
 	return resultMapConcrete;
     }
@@ -286,14 +284,6 @@ public class Estimate implements IDomainObject {
 	this.resultMapMasonryCHB = resultMapMasonry;
     }
 
-    public String[] getChbMeasurementKeys() {
-	return chbMeasurementKeys;
-    }
-
-    public void setChbMeasurementKeys(String[] chbMeasurementKeys) {
-	this.chbMeasurementKeys = chbMeasurementKeys;
-    }
-
     public String getEstimationAllowanceKey() {
 	return estimationAllowanceKey;
     }
@@ -310,12 +300,12 @@ public class Estimate implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public Map<CHB, List<MasonryBlockLayingEstimateResults>> getResultMapMasonryBlockLaying() {
+    public Map<CHB, List<MasonryCHBLayingEstimateResults>> getResultMapMasonryBlockLaying() {
 	return resultMapMasonryBlockLaying;
     }
 
     public void setResultMapMasonryBlockLaying(
-	    Map<CHB, List<MasonryBlockLayingEstimateResults>> resultMapMasonryBlockLaying) {
+	    Map<CHB, List<MasonryCHBLayingEstimateResults>> resultMapMasonryBlockLaying) {
 	this.resultMapMasonryBlockLaying = resultMapMasonryBlockLaying;
     }
 
@@ -371,14 +361,6 @@ public class Estimate implements IDomainObject {
 	this.chbFoundationUnit = chbFoundationUnit;
     }
 
-    public String getChbFootingDimensionKey() {
-	return chbFootingDimensionKey;
-    }
-
-    public void setChbFootingDimensionKey(String chbFootingDimensionKey) {
-	this.chbFootingDimensionKey = chbFootingDimensionKey;
-    }
-
     public Map<ConcreteProportion, MasonryCHBFootingEstimateResults> getResultMapMasonryCHBFooting() {
 	return resultMapMasonryCHBFooting;
     }
@@ -404,6 +386,75 @@ public class Estimate implements IDomainObject {
     public void setChbHorizontalReinforcementKey(
 	    String chbHorizontalReinforcementKey) {
 	this.chbHorizontalReinforcementKey = chbHorizontalReinforcementKey;
+    }
+
+    public TableCHBDimensions getChbDimensions() {
+	return chbDimensions;
+    }
+
+    public void setChbDimensions(TableCHBDimensions chbDimensions) {
+	this.chbDimensions = chbDimensions;
+    }
+
+    public MappingEstimationClass getEstimationClass() {
+	return estimationClass;
+    }
+
+    public void setEstimationClass(MappingEstimationClass estimationClass) {
+	this.estimationClass = estimationClass;
+    }
+
+    public MasonryCHBEstimateResults getResultCHBEstimate() {
+	return resultCHBEstimate;
+    }
+
+    public void setResultCHBEstimate(MasonryCHBEstimateResults resultCHBEstimate) {
+	this.resultCHBEstimate = resultCHBEstimate;
+    }
+
+    public MasonryCHBLayingEstimateResults getResultCHBLayingEstimate() {
+	return resultCHBLayingEstimate;
+    }
+
+    public void setResultCHBLayingEstimate(
+	    MasonryCHBLayingEstimateResults resultCHBLayingEstimate) {
+	this.resultCHBLayingEstimate = resultCHBLayingEstimate;
+    }
+
+    public MasonryPlasteringEstimateResults getResultPlasteringEstimate() {
+	return resultPlasteringEstimate;
+    }
+
+    public void setResultPlasteringEstimate(
+	    MasonryPlasteringEstimateResults resultPlasteringEstimate) {
+	this.resultPlasteringEstimate = resultPlasteringEstimate;
+    }
+
+    public TableCHBFootingDimensions getChbFootingDimensions() {
+	return chbFootingDimensions;
+    }
+
+    public void setChbFootingDimensions(
+	    TableCHBFootingDimensions chbFootingDimensions) {
+	this.chbFootingDimensions = chbFootingDimensions;
+    }
+
+    public MasonryCHBFootingEstimateResults getResultCHBFootingEstimate() {
+	return resultCHBFootingEstimate;
+    }
+
+    public void setResultCHBFootingEstimate(
+	    MasonryCHBFootingEstimateResults resultCHBFootingEstimate) {
+	this.resultCHBFootingEstimate = resultCHBFootingEstimate;
+    }
+
+    public ConcreteEstimateResults getResultConcreteEstimate() {
+	return resultConcreteEstimate;
+    }
+
+    public void setResultConcreteEstimate(
+	    ConcreteEstimateResults resultConcreteEstimate) {
+	this.resultConcreteEstimate = resultConcreteEstimate;
     }
 
 }

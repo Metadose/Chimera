@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,25 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.MasonryBlockLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
+import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
-import com.cebedo.pmsys.constants.MessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
-import com.cebedo.pmsys.domain.BlockLayingMixture;
-import com.cebedo.pmsys.domain.CHB;
-import com.cebedo.pmsys.domain.CHBFootingDimension;
-import com.cebedo.pmsys.domain.CHBFootingMixture;
-import com.cebedo.pmsys.domain.CHBHorizontalReinforcement;
-import com.cebedo.pmsys.domain.CHBVerticalReinforcement;
-import com.cebedo.pmsys.domain.ConcreteProportion;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationAllowance;
-import com.cebedo.pmsys.domain.PlasterMixture;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
+import com.cebedo.pmsys.enums.TableCHBDimensions;
+import com.cebedo.pmsys.enums.TableCHBFootingDimensions;
+import com.cebedo.pmsys.enums.TableCHBFootingMixture;
+import com.cebedo.pmsys.enums.TableCHBLayingMixture;
+import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.enums.TablePlasterMixture;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.CHBHorizontalReinforcementValueRepo;
 import com.cebedo.pmsys.repository.CHBValueRepo;
@@ -253,35 +249,13 @@ public class EstimateServiceImpl implements EstimateService {
      * @param proportions
      * @param blockLayingList
      */
-    private void prepareInputs(Estimate estimate, Shape shape,
-	    List<CHB> chbList, List<ConcreteProportion> proportions) {
+    private void prepareInputs(Estimate estimate, Shape shape) {
 
 	// Set allowances.
 	setEstimationAllowance(estimate);
 
 	// Compute for area and volume.
 	setAreaVolume(estimate, shape);
-
-	// Prepare estimation inputs.
-	prepareMasonryCHBEstimationInputs(estimate, chbList);
-
-	// Prepare the concrete proportions.
-	prepareConcreteEstimationInputs(estimate, proportions);
-    }
-
-    /**
-     * Prepare the concrete proportions.
-     * 
-     * @param estimate
-     * @param proportions
-     */
-    private void prepareConcreteEstimationInputs(Estimate estimate,
-	    List<ConcreteProportion> proportions) {
-	for (String proportionKey : estimate.getConcreteProportionKeys()) {
-	    ConcreteProportion prop = this.concreteProportionValueRepo
-		    .get(proportionKey);
-	    proportions.add(prop);
-	}
     }
 
     /**
@@ -291,68 +265,68 @@ public class EstimateServiceImpl implements EstimateService {
     @Transactional
     public String computeQuantityEstimate(Estimate estimate) {
 
+	// TODO Handle incorrect requests.
 	// If we're computing block laying,
 	// but didn't specify any block at all,
 	// return fail.
-	if (estimate.willComputeMasonryBlockLaying()
-		&& estimate.getChbMeasurementKeys().length == 0) {
-	    return AlertBoxGenerator.FAILED.setMessage(
-		    MessageRegistry.ESTIMATE_MASONRY_BLM_NO_CHB_LIST)
-		    .generateHTML();
-	}
+	// if (estimate.willComputeMasonryBlockLaying()
+	// && estimate.getChbMeasurementKeys().length == 0) {
+	// return AlertBoxGenerator.FAILED.setMessage(
+	// MessageRegistry.ESTIMATE_MASONRY_BLM_NO_CHB_LIST)
+	// .generateHTML();
+	// }
 
 	// Shape to compute.
 	Shape shape = estimate.getShape();
 
-	// List of chosen inputs.
-	List<CHB> chbList = new ArrayList<CHB>();
-	List<ConcreteProportion> proportions = new ArrayList<ConcreteProportion>();
-
 	// TODO What if area is negative?
 
 	// Prepare inputs.
-	prepareInputs(estimate, shape, chbList, proportions);
+	prepareInputs(estimate, shape);
 
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
-	    computeMasonryCHB(estimate, shape, chbList);
+	    estimateCHBTotal(estimate, shape);
 	}
 
 	// If we're estimating masonry block laying.
 	if (estimate.willComputeMasonryBlockLaying()) {
-	    computeMasonryBlockLaying(estimate, shape, chbList, proportions);
+	    estimateCHBLaying(estimate, shape);
 	}
 
 	// If we're estimating masonry plastering.
 	if (estimate.willComputeMasonryPlastering()) {
-	    computeMasonryPlastering(estimate, shape, proportions);
+	    estimateMasonryPlastering(estimate, shape);
 	}
 
 	// If we're estimating masonry CHB footing.
 	if (estimate.willComputeMasonryCHBFooting()) {
-	    computeMasonryCHBFooting(estimate, proportions);
+	    estimateMasonryCHBFooting(estimate);
 	}
 
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
-	    computeConcrete(estimate, shape, proportions);
+	    estimateConcrete(estimate, shape);
 	}
 
 	// TODO If computing metal reinforcement in CHB.
-	if (estimate.willComputeMRCHB()) {
-	    CHBVerticalReinforcement vertReinforcement = this.chbVerticalReinforcementValueRepo
-		    .get(estimate.getChbVerticalReinforcementKey());
+	// if (estimate.willComputeMRCHB()) {
+	// CHBVerticalReinforcement vertReinforcement =
+	// this.chbVerticalReinforcementValueRepo
+	// .get(estimate.getChbVerticalReinforcementKey());
+	//
+	// CHBHorizontalReinforcement horizReinforcement =
+	// this.chbHorizontalReinforcementValueRepo
+	// .get(estimate.getChbHorizontalReinforcementKey());
+	//
+	// vertReinforcement.getBarLengthPerSqm();
+	// vertReinforcement.getBarsSpacing().spacing();
+	//
+	// horizReinforcement.getBarLengthPerSqm();
+	// horizReinforcement.getBarsLayer().layer();
+	// }
 
-	    CHBHorizontalReinforcement horizReinforcement = this.chbHorizontalReinforcementValueRepo
-		    .get(estimate.getChbHorizontalReinforcementKey());
-
-	    vertReinforcement.getBarLengthPerSqm();
-	    vertReinforcement.getBarsSpacing().spacing();
-
-	    horizReinforcement.getBarLengthPerSqm();
-	    horizReinforcement.getBarsLayer().layer();
-	}
-
+	estimate.setLastComputed(new Date(System.currentTimeMillis()));
 	this.estimateValueRepo.set(estimate);
 
 	return AlertBoxGenerator.SUCCESS.generateCompute(
@@ -365,54 +339,42 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimate
      * @param proportions
      */
-    private void computeMasonryCHBFooting(Estimate estimate,
-	    List<ConcreteProportion> proportions) {
+    private void estimateMasonryCHBFooting(Estimate estimate) {
 
 	// Get the dimension key.
 	// And the footing mixes.
-	String dimensionKey = estimate.getChbFootingDimensionKey();
-	CHBFootingDimension footingDimension = this.chbFootingDimensionService
-		.get(dimensionKey);
-	List<CHBFootingMixture> footingMixes = this.chbFootingMixtureService
-		.list();
+	TableCHBFootingDimensions chbFooting = estimate
+		.getChbFootingDimensions();
+	String mixClass = estimate.getEstimationClass().getConcreteProportion()
+		.getMixClass();
 
-	// For every proportion,
-	// there is a corresponding footing mix.
-	Map<ConcreteProportion, MasonryCHBFootingEstimateResults> resultMapCHBFooting = new HashMap<ConcreteProportion, MasonryCHBFootingEstimateResults>();
-	for (ConcreteProportion prop : proportions) {
+	// Get the footing mixture given the mix class and footing dimensions.
+	TableCHBFootingMixture footingMixture = getCHBFootingMixture(
+		chbFooting, mixClass);
 
-	    // Get the footing mixture, based on the concrete proportion
-	    // and dimension.
-	    CHBFootingMixture chbFootingMix = getCHBFootingMixture(
-		    footingMixes, dimensionKey, prop);
-	    if (chbFootingMix.getUuid() == null) {
-		continue;
-	    }
+	// Get thickness and width.
+	// TODO Do conversion for other calculations also.
+	double footingThickness = convertToMeter(chbFooting.getThickessUnit(),
+		chbFooting.getThickness());
+	double footingWidth = convertToMeter(chbFooting.getWidthUnit(),
+		chbFooting.getWidth());
 
-	    double footingThickness = convertToMeter(
-		    footingDimension.getThicknessUnit(),
-		    footingDimension.getThickness());
-	    double footingWidth = convertToMeter(
-		    footingDimension.getWidthUnit(),
-		    footingDimension.getWidth());
+	// TODO Optimize below code.
+	// getLength(estimate) is called somewhere else in this class.
+	double length = getLength(estimate);
+	double footingVolume = footingThickness * footingWidth * length;
 
-	    // TODO Optimize below code.
-	    // getLength(estimate) is called somewhere else in this class.
-	    double length = getLength(estimate);
-	    double footingVolume = footingThickness * footingWidth * length;
+	// Estimations.
+	double cement = footingVolume * footingMixture.getPartCement50kg();
+	double sand = footingVolume * footingMixture.getPartSand();
+	double gravel = footingVolume * footingMixture.getPartGravel();
 
-	    // Estimations.
-	    double cement = footingVolume * chbFootingMix.getCement();
-	    double sand = footingVolume * chbFootingMix.getSand();
-	    double gravel = footingVolume * chbFootingMix.getGravel();
+	// Put the results.
+	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(
+		cement, gravel, sand, chbFooting, footingMixture);
 
-	    // Put the results.
-	    MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(
-		    cement, gravel, sand, prop, footingDimension, chbFootingMix);
-	    resultMapCHBFooting.put(prop, footingResults);
-	}
 	// Set the result map of the CHB footing estimate.
-	estimate.setResultMapMasonryCHBFooting(resultMapCHBFooting);
+	estimate.setResultCHBFootingEstimate(footingResults);
     }
 
     /**
@@ -423,20 +385,21 @@ public class EstimateServiceImpl implements EstimateService {
      * @param prop
      * @return
      */
-    private CHBFootingMixture getCHBFootingMixture(
-	    List<CHBFootingMixture> footingMixes, String dimensionKey,
-	    ConcreteProportion prop) {
-	for (CHBFootingMixture footingMix : footingMixes) {
+    private TableCHBFootingMixture getCHBFootingMixture(
+	    TableCHBFootingDimensions chbFooting, String mixClass) {
 
-	    String footingMixKey = footingMix.getFootingDimension().getKey();
-	    // If the dimension keys are equal.
-	    // If the concrete proportions are equal.
-	    if (dimensionKey.equals(footingMixKey)
-		    && prop.equals(footingMix.getConcreteProportion())) {
+	for (TableCHBFootingMixture footingMix : TableCHBFootingMixture.class
+		.getEnumConstants()) {
+
+	    TableCHBFootingDimensions footing = footingMix
+		    .getFootingDimensions();
+	    String footingClass = footingMix.getMixClass();
+
+	    if (chbFooting == footing && footingClass.equals(mixClass)) {
 		return footingMix;
 	    }
 	}
-	return new CHBFootingMixture();
+	return TableCHBFootingMixture.CLASS_A_15_60;
     }
 
     /**
@@ -510,11 +473,11 @@ public class EstimateServiceImpl implements EstimateService {
      * @param shape
      * @param proportions
      */
-    private void computeMasonryPlastering(Estimate estimate, Shape shape,
-	    List<ConcreteProportion> proportions) {
+    private void estimateMasonryPlastering(Estimate estimate, Shape shape) {
 
 	// If a shape has no sides,
 	// then automatically, the number of sides to plaster will be 1.
+	// TODO Simplify all below. Minimize decision making.
 	if (!shape.isWithSides()) {
 	    estimate.setPlasterBackToBack(false);
 	}
@@ -538,43 +501,36 @@ public class EstimateServiceImpl implements EstimateService {
 	// get the thickness area then plaster it.
 	area = addAreaTopSide(estimate, shape, shapeArea, length, area);
 
-	double volume = area * 0.016; // 0.016 is the standard thickness of
-				      // plaster.
+	double volume = area * TablePlasterMixture.STANDARD_PLASTER_THICKNESS;
 
-	// Get the list of plaster mixtures.
-	List<PlasterMixture> plasterMixtures = this.plasterMixtureService
-		.list();
-	Map<ConcreteProportion, MasonryPlasteringEstimateResults> plasteringEstimateResults = new HashMap<ConcreteProportion, MasonryPlasteringEstimateResults>();
+	// Find the appropriate plaster mixture
+	// given this proportion.
+	TableConcreteProportion proportion = estimate.getEstimationClass()
+		.getConcreteProportion();
+	String proportionMixClass = proportion.getMixClass();
 
-	for (ConcreteProportion proportion : proportions) {
+	// Find the plaster mix.
+	TablePlasterMixture plasterMixture = TablePlasterMixture.CLASS_A;
+	for (TablePlasterMixture plasterMix : TablePlasterMixture.class
+		.getEnumConstants()) {
 
-	    // Find the appropriate plaster mixture
-	    // given this proportion.
-	    String propKey = proportion.getKey();
-	    PlasterMixture plasterMixture = new PlasterMixture();
-	    for (PlasterMixture plasterMix : plasterMixtures) {
-		String plasterMixProportionKey = plasterMix
-			.getConcreteProportion().getKey();
-		if (propKey.equals(plasterMixProportionKey)) {
-		    plasterMixture = plasterMix;
-		    break;
-		}
+	    String plasterMixClass = plasterMix.getMixClass();
+	    if (plasterMixClass.equals(proportionMixClass)) {
+		plasterMixture = plasterMix;
+		break;
 	    }
-
-	    double bags40kg = volume * plasterMixture.getCement40kg();
-	    double bags50kg = volume * plasterMixture.getCement50kg();
-	    double sand = volume * plasterMixture.getSand();
-
-	    // Set the results, concrete proportion, plaster mixture,
-	    // is back to back, plaster top side.
-	    MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
-		    bags40kg, bags50kg, sand, proportion, plasterMixture,
-		    plasterBackToBack, estimate.isPlasterTopSide());
-	    plasteringEstimateResults.put(proportion, plasteringResults);
 	}
 
-	// Set all results.
-	estimate.setResultMapMasonryPlastering(plasteringEstimateResults);
+	double bags40kg = volume * plasterMixture.getPartCement40kg();
+	double bags50kg = volume * plasterMixture.getPartCement50kg();
+	double sand = volume * plasterMixture.getPartSand();
+
+	// Set the results, concrete proportion, plaster mixture,
+	// is back to back, plaster top side.
+	MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
+		bags40kg, bags50kg, sand, proportion, plasterMixture,
+		plasterBackToBack, estimate.isPlasterTopSide());
+	estimate.setResultPlasteringEstimate(plasteringResults);
     }
 
     /**
@@ -584,57 +540,57 @@ public class EstimateServiceImpl implements EstimateService {
      * @param shape
      * @param chbList
      */
-    private void computeMasonryBlockLaying(Estimate estimate, Shape shape,
-	    List<CHB> chbList, List<ConcreteProportion> concreteProportions) {
+    private void estimateCHBLaying(Estimate estimate, Shape shape) {
 
-	// Prepare the map,
-	// and the BLM list.
-	Map<CHB, List<MasonryBlockLayingEstimateResults>> blockLayingResults = new HashMap<CHB, List<MasonryBlockLayingEstimateResults>>();
-	List<BlockLayingMixture> mixList = this.blockLayingMixtureService
-		.list();
+	// Prepare needed arguments.
+	TableCHBDimensions chb = estimate.getChbDimensions();
+	TableConcreteProportion proportion = estimate.getEstimationClass()
+		.getConcreteProportion();
+	TableCHBLayingMixture chbLayingMix = getCHBLayingMixture(chb,
+		proportion);
 
-	// Loop through all mixtures.
-	for (CHB chb : chbList) {
+	// Get the inputs.
+	double area = shape.getArea();
+	double bags = chbLayingMix.getPartCement50kgBag(); // 50kg bags.
+	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
-	    // For every CHB,
-	    // you have a list of results depending on your list of proportions.
-	    List<MasonryBlockLayingEstimateResults> results = new ArrayList<MasonryBlockLayingEstimateResults>();
+	// Compute.
+	double bagsNeeded = area * bags;
+	double sandNeeded = area * sand;
 
-	    for (ConcreteProportion proportion : concreteProportions) {
+	// Set the results.
+	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(
+		chb, chbLayingMix, proportion, bagsNeeded, sandNeeded);
+	estimate.setResultCHBLayingEstimate(layingResults);
+    }
 
-		// Given a CHB and proportion,
-		// get the block laying mix.
-		BlockLayingMixture mixture = chb.getBlockLayingMixture(mixList,
-			proportion);
+    /**
+     * Get the CHB laying mixture.
+     * 
+     * @param chb
+     * @param proportion
+     * @return
+     */
+    private TableCHBLayingMixture getCHBLayingMixture(TableCHBDimensions chb,
+	    TableConcreteProportion proportion) {
 
-		// If a mixture does not exist for this CHB,
-		// continue.
-		if (mixture == null) {
-		    continue;
-		}
+	String proportionMixClass = proportion.getMixClass();
 
-		// Get the inputs.
-		double area = shape.getArea();
-		double bags = mixture.getCementBags();
-		double sand = mixture.getSand();
+	// Loop through all block laying mixtures.
+	for (TableCHBLayingMixture mix : TableCHBLayingMixture.class
+		.getEnumConstants()) {
 
-		// Compute.
-		double bagsNeeded = area * bags;
-		double sandNeeded = area * sand;
+	    String layingMixClass = mix.getMixClass();
+	    TableCHBDimensions chbFromLaying = mix.getChb();
 
-		// Set the results.
-		MasonryBlockLayingEstimateResults layingResults = new MasonryBlockLayingEstimateResults(
-			chb, mixture, bagsNeeded, sandNeeded, proportion);
-		results.add(layingResults);
+	    // Get correct CHB,
+	    // and correct concrete proportion.
+	    if (layingMixClass.equals(proportionMixClass)
+		    && chbFromLaying == chb) {
+		return mix;
 	    }
-
-	    // Set to map of CHB,
-	    // to list of proportion results.
-	    blockLayingResults.put(chb, results);
 	}
-
-	// Set results.
-	estimate.setResultMapMasonryBlockLaying(blockLayingResults);
+	return TableCHBLayingMixture.CLASS_A_20_20_40;
     }
 
     /**
@@ -643,74 +599,14 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimate
      * @param shape
      */
-    private void computeConcrete(Estimate estimate, Shape shape,
-	    List<ConcreteProportion> concreteProportions) {
+    private void estimateConcrete(Estimate estimate, Shape shape) {
 
-	Map<ConcreteProportion, ConcreteEstimateResults> resultMapConcrete = new HashMap<ConcreteProportion, ConcreteEstimateResults>();
+	// Now, compute the estimated concrete.
+	ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
+		estimate.getEstimationClass().getConcreteProportion(), shape);
 
-	// Loop through all concrete proportion keys.
-	for (ConcreteProportion proportion : concreteProportions) {
-
-	    // Now, compute the estimated concrete.
-	    ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
-		    proportion, shape);
-
-	    // Set the results.
-	    // Set last computed.
-	    // Save the object.
-	    resultMapConcrete.put(proportion, concreteResults);
-	    estimate.setLastComputed(new Date(System.currentTimeMillis()));
-	}
-
-	estimate.setResultMapConcrete(resultMapConcrete);
-    }
-
-    /**
-     * Estimate number of CHB.
-     * 
-     * @param estimate
-     * @param shape
-     * @param chbList
-     */
-    private void computeMasonryCHB(Estimate estimate, Shape shape,
-	    List<CHB> chbList) {
-
-	// Result map.
-	Map<CHB, MasonryCHBEstimateResults> resultMapMasonry = new HashMap<CHB, MasonryCHBEstimateResults>();
-
-	// Loop through all inputs.
-	// Get results.
-	for (CHB chb : chbList) {
-	    MasonryCHBEstimateResults masonryCHBEstimateResults = getMasonryEstimateResults(
-		    shape, chb);
-	    resultMapMasonry.put(chb, masonryCHBEstimateResults);
-	}
-
-	// Set the result map.
-	estimate.setResultMapMasonryCHB(resultMapMasonry);
-    }
-
-    /**
-     * Prepare the needed estimation inputs.
-     * 
-     * @param estimate
-     * @param chbList
-     * @param blockLayingList
-     */
-    private void prepareMasonryCHBEstimationInputs(Estimate estimate,
-	    List<CHB> chbList) {
-
-	// If we are computing CHB OR
-	// block laying, go here.
-	if (estimate.willComputeMasonryCHB()) {
-
-	    // Loop through all inputs.
-	    // Get CHB object.
-	    for (String chbKey : estimate.getChbMeasurementKeys()) {
-		CHB chb = this.chbValueRepo.get(chbKey);
-		chbList.add(chb);
-	    }
-	}
+	// Set the results.
+	estimate.setResultConcreteEstimate(concreteResults);
     }
 
     /**
@@ -771,23 +667,23 @@ public class EstimateServiceImpl implements EstimateService {
      * Get quantity estimation of masonry.
      * 
      * @param estimate
+     * 
+     * @param estimate
      * @param shape
      * @param chb
      * @return
      */
-    private MasonryCHBEstimateResults getMasonryEstimateResults(Shape shape,
-	    CHB chb) {
+    private void estimateCHBTotal(Estimate estimate, Shape shape) {
 
 	double area = shape.getArea();
 
 	// Get total CHBs.
-	double totalCHB = area * chb.getPerSqM();
+	double totalCHB = area * TableCHBDimensions.STANDARD_CHB_PER_SQ_M;
 
 	// Results of the estimate.
 	MasonryCHBEstimateResults masonryCHBEstimateResults = new MasonryCHBEstimateResults(
-		chb, totalCHB);
-
-	return masonryCHBEstimateResults;
+		estimate.getChbDimensions(), totalCHB);
+	estimate.setResultCHBEstimate(masonryCHBEstimateResults);
     }
 
     /**
@@ -795,21 +691,21 @@ public class EstimateServiceImpl implements EstimateService {
      * 
      * @param allowance
      * 
-     * @param proportion
+     * @param tableConcreteProportion
      * @param mathExp
      * @return
      */
     private ConcreteEstimateResults getConcreteEstimateResults(
-	    ConcreteProportion proportion, Shape shape) {
+	    TableConcreteProportion tableConcreteProportion, Shape shape) {
 
 	double volume = shape.getVolume();
 
 	// Get the ingredients.
 	// Now, compute the estimated concrete.
-	double cement40kg = proportion.getPartCement40kg();
-	double cement50kg = proportion.getPartCement50kg();
-	double sand = proportion.getPartSand();
-	double gravel = proportion.getPartGravel();
+	double cement40kg = tableConcreteProportion.getPartCement40kg();
+	double cement50kg = tableConcreteProportion.getPartCement50kg();
+	double sand = tableConcreteProportion.getPartSand();
+	double gravel = tableConcreteProportion.getPartGravel();
 
 	// Compute.
 	double estCement40kg = volume * cement40kg;

@@ -42,4 +42,44 @@ public enum TableCHBFootingDimensions {
 	this.widthUnit = widthUnit;
     }
 
+    public String getLabel() {
+	return label;
+    }
+
+    public void setLabel(String label) {
+	this.label = label;
+    }
+
+    public double getThickness() {
+	return thickness;
+    }
+
+    public void setThickness(double thickness) {
+	this.thickness = thickness;
+    }
+
+    public CommonLengthUnit getThickessUnit() {
+	return thickessUnit;
+    }
+
+    public void setThickessUnit(CommonLengthUnit thickessUnit) {
+	this.thickessUnit = thickessUnit;
+    }
+
+    public double getWidth() {
+	return width;
+    }
+
+    public void setWidth(double width) {
+	this.width = width;
+    }
+
+    public CommonLengthUnit getWidthUnit() {
+	return widthUnit;
+    }
+
+    public void setWidthUnit(CommonLengthUnit widthUnit) {
+	this.widthUnit = widthUnit;
+    }
+
 }

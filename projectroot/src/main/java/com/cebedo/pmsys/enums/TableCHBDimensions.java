@@ -11,6 +11,8 @@ public enum TableCHBDimensions {
     CHB_20_20_40("20cm x 20cm x 40cm", 20, CommonLengthUnit.CENTIMETER, 20,
 	    CommonLengthUnit.CENTIMETER, 40, CommonLengthUnit.CENTIMETER);
 
+    public static final double STANDARD_CHB_PER_SQ_M = 12.5;
+
     private String label;
     private double thickness;
     private double height;

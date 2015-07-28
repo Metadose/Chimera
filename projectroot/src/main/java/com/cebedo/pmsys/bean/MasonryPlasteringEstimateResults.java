@@ -2,8 +2,8 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.domain.ConcreteProportion;
-import com.cebedo.pmsys.domain.PlasterMixture;
+import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.enums.TablePlasterMixture;
 
 public class MasonryPlasteringEstimateResults implements Serializable {
 
@@ -12,8 +12,9 @@ public class MasonryPlasteringEstimateResults implements Serializable {
     // Set the results, concrete proportion, plaster mixture,
     // is back to back, plaster top side.
 
-    private ConcreteProportion concreteProportion;
-    private PlasterMixture plasterMixture;
+    private TableConcreteProportion concreteProportion;
+    private TablePlasterMixture plasterMixture;
+
     private double cement40kg;
     private double cement50kg;
     private double sand;
@@ -26,8 +27,8 @@ public class MasonryPlasteringEstimateResults implements Serializable {
     }
 
     public MasonryPlasteringEstimateResults(double bags40kg, double bags50kg,
-	    double sand2, ConcreteProportion proportion,
-	    PlasterMixture plasterMixture2, boolean plasterBackToBack2,
+	    double sand2, TableConcreteProportion proportion,
+	    TablePlasterMixture plasterMixture2, boolean plasterBackToBack2,
 	    boolean plasterTopSide2) {
 	setCement40kg(bags40kg);
 	setCement50kg(bags50kg);
@@ -36,22 +37,6 @@ public class MasonryPlasteringEstimateResults implements Serializable {
 	setPlasterMixture(plasterMixture2);
 	setPlasterBackToBack(plasterBackToBack2);
 	setPlasterTopSide(plasterTopSide2);
-    }
-
-    public ConcreteProportion getConcreteProportion() {
-	return concreteProportion;
-    }
-
-    public void setConcreteProportion(ConcreteProportion concreteProportion) {
-	this.concreteProportion = concreteProportion;
-    }
-
-    public PlasterMixture getPlasterMixture() {
-	return plasterMixture;
-    }
-
-    public void setPlasterMixture(PlasterMixture plasterMixture) {
-	this.plasterMixture = plasterMixture;
     }
 
     public double getCement40kg() {
@@ -92,6 +77,22 @@ public class MasonryPlasteringEstimateResults implements Serializable {
 
     public void setPlasterTopSide(boolean plasterTopSide) {
 	this.plasterTopSide = plasterTopSide;
+    }
+
+    public TableConcreteProportion getConcreteProportion() {
+	return concreteProportion;
+    }
+
+    public void setConcreteProportion(TableConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
+    }
+
+    public TablePlasterMixture getPlasterMixture() {
+	return plasterMixture;
+    }
+
+    public void setPlasterMixture(TablePlasterMixture plasterMixture) {
+	this.plasterMixture = plasterMixture;
     }
 
 }
