@@ -23,6 +23,7 @@
 		<javax-valid>1.1.0.Final</javax-valid>
 		<hibernate-valid>5.1.3.Final</hibernate-valid>
 		<eval-ex>1.0</eval-ex>
+		<apache-poi>3.12</apache-poi>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -80,6 +81,14 @@
 			<artifactId>xbean-spring</artifactId>
 			<version>4.2</version>
 		</dependency>
+		
+		<!-- Apache POI -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${apache-poi}</version>
+		</dependency>
+				
 		
 		<!-- Java Math Evaluator -->
 	    <dependency>

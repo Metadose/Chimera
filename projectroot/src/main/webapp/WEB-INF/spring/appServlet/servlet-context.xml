@@ -543,7 +543,6 @@
         <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
         <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
         <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
-        <beans:property name="estimationAllowanceValueRepo" ref="estimationAllowanceValueRepo"></beans:property>
         <beans:property name="chbHorizontalReinforcementValueRepo" ref="chbHorizontalReinforcementValueRepo"></beans:property>
         <beans:property name="chbVerticalReinforcementValueRepo" ref="chbVerticalReinforcementValueRepo"></beans:property>
     </beans:bean>
@@ -551,13 +550,6 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
-    <!-- Estimation Allowance -->
-    <beans:bean id="estimationAllowanceService" class="com.cebedo.pmsys.service.impl.EstimationAllowanceServiceImpl">
-        <beans:property name="estimationAllowanceValueRepo" ref="estimationAllowanceValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="estimationAllowanceValueRepo" class="com.cebedo.pmsys.repository.EstimationAllowanceValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
     
     <!-- Material Category -->
     <beans:bean id="materialCategoryService" class="com.cebedo.pmsys.service.impl.MaterialCategoryServiceImpl">

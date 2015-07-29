@@ -27,8 +27,6 @@ public abstract class RedisConstants {
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY = "masonry (CHB) estimation summary";
 
-    public static final String OBJECT_ESTIMATION_ALLOWANCE = "estimationallowance";
-    public static final String OBJECT_ESTIMATION_ALLOWANCE_DISPLAY = "estimation allowance";
     public static final String OBJECT_MATERIAL_CATEGORY = "materialcategory";
 
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
@@ -65,10 +63,6 @@ public abstract class RedisConstants {
     public static final String JSP_CHB_VERTICAL_REINFORCEMENT_EDIT = OBJECT_CHB_VERTICAL_REINFORCEMENT
 	    + "/chbVerticalReinforcementEdit";
 
-    public static final String JSP_ESTIMATION_ALLOWANCE_LIST = OBJECT_ESTIMATION_ALLOWANCE
-	    + "/estimationAllowanceList";
-    public static final String JSP_ESTIMATION_ALLOWANCE_EDIT = OBJECT_ESTIMATION_ALLOWANCE
-	    + "/estimationAllowanceEdit";
     public static final String JSP_ESTIMATE_EDIT = OBJECT_ESTIMATE
 	    + "/estimateEdit";
     public static final String JSP_MATERIAL_CATEGORY_LIST = OBJECT_MATERIAL_CATEGORY

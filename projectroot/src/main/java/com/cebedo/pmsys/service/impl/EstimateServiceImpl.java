@@ -20,7 +20,6 @@ import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.EstimationAllowance;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -32,7 +31,6 @@ import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.enums.TablePlasterMixture;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
-import com.cebedo.pmsys.repository.EstimationAllowanceValueRepo;
 import com.cebedo.pmsys.repository.ShapeValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -43,12 +41,6 @@ public class EstimateServiceImpl implements EstimateService {
 
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
-    private EstimationAllowanceValueRepo estimationAllowanceValueRepo;
-
-    public void setEstimationAllowanceValueRepo(
-	    EstimationAllowanceValueRepo estimationAllowanceValueRepo) {
-	this.estimationAllowanceValueRepo = estimationAllowanceValueRepo;
-    }
 
     public void setShapeValueRepo(ShapeValueRepo shapeValueRepo) {
 	this.shapeValueRepo = shapeValueRepo;
@@ -158,8 +150,7 @@ public class EstimateServiceImpl implements EstimateService {
     private void setAreaVolume(Estimate estimate, Shape shape) {
 
 	// Allowance.
-	double allowance = estimate.getEstimationAllowance()
-		.getEstimationAllowance();
+	double allowance = estimate.getEstimationAllowance().getAllowance();
 
 	// Area.
 	double area = getArea(estimate, shape);
@@ -174,18 +165,6 @@ public class EstimateServiceImpl implements EstimateService {
     }
 
     /**
-     * Set the estimation allowance.
-     * 
-     * @param estimate
-     */
-    private void setEstimationAllowance(Estimate estimate) {
-	// Set allowances.
-	EstimationAllowance allowance = this.estimationAllowanceValueRepo
-		.get(estimate.getEstimationAllowanceKey());
-	estimate.setEstimationAllowance(allowance);
-    }
-
-    /**
      * Prepare inputs.
      * 
      * @param estimate
@@ -195,9 +174,6 @@ public class EstimateServiceImpl implements EstimateService {
      * @param blockLayingList
      */
     private void prepareInputs(Estimate estimate, Shape shape) {
-
-	// Set allowances.
-	setEstimationAllowance(estimate);
 
 	// Compute for area and volume.
 	setAreaVolume(estimate, shape);

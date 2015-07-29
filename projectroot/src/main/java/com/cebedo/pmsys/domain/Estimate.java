@@ -18,6 +18,7 @@ import com.cebedo.pmsys.enums.MappingEstimationClass;
 import com.cebedo.pmsys.enums.TableCHBDimensions;
 import com.cebedo.pmsys.enums.TableCHBFootingDimensions;
 import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
@@ -44,35 +45,48 @@ public class Estimate implements IDomainObject {
      */
     private Shape shape;
     private List<EstimateType> estimateTypes;
-    private EstimationAllowance estimationAllowance;
 
     /**
      * Bean-backed form.
      */
+    // To be chosen in JSP.
     // Standard constants.
     private MappingEstimationClass estimationClass;
     private TableCHBDimensions chbDimensions;
     private TableCHBFootingDimensions chbFootingDimensions;
+    private TableEstimationAllowance estimationAllowance;
 
-    // First commit.
-    private String shapeKey;
-    private String estimationAllowanceKey;
+    // TODO Remove, choose all estimation types.
+    @Deprecated
     private int[] estimateType;
 
-    // Second commit.
+    // TODO User will compute his own area and volume.
+    @Deprecated
+    private String shapeKey;
+    @Deprecated
     private Map<String, String> areaFormulaInputs = new HashMap<String, String>();
+    @Deprecated
     private Map<String, String> volumeFormulaInputs = new HashMap<String, String>();
+    @Deprecated
     private Map<String, CommonLengthUnit> areaFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
+    @Deprecated
     private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
 
     // Masonry (Plastering) inputs.
+    // TODO Is there a way to compute foundation based on area?
+    // If no, choose this in JSP.
     private double chbFoundationHeight;
     private CommonLengthUnit chbFoundationUnit;
+
+    // TODO Always plaster back to back.
+    @Deprecated
     private boolean plasterBackToBack; // Compute the needed plaster for the two
 				       // sides of the area. If we have a 20
 				       // sqm. wall, and we plaster back to
 				       // back, then we compute 20sqm x 2sides =
 				       // 40sqm total.
+    // TODO Always plaster top side.
+    @Deprecated
     private boolean plasterTopSide; // Plaster the top side of the shape.
 
     // Metal reinforcement (CHB).
@@ -264,22 +278,6 @@ public class Estimate implements IDomainObject {
 	this.volumeFormulaInputsUnits = formulaInputsUnits;
     }
 
-    public String getEstimationAllowanceKey() {
-	return estimationAllowanceKey;
-    }
-
-    public void setEstimationAllowanceKey(String estimationAllowanceKey) {
-	this.estimationAllowanceKey = estimationAllowanceKey;
-    }
-
-    public EstimationAllowance getEstimationAllowance() {
-	return estimationAllowance;
-    }
-
-    public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
-	this.estimationAllowance = estimationAllowance;
-    }
-
     public boolean isPlasterBackToBack() {
 	return plasterBackToBack;
     }
@@ -408,6 +406,14 @@ public class Estimate implements IDomainObject {
     public void setResultConcreteEstimate(
 	    ConcreteEstimateResults resultConcreteEstimate) {
 	this.resultConcreteEstimate = resultConcreteEstimate;
+    }
+
+    public TableEstimationAllowance getEstimationAllowance() {
+	return estimationAllowance;
+    }
+
+    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
+	this.estimationAllowance = estimationAllowance;
     }
 
 }

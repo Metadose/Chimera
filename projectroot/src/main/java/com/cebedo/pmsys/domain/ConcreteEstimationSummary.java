@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -64,7 +65,7 @@ public class ConcreteEstimationSummary implements IDomainObject {
     /**
      * To set during estimation.
      */
-    private EstimationAllowance estimationAllowance;
+    private TableEstimationAllowance estimationAllowance;
 
     /**
      * Other specs.
@@ -405,14 +406,6 @@ public class ConcreteEstimationSummary implements IDomainObject {
 		proj.getCompany().getId(), proj.getId(), "*");
     }
 
-    public EstimationAllowance getEstimationAllowance() {
-	return estimationAllowance;
-    }
-
-    public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
-	this.estimationAllowance = estimationAllowance;
-    }
-
     public TableConcreteProportion getConcreteProportion() {
 	return concreteProportion;
     }
@@ -430,5 +423,13 @@ public class ConcreteEstimationSummary implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    public TableEstimationAllowance getEstimationAllowance() {
+	return estimationAllowance;
+    }
+
+    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
+	this.estimationAllowance = estimationAllowance;
     }
 }
