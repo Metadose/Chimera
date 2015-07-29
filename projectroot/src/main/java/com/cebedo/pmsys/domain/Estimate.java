@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,6 @@ public class Estimate implements IDomainObject {
      * Computational specs.
      */
     private Shape shape;
-    private List<EstimateType> estimateTypes;
 
     /**
      * Bean-backed form.
@@ -56,9 +56,10 @@ public class Estimate implements IDomainObject {
     private TableCHBFootingDimensions chbFootingDimensions;
     private TableEstimationAllowance estimationAllowance;
 
-    // TODO Remove, choose all estimation types.
+    // TODO Let them choose in the Excel file.
     @Deprecated
     private int[] estimateType;
+    private List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
 
     // TODO User will compute his own area and volume.
     @Deprecated
@@ -412,7 +413,8 @@ public class Estimate implements IDomainObject {
 	return estimationAllowance;
     }
 
-    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
+    public void setEstimationAllowance(
+	    TableEstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
 

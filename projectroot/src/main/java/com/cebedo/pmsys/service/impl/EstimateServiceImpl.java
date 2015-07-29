@@ -1,15 +1,24 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +47,17 @@ import com.udojava.evalex.Expression;
 
 @Service
 public class EstimateServiceImpl implements EstimateService {
+
+    public static final int EXCEL_COLUMN_DETAILS_NAME = 1;
+    public static final int EXCEL_COLUMN_DETAILS_AREA = 2;
+    public static final int EXCEL_COLUMN_DETAILS_VOLUME = 3;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CONCRETE = 4;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB = 5;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_LAYING = 6;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_PLASTERING = 7;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING = 8;
+    public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 9;
+    public static final int EXCEL_COLUMN_DETAILS_REMARKS = 10;
 
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
@@ -177,6 +197,202 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Compute for area and volume.
 	setAreaVolume(estimate, shape);
+    }
+
+    /**
+     * Convert Yes/No input from Excel to boolean type.
+     * 
+     * @param workbook
+     * @param cell
+     * @return
+     */
+    private static boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook,
+	    Cell cell) {
+	String concrete = (String) (getValueAsExpected(workbook, cell) == null ? ""
+		: getValueAsExpected(workbook, cell));
+	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true
+		: false;
+    }
+
+    /**
+     * Get value as the expected object to avoid exceptions.
+     * 
+     * @param cell
+     * @return
+     */
+    private static Object getValueAsExpected(HSSFWorkbook workbook, Cell cell) {
+
+	// Evaluate the cell.
+	// Get the value of the cell.
+	FormulaEvaluator evaluator = workbook.getCreationHelper()
+		.createFormulaEvaluator();
+	CellValue cellValue = evaluator.evaluate(cell);
+
+	// Handle each case.
+	switch (cellValue.getCellType()) {
+
+	case Cell.CELL_TYPE_NUMERIC:
+	    return cellValue.getNumberValue();
+
+	case Cell.CELL_TYPE_STRING:
+	    return cellValue.getStringValue();
+
+	case Cell.CELL_TYPE_BOOLEAN:
+	    return cellValue.getBooleanValue();
+
+	case Cell.CELL_TYPE_BLANK:
+	    return null;
+
+	case Cell.CELL_TYPE_ERROR:
+	    return null;
+
+	case Cell.CELL_TYPE_FORMULA:
+	    // CELL_TYPE_FORMULA will never happen
+	    // since it's already evaluated.
+	    return null;
+	}
+	return null;
+    }
+
+    @SuppressWarnings("resource")
+    public static void main(String[] args) {
+	try {
+
+	    // Create Workbook instance holding reference to .xls file
+	    // Get first/desired sheet from the workbook.
+	    FileInputStream file = new FileInputStream(new File(
+		    "C:/Users/AEA/git/PracticeRepo/estimation-test/Book2.xls"));
+	    HSSFWorkbook workbook = new HSSFWorkbook(file);
+	    HSSFSheet sheet = workbook.getSheetAt(0);
+
+	    // Iterate through each rows one by one.
+	    Iterator<Row> rowIterator = sheet.iterator();
+
+	    // Construct estimate containers.
+	    List<Estimate> estimates = new ArrayList<Estimate>();
+	    while (rowIterator.hasNext()) {
+
+		Row row = rowIterator.next();
+		int rowCountDisplay = row.getRowNum() + 1;
+
+		// Skip first 3 lines.
+		if (rowCountDisplay <= 3) {
+		    continue;
+		}
+
+		// For each row, iterate through all the columns
+		Iterator<Cell> cellIterator = row.cellIterator();
+
+		// Every row, is an Estimate object.
+		// TODO Add Project object.
+		Estimate estimate = new Estimate();
+		Shape shape = new Shape();
+		List<EstimateType> estimateTypes = estimate.getEstimateTypes();
+
+		while (cellIterator.hasNext()) {
+
+		    // Cell in this row and column.
+		    Cell cell = cellIterator.next();
+		    int colCountDisplay = cell.getColumnIndex() + 1;
+
+		    switch (colCountDisplay) {
+
+		    case EXCEL_COLUMN_DETAILS_NAME:
+			String name = (String) (getValueAsExpected(workbook,
+				cell) == null ? "" : getValueAsExpected(
+				workbook, cell));
+			estimate.setName(name);
+			continue;
+
+		    case EXCEL_COLUMN_DETAILS_AREA:
+			double area = (Double) (getValueAsExpected(workbook,
+				cell) == null ? "" : getValueAsExpected(
+				workbook, cell));
+			shape.setArea(area);
+			estimate.setShape(shape);
+			continue;
+
+		    case EXCEL_COLUMN_DETAILS_VOLUME:
+			double volume = (Double) (getValueAsExpected(workbook,
+				cell) == null ? "" : getValueAsExpected(
+				workbook, cell));
+			shape.setVolume(volume);
+			estimate.setShape(shape);
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CONCRETE:
+			boolean concrete = getEstimateBooleanFromExcel(
+				workbook, cell);
+			if (concrete) {
+			    estimateTypes.add(EstimateType.CONCRETE);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB:
+			boolean chb = getEstimateBooleanFromExcel(workbook,
+				cell);
+			if (chb) {
+			    estimateTypes.add(EstimateType.MASONRY_CHB);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_LAYING:
+			boolean chbLaying = getEstimateBooleanFromExcel(
+				workbook, cell);
+			if (chbLaying) {
+			    estimateTypes
+				    .add(EstimateType.MASONRY_BLOCK_LAYING);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_PLASTERING:
+			boolean plaster = getEstimateBooleanFromExcel(workbook,
+				cell);
+			if (plaster) {
+			    estimateTypes.add(EstimateType.MASONRY_PLASTERING);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING:
+			boolean footing = getEstimateBooleanFromExcel(workbook,
+				cell);
+			if (footing) {
+			    estimateTypes.add(EstimateType.MASONRY_CHB_FOOTING);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_ESTIMATE_MR_CHB:
+			boolean mrCHB = getEstimateBooleanFromExcel(workbook,
+				cell);
+			if (mrCHB) {
+			    estimateTypes
+				    .add(EstimateType.METAL_REINFORCEMENT_CHB);
+			    estimate.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_COLUMN_DETAILS_REMARKS:
+			String remarks = (String) (getValueAsExpected(workbook,
+				cell) == null ? "" : getValueAsExpected(
+				workbook, cell));
+			estimate.setRemarks(remarks);
+			continue;
+
+		    }
+		}
+
+		estimates.add(estimate);
+	    }
+	    estimates.toString();
+	    file.close();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 
     /**

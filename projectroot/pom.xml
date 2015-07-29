@@ -88,7 +88,6 @@
 			<artifactId>poi</artifactId>
 			<version>${apache-poi}</version>
 		</dependency>
-				
 		
 		<!-- Java Math Evaluator -->
 	    <dependency>
