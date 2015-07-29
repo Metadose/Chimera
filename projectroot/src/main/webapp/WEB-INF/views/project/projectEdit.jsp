@@ -74,6 +74,7 @@
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
                                 		<li><a href="#tab_estimate" data-toggle="tab">Estimate</a></li>
+                                		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
@@ -315,6 +316,38 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
+                   				<div class="tab-pane" id="tab_project_estimate">
+                                	<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   								
+                   								<form:form modelAttribute="estimationInput"
+													action="${contextPath}/project/create/estimate"
+													method="post"
+													enctype="multipart/form-data">
+<!--	 allowanceList -->
+<!--     private TableEstimationAllowance estimationAllowance; -->
+<!--     private MultipartFile estimationFile; -->
+			                                        <div class="form-group">
+			                                        <label>Excel File</label>
+													<form:input type="file" class="form-control" path="estimationFile"/><br/>
+													
+	                                                <label>Estimation Allowance</label>
+	                                                <form:select class="form-control" path="estimationAllowance"> 
+                                   						<c:forEach items="${allowanceList}" var="allowance"> 
+                                   							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
+                                   						</c:forEach> 
+	                                    			</form:select><br/>
+	                                    			
+	                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
+			                                        </div>
+		                                        </form:form>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	
                                 	<div class="nav-tabs-custom">

@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
+import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
@@ -52,6 +53,7 @@ import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
@@ -89,14 +91,19 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
-@SessionAttributes(value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
+@SessionAttributes(
+
+value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
 	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
 	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE }, types = {
-	Project.class, FieldAssignmentBean.class, ProjectFile.class,
+	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE },
+
+types = { Project.class, FieldAssignmentBean.class, ProjectFile.class,
 	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
-	Estimate.class })
+	Estimate.class }
+
+)
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
@@ -124,11 +131,14 @@ public class ProjectController {
     public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
+
+    public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
     public static final String ATTR_ESTIMATE_COMBINED_LIST = "combinedEstimateList";
+
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
@@ -527,7 +537,7 @@ public class ProjectController {
 
 	    status.setComplete();
 	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
-		    + SystemConstants.REQUEST_LIST;
+		    + SystemConstants.REQUEST_EDIT + "/" + project.getId();
 	}
 
 	// Get response.
@@ -1262,11 +1272,14 @@ public class ProjectController {
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
 	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
-	    @ModelAttribute(RedisConstants.OBJECT_ESTIMATE) Estimate estimate,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimationInputBean estimateInput,
+	    RedirectAttributes redirectAttrs, SessionStatus status,
+	    HttpSession session) {
 
 	// Do service and get response.
-	String response = this.estimateService.set(estimate);
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	estimateInput.setProject(proj);
+	String response = this.estimateService.set(estimateInput);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
@@ -1274,8 +1287,8 @@ public class ProjectController {
 
 	// Complete the transaction.
 	status.setComplete();
-	return getSubmoduleEditRedirect(RedisConstants.OBJECT_ESTIMATE,
-		estimate.getKey());
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
     /**
@@ -1982,6 +1995,9 @@ public class ProjectController {
 
 	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimationInputBean());
+	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST,
+		TableEstimationAllowance.class.getEnumConstants());
 
 	// Empty bean of concrete estimation summary.
 	// List of all estimation summaries.

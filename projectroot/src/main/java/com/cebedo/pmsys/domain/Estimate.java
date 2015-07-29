@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
@@ -48,12 +50,14 @@ public class Estimate implements IDomainObject {
     /**
      * Bean-backed form.
      */
-    // To be chosen in JSP.
-    // Standard constants.
-    private MappingEstimationClass estimationClass;
-    private TableCHBDimensions chbDimensions;
-    private TableCHBFootingDimensions chbFootingDimensions;
+    // User input.
     private TableEstimationAllowance estimationAllowance;
+    private MultipartFile estimationFile;
+
+    // Standard constants.
+    private MappingEstimationClass estimationClass = MappingEstimationClass.CLASS_A;
+    private TableCHBDimensions chbDimensions = TableCHBDimensions.CHB_20_20_40;
+    private TableCHBFootingDimensions chbFootingDimensions = TableCHBFootingDimensions.FOOTING_15_60;
 
     // TODO Let them choose in the Excel file.
     private List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
@@ -62,11 +66,7 @@ public class Estimate implements IDomainObject {
     // TODO Is there a way to compute foundation based on area?
     // If no, choose this in JSP.
     private double chbFoundationHeight;
-    private CommonLengthUnit chbFoundationUnit;
-
-    // Metal reinforcement (CHB).
-    private String chbVerticalReinforcementKey;
-    private String chbHorizontalReinforcementKey;
+    private CommonLengthUnit chbFoundationUnit = CommonLengthUnit.METER;
 
     /**
      * Results
@@ -230,24 +230,6 @@ public class Estimate implements IDomainObject {
 	this.chbFoundationUnit = chbFoundationUnit;
     }
 
-    public String getChbVerticalReinforcementKey() {
-	return chbVerticalReinforcementKey;
-    }
-
-    public void setChbVerticalReinforcementKey(
-	    String chbVerticalReinforcementKey) {
-	this.chbVerticalReinforcementKey = chbVerticalReinforcementKey;
-    }
-
-    public String getChbHorizontalReinforcementKey() {
-	return chbHorizontalReinforcementKey;
-    }
-
-    public void setChbHorizontalReinforcementKey(
-	    String chbHorizontalReinforcementKey) {
-	this.chbHorizontalReinforcementKey = chbHorizontalReinforcementKey;
-    }
-
     public TableCHBDimensions getChbDimensions() {
 	return chbDimensions;
     }
@@ -324,6 +306,14 @@ public class Estimate implements IDomainObject {
     public void setEstimationAllowance(
 	    TableEstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
+    }
+
+    public MultipartFile getEstimationFile() {
+	return estimationFile;
+    }
+
+    public void setEstimationFile(MultipartFile estimationFile) {
+	this.estimationFile = estimationFile;
     }
 
 }

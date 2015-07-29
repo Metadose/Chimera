@@ -21,8 +21,10 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
@@ -61,6 +63,8 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_DETAILS_REMARKS = 11;
 
     private EstimateValueRepo estimateValueRepo;
+
+    @Deprecated
     private ShapeValueRepo shapeValueRepo;
 
     public void setShapeValueRepo(ShapeValueRepo shapeValueRepo) {
@@ -81,6 +85,34 @@ public class EstimateServiceImpl implements EstimateService {
     @Transactional
     public void multiSet(Map<String, Estimate> m) {
 	this.estimateValueRepo.multiSet(m);
+    }
+
+    @Override
+    @Transactional
+    public String set(EstimationInputBean estimateInput) {
+
+	// Do the commit.
+	// If create.
+	if (estimateInput.getEstimationFile() != null) {
+	    // obj.setUuid(UUID.randomUUID());
+	    // this.estimateValueRepo.set(obj);
+
+	    List<Estimate> estimates = convertExcelToEstimates(
+		    estimateInput.getEstimationFile(),
+		    estimateInput.getProject());
+
+	    for (Estimate estimate : estimates) {
+		computeQuantityEstimate(estimate);
+	    }
+
+	    return AlertBoxGenerator.SUCCESS.generateCreate(
+		    RedisConstants.OBJECT_ESTIMATE, "TODO");
+	}
+
+	// If update.
+	// this.estimateValueRepo.set(obj);
+	return AlertBoxGenerator.SUCCESS.generateUpdate(
+		RedisConstants.OBJECT_ESTIMATE, "TODO");
     }
 
     /**
@@ -208,16 +240,17 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Convert Excel to a list of Estimates.
      * 
-     * @param file
+     * @param multipartFile
      * @return
      */
-    private List<Estimate> convertExcelToEstimates(FileInputStream file,
+    private List<Estimate> convertExcelToEstimates(MultipartFile multipartFile,
 	    Project proj) {
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
 	    // Get first/desired sheet from the workbook.
-	    HSSFWorkbook workbook = new HSSFWorkbook(file);
+	    HSSFWorkbook workbook = new HSSFWorkbook(
+		    multipartFile.getInputStream());
 	    HSSFSheet sheet = workbook.getSheetAt(0);
 
 	    // Iterate through each rows one by one.
@@ -351,7 +384,6 @@ public class EstimateServiceImpl implements EstimateService {
 
 		estimates.add(estimate);
 	    }
-	    file.close();
 	    return estimates;
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -367,8 +399,9 @@ public class EstimateServiceImpl implements EstimateService {
 	    FileInputStream file = new FileInputStream(new File(
 		    "C:/Users/AEA/git/PracticeRepo/estimation-test/Book2.xls"));
 	    EstimateServiceImpl estimateService = new EstimateServiceImpl();
-	    List<Estimate> estimates = estimateService.convertExcelToEstimates(
-		    file, null);
+	    // List<Estimate> estimates =
+	    // estimateService.convertExcelToEstimates(
+	    // file, null);
 	    file.close();
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -382,21 +415,10 @@ public class EstimateServiceImpl implements EstimateService {
     @Transactional
     public String computeQuantityEstimate(Estimate estimate) {
 
-	// TODO Handle incorrect requests.
-	// If we're computing block laying,
-	// but didn't specify any block at all,
-	// return fail.
-	// if (estimate.willComputeMasonryBlockLaying()
-	// && estimate.getChbMeasurementKeys().length == 0) {
-	// return AlertBoxGenerator.FAILED.setMessage(
-	// MessageRegistry.ESTIMATE_MASONRY_BLM_NO_CHB_LIST)
-	// .generateHTML();
-	// }
+	// TODO What if area is negative?
 
 	// Shape to compute.
 	Shape shape = estimate.getShape();
-
-	// TODO What if area is negative?
 
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
@@ -422,23 +444,6 @@ public class EstimateServiceImpl implements EstimateService {
 	if (estimate.willComputeConcrete()) {
 	    estimateConcrete(estimate, shape);
 	}
-
-	// TODO If computing metal reinforcement in CHB.
-	// if (estimate.willComputeMRCHB()) {
-	// CHBVerticalReinforcement vertReinforcement =
-	// this.chbVerticalReinforcementValueRepo
-	// .get(estimate.getChbVerticalReinforcementKey());
-	//
-	// CHBHorizontalReinforcement horizReinforcement =
-	// this.chbHorizontalReinforcementValueRepo
-	// .get(estimate.getChbHorizontalReinforcementKey());
-	//
-	// vertReinforcement.getBarLengthPerSqm();
-	// vertReinforcement.getBarsSpacing().spacing();
-	//
-	// horizReinforcement.getBarLengthPerSqm();
-	// horizReinforcement.getBarsLayer().layer();
-	// }
 
 	estimate.setLastComputed(new Date(System.currentTimeMillis()));
 	this.estimateValueRepo.set(estimate);

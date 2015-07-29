@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.model.Project;
 
@@ -15,6 +16,8 @@ public interface EstimateService {
     public void multiSet(Map<String, Estimate> m);
 
     public String set(Estimate obj);
+
+    public String set(EstimationInputBean estimateInput);
 
     public void delete(Collection<String> keys);
 
