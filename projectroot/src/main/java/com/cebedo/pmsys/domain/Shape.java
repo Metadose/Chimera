@@ -42,6 +42,7 @@ public class Shape implements IDomainObject {
      */
     private double area;
     private double volume;
+    private double footingLength;
 
     /**
      * Extension map.
@@ -220,5 +221,13 @@ public class Shape implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    public double getFootingLength() {
+	return footingLength;
+    }
+
+    public void setFootingLength(double footingLength) {
+	this.footingLength = footingLength;
     }
 }

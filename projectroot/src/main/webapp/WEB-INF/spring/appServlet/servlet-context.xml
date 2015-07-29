@@ -522,34 +522,14 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
-    <!-- CHB Vertical Reinforcement -->
-    <beans:bean id="chbVerticalReinforcementService" class="com.cebedo.pmsys.service.impl.CHBVerticalReinforcementServiceImpl">
-        <beans:property name="chbVerticalReinforcementValueRepo" ref="chbVerticalReinforcementValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="chbVerticalReinforcementValueRepo" class="com.cebedo.pmsys.repository.CHBVerticalReinforcementValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
-    <!-- CHB Horizontal Reinforcement -->
-    <beans:bean id="chbHorizontalReinforcementService" class="com.cebedo.pmsys.service.impl.CHBHorizontalReinforcementServiceImpl">
-        <beans:property name="chbHorizontalReinforcementValueRepo" ref="chbHorizontalReinforcementValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="chbHorizontalReinforcementValueRepo" class="com.cebedo.pmsys.repository.CHBHorizontalReinforcementValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
     <!-- Estimate -->
     <beans:bean id="estimateService" class="com.cebedo.pmsys.service.impl.EstimateServiceImpl">
         <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
         <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
-        <beans:property name="concreteProportionValueRepo" ref="concreteProportionValueRepo"></beans:property>
-        <beans:property name="chbHorizontalReinforcementValueRepo" ref="chbHorizontalReinforcementValueRepo"></beans:property>
-        <beans:property name="chbVerticalReinforcementValueRepo" ref="chbVerticalReinforcementValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
-    
     
     <!-- Material Category -->
     <beans:bean id="materialCategoryService" class="com.cebedo.pmsys.service.impl.MaterialCategoryServiceImpl">

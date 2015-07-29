@@ -70,7 +70,6 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
 		    .getResultCHBEstimate();
 
 	    // Set the area specifics.
-	    obj.setAreaFormulaInputs(estimate.getAreaFormulaInputs());
 	    obj.setArea(estimate.getShape().getArea());
 	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 

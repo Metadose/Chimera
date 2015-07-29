@@ -2,7 +2,6 @@ package com.cebedo.pmsys.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,38 +56,13 @@ public class Estimate implements IDomainObject {
     private TableEstimationAllowance estimationAllowance;
 
     // TODO Let them choose in the Excel file.
-    @Deprecated
-    private int[] estimateType;
     private List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
-
-    // TODO User will compute his own area and volume.
-    @Deprecated
-    private String shapeKey;
-    @Deprecated
-    private Map<String, String> areaFormulaInputs = new HashMap<String, String>();
-    @Deprecated
-    private Map<String, String> volumeFormulaInputs = new HashMap<String, String>();
-    @Deprecated
-    private Map<String, CommonLengthUnit> areaFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
-    @Deprecated
-    private Map<String, CommonLengthUnit> volumeFormulaInputsUnits = new HashMap<String, CommonLengthUnit>();
 
     // Masonry (Plastering) inputs.
     // TODO Is there a way to compute foundation based on area?
     // If no, choose this in JSP.
     private double chbFoundationHeight;
     private CommonLengthUnit chbFoundationUnit;
-
-    // TODO Always plaster back to back.
-    @Deprecated
-    private boolean plasterBackToBack; // Compute the needed plaster for the two
-				       // sides of the area. If we have a 20
-				       // sqm. wall, and we plaster back to
-				       // back, then we compute 20sqm x 2sides =
-				       // 40sqm total.
-    // TODO Always plaster top side.
-    @Deprecated
-    private boolean plasterTopSide; // Plaster the top side of the shape.
 
     // Metal reinforcement (CHB).
     private String chbVerticalReinforcementKey;
@@ -216,47 +190,6 @@ public class Estimate implements IDomainObject {
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
-    public Map<String, String> getVolumeFormulaInputs() {
-	return volumeFormulaInputs;
-    }
-
-    public void setVolumeFormulaInputs(Map<String, String> formulaInputs) {
-	this.volumeFormulaInputs = formulaInputs;
-    }
-
-    public Map<String, String> getAreaFormulaInputs() {
-	return areaFormulaInputs;
-    }
-
-    public void setAreaFormulaInputs(Map<String, String> areaFormulaInputs) {
-	this.areaFormulaInputs = areaFormulaInputs;
-    }
-
-    public Map<String, CommonLengthUnit> getAreaFormulaInputsUnits() {
-	return areaFormulaInputsUnits;
-    }
-
-    public void setAreaFormulaInputsUnits(
-	    Map<String, CommonLengthUnit> areaFormulaInputsUnits) {
-	this.areaFormulaInputsUnits = areaFormulaInputsUnits;
-    }
-
-    public String getShapeKey() {
-	return shapeKey;
-    }
-
-    public void setShapeKey(String shapeKey) {
-	this.shapeKey = shapeKey;
-    }
-
-    public int[] getEstimateType() {
-	return estimateType;
-    }
-
-    public void setEstimateType(int[] estimateType) {
-	this.estimateType = estimateType;
-    }
-
     public List<EstimateType> getEstimateTypes() {
 	return estimateTypes;
     }
@@ -268,31 +201,6 @@ public class Estimate implements IDomainObject {
     public static String constructPattern(Project proj) {
 	return String.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany()
 		.getId(), proj.getId(), "*");
-    }
-
-    public Map<String, CommonLengthUnit> getVolumeFormulaInputsUnits() {
-	return volumeFormulaInputsUnits;
-    }
-
-    public void setVolumeFormulaInputsUnits(
-	    Map<String, CommonLengthUnit> formulaInputsUnits) {
-	this.volumeFormulaInputsUnits = formulaInputsUnits;
-    }
-
-    public boolean isPlasterBackToBack() {
-	return plasterBackToBack;
-    }
-
-    public void setPlasterBackToBack(boolean plasterBackToBack) {
-	this.plasterBackToBack = plasterBackToBack;
-    }
-
-    public boolean isPlasterTopSide() {
-	return plasterTopSide;
-    }
-
-    public void setPlasterTopSide(boolean plasterTopSide) {
-	this.plasterTopSide = plasterTopSide;
     }
 
     @Override

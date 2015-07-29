@@ -19,11 +19,6 @@ public abstract class RedisConstants {
     public static final String OBJECT_UNIT = "unit";
     public static final String OBJECT_PLASTER_MIXTURE = "plastermixture";
 
-    public static final String OBJECT_CHB_HORIZONTAL_REINFORCEMENT = "chbhorizontalreinforcement";
-    public static final String OBJECT_CHB_HORIZONTAL_REINFORCEMENT_DISPLAY = "CHB horizontal reinforcement";
-    public static final String OBJECT_CHB_VERTICAL_REINFORCEMENT = "chbverticalreinforcement";
-    public static final String OBJECT_CHB_VERTICAL_REINFORCEMENT_DISPLAY = "CHB vertical reinforcement";
-
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY = "masonry (CHB) estimation summary";
 
@@ -54,14 +49,6 @@ public abstract class RedisConstants {
 	    + "/plasterMixtureEdit";
     public static final String JSP_UNIT_LIST = OBJECT_UNIT + "/unitList";
     public static final String JSP_UNIT_EDIT = OBJECT_UNIT + "/unitEdit";
-    public static final String JSP_CHB_HORIZONTAL_REINFORCEMENT_LIST = OBJECT_CHB_HORIZONTAL_REINFORCEMENT
-	    + "/chbHorizontalReinforcementList";
-    public static final String JSP_CHB_HORIZONTAL_REINFORCEMENT_EDIT = OBJECT_CHB_HORIZONTAL_REINFORCEMENT
-	    + "/chbHorizontalReinforcementEdit";
-    public static final String JSP_CHB_VERTICAL_REINFORCEMENT_LIST = OBJECT_CHB_VERTICAL_REINFORCEMENT
-	    + "/chbVerticalReinforcementList";
-    public static final String JSP_CHB_VERTICAL_REINFORCEMENT_EDIT = OBJECT_CHB_VERTICAL_REINFORCEMENT
-	    + "/chbVerticalReinforcementEdit";
 
     public static final String JSP_ESTIMATE_EDIT = OBJECT_ESTIMATE
 	    + "/estimateEdit";

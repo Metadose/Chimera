@@ -54,7 +54,6 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
      * Properties to set during cost estimation.
      */
     private TableCHBDimensions chbDimensions;
-    private Map<String, String> areaFormulaInputs;
     private double area;
     private TableEstimationAllowance estimationAllowance;
 
@@ -176,14 +175,6 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
 
     public void setEstimationToCompute(String[] estimationToCompute) {
 	this.estimationToCompute = estimationToCompute;
-    }
-
-    public Map<String, String> getAreaFormulaInputs() {
-	return areaFormulaInputs;
-    }
-
-    public void setAreaFormulaInputs(Map<String, String> areaFormulaInputs) {
-	this.areaFormulaInputs = areaFormulaInputs;
     }
 
     public double getArea() {

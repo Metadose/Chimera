@@ -19,24 +19,18 @@ public class MasonryPlasteringEstimateResults implements Serializable {
     private double cement50kg;
     private double sand;
 
-    private boolean plasterBackToBack;
-    private boolean plasterTopSide;
-
     public MasonryPlasteringEstimateResults() {
 	;
     }
 
     public MasonryPlasteringEstimateResults(double bags40kg, double bags50kg,
 	    double sand2, TableConcreteProportion proportion,
-	    TablePlasterMixture plasterMixture2, boolean plasterBackToBack2,
-	    boolean plasterTopSide2) {
+	    TablePlasterMixture plasterMixture2) {
 	setCement40kg(bags40kg);
 	setCement50kg(bags50kg);
 	setSand(sand2);
 	setConcreteProportion(proportion);
 	setPlasterMixture(plasterMixture2);
-	setPlasterBackToBack(plasterBackToBack2);
-	setPlasterTopSide(plasterTopSide2);
     }
 
     public double getCement40kg() {
@@ -61,22 +55,6 @@ public class MasonryPlasteringEstimateResults implements Serializable {
 
     public void setSand(double sand) {
 	this.sand = sand;
-    }
-
-    public boolean isPlasterBackToBack() {
-	return plasterBackToBack;
-    }
-
-    public void setPlasterBackToBack(boolean plasterBackToBack) {
-	this.plasterBackToBack = plasterBackToBack;
-    }
-
-    public boolean isPlasterTopSide() {
-	return plasterTopSide;
-    }
-
-    public void setPlasterTopSide(boolean plasterTopSide) {
-	this.plasterTopSide = plasterTopSide;
     }
 
     public TableConcreteProportion getConcreteProportion() {

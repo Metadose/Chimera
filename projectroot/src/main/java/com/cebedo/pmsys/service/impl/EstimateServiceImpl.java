@@ -56,8 +56,9 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_LAYING = 6;
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_PLASTERING = 7;
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING = 8;
-    public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 9;
-    public static final int EXCEL_COLUMN_DETAILS_REMARKS = 10;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH = 9;
+    public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 10;
+    public static final int EXCEL_COLUMN_DETAILS_REMARKS = 11;
 
     private EstimateValueRepo estimateValueRepo;
     private ShapeValueRepo shapeValueRepo;
@@ -88,18 +89,6 @@ public class EstimateServiceImpl implements EstimateService {
     @Override
     @Transactional
     public String set(Estimate obj) {
-
-	// Set the shape.
-	Shape shape = this.shapeValueRepo.get(obj.getShapeKey());
-	obj.setShape(shape);
-
-	// Set the estimate types.
-	List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
-	for (int estimateTypeID : obj.getEstimateType()) {
-	    EstimateType type = EstimateType.of(estimateTypeID);
-	    estimateTypes.add(type);
-	}
-	obj.setEstimateTypes(estimateTypes);
 
 	// Do the commit.
 	// If create.
@@ -162,44 +151,6 @@ public class EstimateServiceImpl implements EstimateService {
     }
 
     /**
-     * Compute for area and volume.
-     * 
-     * @param shape
-     * @param estimate
-     */
-    private void setAreaVolume(Estimate estimate, Shape shape) {
-
-	// Allowance.
-	double allowance = estimate.getEstimationAllowance().getAllowance();
-
-	// Area.
-	double area = getArea(estimate, shape);
-	area += (area * allowance);
-
-	// Volume.
-	double volume = getVolume(estimate, shape);
-	volume += (volume * allowance);
-
-	shape.setArea(area);
-	shape.setVolume(volume);
-    }
-
-    /**
-     * Prepare inputs.
-     * 
-     * @param estimate
-     * @param shape
-     * @param chbList
-     * @param proportions
-     * @param blockLayingList
-     */
-    private void prepareInputs(Estimate estimate, Shape shape) {
-
-	// Compute for area and volume.
-	setAreaVolume(estimate, shape);
-    }
-
-    /**
      * Convert Yes/No input from Excel to boolean type.
      * 
      * @param workbook
@@ -254,14 +205,18 @@ public class EstimateServiceImpl implements EstimateService {
 	return null;
     }
 
-    @SuppressWarnings("resource")
-    public static void main(String[] args) {
+    /**
+     * Convert Excel to a list of Estimates.
+     * 
+     * @param file
+     * @return
+     */
+    private List<Estimate> convertExcelToEstimates(FileInputStream file,
+	    Project proj) {
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
 	    // Get first/desired sheet from the workbook.
-	    FileInputStream file = new FileInputStream(new File(
-		    "C:/Users/AEA/git/PracticeRepo/estimation-test/Book2.xls"));
 	    HSSFWorkbook workbook = new HSSFWorkbook(file);
 	    HSSFSheet sheet = workbook.getSheetAt(0);
 
@@ -285,7 +240,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 		// Every row, is an Estimate object.
 		// TODO Add Project object.
-		Estimate estimate = new Estimate();
+		Estimate estimate = new Estimate(proj);
 		Shape shape = new Shape();
 		List<EstimateType> estimateTypes = estimate.getEstimateTypes();
 
@@ -366,6 +321,14 @@ public class EstimateServiceImpl implements EstimateService {
 			}
 			continue;
 
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH:
+			double footingLength = (Double) (getValueAsExpected(
+				workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
+			shape.setFootingLength(footingLength);
+			estimate.setShape(shape);
+			continue;
+
 		    case EXCEL_COLUMN_ESTIMATE_MR_CHB:
 			boolean mrCHB = getEstimateBooleanFromExcel(workbook,
 				cell);
@@ -388,7 +351,24 @@ public class EstimateServiceImpl implements EstimateService {
 
 		estimates.add(estimate);
 	    }
-	    estimates.toString();
+	    file.close();
+	    return estimates;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return new ArrayList<Estimate>();
+    }
+
+    public static void main(String[] args) {
+	try {
+
+	    // Create Workbook instance holding reference to .xls file
+	    // Get first/desired sheet from the workbook.
+	    FileInputStream file = new FileInputStream(new File(
+		    "C:/Users/AEA/git/PracticeRepo/estimation-test/Book2.xls"));
+	    EstimateServiceImpl estimateService = new EstimateServiceImpl();
+	    List<Estimate> estimates = estimateService.convertExcelToEstimates(
+		    file, null);
 	    file.close();
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -417,9 +397,6 @@ public class EstimateServiceImpl implements EstimateService {
 	Shape shape = estimate.getShape();
 
 	// TODO What if area is negative?
-
-	// Prepare inputs.
-	prepareInputs(estimate, shape);
 
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
@@ -498,7 +475,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// TODO Optimize below code.
 	// getLength(estimate) is called somewhere else in this class.
-	double length = getLength(estimate);
+	double length = estimate.getShape().getFootingLength();
 	double footingVolume = footingThickness * footingWidth * length;
 
 	// Estimations.
@@ -540,23 +517,6 @@ public class EstimateServiceImpl implements EstimateService {
     }
 
     /**
-     * Get the length (longest side) from the user input.
-     * 
-     * @param estimate
-     * @return
-     */
-    private double getLength(Estimate estimate) {
-	double length = 0.0;
-	for (String value : estimate.getAreaFormulaInputs().values()) {
-	    double formulaVal = Double.valueOf(value);
-	    if (formulaVal > length) {
-		length = formulaVal;
-	    }
-	}
-	return length;
-    }
-
-    /**
      * Don't include the area below ground when plastering.
      * 
      * @param estimate
@@ -590,16 +550,14 @@ public class EstimateServiceImpl implements EstimateService {
      */
     private double addAreaTopSide(Estimate estimate, Shape shape,
 	    double shapeArea, double length, double area) {
-	boolean plasterTopSide = estimate.isPlasterTopSide();
-	if (plasterTopSide) {
 
-	    // Get the thickness.
-	    double thickness = shape.getVolume() / shapeArea;
+	// Get the thickness.
+	double thickness = shape.getVolume() / shapeArea;
 
-	    // Get the area and add to overall area.
-	    double topSideArea = length * thickness;
-	    area += topSideArea;
-	}
+	// Get the area and add to overall area.
+	double topSideArea = length * thickness;
+	area += topSideArea;
+
 	return area;
     }
 
@@ -612,22 +570,14 @@ public class EstimateServiceImpl implements EstimateService {
      */
     private void estimateMasonryPlastering(Estimate estimate, Shape shape) {
 
-	// If a shape has no sides,
-	// then automatically, the number of sides to plaster will be 1.
-	// TODO Simplify all below. Minimize decision making.
-	if (!shape.isWithSides()) {
-	    estimate.setPlasterBackToBack(false);
-	}
-
 	// If we're plastering back to back,
 	// multiply the area by 2.
 	// Else, plaster only 1 side.
-	boolean plasterBackToBack = estimate.isPlasterBackToBack();
 	double shapeArea = shape.getArea();
-	double area = plasterBackToBack ? shapeArea * 2 : shape.getArea();
+	double area = shapeArea * 2;
 
 	// Get the length "longest side of the shape".
-	double length = getLength(estimate);
+	double length = shape.getFootingLength();
 
 	// Consider the height below ground.
 	// Get the height of foundation (height of wall below the
@@ -665,8 +615,7 @@ public class EstimateServiceImpl implements EstimateService {
 	// Set the results, concrete proportion, plaster mixture,
 	// is back to back, plaster top side.
 	MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
-		bags40kg, bags50kg, sand, proportion, plasterMixture,
-		plasterBackToBack, estimate.isPlasterTopSide());
+		bags40kg, bags50kg, sand, proportion, plasterMixture);
 	estimate.setResultPlasteringEstimate(plasteringResults);
     }
 
@@ -753,25 +702,25 @@ public class EstimateServiceImpl implements EstimateService {
      * @param shape
      * @return
      */
-    private double getVolume(Estimate estimate, Shape shape) {
-
-	// If any of the following is null, can't compute area.
-	if (shape.getVolumeFormula() == null
-		|| estimate.getVolumeFormulaInputs() == null
-		|| shape.getVolumeVariableNames() == null
-		|| estimate.getVolumeFormulaInputsUnits() == null) {
-	    return 0.0;
-	}
-
-	// Replace all variables with the inputs given by the user.
-	Expression mathExp = replaceVariablesWithInputs(
-		shape.getVolumeFormulaWithoutDelimiters(),
-		estimate.getVolumeFormulaInputs(), estimate.getShape()
-			.getVolumeVariableNames(),
-		estimate.getVolumeFormulaInputsUnits());
-
-	return mathExp.eval().doubleValue();
-    }
+    // private double getVolume(Estimate estimate, Shape shape) {
+    //
+    // // If any of the following is null, can't compute area.
+    // if (shape.getVolumeFormula() == null
+    // || estimate.getVolumeFormulaInputs() == null
+    // || shape.getVolumeVariableNames() == null
+    // || estimate.getVolumeFormulaInputsUnits() == null) {
+    // return 0.0;
+    // }
+    //
+    // // Replace all variables with the inputs given by the user.
+    // Expression mathExp = replaceVariablesWithInputs(
+    // shape.getVolumeFormulaWithoutDelimiters(),
+    // estimate.getVolumeFormulaInputs(), estimate.getShape()
+    // .getVolumeVariableNames(),
+    // estimate.getVolumeFormulaInputsUnits());
+    //
+    // return mathExp.eval().doubleValue();
+    // }
 
     /**
      * Get the area of the shape.
@@ -780,25 +729,25 @@ public class EstimateServiceImpl implements EstimateService {
      * @param shape
      * @return
      */
-    private double getArea(Estimate estimate, Shape shape) {
-
-	// If any of the following is null, can't compute area.
-	if (shape.getAreaFormula() == null
-		|| estimate.getAreaFormulaInputs() == null
-		|| shape.getAreaVariableNames() == null
-		|| estimate.getAreaFormulaInputsUnits() == null) {
-	    return 0.0;
-	}
-
-	// Compute for area.
-	Expression mathExp = replaceVariablesWithInputs(
-		shape.getAreaFormulaWithoutDelimiters(),
-		estimate.getAreaFormulaInputs(), shape.getAreaVariableNames(),
-		estimate.getAreaFormulaInputsUnits());
-	BigDecimal area = mathExp.eval();
-
-	return area.doubleValue();
-    }
+    // private double getArea(Estimate estimate, Shape shape) {
+    //
+    // // If any of the following is null, can't compute area.
+    // if (shape.getAreaFormula() == null
+    // || estimate.getAreaFormulaInputs() == null
+    // || shape.getAreaVariableNames() == null
+    // || estimate.getAreaFormulaInputsUnits() == null) {
+    // return 0.0;
+    // }
+    //
+    // // Compute for area.
+    // Expression mathExp = replaceVariablesWithInputs(
+    // shape.getAreaFormulaWithoutDelimiters(),
+    // estimate.getAreaFormulaInputs(), shape.getAreaVariableNames(),
+    // estimate.getAreaFormulaInputsUnits());
+    // BigDecimal area = mathExp.eval();
+    //
+    // return area.doubleValue();
+    // }
 
     /**
      * Get quantity estimation of masonry.
