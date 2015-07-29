@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.enums.TableCHBDimensions;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -51,7 +52,7 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
     /**
      * Properties to set during cost estimation.
      */
-    private CHB chbMeasurement;
+    private TableCHBDimensions chbDimensions;
     private Map<String, String> areaFormulaInputs;
     private double area;
     private EstimationAllowance estimationAllowance;
@@ -176,14 +177,6 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
 	this.estimationToCompute = estimationToCompute;
     }
 
-    public CHB getChbMeasurement() {
-	return chbMeasurement;
-    }
-
-    public void setChbMeasurement(CHB chbMeasurement) {
-	this.chbMeasurement = chbMeasurement;
-    }
-
     public Map<String, String> getAreaFormulaInputs() {
 	return areaFormulaInputs;
     }
@@ -206,6 +199,14 @@ public class MasonryCHBEstimationSummary implements IDomainObject {
 
     public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
+    }
+
+    public TableCHBDimensions getChbDimensions() {
+	return chbDimensions;
+    }
+
+    public void setChbDimensions(TableCHBDimensions chbDimensions) {
+	this.chbDimensions = chbDimensions;
     }
 
     @Override

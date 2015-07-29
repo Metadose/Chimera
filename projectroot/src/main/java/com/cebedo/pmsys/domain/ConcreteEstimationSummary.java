@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -28,7 +29,7 @@ public class ConcreteEstimationSummary implements IDomainObject {
     /**
      * Number of units and their unit of measure.
      */
-    private ConcreteProportion concreteProportion;
+    private TableConcreteProportion concreteProportion;
     private double totalUnitsCement40kg;
     private double totalUnitsCement50kg;
     private double totalUnitsSand;
@@ -404,20 +405,20 @@ public class ConcreteEstimationSummary implements IDomainObject {
 		proj.getCompany().getId(), proj.getId(), "*");
     }
 
-    public ConcreteProportion getConcreteProportion() {
-	return concreteProportion;
-    }
-
-    public void setConcreteProportion(ConcreteProportion concreteProportion) {
-	this.concreteProportion = concreteProportion;
-    }
-
     public EstimationAllowance getEstimationAllowance() {
 	return estimationAllowance;
     }
 
     public void setEstimationAllowance(EstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
+    }
+
+    public TableConcreteProportion getConcreteProportion() {
+	return concreteProportion;
+    }
+
+    public void setConcreteProportion(TableConcreteProportion concreteProportion) {
+	this.concreteProportion = concreteProportion;
     }
 
     @Override

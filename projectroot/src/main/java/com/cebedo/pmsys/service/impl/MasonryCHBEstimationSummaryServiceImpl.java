@@ -66,8 +66,8 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
 	for (Estimate estimate : estimateList) {
 
 	    // Get the estimated quantity.
-	    Map<CHB, MasonryCHBEstimateResults> masonryResultMap = estimate
-		    .getResultMapMasonryCHB();
+	    MasonryCHBEstimateResults chbEstimate = estimate
+		    .getResultCHBEstimate();
 
 	    // Set the area specifics.
 	    obj.setAreaFormulaInputs(estimate.getAreaFormulaInputs());
@@ -76,26 +76,22 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
 
 	    // For every type of CHB type selected,
 	    // there is an individual cost estimate.
-	    for (CHB chb : masonryResultMap.keySet()) {
 
-		obj.setChbMeasurement(chb);
+	    obj.setChbDimensions(chbEstimate.getChbDimensions());
 
-		// Get the result.
-		// Get total cost =
-		// cost per piece * no. of pieces
-		MasonryCHBEstimateResults estimateResult = masonryResultMap
-			.get(chb);
-		double totalPiecesCHB = estimateResult.getTotalCHB();
-		obj.setTotalPiecesCHB(totalPiecesCHB);
-		double totalCost = obj.getCostPerPieceCHB() * totalPiecesCHB;
+	    // Get the result.
+	    // Get total cost =
+	    // cost per piece * no. of pieces
+	    double totalPiecesCHB = chbEstimate.getTotalCHB();
+	    obj.setTotalPiecesCHB(totalPiecesCHB);
+	    double totalCost = obj.getCostPerPieceCHB() * totalPiecesCHB;
 
-		// Set the total cost.
-		obj.setTotalCostOfCHB(totalCost);
+	    // Set the total cost.
+	    obj.setTotalCostOfCHB(totalCost);
 
-		// Commit this cost estimate.
-		obj.setUuid(UUID.randomUUID());
-		this.masonryCHBEstimationSummaryValueRepo.set(obj);
-	    }
+	    // Commit this cost estimate.
+	    obj.setUuid(UUID.randomUUID());
+	    this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	}
 
 	// If create.

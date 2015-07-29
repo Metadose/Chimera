@@ -68,61 +68,54 @@ public class ConcreteEstimationSummaryServiceImpl implements
 	for (Estimate estimate : estimateList) {
 
 	    // Get result map for concrete.
-	    Map<ConcreteProportion, ConcreteEstimateResults> resultMap = estimate
-		    .getResultMapConcrete();
+	    ConcreteEstimateResults concreteEstimate = estimate
+		    .getResultConcreteEstimate();
 	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 
 	    // For every summary, every proportion must have a different
 	    // total and grand total.
-	    for (ConcreteProportion proportion : resultMap.keySet()) {
 
-		obj.setConcreteProportion(proportion);
+	    obj.setConcreteProportion(estimate.getConcreteProportion());
 
-		// Get the values.
-		ConcreteEstimateResults estimateQuantityResults = resultMap
-			.get(proportion);
-		double unitsCement40kg = estimateQuantityResults
-			.getCement40kg();
-		double unitsCement50kg = estimateQuantityResults
-			.getCement50kg();
-		double unitsSand = estimateQuantityResults.getSand();
-		double unitsGravel = estimateQuantityResults.getGravel();
+	    // Get the values.
+	    double unitsCement40kg = concreteEstimate.getCement40kg();
+	    double unitsCement50kg = concreteEstimate.getCement50kg();
+	    double unitsSand = concreteEstimate.getSand();
+	    double unitsGravel = concreteEstimate.getGravel();
 
-		// Set the values as the object's
-		// quantity estimate.
-		obj.setTotalUnitsCement40kg(unitsCement40kg);
-		obj.setTotalUnitsCement50kg(unitsCement50kg);
-		obj.setTotalUnitsSand(unitsSand);
-		obj.setTotalUnitsGravel(unitsGravel);
+	    // Set the values as the object's
+	    // quantity estimate.
+	    obj.setTotalUnitsCement40kg(unitsCement40kg);
+	    obj.setTotalUnitsCement50kg(unitsCement50kg);
+	    obj.setTotalUnitsSand(unitsSand);
+	    obj.setTotalUnitsGravel(unitsGravel);
 
-		// Compute for the total cost of each component.
-		double totalCostCement40kg = unitsCement40kg
-			* obj.getCostPerUnitCement40kg();
-		double totalCostCement50kg = unitsCement50kg
-			* obj.getCostPerUnitCement50kg();
-		double totalCostSand = unitsSand * obj.getCostPerUnitSand();
-		double totalCostGravel = unitsGravel
-			* obj.getCostPerUnitGravel();
+	    // Compute for the total cost of each component.
+	    double totalCostCement40kg = unitsCement40kg
+		    * obj.getCostPerUnitCement40kg();
+	    double totalCostCement50kg = unitsCement50kg
+		    * obj.getCostPerUnitCement50kg();
+	    double totalCostSand = unitsSand * obj.getCostPerUnitSand();
+	    double totalCostGravel = unitsGravel * obj.getCostPerUnitGravel();
 
-		// Set the costs.
-		obj.setTotalCostCement40kg(totalCostCement40kg);
-		obj.setTotalCostCement50kg(totalCostCement50kg);
-		obj.setTotalCostSand(totalCostSand);
-		obj.setTotalCostGravel(totalCostGravel);
+	    // Set the costs.
+	    obj.setTotalCostCement40kg(totalCostCement40kg);
+	    obj.setTotalCostCement50kg(totalCostCement50kg);
+	    obj.setTotalCostSand(totalCostSand);
+	    obj.setTotalCostGravel(totalCostGravel);
 
-		// Compute for the grand total.
-		obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand
-			+ totalCostGravel);
-		obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
-			+ totalCostGravel);
+	    // Compute for the grand total.
+	    obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand
+		    + totalCostGravel);
+	    obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
+		    + totalCostGravel);
 
-		// Set last computed.
-		obj.setLastComputed(new Date(System.currentTimeMillis()));
+	    // Set last computed.
+	    obj.setLastComputed(new Date(System.currentTimeMillis()));
 
-		// Commit.
-		obj.setUuid(UUID.randomUUID());
-		this.concreteEstimationSummaryValueRepo.set(obj);
-	    }
+	    // Commit.
+	    obj.setUuid(UUID.randomUUID());
+	    this.concreteEstimationSummaryValueRepo.set(obj);
 	}
 
 	// If create.

@@ -17,6 +17,7 @@ import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.MappingEstimationClass;
 import com.cebedo.pmsys.enums.TableCHBDimensions;
 import com.cebedo.pmsys.enums.TableCHBFootingDimensions;
+import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
@@ -136,6 +137,10 @@ public class Estimate implements IDomainObject {
 
     public Project getProject() {
 	return project;
+    }
+
+    public TableConcreteProportion getConcreteProportion() {
+	return getEstimationClass().getConcreteProportion();
     }
 
     public void setProject(Project project) {
