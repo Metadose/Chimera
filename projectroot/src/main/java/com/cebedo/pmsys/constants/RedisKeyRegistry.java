@@ -10,6 +10,8 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ESTIMATE = "company.fk:%s:project.fk:%s:estimate:%s";
 
+    public static final String KEY_ESTIMATION_OUTPUT = "company.fk:%s:project.fk:%s:estimation.output:%s";
+
     public static final String KEY_MASONRY_CHB_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:masonrychbestimationsummary:%s";
 
     public static final String KEY_CONCRETE_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:concreteestimationsummary:%s";

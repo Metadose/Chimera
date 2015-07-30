@@ -525,7 +525,7 @@
     <!-- Estimate -->
     <beans:bean id="estimateService" class="com.cebedo.pmsys.service.impl.EstimateServiceImpl">
         <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
-        <beans:property name="shapeValueRepo" ref="shapeValueRepo"></beans:property>
+        <beans:property name="estimationOutputValueRepo" ref="estimationOutputValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -545,6 +545,14 @@
         <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="unitValueRepo" class="com.cebedo.pmsys.repository.UnitValueRepo">
+        <beans:property name="redisTemplate" ref="redisTemplate" />
+    </beans:bean>
+    
+    <!-- Estimation Output -->
+    <beans:bean id="estimationOutputService" class="com.cebedo.pmsys.service.impl.EstimationOutputServiceImpl">
+        <beans:property name="estimationOutputValueRepo" ref="estimationOutputValueRepo"></beans:property>
+    </beans:bean>
+    <beans:bean id="estimationOutputValueRepo" class="com.cebedo.pmsys.repository.EstimationOutputValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     

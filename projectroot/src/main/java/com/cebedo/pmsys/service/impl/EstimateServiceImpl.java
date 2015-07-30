@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
 import com.cebedo.pmsys.bean.EstimationInputBean;
+import com.cebedo.pmsys.bean.EstimationOutputRowBean;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Estimate;
+import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -42,7 +43,7 @@ import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.enums.TablePlasterMixture;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
-import com.cebedo.pmsys.repository.ShapeValueRepo;
+import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.udojava.evalex.Expression;
@@ -57,18 +58,18 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB = 5;
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_LAYING = 6;
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_PLASTERING = 7;
-    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING = 8;
-    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH = 9;
-    public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 10;
-    public static final int EXCEL_COLUMN_DETAILS_REMARKS = 11;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_FOUNDATION_HEIGHT = 8;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING = 9;
+    public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH = 10;
+    public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 11;
+    public static final int EXCEL_COLUMN_DETAILS_REMARKS = 12;
 
     private EstimateValueRepo estimateValueRepo;
+    private EstimationOutputValueRepo estimationOutputValueRepo;
 
-    @Deprecated
-    private ShapeValueRepo shapeValueRepo;
-
-    public void setShapeValueRepo(ShapeValueRepo shapeValueRepo) {
-	this.shapeValueRepo = shapeValueRepo;
+    public void setEstimationOutputValueRepo(
+	    EstimationOutputValueRepo estimationOutputValueRepo) {
+	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
     public void setEstimateValueRepo(EstimateValueRepo estimateValueRepo) {
@@ -94,22 +95,31 @@ public class EstimateServiceImpl implements EstimateService {
 	// Do the commit.
 	// If create.
 	if (estimateInput.getEstimationFile() != null) {
-	    // obj.setUuid(UUID.randomUUID());
-	    // this.estimateValueRepo.set(obj);
 
+	    // New object.
+	    EstimationOutput estimationOutput = new EstimationOutput(
+		    estimateInput);
+
+	    // Convert the excel file to objects.
 	    List<Estimate> estimates = convertExcelToEstimates(
 		    estimateInput.getEstimationFile(),
 		    estimateInput.getProject());
 
+	    // Process each object.
 	    for (Estimate estimate : estimates) {
 		computeQuantityEstimate(estimate);
 	    }
+
+	    // Set the list.
+	    // Set the object.
+	    estimationOutput.setEstimates(estimates);
+	    this.estimationOutputValueRepo.set(estimationOutput);
 
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
 		    RedisConstants.OBJECT_ESTIMATE, "TODO");
 	}
 
-	// If update.
+	// TODO If update.
 	// this.estimateValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
 		RedisConstants.OBJECT_ESTIMATE, "TODO");
@@ -189,8 +199,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param cell
      * @return
      */
-    private static boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook,
-	    Cell cell) {
+    private boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook, Cell cell) {
 	String concrete = (String) (getValueAsExpected(workbook, cell) == null ? ""
 		: getValueAsExpected(workbook, cell));
 	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true
@@ -203,7 +212,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param cell
      * @return
      */
-    private static Object getValueAsExpected(HSSFWorkbook workbook, Cell cell) {
+    private Object getValueAsExpected(HSSFWorkbook workbook, Cell cell) {
 
 	// Evaluate the cell.
 	// Get the value of the cell.
@@ -345,6 +354,13 @@ public class EstimateServiceImpl implements EstimateService {
 			}
 			continue;
 
+		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOUNDATION_HEIGHT:
+			double foundation = (Double) (getValueAsExpected(
+				workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
+			estimate.setChbFoundationHeight(foundation);
+			continue;
+
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING:
 			boolean footing = getEstimateBooleanFromExcel(workbook,
 				cell);
@@ -411,9 +427,7 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate a project's quantity of materials.
      */
-    @Override
-    @Transactional
-    public String computeQuantityEstimate(Estimate estimate) {
+    private void computeQuantityEstimate(Estimate estimate) {
 
 	// TODO What if area is negative?
 
@@ -445,11 +459,8 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimateConcrete(estimate, shape);
 	}
 
-	estimate.setLastComputed(new Date(System.currentTimeMillis()));
-	this.estimateValueRepo.set(estimate);
-
-	return AlertBoxGenerator.SUCCESS.generateCompute(
-		RedisConstants.OBJECT_ESTIMATE, estimate.getName());
+	EstimationOutputRowBean row = new EstimationOutputRowBean(estimate);
+	estimate.setResultRow(row);
     }
 
     /**

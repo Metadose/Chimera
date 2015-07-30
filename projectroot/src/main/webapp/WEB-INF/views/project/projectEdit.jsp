@@ -55,7 +55,7 @@
 	            			New Project
 	            		</c:when>
 	            		<c:when test="${project.id != 0}">
-	            			${fn:escapeXml(project.name)}
+	            			${project.name}
 	            		</c:when>
 	            	</c:choose>
 	                <small>${action} Project <a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a> </small>
@@ -73,7 +73,7 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
-                                		<li><a href="#tab_estimate" data-toggle="tab">Estimate</a></li>
+<!--                                 		<li><a href="#tab_estimate" data-toggle="tab">Estimate</a></li> -->
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
@@ -320,8 +320,15 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Estimation Input</h3>
+                   								</div>
                    								<div class="box-body">
-                   								
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>
+									                    This feature can be utilized to store extra fields.<br/>
+									                    </p>
+									                </div>
                    								<form:form modelAttribute="estimationInput"
 													action="${contextPath}/project/create/estimate"
 													method="post"
@@ -1888,196 +1895,196 @@
 											    private double costPerPieceCHB; -->
 			               						
 			               						<div class="tab-pane" id="subtab_cost-estimate-controls">
-			               						<form:form modelAttribute="costEstimationBean"
-														id="detailsForm"
-														method="post"
-														action="${contextPath}/project/create/costestimation">
-			                                	<div class="row">
-					                            <div class="col-md-4">
-			               							<div class="box box-body box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">
-			               									<span class="badge bg-blue">Input</span>
-			               									Basic Details</h3>
-			               								</div>
-			               								<div class="box-body">
-			               								<div class="callout callout-info callout-cebedo">
-										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-										                </div>
-				                                        <div class="form-group">
+<%-- 			               						<form modelAttribute="costEstimationBean" --%>
+<%-- 														id="detailsForm" --%>
+<%-- 														method="post" --%>
+<%-- 														action="${contextPath}/project/create/costestimation"> --%>
+<!-- 			                                	<div class="row"> -->
+<!-- 					                            <div class="col-md-4"> -->
+<!-- 			               							<div class="box box-body box-default"> -->
+<!-- 			               								<div class="box-header"> -->
+<!-- 			               									<h3 class="box-title"> -->
+<!-- 			               									<span class="badge bg-blue">Input</span> -->
+<!-- 			               									Basic Details</h3> -->
+<!-- 			               								</div> -->
+<!-- 			               								<div class="box-body"> -->
+<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
+<!-- 										                </div> -->
+<!-- 				                                        <div class="form-group"> -->
 				                                        
-			                                            <label>Name</label>
-			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/>
-			                                            <p class="help-block">Enter the name of this estimate summary</p>
+<!-- 			                                            <label>Name</label> -->
+<%-- 			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="name"/> --%>
+<!-- 			                                            <p class="help-block">Enter the name of this estimate summary</p> -->
 			                                            
-			                                            <label>Description</label>
-			                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/>
-					                                    <p class="help-block">Add a description to this summary</p>
+<!-- 			                                            <label>Description</label> -->
+<%-- 			                                            <form:input type="text" placeholder="Sample: To be used for comparison" class="form-control" path="description"/> --%>
+<!-- 					                                    <p class="help-block">Add a description to this summary</p> -->
 					                                    
-				                                        </div>
-			               								</div>
-			               							</div>
-			               						</div>
-			               						<div class="col-md-4">
-			               							<div class="box box-body box-default">
+<!-- 				                                        </div> -->
+<!-- 			               								</div> -->
+<!-- 			               							</div> -->
+<!-- 			               						</div> -->
+<!-- 			               						<div class="col-md-4"> -->
+<!-- 			               							<div class="box box-body box-default"> -->
 			               								
-			               								<div class="box-header">
-			               									<h3 class="box-title">
-			               									<span class="badge bg-blue">Input</span>
-			               									Concrete Cost</h3>
-			               								</div>
-			               								<div class="box-body">
-			               								<div class="callout callout-info callout-cebedo">
-										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-										                </div>
-					                                        <div class="form-group">
-						                                    <label>Cost per Unit (Cement 40kg)</label>
-				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/>
-						                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p>
+<!-- 			               								<div class="box-header"> -->
+<!-- 			               									<h3 class="box-title"> -->
+<!-- 			               									<span class="badge bg-blue">Input</span> -->
+<!-- 			               									Concrete Cost</h3> -->
+<!-- 			               								</div> -->
+<!-- 			               								<div class="box-body"> -->
+<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
+<!-- 										                </div> -->
+<!-- 					                                        <div class="form-group"> -->
+<!-- 						                                    <label>Cost per Unit (Cement 40kg)</label> -->
+<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/> --%>
+<!-- 						                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p> -->
 						                                    
-						                                    <label>Cost per Unit (Cement 50kg)</label>
-				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement50kg"/>
-						                                    <p class="help-block">Specify the cost per 50kg bag of Cement</p>
+<!-- 						                                    <label>Cost per Unit (Cement 50kg)</label> -->
+<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement50kg"/> --%>
+<!-- 						                                    <p class="help-block">Specify the cost per 50kg bag of Cement</p> -->
 						                                    
-						                                    <label>Cost per Unit (Sand)</label>
-				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitSand"/>
-						                                    <p class="help-block">Specify the cost per unit of Sand</p>
+<!-- 						                                    <label>Cost per Unit (Sand)</label> -->
+<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitSand"/> --%>
+<!-- 						                                    <p class="help-block">Specify the cost per unit of Sand</p> -->
 						                                    
-						                                    <label>Cost per Unit (Gravel)</label>
-				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitGravel"/>
-						                                    <p class="help-block">Specify the cost per unit of Gravel</p>
+<!-- 						                                    <label>Cost per Unit (Gravel)</label> -->
+<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitGravel"/> --%>
+<!-- 						                                    <p class="help-block">Specify the cost per unit of Gravel</p> -->
 						                                    
-					                                        </div>
-			               								</div>
+<!-- 					                                        </div> -->
+<!-- 			               								</div> -->
 			               								
 			               								
-			               							</div>
-			               						</div>
-			               						<div class="col-md-4">
-			               							<div class="box box-body box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">
-			               									<span class="badge bg-blue">Input</span>
-			               									Masonry Cost</h3>
-			               								</div>
-			               								<div class="box-body">
-			               								<div class="callout callout-info callout-cebedo">
-										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-										                </div>
-				                                        <div class="form-group">
+<!-- 			               							</div> -->
+<!-- 			               						</div> -->
+<!-- 			               						<div class="col-md-4"> -->
+<!-- 			               							<div class="box box-body box-default"> -->
+<!-- 			               								<div class="box-header"> -->
+<!-- 			               									<h3 class="box-title"> -->
+<!-- 			               									<span class="badge bg-blue">Input</span> -->
+<!-- 			               									Masonry Cost</h3> -->
+<!-- 			               								</div> -->
+<!-- 			               								<div class="box-body"> -->
+<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
+<!-- 										                </div> -->
+<!-- 				                                        <div class="form-group"> -->
 				                                        
-			                                            <label>Cost per Piece of Concrete Hollow Block (CHB)</label>
-			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="costPerPieceCHB"/>
-			                                            <p class="help-block">Enter the name of this estimate summary</p>
-				                                        </div>
-			               								</div>
-			               							</div>
-			               						</div>
-			               						</div>
+<!-- 			                                            <label>Cost per Piece of Concrete Hollow Block (CHB)</label> -->
+<%-- 			                                            <form:input type="text" placeholder="Sample: Summary of all Class C Estimates" class="form-control" path="costPerPieceCHB"/> --%>
+<!-- 			                                            <p class="help-block">Enter the name of this estimate summary</p> -->
+<!-- 				                                        </div> -->
+<!-- 			               								</div> -->
+<!-- 			               							</div> -->
+<!-- 			               						</div> -->
+<!-- 			               						</div> -->
 			               						
-			               						<div class="row">
-			               						<div class="col-md-12">
-			               							<div class="box box-body box-default">
-			               								<div class="box-header">
-			               									<h3 class="box-title">
-			               									<span class="badge bg-blue">Input</span>
-			               									Quantity Estimations</h3>
-			               								</div>
-			               								<div class="box-body">
+<!-- 			               						<div class="row"> -->
+<!-- 			               						<div class="col-md-12"> -->
+<!-- 			               							<div class="box box-body box-default"> -->
+<!-- 			               								<div class="box-header"> -->
+<!-- 			               									<h3 class="box-title"> -->
+<!-- 			               									<span class="badge bg-blue">Input</span> -->
+<!-- 			               									Quantity Estimations</h3> -->
+<!-- 			               								</div> -->
+<!-- 			               								<div class="box-body"> -->
 										                
-					                                        <div class="form-group">
+<!-- 					                                        <div class="form-group"> -->
 					                                        
-						                                    <table id="form-estimate-cost" class="table table-bordered table-striped">
-						                                    <thead>
-						                                    <tr>
-											                	<th colspan="3" style="text-align: center;">
-											                	<span class="label btn-info">
-											                	DETAILS
-											                	</span>
-											                	</th>
+<!-- 						                                    <table id="form-estimate-cost" class="table table-bordered table-striped"> -->
+<!-- 						                                    <thead> -->
+<!-- 						                                    <tr> -->
+<!-- 											                	<th colspan="3" style="text-align: center;"> -->
+<!-- 											                	<span class="label btn-info"> -->
+<!-- 											                	DETAILS -->
+<!-- 											                	</span> -->
+<!-- 											                	</th> -->
 											                	
-											                	<th colspan="3" style="text-align: center;">
-											                	<span class="label btn-success">
-																FORMULA INPUTS / ESTIMATION PARAMETERS
-																</span>
-											                	</th>
+<!-- 											                	<th colspan="3" style="text-align: center;"> -->
+<!-- 											                	<span class="label btn-success"> -->
+<!-- 																FORMULA INPUTS / ESTIMATION PARAMETERS -->
+<!-- 																</span> -->
+<!-- 											                	</th> -->
 											                	
-											                	<th rowspan="2" colspan="1" style="text-align: center; vertical-align: middle;">
-											                	<span class="label btn-danger">
-											                	TYPES OF ESTIMATIONS
-											                	</span>
-											                	</th>
-											                </tr>
-											                <tr>
-											                	<th>Check / Uncheck</th>
-											                	<th>Name</th>
-											                	<th>Remarks</th>
-											                	<th>Shape</th>
-											                	<th>Area Inputs</th>
-											                	<th>Volume Inputs</th>
-											                </tr>
-						                                    </thead>
-						                                    <tbody>
-                                     						<c:forEach items="${combinedEstimateList}" var="quantityEstimate"> 
-						                                    <tr>
-						                                    	<td align="center">
-                                     							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/>
-						                                    	</td>
-						                                    	<td>
-						                                    	<c:url var="urlLink" value="/project/edit/estimate/${quantityEstimate.getKey()}-end"/>
-		                                            			<a href="${urlLink}" class="general-link">
-						                                    	${quantityEstimate.name}
-		                                            			</a>
-						                                    	</td>
+<!-- 											                	<th rowspan="2" colspan="1" style="text-align: center; vertical-align: middle;"> -->
+<!-- 											                	<span class="label btn-danger"> -->
+<!-- 											                	TYPES OF ESTIMATIONS -->
+<!-- 											                	</span> -->
+<!-- 											                	</th> -->
+<!-- 											                </tr> -->
+<!-- 											                <tr> -->
+<!-- 											                	<th>Check / Uncheck</th> -->
+<!-- 											                	<th>Name</th> -->
+<!-- 											                	<th>Remarks</th> -->
+<!-- 											                	<th>Shape</th> -->
+<!-- 											                	<th>Area Inputs</th> -->
+<!-- 											                	<th>Volume Inputs</th> -->
+<!-- 											                </tr> -->
+<!-- 						                                    </thead> -->
+<!-- 						                                    <tbody> -->
+<%--                                      						<c:forEach items="${combinedEstimateList}" var="quantityEstimate">  --%>
+<!-- 						                                    <tr> -->
+<!-- 						                                    	<td align="center"> -->
+<%--                                      							<form:checkbox path="estimationToCompute" class="form-control" value="${quantityEstimate.getKey()}"/> --%>
+<!-- 						                                    	</td> -->
+<!-- 						                                    	<td> -->
+<%-- 						                                    	<c:url var="urlLink" value="/project/edit/estimate/${quantityEstimate.getKey()}-end"/> --%>
+<%-- 		                                            			<a href="${urlLink}" class="general-link"> --%>
+<%-- 						                                    	${quantityEstimate.name} --%>
+<!-- 		                                            			</a> -->
+<!-- 						                                    	</td> -->
 						                                    	
-						                                    	<td>
-						                                    	${quantityEstimate.remarks}
-						                                    	</td>
+<!-- 						                                    	<td> -->
+<%-- 						                                    	${quantityEstimate.remarks} --%>
+<!-- 						                                    	</td> -->
 						                                    	
-						                                    	<td>
-						                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/>
-		                                            			<a href="${urlLink}" class="general-link">
-						                                    	${quantityEstimate.shape.name}
-		                                            			</a><br/>
-		                                            			Area = ${quantityEstimate.shape.areaFormula}
-		                                            			<br/>
-		                                            			Volume = ${quantityEstimate.shape.volumeFormula}
-						                                    	</td>
+<!-- 						                                    	<td> -->
+<%-- 						                                    	<c:url var="urlLink" value="/shape/edit/${quantityEstimate.shape.getKey()}-end"/> --%>
+<%-- 		                                            			<a href="${urlLink}" class="general-link"> --%>
+<%-- 						                                    	${quantityEstimate.shape.name} --%>
+<!-- 		                                            			</a><br/> -->
+<%-- 		                                            			Area = ${quantityEstimate.shape.areaFormula} --%>
+<!-- 		                                            			<br/> -->
+<%-- 		                                            			Volume = ${quantityEstimate.shape.volumeFormula} --%>
+<!-- 						                                    	</td> -->
 						                                    	
-						                                    	<td align="right">
-						                                    	<c:forEach items="${quantityEstimate.areaFormulaInputs}" var="input">
-			                                                	${input.key} = ${input.value} ${quantityEstimate.areaFormulaInputsUnits.get(input.key).symbol()}<br/>
-			                                                	</c:forEach>
-			                                                	Area = ${quantityEstimate.shape.area} sq.m.
-						                                    	</td>
+<!-- 						                                    	<td align="right"> -->
+<%-- 						                                    	<c:forEach items="${quantityEstimate.areaFormulaInputs}" var="input"> --%>
+<%-- 			                                                	${input.key} = ${input.value} ${quantityEstimate.areaFormulaInputsUnits.get(input.key).symbol()}<br/> --%>
+<%-- 			                                                	</c:forEach> --%>
+<%-- 			                                                	Area = ${quantityEstimate.shape.area} sq.m. --%>
+<!-- 						                                    	</td> -->
 						                                    	
-						                                    	<td align="right">
-						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input">
-			                                                	${input.key} = ${input.value} ${quantityEstimate.volumeFormulaInputsUnits.get(input.key).symbol()}<br/>
-			                                                	</c:forEach>
-			                                                	Volume = ${quantityEstimate.shape.volume} cu.m.
-						                                    	</td>
+<!-- 						                                    	<td align="right"> -->
+<%-- 						                                    	<c:forEach items="${quantityEstimate.volumeFormulaInputs}" var="input"> --%>
+<%-- 			                                                	${input.key} = ${input.value} ${quantityEstimate.volumeFormulaInputsUnits.get(input.key).symbol()}<br/> --%>
+<%-- 			                                                	</c:forEach> --%>
+<%-- 			                                                	Volume = ${quantityEstimate.shape.volume} cu.m. --%>
+<!-- 						                                    	</td> -->
 						                                    	
-						                                    	<td>
-						                                    	<c:forEach items="${quantityEstimate.estimateTypes}" var="estimateType">
-						                                    	- ${estimateType.label()}<br/>
-						                                    	</c:forEach>
-						                                    	</td>
-						                                    </tr>
-                                     						</c:forEach> 
-						                                    </tbody>
-											                </table>
+<!-- 						                                    	<td> -->
+<%-- 						                                    	<c:forEach items="${quantityEstimate.estimateTypes}" var="estimateType"> --%>
+<%-- 						                                    	- ${estimateType.label()}<br/> --%>
+<%-- 						                                    	</c:forEach> --%>
+<!-- 						                                    	</td> -->
+<!-- 						                                    </tr> -->
+<%--                                      						</c:forEach>  --%>
+<!-- 						                                    </tbody> -->
+<!-- 											                </table> -->
 						                                    
-		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Estimate Costs</button>
-					                                        </div>
+<!-- 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Estimate Costs</button> -->
+<!-- 					                                        </div> -->
 					                                    
-			               								</div>
+<!-- 			               								</div> -->
 			               								
 			               								
-			               							</div>
-			               						</div>
-			               						</div>
-			               						</form:form>
+<!-- 			               							</div> -->
+<!-- 			               						</div> -->
+<!-- 			               						</div> -->
+<%-- 			               						</form> --%>
 			               						</div>
 			               					</div>
 			               					</div>

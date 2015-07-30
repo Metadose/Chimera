@@ -1,0 +1,33 @@
+estimationAllowance = global
+
+name
+area
+volume
+chbFoundationHeight = masonry
+shape.footingLength = masonry
+
+ConcreteEstimateResults
+// cement40kg
+cement50kg
+sand
+gravel
+
+MasonryCHBEstimateResults
+totalCHB
+
+MasonryCHBLayingEstimateResults
+bags // 50kg
+sand
+
+MasonryPlasteringEstimateResults
+// cement40kg
+cement50kg
+sand
+
+MasonryCHBFootingEstimateResults
+cement // 50kg
+sand
+gravel
+
+remarks
+

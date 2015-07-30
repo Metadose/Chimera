@@ -3,7 +3,6 @@ package com.cebedo.pmsys.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +37,9 @@ import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
-import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
+import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -49,7 +47,6 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
-import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
@@ -68,12 +65,11 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
 import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
+import com.cebedo.pmsys.service.EstimationOutputService;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PhotoService;
@@ -107,23 +103,18 @@ types = { Project.class, FieldAssignmentBean.class, ProjectFile.class,
 @RequestMapping(Project.OBJECT_NAME)
 public class ProjectController {
 
+    // TODO Clean this whole thing.
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
     public static final String ATTR_PROJECT_AUX = RedisConstants.OBJECT_PROJECT_AUX;
     public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
-    public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
-    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARY = RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
-    public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
-    public static final String ATTR_CHB_LIST = "chbList";
-    public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
-    public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
@@ -132,12 +123,19 @@ public class ProjectController {
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
 
+    public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
+    public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
     public static final String ATTR_ESTIMATE_COMBINED_LIST = "combinedEstimateList";
+    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARY = RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY;
+    public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
+    public static final String ATTR_CHB_LIST = "chbList";
+    public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
+    public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
 
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
@@ -205,15 +203,14 @@ public class ProjectController {
     private MaterialCategoryService materialCategoryService;
     private UnitService unitService;
     private EstimateService estimateService;
-    private ConcreteEstimationSummaryService concreteEstimationSummaryService;
     private CostEstimationService costEstimationService;
-    private MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService;
+    private EstimationOutputService estimationOutputService;
 
     @Autowired(required = true)
-    @Qualifier(value = "masonryCHBEstimationSummaryService")
-    public void setMasonryCHBEstimationSummaryService(
-	    MasonryCHBEstimationSummaryService masonryCHBEstimationSummaryService) {
-	this.masonryCHBEstimationSummaryService = masonryCHBEstimationSummaryService;
+    @Qualifier(value = "estimationOutputService")
+    public void setEstimationOutputService(
+	    EstimationOutputService estimationOutputService) {
+	this.estimationOutputService = estimationOutputService;
     }
 
     @Autowired(required = true)
@@ -221,13 +218,6 @@ public class ProjectController {
     public void setCostEstimationService(
 	    CostEstimationService costEstimationService) {
 	this.costEstimationService = costEstimationService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "concreteEstimationSummaryService")
-    public void setConcreteEstimationSummaryService(
-	    ConcreteEstimationSummaryService concreteEstimationSummaryService) {
-	this.concreteEstimationSummaryService = concreteEstimationSummaryService;
     }
 
     @Autowired(required = true)
@@ -1299,6 +1289,7 @@ public class ProjectController {
      * @param status
      * @return
      */
+    @Deprecated
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_COMPUTE + "/"
 	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
@@ -1307,12 +1298,12 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
-	String response = this.estimateService
-		.computeQuantityEstimate(estimate);
+	// String response = this.estimateService
+	// .computeQuantityEstimate(estimate);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	// response);
 
 	// Complete the transaction.
 	status.setComplete();
@@ -1984,8 +1975,8 @@ public class ProjectController {
     public String editProject(
 	    @PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
 
-	// Model for forms.
-	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
+	// Set model attributes that are common in both create and update.
+	setModelAttributes(model, id);
 
 	// If ID is zero, create new.
 	if (id == 0) {
@@ -1993,98 +1984,50 @@ public class ProjectController {
 	    return JSP_EDIT;
 	}
 
-	// Get payroll rows.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
-	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimationInputBean());
-	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST,
-		TableEstimationAllowance.class.getEnumConstants());
+	model.addAttribute(ATTR_PROJECT, proj);
 
-	// Empty bean of concrete estimation summary.
-	// List of all estimation summaries.
-	model.addAttribute(ATTR_COST_ESTIMATION_BEAN, new CostEstimationBean());
+	// Estimate.
+	setEstimateAttributes(proj, model);
 
-	// List of concrete estimation summaries.
-	List<ConcreteEstimationSummary> concreteEstimationSummaries = this.concreteEstimationSummaryService
-		.list(proj);
-	model.addAttribute(ATTR_CONCRETE_ESTIMATION_SUMMARIES,
-		concreteEstimationSummaries);
+	// Staff.
+	setStaffAttributes(proj, model);
 
-	// List of masonry estimation summaries.
-	List<MasonryCHBEstimationSummary> masonryCHBEstimationSummaries = this.masonryCHBEstimationSummaryService
-		.list(proj);
-	model.addAttribute(ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES,
-		masonryCHBEstimationSummaries);
+	// Payroll.
+	setPayrollAttributes(proj, model);
 
-	// Get all payrolls.
-	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectPayrollService
-		.getAllPayrolls(proj);
-	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
+	// Inventory.
+	setInventoryAttributes(proj, model);
 
-	// Get all deliveries.
-	// Get all pull-outs.
-	// Get inventory.
-	// Then add to model.
-	List<Delivery> deliveryList = this.deliveryService.list(proj);
-	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
+	// Auxillary.
+	setAuxAttributes(proj, model);
 
-	// Get all materials.
-	// Add to model.
-	List<Material> materialList = this.materialService.list(proj);
-	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
+	// Program of Works.
+	setProgramOfWorksAttributes(proj, model);
 
-	// Get all pull-outs.
-	// Add to model.
-	List<PullOut> pullOutList = this.pullOutService.list(proj);
-	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
-
-	// TODO Put a check box in List Page "Load Estimates"
-	// If checked, load below.
-	// Get all estimates.
-	// Add to model.
-	List<Estimate> estimateList = this.estimateService.list(proj);
-
-	// Segregate by type of estimate.
-	List<Estimate> concreteEstimateList = new ArrayList<Estimate>();
-	List<Estimate> masonryEstimateList = new ArrayList<Estimate>();
-
-	// Extend this loop to other types..
-	for (Estimate estimate : estimateList) {
-
-	    List<EstimateType> estimateTypes = estimate.getEstimateTypes();
-
-	    // If the estimate has an estimation for concrete,
-	    // add to concrete list.
-	    if (estimateTypes.contains(EstimateType.CONCRETE)) {
-		concreteEstimateList.add(estimate);
-	    }
-
-	    // If has estimation for masonry.
-	    // We do not provide multiple estimations for masonry.
-	    if (estimateTypes.contains(EstimateType.MASONRY_CHB)) {
-		masonryEstimateList.add(estimate);
-	    }
-	}
-
-	// Add segregated estimates to model.
-	model.addAttribute(ATTR_ESTIMATE_CONCRETE_LIST, concreteEstimateList);
-	model.addAttribute(ATTR_ESTIMATE_MASONRY_LIST, masonryEstimateList);
-	model.addAttribute(ATTR_ESTIMATE_COMBINED_LIST, estimateList);
-
-	// Do post-adding of attrs.
-	// Return to the edit page.
-	setModelAttributesOfProject(proj, model);
 	return JSP_EDIT;
     }
 
     /**
-     * Set attributes before forwarding back to JSP.
+     * Set attributes used in Estimate.
      * 
      * @param proj
      * @param model
      */
-    @SuppressWarnings("unchecked")
-    private void setModelAttributesOfProject(Project proj, Model model) {
+    private void setEstimateAttributes(Project proj, Model model) {
+	List<EstimationOutput> estimates = this.estimationOutputService
+		.list(proj);
+	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
+    }
+
+    /**
+     * Set attributes used by Staff and Manager tab.
+     * 
+     * @param proj
+     * @param model
+     */
+    private void setStaffAttributes(Project proj, Model model) {
+
 	// Get list of fields.
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
@@ -2101,11 +2044,87 @@ public class ProjectController {
 		.listUnassignedInProject(companyID, proj);
 
 	// Get lists for selectors.
-	// Actual object and beans.
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
-	model.addAttribute(ATTR_PROJECT, proj);
+    }
+
+    /**
+     * Set auxillary objects.
+     * 
+     * @param proj
+     * @param model
+     */
+    private void setAuxAttributes(Project proj, Model model) {
+	// Add the auxillary object.
+	ProjectAux projectAux = this.projectAuxService.get(proj);
+	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
+    }
+
+    /**
+     * Set model attributes that are common in both create and update.
+     * 
+     * @param model
+     * @param id
+     */
+    private void setModelAttributes(Model model, long id) {
+	// Set common attributes.
+	// Model for forms.
+	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
+
+	// Estimation input.
+	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimationInputBean());
+	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST,
+		TableEstimationAllowance.class.getEnumConstants());
+    }
+
+    /**
+     * Set payroll attributes.
+     * 
+     * @param proj
+     * @param model
+     */
+    private void setPayrollAttributes(Project proj, Model model) {
+	// Get all payrolls.
+	// Add to model.
+	List<ProjectPayroll> payrollList = this.projectPayrollService
+		.getAllPayrolls(proj);
+	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
+    }
+
+    /**
+     * Set inventory attributes.
+     * 
+     * @param proj
+     * @param model
+     */
+    private void setInventoryAttributes(Project proj, Model model) {
+	// Get all deliveries.
+	// Get all pull-outs.
+	// Get inventory.
+	// Then add to model.
+	List<Delivery> deliveryList = this.deliveryService.list(proj);
+	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
+
+	// Get all materials.
+	// Add to model.
+	List<Material> materialList = this.materialService.list(proj);
+	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
+
+	// Get all pull-outs.
+	// Add to model.
+	List<PullOut> pullOutList = this.pullOutService.list(proj);
+	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
+    }
+
+    /**
+     * Set attributes before forwarding back to JSP.
+     * 
+     * @param proj
+     * @param model
+     */
+    @SuppressWarnings("unchecked")
+    private void setProgramOfWorksAttributes(Project proj, Model model) {
 
 	// Gant JSON to be used by the chart in timeline.
 	// Get calendar JSON.
@@ -2137,9 +2156,5 @@ public class ProjectController {
 	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
 	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE,
 		MilestoneStatus.getIdToStatusMap());
-
-	// Add the auxillary object.
-	ProjectAux projectAux = this.projectAuxService.get(proj);
-	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
     }
 }

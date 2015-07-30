@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -9,6 +8,7 @@ import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.bean.EstimationOutputRowBean;
 import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
@@ -40,7 +40,6 @@ public class Estimate implements IDomainObject {
      */
     private String name;
     private String remarks;
-    private Date lastComputed;
 
     /**
      * Computational specs.
@@ -71,11 +70,12 @@ public class Estimate implements IDomainObject {
     /**
      * Results
      */
+    private ConcreteEstimateResults resultConcreteEstimate = new ConcreteEstimateResults();
     private MasonryCHBEstimateResults resultCHBEstimate = new MasonryCHBEstimateResults();
     private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
     private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
     private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
-    private ConcreteEstimateResults resultConcreteEstimate = new ConcreteEstimateResults();
+    private EstimationOutputRowBean resultRow;
 
     /**
      * Extension map.
@@ -158,14 +158,6 @@ public class Estimate implements IDomainObject {
 
     public void setRemarks(String remarks) {
 	this.remarks = remarks;
-    }
-
-    public Date getLastComputed() {
-	return lastComputed;
-    }
-
-    public void setLastComputed(Date lastComputed) {
-	this.lastComputed = lastComputed;
     }
 
     public Shape getShape() {
@@ -314,6 +306,14 @@ public class Estimate implements IDomainObject {
 
     public void setEstimationFile(MultipartFile estimationFile) {
 	this.estimationFile = estimationFile;
+    }
+
+    public EstimationOutputRowBean getResultRow() {
+	return resultRow;
+    }
+
+    public void setResultRow(EstimationOutputRowBean resultRow) {
+	this.resultRow = resultRow;
     }
 
 }
