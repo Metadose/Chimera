@@ -23,9 +23,16 @@ public class EstimationOutput implements IDomainObject {
     private UUID uuid;
 
     /**
+     * Inputs.
+     */
+    private String name;
+    private String remarks;
+
+    /**
      * Output.
      */
     private List<Estimate> estimates;
+    private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
 
@@ -122,6 +129,30 @@ public class EstimationOutput implements IDomainObject {
     public static String constructPattern(Project proj) {
 	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, proj
 		.getCompany().getId(), proj.getId(), "*");
+    }
+
+    public String getEstimatesAsJson() {
+	return estimatesAsJson;
+    }
+
+    public void setEstimatesAsJson(String estimatesAsJson) {
+	this.estimatesAsJson = estimatesAsJson;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    public String getRemarks() {
+	return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+	this.remarks = remarks;
     }
 
 }

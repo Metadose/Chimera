@@ -46,6 +46,7 @@ import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.google.gson.Gson;
 import com.udojava.evalex.Expression;
 
 @Service
@@ -106,13 +107,17 @@ public class EstimateServiceImpl implements EstimateService {
 		    estimateInput.getProject());
 
 	    // Process each object.
+	    List<EstimationOutputRowBean> rowList = new ArrayList<EstimationOutputRowBean>();
 	    for (Estimate estimate : estimates) {
 		computeQuantityEstimate(estimate);
+		rowList.add(estimate.getResultRow());
 	    }
 
 	    // Set the list.
 	    // Set the object.
+	    String rowListJson = new Gson().toJson(rowList, ArrayList.class);
 	    estimationOutput.setEstimates(estimates);
+	    estimationOutput.setEstimatesAsJson(rowListJson);
 	    this.estimationOutputValueRepo.set(estimationOutput);
 
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
