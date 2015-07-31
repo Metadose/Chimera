@@ -17,7 +17,7 @@ public interface EstimateService {
 
     public String set(Estimate obj);
 
-    public String set(EstimationInputBean estimateInput);
+    public String estimate(EstimationInputBean estimateInput);
 
     public void delete(Collection<String> keys);
 

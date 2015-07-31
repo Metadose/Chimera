@@ -10,6 +10,7 @@ public class EstimationOutputRowBean implements Serializable {
     private static final long serialVersionUID = 5377007792468931713L;
 
     // Details.
+    private String uuid;
     private String name;
     private String remarks;
     private double area;
@@ -51,13 +52,11 @@ public class EstimationOutputRowBean implements Serializable {
 	Shape shape = estimate.getShape();
 	ConcreteEstimateResults concrete = estimate.getResultConcreteEstimate();
 	MasonryCHBEstimateResults chb = estimate.getResultCHBEstimate();
-	MasonryCHBLayingEstimateResults chbLaying = estimate
-		.getResultCHBLayingEstimate();
-	MasonryPlasteringEstimateResults plaster = estimate
-		.getResultPlasteringEstimate();
-	MasonryCHBFootingEstimateResults footing = estimate
-		.getResultCHBFootingEstimate();
+	MasonryCHBLayingEstimateResults chbLaying = estimate.getResultCHBLayingEstimate();
+	MasonryPlasteringEstimateResults plaster = estimate.getResultPlasteringEstimate();
+	MasonryCHBFootingEstimateResults footing = estimate.getResultCHBFootingEstimate();
 
+	this.uuid = estimate.getUuid().toString();
 	this.name = estimate.getName();
 	this.remarks = estimate.getRemarks();
 	this.area = shape.getArea();
@@ -256,6 +255,14 @@ public class EstimationOutputRowBean implements Serializable {
 
     public void setFootingGravel(double footingGravel) {
 	this.footingGravel = footingGravel;
+    }
+
+    public String getUuid() {
+	return uuid;
+    }
+
+    public void setUuid(String uuid) {
+	this.uuid = uuid;
     }
 
 }

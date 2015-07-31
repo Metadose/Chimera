@@ -89,15 +89,13 @@ import com.cebedo.pmsys.utils.DateUtils;
 @Controller
 @SessionAttributes(
 
-value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
-	"old" + ProjectController.ATTR_FIELD,
+value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
-	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE },
+	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL, RedisConstants.OBJECT_PULL_OUT,
+	RedisConstants.OBJECT_ESTIMATE },
 
-types = { Project.class, FieldAssignmentBean.class, ProjectFile.class,
-	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
-	Estimate.class }
+types = { Project.class, FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
+	Delivery.class, Material.class, PullOut.class, Estimate.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -126,6 +124,7 @@ public class ProjectController {
     public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
+    public static final String ATTR_ESTIMATE_OUTPUT_JSON = "estimateJSON";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
@@ -184,8 +183,7 @@ public class ProjectController {
 
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
-    public static final String JSP_EDIT_FIELD = Field.OBJECT_NAME
-	    + "/assignedFieldEdit";
+    public static final String JSP_EDIT_FIELD = Field.OBJECT_NAME + "/assignedFieldEdit";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -208,15 +206,13 @@ public class ProjectController {
 
     @Autowired(required = true)
     @Qualifier(value = "estimationOutputService")
-    public void setEstimationOutputService(
-	    EstimationOutputService estimationOutputService) {
+    public void setEstimationOutputService(EstimationOutputService estimationOutputService) {
 	this.estimationOutputService = estimationOutputService;
     }
 
     @Autowired(required = true)
     @Qualifier(value = "costEstimationService")
-    public void setCostEstimationService(
-	    CostEstimationService costEstimationService) {
+    public void setCostEstimationService(CostEstimationService costEstimationService) {
 	this.costEstimationService = costEstimationService;
     }
 
@@ -234,8 +230,7 @@ public class ProjectController {
 
     @Autowired(required = true)
     @Qualifier(value = "materialCategoryService")
-    public void setMaterialCategoryService(
-	    MaterialCategoryService materialCategoryService) {
+    public void setMaterialCategoryService(MaterialCategoryService materialCategoryService) {
 	this.materialCategoryService = materialCategoryService;
     }
 
@@ -253,8 +248,7 @@ public class ProjectController {
 
     @Autowired(required = true)
     @Qualifier(value = "projectPayrollService")
-    public void setProjectPayrollService(
-	    ProjectPayrollService projectPayrollService) {
+    public void setProjectPayrollService(ProjectPayrollService projectPayrollService) {
 	this.projectPayrollService = projectPayrollService;
     }
 
@@ -312,8 +306,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT,
-	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
 	model.addAttribute(ATTR_LIST, this.projectService.list());
 	return JSP_LIST;
@@ -326,21 +319,19 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Staff.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllProjectManagers(HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/"
+	    + SystemConstants.ALL, method = RequestMethod.GET)
+    public String unassignAllProjectManagers(HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	long projectID = project.getId();
 
 	// Get response.
-	String response = this.staffService
-		.unassignAllProjectManagers(projectID);
+	String response = this.staffService.unassignAllProjectManagers(projectID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -354,10 +345,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Staff.OBJECT_NAME + "-member" + "/" + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllStaffMembers(HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/"
+	    + SystemConstants.ALL, method = RequestMethod.GET)
+    public String unassignAllStaffMembers(HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 
@@ -365,8 +356,7 @@ public class ProjectController {
 	String response = this.staffService.unassignAllStaffMembers(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -382,23 +372,19 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Staff.OBJECT_NAME + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignProjectManager(HttpSession session,
-	    SessionStatus status,
-	    @PathVariable(Staff.OBJECT_NAME) long staffID,
-	    RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/{"
+	    + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String unassignProjectManager(HttpSession session, SessionStatus status,
+	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	long projectID = project.getId();
 
 	// Get response.
-	String response = this.staffService.unassignProjectManager(projectID,
-		staffID);
+	String response = this.staffService.unassignProjectManager(projectID, staffID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -414,23 +400,19 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Staff.OBJECT_NAME + "-member" + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignStaffMember(HttpSession session,
-	    SessionStatus status,
-	    @PathVariable(Staff.OBJECT_NAME) long staffID,
-	    RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member"
+	    + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String unassignStaffMember(HttpSession session, SessionStatus status,
+	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	long projectID = project.getId();
 
 	// Get response.
-	String response = this.staffService.unassignStaffMember(project,
-		staffID);
+	String response = this.staffService.unassignStaffMember(project, staffID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -446,11 +428,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-	    + Staff.OBJECT_NAME + "/" + SystemConstants.MASS, method = RequestMethod.POST)
+    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
+	    + SystemConstants.MASS, method = RequestMethod.POST)
     public String assignStaffMass(HttpSession session, SessionStatus status,
-	    @ModelAttribute(ATTR_PROJECT) Project project,
-	    RedirectAttributes redirectAttrs) {
+	    @ModelAttribute(ATTR_PROJECT) Project project, RedirectAttributes redirectAttrs) {
 
 	// Get response.
 	// Do service, clear session.
@@ -458,8 +439,7 @@ public class ProjectController {
 	String response = this.staffService.assignStaffMass(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -475,11 +455,8 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-	    + Staff.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignProjectManager(
-	    HttpSession session,
-	    SessionStatus status,
+    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
+    public String assignProjectManager(HttpSession session, SessionStatus status,
 	    @ModelAttribute(ATTR_STAFF_POSITION) StaffAssignmentBean staffAssignment,
 	    RedirectAttributes redirectAttrs) {
 
@@ -490,12 +467,10 @@ public class ProjectController {
 	// Get response.
 	// Do service, clear session.
 	// Then redirect.
-	String response = this.staffService.assignProjectManager(
-		project.getId(), staffID, position);
+	String response = this.staffService.assignProjectManager(project.getId(), staffID, position);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -522,8 +497,7 @@ public class ProjectController {
 	    String response = this.projectService.create(project);
 
 	    // Attach response.
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		    response);
+	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	    status.setComplete();
 	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
@@ -535,12 +509,11 @@ public class ProjectController {
 	String response = this.projectService.update(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_EDIT
+		+ "/" + project.getId();
     }
 
     /**
@@ -553,25 +526,22 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = Field.OBJECT_NAME + "/"
-	    + SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
     public String updateField(HttpSession session,
-	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean newFaBean,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
+	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean newFaBean, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
 	// Old values.
-	FieldAssignmentBean faBean = (FieldAssignmentBean) session
-		.getAttribute("old" + ATTR_FIELD);
+	FieldAssignmentBean faBean = (FieldAssignmentBean) session.getAttribute("old" + ATTR_FIELD);
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService.updateAssignedProjectField(
-		faBean.getProjectID(), faBean.getFieldID(), faBean.getLabel(),
-		faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue());
+	String response = this.fieldService.updateAssignedProjectField(faBean.getProjectID(),
+		faBean.getFieldID(), faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(),
+		newFaBean.getValue());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Clear session and redirect.
 	status.setComplete();
@@ -586,23 +556,19 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Team.OBJECT_NAME + "/{" + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignProjectTeam(HttpSession session,
-	    SessionStatus status, @PathVariable(Team.OBJECT_NAME) long teamID,
-	    RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/{"
+	    + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String unassignProjectTeam(HttpSession session, SessionStatus status,
+	    @PathVariable(Team.OBJECT_NAME) long teamID, RedirectAttributes redirectAttrs) {
 
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
 	// Get response.
-	String response = this.teamService.unassignProjectTeam(projectID,
-		teamID);
+	String response = this.teamService.unassignProjectTeam(projectID, teamID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -616,12 +582,9 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-	    + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignProjectTeam(
-	    @ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
-	    HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
+    public String assignProjectTeam(@ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
+	    HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs) {
 
 	long teamID = taBean.getTeamID();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
@@ -632,8 +595,7 @@ public class ProjectController {
 	String response = this.teamService.assignProjectTeam(projectID, teamID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -647,21 +609,19 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Team.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllProjectTeams(HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/"
+	    + SystemConstants.ALL, method = RequestMethod.GET)
+    public String unassignAllProjectTeams(HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
 
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
 	// Get response.
 	String response = this.teamService.unassignAllProjectTeams(projectID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -707,25 +667,21 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = Field.OBJECT_NAME + "/"
-	    + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
     public String deleteProjectField(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
 	// Fetch bean from session.
-	FieldAssignmentBean faBean = (FieldAssignmentBean) session
-		.getAttribute(ATTR_FIELD);
+	FieldAssignmentBean faBean = (FieldAssignmentBean) session.getAttribute(ATTR_FIELD);
 
 	// Do service.
 	// Clear session attrs then redirect.
 	// Get response.
-	String response = this.fieldService.unassignFieldFromProject(
-		faBean.getFieldID(), faBean.getProjectID(), faBean.getLabel(),
-		faBean.getValue());
+	String response = this.fieldService.unassignFieldFromProject(faBean.getFieldID(),
+		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -741,27 +697,23 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = Field.OBJECT_NAME + "/"
-	    + SystemConstants.REQUEST_EDIT + "/{" + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/{"
+	    + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String editField(HttpSession session,
-	    @PathVariable(Field.OBJECT_NAME) String fieldIdentifiers,
-	    Model model) {
+	    @PathVariable(Field.OBJECT_NAME) String fieldIdentifiers, Model model) {
 
 	// Get project id.
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
-	long fieldID = Long.valueOf(fieldIdentifiers
-		.split(Field.IDENTIFIER_SEPARATOR)[0]);
+	long fieldID = Long.valueOf(fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[0]);
 	String label = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[1];
 	String value = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[2];
 
 	// Set to model attribute "field".
 	model.addAttribute(ATTR_PROJECT, proj);
-	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID,
-		fieldID, label, value));
-	session.setAttribute("old" + ATTR_FIELD, new FieldAssignmentBean(
-		projectID, fieldID, label, value));
+	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID, fieldID, label, value));
+	session.setAttribute("old" + ATTR_FIELD, new FieldAssignmentBean(projectID, fieldID, label,
+		value));
 
 	return JSP_EDIT_FIELD;
     }
@@ -775,8 +727,7 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-	    + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
@@ -803,12 +754,10 @@ public class ProjectController {
 
 	// Attach response.
 	// Alert result.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
-		+ SystemConstants.REQUEST_LIST;
+	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_LIST;
     }
 
     /**
@@ -819,31 +768,25 @@ public class ProjectController {
      * @throws IOException
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.PROFILE + "/"
-	    + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
-    public ModelAndView deleteProjectProfile(HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs)
-	    throws IOException {
+    @RequestMapping(value = SystemConstants.PROFILE + "/" + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
+    public ModelAndView deleteProjectProfile(HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) throws IOException {
 	// Get project id.
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
 	// Do service.
 	// Get response.
-	String response = this.photoService
-		.deleteProfilePicOfProject(projectID);
+	String response = this.photoService.deleteProfilePicOfProject(projectID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Clear session var.
 	// Then return.
 	status.setComplete();
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT
-		+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-		+ "/" + projectID);
+	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + projectID);
     }
 
     /**
@@ -854,29 +797,24 @@ public class ProjectController {
      * @throws IOException
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
-	    + SystemConstants.PROFILE, method = RequestMethod.POST)
-    public String uploadProfile(HttpSession session,
-	    @RequestParam(ATTR_FILE) MultipartFile file, SessionStatus status,
-	    RedirectAttributes redirectAttrs) throws IOException {
+    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + SystemConstants.PROFILE, method = RequestMethod.POST)
+    public String uploadProfile(HttpSession session, @RequestParam(ATTR_FILE) MultipartFile file,
+	    SessionStatus status, RedirectAttributes redirectAttrs) throws IOException {
 
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 	String response = "";
 
 	// If file is not empty.
 	// Get response.
 	if (!file.isEmpty()) {
-	    response = this.photoService.uploadProfilePicOfProject(file,
-		    projectID);
+	    response = this.photoService.uploadProfilePicOfProject(file, projectID);
 	} else {
 	    // TODO Handle this scenario.
 	}
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -891,24 +829,21 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/"
-	    + Field.OBJECT_NAME + "/" + SystemConstants.ALL, method = RequestMethod.GET)
+    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Field.OBJECT_NAME + "/"
+	    + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllFields(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
 	// Get project ID.
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
 
 	// Get response.
-	String response = this.fieldService
-		.unassignAllFieldsFromProject(projectID);
+	String response = this.fieldService.unassignAllFieldsFromProject(projectID);
 
 	// Attach response.
 	// Construct notification.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Do service and clear session vars.
 	// Then return.
@@ -926,16 +861,14 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/"
-	    + Field.OBJECT_NAME, method = RequestMethod.POST)
+    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
     public String assignField(HttpSession session,
-	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean faBean,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean faBean, RedirectAttributes redirectAttrs,
+	    SessionStatus status) {
 
 	// Get project from session.
 	// Construct commit object.
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long fieldID = 1;
 	FieldAssignment fieldAssignment = new FieldAssignment();
 	fieldAssignment.setLabel(faBean.getLabel());
@@ -945,13 +878,11 @@ public class ProjectController {
 
 	// Do service.
 	// Get response.
-	String response = this.fieldService.assignFieldToProject(
-		fieldAssignment, fieldID, proj.getId());
+	String response = this.fieldService.assignFieldToProject(fieldAssignment, fieldID, proj.getId());
 
 	// Construct ui notifications.
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Remove session variables.
 	// Evict project cache.
@@ -970,12 +901,10 @@ public class ProjectController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
-	    + ProjectFile.OBJECT_NAME, method = RequestMethod.POST)
-    public String uploadFileToProject(
-	    @ModelAttribute(ATTR_PROJECT_FILE) MultipartBean mpBean,
-	    SessionStatus status, HttpSession session,
-	    RedirectAttributes redirectAttrs) throws IOException {
+    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + ProjectFile.OBJECT_NAME, method = RequestMethod.POST)
+    public String uploadFileToProject(@ModelAttribute(ATTR_PROJECT_FILE) MultipartBean mpBean,
+	    SessionStatus status, HttpSession session, RedirectAttributes redirectAttrs)
+	    throws IOException {
 
 	MultipartFile file = mpBean.getFile();
 	String description = mpBean.getDescription();
@@ -987,15 +916,13 @@ public class ProjectController {
 
 	    // Upload then evict cache.
 	    // Get response.
-	    response = this.projectFileService.uploadFileToProject(file,
-		    projectID, description);
+	    response = this.projectFileService.uploadFileToProject(file, projectID, description);
 	} else {
 	    // TODO Handle this scenario.
 	}
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -1009,10 +936,9 @@ public class ProjectController {
      * @param fileID
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/"
-	    + ProjectFile.OBJECT_NAME + "/{" + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public void downloadFileFromProject(
-	    @PathVariable(ProjectFile.OBJECT_NAME) long fileID,
+    @RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/" + ProjectFile.OBJECT_NAME + "/{"
+	    + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public void downloadFileFromProject(@PathVariable(ProjectFile.OBJECT_NAME) long fileID,
 	    HttpServletResponse response) {
 
 	// Get file from server.
@@ -1024,8 +950,8 @@ public class ProjectController {
 	    FileInputStream iStream = new FileInputStream(actualFile);
 	    response.setContentType("application/octet-stream");
 	    response.setContentLength((int) actualFile.length());
-	    response.setHeader("Content-Disposition", "attachment; filename=\""
-		    + actualFile.getName() + "\"");
+	    response.setHeader("Content-Disposition", "attachment; filename=\"" + actualFile.getName()
+		    + "\"");
 	    IOUtils.copy(iStream, response.getOutputStream());
 	    response.flushBuffer();
 
@@ -1044,15 +970,12 @@ public class ProjectController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/"
-	    + Photo.OBJECT_NAME, method = RequestMethod.POST)
-    public String uploadPhotoToProject(
-	    @ModelAttribute(ATTR_PHOTO) MultipartBean mpBean,
-	    HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) throws IOException {
+    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + Photo.OBJECT_NAME, method = RequestMethod.POST)
+    public String uploadPhotoToProject(@ModelAttribute(ATTR_PHOTO) MultipartBean mpBean,
+	    HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs)
+	    throws IOException {
 
-	Project proj = (Project) session
-		.getAttribute(ProjectController.ATTR_PROJECT);
+	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	MultipartFile file = mpBean.getFile();
 	String description = mpBean.getDescription();
 	long projectID = proj.getId();
@@ -1063,15 +986,13 @@ public class ProjectController {
 	if (!file.isEmpty()) {
 
 	    // Get response.
-	    response = this.photoService.uploadPhotoToProject(file, projectID,
-		    description);
+	    response = this.photoService.uploadPhotoToProject(file, projectID, description);
 	} else {
 	    // TODO Handle scenario.
 	}
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -1087,11 +1008,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
-	    + Photo.OBJECT_NAME + "/{" + Photo.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String deletePhoto(@PathVariable(Photo.OBJECT_NAME) long id,
-	    HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/" + Photo.OBJECT_NAME + "/{"
+	    + Photo.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String deletePhoto(@PathVariable(Photo.OBJECT_NAME) long id, HttpSession session,
+	    SessionStatus status, RedirectAttributes redirectAttrs) {
 
 	// Do service.
 	// Get response.
@@ -1100,8 +1020,7 @@ public class ProjectController {
 	this.projectService.clearProjectCache(proj.getId());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -1109,19 +1028,17 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_PAYROLL + "/"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
 	    + SystemConstants.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public String includeStaffToPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) PayrollIncludeStaffBean includeStaffBean,
 	    RedirectAttributes redirectAttrs) {
 
-	String response = this.projectPayrollService.includeStaffToPayroll(
-		projectPayroll, includeStaffBean);
+	String response = this.projectPayrollService.includeStaffToPayroll(projectPayroll,
+		includeStaffBean);
 
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	return payrollEndState(projectPayroll);
     }
@@ -1135,24 +1052,20 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/"
-	    + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
-    public String updatePullout(
-	    @ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
+    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
+    public String updatePullout(@ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
 	String response = this.pullOutService.update(pullout);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ pullout.getProject().getId();
+		+ SystemConstants.REQUEST_EDIT + "/" + pullout.getProject().getId();
     }
 
     /**
@@ -1164,24 +1077,20 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/"
-	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String updateMaterial(
-	    @ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String updateMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
 	String response = this.materialService.update(material);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ material.getProject().getId();
+		+ SystemConstants.REQUEST_EDIT + "/" + material.getProject().getId();
     }
 
     /**
@@ -1193,29 +1102,24 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
-    public String createDelivery(
-	    @ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
+    public String createDelivery(@ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
 	String response = this.deliveryService.set(delivery);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	status.setComplete();
-	return getSubmoduleEditRedirect(RedisConstants.OBJECT_DELIVERY,
-		delivery.getKey());
+	return getSubmoduleEditRedirect(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
     }
 
     private String getSubmoduleEditRedirect(String submodule, String key) {
-	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT
-		+ Project.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT
-		+ "/" + submodule + "/" + key + "-end";
+	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
 	return deliveryEdit;
     }
 
@@ -1228,21 +1132,17 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + CostEstimationBean.BEAN_NAME }, method = RequestMethod.POST)
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + CostEstimationBean.BEAN_NAME }, method = RequestMethod.POST)
     public String createConcreteEstimationSummary(
 	    @ModelAttribute(ATTR_COST_ESTIMATION_BEAN) CostEstimationBean costEstimationBean,
-	    RedirectAttributes redirectAttrs, SessionStatus status,
-	    HttpSession session) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service, get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	String response = this.costEstimationService.estimateCosts(proj,
-		costEstimationBean);
+	String response = this.costEstimationService.estimateCosts(proj, costEstimationBean);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	status.setComplete();
@@ -1259,56 +1159,23 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
 	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimationInputBean estimateInput,
-	    RedirectAttributes redirectAttrs, SessionStatus status,
-	    HttpSession session) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service and get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	estimateInput.setProject(proj);
-	String response = this.estimateService.set(estimateInput);
+	String response = this.estimateService.estimate(estimateInput);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
-    }
-
-    /**
-     * Add estimate inputs.
-     * 
-     * @param estimate
-     * @param redirectAttrs
-     * @param status
-     * @return
-     */
-    @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_COMPUTE + "/"
-	    + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
-    public String computeEstimate(
-	    @ModelAttribute(RedisConstants.OBJECT_ESTIMATE) Estimate estimate,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
-
-	// Do service and get response.
-	// String response = this.estimateService
-	// .computeQuantityEstimate(estimate);
-
-	// Add to redirect attrs.
-	// redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-	// response);
-
-	// Complete the transaction.
-	status.setComplete();
-	return getSubmoduleEditRedirect(RedisConstants.OBJECT_ESTIMATE,
-		estimate.getKey());
     }
 
     /**
@@ -1320,21 +1187,17 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
-	    + RedisConstants.OBJECT_DELIVERY + "/{"
-	    + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
-    public String deleteDelivery(
-	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
-	    RedirectAttributes redirectAttrs, SessionStatus status,
-	    HttpSession session) {
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_DELIVERY
+	    + "/{" + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
+    public String deleteDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
 	// and get response.
 	String response = this.deliveryService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -1353,21 +1216,17 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
-	    + RedisConstants.OBJECT_PAYROLL + "/{"
-	    + RedisConstants.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
-    public String deleteProjectPayroll(
-	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String key,
-	    RedirectAttributes redirectAttrs, SessionStatus status,
-	    HttpSession session) {
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PAYROLL
+	    + "/{" + RedisConstants.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
+    public String deleteProjectPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
 	// and get response.
 	String response = this.projectPayrollService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -1386,21 +1245,17 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
-	    + RedisConstants.OBJECT_PULL_OUT + "/{"
-	    + RedisConstants.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
-    public String deletePullOut(
-	    @PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
-	    RedirectAttributes redirectAttrs, SessionStatus status,
-	    HttpSession session) {
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PULL_OUT
+	    + "/{" + RedisConstants.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
+    public String deletePullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
 	// and get response.
 	String response = this.pullOutService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -1419,12 +1274,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_MATERIAL + "/{"
+    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_MATERIAL + "/{"
 	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String editMaterial(
-	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
-	    Model model, HttpSession session) {
+    public String editMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
+	    HttpSession session) {
 
 	// Construct the bean for the form.
 	Material material = this.materialService.get(key);
@@ -1441,8 +1294,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_UNIT_LIST, unitList);
 
 	// Get list of material categories.
-	List<MaterialCategory> materialCategoryList = this.materialCategoryService
-		.list();
+	List<MaterialCategory> materialCategoryList = this.materialCategoryService.list();
 	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
 
 	// Add the staff list to model.
@@ -1460,12 +1312,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/"
-	    + RedisConstants.OBJECT_MATERIAL + "/{"
-	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String pulloutMaterial(
-	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
-	    Model model, HttpSession session) {
+    @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL
+	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String pulloutMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
+	    HttpSession session) {
 
 	// Construct the bean for the form.
 	Material material = this.materialService.get(key);
@@ -1491,10 +1341,8 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/"
-	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String doPullOutMaterial(
-	    @ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
+    @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String doPullOutMaterial(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service
@@ -1502,16 +1350,14 @@ public class ProjectController {
 	String response = this.pullOutService.create(pullOut);
 
 	// Add to model.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the request.
 	status.setComplete();
 
 	// Return to the project.
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ pullOut.getProject().getId();
+		+ SystemConstants.REQUEST_EDIT + "/" + pullOut.getProject().getId();
     }
 
     /**
@@ -1523,21 +1369,17 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/"
-	    + RedisConstants.OBJECT_MATERIAL + "/{"
-	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String deleteMaterial(
-	    @PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
-	    RedirectAttributes redirecAttrs, SessionStatus status,
-	    HttpSession session) {
+    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_MATERIAL
+	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String deleteMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
+	    RedirectAttributes redirecAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
 	// and get response.
 	String response = this.materialService.delete(key);
 
 	// Attach to redirect attributes.
-	redirecAttrs
-		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Then redirect back to the delivery.
@@ -1558,10 +1400,8 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/"
-	    + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String addMaterial(
-	    @ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String addMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirecAttrs, SessionStatus status) {
 
 	// Do service
@@ -1569,15 +1409,13 @@ public class ProjectController {
 	String response = this.materialService.create(material);
 
 	// Attach to redirect attributes.
-	redirecAttrs
-		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Then redirect back to the delivery.
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ RedisConstants.OBJECT_DELIVERY + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/"
 		+ material.getDelivery().getKey() + "-end";
     }
 
@@ -1588,23 +1426,18 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
-    public String createPayroll(
-	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
+    public String createPayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
-	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProject().getId());
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll.getProject().getId());
 	}
 
 	// Do service.
-	String response = this.projectPayrollService.createPayroll(session,
-		proj, projectPayroll);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	String response = this.projectPayrollService.createPayroll(session, proj, projectPayroll);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -1620,27 +1453,24 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/"
-	    + RedisConstants.OBJECT_PAYROLL + "/" + SystemConstants.CLEAR
-	    + "/{" + SystemConstants.CLEAR + "}" }, method = RequestMethod.POST)
+    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL + "/"
+	    + SystemConstants.CLEAR + "/{" + SystemConstants.CLEAR + "}" }, method = RequestMethod.POST)
     public String createPayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model,
-	    HttpSession session, RedirectAttributes redirectAttrs) {
+	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model, HttpSession session,
+	    RedirectAttributes redirectAttrs) {
 
 	// End the session after this.
 	// Then redirect to an edit page of this object.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
-	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProject().getId());
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll.getProject().getId());
 	}
 
 	// Update the payroll then clear the computation.
-	String response = this.projectPayrollService
-		.createPayrollClearComputation(session, projectPayroll, toClear);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	String response = this.projectPayrollService.createPayrollClearComputation(session,
+		projectPayroll, toClear);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -1656,34 +1486,29 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/"
-	    + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
-    public String computePayroll(
-	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
+    @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/" + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
+    public String computePayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj == null) {
-	    proj = this.projectService.getByIDWithAllCollections(projectPayroll
-		    .getProject().getId());
+	    proj = this.projectService.getByIDWithAllCollections(projectPayroll.getProject().getId());
 	}
 	Date startDate = projectPayroll.getStartDate();
 	Date endDate = projectPayroll.getEndDate();
 
 	// Get payroll maps.
 	// And assign to model.
-	String payrollJSON = this.projectPayrollService.setAndGetResultJSON(
-		proj, startDate, endDate, projectPayroll);
+	String payrollJSON = this.projectPayrollService.setAndGetResultJSON(proj, startDate, endDate,
+		projectPayroll);
 
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 
 	// Construct response.
-	String datePart = ProjectPayrollServiceImpl
-		.getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateCompute(
-		RedisConstants.OBJECT_PAYROLL, datePart);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
+	String response = AlertBoxGenerator.SUCCESS.generateCompute(RedisConstants.OBJECT_PAYROLL,
+		datePart);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	// Get all managers in this project.
@@ -1704,9 +1529,8 @@ public class ProjectController {
 
 	// /edit/payroll/${payrollRow.getKey()}-end
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/"
-		+ RedisConstants.OBJECT_PAYROLL + "/" + projectPayroll.getKey()
-		+ "-end";
+		+ SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
+		+ projectPayroll.getKey() + "-end";
     }
 
     /**
@@ -1737,12 +1561,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_PULL_OUT + "/{"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PULL_OUT + "/{"
 	    + RedisConstants.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
-    public String editPullOut(
-	    @PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
-	    Model model, HttpSession session) {
+    public String editPullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key, Model model,
+	    HttpSession session) {
 
 	// Get the object.
 	PullOut pullOut = this.pullOutService.get(key);
@@ -1770,12 +1592,10 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_DELIVERY + "/{"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/{"
 	    + RedisConstants.OBJECT_DELIVERY + "}-end", method = RequestMethod.GET)
-    public String editDelivery(
-	    @PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
-	    Model model, HttpSession session) {
+    public String editDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key, Model model,
+	    HttpSession session) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
@@ -1796,8 +1616,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_UNIT_LIST, unitList);
 
 	// Get list of material categories.
-	List<MaterialCategory> materialCategoryList = this.materialCategoryService
-		.list();
+	List<MaterialCategory> materialCategoryList = this.materialCategoryService.list();
 	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
 
 	// Get the list of materials this delivery has.
@@ -1816,11 +1635,9 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/"
-	    + RedisConstants.OBJECT_PAYROLL + "/{"
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/{"
 	    + RedisConstants.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
-    public String editPayroll(
-	    @PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
+    public String editPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
 	    Model model, HttpSession session) {
 
 	// Common to both edit new and existing.
@@ -1841,16 +1658,14 @@ public class ProjectController {
 	    // Add the empty object.
 	    // Then redirect.
 	    SystemUser creator = this.authHelper.getAuth().getUser();
-	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(co,
-		    proj, creator));
+	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(co, proj, creator));
 	    return RedisConstants.JSP_PAYROLL_EDIT;
 	}
 
 	// Attach to response.
 	// If flash attribute was null,
 	// use the key.
-	ProjectPayroll projectPayroll = this.projectPayrollService
-		.get(payrollKey);
+	ProjectPayroll projectPayroll = this.projectPayrollService.get(payrollKey);
 
 	// Set the project structure.
 	Long companyID = co == null ? 0 : co.getId();
@@ -1867,13 +1682,11 @@ public class ProjectController {
     private void setFormSelectors(Project proj, Model model) {
 
 	// Approvers.
-	List<Staff> selectorManagers = this.projectService
-		.getAllManagersWithUsers(proj);
+	List<Staff> selectorManagers = this.projectService.getAllManagersWithUsers(proj);
 	model.addAttribute(ATTR_PAYROLL_SELECTOR_APPROVER, selectorManagers);
 
 	// Status.
-	PayrollStatus[] payrollStatusArr = PayrollStatus.class
-		.getEnumConstants();
+	PayrollStatus[] payrollStatusArr = PayrollStatus.class.getEnumConstants();
 	model.addAttribute(ATTR_PAYROLL_SELECTOR_STATUS, payrollStatusArr);
     }
 
@@ -1885,26 +1698,24 @@ public class ProjectController {
      * @param model
      * @param proj
      */
-    private void setModelAttributesOfPayroll(ProjectPayroll projectPayroll,
-	    Project proj, Model model, Long companyID) {
+    private void setModelAttributesOfPayroll(ProjectPayroll projectPayroll, Project proj, Model model,
+	    Long companyID) {
 
 	// For the multi-select box.
 	// Get all staff in this project payroll.
 	// List of staff "during that time".
-	Set<ManagerAssignment> managers = projectPayroll
-		.getManagerAssignments();
+	Set<ManagerAssignment> managers = projectPayroll.getManagerAssignments();
 
 	// Get collection of all staff here.
-	List<Staff> manualStaffList = this.staffService
-		.listUnassignedStaffInProjectPayroll(companyID, projectPayroll);
+	List<Staff> manualStaffList = this.staffService.listUnassignedStaffInProjectPayroll(companyID,
+		projectPayroll);
 
 	// Full list minus already included.
 	Set<Staff> staff = projectPayroll.getStaffList();
 
 	// Set attributes.
 	// Manually include team/staff beans.
-	model.addAttribute(ATTR_PAYROLL_INCLUDE_STAFF,
-		new PayrollIncludeStaffBean());
+	model.addAttribute(ATTR_PAYROLL_INCLUDE_STAFF, new PayrollIncludeStaffBean());
 
 	// Actual object and result JSON.
 	model.addAttribute(ATTR_PROJECT_PAYROLL, projectPayroll);
@@ -1926,10 +1737,9 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/"
-	    + ProjectFile.OBJECT_NAME + "/{" + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String deleteProjectfile(
-	    @PathVariable(ProjectFile.OBJECT_NAME) int id, HttpSession session,
+    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/" + ProjectFile.OBJECT_NAME + "/{"
+	    + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String deleteProjectfile(@PathVariable(ProjectFile.OBJECT_NAME) int id, HttpSession session,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
@@ -1940,8 +1750,7 @@ public class ProjectController {
 	this.projectService.clearProjectCache(proj.getId());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -1970,10 +1779,8 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-	    + Project.COLUMN_PRIMARY_KEY + "}")
-    public String editProject(
-	    @PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Project.COLUMN_PRIMARY_KEY + "}")
+    public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
 
 	// Set model attributes that are common in both create and update.
 	setModelAttributes(model, id);
@@ -2015,9 +1822,15 @@ public class ProjectController {
      * @param model
      */
     private void setEstimateAttributes(Project proj, Model model) {
-	List<EstimationOutput> estimates = this.estimationOutputService
-		.list(proj);
+	List<EstimationOutput> estimates = this.estimationOutputService.list(proj);
 	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
+
+	// TODO TEST
+	try {
+	    model.addAttribute(ATTR_ESTIMATE_OUTPUT_JSON, estimates.get(0).getEstimatesAsJson());
+	} catch (Exception e) {
+	    ;
+	}
     }
 
     /**
@@ -2030,18 +1843,15 @@ public class ProjectController {
 
 	// Get list of fields.
 	// Get list of staff members for manager assignments.
-	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj
-		.getCompany().getId();
+	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj.getCompany().getId();
 
 	// Used in the manager selector.
-	List<Staff> staffList = this.staffService.listWithUsersAndFilter(
-		companyID, proj.getManagers());
+	List<Staff> staffList = this.staffService.listWithUsersAndFilter(companyID, proj.getManagers());
 
 	// Used in the "assign staff constrols".
 	// Get the list of staff not yet assigned in this project.
 	// Company staff, minus managers, minus assigned.
-	List<Staff> availableStaffToAssign = this.staffService
-		.listUnassignedInProject(companyID, proj);
+	List<Staff> availableStaffToAssign = this.staffService.listUnassignedInProject(companyID, proj);
 
 	// Get lists for selectors.
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
@@ -2087,8 +1897,7 @@ public class ProjectController {
     private void setPayrollAttributes(Project proj, Model model) {
 	// Get all payrolls.
 	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectPayrollService
-		.getAllPayrolls(proj);
+	List<ProjectPayroll> payrollList = this.projectPayrollService.getAllPayrolls(proj);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
     }
 
@@ -2128,33 +1937,26 @@ public class ProjectController {
 
 	// Gant JSON to be used by the chart in timeline.
 	// Get calendar JSON.
-	model.addAttribute(ATTR_GANTT_JSON,
-		this.projectService.getGanttJSON(proj));
-	model.addAttribute(ATTR_CALENDAR_JSON,
-		this.projectService.getCalendarJSON(proj));
+	model.addAttribute(ATTR_GANTT_JSON, this.projectService.getGanttJSON(proj));
+	model.addAttribute(ATTR_CALENDAR_JSON, this.projectService.getCalendarJSON(proj));
 
 	// Timeline taks status and count map.
 	// Summary map found in timeline tab.
 	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP,
 		this.projectService.getTaskStatusCountMap(proj));
-	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST,
-		CalendarEventType.class.getEnumConstants());
-	model.addAttribute(ATTR_GANTT_TYPE_LIST,
-		GanttElement.class.getEnumConstants());
+	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, CalendarEventType.class.getEnumConstants());
+	model.addAttribute(ATTR_GANTT_TYPE_LIST, GanttElement.class.getEnumConstants());
 
 	// Summary of per milestones.
 	// Summary of timeline on all milestones.
 	// Add map of id to milestone enum.
-	Map<String, Object> milestoneSummaryMap = this.projectService
-		.getTimelineSummaryMap(proj);
+	Map<String, Object> milestoneSummaryMap = this.projectService.getTimelineSummaryMap(proj);
 	Map<Milestone, Map<String, Object>> milestoneCountMap = (Map<Milestone, Map<String, Object>>) milestoneSummaryMap
 		.get(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP);
 	Map<String, Integer> summaryMap = (Map<String, Integer>) milestoneSummaryMap
 		.get(ATTR_TIMELINE_SUMMARY_MAP);
-	model.addAttribute(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP,
-		milestoneCountMap);
+	model.addAttribute(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP, milestoneCountMap);
 	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
-	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE,
-		MilestoneStatus.getIdToStatusMap());
+	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE, MilestoneStatus.getIdToStatusMap());
     }
 }

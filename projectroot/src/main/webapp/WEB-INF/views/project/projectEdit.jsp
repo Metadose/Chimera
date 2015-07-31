@@ -361,6 +361,22 @@
                    							</div>
                    						</div>
               						</div>
+              						<div class="row">
+                   						<div class="col-md-12">
+                   							<div class="box box-body box-default">
+                   								<div class="box-header">
+<%--                    									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/> --%>
+<%--                    									<h3 class="box-title">Computation as of ${lastComputed}</h3> --%>
+                   								</div>
+                   								<div class="box-body table-responsive">
+                   									<div class="callout callout-info callout-cebedo">
+									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+									                </div>
+                   									<table id="treegrid1"></table>
+                   								</div>
+                							</div>
+                						</div>
+                					</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	
@@ -2460,5 +2476,54 @@
 			return false;
 		}
 	</script>
+	
+	<!-- Ignite UI Required Combined JavaScript Files -->
+	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		// Tree grid.
+		var flatDS = ${estimateJSON};
+		$("#treegrid1").igTreeGrid({
+			dataSource: flatDS,
+			width: "100%",
+			primaryKey: "uuid",
+			columns: [
+				{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
+				{ headerText: "name", width: "26%", key: "name", dataType: "string" },
+				{ headerText: "remarks", width: "8%", key: "remarks", dataType: "string" },
+				{ headerText: "area", width: "8%", key: "area", dataType: "number" },
+				{ headerText: "volume", width: "8%", key: "volume", dataType: "number" },
+				{ headerText: "chbFoundationHeight", width: "8%", key: "chbFoundationHeight", dataType: "number" },
+				{ headerText: "footingLength", width: "8%", key: "footingLength", dataType: "number" },
+				
+				{ headerText: "concreteCement40kg", width: "8%", key: "concreteCement40kg", dataType: "number" },
+				{ headerText: "concreteCement50kg", width: "8%", key: "concreteCement50kg", dataType: "number" },
+				{ headerText: "concreteSand", width: "8%", key: "concreteSand", dataType: "number" },
+				{ headerText: "concreteGravel", width: "8%", key: "concreteGravel", dataType: "number" },
+				
+				{ headerText: "totalCHB", width: "8%", key: "totalCHB", dataType: "number" },
+				
+				{ headerText: "chbLayingBags40kg", width: "8%", key: "chbLayingBags40kg", dataType: "number" },
+				{ headerText: "chbLayingBags50kg", width: "8%", key: "chbLayingBags50kg", dataType: "number" },
+				{ headerText: "chbLayingSand", width: "8%", key: "chbLayingSand", dataType: "number" },
+				
+				{ headerText: "plasteringCement40kg", width: "8%", key: "plasteringCement40kg", dataType: "number" },
+				{ headerText: "plasteringCement50kg", width: "8%", key: "plasteringCement50kg", dataType: "number" },
+				{ headerText: "plasteringSand", width: "8%", key: "plasteringSand", dataType: "number" },
+				
+				{ headerText: "footingCement40kg", width: "8%", key: "footingCement40kg", dataType: "number" },
+				{ headerText: "footingCement50kg", width: "8%", key: "footingCement50kg", dataType: "number" },
+				{ headerText: "footingSand", width: "8%", key: "footingSand", dataType: "number" },
+				{ headerText: "footingGravel", width: "8%", key: "footingGravel", dataType: "number" }
+			]
+		});
+	});
+	</script>
+
 </body>
 </html>

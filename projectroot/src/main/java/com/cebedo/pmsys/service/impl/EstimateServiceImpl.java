@@ -68,8 +68,7 @@ public class EstimateServiceImpl implements EstimateService {
     private EstimateValueRepo estimateValueRepo;
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
-    public void setEstimationOutputValueRepo(
-	    EstimationOutputValueRepo estimationOutputValueRepo) {
+    public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
@@ -91,19 +90,17 @@ public class EstimateServiceImpl implements EstimateService {
 
     @Override
     @Transactional
-    public String set(EstimationInputBean estimateInput) {
+    public String estimate(EstimationInputBean estimateInput) {
 
 	// Do the commit.
 	// If create.
 	if (estimateInput.getEstimationFile() != null) {
 
 	    // New object.
-	    EstimationOutput estimationOutput = new EstimationOutput(
-		    estimateInput);
+	    EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
 
 	    // Convert the excel file to objects.
-	    List<Estimate> estimates = convertExcelToEstimates(
-		    estimateInput.getEstimationFile(),
+	    List<Estimate> estimates = convertExcelToEstimates(estimateInput.getEstimationFile(),
 		    estimateInput.getProject());
 
 	    // Process each object.
@@ -120,14 +117,12 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimationOutput.setEstimatesAsJson(rowListJson);
 	    this.estimationOutputValueRepo.set(estimationOutput);
 
-	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_ESTIMATE, "TODO");
+	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_ESTIMATE, "TODO");
 	}
 
 	// TODO If update.
 	// this.estimateValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_ESTIMATE, "TODO");
+	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_ESTIMATE, "TODO");
     }
 
     /**
@@ -142,14 +137,13 @@ public class EstimateServiceImpl implements EstimateService {
 	if (obj.getUuid() == null) {
 	    obj.setUuid(UUID.randomUUID());
 	    this.estimateValueRepo.set(obj);
-	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_ESTIMATE, obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_ESTIMATE,
+		    obj.getName());
 	}
 
 	// If update.
 	this.estimateValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_ESTIMATE, obj.getName());
+	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_ESTIMATE, obj.getName());
     }
 
     @Override
@@ -207,8 +201,7 @@ public class EstimateServiceImpl implements EstimateService {
     private boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook, Cell cell) {
 	String concrete = (String) (getValueAsExpected(workbook, cell) == null ? ""
 		: getValueAsExpected(workbook, cell));
-	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true
-		: false;
+	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true : false;
     }
 
     /**
@@ -221,8 +214,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Evaluate the cell.
 	// Get the value of the cell.
-	FormulaEvaluator evaluator = workbook.getCreationHelper()
-		.createFormulaEvaluator();
+	FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 	CellValue cellValue = evaluator.evaluate(cell);
 
 	// Handle each case.
@@ -257,14 +249,12 @@ public class EstimateServiceImpl implements EstimateService {
      * @param multipartFile
      * @return
      */
-    private List<Estimate> convertExcelToEstimates(MultipartFile multipartFile,
-	    Project proj) {
+    private List<Estimate> convertExcelToEstimates(MultipartFile multipartFile, Project proj) {
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
 	    // Get first/desired sheet from the workbook.
-	    HSSFWorkbook workbook = new HSSFWorkbook(
-		    multipartFile.getInputStream());
+	    HSSFWorkbook workbook = new HSSFWorkbook(multipartFile.getInputStream());
 	    HSSFSheet sheet = workbook.getSheetAt(0);
 
 	    // Iterate through each rows one by one.
@@ -300,31 +290,27 @@ public class EstimateServiceImpl implements EstimateService {
 		    switch (colCountDisplay) {
 
 		    case EXCEL_COLUMN_DETAILS_NAME:
-			String name = (String) (getValueAsExpected(workbook,
-				cell) == null ? "" : getValueAsExpected(
-				workbook, cell));
+			String name = (String) (getValueAsExpected(workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
 			estimate.setName(name);
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_AREA:
-			double area = (Double) (getValueAsExpected(workbook,
-				cell) == null ? "" : getValueAsExpected(
-				workbook, cell));
+			double area = (Double) (getValueAsExpected(workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
 			shape.setArea(area);
 			estimate.setShape(shape);
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_VOLUME:
-			double volume = (Double) (getValueAsExpected(workbook,
-				cell) == null ? "" : getValueAsExpected(
-				workbook, cell));
+			double volume = (Double) (getValueAsExpected(workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
 			shape.setVolume(volume);
 			estimate.setShape(shape);
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CONCRETE:
-			boolean concrete = getEstimateBooleanFromExcel(
-				workbook, cell);
+			boolean concrete = getEstimateBooleanFromExcel(workbook, cell);
 			if (concrete) {
 			    estimateTypes.add(EstimateType.CONCRETE);
 			    estimate.setEstimateTypes(estimateTypes);
@@ -332,8 +318,7 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB:
-			boolean chb = getEstimateBooleanFromExcel(workbook,
-				cell);
+			boolean chb = getEstimateBooleanFromExcel(workbook, cell);
 			if (chb) {
 			    estimateTypes.add(EstimateType.MASONRY_CHB);
 			    estimate.setEstimateTypes(estimateTypes);
@@ -341,18 +326,15 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_LAYING:
-			boolean chbLaying = getEstimateBooleanFromExcel(
-				workbook, cell);
+			boolean chbLaying = getEstimateBooleanFromExcel(workbook, cell);
 			if (chbLaying) {
-			    estimateTypes
-				    .add(EstimateType.MASONRY_BLOCK_LAYING);
+			    estimateTypes.add(EstimateType.MASONRY_BLOCK_LAYING);
 			    estimate.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_PLASTERING:
-			boolean plaster = getEstimateBooleanFromExcel(workbook,
-				cell);
+			boolean plaster = getEstimateBooleanFromExcel(workbook, cell);
 			if (plaster) {
 			    estimateTypes.add(EstimateType.MASONRY_PLASTERING);
 			    estimate.setEstimateTypes(estimateTypes);
@@ -360,15 +342,13 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOUNDATION_HEIGHT:
-			double foundation = (Double) (getValueAsExpected(
-				workbook, cell) == null ? ""
+			double foundation = (Double) (getValueAsExpected(workbook, cell) == null ? ""
 				: getValueAsExpected(workbook, cell));
 			estimate.setChbFoundationHeight(foundation);
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CHB_FOOTING:
-			boolean footing = getEstimateBooleanFromExcel(workbook,
-				cell);
+			boolean footing = getEstimateBooleanFromExcel(workbook, cell);
 			if (footing) {
 			    estimateTypes.add(EstimateType.MASONRY_CHB_FOOTING);
 			    estimate.setEstimateTypes(estimateTypes);
@@ -376,27 +356,23 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH:
-			double footingLength = (Double) (getValueAsExpected(
-				workbook, cell) == null ? ""
+			double footingLength = (Double) (getValueAsExpected(workbook, cell) == null ? ""
 				: getValueAsExpected(workbook, cell));
 			shape.setFootingLength(footingLength);
 			estimate.setShape(shape);
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MR_CHB:
-			boolean mrCHB = getEstimateBooleanFromExcel(workbook,
-				cell);
+			boolean mrCHB = getEstimateBooleanFromExcel(workbook, cell);
 			if (mrCHB) {
-			    estimateTypes
-				    .add(EstimateType.METAL_REINFORCEMENT_CHB);
+			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_CHB);
 			    estimate.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_REMARKS:
-			String remarks = (String) (getValueAsExpected(workbook,
-				cell) == null ? "" : getValueAsExpected(
-				workbook, cell));
+			String remarks = (String) (getValueAsExpected(workbook, cell) == null ? ""
+				: getValueAsExpected(workbook, cell));
 			estimate.setRemarks(remarks);
 			continue;
 
@@ -464,6 +440,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimateConcrete(estimate, shape);
 	}
 
+	estimate.setUuid(UUID.randomUUID());
 	EstimationOutputRowBean row = new EstimationOutputRowBean(estimate);
 	estimate.setResultRow(row);
     }
@@ -478,21 +455,16 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Get the dimension key.
 	// And the footing mixes.
-	TableCHBFootingDimensions chbFooting = estimate
-		.getChbFootingDimensions();
-	String mixClass = estimate.getEstimationClass().getConcreteProportion()
-		.getMixClass();
+	TableCHBFootingDimensions chbFooting = estimate.getChbFootingDimensions();
+	String mixClass = estimate.getEstimationClass().getConcreteProportion().getMixClass();
 
 	// Get the footing mixture given the mix class and footing dimensions.
-	TableCHBFootingMixture footingMixture = getCHBFootingMixture(
-		chbFooting, mixClass);
+	TableCHBFootingMixture footingMixture = getCHBFootingMixture(chbFooting, mixClass);
 
 	// Get thickness and width.
 	// TODO Do conversion for other calculations also.
-	double footingThickness = convertToMeter(chbFooting.getThickessUnit(),
-		chbFooting.getThickness());
-	double footingWidth = convertToMeter(chbFooting.getWidthUnit(),
-		chbFooting.getWidth());
+	double footingThickness = convertToMeter(chbFooting.getThickessUnit(), chbFooting.getThickness());
+	double footingWidth = convertToMeter(chbFooting.getWidthUnit(), chbFooting.getWidth());
 
 	// TODO Optimize below code.
 	// getLength(estimate) is called somewhere else in this class.
@@ -505,8 +477,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double gravel = footingVolume * footingMixture.getPartGravel();
 
 	// Put the results.
-	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(
-		cement, gravel, sand, chbFooting, footingMixture);
+	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(cement,
+		gravel, sand, chbFooting, footingMixture);
 
 	// Set the result map of the CHB footing estimate.
 	estimate.setResultCHBFootingEstimate(footingResults);
@@ -520,14 +492,12 @@ public class EstimateServiceImpl implements EstimateService {
      * @param prop
      * @return
      */
-    private TableCHBFootingMixture getCHBFootingMixture(
-	    TableCHBFootingDimensions chbFooting, String mixClass) {
+    private TableCHBFootingMixture getCHBFootingMixture(TableCHBFootingDimensions chbFooting,
+	    String mixClass) {
 
-	for (TableCHBFootingMixture footingMix : TableCHBFootingMixture.class
-		.getEnumConstants()) {
+	for (TableCHBFootingMixture footingMix : TableCHBFootingMixture.class.getEnumConstants()) {
 
-	    TableCHBFootingDimensions footing = footingMix
-		    .getFootingDimensions();
+	    TableCHBFootingDimensions footing = footingMix.getFootingDimensions();
 	    String footingClass = footingMix.getMixClass();
 
 	    if (chbFooting == footing && footingClass.equals(mixClass)) {
@@ -544,8 +514,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param length
      * @param area
      */
-    private double minusAreaBelowGround(Estimate estimate, double length,
-	    double area) {
+    private double minusAreaBelowGround(Estimate estimate, double length, double area) {
 
 	// If the unit is not meter,
 	// convert it.
@@ -569,8 +538,8 @@ public class EstimateServiceImpl implements EstimateService {
      * @param length
      * @param area
      */
-    private double addAreaTopSide(Estimate estimate, Shape shape,
-	    double shapeArea, double length, double area) {
+    private double addAreaTopSide(Estimate estimate, Shape shape, double shapeArea, double length,
+	    double area) {
 
 	// Get the thickness.
 	double thickness = shape.getVolume() / shapeArea;
@@ -613,14 +582,12 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Find the appropriate plaster mixture
 	// given this proportion.
-	TableConcreteProportion proportion = estimate.getEstimationClass()
-		.getConcreteProportion();
+	TableConcreteProportion proportion = estimate.getEstimationClass().getConcreteProportion();
 	String proportionMixClass = proportion.getMixClass();
 
 	// Find the plaster mix.
 	TablePlasterMixture plasterMixture = TablePlasterMixture.CLASS_A;
-	for (TablePlasterMixture plasterMix : TablePlasterMixture.class
-		.getEnumConstants()) {
+	for (TablePlasterMixture plasterMix : TablePlasterMixture.class.getEnumConstants()) {
 
 	    String plasterMixClass = plasterMix.getMixClass();
 	    if (plasterMixClass.equals(proportionMixClass)) {
@@ -651,10 +618,8 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Prepare needed arguments.
 	TableCHBDimensions chb = estimate.getChbDimensions();
-	TableConcreteProportion proportion = estimate.getEstimationClass()
-		.getConcreteProportion();
-	TableCHBLayingMixture chbLayingMix = getCHBLayingMixture(chb,
-		proportion);
+	TableConcreteProportion proportion = estimate.getEstimationClass().getConcreteProportion();
+	TableCHBLayingMixture chbLayingMix = getCHBLayingMixture(chb, proportion);
 
 	// Get the inputs.
 	double area = shape.getArea();
@@ -666,8 +631,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double sandNeeded = area * sand;
 
 	// Set the results.
-	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(
-		chb, chbLayingMix, proportion, bagsNeeded, sandNeeded);
+	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(chb,
+		chbLayingMix, proportion, bagsNeeded, sandNeeded);
 	estimate.setResultCHBLayingEstimate(layingResults);
     }
 
@@ -684,16 +649,14 @@ public class EstimateServiceImpl implements EstimateService {
 	String proportionMixClass = proportion.getMixClass();
 
 	// Loop through all block laying mixtures.
-	for (TableCHBLayingMixture mix : TableCHBLayingMixture.class
-		.getEnumConstants()) {
+	for (TableCHBLayingMixture mix : TableCHBLayingMixture.class.getEnumConstants()) {
 
 	    String layingMixClass = mix.getMixClass();
 	    TableCHBDimensions chbFromLaying = mix.getChb();
 
 	    // Get correct CHB,
 	    // and correct concrete proportion.
-	    if (layingMixClass.equals(proportionMixClass)
-		    && chbFromLaying == chb) {
+	    if (layingMixClass.equals(proportionMixClass) && chbFromLaying == chb) {
 		return mix;
 	    }
 	}
@@ -709,8 +672,8 @@ public class EstimateServiceImpl implements EstimateService {
     private void estimateConcrete(Estimate estimate, Shape shape) {
 
 	// Now, compute the estimated concrete.
-	ConcreteEstimateResults concreteResults = getConcreteEstimateResults(
-		estimate.getEstimationClass().getConcreteProportion(), shape);
+	ConcreteEstimateResults concreteResults = getConcreteEstimateResults(estimate
+		.getEstimationClass().getConcreteProportion(), shape);
 
 	// Set the results.
 	estimate.setResultConcreteEstimate(concreteResults);
@@ -820,8 +783,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double estSand = volume * sand;
 	double estGravel = volume * gravel;
 
-	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(
-		estCement40kg, estCement50kg, estSand, estGravel);
+	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(estCement40kg,
+		estCement50kg, estSand, estGravel);
 
 	return concreteResults;
     }
@@ -835,9 +798,8 @@ public class EstimateServiceImpl implements EstimateService {
      * @param formulaInputUnits
      * @return
      */
-    private Expression replaceVariablesWithInputs(String formula,
-	    Map<String, String> formulaInputs, List<String> variableNames,
-	    Map<String, CommonLengthUnit> formulaInputUnits) {
+    private Expression replaceVariablesWithInputs(String formula, Map<String, String> formulaInputs,
+	    List<String> variableNames, Map<String, CommonLengthUnit> formulaInputUnits) {
 	Expression mathExp = new Expression(formula);
 
 	// Loop through each variable and replace each variable.
@@ -845,9 +807,8 @@ public class EstimateServiceImpl implements EstimateService {
 
 	    // Get the value and the unit.
 	    String rawValue = formulaInputs.get(variable);
-	    BigDecimal value = (rawValue == null || !StringUtils
-		    .isNumeric(rawValue)) ? new BigDecimal(0.0)
-		    : new BigDecimal(rawValue);
+	    BigDecimal value = (rawValue == null || !StringUtils.isNumeric(rawValue)) ? new BigDecimal(
+		    0.0) : new BigDecimal(rawValue);
 	    CommonLengthUnit lengthUnit = formulaInputUnits.get(variable);
 
 	    // If the unit is not meter,
@@ -869,8 +830,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param value
      * @return
      */
-    private BigDecimal convertToMeter(CommonLengthUnit lengthUnit,
-	    BigDecimal value) {
+    private BigDecimal convertToMeter(CommonLengthUnit lengthUnit, BigDecimal value) {
 	double meterConvert = lengthUnit.conversionToMeter();
 	double convertedValue = meterConvert * value.doubleValue();
 	value = new BigDecimal(convertedValue);

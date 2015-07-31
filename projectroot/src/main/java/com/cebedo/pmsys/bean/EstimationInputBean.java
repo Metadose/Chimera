@@ -7,6 +7,8 @@ import com.cebedo.pmsys.model.Project;
 
 public class EstimationInputBean {
 
+    private String name;
+    private String remarks;
     private Project project;
     private TableEstimationAllowance estimationAllowance;
     private MultipartFile estimationFile;
@@ -31,8 +33,7 @@ public class EstimationInputBean {
 	return estimationAllowance;
     }
 
-    public void setEstimationAllowance(
-	    TableEstimationAllowance estimationAllowance) {
+    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
 
@@ -42,6 +43,22 @@ public class EstimationInputBean {
 
     public void setEstimationFile(MultipartFile estimationFile) {
 	this.estimationFile = estimationFile;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    public String getRemarks() {
+	return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+	this.remarks = remarks;
     }
 
 }
