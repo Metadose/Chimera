@@ -1,2 +1,3 @@
 # PracticeRepo
-Just another repo where I can practice new stuff and store some garbage.
+
+![alt text](https://github.com/VicCebedo/DBPylon/blob/master/docs/sysarchitecture.jpg)
