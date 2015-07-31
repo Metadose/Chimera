@@ -327,6 +327,7 @@
 		    <version>2.1.0</version>
 		</dependency>
 		
+		<!-- Not sure if still in use -->
 		<!-- Jackson JSON Result -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -368,27 +369,6 @@
 			<version>${hibernate-valid}</version>
 		</dependency>
 		
-		<!-- For wolfram alpha -->
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-		</dependency>
 	</dependencies>
     <build>
         <plugins>
