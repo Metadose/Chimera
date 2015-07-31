@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
@@ -44,7 +43,6 @@ public class Staff implements Serializable {
     public static final String SUB_MODULE_PROFILE = "profile";
 
     private long id;
-    private String thumbnailURL;
     private String prefix;
     private String firstName;
     private String middleName;
@@ -58,7 +56,6 @@ public class Staff implements Serializable {
     private String contactNumber;
     private Set<ProjectFile> files;
     private Set<Team> teams;
-    private Set<StaffFieldAssignment> fieldAssignments;
     private Company company;
     private SystemUser user;
     private double wage;
@@ -80,15 +77,6 @@ public class Staff implements Serializable {
 
     public void setId(long id) {
 	this.id = id;
-    }
-
-    @Column(name = "thumbnail_url", length = 255)
-    public String getThumbnailURL() {
-	return thumbnailURL;
-    }
-
-    public void setThumbnailURL(String thumbnailURL) {
-	this.thumbnailURL = thumbnailURL;
     }
 
     @Column(name = "name_prefix", length = 8)
@@ -212,15 +200,6 @@ public class Staff implements Serializable {
 
     public void setTeams(Set<Team> teams) {
 	this.teams = teams;
-    }
-
-    @OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".staff", cascade = CascadeType.REMOVE)
-    public Set<StaffFieldAssignment> getFieldAssignments() {
-	return fieldAssignments;
-    }
-
-    public void setFieldAssignments(Set<StaffFieldAssignment> staffFieldAssignments) {
-	this.fieldAssignments = staffFieldAssignments;
     }
 
     @ManyToOne

@@ -216,10 +216,22 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     @Transactional
-    public void createAllStaffInList(List<Staff> staffList) {
+    public List<Staff> createOrGetStaffInList(List<Staff> staffList) {
+	List<Staff> refinedStaff = new ArrayList<Staff>();
 	for (Staff staff : staffList) {
+
+	    // Search by name.
+	    // If the staff already exists.
+	    // Use staff in DB instead of the one from Excel.
+	    Staff staffByName = this.staffDAO.getStaffByName(staff);
+	    if (staffByName != null) {
+		refinedStaff.add(staffByName);
+		continue;
+	    }
 	    create(staff);
+	    refinedStaff.add(staff);
 	}
+	return refinedStaff;
     }
 
     /**

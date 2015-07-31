@@ -14,45 +14,45 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 @Service
 public class AuditLogServiceImpl implements AuditLogService {
 
-	private AuthHelper authHelper = new AuthHelper();
-	private AuditLogDAO auditLogDAO;
+    private AuthHelper authHelper = new AuthHelper();
+    private AuditLogDAO auditLogDAO;
 
-	public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
-		this.auditLogDAO = auditLogDAO;
-	}
+    public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
+	this.auditLogDAO = auditLogDAO;
+    }
 
-	@Override
-	@Transactional
-	public void create(AuditLog auditLog) {
-		this.auditLogDAO.create(auditLog);
-	}
+    @Override
+    @Transactional
+    public void create(AuditLog auditLog) {
+	this.auditLogDAO.create(auditLog);
+    }
 
-	@Override
-	@Transactional
-	public AuditLog getByID(long id) {
-		AuditLog obj = this.auditLogDAO.getByID(id);
-		if (this.authHelper.isActionAuthorized(obj)) {
-			return obj;
-		}
-		return new AuditLog();
+    @Override
+    @Transactional
+    public AuditLog getByID(long id) {
+	AuditLog obj = this.auditLogDAO.getByID(id);
+	if (this.authHelper.isActionAuthorized(obj)) {
+	    return obj;
 	}
+	return new AuditLog();
+    }
 
-	@Override
-	@Transactional
-	public void delete(long id) {
-		AuditLog obj = this.auditLogDAO.getByID(id);
-		if (this.authHelper.isActionAuthorized(obj)) {
-			this.auditLogDAO.delete(id);
-		}
+    @Override
+    @Transactional
+    public void delete(long id) {
+	AuditLog obj = this.auditLogDAO.getByID(id);
+	if (this.authHelper.isActionAuthorized(obj)) {
+	    this.auditLogDAO.delete(id);
 	}
+    }
 
-	@Override
-	@Transactional
-	public List<AuditLog> list() {
-		AuthenticationToken token = this.authHelper.getAuth();
-		if (token.isSuperAdmin()) {
-			return this.auditLogDAO.list(null);
-		}
-		return this.auditLogDAO.list(token.getCompany().getId());
+    @Override
+    @Transactional
+    public List<AuditLog> list() {
+	AuthenticationToken token = this.authHelper.getAuth();
+	if (token.isSuperAdmin()) {
+	    return this.auditLogDAO.list(null);
 	}
+	return this.auditLogDAO.list(token.getCompany().getId());
+    }
 }

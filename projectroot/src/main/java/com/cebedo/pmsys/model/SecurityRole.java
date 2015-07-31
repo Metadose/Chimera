@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+@Deprecated
 @Entity
 @Table(name = SecurityRole.TABLE_NAME)
 public class SecurityRole implements Serializable {

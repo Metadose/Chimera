@@ -47,25 +47,23 @@ public class Project implements Serializable {
     private String name;
     private int type;
     private int status;
-    private Set<ManagerAssignment> managerAssignments;
     private Set<Team> assignedTeams;
     private Set<FieldAssignment> assignedFields;
     private Set<Staff> assignedStaff;
-    private String thumbnailURL;
     private String location;
     private String notes;
     private Set<Milestone> milestones;
     private Set<Task> assignedTasks;
+    private Company company;
+
+    private Set<ManagerAssignment> managerAssignments;
     private Set<ProjectFile> files;
     private Set<Photo> photos;
-    private Company company;
 
     /**
      * Bean-backed forms.
      */
     private long[] staffIDs;
-
-    // private Set<Subcontractor> subcontractor;
 
     public Project() {
 	;
@@ -212,15 +210,6 @@ public class Project implements Serializable {
 
     public void setAssignedTasks(Set<Task> assignedTasks) {
 	this.assignedTasks = assignedTasks;
-    }
-
-    @Column(name = "thumbnail_url", length = 255)
-    public String getThumbnailURL() {
-	return thumbnailURL;
-    }
-
-    public void setThumbnailURL(String thumbnailURL) {
-	this.thumbnailURL = thumbnailURL;
     }
 
     @Column(name = "location", length = 108)

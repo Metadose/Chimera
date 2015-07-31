@@ -114,7 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
 		proj.getCompany());
 
 	// Commit all in staff list.
-	this.staffService.createAllStaffInList(staffList);
+	staffList = this.staffService.createOrGetStaffInList(staffList);
 
 	// Assign all staff to project.
 	assignAllStaffToProject(proj, staffList);

@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+@Deprecated
 @Entity
 @Table(name = ProjectFile.TABLE_NAME)
 public class ProjectFile implements Serializable {
@@ -43,8 +44,8 @@ public class ProjectFile implements Serializable {
 	;
     }
 
-    public ProjectFile(Staff staff, String fileLocation, Project proj,
-	    String originalFilename, String descript, long size, Date uploaded) {
+    public ProjectFile(Staff staff, String fileLocation, Project proj, String originalFilename,
+	    String descript, long size, Date uploaded) {
 	this.setUploader(staff);
 	this.setLocation(fileLocation);
 	this.setProject(proj);
@@ -54,8 +55,8 @@ public class ProjectFile implements Serializable {
 	this.setDateUploaded(uploaded);
     }
 
-    public ProjectFile(Staff staff, String fileLocation,
-	    String originalFilename, String descript, long size, Date uploaded) {
+    public ProjectFile(Staff staff, String fileLocation, String originalFilename, String descript,
+	    long size, Date uploaded) {
 	this.setUploader(staff);
 	this.setLocation(fileLocation);
 	this.setName(originalFilename);

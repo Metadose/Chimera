@@ -6,6 +6,8 @@ import java.util.UUID;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 
+// TODO Create an enum for this.
+@Deprecated
 public class MaterialCategory implements IDomainObject {
 
     private static final long serialVersionUID = 1251896191084042909L;
@@ -46,8 +48,7 @@ public class MaterialCategory implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_MATERIAL_CATEGORY,
-		this.company.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_MATERIAL_CATEGORY, this.company.getId(), this.uuid);
     }
 
     public Company getCompany() {
@@ -83,8 +84,7 @@ public class MaterialCategory implements IDomainObject {
     }
 
     public static String constructPattern(Company company2) {
-	return String.format(RedisKeyRegistry.KEY_MATERIAL_CATEGORY,
-		company2.getId(), "*");
+	return String.format(RedisKeyRegistry.KEY_MATERIAL_CATEGORY, company2.getId(), "*");
     }
 
     public String getUnitKey() {
@@ -97,8 +97,8 @@ public class MaterialCategory implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof MaterialCategory ? ((MaterialCategory) obj)
-		.getKey().equals(getKey()) : false;
+	return obj instanceof MaterialCategory ? ((MaterialCategory) obj).getKey().equals(getKey())
+		: false;
     }
 
     @Override

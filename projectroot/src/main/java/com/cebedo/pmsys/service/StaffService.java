@@ -158,6 +158,6 @@ public interface StaffService {
 
     public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company);
 
-    public void createAllStaffInList(List<Staff> staffList);
+    public List<Staff> createOrGetStaffInList(List<Staff> staffList);
 
 }

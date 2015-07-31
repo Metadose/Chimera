@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 
+@Deprecated
 @Entity
 @Table(name = ManagerAssignment.TABLE_NAME)
 @AssociationOverrides({

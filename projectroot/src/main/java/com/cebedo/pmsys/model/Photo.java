@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+@Deprecated
 @Entity
 @Table(name = Photo.TABLE_NAME)
 public class Photo implements Serializable {
@@ -40,9 +41,8 @@ public class Photo implements Serializable {
 	;
     }
 
-    public Photo(Staff staff, String fileLocation, Project proj,
-	    String originalFilename, String descript, long size, Date uploaded,
-	    Company company) {
+    public Photo(Staff staff, String fileLocation, Project proj, String originalFilename,
+	    String descript, long size, Date uploaded, Company company) {
 	this.setUploader(staff);
 	this.setLocation(fileLocation);
 	this.setProject(proj);

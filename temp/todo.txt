@@ -40,33 +40,18 @@ In project -> timeline, load only specific date range
 
 Hide/unhide task/reminder/delivery in project->calendar
 
-In managers of projects, list only those who have user accounts
-
 In payroll, display staff's wage per day.
 
 update maven dependencies
 
-As POC, we get their data. NDA signed. Then implement their data.
-
 ************ REMOVE CLEAR CACHE LINK
 
-*********** REMOVE POPULATE
 
 sa taskEdit.jsp ug teamEdit.jsp nag-dobli ang box-body
 
-remove cache 15mins kill, persist cache forever
-
 Put max lengths in fields?
 
-Dual boot the laptop: dev/deployment. Arch/win7
-
-Allowance %, pila ka percnt ipalapas ang estimate? Usual kay 8-10%
-
-Directly input area or volume of a wall or slab
-
 Brosures for marketing
-
-Remove upload foto of project??
 
 Provide support via Irc, put irc to clients
 
@@ -74,13 +59,9 @@ Nver put font size in pixels
 
 Gremlins.js, fuzz testing. In moderngrade repo
 
-Make 0.016 config plastering kay what if multiple layers of plaster
-
-gitterchat instead of irc for support?
-
 remove table-responsive classes
 
-Mass uploader of estimates, staff, staff attendances
+more Mass uploaders (magamit pod for new clients, mass upload ilang data)
 
 Remove "approver" in payroll?
 

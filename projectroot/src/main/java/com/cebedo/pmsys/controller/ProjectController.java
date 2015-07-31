@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
@@ -758,67 +756,6 @@ public class ProjectController {
 
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_LIST;
-    }
-
-    /**
-     * Delete a project's profile picture.
-     * 
-     * @param projectID
-     * @return
-     * @throws IOException
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.PROFILE + "/" + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
-    public ModelAndView deleteProjectProfile(HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) throws IOException {
-	// Get project id.
-	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	long projectID = proj.getId();
-
-	// Do service.
-	// Get response.
-	String response = this.photoService.deleteProfilePicOfProject(projectID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	// Clear session var.
-	// Then return.
-	status.setComplete();
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID);
-    }
-
-    /**
-     * Upload a project profile pic.
-     * 
-     * @param mBean
-     * @return
-     * @throws IOException
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + SystemConstants.PROFILE, method = RequestMethod.POST)
-    public String uploadProfile(HttpSession session, @RequestParam(ATTR_FILE) MultipartFile file,
-	    SessionStatus status, RedirectAttributes redirectAttrs) throws IOException {
-
-	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	long projectID = proj.getId();
-	String response = "";
-
-	// If file is not empty.
-	// Get response.
-	if (!file.isEmpty()) {
-	    response = this.photoService.uploadProfilePicOfProject(file, projectID);
-	} else {
-	    // TODO Handle this scenario.
-	}
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
     }
 
     /**

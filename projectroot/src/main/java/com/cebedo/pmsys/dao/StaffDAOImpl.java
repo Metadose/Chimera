@@ -44,8 +44,8 @@ public class StaffDAOImpl implements StaffDAO {
     @Override
     public Staff getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session,
-		Staff.class, Staff.PROPERTY_ID, id).uniqueResult();
+	Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session, Staff.class, Staff.PROPERTY_ID,
+		id).uniqueResult();
 	return staff;
     }
 
@@ -54,7 +54,6 @@ public class StaffDAOImpl implements StaffDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 	Staff staff = (Staff) session.load(Staff.class, new Long(id));
 	Hibernate.initialize(staff.getTeams());
-	Hibernate.initialize(staff.getFieldAssignments());
 
 	Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
 	for (ManagerAssignment assignment : managerAssignment) {
@@ -100,8 +99,7 @@ public class StaffDAOImpl implements StaffDAO {
 	String hql = "FROM " + Staff.class.getName();
 	if (companyID != null) {
 	    hql += " WHERE ";
-	    hql += Company.COLUMN_PRIMARY_KEY + "=:"
-		    + Company.COLUMN_PRIMARY_KEY;
+	    hql += Company.COLUMN_PRIMARY_KEY + "=:" + Company.COLUMN_PRIMARY_KEY;
 	}
 
 	Query query = session.createQuery(hql);
@@ -124,8 +122,7 @@ public class StaffDAOImpl implements StaffDAO {
 	String hql = "FROM " + Staff.class.getName();
 	if (companyID != null) {
 	    hql += " WHERE ";
-	    hql += Company.COLUMN_PRIMARY_KEY + "=:"
-		    + Company.COLUMN_PRIMARY_KEY;
+	    hql += Company.COLUMN_PRIMARY_KEY + "=:" + Company.COLUMN_PRIMARY_KEY;
 	}
 
 	// Set params.
@@ -138,7 +135,6 @@ public class StaffDAOImpl implements StaffDAO {
 	for (Staff staff : staffList) {
 	    Hibernate.initialize(staff.getAssignedManagers());
 	    Hibernate.initialize(staff.getTasks());
-	    Hibernate.initialize(staff.getFieldAssignments());
 	}
 	return staffList;
     }
@@ -152,9 +148,8 @@ public class StaffDAOImpl implements StaffDAO {
     @Override
     public void unassignProjectManager(long projectID, long staffID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	SQLQuery query = session.createSQLQuery("DELETE FROM "
-		+ ManagerAssignment.TABLE_NAME + " WHERE "
-		+ Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
+	SQLQuery query = session.createSQLQuery("DELETE FROM " + ManagerAssignment.TABLE_NAME
+		+ " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
 		+ Staff.COLUMN_PRIMARY_KEY + " = " + staffID);
 	query.executeUpdate();
     }
@@ -162,9 +157,8 @@ public class StaffDAOImpl implements StaffDAO {
     @Override
     public void unassignAllProjectManagers(long projectID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	SQLQuery query = session.createSQLQuery("DELETE FROM "
-		+ ManagerAssignment.TABLE_NAME + " WHERE "
-		+ Project.COLUMN_PRIMARY_KEY + " = " + projectID);
+	SQLQuery query = session.createSQLQuery("DELETE FROM " + ManagerAssignment.TABLE_NAME
+		+ " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID);
 	query.executeUpdate();
     }
 
@@ -173,11 +167,9 @@ public class StaffDAOImpl implements StaffDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 	// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
 	// Rather than ObjectAssignment.COLUMN_NAME.
-	Query query = session.createQuery("DELETE FROM "
-		+ StaffTeamAssignment.class.getName() + " WHERE "
-		+ Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY
-		+ " AND " + Staff.COLUMN_PRIMARY_KEY + "=:"
-		+ Staff.COLUMN_PRIMARY_KEY);
+	Query query = session.createQuery("DELETE FROM " + StaffTeamAssignment.class.getName()
+		+ " WHERE " + Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY + " AND "
+		+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
 	query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
 	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
 	query.executeUpdate();
@@ -186,9 +178,8 @@ public class StaffDAOImpl implements StaffDAO {
     @Override
     public void unassignAllTeams(long staffID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM "
-		+ StaffTeamAssignment.class.getName() + " WHERE "
-		+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
+	Query query = session.createQuery("DELETE FROM " + StaffTeamAssignment.class.getName()
+		+ " WHERE " + Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
 	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
 	query.executeUpdate();
     }
@@ -218,8 +209,8 @@ public class StaffDAOImpl implements StaffDAO {
 	// Assign projection criteria.
 	criteria.setProjection(Projections.distinct(projList));
 	Object[] staffName = (Object[]) criteria.uniqueResult();
-	String output = staffName[0] + " " + staffName[1] + " " + staffName[2]
-		+ " " + staffName[3] + " " + staffName[4];
+	String output = staffName[0] + " " + staffName[1] + " " + staffName[2] + " " + staffName[3]
+		+ " " + staffName[4];
 	return output;
     }
 
@@ -228,8 +219,26 @@ public class StaffDAOImpl implements StaffDAO {
     @Cacheable(value = "searchStaffCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless = "#result.isEmpty()")
     public List<Staff> listStaffFromCache(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session,
-		Staff.class.getName(), companyID).list();
+	List<Staff> list = this.daoHelper.getSelectQueryFilterCompany(session, Staff.class.getName(),
+		companyID).list();
 	return list;
+    }
+
+    @Override
+    public Staff getStaffByName(Staff staff) {
+	String queryStr = "FROM " + Staff.class.getName() + " ";
+	queryStr += "WHERE ";
+	queryStr += Staff.PROPERTY_FIRST_NAME + " =: " + Staff.PROPERTY_FIRST_NAME + " AND ";
+	queryStr += Staff.PROPERTY_MIDDLE_NAME + " =: " + Staff.PROPERTY_MIDDLE_NAME + " AND ";
+	queryStr += Staff.PROPERTY_LAST_NAME + " =: " + Staff.PROPERTY_LAST_NAME + " AND ";
+	queryStr += Staff.PROPERTY_SUFFIX + " =: " + Staff.PROPERTY_SUFFIX;
+
+	Session session = this.sessionFactory.getCurrentSession();
+	Query query = session.createQuery(queryStr);
+	query.setParameter(Staff.PROPERTY_FIRST_NAME, staff.getFirstName());
+	query.setParameter(Staff.PROPERTY_MIDDLE_NAME, staff.getMiddleName());
+	query.setParameter(Staff.PROPERTY_LAST_NAME, staff.getLastName());
+	query.setParameter(Staff.PROPERTY_SUFFIX, staff.getSuffix());
+	return (Staff) query.uniqueResult();
     }
 }

@@ -31,7 +31,6 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -1028,53 +1027,6 @@ public class MessageHelper {
 	// Construct the message then send.
 	Map<String, Object> messageMap = constructAction(FieldAssignment.OBJECT_LABEL, action,
 		fieldAssignment.getField().getId(), fieldAssignment.getLabel(), notificationRecipients);
-	sendMessageMap(messageMap);
-    }
-
-    public void sendAssignUnassign(AuditAction action, Task task, TaskFieldAssignment taskField) {
-	List<Long> notificationRecipients = new ArrayList<Long>();
-
-	// Notify all staff involved in this task.
-	notificationRecipients = addNotificationRecipients(notificationRecipients, task.getStaff());
-
-	// Notify all staff in teams in this task.
-	for (Team team : task.getTeams()) {
-	    notificationRecipients = addNotificationRecipients(notificationRecipients, team.getMembers());
-	}
-
-	// Construct the message then send.
-	Map<String, Object> messageMap = constructAssignUnassign(Task.OBJECT_NAME, action, task.getId(),
-		task.getTitle(), notificationRecipients, Field.OBJECT_NAME, taskField.getLabel(),
-		taskField.getField().getId());
-	sendMessageMap(messageMap);
-    }
-
-    public void sendActionWithField(AuditAction action, Task task, TaskFieldAssignment fieldAssignment) {
-	List<Long> notificationRecipients = new ArrayList<Long>();
-
-	// Notify all staff involved in this task.
-	notificationRecipients = addNotificationRecipients(notificationRecipients, task.getStaff());
-
-	// Notify all staff in teams in this task.
-	for (Team team : task.getTeams()) {
-	    notificationRecipients = addNotificationRecipients(notificationRecipients, team.getMembers());
-	}
-
-	// Construct the message then send.
-	Map<String, Object> messageMap = constructAction(TaskFieldAssignment.OBJECT_LABEL, action,
-		fieldAssignment.getField().getId(), fieldAssignment.getLabel(), notificationRecipients);
-	sendMessageMap(messageMap);
-    }
-
-    public void sendActionWithField(AuditAction action, Staff staff, long fieldID, String label) {
-	List<Long> notificationRecipients = new ArrayList<Long>();
-
-	// Add recipients.
-	notificationRecipients = addNotificationRecipient(notificationRecipients, staff);
-
-	// Construct the message then send.
-	Map<String, Object> messageMap = constructAction(TaskFieldAssignment.OBJECT_LABEL, action,
-		fieldID, label, notificationRecipients);
 	sendMessageMap(messageMap);
     }
 

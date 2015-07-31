@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.model.Company;
 
+@Deprecated
 public class Unit implements IDomainObject {
 
     private static final long serialVersionUID = -4796353524486144693L;
@@ -45,8 +46,7 @@ public class Unit implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_UNITS, this.company.getId(),
-		this.uuid);
+	return String.format(RedisKeyRegistry.KEY_UNITS, this.company.getId(), this.uuid);
     }
 
     public UUID getUuid() {
@@ -87,8 +87,7 @@ public class Unit implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof Unit ? ((Unit) obj).getKey().equals(getKey())
-		: false;
+	return obj instanceof Unit ? ((Unit) obj).getKey().equals(getKey()) : false;
     }
 
     @Override

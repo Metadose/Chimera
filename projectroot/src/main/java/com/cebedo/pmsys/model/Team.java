@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.enums.PayrollType;
 
+@Deprecated
 @Entity
 @Table(name = Team.TABLE_NAME)
 public class Team implements Serializable {

@@ -249,7 +249,6 @@
                 <beans:value>com.cebedo.pmsys.model.Staff</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.StaffTeamAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.StaffFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Team</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.TeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Task</beans:value>
@@ -258,7 +257,6 @@
                 <beans:value>com.cebedo.pmsys.model.Photo</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.TaskTeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.TaskStaffAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.TaskFieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Company</beans:value>
                 <beans:value>com.cebedo.pmsys.model.SecurityAccess</beans:value>
@@ -283,7 +281,6 @@
     <beans:bean id="projectService" class="com.cebedo.pmsys.service.impl.ProjectServiceImpl">
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
-        <beans:property name="notificationZSetRepo" ref="notificationZSetRepo"></beans:property>
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
     </beans:bean>
     
@@ -314,14 +311,6 @@
         <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
-    </beans:bean>
-    
-    <!-- Supplier -->
-    <beans:bean id="supplierDAO" class="com.cebedo.pmsys.dao.SupplierDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="supplierService" class="com.cebedo.pmsys.service.impl.SupplierServiceImpl">
-        <beans:property name="supplierDAO" ref="supplierDAO"></beans:property>
     </beans:bean>
     
     <!-- Milestone -->
@@ -374,8 +363,6 @@
     <beans:bean id="fieldService" class="com.cebedo.pmsys.service.impl.FieldServiceImpl">
         <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="taskDAO" ref="taskDAO"></beans:property>
-        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
     </beans:bean>
     
     <!-- Project File -->
@@ -428,7 +415,6 @@
     <beans:bean id="photoService" class="com.cebedo.pmsys.service.impl.PhotoServiceImpl">
         <beans:property name="photoDAO" ref="photoDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>

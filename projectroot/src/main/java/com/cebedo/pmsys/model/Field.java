@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.model.assignment.StaffFieldAssignment;
-import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 
 @Entity
 @Table(name = Field.TABLE_NAME)
@@ -34,8 +32,6 @@ public class Field implements Serializable {
     private long id;
     private String name;
     private Set<FieldAssignment> fieldAssignments;
-    private Set<TaskFieldAssignment> tasks;
-    private Set<StaffFieldAssignment> staffFieldAssignments;
 
     public Field() {
 	;
@@ -72,25 +68,6 @@ public class Field implements Serializable {
 
     public void setFieldAssignments(Set<FieldAssignment> fieldAssignments) {
 	this.fieldAssignments = fieldAssignments;
-    }
-
-    @OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)
-    public Set<TaskFieldAssignment> getTasks() {
-	return tasks;
-    }
-
-    public void setTasks(Set<TaskFieldAssignment> tasks) {
-	this.tasks = tasks;
-    }
-
-    @OneToMany(mappedBy = StaffFieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)
-    public Set<StaffFieldAssignment> getStaffFieldAssignments() {
-	return staffFieldAssignments;
-    }
-
-    public void setStaffFieldAssignments(
-	    Set<StaffFieldAssignment> staffFieldAssignments) {
-	this.staffFieldAssignments = staffFieldAssignments;
     }
 
 }

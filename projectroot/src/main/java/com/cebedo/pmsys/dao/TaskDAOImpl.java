@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -18,7 +17,6 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 
@@ -51,7 +49,6 @@ public class TaskDAOImpl implements TaskDAO {
 	Task task = (Task) session.load(Task.class, new Long(id));
 	Hibernate.initialize(task.getTeams());
 	Hibernate.initialize(task.getStaff());
-	Hibernate.initialize(task.getFields());
 
 	Project proj = task.getProject();
 	Hibernate.initialize(proj);
@@ -157,17 +154,6 @@ public class TaskDAOImpl implements TaskDAO {
 		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:" + TaskStaffAssignment.PROPERTY_TASK_ID);
 	query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, id);
 	query.executeUpdate();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<TaskFieldAssignment> getFieldsByTaskID(long taskID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	String sql = "SELECT * FROM " + TaskFieldAssignment.TABLE_NAME + " WHERE "
-		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY;
-	SQLQuery query = session.createSQLQuery(sql);
-	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
-	return query.list();
     }
 
     @SuppressWarnings("unchecked")

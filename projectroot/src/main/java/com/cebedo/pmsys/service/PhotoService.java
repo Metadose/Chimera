@@ -41,36 +41,6 @@ public interface PhotoService {
 
     public List<Photo> list();
 
-    /**
-     * Upload a project profile pic.
-     * 
-     * @param file
-     * @param projectID
-     * @return
-     * @throws IOException
-     */
-    public String uploadProfilePicOfProject(MultipartFile file, long projectID)
-	    throws IOException;
-
-    /**
-     * Upload a staff profile pic.
-     * 
-     * @param file
-     * @param staffID
-     * @return
-     * @throws IOException
-     */
-    public String uploadProfilePicOfStaff(MultipartFile file, long staffID)
-	    throws IOException;
-
-    /**
-     * Delete a profile pic of a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    public String deleteProfilePicOfProject(long projectID);
-
     public String getNameByID(long id);
 
 }

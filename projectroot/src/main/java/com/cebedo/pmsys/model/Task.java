@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,14 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.cebedo.pmsys.enums.TaskStatus;
-import com.cebedo.pmsys.model.assignment.TaskFieldAssignment;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -55,10 +52,6 @@ public class Task implements Serializable {
     private Set<Team> teams;
     private int status;
     private Company company;
-    @Deprecated
-    private Set<TaskFieldAssignment> fields;
-
-    // private Set<Subcontractor> subcontractor;
 
     public Task() {
 	;
@@ -173,17 +166,6 @@ public class Task implements Serializable {
     @Transient
     public TaskStatus getStatusEnum() {
 	return TaskStatus.of(getStatus());
-    }
-
-    @Deprecated
-    @OneToMany(mappedBy = TaskFieldAssignment.PRIMARY_KEY + ".task", cascade = CascadeType.REMOVE)
-    public Set<TaskFieldAssignment> getFields() {
-	return fields;
-    }
-
-    @Deprecated
-    public void setFields(Set<TaskFieldAssignment> fields) {
-	this.fields = fields;
     }
 
     @Override
