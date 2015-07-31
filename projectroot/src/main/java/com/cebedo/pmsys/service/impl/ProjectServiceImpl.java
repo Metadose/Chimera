@@ -26,7 +26,6 @@ import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
-import com.cebedo.pmsys.domain.Notification;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
@@ -42,7 +41,6 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.ManagerAssignment;
-import com.cebedo.pmsys.repository.NotificationZSetRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -61,7 +59,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
-    private NotificationZSetRepo notificationZSetRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
 
@@ -73,10 +70,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
-    }
-
-    public void setNotificationZSetRepo(NotificationZSetRepo notificationZSetRepo) {
-	this.notificationZSetRepo = notificationZSetRepo;
     }
 
     public void setProjectDAO(ProjectDAO projectDAO) {
@@ -282,11 +275,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getByIDWithAllCollections(long id) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
-	// TODO 86400000 is 24 hours.
 	Long companyID = auth.getCompany() == null ? 0 : auth.getCompany().getId();
-	Set<Notification> notifs = this.notificationZSetRepo.rangeByScore(
-		Notification.constructKey(companyID, auth.getUser().getId(), false),
-		System.currentTimeMillis() - 86400000, System.currentTimeMillis());
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 	if (this.authHelper.isActionAuthorized(project)) {
