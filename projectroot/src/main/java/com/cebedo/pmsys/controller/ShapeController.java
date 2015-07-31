@@ -26,10 +26,8 @@ import com.cebedo.pmsys.service.ShapeService;
 public class ShapeController {
 
     private static final String ATTR_LIST = "shapeList";
-    private static final String JSP_LIST = RedisConstants.OBJECT_SHAPE
-	    + "/shapeList";
-    private static final String JSP_EDIT = RedisConstants.OBJECT_SHAPE
-	    + "/shapeEdit";
+    private static final String JSP_LIST = RedisConstants.OBJECT_SHAPE + "/shapeList";
+    private static final String JSP_EDIT = RedisConstants.OBJECT_SHAPE + "/shapeEdit";
 
     private AuthHelper authHelper = new AuthHelper();
     private ShapeService shapeService;
@@ -48,35 +46,6 @@ public class ShapeController {
     }
 
     /**
-     * Test a formula.
-     * 
-     * @param shape
-     * @param status
-     * @param redirectAttrs
-     * @return
-     */
-    @RequestMapping(value = { SystemConstants.REQUEST_TEST }, method = RequestMethod.POST)
-    public String testFormula(
-	    @ModelAttribute(RedisConstants.OBJECT_SHAPE) Shape shape,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
-
-	// Do service and get response.
-	String response = this.shapeService.test(shape);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_FORMULA_TEST,
-		response);
-
-	// Clear session.
-	status.setComplete();
-
-	return SystemConstants.CONTROLLER_REDIRECT
-		+ RedisConstants.OBJECT_SHAPE + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + shape.getKey()
-		+ "-end";
-    }
-
-    /**
      * Create or update a formula.
      * 
      * @param shape
@@ -85,33 +54,29 @@ public class ShapeController {
      * @return
      */
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE }, method = RequestMethod.POST)
-    public String createShape(
-	    @ModelAttribute(RedisConstants.OBJECT_SHAPE) Shape shape,
+    public String createShape(@ModelAttribute(RedisConstants.OBJECT_SHAPE) Shape shape,
 	    SessionStatus status, RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.shapeService.set(shape);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
-		response);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Clear session.
 	status.setComplete();
 
-	return SystemConstants.CONTROLLER_REDIRECT
-		+ RedisConstants.OBJECT_SHAPE + "/"
+	return SystemConstants.CONTROLLER_REDIRECT + RedisConstants.OBJECT_SHAPE + "/"
 		+ SystemConstants.REQUEST_LIST;
     }
 
-    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
-	    + RedisConstants.OBJECT_SHAPE + "}-end" }, method = RequestMethod.GET)
-    public String editShape(Model model,
-	    @PathVariable(RedisConstants.OBJECT_SHAPE) String key) {
+    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{" + RedisConstants.OBJECT_SHAPE
+	    + "}-end" }, method = RequestMethod.GET)
+    public String editShape(Model model, @PathVariable(RedisConstants.OBJECT_SHAPE) String key) {
 
 	if (key.equals("0")) {
-	    model.addAttribute(RedisConstants.OBJECT_SHAPE, new Shape(
-		    this.authHelper.getAuth().getCompany()));
+	    model.addAttribute(RedisConstants.OBJECT_SHAPE, new Shape(this.authHelper.getAuth()
+		    .getCompany()));
 	    return JSP_EDIT;
 	}
 

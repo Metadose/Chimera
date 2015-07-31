@@ -15,8 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +39,7 @@ import com.cebedo.pmsys.enums.TableCHBFootingMixture;
 import com.cebedo.pmsys.enums.TableCHBLayingMixture;
 import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.enums.TablePlasterMixture;
+import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
@@ -65,6 +64,7 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 11;
     public static final int EXCEL_COLUMN_DETAILS_REMARKS = 12;
 
+    private ExcelHelper excelHelper = new ExcelHelper();
     private EstimateValueRepo estimateValueRepo;
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
@@ -199,48 +199,9 @@ public class EstimateServiceImpl implements EstimateService {
      * @return
      */
     private boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook, Cell cell) {
-	String concrete = (String) (getValueAsExpected(workbook, cell) == null ? ""
-		: getValueAsExpected(workbook, cell));
+	String concrete = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+		: this.excelHelper.getValueAsExpected(workbook, cell));
 	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true : false;
-    }
-
-    /**
-     * Get value as the expected object to avoid exceptions.
-     * 
-     * @param cell
-     * @return
-     */
-    private Object getValueAsExpected(HSSFWorkbook workbook, Cell cell) {
-
-	// Evaluate the cell.
-	// Get the value of the cell.
-	FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-	CellValue cellValue = evaluator.evaluate(cell);
-
-	// Handle each case.
-	switch (cellValue.getCellType()) {
-
-	case Cell.CELL_TYPE_NUMERIC:
-	    return cellValue.getNumberValue();
-
-	case Cell.CELL_TYPE_STRING:
-	    return cellValue.getStringValue();
-
-	case Cell.CELL_TYPE_BOOLEAN:
-	    return cellValue.getBooleanValue();
-
-	case Cell.CELL_TYPE_BLANK:
-	    return null;
-
-	case Cell.CELL_TYPE_ERROR:
-	    return null;
-
-	case Cell.CELL_TYPE_FORMULA:
-	    // CELL_TYPE_FORMULA will never happen
-	    // since it's already evaluated.
-	    return null;
-	}
-	return null;
     }
 
     /**
@@ -290,21 +251,21 @@ public class EstimateServiceImpl implements EstimateService {
 		    switch (colCountDisplay) {
 
 		    case EXCEL_COLUMN_DETAILS_NAME:
-			String name = (String) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimate.setName(name);
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_AREA:
-			double area = (Double) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			shape.setArea(area);
 			estimate.setShape(shape);
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_VOLUME:
-			double volume = (Double) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			shape.setVolume(volume);
 			estimate.setShape(shape);
 			continue;
@@ -342,8 +303,9 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOUNDATION_HEIGHT:
-			double foundation = (Double) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			double foundation = (Double) (this.excelHelper
+				.getValueAsExpected(workbook, cell) == null ? "" : this.excelHelper
+				.getValueAsExpected(workbook, cell));
 			estimate.setChbFoundationHeight(foundation);
 			continue;
 
@@ -356,8 +318,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH:
-			double footingLength = (Double) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			double footingLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
 			shape.setFootingLength(footingLength);
 			estimate.setShape(shape);
 			continue;
@@ -371,8 +333,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_REMARKS:
-			String remarks = (String) (getValueAsExpected(workbook, cell) == null ? ""
-				: getValueAsExpected(workbook, cell));
+			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimate.setRemarks(remarks);
 			continue;
 

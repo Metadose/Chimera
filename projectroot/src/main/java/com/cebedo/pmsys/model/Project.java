@@ -59,10 +59,6 @@ public class Project implements Serializable {
     private Set<ProjectFile> files;
     private Set<Photo> photos;
     private Company company;
-    private Set<DeliveryToDelete> deliveries;
-    private Set<Reminder> reminders;
-    private Set<MaterialToRemove> materials;
-    private Set<Expense> expenses;
 
     /**
      * Bean-backed forms.
@@ -279,42 +275,6 @@ public class Project implements Serializable {
 	this.company = company;
     }
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<DeliveryToDelete> getDeliveries() {
-	return deliveries;
-    }
-
-    public void setDeliveries(Set<DeliveryToDelete> deliveries) {
-	this.deliveries = deliveries;
-    }
-
-    @OneToMany(mappedBy = "project")
-    public Set<MaterialToRemove> getMaterials() {
-	return materials;
-    }
-
-    public void setMaterials(Set<MaterialToRemove> materials) {
-	this.materials = materials;
-    }
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<Expense> getExpenses() {
-	return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-	this.expenses = expenses;
-    }
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<Reminder> getReminders() {
-	return reminders;
-    }
-
-    public void setReminders(Set<Reminder> reminders) {
-	this.reminders = reminders;
-    }
-
     /**
      * Get all staffs and managers.
      * 
@@ -329,8 +289,7 @@ public class Project implements Serializable {
 
 	// Wrap the two lists.
 	List<StaffWrapper> wrappedStaff = StaffWrapper.wrapSet(assignedStaff);
-	List<StaffWrapper> wrappedManagers = StaffWrapper
-		.wrapSet(assignedManagers);
+	List<StaffWrapper> wrappedManagers = StaffWrapper.wrapSet(assignedManagers);
 
 	// Add the two lists.
 	wrappedStaff.addAll(wrappedManagers);
@@ -339,16 +298,4 @@ public class Project implements Serializable {
 	return StaffWrapper.unwrap(wrappedStaff);
     }
 
-    // @ManyToMany
-    // @JoinTable(name = SubconProjectAssignment.TABLE_NAME, joinColumns = {
-    // @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
-    // @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false,
-    // updatable = false) })
-    // public Set<Subcontractor> getSubcontractor() {
-    // return subcontractor;
-    // }
-    //
-    // public void setSubcontractor(Set<Subcontractor> subcontractor) {
-    // this.subcontractor = subcontractor;
-    // }
 }

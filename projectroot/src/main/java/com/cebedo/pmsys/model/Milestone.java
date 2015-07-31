@@ -3,7 +3,6 @@ package com.cebedo.pmsys.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +29,6 @@ public class Milestone implements Serializable {
     private Project project;
     private Set<Task> tasks;
     private Company company;
-    private Set<Expense> expenses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,15 +86,6 @@ public class Milestone implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
-    }
-
-    @OneToMany(mappedBy = "milestone", cascade = CascadeType.ALL)
-    public Set<Expense> getExpenses() {
-	return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-	this.expenses = expenses;
     }
 
 }

@@ -3,7 +3,6 @@ package com.cebedo.pmsys.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -36,7 +34,6 @@ public class Team implements Serializable {
     private Set<Task> tasks;
     private Set<Staff> members;
     private Company company;
-    private Set<Expense> expenses;
     private int payrollType;
 
     @Column(name = "payroll_type", nullable = false)
@@ -108,15 +105,6 @@ public class Team implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
-    }
-
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    public Set<Expense> getExpenses() {
-	return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-	this.expenses = expenses;
     }
 
     @Transient

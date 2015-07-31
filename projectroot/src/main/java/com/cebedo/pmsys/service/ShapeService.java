@@ -29,10 +29,6 @@ public interface ShapeService {
 
     public List<Shape> list();
 
-    public String test(Shape shape);
-
     public List<String> getAllVariableNames(String formula);
-
-    public String getReadyToSolveEquation(Shape shape);
 
 }

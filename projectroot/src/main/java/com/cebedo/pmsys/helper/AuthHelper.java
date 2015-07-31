@@ -6,20 +6,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cebedo.pmsys.domain.Conversation;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.DeliveryToDelete;
-import com.cebedo.pmsys.model.Expense;
-import com.cebedo.pmsys.model.MaterialToRemove;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.ProjectFile;
-import com.cebedo.pmsys.model.Reminder;
 import com.cebedo.pmsys.model.SecurityAccess;
 import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.Storage;
-import com.cebedo.pmsys.model.Subcontractor;
-import com.cebedo.pmsys.model.Supplier;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
@@ -37,18 +30,16 @@ public class AuthHelper {
      * @return
      */
     public AuthenticationToken getAuth() {
-	return (AuthenticationToken) SecurityContextHolder.getContext()
-		.getAuthentication();
+	return (AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
 
     public boolean isPasswordValid(String rawPassword, SystemUser user) {
-	return this.passwordEncoder.isPasswordValid(user.getPassword(),
-		rawPassword, user.getUsername() + PASSWORD_SALT);
+	return this.passwordEncoder.isPasswordValid(user.getPassword(), rawPassword, user.getUsername()
+		+ PASSWORD_SALT);
     }
 
     public String encodePassword(String rawPassword, SystemUser user) {
-	return this.passwordEncoder.encodePassword(rawPassword,
-		user.getUsername() + PASSWORD_SALT);
+	return this.passwordEncoder.encodePassword(rawPassword, user.getUsername() + PASSWORD_SALT);
     }
 
     /**
@@ -151,16 +142,6 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(Subcontractor obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
     /**
      * TODO Check if we really need this since we're just check if it's super
      * admin.
@@ -206,66 +187,6 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (milestone.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(DeliveryToDelete delivery) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (delivery.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Reminder reminder) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (reminder.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(MaterialToRemove material) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (material.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Supplier supplier) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (supplier.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Expense expense) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (expense.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Storage storage) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (storage.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

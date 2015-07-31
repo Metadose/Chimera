@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -67,7 +69,8 @@ public interface ProjectService {
 
     public List<Staff> getAllManagersWithUsers(Project proj);
 
-    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(
-	    Project proj);
+    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(Project proj);
+
+    public String createAllStaffFromExcelAssignToProject(MultipartFile multipartFile, Project proj);
 
 }

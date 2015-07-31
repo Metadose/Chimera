@@ -52,7 +52,6 @@ public class TaskDAOImpl implements TaskDAO {
 	Hibernate.initialize(task.getTeams());
 	Hibernate.initialize(task.getStaff());
 	Hibernate.initialize(task.getFields());
-	Hibernate.initialize(task.getExpenses());
 
 	Project proj = task.getProject();
 	Hibernate.initialize(proj);
@@ -81,16 +80,16 @@ public class TaskDAOImpl implements TaskDAO {
     @SuppressWarnings("unchecked")
     public List<Task> list(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
-		session, Task.class.getName(), companyID).list();
+	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session, Task.class.getName(),
+		companyID).list();
 	return taskList;
     }
 
     @SuppressWarnings("unchecked")
     public List<Task> listWithAllCollections(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
-		session, Task.class.getName(), companyID).list();
+	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session, Task.class.getName(),
+		companyID).list();
 	for (Task task : taskList) {
 	    Hibernate.initialize(task.getTeams());
 	    Hibernate.initialize(task.getProject());
@@ -114,11 +113,9 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void unassignTeamTask(long taskID, long teamID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM "
-		+ TaskTeamAssignment.OBJECT_NAME + " WHERE "
-		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:"
-		+ TaskTeamAssignment.PROPERTY_TASK_ID + " AND "
-		+ TaskTeamAssignment.PROPERTY_TEAM_ID + "=:"
+	Query query = session.createQuery("DELETE FROM " + TaskTeamAssignment.OBJECT_NAME + " WHERE "
+		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:" + TaskTeamAssignment.PROPERTY_TASK_ID
+		+ " AND " + TaskTeamAssignment.PROPERTY_TEAM_ID + "=:"
 		+ TaskTeamAssignment.PROPERTY_TEAM_ID);
 	query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
 	query.setParameter(TaskTeamAssignment.PROPERTY_TEAM_ID, teamID);
@@ -131,10 +128,8 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void unassignAllTeamTasks(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM "
-		+ TaskTeamAssignment.OBJECT_NAME + " WHERE "
-		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:"
-		+ TaskTeamAssignment.PROPERTY_TASK_ID);
+	Query query = session.createQuery("DELETE FROM " + TaskTeamAssignment.OBJECT_NAME + " WHERE "
+		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:" + TaskTeamAssignment.PROPERTY_TASK_ID);
 	query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
 	query.executeUpdate();
     }
@@ -142,11 +137,9 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void unassignStaffTask(long taskID, long staffID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM "
-		+ TaskStaffAssignment.OBJECT_NAME + " WHERE "
-		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:"
-		+ TaskStaffAssignment.PROPERTY_TASK_ID + " AND "
-		+ TaskStaffAssignment.PROPERTY_STAFF_ID + "=:"
+	Query query = session.createQuery("DELETE FROM " + TaskStaffAssignment.OBJECT_NAME + " WHERE "
+		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:" + TaskStaffAssignment.PROPERTY_TASK_ID
+		+ " AND " + TaskStaffAssignment.PROPERTY_STAFF_ID + "=:"
 		+ TaskStaffAssignment.PROPERTY_STAFF_ID);
 	query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, taskID);
 	query.setParameter(TaskStaffAssignment.PROPERTY_STAFF_ID, staffID);
@@ -160,10 +153,8 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void unassignAllStaffTasks(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM "
-		+ TaskStaffAssignment.OBJECT_NAME + " WHERE "
-		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:"
-		+ TaskStaffAssignment.PROPERTY_TASK_ID);
+	Query query = session.createQuery("DELETE FROM " + TaskStaffAssignment.OBJECT_NAME + " WHERE "
+		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:" + TaskStaffAssignment.PROPERTY_TASK_ID);
 	query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, id);
 	query.executeUpdate();
     }
@@ -172,9 +163,8 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public List<TaskFieldAssignment> getFieldsByTaskID(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String sql = "SELECT * FROM " + TaskFieldAssignment.TABLE_NAME
-		+ " WHERE " + Task.COLUMN_PRIMARY_KEY + " =:"
-		+ Task.COLUMN_PRIMARY_KEY;
+	String sql = "SELECT * FROM " + TaskFieldAssignment.TABLE_NAME + " WHERE "
+		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY;
 	SQLQuery query = session.createSQLQuery(sql);
 	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 	return query.list();
@@ -184,8 +174,7 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public List<Staff> getStaffByTaskID(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("FROM "
-		+ TaskStaffAssignment.class.getName() + " WHERE "
+	Query query = session.createQuery("FROM " + TaskStaffAssignment.class.getName() + " WHERE "
 		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
 	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 	return query.list();
@@ -195,8 +184,7 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public List<Team> getTeamByTaskID(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("FROM "
-		+ TaskTeamAssignment.class.getName() + " WHERE "
+	Query query = session.createQuery("FROM " + TaskTeamAssignment.class.getName() + " WHERE "
 		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
 	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 	return query.list();
@@ -228,8 +216,8 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public String getTitleByID(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String result = this.daoHelper.getProjectionByID(session, Task.class,
-		Task.PROPERTY_ID, taskID, Task.PROPERTY_TITLE);
+	String result = this.daoHelper.getProjectionByID(session, Task.class, Task.PROPERTY_ID, taskID,
+		Task.PROPERTY_TITLE);
 	return result;
     }
 
@@ -272,8 +260,8 @@ public class TaskDAOImpl implements TaskDAO {
     @Cacheable(value = "searchTaskCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless = "#result.isEmpty()")
     public List<Task> listTaskFromCache(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(
-		session, Task.class.getName(), companyID).list();
+	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session, Task.class.getName(),
+		companyID).list();
 	return taskList;
     }
 }

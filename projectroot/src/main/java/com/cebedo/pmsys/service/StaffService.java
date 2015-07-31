@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
@@ -54,8 +57,7 @@ public interface StaffService {
      * @param position
      * @return
      */
-    public String assignProjectManager(long projectID, long staffID,
-	    String position);
+    public String assignProjectManager(long projectID, long staffID, String position);
 
     /**
      * Unassign a project manager.
@@ -141,8 +143,7 @@ public interface StaffService {
 
     public List<Staff> listUnassignedStaffInProject(Long companyID, Project proj);
 
-    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID,
-	    ProjectPayroll projectPayroll);
+    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID, ProjectPayroll projectPayroll);
 
     public List<Staff> listWithUsers(Long companyID);
 
@@ -153,7 +154,10 @@ public interface StaffService {
      * @param managers
      * @return
      */
-    public List<Staff> listWithUsersAndFilter(Long companyID,
-	    Set<Staff> filterList);
+    public List<Staff> listWithUsersAndFilter(Long companyID, Set<Staff> filterList);
+
+    public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company);
+
+    public void createAllStaffInList(List<Staff> staffList);
 
 }

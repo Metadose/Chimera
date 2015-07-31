@@ -42,12 +42,6 @@ public class Company implements Serializable {
     private Set<ProjectFile> files;
     private Set<Photo> photos;
     private Set<AuditLog> auditLogs;
-    private Set<DeliveryToDelete> deliveries;
-    private Set<Reminder> reminders;
-    private Set<MaterialToRemove> materials;
-    private Set<Storage> storages;
-    private Set<Supplier> suppliers;
-    private Set<Expense> expenses;
 
     public Company() {
 	;
@@ -143,24 +137,6 @@ public class Company implements Serializable {
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<DeliveryToDelete> getDeliveries() {
-	return deliveries;
-    }
-
-    public void setDeliveries(Set<DeliveryToDelete> deliveries) {
-	this.deliveries = deliveries;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Reminder> getReminders() {
-	return reminders;
-    }
-
-    public void setReminders(Set<Reminder> reminders) {
-	this.reminders = reminders;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     public Set<Team> getTeams() {
 	return teams;
     }
@@ -203,42 +179,6 @@ public class Company implements Serializable {
 
     public void setPhotos(Set<Photo> photos) {
 	this.photos = photos;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<MaterialToRemove> getMaterials() {
-	return materials;
-    }
-
-    public void setMaterials(Set<MaterialToRemove> materials) {
-	this.materials = materials;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Supplier> getSuppliers() {
-	return suppliers;
-    }
-
-    public void setSuppliers(Set<Supplier> suppliers) {
-	this.suppliers = suppliers;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Expense> getExpenses() {
-	return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-	this.expenses = expenses;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Storage> getStorages() {
-	return storages;
-    }
-
-    public void setStorages(Set<Storage> storages) {
-	this.storages = storages;
     }
 
     @OneToMany(mappedBy = "company")

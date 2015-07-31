@@ -53,8 +53,6 @@ public class Staff implements Serializable {
     private String companyPosition;
     private Set<ManagerAssignment> assignedManagers;
     private Set<Task> tasks;
-    private Set<DeliveryToDelete> deliveries;
-    private Set<Expense> expenses;
 
     private String email;
     private String contactNumber;
@@ -165,15 +163,6 @@ public class Staff implements Serializable {
 	this.tasks = tasks;
     }
 
-    @ManyToMany(mappedBy = "staff")
-    public Set<DeliveryToDelete> getDeliveries() {
-	return deliveries;
-    }
-
-    public void setDeliveries(Set<DeliveryToDelete> deliveries) {
-	this.deliveries = deliveries;
-    }
-
     @Column(name = "email", length = 32)
     public String getEmail() {
 	return email;
@@ -230,8 +219,7 @@ public class Staff implements Serializable {
 	return fieldAssignments;
     }
 
-    public void setFieldAssignments(
-	    Set<StaffFieldAssignment> staffFieldAssignments) {
+    public void setFieldAssignments(Set<StaffFieldAssignment> staffFieldAssignments) {
 	this.fieldAssignments = staffFieldAssignments;
     }
 
@@ -258,8 +246,7 @@ public class Staff implements Serializable {
     public String getFullName() {
 	String fullName = getPrefix() == null ? "" : getPrefix() + " ";
 	fullName += getFirstName() == null ? "" : getFirstName() + " ";
-	fullName += getMiddleName() == null ? "" : getMiddleName().charAt(0)
-		+ ". ";
+	fullName += getMiddleName() == null ? "" : getMiddleName().charAt(0) + ". ";
 	fullName += getLastName() == null ? "" : getLastName() + " ";
 	fullName += getSuffix() == null ? "" : getSuffix();
 	return fullName;
@@ -267,24 +254,14 @@ public class Staff implements Serializable {
 
     @Transient
     public String getFormalName() {
-	String pfx = getPrefix() == null || getPrefix().equals("") ? "" : ", "
-		+ getPrefix();
+	String pfx = getPrefix() == null || getPrefix().equals("") ? "" : ", " + getPrefix();
 	String fname = getFirstName() == null ? "" : getFirstName();
-	String mname = getMiddleName() == null || getMiddleName().equals("") ? ""
-		: ", " + getMiddleName().charAt(0) + ".";
+	String mname = getMiddleName() == null || getMiddleName().equals("") ? "" : ", "
+		+ getMiddleName().charAt(0) + ".";
 	String lname = getLastName() == null ? "" : getLastName();
 	String sfx = getSuffix() == null ? "" : getSuffix();
 
 	return lname + ", " + fname + " " + sfx + mname + pfx;
-    }
-
-    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
-    public Set<Expense> getExpenses() {
-	return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-	this.expenses = expenses;
     }
 
     @Transient
