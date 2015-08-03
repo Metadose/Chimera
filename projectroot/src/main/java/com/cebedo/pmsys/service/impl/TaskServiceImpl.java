@@ -76,13 +76,17 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO = taskDAO;
     }
 
-    private void createMassTasks(List<Task> tasks) {
+    @Override
+    @Transactional
+    public void createMassTasks(List<Task> tasks) {
 	for (Task task : tasks) {
-	    ;
+	    this.taskDAO.create(task);
 	}
     }
 
-    private List<Task> convertExcelToTaskList(MultipartFile multipartFile, Company company) {
+    @Override
+    @Transactional
+    public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project) {
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -110,7 +114,8 @@ public class TaskServiceImpl implements TaskService {
 
 		// Every row, is a Staff object.
 		Task task = new Task();
-		task.setCompany(company);
+		task.setCompany(project.getCompany());
+		task.setProject(project);
 
 		while (cellIterator.hasNext()) {
 

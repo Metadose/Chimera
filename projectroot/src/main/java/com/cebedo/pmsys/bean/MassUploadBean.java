@@ -4,16 +4,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.model.Project;
 
-public class MassUploadStaffBean {
+public class MassUploadBean {
 
     private Project project;
-    private MultipartFile staffFile;
+    private MultipartFile file;
 
-    public MassUploadStaffBean() {
+    public MassUploadBean() {
 	;
     }
 
-    public MassUploadStaffBean(Project proj) {
+    public MassUploadBean(Project proj) {
 	setProject(proj);
     }
 
@@ -25,12 +25,12 @@ public class MassUploadStaffBean {
 	this.project = project;
     }
 
-    public MultipartFile getStaffFile() {
-	return staffFile;
+    public MultipartFile getFile() {
+	return file;
     }
 
-    public void setStaffFile(MultipartFile staffFile) {
-	this.staffFile = staffFile;
+    public void setFile(MultipartFile staffFile) {
+	this.file = staffFile;
     }
 
 }

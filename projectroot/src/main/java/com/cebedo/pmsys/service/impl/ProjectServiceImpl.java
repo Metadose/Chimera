@@ -42,6 +42,7 @@ import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
+import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -59,6 +60,13 @@ public class ProjectServiceImpl implements ProjectService {
     private CompanyDAO companyDAO;
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
+    private TaskService taskService;
+
+    @Autowired
+    @Qualifier(value = "taskService")
+    public void setTaskService(TaskService taskService) {
+	this.taskService = taskService;
+    }
 
     @Autowired
     @Qualifier(value = "staffService")
@@ -76,6 +84,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     public void setCompanyDAO(CompanyDAO companyDAO) {
 	this.companyDAO = companyDAO;
+    }
+
+    @Override
+    @Transactional
+    public String createTasksFromExcel(MultipartFile multipartFile, Project project) {
+	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
+	this.taskService.createMassTasks(tasks);
+	return "TODO";
     }
 
     /**
@@ -106,7 +122,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public String createAllStaffFromExcelAssignToProject(MultipartFile multipartFile, Project proj) {
+    public String createStaffFromExcel(MultipartFile multipartFile, Project proj) {
 	// Convert excel to staff objects.
 	List<Staff> staffList = this.staffService.convertExcelToStaffList(multipartFile,
 		proj.getCompany());

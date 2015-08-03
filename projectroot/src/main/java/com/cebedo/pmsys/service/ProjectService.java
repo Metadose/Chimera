@@ -63,6 +63,8 @@ public interface ProjectService {
 
     public List<Staff> getAllStaff(Project proj);
 
-    public String createAllStaffFromExcelAssignToProject(MultipartFile multipartFile, Project proj);
+    public String createStaffFromExcel(MultipartFile multipartFile, Project proj);
+
+    public String createTasksFromExcel(MultipartFile multipartFile, Project project);
 
 }

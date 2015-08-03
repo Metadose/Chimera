@@ -62,7 +62,11 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void update(Task task) {
 	Session session = this.sessionFactory.getCurrentSession();
-	session.update(task);
+	try {
+	    session.update(task);
+	} catch (Exception e) {
+	    session.merge(task);
+	}
     }
 
     @Override

@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
-import com.cebedo.pmsys.bean.MassUploadStaffBean;
+import com.cebedo.pmsys.bean.MassUploadBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
@@ -93,7 +93,7 @@ value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectCont
 	RedisConstants.OBJECT_ESTIMATE, ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN },
 
 types = { Project.class, FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
-	Delivery.class, Material.class, PullOut.class, Estimate.class, MassUploadStaffBean.class }
+	Delivery.class, Material.class, PullOut.class, Estimate.class, MassUploadBean.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -1003,18 +1003,39 @@ public class ProjectController {
     }
 
     /**
+     * Create many tasks by uploading an Excel file.
+     */
+    @RequestMapping(value = { URLRegistry.MASS_UPLOAD_AND_ASSIGN_TASK }, method = RequestMethod.POST)
+    public String createMassTask(
+	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadBean massUploadTask,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	Project proj = massUploadTask.getProject();
+
+	// Do service and get response.
+	String response = this.projectService.createTasksFromExcel(massUploadTask.getFile(), proj);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+    }
+
+    /**
      * Create many staff members by uploading an Excel file.
      */
     @RequestMapping(value = { URLRegistry.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
     public String createMassStaff(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadStaffBean massUploadStaff,
+	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadBean massUploadStaff,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	Project proj = massUploadStaff.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createAllStaffFromExcelAssignToProject(
-		massUploadStaff.getStaffFile(), proj);
+	String response = this.projectService.createStaffFromExcel(
+		massUploadStaff.getFile(), proj);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
@@ -1702,7 +1723,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
-	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new MassUploadStaffBean(proj));
+	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new MassUploadBean(proj));
     }
 
     /**

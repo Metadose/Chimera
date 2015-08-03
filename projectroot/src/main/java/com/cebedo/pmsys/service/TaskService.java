@@ -2,6 +2,9 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Task;
 
 public interface TaskService {
@@ -142,4 +145,9 @@ public interface TaskService {
      * @return
      */
     public String unassignTaskByProject(long taskID, long projectID);
+
+    public void createMassTasks(List<Task> tasks);
+
+    public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project);
+
 }
