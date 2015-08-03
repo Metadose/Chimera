@@ -16,7 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.hibernate.Hibernate;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +44,6 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.StaffService;
@@ -397,108 +395,6 @@ public class StaffServiceImpl implements StaffService {
     }
 
     /**
-     * Assign a staff to a project as manager.
-     */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
-    @Override
-    @Transactional
-    public String assignProjectManager(long projectID, long staffID, String position) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Project project = this.projectDAO.getByID(projectID);
-	Staff staff = this.staffDAO.getByID(staffID);
-
-	// If this action is not authorized,
-	// return.
-	if (!this.authHelper.isActionAuthorized(staff) || !this.authHelper.isActionAuthorized(project)) {
-
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Project.OBJECT_NAME,
-		    project.getId(), project.getName()));
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Staff.OBJECT_NAME,
-		    staff.getId(), staff.getFullName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
-	}
-
-	// Log and notify.
-	this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, project, staff);
-
-	// Do service.
-	ManagerAssignment assignment = new ManagerAssignment();
-	assignment.setProject(project);
-	assignment.setManager(staff);
-	assignment.setProjectPosition(position);
-	this.staffDAO.assignProjectManager(assignment);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
-    }
-
-    /**
-     * Unassign a project manager.
-     */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
-    @Override
-    @Transactional
-    public String unassignProjectManager(long projectID, long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Project project = this.projectDAO.getByID(projectID);
-	Staff staff = this.staffDAO.getByID(staffID);
-
-	if (!this.authHelper.isActionAuthorized(staff) || !this.authHelper.isActionAuthorized(project)) {
-
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Project.OBJECT_NAME,
-		    project.getId(), project.getName()));
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Staff.OBJECT_NAME,
-		    staff.getId(), staff.getFullName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
-	}
-
-	// Log and notify.
-	this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, project, staff);
-
-	// Do service.
-	// If authorized, continue with the action.
-	this.staffDAO.unassignProjectManager(projectID, staffID);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
-    }
-
-    /**
-     * Unassign all project managers.
-     */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
-    @Override
-    @Transactional
-    public String unassignAllProjectManagers(long projectID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Project project = this.projectDAO.getByID(projectID);
-
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN_ALL,
-		    Project.OBJECT_NAME, project.getId(), project.getName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateUnassignAll(ManagerAssignment.OBJECT_LABEL);
-	}
-
-	// Log and notify.
-	this.messageHelper.sendUnassignAll(ManagerAssignment.OBJECT_LABEL, project);
-
-	// Do service.
-	this.staffDAO.unassignAllProjectManagers(projectID);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassignAll(ManagerAssignment.OBJECT_LABEL);
-    }
-
-    /**
      * Get with all collections and id.
      */
     @Override
@@ -651,15 +547,11 @@ public class StaffServiceImpl implements StaffService {
 	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
 	    List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(companyStaffList);
 
-	    // Staff assigned as a manager.
-	    List<StaffWrapper> assignedManagerList = StaffWrapper.wrap(project.getManagerAssignments());
-
 	    // Staff assigned as staff.
 	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project.getAssignedStaff());
 
 	    // Remove assigned managers.
 	    // Remove assigned staff.
-	    wrappedStaffList.removeAll(assignedManagerList);
 	    wrappedStaffList.removeAll(assignedStaffList);
 
 	    // Return as unwrapped.
@@ -822,22 +714,6 @@ public class StaffServiceImpl implements StaffService {
 	// Get the gantt parent data.
 	List<Long> addedProjects = new ArrayList<Long>();
 	List<Long> addedMilestones = new ArrayList<Long>();
-
-	for (ManagerAssignment assigns : staff.getAssignedManagers()) {
-
-	    // Add all projects.
-	    Project proj = assigns.getProject();
-	    addedProjects.add(proj.getId());
-	    GanttBean projectBean = new GanttBean(proj, myGanttBean);
-	    ganttBeanList.add(projectBean);
-
-	    // For each milestone in this project, add.
-	    for (Milestone milestone : proj.getMilestones()) {
-		GanttBean milestoneBean = new GanttBean(milestone, projectBean);
-		ganttBeanList.add(milestoneBean);
-		addedMilestones.add(milestone.getId());
-	    }
-	}
 
 	// Get the tasks (children) of each parent.
 	for (Task task : staff.getTasks()) {
@@ -1065,11 +941,9 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Minus list.
 	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project.getAssignedStaff());
-	    List<StaffWrapper> assignedManagerList = StaffWrapper.wrapSet(project.getManagers());
 
 	    // Do minus.
 	    wrappedStaffList.removeAll(assignedStaffList);
-	    wrappedStaffList.removeAll(assignedManagerList);
 	    return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
 	}
 	return new ArrayList<Staff>();
@@ -1088,11 +962,9 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Minus list.
 	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(projectPayroll.getStaffList());
-	    List<StaffWrapper> assignedManagerList = StaffWrapper.wrapSet(project.getManagers());
 
 	    // Do minus.
 	    wrappedStaffList.removeAll(assignedStaffList);
-	    wrappedStaffList.removeAll(assignedManagerList);
 	    return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
 	}
 	return new ArrayList<Staff>();
@@ -1129,4 +1001,5 @@ public class StaffServiceImpl implements StaffService {
 	// Return unwrapped.
 	return StaffWrapper.unwrap(wrappedStaffList);
     }
+
 }

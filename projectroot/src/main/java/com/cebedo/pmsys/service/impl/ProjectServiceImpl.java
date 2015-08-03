@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,6 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -548,15 +546,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public List<Staff> getAllStaff(Project proj) {
-	// Get all managers in this project.
-	List<Staff> managers = new ArrayList<Staff>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    managers.add(managerAssignment.getManager());
-	}
-
 	// Get all staff in this project.
 	List<Staff> allStaff = new ArrayList<Staff>();
-	allStaff.addAll(managers);
 	for (Task task : proj.getAssignedTasks()) {
 	    allStaff.addAll(task.getStaff());
 	}
@@ -565,42 +556,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    allStaff.addAll(team.getMembers());
 	}
 	return allStaff;
-    }
-
-    @Transactional
-    @Override
-    public List<Staff> getAllManagers(Project proj) {
-	List<Staff> managers = new ArrayList<Staff>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    managers.add(managerAssignment.getManager());
-	}
-	return managers;
-    }
-
-    @Transactional
-    @Override
-    public List<Staff> getAllManagersWithUsers(Project proj) {
-	List<Staff> managers = new ArrayList<Staff>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    if (managerAssignment.getManager().getUser() == null) {
-		continue;
-	    }
-	    managers.add(managerAssignment.getManager());
-	}
-	return managers;
-    }
-
-    @Transactional
-    @Override
-    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(Project proj) {
-	Set<ManagerAssignment> managers = new HashSet<ManagerAssignment>();
-	for (ManagerAssignment managerAssignment : proj.getManagerAssignments()) {
-	    if (managerAssignment.getManager().getUser() == null) {
-		continue;
-	    }
-	    managers.add(managerAssignment);
-	}
-	return managers;
     }
 
 }

@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
@@ -49,7 +48,6 @@ public class Staff implements Serializable {
     private String lastName;
     private String suffix;
     private String companyPosition;
-    private Set<ManagerAssignment> assignedManagers;
     private Set<Task> tasks;
 
     private String email;
@@ -131,15 +129,6 @@ public class Staff implements Serializable {
 
     public void setCompanyPosition(String companyPosition) {
 	this.companyPosition = companyPosition;
-    }
-
-    @OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".manager", cascade = CascadeType.REMOVE)
-    public Set<ManagerAssignment> getAssignedManagers() {
-	return assignedManagers;
-    }
-
-    public void setAssignedManagers(Set<ManagerAssignment> managers) {
-	this.assignedManagers = managers;
     }
 
     @ManyToMany(mappedBy = "staff")
@@ -243,13 +232,4 @@ public class Staff implements Serializable {
 	return lname + ", " + fname + " " + sfx + mname + pfx;
     }
 
-    @Transient
-    public boolean isManager(Project project) {
-	for (ManagerAssignment assign : project.getManagerAssignments()) {
-	    if (assign.getManager().getId() == this.id) {
-		return true;
-	    }
-	}
-	return false;
-    }
 }

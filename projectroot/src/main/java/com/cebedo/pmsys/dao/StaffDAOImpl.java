@@ -6,7 +6,6 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
@@ -17,12 +16,10 @@ import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 
 @Repository
@@ -54,16 +51,6 @@ public class StaffDAOImpl implements StaffDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 	Staff staff = (Staff) session.load(Staff.class, new Long(id));
 	Hibernate.initialize(staff.getTeams());
-
-	Set<ManagerAssignment> managerAssignment = staff.getAssignedManagers();
-	for (ManagerAssignment assignment : managerAssignment) {
-	    Project proj = assignment.getProject();
-	    Hibernate.initialize(proj);
-	    for (Milestone milestone : proj.getMilestones()) {
-		Hibernate.initialize(milestone);
-	    }
-	    Hibernate.initialize(assignment.getManager());
-	}
 
 	Set<Task> taskList = staff.getTasks();
 	for (Task task : taskList) {
@@ -133,33 +120,9 @@ public class StaffDAOImpl implements StaffDAO {
 
 	List<Staff> staffList = query.list();
 	for (Staff staff : staffList) {
-	    Hibernate.initialize(staff.getAssignedManagers());
 	    Hibernate.initialize(staff.getTasks());
 	}
 	return staffList;
-    }
-
-    @Override
-    public void assignProjectManager(ManagerAssignment assignment) {
-	Session session = this.sessionFactory.getCurrentSession();
-	session.persist(assignment);
-    }
-
-    @Override
-    public void unassignProjectManager(long projectID, long staffID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	SQLQuery query = session.createSQLQuery("DELETE FROM " + ManagerAssignment.TABLE_NAME
-		+ " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID + " AND "
-		+ Staff.COLUMN_PRIMARY_KEY + " = " + staffID);
-	query.executeUpdate();
-    }
-
-    @Override
-    public void unassignAllProjectManagers(long projectID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	SQLQuery query = session.createSQLQuery("DELETE FROM " + ManagerAssignment.TABLE_NAME
-		+ " WHERE " + Project.COLUMN_PRIMARY_KEY + " = " + projectID);
-	query.executeUpdate();
     }
 
     @Override

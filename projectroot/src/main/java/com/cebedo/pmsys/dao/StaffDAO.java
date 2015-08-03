@@ -3,7 +3,6 @@ package com.cebedo.pmsys.dao;
 import java.util.List;
 
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 
 public interface StaffDAO {
@@ -21,12 +20,6 @@ public interface StaffDAO {
     public List<Staff> list(Long companyID);
 
     public List<Staff> listWithAllCollections(Long companyID);
-
-    public void assignProjectManager(ManagerAssignment assignment);
-
-    public void unassignProjectManager(long projectID, long staffID);
-
-    public void unassignAllProjectManagers(long projectID);
 
     public void unassignTeam(long teamID, long staffID);
 

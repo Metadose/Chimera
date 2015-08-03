@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 
 public class StaffWrapper {
 
@@ -25,8 +24,7 @@ public class StaffWrapper {
      * @param wrappedStaffList
      * @return
      */
-    public static List<StaffWrapper> removeEmptyNames(
-	    List<StaffWrapper> wrappedStaffList) {
+    public static List<StaffWrapper> removeEmptyNames(List<StaffWrapper> wrappedStaffList) {
 	int i = 0;
 	List<Integer> toRemove = new ArrayList<Integer>();
 	for (StaffWrapper wrappedStaff : wrappedStaffList) {
@@ -54,21 +52,12 @@ public class StaffWrapper {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof StaffWrapper
-		&& this.staff.getId() == (((StaffWrapper) obj).staff.getId());
+	return obj instanceof StaffWrapper && this.staff.getId() == (((StaffWrapper) obj).staff.getId());
     }
 
     @Override
     public int hashCode() {
 	return staff.hashCode();
-    }
-
-    public static List<StaffWrapper> wrap(Set<ManagerAssignment> staffList) {
-	List<StaffWrapper> wrappedList = new ArrayList<StaffWrapper>();
-	for (ManagerAssignment assignment : staffList) {
-	    wrappedList.add(new StaffWrapper(assignment.getManager()));
-	}
-	return wrappedList;
     }
 
     public static List<Staff> unwrap(List<StaffWrapper> wrappedStaffList) {

@@ -2,14 +2,12 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 
 public interface ProjectService {
 
@@ -64,12 +62,6 @@ public interface ProjectService {
     public void clearListCache();
 
     public List<Staff> getAllStaff(Project proj);
-
-    public List<Staff> getAllManagers(Project proj);
-
-    public List<Staff> getAllManagersWithUsers(Project proj);
-
-    public Set<ManagerAssignment> getAllManagersAssignmentsWithUsers(Project proj);
 
     public String createAllStaffFromExcelAssignToProject(MultipartFile multipartFile, Project proj);
 

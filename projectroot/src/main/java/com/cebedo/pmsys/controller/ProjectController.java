@@ -64,7 +64,6 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
@@ -84,7 +83,6 @@ import com.cebedo.pmsys.service.UnitService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
-import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
 @SessionAttributes(
@@ -164,7 +162,6 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
-    public static final String ATTR_PAYROLL_CHECKBOX_MANAGERS = "managerList";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
     public static final String ATTR_STAFF_LIST = "staffList";
     public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
@@ -320,32 +317,6 @@ public class ProjectController {
      * @return
      */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllProjectManagers(HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	long projectID = project.getId();
-
-	// Get response.
-	String response = this.staffService.unassignAllProjectManagers(projectID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    /**
-     * Unassign all staff from a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/"
 	    + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllStaffMembers(HttpSession session, SessionStatus status,
@@ -362,34 +333,6 @@ public class ProjectController {
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
-    }
-
-    /**
-     * Unassign a staff from a project.
-     * 
-     * @param projectID
-     * @param staffID
-     * @param position
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/{"
-	    + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignProjectManager(HttpSession session, SessionStatus status,
-	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
-
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	long projectID = project.getId();
-
-	// Get response.
-	String response = this.staffService.unassignProjectManager(projectID, staffID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
     }
 
     /**
@@ -438,37 +381,6 @@ public class ProjectController {
 	// Do service, clear session.
 	// Then redirect.
 	String response = this.staffService.assignStaffMass(project);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
-    }
-
-    /**
-     * Assign a staff to a project.
-     * 
-     * @param projectID
-     * @param staffID
-     * @param staffAssignment
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignProjectManager(HttpSession session, SessionStatus status,
-	    @ModelAttribute(ATTR_STAFF_POSITION) StaffAssignmentBean staffAssignment,
-	    RedirectAttributes redirectAttrs) {
-
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	long staffID = staffAssignment.getStaffID();
-	String position = staffAssignment.getPosition();
-
-	// Get response.
-	// Do service, clear session.
-	// Then redirect.
-	String response = this.staffService.assignProjectManager(project.getId(), staffID, position);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
@@ -1496,25 +1408,6 @@ public class ProjectController {
     }
 
     /**
-     * Construct key needed for payroll edit.
-     * 
-     * @param projectPayroll
-     * @return
-     */
-    @SuppressWarnings("unused")
-    private String createPayrollRedirectKey(ProjectPayroll projectPayroll) {
-	// Redirect to:
-	// /project/edit/payroll/${payrollKey}-end
-	String payrollKey = projectPayroll.getApprover() + "-";
-	payrollKey += projectPayroll.getCreator() + "-";
-	payrollKey += projectPayroll.getStatus() + "-";
-	payrollKey += DateUtils.formatDate(projectPayroll.getStartDate()) + "-";
-	payrollKey += DateUtils.formatDate(projectPayroll.getEndDate());
-
-	return payrollKey;
-    }
-
-    /**
      * Open an edit page for a pull-out.
      * 
      * @param key
@@ -1643,10 +1536,6 @@ public class ProjectController {
      */
     private void setFormSelectors(Project proj, Model model) {
 
-	// Approvers.
-	List<Staff> selectorManagers = this.projectService.getAllManagersWithUsers(proj);
-	model.addAttribute(ATTR_PAYROLL_SELECTOR_APPROVER, selectorManagers);
-
 	// Status.
 	PayrollStatus[] payrollStatusArr = PayrollStatus.class.getEnumConstants();
 	model.addAttribute(ATTR_PAYROLL_SELECTOR_STATUS, payrollStatusArr);
@@ -1662,11 +1551,6 @@ public class ProjectController {
      */
     private void setModelAttributesOfPayroll(ProjectPayroll projectPayroll, Project proj, Model model,
 	    Long companyID) {
-
-	// For the multi-select box.
-	// Get all staff in this project payroll.
-	// List of staff "during that time".
-	Set<ManagerAssignment> managers = projectPayroll.getManagerAssignments();
 
 	// Get collection of all staff here.
 	List<Staff> manualStaffList = this.staffService.listUnassignedStaffInProjectPayroll(companyID,
@@ -1684,7 +1568,6 @@ public class ProjectController {
 	model.addAttribute(ATTR_PAYROLL_JSON, projectPayroll.getPayrollJSON());
 
 	// Structure/checklist attributes.
-	model.addAttribute(ATTR_PAYROLL_CHECKBOX_MANAGERS, managers);
 	model.addAttribute(ATTR_PAYROLL_CHECKBOX_STAFF, staff);
 	model.addAttribute(ATTR_PAYROLL_MANUAL_STAFF_LIST, manualStaffList);
     }
@@ -1808,7 +1691,7 @@ public class ProjectController {
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj.getCompany().getId();
 
 	// Used in the manager selector.
-	List<Staff> staffList = this.staffService.listWithUsersAndFilter(companyID, proj.getManagers());
+	List<Staff> staffList = this.staffService.list();
 
 	// Used in the "assign staff constrols".
 	// Get the list of staff not yet assigned in this project.

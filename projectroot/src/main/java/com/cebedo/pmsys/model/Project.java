@@ -22,7 +22,6 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
 import com.cebedo.pmsys.model.assignment.TeamAssignment;
 import com.cebedo.pmsys.wrapper.StaffWrapper;
@@ -56,7 +55,6 @@ public class Project implements Serializable {
     private Set<Task> assignedTasks;
     private Company company;
 
-    private Set<ManagerAssignment> managerAssignments;
     private Set<ProjectFile> files;
     private Set<Photo> photos;
 
@@ -124,27 +122,6 @@ public class Project implements Serializable {
 
     public void setAssignedFields(Set<FieldAssignment> fields) {
 	this.assignedFields = fields;
-    }
-
-    /**
-     * Project to Staff with extra columns.
-     */
-    @OneToMany(mappedBy = ManagerAssignment.PRIMARY_KEY + ".project", cascade = CascadeType.REMOVE)
-    public Set<ManagerAssignment> getManagerAssignments() {
-	return this.managerAssignments;
-    }
-
-    @Transient
-    public Set<Staff> getManagers() {
-	Set<Staff> mans = new HashSet<Staff>();
-	for (ManagerAssignment manAss : this.managerAssignments) {
-	    mans.add(manAss.getManager());
-	}
-	return mans;
-    }
-
-    public void setManagerAssignments(Set<ManagerAssignment> man) {
-	this.managerAssignments = man;
     }
 
     /**
@@ -274,14 +251,9 @@ public class Project implements Serializable {
 
 	// Get the two lists.
 	Set<Staff> assignedStaff = getAssignedStaff();
-	Set<Staff> assignedManagers = getManagers();
 
 	// Wrap the two lists.
 	List<StaffWrapper> wrappedStaff = StaffWrapper.wrapSet(assignedStaff);
-	List<StaffWrapper> wrappedManagers = StaffWrapper.wrapSet(assignedManagers);
-
-	// Add the two lists.
-	wrappedStaff.addAll(wrappedManagers);
 
 	// Return as one, unwrapped.
 	return StaffWrapper.unwrap(wrappedStaff);

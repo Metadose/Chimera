@@ -13,7 +13,6 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class ProjectPayroll implements IDomainObject {
@@ -29,7 +28,6 @@ public class ProjectPayroll implements IDomainObject {
     /**
      * Specs.
      */
-    private SystemUser approver;
     private SystemUser creator;
     private PayrollStatus status; // Give me all payrolls not yet approved.
     private Date startDate;
@@ -51,7 +49,6 @@ public class ProjectPayroll implements IDomainObject {
     /**
      * List of staff during the object was created.
      */
-    private Set<ManagerAssignment> managerAssignments;
     private Set<Staff> staffList;
 
     /**
@@ -70,17 +67,8 @@ public class ProjectPayroll implements IDomainObject {
 	return payrollComputationResult;
     }
 
-    public void setPayrollComputationResult(
-	    PayrollComputationResult payrollComputationResult) {
+    public void setPayrollComputationResult(PayrollComputationResult payrollComputationResult) {
 	this.payrollComputationResult = payrollComputationResult;
-    }
-
-    public Set<ManagerAssignment> getManagerAssignments() {
-	return managerAssignments;
-    }
-
-    public void setManagerAssignments(Set<ManagerAssignment> managerAssignments) {
-	this.managerAssignments = managerAssignments;
     }
 
     public Date getLastComputed() {
@@ -103,27 +91,10 @@ public class ProjectPayroll implements IDomainObject {
 	;
     }
 
-    public ProjectPayroll(Company company2, Project project2,
-	    SystemUser creator2) {
+    public ProjectPayroll(Company company2, Project project2, SystemUser creator2) {
 	setCompany(company2);
 	setProject(project2);
 	setCreator(creator2);
-    }
-
-    public SystemUser getApprover() {
-	return approver;
-    }
-
-    public void setApprover(SystemUser approverID) {
-	this.approver = approverID;
-    }
-
-    public long getApproverID() {
-	return approverID;
-    }
-
-    public void setApproverID(long approverID) {
-	this.approverID = approverID;
     }
 
     public int getStatusID() {
@@ -238,8 +209,7 @@ public class ProjectPayroll implements IDomainObject {
      * @return
      */
     public static String constructPattern(long companyID, Long projectID) {
-	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, companyID,
-		projectID, "*");
+	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, companyID, projectID, "*");
     }
 
     /**
@@ -248,8 +218,8 @@ public class ProjectPayroll implements IDomainObject {
     @Override
     public String getKey() {
 	// company:%s:project:%s:payroll:%s
-	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL,
-		this.company.getId(), this.project.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, this.company.getId(),
+		this.project.getId(), this.uuid);
     }
 
     /**
@@ -276,8 +246,7 @@ public class ProjectPayroll implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof ProjectPayroll ? ((ProjectPayroll) obj).getKey()
-		.equals(getKey()) : false;
+	return obj instanceof ProjectPayroll ? ((ProjectPayroll) obj).getKey().equals(getKey()) : false;
     }
 
     @Override

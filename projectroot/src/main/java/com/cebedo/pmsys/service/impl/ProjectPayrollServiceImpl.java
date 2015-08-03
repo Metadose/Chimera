@@ -25,8 +25,6 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
@@ -67,18 +65,16 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectService = projectService;
     }
 
-    public void setProjectPayrollValueRepo(
-	    ProjectPayrollValueRepo projectPayrollValueRepo) {
+    public void setProjectPayrollValueRepo(ProjectPayrollValueRepo projectPayrollValueRepo) {
 	this.projectPayrollValueRepo = projectPayrollValueRepo;
     }
 
     @Override
     @Transactional
-    public String setAndGetResultJSON(Project proj, Date startDate,
-	    Date endDate, ProjectPayroll projectPayroll) {
+    public String setAndGetResultJSON(Project proj, Date startDate, Date endDate,
+	    ProjectPayroll projectPayroll) {
 
-	String payrollJSON = getPayrollJSON(proj, startDate, endDate,
-		projectPayroll);
+	String payrollJSON = getPayrollJSON(proj, startDate, endDate, projectPayroll);
 
 	// Get the resulting state of the computation.
 	// And save it.
@@ -94,18 +90,15 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Revert back to old grand total.
 	// Old payroll object.
-	ProjectPayroll oldPayroll = this.projectPayrollValueRepo
-		.get(projectPayroll.getKey());
+	ProjectPayroll oldPayroll = this.projectPayrollValueRepo.get(projectPayroll.getKey());
 	double oldGrandTotal = projectAux.getGrandTotalPayroll();
-	double oldPayrollResult = oldPayroll.getPayrollComputationResult() == null ? 0
-		: oldPayroll.getPayrollComputationResult()
-			.getOverallTotalOfStaff();
+	double oldPayrollResult = oldPayroll.getPayrollComputationResult() == null ? 0 : oldPayroll
+		.getPayrollComputationResult().getOverallTotalOfStaff();
 	double revertedGrandTotal = oldGrandTotal - oldPayrollResult;
 
 	// Get new payroll result.
 	// Construct new grand total.
-	double newPayrollResult = payrollComputationResult
-		.getOverallTotalOfStaff();
+	double newPayrollResult = payrollComputationResult.getOverallTotalOfStaff();
 	double newGrandTotal = revertedGrandTotal + newPayrollResult;
 
 	// The new grandtotal.
@@ -182,8 +175,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Get value.
 	// Recompute reverted value.
 	double totalAllPayrolls = projAux.getGrandTotalPayroll();
-	double totalThisPayroll = payroll.getPayrollComputationResult()
-		.getOverallTotalOfStaff();
+	double totalThisPayroll = payroll.getPayrollComputationResult().getOverallTotalOfStaff();
 	double revertedTotal = totalAllPayrolls - totalThisPayroll;
 
 	// Set the reverted value.
@@ -195,8 +187,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.delete(key);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateDelete(
-		RedisConstants.OBJECT_PAYROLL, payroll.getStartEndDisplay());
+	return AlertBoxGenerator.SUCCESS.generateDelete(RedisConstants.OBJECT_PAYROLL,
+		payroll.getStartEndDisplay());
     }
 
     /**
@@ -207,8 +199,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList) {
 	double total = 0;
 	for (ProjectPayroll payroll : payrollList) {
-	    PayrollComputationResult result = payroll
-		    .getPayrollComputationResult();
+	    PayrollComputationResult result = payroll.getPayrollComputationResult();
 	    if (result != null) {
 		total += result.getOverallTotalOfStaff();
 	    }
@@ -218,27 +209,17 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Transactional
     @Override
-    public String createPayroll(HttpSession session, Project proj,
-	    ProjectPayroll projectPayroll) {
+    public String createPayroll(HttpSession session, Project proj, ProjectPayroll projectPayroll) {
 
 	// Take a snapshot of the project structure
 	// during the creation of the payroll.
 	boolean isUpdating = projectPayroll.isSaved();
 
-	// Get all managers in this project.
 	// Preserve list of managers during this time.
-	// FIXME What if manager/approver is deleted? Payroll is orphaned.
-	Set<ManagerAssignment> managers = this.projectService
-		.getAllManagersAssignmentsWithUsers(proj);
-	projectPayroll.setManagerAssignments(managers);
 	projectPayroll.setStaffList(proj.getAssignedStaff());
 
 	// Generate actual object from form ID.
-	SystemUser approver = this.systemUserDAO
-		.getWithSecurityByID(projectPayroll.getApproverID());
-	projectPayroll.setApprover(approver);
-	projectPayroll
-		.setStatus(PayrollStatus.of(projectPayroll.getStatusID()));
+	projectPayroll.setStatus(PayrollStatus.of(projectPayroll.getStatusID()));
 
 	// Preserve project structure.
 	projectPayroll.setSaved(true);
@@ -249,11 +230,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	if (isUpdating) {
-	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(
-		    RedisConstants.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(RedisConstants.OBJECT_PAYROLL,
+		    datePart);
 	} else {
-	    response = AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_PAYROLL, datePart);
 	    projectPayroll.setUuid(UUID.randomUUID());
 	}
 
@@ -271,10 +251,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
      */
     public static String getResponseDatePart(ProjectPayroll projectPayroll) {
 	// Date parts of the response.
-	String startStr = DateUtils.formatDate(projectPayroll.getStartDate(),
-		"yyyy/MM/dd");
-	String endStr = DateUtils.formatDate(projectPayroll.getEndDate(),
-		"yyyy/MM/dd");
+	String startStr = DateUtils.formatDate(projectPayroll.getStartDate(), "yyyy/MM/dd");
+	String endStr = DateUtils.formatDate(projectPayroll.getEndDate(), "yyyy/MM/dd");
 	String datePart = startStr + " to " + endStr;
 	return datePart;
     }
@@ -285,8 +263,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    ProjectPayroll projectPayroll) {
 
 	// Do the computation.
-	this.projectPayrollComputerService.compute(startDate, endDate,
-		projectPayroll);
+	this.projectPayrollComputerService.compute(startDate, endDate, projectPayroll);
 
 	// Return the JSON equivalent of the result.
 	return this.projectPayrollComputerService.getPayrollJSONResult();
@@ -301,16 +278,13 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Get the needed ID's for the key.
 	// Construct the key.
-	long companyID = proj.getCompany() == null ? 0 : proj.getCompany()
-		.getId();
-	String pattern = ProjectPayroll.constructPattern(companyID,
-		proj.getId());
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
+	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
 
 	// Get all keys based on pattern.
 	// Multi-get all objects based on keys.
 	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
-	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo
-		.multiGet(keys);
+	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo.multiGet(keys);
 
 	// Sort the list in descending order.
 	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
@@ -321,8 +295,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1
-			: !(aStart.after(bStart)) ? 1 : 0;
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
 	    }
 	});
 
@@ -331,8 +304,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Transactional
     @Override
-    public String createPayrollClearComputation(HttpSession session,
-	    ProjectPayroll projectPayroll, String toClear) {
+    public String createPayrollClearComputation(HttpSession session, ProjectPayroll projectPayroll,
+	    String toClear) {
 
 	// If the update button is clicked from the "right-side"
 	// project structure checkboxes, reset the payroll JSON.
@@ -356,8 +329,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	String datePart = getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(
-		RedisConstants.OBJECT_PAYROLL, datePart);
+	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(RedisConstants.OBJECT_PAYROLL,
+		datePart);
 	return response;
     }
 
@@ -371,8 +344,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	projectPayroll.setStaffList(staffList);
 	this.projectPayrollValueRepo.set(projectPayroll);
 
-	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME,
-		staff.getFullName());
+	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, staff.getFullName());
     }
 
 }

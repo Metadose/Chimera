@@ -21,7 +21,6 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.ManagerAssignment;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.ProjectService;
@@ -88,15 +87,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
-
-	// Clear all cache associated with this staff.
-	Set<ManagerAssignment> manAssigns = staff.getAssignedManagers();
-	if (!manAssigns.isEmpty()) {
-	    for (ManagerAssignment assignment : manAssigns) {
-		this.projectService.clearProjectCache(assignment.getProject()
-			.getId());
-	    }
-	}
     }
 
     @Override
@@ -147,8 +137,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Transactional
     @Override
-    public double getTotalWageOfProjectInRange(Project project, Date min,
-	    Date max) {
+    public double getTotalWageOfProjectInRange(Project project, Date min, Date max) {
 
 	// List of staff IDs that were already computed.
 	// Overall total.
@@ -157,23 +146,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// TODO Get salary of all in team.
 	project.getAssignedTeams();
-
-	// Get salary of all managers.
-	Set<ManagerAssignment> managerAssigns = project.getManagerAssignments();
-	for (ManagerAssignment assign : managerAssigns) {
-
-	    // If the staff has already been computed.
-	    Staff stf = assign.getManager();
-	    long staffID = stf.getId();
-	    if (alreadyComputedStaff.contains(staffID)) {
-		continue;
-	    }
-
-	    // Else, compute, add to grand total, add to computed list.
-	    double stfWage = getTotalWageOfStaffInRange(stf, min, max);
-	    projectTotal += stfWage;
-	    alreadyComputedStaff.add(staffID);
-	}
 
 	return projectTotal;
     }
@@ -194,8 +166,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max) {
 
 	// Get all the attendances.
-	Set<Attendance> attendances = this
-		.rangeStaffAttendance(staff, min, max);
+	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);
 
 	// Get total wage of all attendances.
 	return getTotalWageFromAttendance(attendances);
@@ -204,8 +175,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public Set<Attendance> rangeStaffAttendance(Staff staff, long min, long max) {
-	Set<String> keys = this.attendanceValueRepo.keys(Attendance
-		.constructPattern(staff));
+	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
 	for (String key : keys) {
 	    Attendance attn = this.attendanceValueRepo.get(key);
@@ -229,16 +199,14 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public Attendance get(Staff staff, AttendanceStatus status, Date timestamp) {
-	return this.attendanceValueRepo.get(Attendance.constructKey(staff,
-		timestamp, status));
+	return this.attendanceValueRepo.get(Attendance.constructKey(staff, timestamp, status));
     }
 
     @Override
     @Transactional
     public void multiSet(MassAttendanceBean attendanceMass) {
 	Staff staff = attendanceMass.getStaff();
-	AttendanceStatus status = AttendanceStatus.of(attendanceMass
-		.getStatusID());
+	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
 	if (status == AttendanceStatus.ABSENT) {
 	    attendanceMass.setWage(0);
 	}
@@ -252,13 +220,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 	Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
 	for (Date date : dates) {
 	    Company co = staff.getCompany();
-	    Attendance attendance = new Attendance(co, staff, status, date,
-		    wage);
+	    Attendance attendance = new Attendance(co, staff, status, date, wage);
 
 	    // Check if date is a weekend.
 	    int dayOfWeek = DateUtils.getDayOfWeek(date);
-	    boolean isWeekend = dayOfWeek == Calendar.SATURDAY
-		    || dayOfWeek == Calendar.SUNDAY;
+	    boolean isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
 
 	    // If status is delete.
 	    if (status == AttendanceStatus.DELETE) {
@@ -283,8 +249,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public List<Attendance> getAllAttendance(Staff staff) {
-	Set<String> keys = this.attendanceValueRepo.keys(Attendance
-		.constructPattern(staff));
+	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	return this.attendanceValueRepo.multiGet(keys);
     }
 

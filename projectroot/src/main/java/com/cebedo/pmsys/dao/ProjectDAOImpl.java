@@ -72,7 +72,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	List<Project> projectList = this.daoHelper.getSelectQueryFilterCompany(session,
 		Project.class.getName(), companyID).list();
 	for (Project project : projectList) {
-	    Hibernate.initialize(project.getManagerAssignments());
 	    Hibernate.initialize(project.getAssignedTeams());
 	    Hibernate.initialize(project.getAssignedTasks());
 	}
@@ -95,7 +94,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	    }
 	}
 
-	Hibernate.initialize(project.getManagerAssignments());
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getAssignedStaff());
 	Hibernate.initialize(project.getFiles());

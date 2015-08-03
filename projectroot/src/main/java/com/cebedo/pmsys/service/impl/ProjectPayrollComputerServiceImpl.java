@@ -29,8 +29,7 @@ import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.google.gson.Gson;
 
 @Service
-public class ProjectPayrollComputerServiceImpl implements
-	ProjectPayrollComputerService {
+public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputerService {
 
     private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
 
@@ -129,16 +128,15 @@ public class ProjectPayrollComputerServiceImpl implements
 	    // If a staff has already been computed before,
 	    // don't compute again.
 	    if (this.alreadyComputedMap.containsKey(staffID)) {
-		this.staffToWageMap.put(staff, IDENTIFIER_ALREADY_EXISTS
-			+ this.alreadyComputedMap.get(staffID));
+		this.staffToWageMap.put(staff,
+			IDENTIFIER_ALREADY_EXISTS + this.alreadyComputedMap.get(staffID));
 		continue;
 	    }
 
 	    // Get wage then add to map.
 	    // Get the total of this guy.
-	    double staffWageTotal = this.attendanceService
-		    .getTotalWageOfStaffInRange(staff, this.startDate,
-			    this.endDate);
+	    double staffWageTotal = this.attendanceService.getTotalWageOfStaffInRange(staff,
+		    this.startDate, this.endDate);
 
 	    // Add it to the overall total of managers.
 	    this.overallTotalOfStaff += staffWageTotal;
@@ -162,11 +160,10 @@ public class ProjectPayrollComputerServiceImpl implements
      * @param max
      * @return
      */
-    private Map<AttendanceStatus, Map<String, Double>> getStaffBreakdownMap(
-	    Staff manager, Date min, Date max) {
+    private Map<AttendanceStatus, Map<String, Double>> getStaffBreakdownMap(Staff manager, Date min,
+	    Date max) {
 	// Attendance count map.
-	Set<Attendance> attendanceList = this.attendanceService
-		.rangeStaffAttendance(manager, min, max);
+	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(manager, min, max);
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = this.staffService
 		.getAttendanceStatusCountMap(attendanceList);
 	return attendanceStatusCountMap;
@@ -194,14 +191,12 @@ public class ProjectPayrollComputerServiceImpl implements
      * @param overtime
      * @return
      */
-    private String getBreakdownCount(
-	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
+    private String getBreakdownCount(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
 	    AttendanceStatus status) {
 
 	// Get the count, wage and format.
 	Map<String, Double> countAndWage = staffWageBreakdown.get(status);
-	double count = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
+	double count = countAndWage.get(StaffServiceImpl.STAFF_ATTENDANCE_STATUS_COUNT);
 
 	// Get the value.
 	// Get the old value.
@@ -220,14 +215,12 @@ public class ProjectPayrollComputerServiceImpl implements
      * @param countAndWage
      * @return
      */
-    private String getBreakdownWage(
-	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
+    private String getBreakdownWage(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
 	    AttendanceStatus status) {
 
 	// Get the count, wage and format.
 	Map<String, Double> countAndWage = staffWageBreakdown.get(status);
-	Double wage = countAndWage
-		.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
+	Double wage = countAndWage.get(StaffServiceImpl.STAFF_ATTENDANCE_EQUIVALENT_WAGE);
 
 	// Get the value.
 	// Get the old value.
@@ -250,44 +243,32 @@ public class ProjectPayrollComputerServiceImpl implements
      * @return
      */
     private TreeGridRowBean setAttendanceBreakdown(
-	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
-	    TreeGridRowBean rowBean) {
+	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown, TreeGridRowBean rowBean) {
 
 	// OVERTIME.
 	rowBean.setBreakdownOvertimeCount(getBreakdownCount(staffWageBreakdown,
 		AttendanceStatus.OVERTIME));
-	rowBean.setBreakdownOvertimeWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.OVERTIME));
+	rowBean.setBreakdownOvertimeWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.OVERTIME));
 
 	// ABSENT.
-	rowBean.setBreakdownAbsentCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.ABSENT));
-	rowBean.setBreakdownAbsentWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.ABSENT));
+	rowBean.setBreakdownAbsentCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.ABSENT));
+	rowBean.setBreakdownAbsentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.ABSENT));
 
 	// HALFDAY.
-	rowBean.setBreakdownHalfdayCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.HALFDAY));
-	rowBean.setBreakdownHalfdayWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.HALFDAY));
+	rowBean.setBreakdownHalfdayCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.HALFDAY));
+	rowBean.setBreakdownHalfdayWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.HALFDAY));
 
 	// LATE.
-	rowBean.setBreakdownLateCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.LATE));
-	rowBean.setBreakdownLateWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.LATE));
+	rowBean.setBreakdownLateCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.LATE));
+	rowBean.setBreakdownLateWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.LATE));
 
 	// LEAVE.
-	rowBean.setBreakdownLeaveCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.LEAVE));
-	rowBean.setBreakdownLeaveWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.LEAVE));
+	rowBean.setBreakdownLeaveCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.LEAVE));
+	rowBean.setBreakdownLeaveWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.LEAVE));
 
 	// PRESENT.
-	rowBean.setBreakdownPresentCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.PRESENT));
-	rowBean.setBreakdownPresentWage(getBreakdownWage(staffWageBreakdown,
-		AttendanceStatus.PRESENT));
+	rowBean.setBreakdownPresentCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.PRESENT));
+	rowBean.setBreakdownPresentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.PRESENT));
 
 	return rowBean;
     }
@@ -349,11 +330,7 @@ public class ProjectPayrollComputerServiceImpl implements
 
 	    // Get details.
 	    long rowPKey = Math.abs(randomno.nextLong());
-	    boolean isManager = staff.isManager(this.projectPayroll
-		    .getProject());
-	    String rowName = isManager ? CSSClass.DANGER.getSpanHTML("MANAGER",
-		    staff.getFormalName()) : CSSClass.SUCCESS.getSpanHTML(
-		    "STAFF", staff.getFormalName());
+	    String rowName = CSSClass.SUCCESS.getSpanHTML("STAFF", staff.getFormalName());
 	    String value = this.staffToWageMap.get(staff);
 	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
 	    String rowValue = getTreeGridRowValue(skip, value);
@@ -361,10 +338,9 @@ public class ProjectPayrollComputerServiceImpl implements
 	    // Add to bean.
 	    double staffWage = staff.getWage();
 	    this.overallTotalOfWage += staffWage;
-	    String staffWageStr = NumberFormatUtils.getCurrencyFormatter()
-		    .format(staffWage);
-	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, headerPKey,
-		    rowName, rowValue, staffWageStr);
+	    String staffWageStr = NumberFormatUtils.getCurrencyFormatter().format(staffWage);
+	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, headerPKey, rowName, rowValue,
+		    staffWageStr);
 
 	    // Breakdown.
 	    if (!skip) {
@@ -388,37 +364,24 @@ public class ProjectPayrollComputerServiceImpl implements
     private void setBreakdownMotherBean() {
 	TreeGridRowBean motherBean = this.treeGrid.get(0);
 	motherBean.setWage(this.formatter.format(this.overallTotalOfWage));
-	motherBean
-		.setBreakdownAbsentCount(getOverallBreakdownCountStr(AttendanceStatus.ABSENT));
-	motherBean
-		.setBreakdownAbsentWage(getOverallBreakdownWageStr(AttendanceStatus.ABSENT));
-	motherBean
-		.setBreakdownHalfdayCount(getOverallBreakdownCountStr(AttendanceStatus.HALFDAY));
-	motherBean
-		.setBreakdownHalfdayWage(getOverallBreakdownWageStr(AttendanceStatus.HALFDAY));
-	motherBean
-		.setBreakdownLateCount(getOverallBreakdownCountStr(AttendanceStatus.LATE));
-	motherBean
-		.setBreakdownLateWage(getOverallBreakdownWageStr(AttendanceStatus.LATE));
-	motherBean
-		.setBreakdownLeaveCount(getOverallBreakdownCountStr(AttendanceStatus.LEAVE));
-	motherBean
-		.setBreakdownLeaveWage(getOverallBreakdownWageStr(AttendanceStatus.LEAVE));
-	motherBean
-		.setBreakdownOvertimeCount(getOverallBreakdownCountStr(AttendanceStatus.OVERTIME));
-	motherBean
-		.setBreakdownOvertimeWage(getOverallBreakdownWageStr(AttendanceStatus.OVERTIME));
-	motherBean
-		.setBreakdownPresentCount(getOverallBreakdownCountStr(AttendanceStatus.PRESENT));
-	motherBean
-		.setBreakdownPresentWage(getOverallBreakdownWageStr(AttendanceStatus.PRESENT));
+	motherBean.setBreakdownAbsentCount(getOverallBreakdownCountStr(AttendanceStatus.ABSENT));
+	motherBean.setBreakdownAbsentWage(getOverallBreakdownWageStr(AttendanceStatus.ABSENT));
+	motherBean.setBreakdownHalfdayCount(getOverallBreakdownCountStr(AttendanceStatus.HALFDAY));
+	motherBean.setBreakdownHalfdayWage(getOverallBreakdownWageStr(AttendanceStatus.HALFDAY));
+	motherBean.setBreakdownLateCount(getOverallBreakdownCountStr(AttendanceStatus.LATE));
+	motherBean.setBreakdownLateWage(getOverallBreakdownWageStr(AttendanceStatus.LATE));
+	motherBean.setBreakdownLeaveCount(getOverallBreakdownCountStr(AttendanceStatus.LEAVE));
+	motherBean.setBreakdownLeaveWage(getOverallBreakdownWageStr(AttendanceStatus.LEAVE));
+	motherBean.setBreakdownOvertimeCount(getOverallBreakdownCountStr(AttendanceStatus.OVERTIME));
+	motherBean.setBreakdownOvertimeWage(getOverallBreakdownWageStr(AttendanceStatus.OVERTIME));
+	motherBean.setBreakdownPresentCount(getOverallBreakdownCountStr(AttendanceStatus.PRESENT));
+	motherBean.setBreakdownPresentWage(getOverallBreakdownWageStr(AttendanceStatus.PRESENT));
 	this.treeGrid.set(0, motherBean);
     }
 
     private String getOverallBreakdownWageStr(AttendanceStatus status) {
-	return this.overallBreakdownWageMap.get(status) == 0.0 ? "-"
-		: this.formatter.format(this.overallBreakdownWageMap
-			.get(status));
+	return this.overallBreakdownWageMap.get(status) == 0.0 ? "-" : this.formatter
+		.format(this.overallBreakdownWageMap.get(status));
     }
 
     private String getOverallBreakdownCountStr(AttendanceStatus status) {
@@ -437,8 +400,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	this.startDate = min;
 	this.endDate = max;
 	this.projectPayroll = projectPayroll;
-	this.staffIDsToCompute = DataStructUtils
-		.convertArrayToList(projectPayroll.getStaffIDs());
+	this.staffIDsToCompute = DataStructUtils.convertArrayToList(projectPayroll.getStaffIDs());
 
 	// Compute.
 	compute();
@@ -449,8 +411,7 @@ public class ProjectPayrollComputerServiceImpl implements
 	this.payrollResult.setStartDate(this.startDate);
 	this.payrollResult.setEndDate(this.endDate);
 	this.payrollResult.setOverallTotalOfStaff(this.overallTotalOfStaff);
-	this.payrollResult
-		.setStaffPayrollBreakdownMap(this.staffPayrollBreakdownMap);
+	this.payrollResult.setStaffPayrollBreakdownMap(this.staffPayrollBreakdownMap);
 	this.payrollResult.setStaffToWageMap(this.staffToWageMap);
 	this.payrollResult.setTreeGrid(this.treeGrid);
     }

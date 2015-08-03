@@ -49,33 +49,6 @@ public interface StaffService {
 
     public List<Staff> listWithAllCollections();
 
-    /**
-     * Assign a project manager.
-     * 
-     * @param projectID
-     * @param staffID
-     * @param position
-     * @return
-     */
-    public String assignProjectManager(long projectID, long staffID, String position);
-
-    /**
-     * Unassign a project manager.
-     * 
-     * @param projectID
-     * @param staffID
-     * @return
-     */
-    public String unassignProjectManager(long projectID, long staffID);
-
-    /**
-     * Unassign all project managers.
-     * 
-     * @param projectID
-     * @return
-     */
-    public String unassignAllProjectManagers(long projectID);
-
     public Staff getWithAllCollectionsByID(long id);
 
     /**
