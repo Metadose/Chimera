@@ -80,8 +80,7 @@ public class EstimationOutput implements IDomainObject {
 	return estimationAllowance;
     }
 
-    public void setEstimationAllowance(
-	    TableEstimationAllowance estimationAllowance) {
+    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
 
@@ -111,14 +110,14 @@ public class EstimationOutput implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT,
-		this.company.getId(), this.project.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, this.company.getId(),
+		this.project.getId(), this.uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof EstimationOutput ? ((EstimationOutput) obj)
-		.getKey().equals(getKey()) : false;
+	return obj instanceof EstimationOutput ? ((EstimationOutput) obj).getKey().equals(getKey())
+		: false;
     }
 
     @Override
@@ -127,8 +126,8 @@ public class EstimationOutput implements IDomainObject {
     }
 
     public static String constructPattern(Project proj) {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, proj
-		.getCompany().getId(), proj.getId(), "*");
+	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, proj.getCompany().getId(),
+		proj.getId(), "*");
     }
 
     public String getEstimatesAsJson() {
@@ -153,6 +152,16 @@ public class EstimationOutput implements IDomainObject {
 
     public void setRemarks(String remarks) {
 	this.remarks = remarks;
+    }
+
+    public void setResults(EstimationInputBean estimateInput, List<Estimate> estimates2,
+	    String rowListJson) {
+	setName(estimateInput.getName());
+	setRemarks(estimateInput.getRemarks());
+	setEstimates(estimates2);
+	setEstimatesAsJson(rowListJson);
+	setLastComputed(new Date(System.currentTimeMillis()));
+	setUuid(UUID.randomUUID());
     }
 
 }

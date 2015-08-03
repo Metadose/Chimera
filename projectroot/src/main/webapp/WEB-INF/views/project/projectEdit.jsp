@@ -71,9 +71,7 @@
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
-                                		<li><a href="#tab_managers" data-toggle="tab">Managers</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
-<!--                                 		<li><a href="#tab_estimate" data-toggle="tab">Estimate</a></li> -->
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
@@ -341,20 +339,51 @@
               						</div>
               						<div class="row">
                    						<div class="col-md-12">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-<%--                    									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/> --%>
-<%--                    									<h3 class="box-title">Computation as of ${lastComputed}</h3> --%>
-                   								</div>
-                   								<div class="box-body table-responsive">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+		                                	<div class="box box-body box-default">
+<!-- 				                                		<div class="box-header"> -->
+<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
+<!-- 			              								</div> -->
+				                                <div class="box-body table-responsive">
+				                                	<div class="callout callout-info callout-cebedo">
+									                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 									                </div>
-                   									<table id="treegrid1"></table>
-                   								</div>
-                							</div>
-                						</div>
-                					</div>
+				                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Name</th>
+				                                                <th>Remarks</th>
+				                                                <th>Allowance</th>
+				                                                <th>Time Computed</th>
+				                                            </tr>
+		                                        		</thead>
+				                                        <tbody>
+					                                		<c:forEach items="${estimationOutputList}" var="estimationOutput">
+				                                            <tr>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlView" value=""/>
+				                                            			<a href="${urlView}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+									                                    <c:url value="/project/" var="urlDelete"/>
+									                                    <a href="${urlDelete}">
+		                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Delete</button>
+									                                    </a>
+																	</center>
+																</td>
+			                                                	<td>${estimationOutput.name}</td>
+			                                                	<td>${estimationOutput.remarks}</td>
+			                                                	<td>${estimationOutput.estimationAllowance.getLabel()}</td>
+			                                                	<td>${estimationOutput.lastComputed}</td>
+				                                            </tr>
+				                                            </c:forEach>
+					                                    </tbody>
+					                                </table>
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+				                   	</div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	
@@ -1125,136 +1154,6 @@
 		                            </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_managers">
-                                	<div class="box">
-<!--                                 		<div class="box-header"> -->
-<!--           									<h3 class="box-title">Managers</h3> -->
-<!--           								</div> -->
-		                                <div class="box-body table-responsive">
-          									<div class="callout callout-info callout-cebedo">
-							                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
-							                </div>
-		                                	<c:set var="displayBreakManager" value="${false}"/>
-		                                	<table>
-		                                    	<tr>
-		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
-		                                    		<td style="vertical-align: top;">
-		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
-		                                    			<a href="${urlCreateStaff}">
-				                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:set var="displayBreakManager" value="${true}"/>
-		                                    		</sec:authorize>
-		                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-		                                    		<c:if test="${!empty staffList}">
- 		                                    		<form:form 
- 		                                    		modelAttribute="staffPosition"  
- 		                                    		method="post" 
- 		                                    		action="${contextPath}/project/assign/staff"> 
- 		                                    			<td>
- 		                                    			<form:select class="form-control" path="staffID"> 
-                                     						<c:forEach items="${staffList}" var="staff"> 
-                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select>
- 		                                    			
- 		                                    			<p class="help-block">Choose the staff who will manage this project&nbsp;&nbsp;&nbsp;&nbsp;</p> 
- 		                                    			</td>
- 		                                    			<td>
- 		                                    				&nbsp;
- 		                                    			</td>
- 		                                    			<td>
- 		                                    			<form:input placeholder="Sample: Constructor, Timekeeper, Foreman, Liason, etc." 
- 		                                    				type="text" 
- 															class="form-control" 
- 															path="position"/>
- 														<p class="help-block">Enter the position or title of the staff in this project</p>
- 		                                    			</td>
- 		                                    			<td>
- 		                                    				&nbsp;
- 		                                    			</td>
- 														<td style="vertical-align: top;">
- 														<button class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
- 		                                    			</td> 
- 		                                    		</form:form> 
-		                                    		</c:if>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:if test="${!empty project.managerAssignments}">
-		                                    		<td>
-               											<c:url var="urlProjectUnassignStaffAll" value="/project/unassign/staff/all"/>
-		                                    			<a href="${urlProjectUnassignStaffAll}">
-                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		</c:if>
-		                                    		<c:set var="displayBreakManager" value="${true}"/>
-		                                    		</sec:authorize>
-		                                    	</tr>
-		                                    </table>
-		                                    <c:if test="${displayBreakManager}">
-		                                    <br/>
-		                                    </c:if>
-		                                    <table id="managers-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                                <th>Photo</th>
-		                                                <th>Full Name</th>
-		                                                <th>Company Position</th>
-		                                                <th>Project Position</th>
-		                                                <th>Salary (Daily)</th>
-		                                                <th>E-Mail</th>
-		                                                <th>Contact Number</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                        <c:set var="managerAssignments" value="${project.managerAssignments}"/>
-				                                	<c:if test="${!empty managerAssignments}">
-				                                		<c:forEach items="${managerAssignments}" var="assignment">
-			                                			<c:set var="manager" value="${assignment.manager}"/>
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" />
-			                                            			<a href="${urlViewStaff}">
-							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-			                                            			</a>
-	                   												<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
-	                   												<c:url var="urlUnassignStaff" value="/project/unassign/staff/${manager.id}"/>
-	                   												<a href="${urlUnassignStaff}">
-																		<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-	                   												</a>
-	                   												</sec:authorize>
-																</center>
-															</td>
-			                                                <td>
-			                                                	<div class="user-panel">
-													            <div class="pull-left image">
-													            TODO
-													            </div>
-														        </div>
-			                                                </td>
-			                                                <td>${manager.getFullName()}</td>
-			                                                <td>${manager.companyPosition}</td>
-			                                                <td>${assignment.projectPosition}</td>
-			                                                <td>${manager.getWageAsString()}</td>
-			                                                <td>${manager.email}</td>
-			                                                <td>${manager.contactNumber}</td>
-			                                            </tr>
-		                                            </c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
-                                
                                 <div class="tab-pane" id="tab_estimate">
                                 	<div class="box">
 <!--                                 		<div class="box-header"> -->
@@ -2398,6 +2297,7 @@
 			$("#assigned-staff-table").dataTable();
 			$("#assign-staff-table").dataTable();
 			$("#tasks-table").dataTable();
+			$(".is-data-table").dataTable();
 			
 			// Event handler for photos.
 			$('li img').on('click',function(){

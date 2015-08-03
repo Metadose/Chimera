@@ -205,6 +205,7 @@ public class Task implements Serializable {
 	this.company = company;
     }
 
+    @Transient
     public String getMilestoneString() {
 	return milestoneString;
     }

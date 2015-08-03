@@ -1034,8 +1034,7 @@ public class ProjectController {
 	Project proj = massUploadStaff.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createStaffFromExcel(
-		massUploadStaff.getFile(), proj);
+	String response = this.projectService.createStaffFromExcel(massUploadStaff.getFile(), proj);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
@@ -1690,13 +1689,6 @@ public class ProjectController {
     private void setEstimateAttributes(Project proj, Model model) {
 	List<EstimationOutput> estimates = this.estimationOutputService.list(proj);
 	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
-
-	// TODO TEST
-	try {
-	    model.addAttribute(ATTR_ESTIMATE_OUTPUT_JSON, estimates.get(0).getEstimatesAsJson());
-	} catch (Exception e) {
-	    ;
-	}
     }
 
     /**

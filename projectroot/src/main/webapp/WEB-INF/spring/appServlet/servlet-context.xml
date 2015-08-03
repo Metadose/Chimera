@@ -247,7 +247,6 @@
                 <beans:value>com.cebedo.pmsys.model.Field</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.FieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Staff</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.ManagerAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.StaffTeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Team</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.TeamAssignment</beans:value>

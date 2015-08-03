@@ -113,8 +113,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    // Set the list.
 	    // Set the object.
 	    String rowListJson = new Gson().toJson(rowList, ArrayList.class);
-	    estimationOutput.setEstimates(estimates);
-	    estimationOutput.setEstimatesAsJson(rowListJson);
+	    estimationOutput.setResults(estimateInput, estimates, rowListJson);
 	    this.estimationOutputValueRepo.set(estimationOutput);
 
 	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_ESTIMATE, "TODO");
