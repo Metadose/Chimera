@@ -89,14 +89,7 @@
 							                                                <td>
 							                                                	<div class="user-panel">
 																	            <div class="pull-left image">
-																	                <c:choose>
-						                                                			<c:when test="${!empty staff.thumbnailURL}">
-						                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}" class="img-circle"/>
-						                                                			</c:when>
-						                                                			<c:when test="${empty staff.thumbnailURL}">
-						                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
-						                                                			</c:when>
-							                                                		</c:choose>
+																	            	TODO
 																	            </div>
 																		        </div>
 							                                                </td>

@@ -184,14 +184,6 @@
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header bg-light-blue">
-                        	<c:choose>
-							<c:when test="${!empty authStaff.thumbnailURL}">
-								<img src="${contextPath}/image/display/staff/profile/?staff_id=${authStaff.id}" class="img-circle" alt="User Image" />
-							</c:when>
-							<c:when test="${empty authStaff.thumbnailURL}">
-								<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
-							</c:when>
-							</c:choose>
                             <p>
 		            	 		${staffName}<br/>${companyPosition}
                                 <small>Member since TODO SUBTITLE</small>

@@ -78,12 +78,7 @@
 																			<span class="label ${css}">${project.getStatusEnum()}</span>
 						                                                </td>
 						                                                <td>
-								                                            ${project.name}<br/><br/>
-						                                                	<c:choose>
-						                                                		<c:when test="${!empty project.thumbnailURL}">
-						                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-						                                                		</c:when>
-						                                                	</c:choose>
+								                                            ${project.name}
 						                                                </td>
 						                                                <td>${project.location}</td>
 						                                                <td>${project.notes}</td>

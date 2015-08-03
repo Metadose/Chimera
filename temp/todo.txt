@@ -69,9 +69,9 @@ Jm ig agaw roy pwede ma client or subcon
 
 use esapi in XSSRequestWrapper:78
 
+Check if pwde ma preauth ang company
 
-
-
+Remove concept of Project "Manager"
 
 
 

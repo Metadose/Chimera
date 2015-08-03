@@ -55,14 +55,7 @@ $(document).ready(function() {
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-            	<c:choose>
-				<c:when test="${!empty authStaff.thumbnailURL}">
-					<img src="${contextPath}/image/display/staff/profile/?staff_id=${authStaff.id}" class="img-circle" alt="User Image" />
-				</c:when>
-				<c:when test="${empty authStaff.thumbnailURL}">
-					<img src="<c:url value="/resources/img/avatar5.png" />" class="img-circle" alt="User Image" />
-				</c:when>
-				</c:choose>
+            	TODO
             </div>
             <div class="pull-left info">
             	<c:choose>

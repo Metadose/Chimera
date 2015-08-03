@@ -29,12 +29,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
+import com.cebedo.pmsys.bean.MassUploadStaffBean;
 import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
 import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.URLRegistry;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationOutput;
@@ -90,10 +92,10 @@ import com.cebedo.pmsys.utils.DateUtils;
 value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
 	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL, RedisConstants.OBJECT_PULL_OUT,
-	RedisConstants.OBJECT_ESTIMATE },
+	RedisConstants.OBJECT_ESTIMATE, ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN },
 
 types = { Project.class, FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
-	Delivery.class, Material.class, PullOut.class, Estimate.class }
+	Delivery.class, Material.class, PullOut.class, Estimate.class, MassUploadStaffBean.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -119,6 +121,7 @@ public class ProjectController {
     public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
 
+    public static final String ATTR_MASS_UPLOAD_STAFF_BEAN = "massUploadStaffBean";
     public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
@@ -1088,6 +1091,28 @@ public class ProjectController {
     }
 
     /**
+     * Create many staff members by uploading an Excel file.
+     */
+    @RequestMapping(value = { URLRegistry.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
+    public String createMassStaff(
+	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadStaffBean massUploadStaff,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	Project proj = massUploadStaff.getProject();
+
+	// Do service and get response.
+	String response = this.projectService.createAllStaffFromExcelAssignToProject(
+		massUploadStaff.getStaffFile(), proj);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	status.setComplete();
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+    }
+
+    /**
      * Do create/update on an estimate.
      * 
      * @param delivery
@@ -1794,6 +1819,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
+	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new MassUploadStaffBean(proj));
     }
 
     /**

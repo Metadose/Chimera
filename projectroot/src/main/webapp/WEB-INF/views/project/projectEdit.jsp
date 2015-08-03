@@ -100,18 +100,7 @@
 									                </div>
                    									<c:choose>
                                 						<c:when test="${project.id != 0}">
-                                							<c:choose>
-		                   										<c:when test="${!empty project.thumbnailURL}">
-		                   											<img src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-		                   											<br/>
-		                   											<br/>
-		                   										</c:when>
-		                   										<c:when test="${empty project.thumbnailURL}">
-		                   											<div class="callout callout-warning">
-													                    <p>No photo uploaded.</p>
-													                </div>
-		                   										</c:when>
-		                   									</c:choose>
+                                							TODO
 		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<div class="form-group">
 		                   										<form:form id="uploadPhotoForm"
@@ -139,17 +128,6 @@
 						                                        <td>
 						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-cebedo-upload btn-flat btn-sm">Upload</button>
 						                                        </td>
-						                                        <c:if test="${!empty project.thumbnailURL}">
-						                                        <td>
-						                                        &nbsp;
-						                                        </td>
-						                                        <td>
-						                                        <c:url var="urlProjectProfileDelete" value="/project/profile/delete"/>
-                                								<a href="${urlProjectProfileDelete}">
-						                                        <button class="btn btn-cebedo-delete btn-flat btn-sm">Delete Photo</button>
-          														</a>
-						                                        </td>
-						                                        </c:if>
 						                                        </tr>
 						                                        </table>
 						                                    </div>
@@ -1258,14 +1236,7 @@
 			                                                <td>
 			                                                	<div class="user-panel">
 													            <div class="pull-left image">
-													                <c:choose>
-		                                                			<c:when test="${!empty manager.thumbnailURL}">
-		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${manager.id}" class="img-circle"/>
-		                                                			</c:when>
-		                                                			<c:when test="${empty manager.thumbnailURL}">
-		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
-		                                                			</c:when>
-			                                                		</c:choose>
+													            TODO
 													            </div>
 														        </div>
 			                                                </td>

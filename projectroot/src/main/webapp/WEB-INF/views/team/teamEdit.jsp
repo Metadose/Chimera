@@ -250,14 +250,7 @@
 			                                                <td>
 			                                                	<div class="user-panel">
 													            <div class="pull-left image">
-													                <c:choose>
-		                                                			<c:when test="${!empty member.thumbnailURL}">
-		                                                				<img src="${contextPath}/image/display/staff/profile/?staff_id=${member.id}" class="img-circle"/>
-		                                                			</c:when>
-		                                                			<c:when test="${empty member.thumbnailURL}">
-		                                                				<img src="${contextPath}/resources/img/avatar5.png" class="img-circle">
-		                                                			</c:when>
-			                                                		</c:choose>
+													            	TODO
 													            </div>
 														        </div>
 			                                                </td>
@@ -371,15 +364,7 @@
 					                                            		<span class="label label">Cancelled</span>
 					                                            	</c:when>
 					                                            </c:choose>
-					                                            ${project.name}<br/><br/>
-			                                                	<c:choose>
-			                                                		<c:when test="${!empty project.thumbnailURL}">
-			                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-			                                                		</c:when>
-			                                                		<c:when test="${empty project.thumbnailURL}">
-			                                                			<h5>No photo uploaded.</h5>
-			                                                		</c:when>
-			                                                	</c:choose>
+					                                            ${project.name}
 			                                                </td>
 			                                                <td>${project.location}</td>
 			                                                <td>${project.notes}</td>

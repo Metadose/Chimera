@@ -76,15 +76,6 @@
                    								</div>
                    								<div class="box-body">
                    									<c:if test="${staff.id != 0}">
-                   									<c:choose>
-                   										<c:when test="${!empty staff.thumbnailURL}">
-                   											<img src="${contextPath}/image/display/staff/profile/?staff_id=${staff.id}"/>
-                   										</c:when>
-                   										<c:when test="${empty staff.thumbnailURL}">
-                   											No photo uploaded.
-                   										</c:when>
-                   									</c:choose>
-                   									<br/><br/>
                    									<div class="form-group">
                    										<form action="${contextPath}/photo/upload/staff/profile" method="post" enctype="multipart/form-data">	
                    											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -423,15 +414,7 @@
 				                                            </c:choose>
 		                                                </td>
 		                                                <td>
-				                                            ${project.name}<br/><br/>
-		                                                	<c:choose>
-		                                                		<c:when test="${!empty project.thumbnailURL}">
-		                                                			<img style="width: 100%" src="${contextPath}/image/display/project/profile/?project_id=${project.id}"/>
-		                                                		</c:when>
-		                                                		<c:when test="${empty project.thumbnailURL}">
-		                                                			<h5>No photo uploaded.</h5>
-		                                                		</c:when>
-		                                                	</c:choose>
+				                                            ${project.name}
 		                                                </td>
 		                                                <td>${project.location}</td>
 		                                                <td>${project.notes}</td>

@@ -53,6 +53,11 @@ public class Task implements Serializable {
     private int status;
     private Company company;
 
+    /**
+     * Excel inputs.
+     */
+    private String milestoneString;
+
     public Task() {
 	;
     }
@@ -198,6 +203,14 @@ public class Task implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    public String getMilestoneString() {
+	return milestoneString;
+    }
+
+    public void setMilestoneString(String milestoneString) {
+	this.milestoneString = milestoneString;
     }
 
     // @ManyToMany

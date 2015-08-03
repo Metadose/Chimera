@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +10,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DateUtils {
+
+    public static Date convertStringToDate(String dateString) throws ParseException {
+	DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	Date date = formatter.parse(dateString);
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(date);
+	return calendar.getTime();
+    }
 
     /**
      * Reference:
@@ -18,8 +28,7 @@ public class DateUtils {
      */
     public static Date getCurrentMonthDateEnd() {
 	Calendar calendar = getCalendarForNow();
-	calendar.set(Calendar.DAY_OF_MONTH,
-		calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+	calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 	setTimeToEndofDay(calendar);
 	Date end = calendar.getTime();
 	return end;
@@ -34,8 +43,7 @@ public class DateUtils {
      */
     public static Date getCurrentMonthDateStart() {
 	Calendar calendar = getCalendarForNow();
-	calendar.set(Calendar.DAY_OF_MONTH,
-		calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+	calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 	setTimeToBeginningOfDay(calendar);
 	Date begining = calendar.getTime();
 	return begining;

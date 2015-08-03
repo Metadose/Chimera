@@ -1,11 +1,22 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.DateFormatConverter;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -14,6 +25,7 @@ import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
@@ -26,6 +38,7 @@ import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -33,7 +46,14 @@ public class TaskServiceImpl implements TaskService {
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private LogHelper logHelper = new LogHelper();
+    private ExcelHelper excelHelper = new ExcelHelper();
     private static Logger logger = Logger.getLogger(Task.OBJECT_NAME);
+
+    private static final int EXCEL_COLUMN_DATE_START = 1;
+    private static final int EXCEL_COLUMN_DURATION = 2;
+    private static final int EXCEL_COLUMN_MILESTONE = 3;
+    private static final int EXCEL_COLUMN_TITLE = 4;
+    private static final int EXCEL_COLUMN_CONTENT = 5;
 
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
@@ -54,6 +74,104 @@ public class TaskServiceImpl implements TaskService {
 
     public void setTaskDAO(TaskDAO taskDAO) {
 	this.taskDAO = taskDAO;
+    }
+
+    private void createMassTasks(List<Task> tasks) {
+	for (Task task : tasks) {
+	    ;
+	}
+    }
+
+    private List<Task> convertExcelToTaskList(MultipartFile multipartFile, Company company) {
+	try {
+
+	    // Create Workbook instance holding reference to .xls file
+	    // Get first/desired sheet from the workbook.
+	    HSSFWorkbook workbook = new HSSFWorkbook(multipartFile.getInputStream());
+	    HSSFSheet sheet = workbook.getSheetAt(0);
+
+	    // Iterate through each rows one by one.
+	    Iterator<Row> rowIterator = sheet.iterator();
+
+	    // Construct estimate containers.
+	    List<Task> taskList = new ArrayList<Task>();
+	    while (rowIterator.hasNext()) {
+
+		Row row = rowIterator.next();
+		int rowCountDisplay = row.getRowNum() + 1;
+
+		// TODO Skip first 3 lines.
+		if (rowCountDisplay <= 3) {
+		    continue;
+		}
+
+		// For each row, iterate through all the columns
+		Iterator<Cell> cellIterator = row.cellIterator();
+
+		// Every row, is a Staff object.
+		Task task = new Task();
+		task.setCompany(company);
+
+		while (cellIterator.hasNext()) {
+
+		    // Cell in this row and column.
+		    Cell cell = cellIterator.next();
+		    int colCountDisplay = cell.getColumnIndex() + 1;
+
+		    switch (colCountDisplay) {
+
+		    case EXCEL_COLUMN_DATE_START:
+
+			// Apply a date format in the cell.
+			String excelFormatPattern = DateFormatConverter.convert(Locale.ENGLISH,
+				"yyyy-MM-dd");
+			CellStyle cellStyle = workbook.createCellStyle();
+			DataFormat poiFormat = workbook.createDataFormat();
+			cellStyle.setDataFormat(poiFormat.getFormat(excelFormatPattern));
+			cell.setCellStyle(cellStyle);
+
+			// Get the cell data.
+			String dateStart = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+
+			// Convert the date string to date object.
+			task.setDateStart(DateUtils.convertStringToDate(dateStart));
+			continue;
+
+		    case EXCEL_COLUMN_DURATION:
+			int duration = (Integer) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			task.setDuration(duration);
+			continue;
+
+		    case EXCEL_COLUMN_MILESTONE:
+			String milestone = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			task.setMilestoneString(milestone);
+			continue;
+
+		    case EXCEL_COLUMN_TITLE:
+			String title = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			task.setTitle(title);
+			continue;
+
+		    case EXCEL_COLUMN_CONTENT:
+			String content = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			task.setContent(content);
+			continue;
+
+		    }
+		}
+
+		taskList.add(task);
+	    }
+	    return taskList;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return new ArrayList<Task>();
     }
 
     /**
