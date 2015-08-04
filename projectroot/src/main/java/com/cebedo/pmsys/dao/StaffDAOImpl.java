@@ -19,8 +19,6 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 
 @Repository
 public class StaffDAOImpl implements StaffDAO {
@@ -50,11 +48,9 @@ public class StaffDAOImpl implements StaffDAO {
     public Staff getWithAllCollectionsByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Staff staff = (Staff) session.load(Staff.class, new Long(id));
-	Hibernate.initialize(staff.getTeams());
 
 	Set<Task> taskList = staff.getTasks();
 	for (Task task : taskList) {
-	    Hibernate.initialize(task.getTeams());
 	    Hibernate.initialize(task.getStaff());
 	    Hibernate.initialize(task.getMilestone());
 
@@ -123,34 +119,6 @@ public class StaffDAOImpl implements StaffDAO {
 	    Hibernate.initialize(staff.getTasks());
 	}
 	return staffList;
-    }
-
-    @Override
-    public void unassignTeam(long teamID, long staffID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	// TODO Make the others reference Object.COLUMN_PRIMARY_KEY
-	// Rather than ObjectAssignment.COLUMN_NAME.
-	Query query = session.createQuery("DELETE FROM " + StaffTeamAssignment.class.getName()
-		+ " WHERE " + Team.COLUMN_PRIMARY_KEY + "=:" + Team.COLUMN_PRIMARY_KEY + " AND "
-		+ Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
-	query.setParameter(Team.COLUMN_PRIMARY_KEY, teamID);
-	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
-	query.executeUpdate();
-    }
-
-    @Override
-    public void unassignAllTeams(long staffID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM " + StaffTeamAssignment.class.getName()
-		+ " WHERE " + Staff.COLUMN_PRIMARY_KEY + "=:" + Staff.COLUMN_PRIMARY_KEY);
-	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staffID);
-	query.executeUpdate();
-    }
-
-    @Override
-    public void assignTeam(StaffTeamAssignment stAssign) {
-	Session session = this.sessionFactory.getCurrentSession();
-	session.persist(stAssign);
     }
 
     @Override

@@ -38,7 +38,6 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -566,10 +565,6 @@ public class ProjectServiceImpl implements ProjectService {
 	List<Staff> allStaff = new ArrayList<Staff>();
 	for (Task task : proj.getAssignedTasks()) {
 	    allStaff.addAll(task.getStaff());
-	}
-
-	for (Team team : proj.getAssignedTeams()) {
-	    allStaff.addAll(team.getMembers());
 	}
 	return allStaff;
     }

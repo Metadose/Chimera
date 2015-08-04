@@ -15,7 +15,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +25,6 @@ import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
-import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -39,13 +37,9 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.ProjectFile;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
-import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -77,10 +71,8 @@ public class StaffServiceImpl implements StaffService {
 
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
-    private TeamDAO teamDAO;
     private SystemUserDAO systemUserDAO;
     private CompanyDAO companyDAO;
-    private ProjectFileService projectFileService;
 
     public void setCompanyDAO(CompanyDAO companyDAO) {
 	this.companyDAO = companyDAO;
@@ -90,20 +82,12 @@ public class StaffServiceImpl implements StaffService {
 	this.systemUserDAO = systemUserDAO;
     }
 
-    public void setProjectFileService(ProjectFileService ps) {
-	this.projectFileService = ps;
-    }
-
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
     }
 
     public void setStaffDAO(StaffDAO staffDAO) {
 	this.staffDAO = staffDAO;
-    }
-
-    public void setTeamDAO(TeamDAO teamDAO) {
-	this.teamDAO = teamDAO;
     }
 
     @Override
@@ -319,22 +303,6 @@ public class StaffServiceImpl implements StaffService {
 	if (this.authHelper.isActionAuthorized(stf)) {
 	    // Log and notify.
 	    this.messageHelper.sendAction(AuditAction.DELETE, stf);
-
-	    // Do service.
-	    // Check if the staff has any project files.
-	    Hibernate.initialize(stf.getFiles());
-	    for (ProjectFile file : stf.getFiles()) {
-
-		// If not owned by a project, delete it.
-		if (file.getProject() == null) {
-		    this.projectFileService.delete(file.getId());
-		    continue;
-		}
-		// If the file is owned by a project,
-		// remove it's association with the staff.
-		file.setUploader(null);
-		this.projectFileService.update(file);
-	    }
 	    this.staffDAO.delete(id);
 
 	    // Return success.
@@ -420,97 +388,6 @@ public class StaffServiceImpl implements StaffService {
 
 	// Return empty.
 	return new Staff();
-    }
-
-    /**
-     * Unassign a team from a staff.
-     */
-    @Override
-    @Transactional
-    public String unassignTeam(long teamID, long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Team team = this.teamDAO.getByID(teamID);
-	Staff staff = this.staffDAO.getByID(staffID);
-
-	if (!this.authHelper.isActionAuthorized(staff) || !this.authHelper.isActionAuthorized(team)) {
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Staff.OBJECT_NAME,
-		    staff.getId(), staff.getFullName()));
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Team.OBJECT_NAME,
-		    team.getId(), team.getName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateUnassign(Team.OBJECT_NAME, team.getName());
-	}
-
-	// Log and notify.
-	this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, staff, team);
-
-	// Do service.
-	this.staffDAO.unassignTeam(teamID, staffID);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Team.OBJECT_NAME, team.getName());
-    }
-
-    /**
-     * Unassign all teams linked to a staff.
-     */
-    @Override
-    @Transactional
-    public String unassignAllTeams(long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Staff staff = this.staffDAO.getByID(staffID);
-
-	if (!this.authHelper.isActionAuthorized(staff)) {
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN_ALL,
-		    Staff.OBJECT_NAME, staff.getId(), staff.getFullName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateUnassignAll(Team.OBJECT_NAME);
-	}
-
-	// Log and notify.
-	this.messageHelper.sendUnassignAll(Team.OBJECT_NAME, staff);
-
-	// Do service.
-	this.staffDAO.unassignAllTeams(staffID);
-
-	// Log success.
-	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Team.OBJECT_NAME);
-    }
-
-    /***
-     * Assign a team for the staff.
-     */
-    @Override
-    @Transactional
-    public String assignTeam(StaffTeamAssignment stAssign) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Staff staff = this.staffDAO.getByID(stAssign.getStaffID());
-	Team team = this.teamDAO.getByID(stAssign.getTeamID());
-
-	if (!this.authHelper.isActionAuthorized(staff) || !this.authHelper.isActionAuthorized(team)) {
-
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Staff.OBJECT_NAME,
-		    staff.getId(), staff.getFullName()));
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Team.OBJECT_NAME,
-		    team.getId(), team.getName()));
-
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateAssign(Team.OBJECT_NAME, team.getName());
-	}
-
-	// Log and notify.
-	this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, staff, team);
-
-	// Do service.
-	this.staffDAO.assignTeam(stAssign);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateAssign(Team.OBJECT_NAME, team.getName());
     }
 
     /**

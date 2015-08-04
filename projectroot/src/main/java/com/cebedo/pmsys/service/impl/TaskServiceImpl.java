@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
-import com.cebedo.pmsys.dao.TeamDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -32,9 +31,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
-import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -58,14 +55,9 @@ public class TaskServiceImpl implements TaskService {
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
     private StaffDAO staffDAO;
-    private TeamDAO teamDAO;
 
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
-    }
-
-    public void setTeamDAO(TeamDAO teamDAO) {
-	this.teamDAO = teamDAO;
     }
 
     public void setStaffDAO(StaffDAO staffDAO) {
@@ -404,41 +396,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * Assign task to a team.
-     */
-    @Override
-    @Transactional
-    public String assignTeamTask(long taskID, long teamID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Task task = this.taskDAO.getByID(taskID);
-	Team team = this.teamDAO.getByID(teamID);
-
-	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(team)) {
-
-	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, team, task);
-
-	    // Do service.
-	    TaskTeamAssignment taskTeamAssign = new TaskTeamAssignment();
-	    taskTeamAssign.setTaskID(taskID);
-	    taskTeamAssign.setTeamID(teamID);
-	    this.taskDAO.assignTeamTask(taskTeamAssign);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateAssign(Team.OBJECT_NAME, team.getName());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Team.OBJECT_NAME,
-		team.getId(), team.getName()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateAssign(Team.OBJECT_NAME, team.getName());
-    }
-
-    /**
      * Get object with all collections.
      */
     @Override
@@ -462,67 +419,6 @@ public class TaskServiceImpl implements TaskService {
 
 	// Return empty.
 	return new Task();
-    }
-
-    /**
-     * Unassign a team under task.
-     */
-    @Override
-    @Transactional
-    public String unassignTeamTask(long taskID, long teamID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Task task = this.taskDAO.getByID(taskID);
-	Team team = this.teamDAO.getByID(teamID);
-
-	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(team)) {
-
-	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, team, task);
-
-	    // Do service.
-	    this.taskDAO.unassignTeamTask(taskID, teamID);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateAssign(Task.OBJECT_NAME, task.getTitle());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Team.OBJECT_NAME,
-		team.getId(), team.getName()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateAssign(Task.OBJECT_NAME, task.getTitle());
-    }
-
-    /**
-     * Unassign all teams assigned to a task.
-     */
-    @Override
-    @Transactional
-    public String unassignAllTeamsInTask(long taskID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Task task = this.taskDAO.getByID(taskID);
-
-	if (this.authHelper.isActionAuthorized(task)) {
-
-	    // Log and notify.
-	    this.messageHelper.sendUnassignAll(Team.OBJECT_NAME, task);
-
-	    // Do service.
-	    this.taskDAO.unassignAllTeamTasks(taskID);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUnassignAll(Team.OBJECT_NAME);
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN_ALL, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUnassignAll(Team.OBJECT_NAME);
     }
 
     /**
@@ -665,7 +561,6 @@ public class TaskServiceImpl implements TaskService {
 	    if (task.getStaff() == null) {
 		task.setStaff(oldTask.getStaff());
 	    }
-	    task.setTeams(oldTask.getTeams());
 
 	    // Log and notify.
 	    this.messageHelper.sendAction(AuditAction.UPDATE, oldTask);

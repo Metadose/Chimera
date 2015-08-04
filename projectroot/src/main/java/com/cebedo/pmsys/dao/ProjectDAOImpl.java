@@ -15,7 +15,6 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 
 @Repository
 public class ProjectDAOImpl implements ProjectDAO {
@@ -72,7 +71,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	List<Project> projectList = this.daoHelper.getSelectQueryFilterCompany(session,
 		Project.class.getName(), companyID).list();
 	for (Project project : projectList) {
-	    Hibernate.initialize(project.getAssignedTeams());
 	    Hibernate.initialize(project.getAssignedTasks());
 	}
 	return projectList;
@@ -96,8 +94,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getAssignedStaff());
-	Hibernate.initialize(project.getFiles());
-	Hibernate.initialize(project.getPhotos());
 
 	// Initialize milestones.
 	Set<Milestone> milestones = project.getMilestones();
@@ -112,20 +108,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(assignedTasks);
 	for (Task task : assignedTasks) {
 
-	    Set<Team> teams = task.getTeams();
-	    Hibernate.initialize(teams);
-	    for (Team team : teams) {
-		Hibernate.initialize(team.getMembers());
-	    }
 	    Hibernate.initialize(task.getStaff());
 	    Hibernate.initialize(task.getMilestone());
-	}
-
-	// Initialize teams.
-	Set<Team> teams = project.getAssignedTeams();
-	Hibernate.initialize(teams);
-	for (Team team : teams) {
-	    Hibernate.initialize(team.getMembers());
 	}
 
 	return project;

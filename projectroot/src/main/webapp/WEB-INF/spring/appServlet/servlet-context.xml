@@ -247,19 +247,11 @@
                 <beans:value>com.cebedo.pmsys.model.Field</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.FieldAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Staff</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.StaffTeamAssignment</beans:value>
-                <beans:value>com.cebedo.pmsys.model.Team</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.TeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Task</beans:value>
-                <beans:value>com.cebedo.pmsys.model.ProjectFile</beans:value>
                 <beans:value>com.cebedo.pmsys.model.SystemConfiguration</beans:value>
-                <beans:value>com.cebedo.pmsys.model.Photo</beans:value>
-                <beans:value>com.cebedo.pmsys.model.assignment.TaskTeamAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.assignment.TaskStaffAssignment</beans:value>
                 <beans:value>com.cebedo.pmsys.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Company</beans:value>
-                <beans:value>com.cebedo.pmsys.model.SecurityAccess</beans:value>
-                <beans:value>com.cebedo.pmsys.model.SecurityRole</beans:value>
                 <beans:value>com.cebedo.pmsys.model.AuditLog</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Milestone</beans:value>
             </beans:list>

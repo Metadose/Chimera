@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +22,6 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
-import com.cebedo.pmsys.model.assignment.TeamAssignment;
 import com.cebedo.pmsys.wrapper.StaffWrapper;
 
 @Entity
@@ -46,7 +44,6 @@ public class Project implements Serializable {
     private String name;
     private int type;
     private int status;
-    private Set<Team> assignedTeams;
     private Set<FieldAssignment> assignedFields;
     private Set<Staff> assignedStaff;
     private String location;
@@ -54,9 +51,6 @@ public class Project implements Serializable {
     private Set<Milestone> milestones;
     private Set<Task> assignedTasks;
     private Company company;
-
-    private Set<ProjectFile> files;
-    private Set<Photo> photos;
 
     /**
      * Bean-backed forms.
@@ -124,26 +118,6 @@ public class Project implements Serializable {
 	this.assignedFields = fields;
     }
 
-    /**
-     * Project to Team many-to-many without extra columns.
-     */
-    @ManyToMany
-    @JoinTable(name = TeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-    public Set<Team> getAssignedTeams() {
-	return this.assignedTeams;
-    }
-
-    @Transient
-    public Set<Team> getAssignedProjectBasedTeams() {
-	Set<Team> teams = new HashSet<Team>();
-	for (Team team : this.assignedTeams) {
-	    if (team.isProjectBased()) {
-		teams.add(team);
-	    }
-	}
-	return teams;
-    }
-
     @ManyToMany
     @JoinTable(name = ProjectStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
     public Set<Staff> getAssignedStaff() {
@@ -161,10 +135,6 @@ public class Project implements Serializable {
 
     public void setStaffIDs(long[] staffIDs) {
 	this.staffIDs = staffIDs;
-    }
-
-    public void setAssignedTeams(Set<Team> teams) {
-	this.assignedTeams = teams;
     }
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
@@ -205,25 +175,6 @@ public class Project implements Serializable {
 
     public void setNotes(String notes) {
 	this.notes = notes;
-    }
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<ProjectFile> getFiles() {
-	return files;
-    }
-
-    public void setFiles(Set<ProjectFile> files) {
-	this.files = files;
-    }
-
-    @OrderBy(Photo.COLUMN_PRIMARY_KEY)
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<Photo> getPhotos() {
-	return photos;
-    }
-
-    public void setPhotos(Set<Photo> photos) {
-	this.photos = photos;
     }
 
     @Override

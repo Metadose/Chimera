@@ -12,17 +12,14 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.DateRangeBean;
@@ -33,15 +30,11 @@ import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.Team;
-import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
-import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
@@ -76,7 +69,6 @@ public class StaffController {
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 
     private StaffService staffService;
-    private TeamService teamService;
     private FieldService fieldService;
     private ProjectService projectService;
     private AttendanceService attendanceService;
@@ -105,12 +97,6 @@ public class StaffController {
 	this.staffService = s;
     }
 
-    @Autowired(required = true)
-    @Qualifier(value = "teamService")
-    public void setTeamService(TeamService s) {
-	this.teamService = s;
-    }
-
     @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String listStaff(Model model) {
 	model.addAttribute(ATTR_LIST, this.staffService.listWithAllCollections());
@@ -124,7 +110,6 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_STAFF) Staff staff, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
@@ -160,7 +145,6 @@ public class StaffController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + SystemConstants.FROM + "/{"
 	    + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
     public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
@@ -275,7 +259,6 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Staff.OBJECT_NAME) long id, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
@@ -299,7 +282,6 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
     public String delete(SessionStatus status, HttpSession session, RedirectAttributes redirectAttrs) {
 
@@ -373,9 +355,7 @@ public class StaffController {
 	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) DateRangeBean rangeDates, HttpSession session,
 	    Model model) {
 	// Get prelim objects.
-	List<Team> teamList = this.teamService.list();
 	List<Field> fields = this.fieldService.list();
-	model.addAttribute(TeamController.JSP_LIST, teamList);
 	model.addAttribute(FieldController.JSP_LIST, fields);
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 
@@ -449,7 +429,6 @@ public class StaffController {
 
 	// TODO Check if where this is used.
 	// If not used, delete.
-	model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
 	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
 
 	// Get staff object.
@@ -475,7 +454,6 @@ public class StaffController {
 
 	// TODO Check if where this is used.
 	// If not used, delete.
-	model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
 	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
 
 	// Get staff object.
@@ -504,7 +482,6 @@ public class StaffController {
 
 	// TODO Check if where this is used.
 	// If not used, delete.
-	model.addAttribute(TeamController.JSP_LIST, this.teamService.list());
 	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
 
 	// If action is to create new staff.
@@ -572,65 +549,4 @@ public class StaffController {
 	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
     }
 
-    /**
-     * Unassign a staff from a team.
-     * 
-     * @param teamID
-     * @param staffID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public ModelAndView unassignTeam(@RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
-	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-	    @RequestParam(value = SystemConstants.ORIGIN, required = false) String origin) {
-	this.staffService.unassignTeam(teamID, staffID);
-	if (origin.equals(Team.OBJECT_NAME)) {
-	    return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Team.OBJECT_NAME + "/"
-		    + SystemConstants.REQUEST_EDIT + "/" + teamID);
-	}
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + staffID);
-    }
-
-    /**
-     * Unassign all teams from a staff.
-     * 
-     * @param teamID
-     * @param staffID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.POST)
-    public ModelAndView unassignAllTeams(@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID) {
-	this.staffService.unassignAllTeams(staffID);
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + staffID);
-    }
-
-    /**
-     * Assign a team to a staff.
-     * 
-     * @param staffID
-     * @param teamID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public ModelAndView assignTeam(@RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID,
-	    @RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID,
-	    @RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
-	    @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) String originID) {
-	StaffTeamAssignment stAssign = new StaffTeamAssignment();
-	stAssign.setStaffID(staffID);
-	stAssign.setTeamID(teamID);
-	this.staffService.assignTeam(stAssign);
-	if (!origin.isEmpty()) {
-	    return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + origin + "/"
-		    + SystemConstants.REQUEST_EDIT + "/" + originID);
-	}
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + staffID);
-    }
 }

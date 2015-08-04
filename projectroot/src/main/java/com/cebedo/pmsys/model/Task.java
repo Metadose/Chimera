@@ -22,7 +22,6 @@ import javax.persistence.Transient;
 
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
-import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Entity
@@ -49,7 +48,6 @@ public class Task implements Serializable {
     private Project project;
     private Milestone milestone;
     private Set<Staff> staff;
-    private Set<Team> teams;
     private int status;
     private Company company;
 
@@ -147,16 +145,6 @@ public class Task implements Serializable {
 
     public void setStaff(Set<Staff> staff) {
 	this.staff = staff;
-    }
-
-    @ManyToMany
-    @JoinTable(name = TaskTeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-    public Set<Team> getTeams() {
-	return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-	this.teams = teams;
     }
 
     @Column(name = "status", nullable = false)

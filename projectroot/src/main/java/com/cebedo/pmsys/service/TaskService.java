@@ -58,32 +58,25 @@ public interface TaskService {
     public String assignStaffTask(long taskID, long staffID);
 
     /**
-     * Assign a team under task.
      * 
      * @param taskID
      * @param staffID
      * @return
      */
-    public String assignTeamTask(long taskID, long teamID);
 
     public Task getByIDWithAllCollections(long id);
 
     /**
-     * Unassign a team under task.
      * 
      * @param taskID
-     * @param teamID
      * @return
      */
-    public String unassignTeamTask(long taskID, long teamID);
 
     /**
-     * Unassign all teams in a given task.
      * 
      * @param taskID
      * @return
      */
-    public String unassignAllTeamsInTask(long taskID);
 
     /**
      * Unassign a staff from a task.

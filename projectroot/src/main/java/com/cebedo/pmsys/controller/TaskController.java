@@ -6,7 +6,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,15 +25,12 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
-import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
@@ -60,7 +56,6 @@ public class TaskController {
     private AuthHelper authHelper = new AuthHelper();
 
     private TaskService taskService;
-    private TeamService teamService;
     private StaffService staffService;
     private FieldService fieldService;
     private ProjectService projectService;
@@ -89,12 +84,6 @@ public class TaskController {
 	this.staffService = s;
     }
 
-    @Autowired(required = true)
-    @Qualifier(value = "teamService")
-    public void setTeamService(TeamService s) {
-	this.teamService = s;
-    }
-
     /**
      * List all tasks and load all collections.
      * 
@@ -113,7 +102,6 @@ public class TaskController {
      * @param task
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + Project.OBJECT_NAME, method = RequestMethod.POST)
     public String createWithProject(@ModelAttribute(ATTR_TASK) Task task,
 	    @RequestParam(value = SystemConstants.ORIGIN, required = false) String origin,
@@ -144,7 +132,6 @@ public class TaskController {
      * @param task
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
@@ -176,7 +163,6 @@ public class TaskController {
      * @param task
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + SystemConstants.FROM + "/{"
 	    + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
     public String createFromOrigin(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
@@ -210,7 +196,6 @@ public class TaskController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_ASSIGN_PROJECT,
 	    SystemConstants.REQUEST_ASSIGN_PROJECT + "/{" + Project.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
     public ModelAndView assignProject(@ModelAttribute(ATTR_TASK) Task task,
@@ -239,7 +224,6 @@ public class TaskController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/{"
 	    + Staff.COLUMN_PRIMARY_KEY + "}")
     public String redirectAssignStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model) {
@@ -259,7 +243,6 @@ public class TaskController {
      * @return
      */
     @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_ASSIGN + "/" + SystemConstants.NEW + "/"
 	    + Staff.OBJECT_NAME + "/{" + Staff.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
     public ModelAndView assignTaskToStaff(@ModelAttribute(ATTR_TASK) Task task,
@@ -287,7 +270,6 @@ public class TaskController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
     public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) long id, RedirectAttributes redirectAttrs) {
 
@@ -308,7 +290,6 @@ public class TaskController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_MARK, method = RequestMethod.GET)
     public ModelAndView mark(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 	    @RequestParam(Task.COLUMN_STATUS) int status, RedirectAttributes redirectAttrs) {
@@ -334,7 +315,6 @@ public class TaskController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_MARK + "/" + Project.OBJECT_NAME, method = RequestMethod.GET)
     public ModelAndView markProject(@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
 	    @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
@@ -360,7 +340,6 @@ public class TaskController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + SystemConstants.FROM + "/"
 	    + Project.OBJECT_NAME)
     public String redirectAssignProject(Model model, HttpSession session) {
@@ -414,7 +393,6 @@ public class TaskController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/"
 	    + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllTaskStaff(HttpSession session, SessionStatus status,
@@ -445,35 +423,6 @@ public class TaskController {
     }
 
     /**
-     * Unassign all teams inside a task.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllTaskTeams(HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-
-	// Get IDs.
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-	long taskID = task.getId();
-
-	// Do service.
-	this.taskService.unassignAllTeamsInTask(taskID);
-
-	// Construct response.
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned all</b> teams.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + taskID;
-    }
-
-    /**
      * Unassign a staff from a task.
      * 
      * @param projectID
@@ -481,7 +430,6 @@ public class TaskController {
      * @param position
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/{"
 	    + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String unassignTaskStaff(HttpSession session, SessionStatus status,
@@ -512,35 +460,6 @@ public class TaskController {
     }
 
     /**
-     * Unassign team from a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/{"
-	    + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignTaskTeam(HttpSession session, SessionStatus status,
-	    @PathVariable(Team.OBJECT_NAME) long teamID, RedirectAttributes redirectAttrs) {
-
-	// Get the IDs.
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-	long taskID = task.getId();
-
-	// Do service.
-	this.taskService.unassignTeamTask(taskID, teamID);
-
-	// Construct response.
-	String teamName = this.teamService.getNameByID(teamID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned</b> team <b>" + teamName + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + taskID;
-    }
-
-    /**
      * Assign a staff to a task.
      * 
      * @param projectID
@@ -548,7 +467,6 @@ public class TaskController {
      * @param staffAssignment
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public String assignTaskStaff(HttpSession session, SessionStatus status,
 	    @ModelAttribute(ATTR_STAFF_ASSIGNMENT) StaffAssignmentBean staffAssignment,
@@ -627,87 +545,13 @@ public class TaskController {
 
 	// List unassigned teams/staff,
 	// don't list them all.
-	List<Team> teamList = this.teamService.listTaskBasedExcept(coID, task.getTeams());
 	List<Staff> staffList = this.staffService.listExcept(coID, task.getStaff());
-	model.addAttribute(ATTR_TEAM_LIST, teamList);
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
 	model.addAttribute(ATTR_STAFF_ASSIGNMENT, new StaffAssignmentBean());
 	model.addAttribute(ATTR_TEAM_ASSIGNMENT, new TeamAssignmentBean());
 	model.addAttribute(ATTR_TASK, task);
 	return JSP_EDIT;
-    }
-
-    /**
-     * Assign team to a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignTaskTeam(@ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
-	    HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs) {
-	// Get the IDs.
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-	long teamID = taBean.getTeamID();
-	long taskID = task.getId();
-
-	// Do the service.
-	this.taskService.assignTeamTask(taskID, teamID);
-
-	// Construct response.
-	String teamName = this.teamService.getNameByID(teamID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>assigned</b> team <b>" + teamName + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + taskID;
-    }
-
-    /**
-     * Delete all team assignments in a specific task.
-     * 
-     * @param taskID
-     * @return
-     */
-    @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.POST)
-    public ModelAndView unassignAllTaskTeams(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	    RedirectAttributes redirectAttrs) {
-	this.taskService.unassignAllTeamsInTask(taskID);
-	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned " + taskTitle + "</b> from all teams.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + taskID);
-    }
-
-    /**
-     * Unassign a task from a team.
-     * 
-     * @param taskID
-     * @param teamID
-     * @return
-     */
-    @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TEAM_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public ModelAndView unassignTaskFromTeam(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	    @RequestParam(Team.COLUMN_PRIMARY_KEY) long teamID, RedirectAttributes redirectAttrs) {
-	this.taskService.unassignTeamTask(taskID, teamID);
-
-	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned</b> task <b>" + taskTitle + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	return new ModelAndView(SystemConstants.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + taskID);
     }
 
     /**
@@ -718,7 +562,6 @@ public class TaskController {
      * @return
      */
     @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public ModelAndView unassignTaskFromStaff(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
 	    @RequestParam(Staff.COLUMN_PRIMARY_KEY) long staffID, RedirectAttributes redirectAttrs) {
@@ -737,7 +580,6 @@ public class TaskController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + SystemConstants.FROM + "/"
 	    + Project.OBJECT_NAME, method = RequestMethod.POST)
     public ModelAndView unassignTaskByProject(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
@@ -758,7 +600,6 @@ public class TaskController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Project.OBJECT_NAME + "/"
 	    + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView unassignAllTasksInProject(
@@ -780,7 +621,6 @@ public class TaskController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_TASK_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/" + Project.OBJECT_NAME + "/"
 	    + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView deleteAllTasksByProject(
@@ -805,7 +645,6 @@ public class TaskController {
      * @return
      */
     @Deprecated
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_STAFF_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/"
 	    + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView unassignAllTaskStaff(@RequestParam(Task.COLUMN_PRIMARY_KEY) long id,

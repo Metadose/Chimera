@@ -10,15 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 @Entity
@@ -52,8 +49,6 @@ public class Staff implements Serializable {
 
     private String email;
     private String contactNumber;
-    private Set<ProjectFile> files;
-    private Set<Team> teams;
     private Company company;
     private SystemUser user;
     private double wage;
@@ -170,25 +165,6 @@ public class Staff implements Serializable {
 
     public void setContactNumber(String contactNumber) {
 	this.contactNumber = contactNumber;
-    }
-
-    @OneToMany(mappedBy = "uploader")
-    public Set<ProjectFile> getFiles() {
-	return files;
-    }
-
-    public void setFiles(Set<ProjectFile> files) {
-	this.files = files;
-    }
-
-    @ManyToMany
-    @JoinTable(name = StaffTeamAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Team.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-    public Set<Team> getTeams() {
-	return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-	this.teams = teams;
     }
 
     @ManyToOne

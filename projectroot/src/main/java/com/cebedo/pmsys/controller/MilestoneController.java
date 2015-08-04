@@ -2,7 +2,6 @@ package com.cebedo.pmsys.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.model.Milestone;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.service.MilestoneService;
 
 @Controller
@@ -42,22 +40,20 @@ public class MilestoneController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_MILESTONE_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
-    public String create(@ModelAttribute(ATTR_MILESTONE) Milestone milestone,
-	    SessionStatus status) {
+    public String create(@ModelAttribute(ATTR_MILESTONE) Milestone milestone, SessionStatus status) {
 
 	if (milestone.getId() == 0) {
 	    this.milestoneService.create(milestone);
 	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME
-		    + "/" + SystemConstants.REQUEST_LIST;
+	    return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME + "/"
+		    + SystemConstants.REQUEST_LIST;
 	}
 
 	this.milestoneService.update(milestone);
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME
-		+ "/" + SystemConstants.REQUEST_EDIT + "/" + milestone.getId();
+	return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + milestone.getId();
     }
 
     /**
@@ -67,10 +63,8 @@ public class MilestoneController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{"
-	    + Milestone.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String editMilestone(@PathVariable(Milestone.OBJECT_NAME) int id,
-	    Model model) {
+    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Milestone.OBJECT_NAME + "}", method = RequestMethod.GET)
+    public String editMilestone(@PathVariable(Milestone.OBJECT_NAME) int id, Model model) {
 	if (id == 0) {
 	    model.addAttribute(ATTR_MILESTONE, new Milestone());
 	} else {
@@ -86,8 +80,7 @@ public class MilestoneController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT,
-	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
     public String list(Model model) {
 	model.addAttribute(ATTR_LIST, this.milestoneService.list());
 	return JSP_LIST;
@@ -99,13 +92,11 @@ public class MilestoneController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_MILESTONE_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{"
-	    + Milestone.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Milestone.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Milestone.OBJECT_NAME) int id) {
 	this.milestoneService.delete(id);
-	return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME
-		+ "/" + SystemConstants.REQUEST_LIST;
+	return SystemConstants.CONTROLLER_REDIRECT + Milestone.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_LIST;
     }
 
 }

@@ -1,20 +1,14 @@
 package com.cebedo.pmsys.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,17 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.CostEstimationBean;
 import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MassUploadBean;
-import com.cebedo.pmsys.bean.MultipartBean;
 import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.bean.StaffAssignmentBean;
-import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.constants.URLRegistry;
@@ -55,14 +46,10 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Milestone;
-import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.ProjectFile;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
@@ -71,14 +58,11 @@ import com.cebedo.pmsys.service.EstimationOutputService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
-import com.cebedo.pmsys.service.PhotoService;
 import com.cebedo.pmsys.service.ProjectAuxService;
-import com.cebedo.pmsys.service.ProjectFileService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
-import com.cebedo.pmsys.service.TeamService;
 import com.cebedo.pmsys.service.UnitService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -88,12 +72,12 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @SessionAttributes(
 
 value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
-	ProjectController.ATTR_PROJECT_FILE, RedisConstants.OBJECT_PAYROLL,
-	RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL, RedisConstants.OBJECT_PULL_OUT,
-	RedisConstants.OBJECT_ESTIMATE, ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN },
+	RedisConstants.OBJECT_PAYROLL, RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
+	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE,
+	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN },
 
-types = { Project.class, FieldAssignmentBean.class, ProjectFile.class, ProjectPayroll.class,
-	Delivery.class, Material.class, PullOut.class, Estimate.class, MassUploadBean.class }
+types = { Project.class, FieldAssignmentBean.class, ProjectPayroll.class, Delivery.class,
+	Material.class, PullOut.class, Estimate.class, MassUploadBean.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -107,7 +91,6 @@ public class ProjectController {
     public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
-    public static final String ATTR_PHOTO = Photo.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
@@ -143,7 +126,6 @@ public class ProjectController {
     public static final String ATTR_UNIT_LIST = "unitList";
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
-    public static final String ATTR_PROJECT_FILE = ProjectFile.OBJECT_NAME;
     public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
@@ -187,10 +169,7 @@ public class ProjectController {
 
     private ProjectService projectService;
     private StaffService staffService;
-    private TeamService teamService;
     private FieldService fieldService;
-    private PhotoService photoService;
-    private ProjectFileService projectFileService;
     private DeliveryService deliveryService;
     private MaterialService materialService;
     private ProjectPayrollService projectPayrollService;
@@ -263,27 +242,9 @@ public class ProjectController {
     }
 
     @Autowired(required = true)
-    @Qualifier(value = "projectFileService")
-    public void setProjectFileService(ProjectFileService ps) {
-	this.projectFileService = ps;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "photoService")
-    public void setPhotoService(PhotoService ps) {
-	this.photoService = ps;
-    }
-
-    @Autowired(required = true)
     @Qualifier(value = "fieldService")
     public void setFieldService(FieldService s) {
 	this.fieldService = s;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "teamService")
-    public void setTeamService(TeamService s) {
-	this.teamService = s;
     }
 
     @Autowired(required = true)
@@ -316,7 +277,6 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/"
 	    + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllStaffMembers(HttpSession session, SessionStatus status,
@@ -343,7 +303,6 @@ public class ProjectController {
      * @param position
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member"
 	    + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String unassignStaffMember(HttpSession session, SessionStatus status,
@@ -371,7 +330,6 @@ public class ProjectController {
      * @param staffAssignment
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
 	    + SystemConstants.MASS, method = RequestMethod.POST)
     public String assignStaffMass(HttpSession session, SessionStatus status,
@@ -398,7 +356,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_PROJECT) Project project,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -438,7 +395,6 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
     public String updateField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean newFaBean, SessionStatus status,
@@ -463,123 +419,12 @@ public class ProjectController {
     }
 
     /**
-     * Unassign team from a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/{"
-	    + Team.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignProjectTeam(HttpSession session, SessionStatus status,
-	    @PathVariable(Team.OBJECT_NAME) long teamID, RedirectAttributes redirectAttrs) {
-
-	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	long projectID = proj.getId();
-
-	// Get response.
-	String response = this.teamService.unassignProjectTeam(projectID, teamID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    /**
-     * Assign team to a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Team.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignProjectTeam(@ModelAttribute(ATTR_TEAM_ASSIGNMENT) TeamAssignmentBean taBean,
-	    HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs) {
-
-	long teamID = taBean.getTeamID();
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	long projectID = proj.getId();
-
-	// Do service.
-	// Get response.
-	String response = this.teamService.assignProjectTeam(projectID, teamID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    /**
-     * Unassign all teams inside a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Team.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.GET)
-    public String unassignAllProjectTeams(HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-
-	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	long projectID = proj.getId();
-
-	// Get response.
-	String response = this.teamService.unassignAllProjectTeams(projectID);
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    // @RequestMapping(value = Staff.OBJECT_NAME + "/"
-    // + SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}", method =
-    // RequestMethod.GET)
-    // public String editStaff(
-    // @PathVariable(Staff.OBJECT_NAME) long staffID,
-    // @RequestParam(value = SystemConstants.ORIGIN, required = false) String
-    // origin,
-    // @RequestParam(value = SystemConstants.ORIGIN_ID, required = false) long
-    // originID,
-    // Model model) {
-    //
-    // // Add origin details.
-    // model.addAttribute(SystemConstants.ORIGIN, origin);
-    // model.addAttribute(SystemConstants.ORIGIN_ID, originID);
-    //
-    // // If new, create it.
-    // if (staffID == 0) {
-    // model.addAttribute(ATTR_STAFF, new Staff());
-    // model.addAttribute(SystemConstants.ATTR_ACTION,
-    // SystemConstants.ACTION_CREATE);
-    // return JSP_EDIT;
-    // }
-    //
-    // // Else if not new, edit it.
-    // model.addAttribute(ATTR_STAFF,
-    // this.staffService.getWithAllCollectionsByID(staffID));
-    // model.addAttribute(SystemConstants.ATTR_ACTION,
-    // SystemConstants.ACTION_EDIT);
-    // return JSP_EDIT;
-    // }
-
-    /**
      * Unassign a field from a project.
      * 
      * @param fieldID
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
     public String deleteProjectField(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
@@ -609,7 +454,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/{"
 	    + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String editField(HttpSession session,
@@ -639,7 +483,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -680,7 +523,6 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Field.OBJECT_NAME + "/"
 	    + SystemConstants.ALL, method = RequestMethod.GET)
     public String unassignAllFields(HttpSession session, SessionStatus status,
@@ -712,7 +554,6 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
     public String assignField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean faBean, RedirectAttributes redirectAttrs,
@@ -743,143 +584,6 @@ public class ProjectController {
 		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
-    /**
-     * Upload a file to a project.
-     * 
-     * @param file
-     * @param projectID
-     * @param description
-     * @param redirectAttrs
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + ProjectFile.OBJECT_NAME, method = RequestMethod.POST)
-    public String uploadFileToProject(@ModelAttribute(ATTR_PROJECT_FILE) MultipartBean mpBean,
-	    SessionStatus status, HttpSession session, RedirectAttributes redirectAttrs)
-	    throws IOException {
-
-	MultipartFile file = mpBean.getFile();
-	String description = mpBean.getDescription();
-	long projectID = mpBean.getProjectID();
-	String response = "";
-
-	// If file is not empty.
-	if (!file.isEmpty()) {
-
-	    // Upload then evict cache.
-	    // Get response.
-	    response = this.projectFileService.uploadFileToProject(file, projectID, description);
-	} else {
-	    // TODO Handle this scenario.
-	}
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    /**
-     * Download a file from Project. TODO Need work on security url here.
-     * 
-     * @param projectID
-     * @param fileID
-     * @return
-     */
-    @RequestMapping(value = SystemConstants.REQUEST_DOWNLOAD + "/" + ProjectFile.OBJECT_NAME + "/{"
-	    + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public void downloadFileFromProject(@PathVariable(ProjectFile.OBJECT_NAME) long fileID,
-	    HttpServletResponse response) {
-
-	// Get file from server.
-	File actualFile = this.projectFileService.getPhysicalFileByID(fileID);
-
-	try {
-
-	    // Serve it to the client.
-	    FileInputStream iStream = new FileInputStream(actualFile);
-	    response.setContentType("application/octet-stream");
-	    response.setContentLength((int) actualFile.length());
-	    response.setHeader("Content-Disposition", "attachment; filename=\"" + actualFile.getName()
-		    + "\"");
-	    IOUtils.copy(iStream, response.getOutputStream());
-	    response.flushBuffer();
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-    }
-
-    /**
-     * Upload a photo to a project.
-     * 
-     * @param file
-     * @param projectID
-     * @param description
-     * @param redirectAttrs
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = SystemConstants.REQUEST_UPLOAD + "/" + Photo.OBJECT_NAME, method = RequestMethod.POST)
-    public String uploadPhotoToProject(@ModelAttribute(ATTR_PHOTO) MultipartBean mpBean,
-	    HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs)
-	    throws IOException {
-
-	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	MultipartFile file = mpBean.getFile();
-	String description = mpBean.getDescription();
-	long projectID = proj.getId();
-	String response = "";
-
-	// TODO Limit only uploads to known extensions of an image.
-	// If file is not empty.
-	if (!file.isEmpty()) {
-
-	    // Get response.
-	    response = this.photoService.uploadPhotoToProject(file, projectID, description);
-	} else {
-	    // TODO Handle scenario.
-	}
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
-    }
-
-    /**
-     * Delete a photo from a project.
-     * 
-     * @param projectID
-     * @param id
-     * @param redirectAttrs
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/" + Photo.OBJECT_NAME + "/{"
-	    + Photo.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String deletePhoto(@PathVariable(Photo.OBJECT_NAME) long id, HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
-
-	// Do service.
-	// Get response.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	String response = this.photoService.delete(id);
-	this.projectService.clearProjectCache(proj.getId());
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
-    }
-
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
 	    + SystemConstants.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public String includeStaffToPayroll(
@@ -903,7 +607,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
     public String updatePullout(@ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -928,7 +631,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String updateMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -953,7 +655,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
     public String createDelivery(@ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -983,7 +684,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + CostEstimationBean.BEAN_NAME }, method = RequestMethod.POST)
     public String createConcreteEstimationSummary(
 	    @ModelAttribute(ATTR_COST_ESTIMATION_BEAN) CostEstimationBean costEstimationBean,
@@ -1052,7 +752,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
 	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimationInputBean estimateInput,
@@ -1102,7 +801,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_DELIVERY
 	    + "/{" + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
     public String deleteDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
@@ -1131,7 +829,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PAYROLL
 	    + "/{" + RedisConstants.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
     public String deleteProjectPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String key,
@@ -1160,7 +857,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PULL_OUT
 	    + "/{" + RedisConstants.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
     public String deletePullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
@@ -1189,7 +885,6 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_MATERIAL + "/{"
 	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
     public String editMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
@@ -1227,7 +922,6 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL
 	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
     public String pulloutMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
@@ -1256,7 +950,6 @@ public class ProjectController {
      * @param pullOut
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String doPullOutMaterial(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
@@ -1284,7 +977,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_MATERIAL
 	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
     public String deleteMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
@@ -1315,7 +1007,6 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String addMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirecAttrs, SessionStatus status) {
@@ -1341,7 +1032,6 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
@@ -1368,7 +1058,6 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL + "/"
 	    + SystemConstants.CLEAR + "/{" + SystemConstants.CLEAR + "}" }, method = RequestMethod.POST)
     public String createPayrollClearComputation(
@@ -1401,7 +1090,6 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/" + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
@@ -1457,7 +1145,6 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PULL_OUT + "/{"
 	    + RedisConstants.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
     public String editPullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key, Model model,
@@ -1488,7 +1175,6 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/{"
 	    + RedisConstants.OBJECT_DELIVERY + "}-end", method = RequestMethod.GET)
     public String editDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key, Model model,
@@ -1531,7 +1217,6 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/{"
 	    + RedisConstants.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
     public String editPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
@@ -1612,36 +1297,6 @@ public class ProjectController {
 	// Structure/checklist attributes.
 	model.addAttribute(ATTR_PAYROLL_CHECKBOX_STAFF, staff);
 	model.addAttribute(ATTR_PAYROLL_MANUAL_STAFF_LIST, manualStaffList);
-    }
-
-    /**
-     * Delete a project file. TODO Make this general, create "From Origin"
-     * version.
-     * 
-     * @param id
-     * @param projectID
-     * @param redirectAttrs
-     * @return
-     */
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/" + ProjectFile.OBJECT_NAME + "/{"
-	    + ProjectFile.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String deleteProjectfile(@PathVariable(ProjectFile.OBJECT_NAME) int id, HttpSession session,
-	    SessionStatus status, RedirectAttributes redirectAttrs) {
-
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-
-	// Delete, then
-	// Evict cache.
-	String response = this.projectFileService.delete(id);
-	this.projectService.clearProjectCache(proj.getId());
-
-	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
     /**

@@ -6,16 +6,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
-import com.cebedo.pmsys.model.Photo;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.ProjectFile;
-import com.cebedo.pmsys.model.SecurityAccess;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class AuthHelper {
@@ -81,16 +76,6 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(Team team) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (team.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
     public boolean isActionAuthorized(SystemConfiguration obj) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
@@ -116,56 +101,6 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(ProjectFile obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Photo obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    /**
-     * TODO Check if we really need this since we're just check if it's super
-     * admin.
-     * 
-     * @param obj
-     * @return
-     */
-    public boolean isActionAuthorized(SecurityAccess obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	}
-	return false;
-    }
-
-    /**
-     * TODO Check if we really need this since we're just check if it's super
-     * admin.
-     * 
-     * @param obj
-     * @return
-     */
-    public boolean isActionAuthorized(SecurityRole obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
 	    return true;
 	}
 	return false;

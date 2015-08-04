@@ -36,11 +36,8 @@ public class Company implements Serializable {
     private Set<SystemUser> employees;
     private Set<Project> projects;
     private Set<Milestone> milestones;
-    private Set<Team> teams;
     private Set<SystemConfiguration> configs;
     private Set<Task> tasks;
-    private Set<ProjectFile> files;
-    private Set<Photo> photos;
     private Set<AuditLog> auditLogs;
 
     public Company() {
@@ -137,15 +134,6 @@ public class Company implements Serializable {
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Team> getTeams() {
-	return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-	this.teams = teams;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     public Set<SystemConfiguration> getConfigs() {
 	return configs;
     }
@@ -161,24 +149,6 @@ public class Company implements Serializable {
 
     public void setTasks(Set<Task> tasks) {
 	this.tasks = tasks;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<ProjectFile> getFiles() {
-	return files;
-    }
-
-    public void setFiles(Set<ProjectFile> files) {
-	this.files = files;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Photo> getPhotos() {
-	return photos;
-    }
-
-    public void setPhotos(Set<Photo> photos) {
-	this.photos = photos;
     }
 
     @OneToMany(mappedBy = "company")

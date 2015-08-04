@@ -16,9 +16,7 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
-import com.cebedo.pmsys.model.assignment.TaskTeamAssignment;
 
 @Repository
 public class TaskDAOImpl implements TaskDAO {
@@ -47,7 +45,6 @@ public class TaskDAOImpl implements TaskDAO {
     public Task getByIDWithAllCollections(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Task task = (Task) session.load(Task.class, new Long(id));
-	Hibernate.initialize(task.getTeams());
 	Hibernate.initialize(task.getStaff());
 
 	Project proj = task.getProject();
@@ -92,7 +89,6 @@ public class TaskDAOImpl implements TaskDAO {
 	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session, Task.class.getName(),
 		companyID).list();
 	for (Task task : taskList) {
-	    Hibernate.initialize(task.getTeams());
 	    Hibernate.initialize(task.getProject());
 	    Hibernate.initialize(task.getStaff());
 	}
@@ -103,36 +99,6 @@ public class TaskDAOImpl implements TaskDAO {
     public void assignStaffTask(TaskStaffAssignment taskStaffAssign) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(taskStaffAssign);
-    }
-
-    @Override
-    public void assignTeamTask(TaskTeamAssignment taskTeamAssign) {
-	Session session = this.sessionFactory.getCurrentSession();
-	session.persist(taskTeamAssign);
-    }
-
-    @Override
-    public void unassignTeamTask(long taskID, long teamID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM " + TaskTeamAssignment.OBJECT_NAME + " WHERE "
-		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:" + TaskTeamAssignment.PROPERTY_TASK_ID
-		+ " AND " + TaskTeamAssignment.PROPERTY_TEAM_ID + "=:"
-		+ TaskTeamAssignment.PROPERTY_TEAM_ID);
-	query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
-	query.setParameter(TaskTeamAssignment.PROPERTY_TEAM_ID, teamID);
-	query.executeUpdate();
-    }
-
-    /**
-     * Delete all team assignments in a specific task.
-     */
-    @Override
-    public void unassignAllTeamTasks(long taskID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM " + TaskTeamAssignment.OBJECT_NAME + " WHERE "
-		+ TaskTeamAssignment.PROPERTY_TASK_ID + "=:" + TaskTeamAssignment.PROPERTY_TASK_ID);
-	query.setParameter(TaskTeamAssignment.PROPERTY_TASK_ID, taskID);
-	query.executeUpdate();
     }
 
     @Override
@@ -165,16 +131,6 @@ public class TaskDAOImpl implements TaskDAO {
     public List<Staff> getStaffByTaskID(long taskID) {
 	Session session = this.sessionFactory.getCurrentSession();
 	Query query = session.createQuery("FROM " + TaskStaffAssignment.class.getName() + " WHERE "
-		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
-	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
-	return query.list();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Team> getTeamByTaskID(long taskID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("FROM " + TaskTeamAssignment.class.getName() + " WHERE "
 		+ Task.COLUMN_PRIMARY_KEY + " =:" + Task.COLUMN_PRIMARY_KEY);
 	query.setParameter(Task.COLUMN_PRIMARY_KEY, taskID);
 	return query.list();

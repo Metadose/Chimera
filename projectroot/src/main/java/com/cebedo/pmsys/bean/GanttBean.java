@@ -11,7 +11,6 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class GanttBean {
@@ -65,22 +64,12 @@ public class GanttBean {
 	setParent(parent.getId());
 	setType("Task");
 
-	// Assigned teams.
-	if (task.getTeams() != null && !task.getTeams().isEmpty()) {
-	    List<String> teams = new ArrayList<String>();
-	    for (Team team : task.getTeams()) {
-		teams.add(team.getName());
-	    }
-	    setAssignedTeams(StringUtils.join(teams, ", "));
-	}
-
 	// Assigned staff.
 	if (task.getStaff() != null && !task.getStaff().isEmpty()) {
 	    List<String> staffMembers = new ArrayList<String>();
 	    for (Staff staff : task.getStaff()) {
-		String name = staff.getFullName().isEmpty() ? (staff.getUser()
-			.getUsername() + " (Unnamed Staff)") : staff
-			.getFullName();
+		String name = staff.getFullName().isEmpty() ? (staff.getUser().getUsername() + " (Unnamed Staff)")
+			: staff.getFullName();
 		staffMembers.add(name);
 	    }
 	    setAssignedStaff(StringUtils.join(staffMembers, ", "));
@@ -114,22 +103,12 @@ public class GanttBean {
 	setParent(parent);
 	setType("Task");
 
-	// Assigned teams.
-	if (task.getTeams() != null && !task.getTeams().isEmpty()) {
-	    List<String> teams = new ArrayList<String>();
-	    for (Team team : task.getTeams()) {
-		teams.add(team.getName());
-	    }
-	    setAssignedTeams(StringUtils.join(teams, ", "));
-	}
-
 	// Assigned staff.
 	if (task.getStaff() != null && !task.getStaff().isEmpty()) {
 	    List<String> staffMembers = new ArrayList<String>();
 	    for (Staff staff : task.getStaff()) {
-		String name = staff.getFullName().isEmpty() ? (staff.getUser()
-			.getUsername() + " (Unnamed Staff)") : staff
-			.getFullName();
+		String name = staff.getFullName().isEmpty() ? (staff.getUser().getUsername() + " (Unnamed Staff)")
+			: staff.getFullName();
 		staffMembers.add(name);
 	    }
 	    setAssignedStaff(StringUtils.join(staffMembers, ", "));

@@ -12,7 +12,6 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class ProjectPayroll implements IDomainObject {
@@ -220,20 +219,6 @@ public class ProjectPayroll implements IDomainObject {
 	// company:%s:project:%s:payroll:%s
 	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, this.company.getId(),
 		this.project.getId(), this.uuid);
-    }
-
-    /**
-     * Get all teams in this object.
-     * 
-     * @return
-     */
-    public Set<Team> getAllTeams() {
-	// Map<Team, Set<Staff>> teamStaffMap = (Map<Team, Set<Staff>>)
-	// this.projectStructure
-	// .get(ProjectController.KEY_PROJECT_STRUCTURE_TEAMS);
-	// return teamStaffMap.keySet();
-	// FIXME
-	return null;
     }
 
     public UUID getUuid() {

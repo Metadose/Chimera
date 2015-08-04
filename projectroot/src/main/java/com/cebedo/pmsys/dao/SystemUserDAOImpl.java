@@ -40,8 +40,6 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 	for (SystemUser dbUser : users) {
 	    if (dbUser.getUsername().equals(username) == true) {
 		Hibernate.initialize(dbUser.getStaff());
-		Hibernate.initialize(dbUser.getSecurityAccess());
-		Hibernate.initialize(dbUser.getSecurityRoles());
 
 		Company co = dbUser.getCompany();
 		Hibernate.initialize(co);
@@ -59,9 +57,8 @@ public class SystemUserDAOImpl implements SystemUserDAO {
     @Override
     public List<SystemUser> list(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<SystemUser> systemUserList = this.daoHelper
-		.getSelectQueryFilterCompany(session,
-			SystemUser.class.getName(), companyID).list();
+	List<SystemUser> systemUserList = this.daoHelper.getSelectQueryFilterCompany(session,
+		SystemUser.class.getName(), companyID).list();
 	return systemUserList;
     }
 
@@ -81,8 +78,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
     public void delete(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
 	String hql = "DELETE FROM " + SystemUser.class.getName();
-	hql += " WHERE " + SystemUser.COLUMN_PRIMARY_KEY + "=:"
-		+ SystemUser.COLUMN_PRIMARY_KEY;
+	hql += " WHERE " + SystemUser.COLUMN_PRIMARY_KEY + "=:" + SystemUser.COLUMN_PRIMARY_KEY;
 	Query query = session.createQuery(hql);
 	query.setParameter(SystemUser.COLUMN_PRIMARY_KEY, id);
 	query.executeUpdate();
@@ -91,8 +87,7 @@ public class SystemUserDAOImpl implements SystemUserDAO {
     @Override
     public SystemUser getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(
-		id));
+	SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(id));
 	Hibernate.initialize(user.getStaff());
 	return user;
     }
@@ -100,11 +95,8 @@ public class SystemUserDAOImpl implements SystemUserDAO {
     @Override
     public SystemUser getWithSecurityByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(
-		id));
+	SystemUser user = (SystemUser) session.load(SystemUser.class, new Long(id));
 	Hibernate.initialize(user.getStaff());
-	Hibernate.initialize(user.getSecurityAccess());
-	Hibernate.initialize(user.getSecurityRoles());
 	return user;
     }
 }

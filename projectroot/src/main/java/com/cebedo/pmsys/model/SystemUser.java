@@ -9,16 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cebedo.pmsys.model.assignment.UserAccessAssignment;
-import com.cebedo.pmsys.model.assignment.UserRoleAssignment;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
@@ -41,8 +36,6 @@ public class SystemUser implements Serializable {
     private Company company;
     private Long companyID;
     private boolean companyAdmin;
-    private Set<SecurityAccess> securityAccess;
-    private Set<SecurityRole> securityRoles;
     private Set<AuditLog> auditLogs;
     private int loginAttempts;
 
@@ -119,26 +112,6 @@ public class SystemUser implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
-    }
-
-    @ManyToMany
-    @JoinTable(name = UserAccessAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityAccess.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-    public Set<SecurityAccess> getSecurityAccess() {
-	return securityAccess;
-    }
-
-    public void setSecurityAccess(Set<SecurityAccess> securityAccess) {
-	this.securityAccess = securityAccess;
-    }
-
-    @ManyToMany
-    @JoinTable(name = UserRoleAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = SecurityRole.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
-    public Set<SecurityRole> getSecurityRoles() {
-	return securityRoles;
-    }
-
-    public void setSecurityRoles(Set<SecurityRole> securityRoles) {
-	this.securityRoles = securityRoles;
     }
 
     @OneToMany(mappedBy = "user")

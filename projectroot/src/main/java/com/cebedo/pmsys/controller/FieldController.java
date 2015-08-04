@@ -2,7 +2,6 @@ package com.cebedo.pmsys.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.model.Field;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.service.FieldService;
 
 @Controller
@@ -38,7 +36,6 @@ public class FieldController {
 	return JSP_LIST;
     }
 
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_FIELD_EDITOR + "')")
     @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_FIELD) Field field) {
 	if (field.getId() == 0) {
@@ -49,7 +46,6 @@ public class FieldController {
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_FIELD + "/" + SystemConstants.REQUEST_LIST;
     }
 
-    @PreAuthorize("hasRole('" + SecurityRole.ROLE_FIELD_EDITOR + "')")
     @RequestMapping(value = "/" + SystemConstants.REQUEST_DELETE + "/{" + Field.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
     public String delete(@PathVariable(Field.COLUMN_PRIMARY_KEY) int id) {
 	this.fieldService.delete(id);

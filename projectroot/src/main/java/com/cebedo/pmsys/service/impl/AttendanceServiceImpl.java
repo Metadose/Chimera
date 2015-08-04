@@ -20,7 +20,6 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.Team;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.ProjectService;
@@ -119,22 +118,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	return wage;
     }
 
-    @Override
-    @Transactional
-    public double getTotalWageOfTeamInRange(Team team, Date min, Date max) {
-
-	// Get all members in a team.
-	Set<Staff> members = team.getMembers();
-
-	// Compute total wage of all members in team.
-	double totalWage = 0;
-	for (Staff member : members) {
-	    double staffWage = getTotalWageOfStaffInRange(member, min, max);
-	    totalWage += staffWage;
-	}
-	return totalWage;
-    }
-
     @Transactional
     @Override
     public double getTotalWageOfProjectInRange(Project project, Date min, Date max) {
@@ -143,9 +126,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Overall total.
 	List<Long> alreadyComputedStaff = new ArrayList<Long>();
 	double projectTotal = 0;
-
-	// TODO Get salary of all in team.
-	project.getAssignedTeams();
 
 	return projectTotal;
     }

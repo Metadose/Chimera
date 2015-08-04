@@ -13,7 +13,6 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.assignment.StaffTeamAssignment;
 
 public interface StaffService {
 
@@ -52,29 +51,22 @@ public interface StaffService {
     public Staff getWithAllCollectionsByID(long id);
 
     /**
-     * Unassign a team from staff.
-     * 
-     * @param teamID
-     * @param staffID
-     * @return
-     */
-    public String unassignTeam(long teamID, long staffID);
-
-    /**
-     * Unassign all teams.
      * 
      * @param staffID
      * @return
      */
-    public String unassignAllTeams(long staffID);
 
     /**
-     * Assign a team.
+     * 
+     * @param staffID
+     * @return
+     */
+
+    /**
      * 
      * @param stAssign
      * @return
      */
-    public String assignTeam(StaffTeamAssignment stAssign);
 
     public List<Staff> listUnassignedInProject(Long companyID, Project project);
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
@@ -24,8 +22,6 @@ import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.helper.LogHelper;
-import com.cebedo.pmsys.model.SecurityAccess;
-import com.cebedo.pmsys.model.SecurityRole;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.service.SystemUserService;
@@ -138,19 +134,9 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
      * @return
      */
     public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
-	Set<SecurityAccess> accessSet = user.getSecurityAccess();
-	Set<SecurityRole> roles = user.getSecurityRoles();
 	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-
-	// Add all defined access.
-	for (SecurityAccess access : accessSet) {
-	    authList.add(new SimpleGrantedAuthority(access.getName()));
-	}
-
-	// Add all roles.
-	for (SecurityRole role : roles) {
-	    authList.add(new SimpleGrantedAuthority(role.getName()));
-	}
+	// authList.add(new SimpleGrantedAuthority(access.getName()));
 	return authList;
     }
+
 }
