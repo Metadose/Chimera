@@ -71,18 +71,18 @@ public class EstimationOutputRowBean implements Serializable {
 
 	this.totalCHB = chb.getTotalCHB();
 
-	double chbBags40 = chbLaying.getBags();
-	this.chbLayingBags40kg = chbBags40;
-	this.chbLayingBags50kg = chbBags40 + (chbBags40 * 0.2);
+	double chbBags50 = chbLaying.getBags();
+	this.chbLayingBags40kg = chbBags50 - (chbBags50 * 0.2);
+	this.chbLayingBags50kg = chbBags50;
 	this.chbLayingSand = chbLaying.getSand();
 
 	this.plasteringCement40kg = plaster.getCement40kg();
 	this.plasteringCement50kg = plaster.getCement50kg();
 	this.plasteringSand = plaster.getSand();
 
-	double footingBags40 = footing.getCement();
-	this.footingCement40kg = footingBags40;
-	this.footingCement50kg = footingBags40 + (footingBags40 * 0.2);
+	double footingBags50 = footing.getCement();
+	this.footingCement40kg = footingBags50 - (footingBags50 * 0.2);
+	this.footingCement50kg = footingBags50;
 	this.footingSand = footing.getSand();
 	this.footingGravel = footing.getGravel();
     }

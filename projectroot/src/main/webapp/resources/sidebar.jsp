@@ -1,9 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!-- Left side column. contains the logo and sidebar -->
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<sec:authentication var="authUser" property="user"/>
-<sec:authentication var="authStaff" property="staff"/>
 <style>
 .autocomplete-suggestions { background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
@@ -52,35 +50,6 @@ $(document).ready(function() {
 <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-            	TODO
-            </div>
-            <div class="pull-left info">
-            	<c:choose>
-            	 	<c:when test="${!empty authStaff}">
-            	 		<p>Hello, ${authStaff.getFullName()}</p>
-            	 		<h6>(${authUser.username})</h6>
-            	 	</c:when>
-            	 	<c:when test="${empty authStaff}">
-            	 		<p>Hello, ${authUser.username}</p>
-            	 		<h6>No Staff for this User.</h6>
-            	 	</c:when>
-            	</c:choose>
-            </div>
-        </div>
-        <!-- search form -->
-<!--         <form action="#" id="sidebar-search-form" method="post" class="sidebar-form"> -->
-<%-- 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
-<!--             <div class="input-group"> -->
-<!--                 <input type="text" id="searchField" name="search" class='form-control' placeholder="Search..."/> -->
-<!--                 <span class="input-group-btn"> -->
-<!--                     <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button> -->
-<!--                 </span> -->
-<!--             </div> -->
-<!--         </form> -->
-        <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="active">
@@ -89,30 +58,24 @@ $(document).ready(function() {
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
-            <sec:authorize access="hasRole('ACCESS_PROJECT')">
             <li>
             	<c:url var="urlProjectList" value="/project/list/"/>
                 <a href="${urlProjectList}">
                     <i class="fa fa-building"></i> <span>Projects</span>
                 </a>
             </li>
-            </sec:authorize>
-            <sec:authorize access="hasRole('ACCESS_STAFF')">
             <li>
             	<c:url var="urlStaffList" value="/staff/list/"/>
                 <a href="${urlStaffList}">
                     <i class="fa fa-user"></i> <span>Company Staff</span>
                 </a>
             </li>
-            </sec:authorize>
-            <sec:authorize access="hasRole('ROLE_SYSTEMUSER_EDITOR')">
             <li>
             	<c:url var="urlSystemUserList" value="/systemuser/list/"/>
                 <a href="${urlSystemUserList}">
                     <i class="fa fa-male"></i> <span>User Accounts</span>
                 </a>
             </li>
-            </sec:authorize>
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-cog"></i>

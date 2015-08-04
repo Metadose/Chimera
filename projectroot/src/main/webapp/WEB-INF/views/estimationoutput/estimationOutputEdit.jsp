@@ -48,7 +48,21 @@
 						<div class="callout callout-info callout-cebedo">
 						<p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 						</div>
-						<table id="treegrid1"></table>
+						<label>Input</label>
+						<table id="treegrid-details"></table><br/>
+						
+						<label>Concrete</label>
+						<table id="treegrid-concrete"></table><br/>
+						
+						<label>CHB (Setting/Laying)</label>
+						<table id="treegrid-chb-setting"></table><br/>
+						
+						<label>CHB (Plastering)</label>
+						<table id="treegrid-chb-plastering"></table><br/>
+						
+						<label>CHB (Footing)</label>
+						<table id="treegrid-chb-footing"></table><br/>
+						
 						</div>
 					</div>
 				</div>
@@ -72,43 +86,192 @@ $(document).ready(function() {
 	
 	// Tree grid.
 	var flatDS = ${estimationoutput.estimatesAsJson};
-	$("#treegrid1").igTreeGrid({
+	$("#treegrid-chb-footing").igTreeGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
+			{ name: "MultiColumnHeaders" }
+		],
+		primaryKey: "uuid",
+		columns: [
+			{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Name", key: "name", dataType: "string" },
+			{ headerText: "Remarks", key: "remarks", dataType: "string", hidden: true },
+			{ headerText: "Area", key: "area", dataType: "number", hidden: true },
+			{ headerText: "Volume", key: "volume", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing Length", key: "footingLength", dataType: "number", hidden: true },
+			
+			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			
+			{ headerText: "CHB", key: "totalCHB", dataType: "number" },
+			
+			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand (cu.m.)", key: "chbLayingSand", dataType: "number", hidden: true },
+			
+			
+			{ headerText: "plasteringCement40kg", key: "plasteringCement40kg", dataType: "number", hidden: true },
+			{ headerText: "plasteringCement50kg", key: "plasteringCement50kg", dataType: "number", hidden: true },
+			{ headerText: "plasteringSand", key: "plasteringSand", dataType: "number", hidden: true },
+			
+			{ headerText: "Footing", group: [
+			{ headerText: "Cement (40kg)", key: "footingCement40kg", dataType: "number" },
+			{ headerText: "Cement (50kg)", key: "footingCement50kg", dataType: "number" },
+			{ headerText: "Sand (cu.m.)", key: "footingSand", dataType: "number" },
+			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number" }
+			]}
+		]
+	});
+	$("#treegrid-chb-plastering").igTreeGrid({
+		dataSource: flatDS,
+		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" }
+		],
+		primaryKey: "uuid",
+		columns: [
+			{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Name", key: "name", dataType: "string" },
+			{ headerText: "Remarks", key: "remarks", dataType: "string", hidden: true },
+			{ headerText: "Area", key: "area", dataType: "number", hidden: true },
+			{ headerText: "Volume", key: "volume", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing Length", key: "footingLength", dataType: "number", hidden: true },
+			
+			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			
+			{ headerText: "CHB", key: "totalCHB", dataType: "number" },
+			
+			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand (cu.m.)", key: "chbLayingSand", dataType: "number", hidden: true },
+			
+			
+			{ headerText: "Plastering", group: [
+			{ headerText: "Cement (40kg)", key: "plasteringCement40kg", dataType: "number" },
+			{ headerText: "Cement (50kg)", key: "plasteringCement50kg", dataType: "number" },
+			{ headerText: "Sand (cu.m.)", key: "plasteringSand", dataType: "number" }
+			]},
+			
+			{ headerText: "footingCement40kg", key: "footingCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "footingCement50kg", key: "footingCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "footingSand", key: "footingSand", dataType: "number", hidden: true  },
+			{ headerText: "footingGravel", key: "footingGravel", dataType: "number", hidden: true  }
+		]
+	});
+	$("#treegrid-chb-setting").igTreeGrid({
+		dataSource: flatDS,
+		width: "100%",
+        features:[
             { name: "MultiColumnHeaders" }
         ],
 		primaryKey: "uuid",
 		columns: [
 			{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", key: "name", dataType: "string" },
-			{ headerText: "Remarks", key: "remarks", dataType: "string" },
-			{ headerText: "Area", key: "area", dataType: "number" },
-			{ headerText: "Volume", key: "volume", dataType: "number" },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number" },
-			{ headerText: "CHB Footing Length", key: "footingLength", dataType: "number" },
+			{ headerText: "Remarks", key: "remarks", dataType: "string", hidden: true },
+			{ headerText: "Area", key: "area", dataType: "number", hidden: true },
+			{ headerText: "Volume", key: "volume", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing Length", key: "footingLength", dataType: "number", hidden: true },
 			
-			{ headerText: "Concrete", group: [
-			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number" },
-			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number" },
-			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number" },
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number" }
-       		]},
+			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
 			
 			{ headerText: "CHB", key: "totalCHB", dataType: "number" },
 			
-			{ headerText: "chbLayingBags40kg", key: "chbLayingBags40kg", dataType: "number" },
-			{ headerText: "chbLayingBags50kg", key: "chbLayingBags50kg", dataType: "number" },
-			{ headerText: "chbLayingSand", key: "chbLayingSand", dataType: "number" },
+           	{ headerText: "Setting / Laying", group: [
+			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number" },
+			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number" },
+			{ headerText: "Sand (cu.m.)", key: "chbLayingSand", dataType: "number" }
+      		]},
 			
-			{ headerText: "plasteringCement40kg", key: "plasteringCement40kg", dataType: "number" },
-			{ headerText: "plasteringCement50kg", key: "plasteringCement50kg", dataType: "number" },
-			{ headerText: "plasteringSand", key: "plasteringSand", dataType: "number" },
 			
-			{ headerText: "footingCement40kg", key: "footingCement40kg", dataType: "number" },
-			{ headerText: "footingCement50kg", key: "footingCement50kg", dataType: "number" },
-			{ headerText: "footingSand", key: "footingSand", dataType: "number" },
-			{ headerText: "footingGravel", key: "footingGravel", dataType: "number" }
+			{ headerText: "plasteringCement40kg", key: "plasteringCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringCement50kg", key: "plasteringCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringSand", key: "plasteringSand", dataType: "number", hidden: true  },
+			
+			{ headerText: "footingCement40kg", key: "footingCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "footingCement50kg", key: "footingCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "footingSand", key: "footingSand", dataType: "number", hidden: true  },
+			{ headerText: "footingGravel", key: "footingGravel", dataType: "number", hidden: true  }
+		]
+	});
+	$("#treegrid-concrete").igTreeGrid({
+		dataSource: flatDS,
+		width: "100%",
+		primaryKey: "uuid",
+		columns: [
+			{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Name", key: "name", dataType: "string" },
+			{ headerText: "Remarks", key: "remarks", dataType: "string", hidden: true },
+			{ headerText: "Area", key: "area", dataType: "number", hidden: true },
+			{ headerText: "Volume", key: "volume", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing Length", key: "footingLength", dataType: "number", hidden: true },
+			
+			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number"},
+			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number"},
+			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number"},
+			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number"},
+			
+			{ headerText: "CHB", key: "totalCHB", dataType: "number", hidden: true  },
+			
+			{ headerText: "chbLayingBags40kg", key: "chbLayingBags40kg", dataType: "number", hidden: true  },
+			{ headerText: "chbLayingBags50kg", key: "chbLayingBags50kg", dataType: "number", hidden: true  },
+			{ headerText: "chbLayingSand", key: "chbLayingSand", dataType: "number", hidden: true  },
+			
+			{ headerText: "plasteringCement40kg", key: "plasteringCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringCement50kg", key: "plasteringCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringSand", key: "plasteringSand", dataType: "number", hidden: true  },
+			
+			{ headerText: "footingCement40kg", key: "footingCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "footingCement50kg", key: "footingCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "footingSand", key: "footingSand", dataType: "number", hidden: true  },
+			{ headerText: "footingGravel", key: "footingGravel", dataType: "number", hidden: true  }
+		]
+	});
+	$("#treegrid-details").igTreeGrid({
+		dataSource: flatDS,
+		width: "100%",
+		primaryKey: "uuid",
+		columns: [
+			{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Name", key: "name", dataType: "string" },
+			{ headerText: "Remarks", key: "remarks", dataType: "string" },
+			{ headerText: "Area (sq.m.)", key: "area", dataType: "number" },
+			{ headerText: "Volume (cu.m.)", key: "volume", dataType: "number" },
+			{ headerText: "Foundation Height (m)", key: "chbFoundationHeight", dataType: "number" },
+			{ headerText: "Footing Length (m)", key: "footingLength", dataType: "number" },
+			
+			{ headerText: "Cement (40kg)", key: "concreteCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "Cement (50kg)", key: "concreteCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "Sand (cu.m.)", key: "concreteSand", dataType: "number", hidden: true  },
+			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true  },
+			
+			{ headerText: "CHB", key: "totalCHB", dataType: "number", hidden: true  },
+			
+			{ headerText: "chbLayingBags40kg", key: "chbLayingBags40kg", dataType: "number", hidden: true  },
+			{ headerText: "chbLayingBags50kg", key: "chbLayingBags50kg", dataType: "number", hidden: true  },
+			{ headerText: "chbLayingSand", key: "chbLayingSand", dataType: "number", hidden: true  },
+			
+			{ headerText: "plasteringCement40kg", key: "plasteringCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringCement50kg", key: "plasteringCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "plasteringSand", key: "plasteringSand", dataType: "number", hidden: true  },
+			
+			{ headerText: "footingCement40kg", key: "footingCement40kg", dataType: "number", hidden: true  },
+			{ headerText: "footingCement50kg", key: "footingCement50kg", dataType: "number", hidden: true  },
+			{ headerText: "footingSand", key: "footingSand", dataType: "number", hidden: true  },
+			{ headerText: "footingGravel", key: "footingGravel", dataType: "number", hidden: true  }
 		]
 	});
 });

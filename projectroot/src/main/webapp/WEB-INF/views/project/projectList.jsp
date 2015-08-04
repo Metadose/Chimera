@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -37,13 +37,11 @@
 									<div class="col-md-12">
 										<div class="box">
 												<div class="box-body table-responsive">
-													<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 													<c:url var="urlCreateProject" value="/project/edit/0"/>
 				                                	<a href="${urlCreateProject}">
 				                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>
 				                                	</a>
 				                                	<br/><br/>
-				                                	</sec:authorize>
 				                                    <table id="example-1" class="table table-bordered table-striped">
 				                                        <thead>
 				                                            <tr>
@@ -64,12 +62,10 @@
 				                                								<a href="${urlEditProject}">
 																					<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                								</a>
-																				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																				<c:url var="urlDeleteProject" value="/project/delete/${project.id}"/>
 				                                								<a href="${urlDeleteProject}">
 																					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                								</a>
-																				</sec:authorize>
 																				<a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a>
 																			</center>
 																		</td>

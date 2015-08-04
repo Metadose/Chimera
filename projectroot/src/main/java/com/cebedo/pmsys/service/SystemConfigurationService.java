@@ -6,18 +6,20 @@ import com.cebedo.pmsys.model.SystemConfiguration;
 
 public interface SystemConfigurationService {
 
-	public void create(SystemConfiguration systemConfiguration);
+    public void create(SystemConfiguration systemConfiguration);
 
-	public SystemConfiguration getByID(long id);
+    public SystemConfiguration getByID(long id);
 
-	public void update(SystemConfiguration systemConfiguration);
+    public void update(SystemConfiguration systemConfiguration);
 
-	public void delete(long id);
+    public void delete(long id);
 
-	public List<SystemConfiguration> list();
+    public List<SystemConfiguration> list();
 
-	public String getValueByName(String name);
+    public String getValueByName(String name);
 
-	public SystemConfiguration getByName(String name);
+    public SystemConfiguration getByName(String name);
+
+    public void merge(SystemConfiguration config);
 
 }

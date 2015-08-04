@@ -1,14 +1,15 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <sec:authentication var="authStaff" property="staff"/>
 <sec:authentication var="authUser" property="user"/>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:choose>
 	<c:when test="${!empty authStaff}">
 		<c:set var="staffName" value="${authStaff.getFullName()}"/>
 		<c:set var="companyPosition" value="${authStaff.companyPosition}"/>
 	</c:when>
-	<c:when test="${empty authStaff}">
+	<c:when test="${empty authStaff}"> 
 		<c:set var="staffName" value="${authUser.username}"/>
 		<c:set var="companyPosition" value="(No Staff)"/>
 	</c:when>
@@ -185,8 +186,8 @@
                         <!-- User image -->
                         <li class="user-header bg-light-blue">
                             <p>
-		            	 		${staffName}<br/>${companyPosition}
-                                <small>Member since TODO SUBTITLE</small>
+		            	 		${staffName}<br/>
+                                <small>${companyPosition}</small>
                             </p>
                         </li>
                         <!-- Menu Body -->

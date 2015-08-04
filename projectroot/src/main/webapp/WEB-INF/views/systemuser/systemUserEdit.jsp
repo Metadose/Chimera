@@ -1,8 +1,7 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -117,7 +116,6 @@
                                 	<div class="box box-body box-default">
 		                                	<table>
 		                                    	<tr>
-<%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
 <!-- 		                                    		<td> -->
 <%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
 <%-- 		                                    			<a href="${urlCreateStaff}"> --%>
@@ -127,7 +125,6 @@
 <!-- 		                                    		<td> -->
 <!-- 		                                    			&nbsp; -->
 <!-- 		                                    		</td> -->
-<%-- 		                                    		</sec:authorize> --%>
  		                                    		<form:form 
  		                                    		modelAttribute="securityaccess"  
  		                                    		method="post" 
@@ -194,7 +191,6 @@
                                 	<div class="box box-body box-default">
 		                                	<table>
 		                                    	<tr>
-<%-- 		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')"> --%>
 <!-- 		                                    		<td> -->
 <%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
 <%-- 		                                    			<a href="${urlCreateStaff}"> --%>
@@ -204,7 +200,6 @@
 <!-- 		                                    		<td> -->
 <!-- 		                                    			&nbsp; -->
 <!-- 		                                    		</td> -->
-<%-- 		                                    		</sec:authorize> --%>
  		                                    		<form:form 
  		                                    		modelAttribute="securityrole"  
  		                                    		method="post" 

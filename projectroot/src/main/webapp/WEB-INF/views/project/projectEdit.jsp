@@ -99,7 +99,6 @@
                    									<c:choose>
                                 						<c:when test="${project.id != 0}">
                                 							TODO
-		                   									<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 		                   									<div class="form-group">
 		                   										<form:form id="uploadPhotoForm"
 	                   												modelAttribute="profilePhoto"
@@ -129,7 +128,6 @@
 						                                        </tr>
 						                                        </table>
 						                                    </div>
-						                                    </sec:authorize>
                                 						</c:when>
                               						</c:choose>
 				                                    <br/>
@@ -149,13 +147,10 @@
 			                                            <label>Notes</label><br/>
 			                                            <c:out value="${project.notes}"/><br/><br/>
 			                                            
-			                                            <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit Details</button>
 			                                            <p class="help-block">Edit the details above</p>
-			                                            </sec:authorize>
 			                                        </div>
 			                                        </c:if>
-				                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 			                                        <div class="form-group" id="detailsDivEditor">
 			                                        
 			                                        	<!-- Update form Input -->
@@ -203,7 +198,6 @@
 		                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
 		                                            </c:if>
 			                                        </div>
-		                                            </sec:authorize>
                    								</div>
                    							</div>
                    						</div>
@@ -228,14 +222,12 @@
 	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
                														<!-- More Information Output -->
 	       															<label><c:out value="${field.label}"/></label>
-	       															<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-3edc-${field.label}-3edc-${field.value}"/>
 						                                            	(
 		                                								<a class="general-link" href="${urlEditProjectField}">
 						                                            	Edit
 	               														</a>
 						                                            	)
-						                                            </sec:authorize>
 						                                            <br/>
 						                                            <c:out value="${field.value}"/>
 	       															<br/>
@@ -248,7 +240,6 @@
 											                    <p>No extra information added.</p>
 											                </div>
    															</c:if>
-   															<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
    															<h4>Add More Information</h4>
 															<form:form modelAttribute="field"
 																id="fieldsForm" 
@@ -270,14 +261,11 @@
 															<br/>
 	                                           				<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add Information</button>
 	                                           				<c:if test="${!empty projectFields}">
-	                                           				<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 																<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
 	                               								<a href="${urlProjectUnassignFieldAll}">
 																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Remove All</button>
 	       														</a>
-															</sec:authorize>
 															</c:if>
-	                                           				</sec:authorize>
 			                                        </div>
                    								</div>
                    							</div>
@@ -625,7 +613,6 @@
 	                   									<div class="callout callout-info callout-cebedo">
 										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 										                </div>
-				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 						                                	<table>
 						                                    	<tr>
 						                                    		<td>
@@ -648,7 +635,6 @@
 						                                    		</c:if>
 						                                    	</tr>
 						                                    </table><br/>
-				                                    		</sec:authorize>
 						                                    <table id="tasks-table" class="table table-bordered table-striped">
 						                                    	<thead>
 						                                            <tr>
@@ -668,7 +654,6 @@
 						                                        		<c:forEach items="${taskList}" var="task">
 						                                        			<tr>
 						                                        				<td>
-						                                        					<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 						                                        					<div class="btn-group">
 											                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 											                                                Mark As&nbsp;
@@ -684,19 +669,16 @@
 				<!-- 							                                                <li><a href="#">Separated link</a></li> -->
 											                                            </ul>
 											                                        </div>
-											                                        </sec:authorize>
 											                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
 											                                        <a href="${urlViewTask}">
 									                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 											                                        </a>
-									                                            	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 									                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
 									                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 									                                            	<input type="hidden" name="task_id" value="${task.id}"/>
 									                                            	<input type="hidden" name="project_id" value="${project.id}"/>
 									                                            	<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
 									                                            	</form> 
-									                                            	</sec:authorize>
 						                                        				</td>
 									                                            <td style="vertical-align: middle;">
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
@@ -2027,12 +2009,10 @@
 							                                            			<a href="${urlViewStaff}">
 											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
-												                                    <sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 												                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
 												                                    <a href="${urlUnassignStaff}">
 					                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
 												                                    </a>
-					                   												</sec:authorize>
 																				</center>
 																			</td>
 						                                                	<td>${assignedStaffMember.getFullName()}</td>
@@ -2062,14 +2042,11 @@
 											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 											                </div>
 											                
-				                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 				                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 				                                    			<a href="${urlCreateStaff}">
 						                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 				                                    			</a>
-				                                    		</sec:authorize>
 				                                    		
-				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
 				                                    		</c:if>
@@ -2099,7 +2076,6 @@
 				                                    		
 							                                <br/>
 							                                <br/>
-				                                    		</sec:authorize>
 				                                    		<form:form modelAttribute="project" 
 				                                    		method="post" 
 				                                    		id="assignStaffForm"
@@ -2175,7 +2151,6 @@
    	
    	
    	<c:if test="${project.id != 0}">
-   	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
    	<script type="text/javascript">
    	$(document).ready(function() {
 		$('#detailsDivEditor').hide();
@@ -2210,18 +2185,15 @@
 	    });
 	});
    	</script>
-	</sec:authorize>
 	</c:if>
 	
 	<c:if test="${project.id != 0 && !empty project.assignedFields}">
-   	<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
    	<script type="text/javascript">
    	$(document).ready(function() {
 		$('#detailsDivEditor').hide();
 		$('#fieldsDivEditor').hide();
 	});
    	</script>
-	</sec:authorize>
 	</c:if>
 	
 	<script type="text/javascript">

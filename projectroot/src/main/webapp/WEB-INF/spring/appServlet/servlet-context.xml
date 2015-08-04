@@ -146,21 +146,16 @@
 		
 		<!-- Only an authenticated user can view the dashboard and images -->
 		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/search/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/image/display/**" access="isAuthenticated()"/>
 		
 		<!-- These are just general access security, a finer security level resides in the Controller and JSP -->
-		<security:intercept-url pattern="/company/**" access="hasRole('ACCESS_COMPANY')"/>
-		<security:intercept-url pattern="/field/**" access="hasRole('ACCESS_FIELD')"/>
-		<security:intercept-url pattern="/photo/**" access="hasRole('ACCESS_PHOTO')"/>
-		<security:intercept-url pattern="/project/**" access="hasRole('ACCESS_PROJECT')"/>
-		<security:intercept-url pattern="/projectfile/**" access="hasRole('ACCESS_PROJECTFILE')"/>
-		<security:intercept-url pattern="/staff/**" access="hasRole('ACCESS_STAFF')"/>
-		<security:intercept-url pattern="/task/**" access="hasRole('ACCESS_TASK')"/>
-		<security:intercept-url pattern="/team/**" access="hasRole('ACCESS_TEAM')"/>
-		<security:intercept-url pattern="/systemuser/**" access="hasRole('ACCESS_SYSTEMUSER')"/>
-		<security:intercept-url pattern="/config/**" access="hasRole('ACCESS_CONFIG')"/>
-		<security:intercept-url pattern="/log/**" access="hasRole('ACCESS_LOG')"/>
+		<security:intercept-url pattern="/company/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/field/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/project/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/staff/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/task/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/systemuser/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/config/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/log/**" access="isAuthenticated()"/>
 		
 		<security:logout 
 				invalidate-session="true" 
@@ -288,20 +283,8 @@
     <beans:bean id="staffService" class="com.cebedo.pmsys.service.impl.StaffServiceImpl">
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
-        <beans:property name="projectFileService" ref="projectFileService"></beans:property>
-    </beans:bean>
-    
-    <!-- Team -->
-    <beans:bean id="teamDAO" class="com.cebedo.pmsys.dao.TeamDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="teamService" class="com.cebedo.pmsys.service.impl.TeamServiceImpl">
-        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
-        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     
     <!-- Milestone -->
@@ -312,22 +295,6 @@
         <beans:property name="milestoneDAO" ref="milestoneDAO"></beans:property>
     </beans:bean>
     
-    <!-- Security Access -->
-    <beans:bean id="securityAccessDAO" class="com.cebedo.pmsys.dao.SecurityAccessDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="securityAccessService" class="com.cebedo.pmsys.service.impl.SecurityAccessServiceImpl">
-        <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
-    </beans:bean>
-    
-    <!-- Security Role -->
-    <beans:bean id="securityRoleDAO" class="com.cebedo.pmsys.dao.SecurityRoleDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="securityRoleService" class="com.cebedo.pmsys.service.impl.SecurityRoleServiceImpl">
-        <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
-    </beans:bean>
-    
     <!-- Task -->
     <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.TaskDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
@@ -335,15 +302,6 @@
     <beans:bean id="taskService" class="com.cebedo.pmsys.service.impl.TaskServiceImpl">
         <beans:property name="taskDAO" ref="taskDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
-        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
-        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-    </beans:bean>
-    
-    <!-- Search -->
-    <beans:bean id="searchService" class="com.cebedo.pmsys.service.impl.SearchServiceImpl">
-        <beans:property name="taskDAO" ref="taskDAO"></beans:property>
-        <beans:property name="staffDAO" ref="staffDAO"></beans:property>
-        <beans:property name="teamDAO" ref="teamDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
     </beans:bean>
     
@@ -354,16 +312,6 @@
     <beans:bean id="fieldService" class="com.cebedo.pmsys.service.impl.FieldServiceImpl">
         <beans:property name="fieldDAO" ref="fieldDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-    </beans:bean>
-    
-    <!-- Project File -->
-    <beans:bean id="projectFileDAO" class="com.cebedo.pmsys.dao.ProjectFileDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="projectFileService" class="com.cebedo.pmsys.service.impl.ProjectFileServiceImpl">
-        <beans:property name="projectFileDAO" ref="projectFileDAO"></beans:property>
-        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
 	<!-- System Configuration -->    
@@ -386,8 +334,6 @@
     <beans:bean id="systemUserService" class="com.cebedo.pmsys.service.impl.SystemUserServiceImpl">
         <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
-        <beans:property name="securityAccessDAO" ref="securityAccessDAO"></beans:property>
-        <beans:property name="securityRoleDAO" ref="securityRoleDAO"></beans:property>
         <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
     </beans:bean>
     
@@ -396,17 +342,6 @@
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="companyService" class="com.cebedo.pmsys.service.impl.CompanyServiceImpl">
-        <beans:property name="companyDAO" ref="companyDAO"></beans:property>
-    </beans:bean>
-    
-    <!-- Photo -->
-    <beans:bean id="photoDAO" class="com.cebedo.pmsys.dao.PhotoDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-    </beans:bean>
-    <beans:bean id="photoService" class="com.cebedo.pmsys.service.impl.PhotoServiceImpl">
-        <beans:property name="photoDAO" ref="photoDAO"></beans:property>
-        <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="systemConfigurationDAO" ref="systemConfigurationDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
     </beans:bean>
     

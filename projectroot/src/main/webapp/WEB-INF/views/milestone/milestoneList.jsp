@@ -1,4 +1,4 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -28,12 +28,10 @@
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<sec:authorize access="hasRole('ROLE_FIELD_EDITOR')">
                                 	<a href="${contextPath}/milestone/edit/0">
                                 		<button class="btn btn-default btn-flat btn-sm">Create Field</button>
                                 	</a>
                                 	<br/><br/>
-                                	</sec:authorize>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -51,11 +49,9 @@
 																<a href="${contextPath}/milestone/edit/${milestone.id}">
 																	<button class="btn btn-default btn-flat btn-sm">View</button>
 																</a>
-																<sec:authorize access="hasRole('ROLE_FIELD_EDITOR')">
 																<a href="${contextPath}/milestone/delete/${milestone.id}">
 																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																</a>
-																</sec:authorize>
 															</center>
 														</td>
 														<td>${milestone.id}</td>

@@ -1,4 +1,4 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -164,7 +164,6 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
-		                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 		                                    		<td>
 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/task/${task.id}"/>
 		                                    			<a href="${urlCreateStaff}">
@@ -174,8 +173,6 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
-		                                    		</sec:authorize>
-		                                    		<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 		                                    		<c:if test="${!empty staffList}">
  		                                    		<form:form 
  		                                    		modelAttribute="staffAssignment"  
@@ -207,7 +204,6 @@
 		                                    			</a>
 		                                    		</td>
 		                                    		</c:if>
-		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table>
 		                                    <table id="staff-table" class="table table-bordered table-striped">
@@ -230,12 +226,10 @@
 			                                            			<a href="${urlViewStaff}">
 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
 			                                            			</a>
-	                   												<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 	                   												<c:url var="urlUnassignStaff" value="/task/unassign/staff/${staffAssign.id}"/>
 	                   												<a href="${urlUnassignStaff}">
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 	                   												</a>
-	                   												</sec:authorize>
 																</center>
 															</td>
 			                                                <td>
@@ -261,7 +255,6 @@
 		                                <div class="box-body table-responsive">
 		                                	<table>
 		                                    	<tr>
-		                                    		<sec:authorize access="hasRole('ROLE_TEAM_EDITOR')">
 		                                    		<td>
 		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/task/${task.id}"/>
 		                                    			<a href="${urlCreateTeam}">
@@ -271,8 +264,6 @@
 		                                    		<td>
 		                                    			&nbsp;
 		                                    		</td>
-		                                    		</sec:authorize>
-		                                    		<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 		                                    		<c:if test="${!empty teamList}">
  		                                    		<form:form 
  		                                    		modelAttribute="teamAssignment"  
@@ -304,7 +295,6 @@
 		                                    			</a>
 		                                    		</td>
 		                                    		</c:if>
-		                                    		</sec:authorize>
 		                                    	</tr>
 		                                    </table>
 		                                    <table id="teams-table" class="table table-bordered table-striped">
@@ -324,12 +314,10 @@
 			                                            			<a href="${urlViewTeam}">
 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
 			                                            			</a>
-	                   												<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 	                   												<c:url var="urlUnassignTeam" value="/task/unassign/team/${team.id}"/>
 	                   												<a href="${urlUnassignTeam}">
 																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
 	                   												</a>
-	                   												</sec:authorize>
 																</center>
 															</td>
 			                                                <td>${team.id}</td>

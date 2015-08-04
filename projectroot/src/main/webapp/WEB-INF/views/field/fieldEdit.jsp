@@ -1,4 +1,4 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -55,7 +55,6 @@
 				                                            <input type="text" class="form-control" name="name" value="${field.name}"/><br/>
 				                                        </div>
 				                                    </form>
-			                                    	<sec:authorize access="hasRole('ROLE_FIELD_EDITOR')">
 				                                    <c:choose>
 		                                            	<c:when test="${field.id == 0}">
 		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
@@ -67,7 +66,6 @@
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
-	                                            	</sec:authorize>
                    								</div>
                    							</div>
                    						</div>

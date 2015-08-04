@@ -1,10 +1,9 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -44,13 +43,11 @@
 					<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 					                                </div><!-- /.box-header -->
 					                                <div class="box-body table-responsive">
-					                                	<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
 					                                	<a href="${urlCreateStaff}">
 					                                		<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 					                                	<br/><br/>
-					                                	</sec:authorize>
 					                                    <table id="example-1" class="table table-bordered table-striped">
 					                                        <thead>
 					                                            <tr>
@@ -72,12 +69,10 @@
 																					<a href="${urlEditStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">View</button>
 																					</a>
-																					<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 																					<c:url var="urlDeleteStaff" value="/staff/delete/${staff.id}"/>
 																					<a href="${urlDeleteStaff}">
 																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																					</a>
-																					</sec:authorize>
 																					<c:if test="${!empty staff.getUser().getId() && staff.getUser().getId() != authUser.id}">
 																					<c:url var="urlSendMessage" value="/message/view/${staff.getUser().getId()}"/>
 																					<a href="${urlSendMessage}">

@@ -1,4 +1,4 @@
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -44,13 +44,11 @@
 				<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 												</div><!-- /.box-header -->
 												<div class="box-body table-responsive">
-													<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 													<c:url value="/task/edit/0" var="urlCreateTask"/>
 				                                	<a href="${urlCreateTask}">
 				                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
 				                                	</a>
 				                                	<br/><br/>
-				                                	</sec:authorize>
 				                                    <table id="example-1" class="table table-bordered table-striped">
 				                                        <thead>
 				                                            <tr>
@@ -69,7 +67,6 @@
 				                                        		<c:forEach items="${taskList}" var="task">
 				                                        			<tr>
 				                                        				<td>
-				                                        					<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 				                                        					<div class="btn-group">
 									                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 									                                                Mark As&nbsp;
@@ -83,16 +80,13 @@
 									                                                <li><a href="${contextPath}/task/mark/?task_id=${task.id}&status=4">Cancelled</a></li>
 									                                            </ul>
 									                                        </div>
-									                                        </sec:authorize>
 									                                        <c:url value="/task/edit/${task.id}" var="viewTaskURL"/>
 									                                        <a href="${viewTaskURL}">
 							                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
 							                                            	</a>
-							                                            	<sec:authorize access="hasRole('ROLE_TASK_EDITOR')">
 							                                            	<a href="${contextPath}/task/delete/${task.id}">
 																				<button class="btn btn-default btn-flat btn-sm">Delete</button>
 																			</a>
-																			</sec:authorize>
 				                                        				</td>
 							                                            <td style="vertical-align: middle;">
 							                                            	<c:choose>
