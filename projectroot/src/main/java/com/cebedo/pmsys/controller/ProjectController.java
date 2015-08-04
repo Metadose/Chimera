@@ -1080,6 +1080,28 @@ public class ProjectController {
      * @param status
      * @return
      */
+    @RequestMapping(value = { URLRegistry.VIEW_ESTIMATION_RESULTS }, method = RequestMethod.GET)
+    public String viewEstimation(@PathVariable(RedisConstants.OBJECT_ESTIMATION_OUTPUT) String key,
+	    Model model) {
+
+	// Get estimation output.
+	EstimationOutput output = this.estimationOutputService.get(key);
+
+	// Attach to model.
+	model.addAttribute(RedisConstants.OBJECT_ESTIMATION_OUTPUT, output);
+
+	// Return.
+	return RedisConstants.JSP_ESTIMATION_OUTPUT_EDIT;
+    }
+
+    /**
+     * Delete a delivery.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @PreAuthorize("hasRole('" + SecurityRole.ROLE_PROJECT_EDITOR + "')")
     @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_DELIVERY
 	    + "/{" + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)

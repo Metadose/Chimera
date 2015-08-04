@@ -126,8 +126,8 @@ public class StaffServiceImpl implements StaffService {
 		Row row = rowIterator.next();
 		int rowCountDisplay = row.getRowNum() + 1;
 
-		// TODO Skip first 3 lines.
-		if (rowCountDisplay <= 3) {
+		// Skip first line.
+		if (rowCountDisplay <= 1) {
 		    continue;
 		}
 
@@ -189,9 +189,10 @@ public class StaffServiceImpl implements StaffService {
 			continue;
 
 		    case EXCEL_COLUMN_CONTACT_NUMBER:
-			String contactNumber = (String) (this.excelHelper.getValueAsExpected(workbook,
+			Object contactNumber = (Object) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
-			staff.setContactNumber(contactNumber);
+			staff.setContactNumber(contactNumber instanceof Double ? String
+				.valueOf(contactNumber) : (String) contactNumber);
 			continue;
 
 		    case EXCEL_COLUMN_EMAIL:

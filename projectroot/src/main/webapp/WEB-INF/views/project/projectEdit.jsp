@@ -362,11 +362,11 @@
 				                                            <tr>
 				                                            	<td>
 				                                            		<center>
-				                                            			<c:url var="urlView" value=""/>
+				                                            			<c:url var="urlView" value="/project/view/estimation/${estimationOutput.getKey()}-end"/>
 				                                            			<a href="${urlView}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-									                                    <c:url value="/project/" var="urlDelete"/>
+									                                    <c:url value="/project/delete/estimation/${estimationOutput.getKey()}-end" var="urlDelete"/>
 									                                    <a href="${urlDelete}">
 		                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Delete</button>
 									                                    </a>
@@ -2061,12 +2061,14 @@
 						                                	<div class="callout callout-info callout-cebedo">
 											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 											                </div>
+											                
 				                                    		<sec:authorize access="hasRole('ROLE_STAFF_EDITOR')">
 				                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
 				                                    			<a href="${urlCreateStaff}">
 						                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 				                                    			</a>
 				                                    		</sec:authorize>
+				                                    		
 				                                    		<sec:authorize access="hasRole('ROLE_PROJECT_EDITOR')">
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
@@ -2082,6 +2084,19 @@
 				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
 				                                    		</c:if>
+				                                    		<br/><br/>
+				                                    		<form:form modelAttribute="massUploadStaffBean"
+																action="${contextPath}/project/mass/upload-and-assign/staff"
+																method="post"
+																enctype="multipart/form-data">
+															
+																<div class="form-group">
+																<label>Excel File</label>
+																<form:input type="file" class="form-control" path="file"/><br/>
+																<button class="btn btn-cebedo-create btn-flat btn-sm">Create and Assign</button>
+																</div>
+															</form:form>
+				                                    		
 							                                <br/>
 							                                <br/>
 				                                    		</sec:authorize>
@@ -2347,54 +2362,5 @@
 			return false;
 		}
 	</script>
-	
-	<!-- Ignite UI Required Combined JavaScript Files -->
-	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
-	
-	<script type="text/javascript">
-	$(document).ready(function() {
-		
-		// Tree grid.
-		var flatDS = ${estimateJSON};
-		$("#treegrid1").igTreeGrid({
-			dataSource: flatDS,
-			width: "100%",
-			primaryKey: "uuid",
-			columns: [
-				{ headerText: "uuid", key: "uuid", dataType: "string", hidden: true },
-				{ headerText: "name", width: "26%", key: "name", dataType: "string" },
-				{ headerText: "remarks", width: "8%", key: "remarks", dataType: "string" },
-				{ headerText: "area", width: "8%", key: "area", dataType: "number" },
-				{ headerText: "volume", width: "8%", key: "volume", dataType: "number" },
-				{ headerText: "chbFoundationHeight", width: "8%", key: "chbFoundationHeight", dataType: "number" },
-				{ headerText: "footingLength", width: "8%", key: "footingLength", dataType: "number" },
-				
-				{ headerText: "concreteCement40kg", width: "8%", key: "concreteCement40kg", dataType: "number" },
-				{ headerText: "concreteCement50kg", width: "8%", key: "concreteCement50kg", dataType: "number" },
-				{ headerText: "concreteSand", width: "8%", key: "concreteSand", dataType: "number" },
-				{ headerText: "concreteGravel", width: "8%", key: "concreteGravel", dataType: "number" },
-				
-				{ headerText: "totalCHB", width: "8%", key: "totalCHB", dataType: "number" },
-				
-				{ headerText: "chbLayingBags40kg", width: "8%", key: "chbLayingBags40kg", dataType: "number" },
-				{ headerText: "chbLayingBags50kg", width: "8%", key: "chbLayingBags50kg", dataType: "number" },
-				{ headerText: "chbLayingSand", width: "8%", key: "chbLayingSand", dataType: "number" },
-				
-				{ headerText: "plasteringCement40kg", width: "8%", key: "plasteringCement40kg", dataType: "number" },
-				{ headerText: "plasteringCement50kg", width: "8%", key: "plasteringCement50kg", dataType: "number" },
-				{ headerText: "plasteringSand", width: "8%", key: "plasteringSand", dataType: "number" },
-				
-				{ headerText: "footingCement40kg", width: "8%", key: "footingCement40kg", dataType: "number" },
-				{ headerText: "footingCement50kg", width: "8%", key: "footingCement50kg", dataType: "number" },
-				{ headerText: "footingSand", width: "8%", key: "footingSand", dataType: "number" },
-				{ headerText: "footingGravel", width: "8%", key: "footingGravel", dataType: "number" }
-			]
-		});
-	});
-	</script>
-
 </body>
 </html>

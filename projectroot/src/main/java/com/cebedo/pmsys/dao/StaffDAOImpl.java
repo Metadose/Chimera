@@ -191,10 +191,10 @@ public class StaffDAOImpl implements StaffDAO {
     public Staff getStaffByName(Staff staff) {
 	String queryStr = "FROM " + Staff.class.getName() + " ";
 	queryStr += "WHERE ";
-	queryStr += Staff.PROPERTY_FIRST_NAME + " =: " + Staff.PROPERTY_FIRST_NAME + " AND ";
-	queryStr += Staff.PROPERTY_MIDDLE_NAME + " =: " + Staff.PROPERTY_MIDDLE_NAME + " AND ";
-	queryStr += Staff.PROPERTY_LAST_NAME + " =: " + Staff.PROPERTY_LAST_NAME + " AND ";
-	queryStr += Staff.PROPERTY_SUFFIX + " =: " + Staff.PROPERTY_SUFFIX;
+	queryStr += Staff.PROPERTY_FIRST_NAME + " =:" + Staff.PROPERTY_FIRST_NAME + " AND ";
+	queryStr += Staff.PROPERTY_MIDDLE_NAME + " =:" + Staff.PROPERTY_MIDDLE_NAME + " AND ";
+	queryStr += Staff.PROPERTY_LAST_NAME + " =:" + Staff.PROPERTY_LAST_NAME + " AND ";
+	queryStr += Staff.PROPERTY_SUFFIX + " =:" + Staff.PROPERTY_SUFFIX;
 
 	Session session = this.sessionFactory.getCurrentSession();
 	Query query = session.createQuery(queryStr);

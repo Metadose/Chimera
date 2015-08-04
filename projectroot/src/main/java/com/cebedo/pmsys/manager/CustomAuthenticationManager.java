@@ -36,136 +36,121 @@ import com.cebedo.pmsys.token.AuthenticationToken;
  * in the database and if the username and password are not the same. Otherwise,
  * throw a {@link BadCredentialsException}
  */
-public class CustomAuthenticationManager implements AuthenticationManager,
-		ServletContextAware {
+public class CustomAuthenticationManager implements AuthenticationManager, ServletContextAware {
 
-	private static Logger logger = Logger
-			.getLogger(SystemConstants.LOGGER_LOGIN);
-	private LogHelper logHelper = new LogHelper();
-	private AuthHelper authHelper = new AuthHelper();
-	private BeanHelper beanHelper = new BeanHelper();
-	private static final int MAX_LOGIN_ATTEMPT = 5;
+    private static Logger logger = Logger.getLogger(SystemConstants.LOGGER_LOGIN);
+    private LogHelper logHelper = new LogHelper();
+    private AuthHelper authHelper = new AuthHelper();
+    private BeanHelper beanHelper = new BeanHelper();
+    private static final int MAX_LOGIN_ATTEMPT = 5;
 
-	private SystemUserService systemUserService;
-	private ServletContext servletContext;
+    private SystemUserService systemUserService;
+    private ServletContext servletContext;
 
-	@Override
-	public void setServletContext(ServletContext context) {
-		this.servletContext = context;
+    @Override
+    public void setServletContext(ServletContext context) {
+	this.servletContext = context;
+    }
+
+    public Authentication authenticate(Authentication auth) throws AuthenticationException {
+	SystemUser user = null;
+	WebAuthenticationDetails details = (WebAuthenticationDetails) auth.getDetails();
+	String ipAddress = details.getRemoteAddress();
+	try {
+	    WebApplicationContext applicationContext = WebApplicationContextUtils
+		    .getWebApplicationContext(servletContext);
+	    this.systemUserService = (SystemUserService) applicationContext.getBean("systemUserService");
+	    user = this.systemUserService.searchDatabase(auth.getName());
+	}
+	// If user does not exist.
+	// TODO Put alert boxes.
+	catch (Exception e) {
+	    String text = this.logHelper.logMessage(ipAddress, null, null, null, null,
+		    "User does not exist: " + auth.getName());
+	    logger.warn(text);
+	    throw new BadCredentialsException(text);
 	}
 
-	public Authentication authenticate(Authentication auth)
-			throws AuthenticationException {
-		SystemUser user = null;
-		WebAuthenticationDetails details = (WebAuthenticationDetails) auth
-				.getDetails();
-		String ipAddress = details.getRemoteAddress();
-		try {
-			WebApplicationContext applicationContext = WebApplicationContextUtils
-					.getWebApplicationContext(servletContext);
-			this.systemUserService = (SystemUserService) applicationContext
-					.getBean("systemUserService");
-			user = this.systemUserService.searchDatabase(auth.getName());
-		}
-		// If user does not exist.
-		// TODO Put alert boxes.
-		catch (Exception e) {
-			String text = this.logHelper.logMessage(ipAddress, null,
-					null, null, null, "User does not exist: " + auth.getName());
-			logger.warn(text);
-			throw new BadCredentialsException(text);
-		}
+	if (!user.isSuperAdmin()) {
+	    // If the current date is already after the company's expiration.
+	    if (new Date(System.currentTimeMillis()).after(user.getCompany().getDateExpiration())) {
+		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
+			user.getStaff(), null, "User company is expired.");
+		logger.warn(text);
+		MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
+		// TODO This would change the way we notify and log events.
+		// Use redis for messaging instead.
+		sender.send("notification.system.login.company.expired", text);
+		throw new BadCredentialsException(text);
+	    }
 
-		if (!user.isSuperAdmin()) {
-			// If the current date is already after the company's expiration.
-			if (new Date(System.currentTimeMillis()).after(user.getCompany()
-					.getDateExpiration())) {
-				String text = this.logHelper.logMessage(ipAddress,
-						user.getCompany(), user, user.getStaff(), null,
-						"User company is expired.");
-				logger.warn(text);
-				MessageSender sender = (MessageSender) this.beanHelper
-						.getBean(MessageSender.BEAN_NAME);
-				// TODO This would change the way we notify and log events.
-				// Use redis for messaging instead.
-				sender.send("notification.system.login.company.expired", text);
-				throw new BadCredentialsException(text);
-			}
-
-			// If user is locked.
-			if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
-				String text = this.logHelper.logMessage(ipAddress,
-						user.getCompany(), user, user.getStaff(), null,
-						"User account is locked.");
-				logger.warn(text);
-				MessageSender sender = (MessageSender) this.beanHelper
-						.getBean(MessageSender.BEAN_NAME);
-				sender.send("notification.system.login.user.locked", text);
-				throw new BadCredentialsException(text);
-			}
-		}
-
-		// Compare passwords.
-		// Make sure to encode the password first before comparing.
-		if (this.authHelper.isPasswordValid((String) auth.getCredentials(),
-				user) == false) {
-			// Add 1 to the user login attempts.
-			user.setLoginAttempts(user.getLoginAttempts() + 1);
-			this.systemUserService.update(user, true);
-
-			String text = this.logHelper.logMessage(ipAddress,
-					user.getCompany(), user, user.getStaff(), null,
-					"Invalid password.");
-			logger.warn(text);
-			throw new BadCredentialsException(text);
-		}
-
-		// Here's the main logic of this custom authentication manager.
-		// Username and password must not be the same to authenticate.
-		if (auth.getName().equals(auth.getCredentials()) == true) {
-			String text = this.logHelper.logMessage(ipAddress,
-					user.getCompany(), user, user.getStaff(), null,
-					"Username and password are the same.");
-			logger.warn(text);
-			throw new BadCredentialsException(text);
-
-		} else {
-			if (user.getLoginAttempts() > 0) {
-				user.setLoginAttempts(0);
-				this.systemUserService.update(user, true);
-			}
-
-			AuthenticationToken token = new AuthenticationToken(auth.getName(),
-					auth.getCredentials(), getAuthorities(user),
-					user.getStaff(), user.getCompany(), user.isSuperAdmin(),
-					user.isCompanyAdmin(), user);
-			token.setIpAddress(ipAddress);
-			logger.info(this.logHelper.logMessage(token,
-					"User is authenticated."));
-			return token;
-		}
+	    // If user is locked.
+	    if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
+		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
+			user.getStaff(), null, "User account is locked.");
+		logger.warn(text);
+		MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
+		sender.send("notification.system.login.user.locked", text);
+		throw new BadCredentialsException(text);
+	    }
 	}
 
-	/**
-	 * Get all the granted authorities from a specific user.
-	 * 
-	 * @param user
-	 * @return
-	 */
-	public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
-		Set<SecurityAccess> accessSet = user.getSecurityAccess();
-		Set<SecurityRole> roles = user.getSecurityRoles();
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+	// Compare passwords.
+	// Make sure to encode the password first before comparing.
+	if (this.authHelper.isPasswordValid((String) auth.getCredentials(), user) == false) {
+	    // Add 1 to the user login attempts.
+	    user.setLoginAttempts(user.getLoginAttempts() + 1);
+	    this.systemUserService.update(user, true);
 
-		// Add all defined access.
-		for (SecurityAccess access : accessSet) {
-			authList.add(new SimpleGrantedAuthority(access.getName()));
-		}
-
-		// Add all roles.
-		for (SecurityRole role : roles) {
-			authList.add(new SimpleGrantedAuthority(role.getName()));
-		}
-		return authList;
+	    String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user, user.getStaff(),
+		    null, "Invalid password.");
+	    logger.warn(text);
+	    throw new BadCredentialsException(text);
 	}
+
+	// Here's the main logic of this custom authentication manager.
+	// Username and password must not be the same to authenticate.
+	if (auth.getName().equals(auth.getCredentials()) == true) {
+	    String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user, user.getStaff(),
+		    null, "Username and password are the same.");
+	    logger.warn(text);
+	    throw new BadCredentialsException(text);
+
+	} else {
+	    if (user.getLoginAttempts() > 0) {
+		user.setLoginAttempts(0);
+		this.systemUserService.update(user, true);
+	    }
+
+	    AuthenticationToken token = new AuthenticationToken(auth.getName(), auth.getCredentials(),
+		    getAuthorities(user), user.getStaff(), user.getCompany(), user.isSuperAdmin(),
+		    user.isCompanyAdmin(), user);
+	    token.setIpAddress(ipAddress);
+	    logger.info(this.logHelper.logMessage(token, "User is authenticated."));
+	    return token;
+	}
+    }
+
+    /**
+     * Get all the granted authorities from a specific user.
+     * 
+     * @param user
+     * @return
+     */
+    public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
+	Set<SecurityAccess> accessSet = user.getSecurityAccess();
+	Set<SecurityRole> roles = user.getSecurityRoles();
+	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+
+	// Add all defined access.
+	for (SecurityAccess access : accessSet) {
+	    authList.add(new SimpleGrantedAuthority(access.getName()));
+	}
+
+	// Add all roles.
+	for (SecurityRole role : roles) {
+	    authList.add(new SimpleGrantedAuthority(role.getName()));
+	}
+	return authList;
+    }
 }
