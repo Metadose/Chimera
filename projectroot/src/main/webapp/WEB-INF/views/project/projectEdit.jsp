@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="action" value="Create"/>
 <c:if test="${project.id > 0}">
@@ -578,6 +579,17 @@
 	                   									<div class="callout callout-info callout-cebedo">
 										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 										                </div>
+										                	<form:form modelAttribute="massUploadStaffBean"
+																action="${contextPath}/project/mass/upload-and-assign/task"
+																method="post"
+																enctype="multipart/form-data">
+															
+																<div class="form-group">
+																<label>Excel File</label>
+																<form:input type="file" class="form-control" path="file"/><br/>
+																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload Tasks</button>
+																</div>
+															</form:form>
 						                                	<table>
 						                                    	<tr>
 						                                    		<td>
@@ -2007,10 +2019,22 @@
 											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 											                </div>
 											                
-				                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
-				                                    			<a href="${urlCreateStaff}">
-						                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
-				                                    			</a>
+				                                    		<form:form modelAttribute="massUploadStaffBean"
+																action="${contextPath}/project/mass/upload-and-assign/staff"
+																method="post"
+																enctype="multipart/form-data">
+															
+																<div class="form-group">
+																<label>Excel File</label>
+																<form:input type="file" class="form-control" path="file"/><br/>
+																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload and Assign</button>
+																</div>
+															</form:form>
+															
+			                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
+			                                    			<a href="${urlCreateStaff}">
+					                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
+			                                    			</a>
 				                                    		
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
@@ -2026,18 +2050,6 @@
 				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
 				                                    		</c:if>
-				                                    		<br/><br/>
-				                                    		<form:form modelAttribute="massUploadStaffBean"
-																action="${contextPath}/project/mass/upload-and-assign/staff"
-																method="post"
-																enctype="multipart/form-data">
-															
-																<div class="form-group">
-																<label>Excel File</label>
-																<form:input type="file" class="form-control" path="file"/><br/>
-																<button class="btn btn-cebedo-create btn-flat btn-sm">Create and Assign</button>
-																</div>
-															</form:form>
 				                                    		
 							                                <br/>
 							                                <br/>

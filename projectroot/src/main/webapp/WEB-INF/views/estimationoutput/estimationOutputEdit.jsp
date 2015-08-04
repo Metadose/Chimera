@@ -1,13 +1,13 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
-	<title>Unit Create</title>
-		<!-- Ignite UI Required Combined CSS Files -->
+	<title>Estimation View</title>
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
@@ -32,13 +32,18 @@
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
-	            <h1>
-	            	${estimationoutput.name}
+	            <h1>${estimationoutput.name}<small>${estimationoutput.lastComputed}</small>
 	            </h1>
 	        </section>
 	        <section class="content">
 			<div class="row">
 				<div class="col-md-12">
+					<c:url var="urlBack" value="/project/edit/" />
+	                <a href="${urlBack}">
+						<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
+					</a>
+					<br/>
+					<br/>
 					<div class="box box-body box-default">
 						<div class="box-header">
 						<%--<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/> --%>
