@@ -18,6 +18,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.cebedo.pmsys.constants.MessageDestinationRegistry;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.BeanHelper;
@@ -52,6 +53,8 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	SystemUser user = null;
 	WebAuthenticationDetails details = (WebAuthenticationDetails) auth.getDetails();
 	String ipAddress = details.getRemoteAddress();
+
+	// Check if the user exists.
 	try {
 	    WebApplicationContext applicationContext = WebApplicationContextUtils
 		    .getWebApplicationContext(servletContext);
@@ -74,9 +77,7 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 			user.getStaff(), null, "User company is expired.");
 		logger.warn(text);
 		MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
-		// TODO This would change the way we notify and log events.
-		// Use redis for messaging instead.
-		sender.send("notification.system.login.company.expired", text);
+		sender.send(MessageDestinationRegistry.SYSTEM_LOGIN_COMPANY_EXPIRED, text);
 		throw new BadCredentialsException(text);
 	    }
 

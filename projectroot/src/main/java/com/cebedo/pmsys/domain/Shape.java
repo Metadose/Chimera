@@ -42,6 +42,8 @@ public class Shape implements IDomainObject {
      */
     private double area;
     private double volume;
+    private double originalArea;
+    private double originalVolume;
     private double footingLength;
 
     /**
@@ -76,8 +78,7 @@ public class Shape implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_SHAPE, this.company.getId(),
-		this.uuid);
+	return String.format(RedisKeyRegistry.KEY_SHAPE, this.company.getId(), this.uuid);
     }
 
     public Company getCompany() {
@@ -160,10 +161,10 @@ public class Shape implements IDomainObject {
     public boolean isValid() {
 
 	// Check if open brackets are equal to close brackets.
-	int openIndices = org.apache.commons.lang.StringUtils.countMatches(
-		this.volumeFormula, DELIMITER_OPEN_VARIABLE);
-	int closeIndices = org.apache.commons.lang.StringUtils.countMatches(
-		this.volumeFormula, DELIMITER_CLOSE_VARIABLE);
+	int openIndices = org.apache.commons.lang.StringUtils.countMatches(this.volumeFormula,
+		DELIMITER_OPEN_VARIABLE);
+	int closeIndices = org.apache.commons.lang.StringUtils.countMatches(this.volumeFormula,
+		DELIMITER_CLOSE_VARIABLE);
 	if (openIndices == closeIndices) {
 	    return true;
 	}
@@ -172,19 +173,15 @@ public class Shape implements IDomainObject {
 
     public String getAreaFormulaWithoutDelimiters() {
 	String areaFormula = this.areaFormula;
-	areaFormula = StringUtils.remove(areaFormula,
-		Shape.DELIMITER_OPEN_VARIABLE);
-	areaFormula = StringUtils.remove(areaFormula,
-		Shape.DELIMITER_CLOSE_VARIABLE);
+	areaFormula = StringUtils.remove(areaFormula, Shape.DELIMITER_OPEN_VARIABLE);
+	areaFormula = StringUtils.remove(areaFormula, Shape.DELIMITER_CLOSE_VARIABLE);
 	return areaFormula;
     }
 
     public String getVolumeFormulaWithoutDelimiters() {
 	String volFormula = this.volumeFormula;
-	volFormula = StringUtils.remove(volFormula,
-		Shape.DELIMITER_OPEN_VARIABLE);
-	volFormula = StringUtils.remove(volFormula,
-		Shape.DELIMITER_CLOSE_VARIABLE);
+	volFormula = StringUtils.remove(volFormula, Shape.DELIMITER_OPEN_VARIABLE);
+	volFormula = StringUtils.remove(volFormula, Shape.DELIMITER_CLOSE_VARIABLE);
 	return volFormula;
     }
 
@@ -214,8 +211,7 @@ public class Shape implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof Shape ? ((Shape) obj).getKey().equals(getKey())
-		: false;
+	return obj instanceof Shape ? ((Shape) obj).getKey().equals(getKey()) : false;
     }
 
     @Override
@@ -229,5 +225,21 @@ public class Shape implements IDomainObject {
 
     public void setFootingLength(double footingLength) {
 	this.footingLength = footingLength;
+    }
+
+    public double getOriginalArea() {
+	return originalArea;
+    }
+
+    public void setOriginalArea(double originalArea) {
+	this.originalArea = originalArea;
+    }
+
+    public double getOriginalVolume() {
+	return originalVolume;
+    }
+
+    public void setOriginalVolume(double originalVolume) {
+	this.originalVolume = originalVolume;
     }
 }

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -39,6 +40,12 @@ public class LoginLogoutController {
     @Qualifier(value = "systemConfigurationService")
     public void setFieldService(SystemConfigurationService ps) {
 	this.configService = ps;
+    }
+
+    @RequestMapping(value = "/login/error", method = RequestMethod.GET)
+    public String loginError(Model model) {
+	model.addAttribute(SystemConstants.UI_PARAM_ALERT, "Login failed");
+	return getLoginPage();
     }
 
     /**

@@ -59,8 +59,8 @@ public class EstimationOutputRowBean implements Serializable {
 	this.uuid = estimate.getUuid().toString();
 	this.name = estimate.getName();
 	this.remarks = estimate.getRemarks();
-	this.area = shape.getArea();
-	this.volume = shape.getVolume();
+	this.area = shape.getOriginalArea();
+	this.volume = shape.getOriginalVolume();
 	this.chbFoundationHeight = estimate.getChbFoundationHeight();
 	this.footingLength = shape.getFootingLength();
 
@@ -71,18 +71,18 @@ public class EstimationOutputRowBean implements Serializable {
 
 	this.totalCHB = chb.getTotalCHB();
 
-	double chbBags50 = chbLaying.getBags();
-	this.chbLayingBags40kg = chbBags50 - (chbBags50 * 0.2);
-	this.chbLayingBags50kg = chbBags50;
+	double chbBags40 = chbLaying.getBags();
+	this.chbLayingBags40kg = chbBags40;
+	this.chbLayingBags50kg = chbBags40 - (chbBags40 * 0.2);
 	this.chbLayingSand = chbLaying.getSand();
 
 	this.plasteringCement40kg = plaster.getCement40kg();
 	this.plasteringCement50kg = plaster.getCement50kg();
 	this.plasteringSand = plaster.getSand();
 
-	double footingBags50 = footing.getCement();
-	this.footingCement40kg = footingBags50 - (footingBags50 * 0.2);
-	this.footingCement50kg = footingBags50;
+	double footingBags40 = footing.getCement();
+	this.footingCement40kg = footingBags40;
+	this.footingCement50kg = footingBags40 - (footingBags40 * 0.2);
 	this.footingSand = footing.getSand();
 	this.footingGravel = footing.getGravel();
     }

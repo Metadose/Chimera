@@ -22,7 +22,8 @@
 </head>
 <body class="bg-black">
         <div class="form-box" id="login-box">
-            <div class="header">Log In</div>
+            <div class="header">Log In
+            </div>
             <form action="${contextPath}/j_spring_security_check" method="POST">	
             	<fieldset>
                 <div class="body bg-gray">
@@ -37,6 +38,13 @@
                     </div>
                 </div>
                 <div class="footer">
+                
+                	<c:if test="${!empty uiParamAlert}">
+                	<center>
+                	<font color="red">${uiParamAlert}</font>
+                	</center><br/>
+                	</c:if>
+                	
                     <button type="submit" class="btn bg-olive btn-block">Log me in</button>
 
                     <p><a href="#">I forgot my password</a></p>

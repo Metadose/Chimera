@@ -155,6 +155,7 @@ public class StaffDAOImpl implements StaffDAO {
 	return list;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Staff getStaffByName(Staff staff) {
 	String queryStr = "FROM " + Staff.class.getName() + " ";
@@ -170,6 +171,11 @@ public class StaffDAOImpl implements StaffDAO {
 	query.setParameter(Staff.PROPERTY_MIDDLE_NAME, staff.getMiddleName());
 	query.setParameter(Staff.PROPERTY_LAST_NAME, staff.getLastName());
 	query.setParameter(Staff.PROPERTY_SUFFIX, staff.getSuffix());
+
+	List<Staff> staffList = (List<Staff>) query.list();
+	if (staffList != null && staffList.size() > 1) {
+	    return null;
+	}
 	return (Staff) query.uniqueResult();
     }
 }

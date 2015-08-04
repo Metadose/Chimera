@@ -39,11 +39,11 @@ public class Staff implements Serializable {
     public static final String SUB_MODULE_PROFILE = "profile";
 
     private long id;
-    private String prefix;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String suffix;
+    private String prefix = "";
+    private String firstName = "";
+    private String middleName = "";
+    private String lastName = "";
+    private String suffix = "";
     private String companyPosition;
     private Set<Task> tasks;
 
@@ -206,6 +206,16 @@ public class Staff implements Serializable {
 	String sfx = getSuffix() == null ? "" : getSuffix();
 
 	return lname + ", " + fname + " " + sfx + mname + pfx;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Staff ? ((Staff) obj).getId() == (getId()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return ((Long) getId()).hashCode();
     }
 
 }

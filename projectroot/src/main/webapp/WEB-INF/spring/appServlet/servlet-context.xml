@@ -181,7 +181,7 @@
  	
  	<!-- We just actually need to set the default failure url here -->
  	<beans:bean id="customAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
- 		p:defaultFailureUrl="/auth/login?error=true" />
+ 		p:defaultFailureUrl="/auth/login/error" />
  		
  	 <!-- We just actually need to set the default target url here -->
  	<beans:bean id="customAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler"

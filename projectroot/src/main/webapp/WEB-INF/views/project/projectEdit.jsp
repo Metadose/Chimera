@@ -96,41 +96,6 @@
 									                    A photo of the project site may also be uploaded in the section below.
 									                    </p>
 									                </div>
-                   									<c:choose>
-                                						<c:when test="${project.id != 0}">
-                                							TODO
-		                   									<div class="form-group">
-		                   										<form:form id="uploadPhotoForm"
-	                   												modelAttribute="profilePhoto"
-																	action="${contextPath}/project/upload/profile"
-																	method="post"
-																	enctype="multipart/form-data">
-			                   										<table>
-			                   											<tr>
-			                   												<td style="vertical-align: top">
-			                   													<label for="exampleInputFile">Update Photo</label>
-			                   												</td>
-			                   												<td>
-			                   													&nbsp;&nbsp;
-			                   												</td> 
-			                   												<td>
-			                   													<input type="file" id="file" name="file"/>
-			                   													<p class="help-block">Upload a photo of the project site</p>
-			                   												</td>
-			                   											</tr>
-			                   										</table>
-						                                        </form:form>
-						                                        <table>
-						                                        <tr>
-						                                        <td>
-						                                        <button onclick="submitForm('uploadPhotoForm')" class="btn btn-cebedo-upload btn-flat btn-sm">Upload</button>
-						                                        </td>
-						                                        </tr>
-						                                        </table>
-						                                    </div>
-                                						</c:when>
-                              						</c:choose>
-				                                    <br/>
 				                                    <c:if test="${project.id != 0}">
 				                                    <!-- Read only Output -->
 				                                    <div class="form-group" id="detailsDivViewer">

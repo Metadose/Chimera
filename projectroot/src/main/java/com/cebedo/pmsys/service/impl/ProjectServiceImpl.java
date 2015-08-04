@@ -139,7 +139,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Set<Staff> projectStaff = proj.getAssignedStaff();
 	projectStaff.addAll(staffList);
 	proj.setAssignedStaff(projectStaff);
-	this.projectDAO.update(proj);
+	this.projectDAO.merge(proj);
     }
 
     /**

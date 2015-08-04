@@ -50,7 +50,7 @@ public class Estimate implements IDomainObject {
      * Bean-backed form.
      */
     // User input.
-    private TableEstimationAllowance estimationAllowance;
+    private TableEstimationAllowance estimationAllowance = TableEstimationAllowance.ALLOWANCE_0;
     private MultipartFile estimationFile;
 
     // Standard constants.
@@ -112,8 +112,7 @@ public class Estimate implements IDomainObject {
     }
 
     public boolean willComputeMRCHB() {
-	return this.estimateTypes
-		.contains(EstimateType.METAL_REINFORCEMENT_CHB);
+	return this.estimateTypes.contains(EstimateType.METAL_REINFORCEMENT_CHB);
     }
 
     public Company getCompany() {
@@ -178,8 +177,8 @@ public class Estimate implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATE,
-		this.company.getId(), this.project.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_ESTIMATE, this.company.getId(), this.project.getId(),
+		this.uuid);
     }
 
     public List<EstimateType> getEstimateTypes() {
@@ -191,14 +190,13 @@ public class Estimate implements IDomainObject {
     }
 
     public static String constructPattern(Project proj) {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany()
-		.getId(), proj.getId(), "*");
+	return String
+		.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany().getId(), proj.getId(), "*");
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof Estimate ? ((Estimate) obj).getKey().equals(
-		getKey()) : false;
+	return obj instanceof Estimate ? ((Estimate) obj).getKey().equals(getKey()) : false;
     }
 
     @Override
@@ -250,8 +248,7 @@ public class Estimate implements IDomainObject {
 	return resultCHBLayingEstimate;
     }
 
-    public void setResultCHBLayingEstimate(
-	    MasonryCHBLayingEstimateResults resultCHBLayingEstimate) {
+    public void setResultCHBLayingEstimate(MasonryCHBLayingEstimateResults resultCHBLayingEstimate) {
 	this.resultCHBLayingEstimate = resultCHBLayingEstimate;
     }
 
@@ -259,8 +256,7 @@ public class Estimate implements IDomainObject {
 	return resultPlasteringEstimate;
     }
 
-    public void setResultPlasteringEstimate(
-	    MasonryPlasteringEstimateResults resultPlasteringEstimate) {
+    public void setResultPlasteringEstimate(MasonryPlasteringEstimateResults resultPlasteringEstimate) {
 	this.resultPlasteringEstimate = resultPlasteringEstimate;
     }
 
@@ -268,8 +264,7 @@ public class Estimate implements IDomainObject {
 	return chbFootingDimensions;
     }
 
-    public void setChbFootingDimensions(
-	    TableCHBFootingDimensions chbFootingDimensions) {
+    public void setChbFootingDimensions(TableCHBFootingDimensions chbFootingDimensions) {
 	this.chbFootingDimensions = chbFootingDimensions;
     }
 
@@ -277,8 +272,7 @@ public class Estimate implements IDomainObject {
 	return resultCHBFootingEstimate;
     }
 
-    public void setResultCHBFootingEstimate(
-	    MasonryCHBFootingEstimateResults resultCHBFootingEstimate) {
+    public void setResultCHBFootingEstimate(MasonryCHBFootingEstimateResults resultCHBFootingEstimate) {
 	this.resultCHBFootingEstimate = resultCHBFootingEstimate;
     }
 
@@ -286,8 +280,7 @@ public class Estimate implements IDomainObject {
 	return resultConcreteEstimate;
     }
 
-    public void setResultConcreteEstimate(
-	    ConcreteEstimateResults resultConcreteEstimate) {
+    public void setResultConcreteEstimate(ConcreteEstimateResults resultConcreteEstimate) {
 	this.resultConcreteEstimate = resultConcreteEstimate;
     }
 
@@ -295,8 +288,7 @@ public class Estimate implements IDomainObject {
 	return estimationAllowance;
     }
 
-    public void setEstimationAllowance(
-	    TableEstimationAllowance estimationAllowance) {
+    public void setEstimationAllowance(TableEstimationAllowance estimationAllowance) {
 	this.estimationAllowance = estimationAllowance;
     }
 

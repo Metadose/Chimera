@@ -102,7 +102,7 @@
 		
 		<!-- Controller calls that do not have validation -->
 		<hdiv:startPages>/</hdiv:startPages>
-		<hdiv:startPages method="get">/auth/denied,/fix,/,/auth/login,/dashboard/,/image/display/,/image/display/project/profile/,/image/display/staff/profile/</hdiv:startPages>
+		<hdiv:startPages method="get">/auth/denied,/fix,/,/auth/login,/auth/login/error,/dashboard/</hdiv:startPages>
 		<hdiv:startPages method="post">/j_spring_security_check</hdiv:startPages>
 	</hdiv:config>
 	

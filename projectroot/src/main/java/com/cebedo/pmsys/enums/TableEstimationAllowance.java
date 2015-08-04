@@ -2,6 +2,8 @@ package com.cebedo.pmsys.enums;
 
 public enum TableEstimationAllowance {
 
+    ALLOWANCE_0("0%", 0.00),
+
     ALLOWANCE_1("1%", 0.01),
 
     ALLOWANCE_2("2%", 0.02),

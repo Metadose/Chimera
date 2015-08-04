@@ -794,6 +794,33 @@ public class ProjectController {
     }
 
     /**
+     * Delete an estimation.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { URLRegistry.DELETE_ESTIMATION_RESULTS }, method = RequestMethod.GET)
+    public String deleteEstimate(@PathVariable(RedisConstants.OBJECT_ESTIMATION_OUTPUT) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.estimationOutputService.delete(key);
+
+	// Attach to redirect.
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Return.
+	status.setComplete();
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+    }
+
+    /**
      * Delete a delivery.
      * 
      * @param key

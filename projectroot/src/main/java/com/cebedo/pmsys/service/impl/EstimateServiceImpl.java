@@ -106,6 +106,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    // Process each object.
 	    List<EstimationOutputRowBean> rowList = new ArrayList<EstimationOutputRowBean>();
 	    for (Estimate estimate : estimates) {
+		estimate.setEstimationAllowance(estimateInput.getEstimationAllowance());
 		computeQuantityEstimate(estimate);
 		rowList.add(estimate.getResultRow());
 	    }
@@ -259,6 +260,7 @@ public class EstimateServiceImpl implements EstimateService {
 			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			shape.setArea(area);
+			shape.setOriginalArea(area);
 			estimate.setShape(shape);
 			continue;
 
@@ -266,6 +268,7 @@ public class EstimateServiceImpl implements EstimateService {
 			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			shape.setVolume(volume);
+			shape.setOriginalVolume(volume);
 			estimate.setShape(shape);
 			continue;
 
@@ -376,6 +379,16 @@ public class EstimateServiceImpl implements EstimateService {
 	// Shape to compute.
 	Shape shape = estimate.getShape();
 
+	// Prepare area and volume.
+	// Set allowances.
+	double allowance = estimate.getEstimationAllowance().getAllowance();
+	if (allowance != 0.0) {
+	    double area = shape.getArea();
+	    double volume = shape.getVolume();
+	    shape.setArea(area + (area * allowance));
+	    shape.setVolume(volume + (volume * allowance));
+	}
+
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
 	    estimateCHBTotal(estimate, shape);
@@ -433,7 +446,7 @@ public class EstimateServiceImpl implements EstimateService {
 	double footingVolume = footingThickness * footingWidth * length;
 
 	// Estimations.
-	double cement = footingVolume * footingMixture.getPartCement50kg();
+	double cement = footingVolume * footingMixture.getPartCement40kg();
 	double sand = footingVolume * footingMixture.getPartSand();
 	double gravel = footingVolume * footingMixture.getPartGravel();
 
@@ -521,19 +534,19 @@ public class EstimateServiceImpl implements EstimateService {
      */
     private void estimateMasonryPlastering(Estimate estimate, Shape shape) {
 
-	// If we're plastering back to back,
-	// multiply the area by 2.
-	// Else, plaster only 1 side.
-	double shapeArea = shape.getArea();
-	double area = shapeArea * 2;
-
 	// Get the length "longest side of the shape".
 	double length = shape.getFootingLength();
 
 	// Consider the height below ground.
 	// Get the height of foundation (height of wall below the
 	// ground) and don't include that to the area to be plastered.
-	area = minusAreaBelowGround(estimate, length, area);
+	double shapeArea = shape.getArea();
+	double area = minusAreaBelowGround(estimate, length, shapeArea);
+
+	// If we're plastering back to back,
+	// multiply the area by 2.
+	// Else, plaster only 1 side.
+	area = area * 2;
 
 	// If we're plastering the top side,
 	// get the thickness area then plaster it.
@@ -584,7 +597,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Get the inputs.
 	double area = shape.getArea();
-	double bags = chbLayingMix.getPartCement50kgBag(); // 50kg bags.
+	double bags = chbLayingMix.getPartCement40kgBag(); // 40kg bags.
 	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
 	// Compute.

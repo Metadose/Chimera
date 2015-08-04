@@ -49,11 +49,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public void update(Project project) {
 	Session session = this.sessionFactory.getCurrentSession();
-	try {
-	    session.update(project);
-	} catch (Exception e) {
-	    session.merge(project);
-	}
+	session.update(project);
     }
 
     @Override
