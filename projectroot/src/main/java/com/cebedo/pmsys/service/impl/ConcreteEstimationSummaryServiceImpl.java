@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.model.Project;
@@ -22,8 +21,7 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DataStructUtils;
 
 @Service
-public class ConcreteEstimationSummaryServiceImpl implements
-	ConcreteEstimationSummaryService {
+public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationSummaryService {
 
     private ConcreteEstimationSummaryValueRepo concreteEstimationSummaryValueRepo;
     private EstimateValueRepo estimateValueRepo;
@@ -60,16 +58,14 @@ public class ConcreteEstimationSummaryServiceImpl implements
 
 	// Loop through each checked quantity estimate.
 	// Then get the sum.
-	List<Estimate> estimateList = this.estimateValueRepo
-		.multiGet(DataStructUtils.convertArrayToList(obj
-			.getEstimationToCompute()));
+	List<Estimate> estimateList = this.estimateValueRepo.multiGet(DataStructUtils
+		.convertArrayToList(obj.getEstimationToCompute()));
 
 	// For each estimate chosen in JSP.
 	for (Estimate estimate : estimateList) {
 
 	    // Get result map for concrete.
-	    ConcreteEstimateResults concreteEstimate = estimate
-		    .getResultConcreteEstimate();
+	    ConcreteEstimateResults concreteEstimate = estimate.getResultConcreteEstimate();
 	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 
 	    // For every summary, every proportion must have a different
@@ -91,10 +87,8 @@ public class ConcreteEstimationSummaryServiceImpl implements
 	    obj.setTotalUnitsGravel(unitsGravel);
 
 	    // Compute for the total cost of each component.
-	    double totalCostCement40kg = unitsCement40kg
-		    * obj.getCostPerUnitCement40kg();
-	    double totalCostCement50kg = unitsCement50kg
-		    * obj.getCostPerUnitCement50kg();
+	    double totalCostCement40kg = unitsCement40kg * obj.getCostPerUnitCement40kg();
+	    double totalCostCement50kg = unitsCement50kg * obj.getCostPerUnitCement50kg();
 	    double totalCostSand = unitsSand * obj.getCostPerUnitSand();
 	    double totalCostGravel = unitsGravel * obj.getCostPerUnitGravel();
 
@@ -105,10 +99,8 @@ public class ConcreteEstimationSummaryServiceImpl implements
 	    obj.setTotalCostGravel(totalCostGravel);
 
 	    // Compute for the grand total.
-	    obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand
-		    + totalCostGravel);
-	    obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand
-		    + totalCostGravel);
+	    obj.setGrandTotalCostIf40kg(totalCostCement40kg + totalCostSand + totalCostGravel);
+	    obj.setGrandTotalCostIf50kg(totalCostCement50kg + totalCostSand + totalCostGravel);
 
 	    // Set last computed.
 	    obj.setLastComputed(new Date(System.currentTimeMillis()));
@@ -120,14 +112,12 @@ public class ConcreteEstimationSummaryServiceImpl implements
 
 	// If create.
 	if (isCreate) {
-	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_UNIT, obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateCreate("TODO", obj.getName());
 	}
 
 	// If update.
 	this.concreteEstimationSummaryValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_UNIT, obj.getName());
+	return AlertBoxGenerator.SUCCESS.generateUpdate("TODO", obj.getName());
     }
 
     @Override
@@ -156,8 +146,7 @@ public class ConcreteEstimationSummaryServiceImpl implements
 
     @Override
     @Transactional
-    public Collection<ConcreteEstimationSummary> multiGet(
-	    Collection<String> keys) {
+    public Collection<ConcreteEstimationSummary> multiGet(Collection<String> keys) {
 	return this.concreteEstimationSummaryValueRepo.multiGet(keys);
     }
 
@@ -172,8 +161,7 @@ public class ConcreteEstimationSummaryServiceImpl implements
     @Transactional
     public List<ConcreteEstimationSummary> list(Project proj) {
 	String pattern = ConcreteEstimationSummary.constructPattern(proj);
-	Set<String> keys = this.concreteEstimationSummaryValueRepo
-		.keys(pattern);
+	Set<String> keys = this.concreteEstimationSummaryValueRepo.keys(pattern);
 	return this.concreteEstimationSummaryValueRepo.multiGet(keys);
     }
 

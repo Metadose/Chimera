@@ -4,8 +4,6 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 
-    public static final String KEY_MATERIAL_CATEGORY = "company.fk:%s:materialcategory:%s";
-
     public static final String KEY_UNITS = "company.fk:%s:units:%s";
 
     public static final String KEY_ESTIMATE = "company.fk:%s:project.fk:%s:estimate:%s";

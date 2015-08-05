@@ -90,28 +90,11 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<c:choose>
-                   									<c:when  test="${empty payrollApproverOptions}">
-                   									<div class="callout callout-danger">
-									                    <p>Cannot create Payroll without a Project Manager.<br/>
-                   									Only assigned Project Managers are allowed to approve or reject a Payroll.</p>
-									                </div>
-                   									</c:when>
-                   									<c:when  test="${!empty payrollApproverOptions}">
                    									<form:form modelAttribute="projectPayroll"
 														id="detailsForm"
 														method="post"
 														action="${contextPath}/project/create/payroll">
 				                                        <div class="form-group">
-				                                        
-				                                        	<!-- List of all staff as Project Manager -->
-				                                            <label>Approver</label>
-				                                            <form:select class="form-control" path="approverID">
-				                                            	<c:forEach items="${payrollApproverOptions}" var="manager">
-				                                            	<form:option class="form-control" value="${manager.user.id}" label="${manager.getFullName()}"/>
-				                                            	</c:forEach>
-				                                            </form:select>
-				                                            <p class="help-block">Set one of the project managers as the payroll approver</p>
 				                                            
 				                                            <!-- List of all in PayrollStatus enum -->
 				                                            <label>Status</label>
@@ -141,8 +124,6 @@
 	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
 				                                        </c:if>
 				                                    </form:form>
-				                                    </c:when>
-                   									</c:choose>
                    								</div>
                    							</div>
                    							<c:if test="${projectPayroll.saved}">
@@ -197,67 +178,12 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
-                   									<label>All</label>&nbsp;
-													<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
-													<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
-													<p class="help-block">Check or uncheck all staff members in the list below</p>
-													<br/>
 													<c:set value="" var="alreadyRendered"/>
                    									<form:form modelAttribute="projectPayroll"
 														id="checkboxesForm"
 														method="post"
 														action="${contextPath}/project/create/payroll/clear/computation">
 				                                        <div class="form-group">
-
-
-
-															<label>Managers</label>&nbsp;
-															<a href="#" onclick="checkAll('manager-checkboxes')" class="general-link">Check All</a>&nbsp;
-															<a href="#" onclick="uncheckAll('manager-checkboxes')" class="general-link">Uncheck All</a>
-															<p class="help-block">Check or uncheck all managers</p>
-															
-															<c:choose>
-															<c:when test="${empty managerList}">
-															<i>No manager assigned in project.</i><br/><br/>
-															</c:when>
-															<c:when test="${!empty managerList}">
-			                                            	<table class="table table-bordered table-striped">
-															<thead>
-					                                    		<tr>
-						                                            <th>Add</th>
-						                                            <th>Position</th>
-						                                            <th>Manager</th>
-						                                        </tr>
-					                                    	</thead>
-															<tbody>
-															<c:forEach items="${managerList}" var="managerAssignment">
-																<c:set value="${managerAssignment.manager}" var="manager"/>
-																<c:if test="${!fn:contains(alreadyRendered, manager.id)}">
-																<tr>
-																	<td align="center">
-																		<c:set value="${alreadyRendered}-${manager.id}-" var="alreadyRendered"/>
-								                                		<form:checkbox class="form-control include-checkbox manager-checkboxes" 
-								                                			path="staffIDs" 
-								                                			value="${manager.id}"
-								                                			/>
-																	</td>
-																	<td>
-																		${managerAssignment.projectPosition}
-																	</td>
-																	<td>
-																		<c:url value="/staff/edit/${manager.id}/from/project/${projectPayroll.project.id}" var="staffLink"/>
-																		<a href="${staffLink}" class="general-link">
-																		${manager.getFullName()}
-																		</a>
-																	</td>
-																</tr>
-																</c:if>
-															</c:forEach>
-															</tbody>
-															</table><br/>
-															</c:when>
-															</c:choose>
-															
 															
 
 															<label>Staff</label>

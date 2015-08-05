@@ -32,11 +32,9 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
-import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
-import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MilestoneStatus;
@@ -56,14 +54,12 @@ import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.MaterialCategoryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
-import com.cebedo.pmsys.service.UnitService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -131,7 +127,6 @@ public class ProjectController {
     public static final String ATTR_FILE = "file";
 
     public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
-    public static final String ATTR_PAYROLL_SELECTOR_APPROVER = "payrollApproverOptions";
 
     public static final String ATTR_CALENDAR_EVENT_TYPES_MAP = "calendarEventTypesMap";
     public static final String ATTR_CALENDAR_EVENT_TYPES_LIST = "calendarEventTypes";
@@ -175,8 +170,6 @@ public class ProjectController {
     private ProjectPayrollService projectPayrollService;
     private ProjectAuxService projectAuxService;
     private PullOutService pullOutService;
-    private MaterialCategoryService materialCategoryService;
-    private UnitService unitService;
     private EstimateService estimateService;
     private CostEstimationService costEstimationService;
     private EstimationOutputService estimationOutputService;
@@ -197,18 +190,6 @@ public class ProjectController {
     @Qualifier(value = "estimateService")
     public void setEstimateService(EstimateService estimateService) {
 	this.estimateService = estimateService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "unitService")
-    public void setUnitService(UnitService unitService) {
-	this.unitService = unitService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "materialCategoryService")
-    public void setMaterialCategoryService(MaterialCategoryService materialCategoryService) {
-	this.materialCategoryService = materialCategoryService;
     }
 
     @Autowired(required = true)
@@ -927,14 +908,6 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	List<Staff> staffList = proj.getAssignedStaffAndManagers();
 
-	// Get list of units.
-	List<Unit> unitList = this.unitService.list();
-	model.addAttribute(ATTR_UNIT_LIST, unitList);
-
-	// Get list of material categories.
-	List<MaterialCategory> materialCategoryList = this.materialCategoryService.list();
-	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
-
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
@@ -1220,14 +1193,6 @@ public class ProjectController {
 	// return the object from redis.
 	Delivery delivery = this.deliveryService.get(key);
 	model.addAttribute(ATTR_DELIVERY, delivery);
-
-	// Get list of units.
-	List<Unit> unitList = this.unitService.list();
-	model.addAttribute(ATTR_UNIT_LIST, unitList);
-
-	// Get list of material categories.
-	List<MaterialCategory> materialCategoryList = this.materialCategoryService.list();
-	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, materialCategoryList);
 
 	// Get the list of materials this delivery has.
 	// Then add to model.

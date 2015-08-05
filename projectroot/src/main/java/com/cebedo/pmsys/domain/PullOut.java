@@ -63,8 +63,7 @@ public class PullOut implements IDomainObject {
     @Override
     public String getKey() {
 	// company.fk:%s:project.fk:%s:delivery.fk:%s:material.fk:%s:pullout:%s
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT,
-		this.company.getId(), this.project.getId(),
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, this.company.getId(), this.project.getId(),
 		this.delivery.getUuid(), this.material.getUuid(), this.uuid);
     }
 
@@ -128,10 +127,6 @@ public class PullOut implements IDomainObject {
 	return quantity;
     }
 
-    public String getQuantityWithUnitsAsString() {
-	return this.quantity + " " + this.material.getUnit().getName();
-    }
-
     public void setQuantity(double quantity) {
 	this.quantity = quantity;
     }
@@ -156,27 +151,26 @@ public class PullOut implements IDomainObject {
 	Company company = material2.getCompany();
 	Project project = material2.getProject();
 	Delivery delivery = material2.getDelivery();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
-		project.getId(), delivery.getUuid(), material2.getUuid(), "*");
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(),
+		delivery.getUuid(), material2.getUuid(), "*");
     }
 
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
-		project.getId(), "*", "*", "*");
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(), "*", "*",
+		"*");
     }
 
     public static String constructPattern(Delivery delivery2) {
 	Company company = delivery2.getCompany();
 	Project project = delivery2.getProject();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(),
-		project.getId(), delivery2.getUuid(), "*", "*");
+	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(),
+		delivery2.getUuid(), "*", "*");
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof PullOut ? ((PullOut) obj).getKey().equals(
-		getKey()) : false;
+	return obj instanceof PullOut ? ((PullOut) obj).getKey().equals(getKey()) : false;
     }
 
     @Override

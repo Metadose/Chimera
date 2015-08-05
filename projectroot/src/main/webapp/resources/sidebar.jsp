@@ -76,32 +76,11 @@ $(document).ready(function() {
                     <i class="fa fa-male"></i> <span>User Accounts</span>
                 </a>
             </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-cog"></i>
-                    <span>Settings</span>
-                    <i class="fa fa-angle-left pull-right"></i>
+            <li>
+            	<c:url var="urlList" value="/shape/list/"/>
+                <a href="${urlList}">
+                    <i class="fa fa-cube"></i> <span>Shapes</span>
                 </a>
-                <ul class="treeview-menu">
-		            <li>
-		            	<c:url var="urlList" value="/unit/list"/>
-		                <a href="${urlList}">
-		                    <i class="fa fa-expand"></i> <span>Units of Measure</span>
-		                </a>
-		            </li>
-                	<li>
-		            	<c:url var="urlList" value="/materialcategory/list/"/>
-		                <a href="${urlList}">
-		                    <i class="fa fa-wrench"></i> <span>Material Categories</span>
-		                </a>
-		            </li>
-                    <li>
-		            	<c:url var="urlList" value="/shape/list/"/>
-		                <a href="${urlList}">
-		                    <i class="fa fa-cube"></i> <span>Shapes</span>
-		                </a>
-		            </li>
-                </ul>
             </li>
             
             <c:if test="${authUser.superAdmin == true}">

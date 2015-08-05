@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
@@ -21,8 +20,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
-    public void setEstimationOutputValueRepo(
-	    EstimationOutputValueRepo estimationOutputValueRepo) {
+    public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
@@ -49,14 +47,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	if (obj.getUuid() == null) {
 	    obj.setUuid(UUID.randomUUID());
 	    this.estimationOutputValueRepo.set(obj);
-	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_UNIT, "TODO");
+	    return AlertBoxGenerator.SUCCESS.generateCreate("TODO", "TODO");
 	}
 
 	// If update.
 	this.estimationOutputValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_UNIT, "TODO");
+	return AlertBoxGenerator.SUCCESS.generateUpdate("TODO", "TODO");
     }
 
     @Override

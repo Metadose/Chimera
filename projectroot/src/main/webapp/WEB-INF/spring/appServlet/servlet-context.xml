@@ -359,8 +359,6 @@
         <beans:property name="deliveryValueRepo" ref="deliveryValueRepo"></beans:property>
         <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
-        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
-        <beans:property name="materialCategoryValueRepo" ref="materialCategoryValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
@@ -396,23 +394,6 @@
         <beans:property name="estimationOutputValueRepo" ref="estimationOutputValueRepo"></beans:property>
     </beans:bean>
     <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
-    <!-- Material Category -->
-    <beans:bean id="materialCategoryService" class="com.cebedo.pmsys.service.impl.MaterialCategoryServiceImpl">
-        <beans:property name="materialCategoryValueRepo" ref="materialCategoryValueRepo"></beans:property>
-        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="materialCategoryValueRepo" class="com.cebedo.pmsys.repository.MaterialCategoryValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
-    <!-- Units of Measure -->
-    <beans:bean id="unitService" class="com.cebedo.pmsys.service.impl.UnitServiceImpl">
-        <beans:property name="unitValueRepo" ref="unitValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="unitValueRepo" class="com.cebedo.pmsys.repository.UnitValueRepo">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     

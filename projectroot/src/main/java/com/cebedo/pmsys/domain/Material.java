@@ -4,6 +4,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
+import com.cebedo.pmsys.enums.CommonMassUnit;
+import com.cebedo.pmsys.enums.CommonVolumeUnit;
+import com.cebedo.pmsys.enums.MaterialCategory;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -31,14 +35,14 @@ public class Material implements IDomainObject {
     private double quantity;
     private double used;
     private double available;
-    private Unit unit;
-    private MaterialCategory materialCategory;
 
     /**
      * Bean-backed form.
      */
-    private String materialCategoryKey;
-    private String unitKey;
+    private MaterialCategory materialCategory;
+    private CommonLengthUnit unitLength;
+    private CommonMassUnit unitMass;
+    private CommonVolumeUnit unitVolume;
 
     /**
      * Cost per unit.
@@ -84,8 +88,7 @@ public class Material implements IDomainObject {
     @Override
     public String getKey() {
 	// company:%s:project:%s:delivery:%s:material:%s
-	return String.format(RedisKeyRegistry.KEY_MATERIAL,
-		this.company.getId(), this.project.getId(),
+	return String.format(RedisKeyRegistry.KEY_MATERIAL, this.company.getId(), this.project.getId(),
 		this.delivery.getUuid(), this.uuid);
     }
 
@@ -137,33 +140,8 @@ public class Material implements IDomainObject {
 	this.quantity = quantity;
     }
 
-    public String getUnitKey() {
-	return unitKey;
-    }
-
-    public void setUnitKey(String unit) {
-	this.unitKey = unit;
-    }
-
-    public String getMaterialCategoryKey() {
-	return materialCategoryKey;
-    }
-
-    public void setMaterialCategoryKey(String materialCategoryKey) {
-	this.materialCategoryKey = materialCategoryKey;
-    }
-
-    public Unit getUnit() {
-	return unit;
-    }
-
-    public void setUnit(Unit unit) {
-	this.unit = unit;
-    }
-
     public String getCostPerUnitMaterialAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		costPerUnitMaterial);
+	return NumberFormatUtils.getCurrencyFormatter().format(costPerUnitMaterial);
     }
 
     public double getCostPerUnitMaterial() {
@@ -199,8 +177,7 @@ public class Material implements IDomainObject {
     }
 
     public String getTotalCostPerUnitMaterialAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		totalCostPerUnitMaterial);
+	return NumberFormatUtils.getCurrencyFormatter().format(totalCostPerUnitMaterial);
     }
 
     public double getTotalCostPerUnitMaterial() {
@@ -294,6 +271,28 @@ public class Material implements IDomainObject {
 	this.available = available;
     }
 
+    public static String constructPattern(Delivery delivery2) {
+	Company company = delivery2.getCompany();
+	Project project = delivery2.getProject();
+	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(), project.getId(),
+		delivery2.getUuid(), "*");
+    }
+
+    public static String constructPattern(Project project) {
+	Company company = project.getCompany();
+	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(), project.getId(), "*", "*");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Material ? ((Material) obj).getKey().equals(getKey()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return getKey().hashCode();
+    }
+
     public MaterialCategory getMaterialCategory() {
 	return materialCategory;
     }
@@ -302,28 +301,28 @@ public class Material implements IDomainObject {
 	this.materialCategory = materialCategory;
     }
 
-    public static String constructPattern(Delivery delivery2) {
-	Company company = delivery2.getCompany();
-	Project project = delivery2.getProject();
-	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(),
-		project.getId(), delivery2.getUuid(), "*");
+    public CommonLengthUnit getUnitLength() {
+	return unitLength;
     }
 
-    public static String constructPattern(Project project) {
-	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(),
-		project.getId(), "*", "*");
+    public void setUnitLength(CommonLengthUnit unitLength) {
+	this.unitLength = unitLength;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-	return obj instanceof Material ? ((Material) obj).getKey().equals(
-		getKey()) : false;
+    public CommonMassUnit getUnitMass() {
+	return unitMass;
     }
 
-    @Override
-    public int hashCode() {
-	return getKey().hashCode();
+    public void setUnitMass(CommonMassUnit unitMass) {
+	this.unitMass = unitMass;
+    }
+
+    public CommonVolumeUnit getUnitVolume() {
+	return unitVolume;
+    }
+
+    public void setUnitVolume(CommonVolumeUnit unitVolume) {
+	this.unitVolume = unitVolume;
     }
 
 }

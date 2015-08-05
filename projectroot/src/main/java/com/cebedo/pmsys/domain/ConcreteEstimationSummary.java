@@ -16,8 +16,7 @@ import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ConcreteEstimationSummary implements IDomainObject {
 
-    private static NumberFormat costFormatter = NumberFormatUtils
-	    .getCostFormatter();
+    private static NumberFormat costFormatter = NumberFormatUtils.getCostFormatter();
     private static final long serialVersionUID = -8209296327109938266L;
 
     /**
@@ -35,10 +34,6 @@ public class ConcreteEstimationSummary implements IDomainObject {
     private double totalUnitsCement50kg;
     private double totalUnitsSand;
     private double totalUnitsGravel;
-    private Unit unitCement40kg;
-    private Unit unitCement50kg;
-    private Unit unitSand;
-    private Unit unitGravel;
 
     /**
      * Total of cost.
@@ -86,15 +81,12 @@ public class ConcreteEstimationSummary implements IDomainObject {
 	setProject(proj);
     }
 
-    public ConcreteEstimationSummary(Project proj,
-	    CostEstimationBean costEstimationBean) {
+    public ConcreteEstimationSummary(Project proj, CostEstimationBean costEstimationBean) {
 	setCompany(proj.getCompany());
 	setProject(proj);
 
-	this.costPerUnitCement40kg = costEstimationBean
-		.getCostPerUnitCement40kg();
-	this.costPerUnitCement50kg = costEstimationBean
-		.getCostPerUnitCement50kg();
+	this.costPerUnitCement40kg = costEstimationBean.getCostPerUnitCement40kg();
+	this.costPerUnitCement50kg = costEstimationBean.getCostPerUnitCement50kg();
 	this.costPerUnitGravel = costEstimationBean.getCostPerUnitGravel();
 	this.costPerUnitSand = costEstimationBean.getCostPerUnitSand();
 	this.description = costEstimationBean.getDescription();
@@ -225,38 +217,6 @@ public class ConcreteEstimationSummary implements IDomainObject {
 
     public void setTotalUnitsGravel(double totalUnitsGravel) {
 	this.totalUnitsGravel = totalUnitsGravel;
-    }
-
-    public Unit getUnitCement40kg() {
-	return unitCement40kg;
-    }
-
-    public void setUnitCement40kg(Unit unitCement40kg) {
-	this.unitCement40kg = unitCement40kg;
-    }
-
-    public Unit getUnitCement50kg() {
-	return unitCement50kg;
-    }
-
-    public void setUnitCement50kg(Unit unitCement50kg) {
-	this.unitCement50kg = unitCement50kg;
-    }
-
-    public Unit getUnitSand() {
-	return unitSand;
-    }
-
-    public void setUnitSand(Unit unitSand) {
-	this.unitSand = unitSand;
-    }
-
-    public Unit getUnitGravel() {
-	return unitGravel;
-    }
-
-    public void setUnitGravel(Unit unitGravel) {
-	this.unitGravel = unitGravel;
     }
 
     public double getCostPerUnitCement40kg() {
@@ -397,8 +357,8 @@ public class ConcreteEstimationSummary implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_CONCRETE_ESTIMATION_SUMMARY,
-		this.company.getId(), this.project.getId(), this.uuid);
+	return String.format(RedisKeyRegistry.KEY_CONCRETE_ESTIMATION_SUMMARY, this.company.getId(),
+		this.project.getId(), this.uuid);
     }
 
     public static String constructPattern(Project proj) {
@@ -416,8 +376,8 @@ public class ConcreteEstimationSummary implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof ConcreteEstimationSummary ? ((ConcreteEstimationSummary) obj)
-		.getKey().equals(getKey()) : false;
+	return obj instanceof ConcreteEstimationSummary ? ((ConcreteEstimationSummary) obj).getKey()
+		.equals(getKey()) : false;
     }
 
     @Override

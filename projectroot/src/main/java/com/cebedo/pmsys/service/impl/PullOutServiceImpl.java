@@ -63,10 +63,9 @@ public class PullOutServiceImpl implements PullOutService {
 	double available = material.getAvailable();
 
 	// You're also not allowed if you already have a uuid.
-	if (quantity <= 0 || obj.getDatetime() == null || available <= 0
-		|| quantity > available) {
-	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(),
-		    material.getUnit().getName(), material.getName());
+	if (quantity <= 0 || obj.getDatetime() == null || available <= 0 || quantity > available) {
+	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(), "TODO",
+		    material.getName());
 	}
 
 	// If we're creating.
@@ -94,8 +93,7 @@ public class PullOutServiceImpl implements PullOutService {
 	this.materialValueRepo.set(material);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(),
-		material.getUnit().getName(), material.getName());
+	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), "TODO", material.getName());
     }
 
     @Override
@@ -138,8 +136,8 @@ public class PullOutServiceImpl implements PullOutService {
 	doDelete(key, obj);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(
-		obj.getDatetime(), obj.getStaff().getFullName());
+	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(obj.getDatetime(), obj.getStaff()
+		.getFullName());
     }
 
     /**
@@ -189,26 +187,23 @@ public class PullOutServiceImpl implements PullOutService {
 
 	    // Get the updated Material,
 	    // "After the deletion of the oldPullOut".
-	    Material updatedMaterial = this.materialValueRepo.get(newPullout
-		    .getMaterial().getKey());
+	    Material updatedMaterial = this.materialValueRepo.get(newPullout.getMaterial().getKey());
 	    newPullout.setMaterial(updatedMaterial);
 
 	    // Create new entry.
 	    create(newPullout);
 
 	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(
-		    RedisConstants.OBJECT_PULL_OUT, newPullout.getMaterial()
-			    .getName());
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_PULL_OUT, newPullout
+		    .getMaterial().getName());
 	}
 
 	// Do service.
 	this.pullOutValueRepo.set(newPullout);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_PULL_OUT, newPullout.getMaterial()
-			.getName());
+	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_PULL_OUT, newPullout
+		.getMaterial().getName());
     }
 
 }

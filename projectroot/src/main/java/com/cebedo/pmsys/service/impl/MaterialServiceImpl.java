@@ -12,17 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
-import com.cebedo.pmsys.domain.MaterialCategory;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.PullOut;
-import com.cebedo.pmsys.domain.Unit;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
-import com.cebedo.pmsys.repository.MaterialCategoryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
-import com.cebedo.pmsys.repository.UnitValueRepo;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -35,17 +31,6 @@ public class MaterialServiceImpl implements MaterialService {
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxService projectAuxService;
     private PullOutValueRepo pullOutValueRepo;
-    private UnitValueRepo unitValueRepo;
-    private MaterialCategoryValueRepo materialCategoryValueRepo;
-
-    public void setMaterialCategoryValueRepo(
-	    MaterialCategoryValueRepo materialCategoryValueRepo) {
-	this.materialCategoryValueRepo = materialCategoryValueRepo;
-    }
-
-    public void setUnitValueRepo(UnitValueRepo unitValueRepo) {
-	this.unitValueRepo = unitValueRepo;
-    }
 
     public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
@@ -90,15 +75,6 @@ public class MaterialServiceImpl implements MaterialService {
 	    // Set the UUID.
 	    obj.setUuid(UUID.randomUUID());
 
-	    // Set the units.
-	    Unit unit = this.unitValueRepo.get(obj.getUnitKey());
-	    obj.setUnit(unit);
-
-	    // Set the material category.
-	    MaterialCategory category = this.materialCategoryValueRepo.get(obj
-		    .getMaterialCategoryKey());
-	    obj.setMaterialCategory(category);
-
 	    // Set available = quantity.
 	    obj.setAvailable(obj.getQuantity());
 
@@ -113,28 +89,24 @@ public class MaterialServiceImpl implements MaterialService {
 	    // Add the grand total to the delivery.
 	    // Update the delivery object.
 	    Delivery delivery = obj.getDelivery();
-	    double newGrandTotal = delivery.getGrandTotalOfMaterials()
-		    + totalCost;
+	    double newGrandTotal = delivery.getGrandTotalOfMaterials() + totalCost;
 	    delivery.setGrandTotalOfMaterials(newGrandTotal);
 	    this.deliveryValueRepo.set(delivery);
 
 	    // Update the project auxillary.
 	    // Add material total to project grand total.
 	    ProjectAux projectAux = this.projectAuxService.get(delivery);
-	    double projectTotalDelivery = projectAux.getGrandTotalDelivery()
-		    + totalCost;
+	    double projectTotalDelivery = projectAux.getGrandTotalDelivery() + totalCost;
 	    projectAux.setGrandTotalDelivery(projectTotalDelivery);
 	    this.projectAuxService.set(projectAux);
 
 	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generateAdd(
-		    RedisConstants.OBJECT_MATERIAL, obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
 	}
 
 	// This service used only for adding.
 	// Not updating.
-	return AlertBoxGenerator.FAILED.generateAdd(
-		RedisConstants.OBJECT_MATERIAL, obj.getName());
+	return AlertBoxGenerator.FAILED.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
     }
 
     @Override
@@ -186,10 +158,8 @@ public class MaterialServiceImpl implements MaterialService {
 	Material material = this.materialValueRepo.get(key);
 
 	// Get the updated version of the objects.
-	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery()
-		.getKey());
-	ProjectAux projectAux = this.projectAuxService.get(material
-		.getProject());
+	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery().getKey());
+	ProjectAux projectAux = this.projectAuxService.get(material.getProject());
 
 	// If the object will be deleted,
 	// remove this material's total from delivery,
@@ -214,8 +184,8 @@ public class MaterialServiceImpl implements MaterialService {
 	this.pullOutValueRepo.delete(keys);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDelete(
-		RedisConstants.OBJECT_MATERIAL, material.getName());
+	return AlertBoxGenerator.SUCCESS.generateDelete(RedisConstants.OBJECT_MATERIAL,
+		material.getName());
     }
 
     /**
@@ -232,20 +202,10 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public String update(Material material) {
-
-	// Update also the unit.
-	Unit unit = this.unitValueRepo.get(material.getUnitKey());
-	material.setUnit(unit);
-
-	// Update the category.
-	MaterialCategory category = this.materialCategoryValueRepo.get(material
-		.getMaterialCategoryKey());
-	material.setMaterialCategory(category);
-
 	// Set the material.
 	this.materialValueRepo.set(material);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_MATERIAL, material.getName());
+	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_MATERIAL,
+		material.getName());
     }
 
 }

@@ -767,7 +767,6 @@
 			                                            	<th>&nbsp;</th>
 			                                                <th>Start Date</th>
 			                                                <th>End Date</th>
-			                                            	<th>Approver</th>
 			                                                <th>Creator</th>
 			                                                <th>Status</th>
 			                                                <th>Payroll Total</th>
@@ -778,8 +777,6 @@
 				                                		<c:forEach items="${payrollList}" var="payrollRow">
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
 														<fmt:formatDate pattern="yyyy.MM.dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
-				                                		<c:set value="${payrollRow.approver.id}-${payrollRow.creator.id}-${payrollRow.status.id()}-${payrollStartDate}-${payrollEndDate}"
-				                                				var="payrollRow.getKey()"></c:set>
 				                                		
 			                                            <tr>
 			                                            	<td>
@@ -798,13 +795,6 @@
 			                                                <td>${payrollStartDate}</td>
 			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
 			                                                <td>${payrollEndDate}</td>
-			                                                
-			                                                <td>
-			                                                <c:url var="urlLink" value="/staff/edit/${payrollRow.approver.staff.id}/from/project/${project.id}"/>
-						                                    <a href="${urlLink}" class="general-link">
-			                                                ${payrollRow.approver.staff.getFullName()}
-						                                    </a>
-			                                                </td>
 			                                                
 			                                                <td>
 			                                                <c:url var="urlLink" value="/staff/edit/${payrollRow.creator.staff.id}/from/project/${project.id}"/>
