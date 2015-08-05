@@ -92,6 +92,17 @@ public class Material implements IDomainObject {
 		this.delivery.getUuid(), this.uuid);
     }
 
+    public String getUnitName() {
+	if (this.unitLength != null) {
+	    return this.unitLength.label();
+	} else if (this.unitMass != null) {
+	    return this.unitMass.getLabel();
+	} else if (this.unitVolume != null) {
+	    return this.unitVolume.getLabel();
+	}
+	return "";
+    }
+
     public Company getCompany() {
 	return company;
     }

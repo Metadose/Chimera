@@ -250,10 +250,7 @@
 <!-- 			              								</div> -->
 				                                <div class="box-body table-responsive">
 				                                	<div class="callout callout-info">
-									                    <p>List of all project estimates.<br/><br/>
-									                    	To estimate a project:<br/>
-									                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
-									                    </p>
+									                    <p>List of all project estimates.</p>
 									                </div>
 				                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
 				                                    	<thead>
@@ -301,8 +298,10 @@
                    								</div>
                    								<div class="box-body">
                    									<div class="callout callout-info">
-									                    <p>
-									                    This feature can be utilized to store extra fields.<br/>
+									                    <p>To estimate a project:<br/>
+									                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
+									                    	<span class="badge bg-blue">2</span> <b>Fill up</b> the form below.<br/>
+									                    	<span class="badge bg-blue">3</span> Click <b>Estimate</b> button.
 									                    </p>
 									                </div>
                    								<form:form modelAttribute="estimationInput"
@@ -315,20 +314,24 @@
 			                                        <div class="form-group">
 			                                        
 													<label>Name</label>
-													<form:input placeholder="TODO" class="form-control" path="name"/><br/>													
+													<form:input placeholder="Sample: Project estimate, Estimation" class="form-control" path="name"/>
+													<p class="help-block">Enter the name of this estimate</p>
 	
 			                                        <label>Excel File</label>
-													<form:input type="file" class="form-control" path="estimationFile"/><br/>
+													<form:input type="file" class="form-control" path="estimationFile"/>
+													<p class="help-block">Choose the Excel file which contains the inputs</p>
 													
 	                                                <label>Estimation Allowance</label>
 	                                                <form:select class="form-control" path="estimationAllowance"> 
                                    						<c:forEach items="${allowanceList}" var="allowance"> 
                                    							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
                                    						</c:forEach> 
-	                                    			</form:select><br/>
+	                                    			</form:select>
+	                                    			<p class="help-block">Alot allowance for wastage</p>
 	                                    			
 													<label>Remarks</label>
-													<form:input placeholder="TODO" class="form-control" path="remarks"/><br/>
+													<form:input placeholder="Sample: This is the official estimate" class="form-control" path="remarks"/>
+													<p class="help-block">Add additional information</p>
 	                                    			
 	                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
 			                                        </div>
@@ -344,8 +347,8 @@
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-timeline">
 										<li class="active"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
-										<li><a href="#subtab_milestones" data-toggle="tab">Milestones</a></li>
 										<li><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
+										<li><a href="#subtab_milestones" data-toggle="tab">Milestones</a></li>
 									</ul>
 									<div class="tab-content">
 									
@@ -357,9 +360,6 @@
 			              									<h3 class="box-title">Timeline</h3>
 			              								</div>
 						                                <div class="box-body">
-						                                <div class="callout callout-info">
-										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-										                </div>
 										                <c:if test="${!empty project.assignedTasks}">
 						                                <table>
 		               										<tr>
@@ -414,11 +414,8 @@
 		                   									<h3 class="box-title">Summary</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   									<div class="callout callout-info">
-											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-											                </div>
+															<b>TOTAL MILESTONES:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
 		                   									<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
-															<b>Total Milestones:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
 															<b>Breakdown</b> of Total Milestones by Milestone Status:<br/><br/>
 															<table id="milestone-breakdown-table" class="table table-bordered table-striped">
 															<thead>
@@ -454,9 +451,6 @@
 		                   									<h3 class="box-title">Graph</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   								<div class="callout callout-info">
-										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-										                </div>
 										                Graph sa summary sa mga milestones
 		                   								</div>
 	                   								</div>
@@ -521,11 +515,7 @@
 	                   									<h3 class="box-title">Summary</h3>
 	                   								</div>
 	                   								<div class="box-body">
-	                   								<div class="callout callout-info">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
-									                
-	                   								<b>Total Tasks:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
+	                   								<b>TOTAL TASKS:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
 	                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
 	                   								
 													<table id="task-status-table" class="table table-bordered table-striped">
@@ -559,12 +549,7 @@
 	                   									<h3 class="box-title">Graph</h3>
 	                   								</div>
 	                   								<div class="box-body">
-	                   								<div class="callout callout-info">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
-									                
 	                   								Pie chart sa division sa summary (awa sa left side)
-	                   								
 	                   								</div>
 	                   							</div>
 	                   						</div>
@@ -577,7 +562,18 @@
 	                   								</div>
 	                   								<div class="box-body">
 	                   									<div class="callout callout-info">
-										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+										                    <p>List of tasks visualized by the chart.<br/>
+										                    	<br/>
+										                    	There are <u>two methods</u> to create a new task:<br/>
+										                    	<span class="badge bg-green">Method A: Excel</span><br/>
+										                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
+										                    	<span class="badge bg-blue">2</span> Click <b>Choose file</b> button, and choose the file from Step 1.<br/>
+										                    	<span class="badge bg-blue">3</span> Click <b>Upload Tasks</b> button.<br/>
+										                    	<br/>
+										                    	<span class="badge bg-green">Method B: Manual</span><br/>
+										                    	<span class="badge bg-blue">1</span> Click <b>Create Tasks</b> button.<br/>
+										                    	<span class="badge bg-blue">2</span> Use the interface to create a new task.
+										                    </p>
 										                </div>
 										                	<form:form modelAttribute="massUploadStaffBean"
 																action="${contextPath}/project/mass/upload-and-assign/task"
@@ -593,21 +589,27 @@
 						                                	<table>
 						                                    	<tr>
 						                                    		<td>
-						                                    			<c:url value="/task/create/from/project" var="urlAddTask"/>
+						                                    			<c:url value="/project/edit/task/0" var="urlAddTask"/>
 						                                    			<a href="${urlAddTask}">
 								                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Task</button>
 						                                    			</a>
 						                                    		</td>
 						                                    		<c:if test="${!empty project.assignedTasks}">
+						                                    		<td>&nbsp;</td>
 						                                    		<td>
-						                                    			&nbsp;
+				               											<!-- Delete All button -->
+								                                        <c:url value="/project/delete/task/all" var="urlButton"/>
+								                                        <a href="${urlButton}">
+				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks</button>
+								                                        </a>
 						                                    		</td>
+						                                    		<td>&nbsp;</td>
 						                                    		<td>
-						                                    			<form method="post" action="${contextPath}/task/unassign/project/all">
-						                                    				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-				                											<input type="hidden" id="project_id" name="project_id" value="${project.id}"/>
-				                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-				               											</form>
+				               											<!-- Delete All button -->
+								                                        <c:url value="/project/delete/program-of-works" var="urlButton"/>
+								                                        <a href="${urlButton}">
+				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks & Milestones</button>
+								                                        </a>
 						                                    		</td>
 						                                    		</c:if>
 						                                    	</tr>
@@ -642,20 +644,20 @@
 											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
 											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
 											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
-				<!-- 							                                                <li class="divider"></li> -->
-				<!-- 							                                                <li><a href="#">Separated link</a></li> -->
 											                                            </ul>
 											                                        </div>
-											                                        <c:url value="/task/edit/${task.id}/from/project/${project.id}" var="urlViewTask"/>
+											                                        
+											                                        <!-- View button -->
+											                                        <c:url value="/project/edit/task/${task.id}" var="urlViewTask"/>
 											                                        <a href="${urlViewTask}">
 									                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 											                                        </a>
-									                                            	<form method="post" action="${contextPath}/task/unassign/from/project">
-									                                            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-									                                            	<input type="hidden" name="task_id" value="${task.id}"/>
-									                                            	<input type="hidden" name="project_id" value="${project.id}"/>
-									                                            	<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-									                                            	</form> 
+
+											                                        <!-- Delete button -->
+											                                        <c:url value="/project/delete/task/${task.id}" var="urlDeleteTask"/>
+											                                        <a href="${urlDeleteTask}">
+									                                            	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+											                                        </a>
 						                                        				</td>
 									                                            <td style="vertical-align: middle;">
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
@@ -903,21 +905,9 @@
 																${row.delivery.name}
 							                                    </a>
 																</td>
-																<td>
-																<c:url var="urlLink" value="/materialcategory/edit/${row.materialCategory.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.materialCategory.name}
-							                                    </a>
-																</td>
+																<td>${row.materialCategory.getLabel()}</td>
 																<td>${row.name}</td>
-																
-																<td>
-																<c:url var="urlLink" value="/unit/edit/${row.unit.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.unit.name}
-							                                    </a>
-																</td>
-																
+																<td>${row.getUnitName()}</td>
 																<td>${row.remarks}</td>
 																
 																
@@ -2019,8 +2009,8 @@
 						                                	<div class="callout callout-info">
 											                    <p>Below is a list of <u>all staff members</u> under your <u>company</u>.<br/>
 											                    	Here you can <u>assign staff members</u> to the project.<br/>
-											                    	There are <u>two ways</u> to assign staff members:<br/>
 											                    	<br/>
+											                    	There are <u>two methods</u> to assign staff members:<br/>
 											                    	<span class="badge bg-green">Method A: Excel</span><br/>
 											                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
 											                    	<span class="badge bg-blue">2</span> Click <b>Choose file</b> button, and choose the file from Step 1.<br/>

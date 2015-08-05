@@ -124,15 +124,10 @@
 														action="${contextPath}/project/add/material">
 				                                        <div class="form-group">
 				                                        
-				                                        	<label>
-				                                        	<c:url var="urlLink" value="/materialcategory/list"/>
-											                <a href="${urlLink}" class="general-link">
-				                                        	Material Category
-											                </a>
-				                                        	</label>
-				                                            <form:select class="form-control" path="materialCategoryKey"> 
+				                                        	<label>Material Category</label>
+				                                            <form:select class="form-control" path="materialCategory"> 
 	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
-	                                     							<form:option value="${materialCategory.getKey()}" label="${materialCategory.name}"/> 
+	                                     							<form:option value="${materialCategory}" label="${materialCategory.getLabel()}"/> 
 	                                     						</c:forEach> 
 	 		                                    			</form:select>
 				                                            <p class="help-block">Choose the category of the material</p>
@@ -141,15 +136,23 @@
 				                                            <form:input type="text" placeholder="Sample: Ordinary Portland Cement" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the specific name of the material</p>
 				                                            
-				                                            <label>
-				                                            <c:url var="urlLink" value="/unit/list"/>
-											                <a href="${urlLink}" class="general-link">
-				                                            Unit of Measure
-											                </a>
-				                                            </label>
-				                                            <form:select class="form-control" path="unitKey"> 
-	                                     						<c:forEach items="${unitList}" var="unit"> 
-	                                     							<form:option value="${unit.getKey()}" label="${unit.name}"/> 
+				                                            <label>Unit of Measure</label>
+				                                            <form:select class="form-control" path="unitLength"> 
+				                                            	<form:option value="" label=""/> 
+	                                     						<c:forEach items="${unitListLength}" var="unit"> 
+	                                     							<form:option value="${unit}" label="${unit.label()}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <form:select class="form-control" path="unitMass"> 
+				                                            	<form:option value="" label=""/> 
+	                                     						<c:forEach items="${unitListMass}" var="unit"> 
+	                                     							<form:option value="${unit}" label="${unit.getLabel()}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <form:select class="form-control" path="unitVolume"> 
+				                                            	<form:option value="" label=""/> 
+	                                     						<c:forEach items="${unitListVolume}" var="unit"> 
+	                                     							<form:option value="${unit}" label="${unit.getLabel()}"/> 
 	                                     						</c:forEach> 
 	 		                                    			</form:select>
 				                                            <p class="help-block">Choose the unit of measure</p>
@@ -226,20 +229,9 @@
 									                                    </a>
 																	</center>
 																</td>
-																<td>
-																<c:url var="urlLink" value="/materialcategory/edit/${row.materialCategory.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.materialCategory.name}
-							                                    </a>
-																</td>
+																<td>${row.materialCategory.getLabel()}</td>
 																<td>${row.name}</td>
-																<td>
-																<c:url var="urlLink" value="/unit/edit/${row.unit.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.unit.name}
-							                                    </a>
-																</td>
-																
+																<td>${row.getUnitName()}</td>
 																<td>${row.remarks}</td>
 																
 																<td align="center">

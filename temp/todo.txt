@@ -57,7 +57,7 @@ Remove concept of Project "Manager"
 and others
 2015-08-04 11:33:45 WARN  RootClass:289 - HHH000039: Composite-id class does not override hashCode(): com.cebedo.pmsys.model.assignment.FieldAssignmentID
 
-
+In taskEdit.jsp, see date selector, still using date input mask.
 
 
 

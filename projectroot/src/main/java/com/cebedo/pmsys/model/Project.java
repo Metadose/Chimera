@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,7 +21,6 @@ import javax.persistence.Transient;
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
-import com.cebedo.pmsys.wrapper.StaffWrapper;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
@@ -190,24 +188,6 @@ public class Project implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
-    }
-
-    /**
-     * Get all staffs and managers.
-     * 
-     * @return
-     */
-    @Transient
-    public List<Staff> getAssignedStaffAndManagers() {
-
-	// Get the two lists.
-	Set<Staff> assignedStaff = getAssignedStaff();
-
-	// Wrap the two lists.
-	List<StaffWrapper> wrappedStaff = StaffWrapper.wrapSet(assignedStaff);
-
-	// Return as one, unwrapped.
-	return StaffWrapper.unwrap(wrappedStaff);
     }
 
 }

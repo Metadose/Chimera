@@ -57,6 +57,10 @@ public class Task implements Serializable {
 
     public Task(Project proj) {
 	setProject(proj);
+	Company company = proj.getCompany();
+	if (company != null) {
+	    setCompany(company);
+	}
     }
 
     public Task(Company company2, Project project2) {

@@ -45,9 +45,7 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <li><a href="#tab_expenses" data-toggle="tab">Expenses</a></li>
                                 <li><a href="#tab_assigned_staff" data-toggle="tab">Staff</a></li>
-                                <li><a href="#tab_assigned_teams" data-toggle="tab">Teams</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -55,11 +53,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
-                   									<c:set var="formAction" value="${contextPath}/task/create"/>
-                   									<c:if test="${!empty origin && !empty originID}">
-                   										<c:set var="formAction" value="${contextPath}/task/create/from/${origin}/${originID}"/>
-                   									</c:if>
-                   									<form:form modelAttribute="task" role="form" name="detailsForm" id="detailsForm" method="post" action="${formAction}">
+                   									<form:form modelAttribute="task" role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create/task">
 				                                        <div class="form-group">
 				                                        	<label>Status</label>
 				                                            <form:select class="form-control" id="task_status" path="status">
@@ -85,7 +79,7 @@
 					                                        </div>
 					                                        <br/>
 					                                        <label>Duration (Man Days)</label>
-				                                            <form:input type="text" class="form-control" path="duration"/><br/>
+				                                            <form:input type="text" class="form-control" path="duration"/>
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>
@@ -104,61 +98,6 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_expenses">
-	                               	<div class="row">
-                   						<div class="col-md-12">
-                   							<div class="box box-body box-default">
-                   							<div class="box-header">
-                   								<table>
-                   								<tr>
-                   								<td><h3 class="box-title">Expenses</h3></td>
-                   								<td>
-                   									<c:url value="/edit/expense/0" var="addExpenseURL"/>
-                   									<a href="${addExpenseURL}">
-			                                		<button class="btn btn-default btn-flat btn-sm">Add Expense</button>
-                   									</a>
-                   								</td>
-                   								</tr>
-                   								</table>
-               								</div>
-               								<div class="box-body">
-			                                    <table id="expenses-table" class="table table-bordered table-striped">
-			                                    	<thead>
-			                                    		<tr>
-				                                        	<th>&nbsp;</th>
-				                                        	<th>ID #</th>
-				                                            <th>Name</th>
-				                                            <th>Description</th>
-				                                            <th>Value</th>
-				                                            <th>Date and Time</th>
-				                                        </tr>
-			                                    	</thead>
-			                                        <tbody>
-		                                        		<c:forEach items="${task.expenses}" var="expense">
-		                                        			<tr>
-		                                        				<td>
-		                                        					<c:url value="/task/edit/expense/${expense.id}" var="viewExpenseURL"/>
-							                                        <a href="${viewExpenseURL}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
-					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/XXXXX">
-					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-					                                            	</a>
-		                                        				</td>
-					                                            <td>${expense.id}</td>
-					                                            <td>${expense.name}</td>
-					                                            <td>${expense.description}</td>
-					                                            <td>${expense.value}</td>
-					                                            <td>${expense.datetime}</td>
-					                                        </tr>
-		                                        		</c:forEach>
-				                                    </tbody>
-				                                </table>
-			                                </div><!-- /.box-body -->
-			                                </div>
-                   						</div>
-              						</div>
-           						</div>
                                 <div class="tab-pane" id="tab_assigned_staff">
                                 	<div class="box">
 		                                <div class="box-body table-responsive">
@@ -250,85 +189,6 @@
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_assigned_teams">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">
-		                                	<table>
-		                                    	<tr>
-		                                    		<td>
-		                                    			<c:url var="urlCreateTeam" value="/team/edit/0/from/task/${task.id}"/>
-		                                    			<a href="${urlCreateTeam}">
-				                                    	<button class="btn btn-default btn-flat btn-sm">Create Team</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:if test="${!empty teamList}">
- 		                                    		<form:form 
- 		                                    		modelAttribute="teamAssignment"  
- 		                                    		method="post" 
- 		                                    		action="${contextPath}/task/assign/team"> 
- 		                                    			<td>
- 		                                    			<form:select class="form-control" path="teamID"> 
-                                     						<c:forEach items="${teamList}" var="team"> 
-                                     							<form:option value="${team.id}" label="${team.name}"/> 
-                                     						</c:forEach> 
- 		                                    			</form:select> 
- 		                                    			</td>
- 		                                    			<td>
- 		                                    				&nbsp;
- 		                                    			</td>
- 														<td>
- 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
- 		                                    			</td> 
- 		                                    		</form:form> 
-		                                    		</c:if>
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<c:if test="${!empty task.teams}">
-		                                    		<td>
-               											<c:url var="urlTaskUnassignTeamAll" value="/task/unassign/team/all"/>
-		                                    			<a href="${urlTaskUnassignTeamAll}">
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-		                                    			</a>
-		                                    		</td>
-		                                    		</c:if>
-		                                    	</tr>
-		                                    </table>
-		                                    <table id="teams-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                                <th>#</th>
-		                                                <th>Name</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                		<c:forEach items="${task.teams}" var="team">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-			                                            			<c:url var="urlViewTeam" value="/team/edit/${team.id}/from/task/${task.id}" />
-			                                            			<a href="${urlViewTeam}">
-							                                    	<button class="btn btn-default btn-flat btn-sm">View</button>
-			                                            			</a>
-	                   												<c:url var="urlUnassignTeam" value="/task/unassign/team/${team.id}"/>
-	                   												<a href="${urlUnassignTeam}">
-																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-	                   												</a>
-																</center>
-															</td>
-			                                                <td>${team.id}</td>
-			                                                <td>${team.name}</td>
-			                                            </tr>
-		                                            </c:forEach>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
@@ -363,7 +223,6 @@
 		$(document).ready(function() {
 			$("#date-mask").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task_status").val("${task.status}");
-			$("#expenses-table").dataTable();
 			$("#staff-table").dataTable();
 			$("#teams-table").dataTable();
 	    });

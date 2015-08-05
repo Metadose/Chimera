@@ -95,7 +95,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Set<Milestone> milestones = project.getMilestones();
 	Hibernate.initialize(milestones);
 	for (Milestone milestone : milestones) {
-	    Hibernate.initialize(milestone.getTasks());
+	    Set<Task> tasks = milestone.getTasks();
+	    Hibernate.initialize(tasks);
+	    for (Task task : tasks) {
+		Hibernate.initialize(task.getStaff());
+	    }
 	}
 
 	// Initialize all tasks.
@@ -103,7 +107,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Set<Task> assignedTasks = project.getAssignedTasks();
 	Hibernate.initialize(assignedTasks);
 	for (Task task : assignedTasks) {
-
 	    Hibernate.initialize(task.getStaff());
 	    Hibernate.initialize(task.getMilestone());
 	}

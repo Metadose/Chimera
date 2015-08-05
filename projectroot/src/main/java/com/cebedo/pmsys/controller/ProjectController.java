@@ -36,7 +36,11 @@ import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.CalendarEventType;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
+import com.cebedo.pmsys.enums.CommonMassUnit;
+import com.cebedo.pmsys.enums.CommonVolumeUnit;
 import com.cebedo.pmsys.enums.GanttElement;
+import com.cebedo.pmsys.enums.MaterialCategory;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
@@ -60,6 +64,7 @@ import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
+import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -70,10 +75,10 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
 	RedisConstants.OBJECT_PAYROLL, RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
 	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE,
-	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN },
+	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN, ProjectController.ATTR_TASK },
 
 types = { Project.class, FieldAssignmentBean.class, ProjectPayroll.class, Delivery.class,
-	Material.class, PullOut.class, Estimate.class, MassUploadBean.class }
+	Material.class, PullOut.class, Estimate.class, MassUploadBean.class, Task.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -119,7 +124,9 @@ public class ProjectController {
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
     public static final String ATTR_CHB_MR_HORIZONTAL_LIST = "chbHorizontalReinforcementList";
     public static final String ATTR_CHB_MR_VERTICAL_LIST = "chbVerticalReinforcementList";
-    public static final String ATTR_UNIT_LIST = "unitList";
+    public static final String ATTR_UNIT_LIST_LENGTH = "unitListLength";
+    public static final String ATTR_UNIT_LIST_MASS = "unitListMass";
+    public static final String ATTR_UNIT_LIST_VOLUME = "unitListVolume";
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
     public static final String ATTR_STAFF_POSITION = "staffPosition";
@@ -173,6 +180,13 @@ public class ProjectController {
     private EstimateService estimateService;
     private CostEstimationService costEstimationService;
     private EstimationOutputService estimationOutputService;
+    private TaskService taskService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "taskService")
+    public void setTaskService(TaskService taskService) {
+	this.taskService = taskService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "estimationOutputService")
@@ -886,6 +900,133 @@ public class ProjectController {
     }
 
     /**
+     * Create a task.
+     * 
+     * @param task
+     * @param status
+     * @param origin
+     * @param originID
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = URLRegistry.CREATE_TASK, method = RequestMethod.POST)
+    public String createTask(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
+
+	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
+
+	if (task.getId() == 0) {
+	    this.taskService.create(task);
+	    alertFactory.setMessage("Successfully <b>created</b> task <b>" + task.getTitle() + "</b>.");
+	} else {
+	    this.taskService.update(task);
+	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
+	}
+	status.setComplete();
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, task.getProject().getId());
+    }
+
+    /**
+     * Edit a task.
+     * 
+     * @param taskID
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = URLRegistry.EDIT_TASK, method = RequestMethod.GET)
+    public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model, HttpSession session) {
+
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// If ID is zero,
+	// Open a page with empty values, ready to create.
+	if (taskID == 0) {
+	    model.addAttribute(ATTR_TASK, new Task(proj));
+	    return TaskController.JSP_EDIT;
+	}
+
+	// Else, get the object from DB
+	// then populate the fields in JSP.
+	Task task = this.taskService.getByIDWithAllCollections(taskID);
+	model.addAttribute(ATTR_TASK, task);
+	return TaskController.JSP_EDIT;
+    }
+
+    /**
+     * Delete all tasks.
+     * 
+     * @param taskID
+     * @param session
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = URLRegistry.DELETE_TASK_ALL, method = RequestMethod.GET)
+    public String deleteAllTask(HttpSession session, RedirectAttributes redirectAttrs,
+	    SessionStatus status) {
+
+	// Do service and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	String response = this.taskService.deleteAllTasksByProject(proj.getId());
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	// Redirect.
+	status.setComplete();
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+    }
+
+    /**
+     * Delete all tasks and milestones.
+     * 
+     * @param taskID
+     * @param session
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = URLRegistry.DELETE_PROGRAM_OF_WORKS, method = RequestMethod.GET)
+    public String deleteAllTaskAndMilestone(HttpSession session, RedirectAttributes redirectAttrs,
+	    SessionStatus status) {
+
+	// Do service and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	String response = this.projectService.deleteProgramOfWorks(proj);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	// Redirect.
+	status.setComplete();
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+    }
+
+    /**
+     * Delete a task.
+     * 
+     * @param taskID
+     * @param session
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = URLRegistry.DELETE_TASK, method = RequestMethod.GET)
+    public String deleteTask(@PathVariable(Task.OBJECT_NAME) long taskID, HttpSession session,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.taskService.delete(taskID);
+	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	// Redirect.
+	status.setComplete();
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+    }
+
+    /**
      * Open an edit page for a material.
      * 
      * @param key
@@ -906,7 +1047,7 @@ public class ProjectController {
 	// This is for the selector.
 	// Who pulled-out the material?
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+	Set<Staff> staffList = proj.getAssignedStaff();
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -936,7 +1077,7 @@ public class ProjectController {
 	// This is for the selector.
 	// Who pulled-out the material?
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+	Set<Staff> staffList = proj.getAssignedStaff();
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -1158,7 +1299,7 @@ public class ProjectController {
 	// This is for the selector.
 	// Who pulled-out the material?
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	List<Staff> staffList = proj.getAssignedStaffAndManagers();
+	Set<Staff> staffList = proj.getAssignedStaff();
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -1188,6 +1329,13 @@ public class ProjectController {
 	    model.addAttribute(ATTR_DELIVERY, new Delivery(proj));
 	    return RedisConstants.JSP_DELIVERY_EDIT;
 	}
+
+	// Add material category list.
+	// And Units list.
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, MaterialCategory.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, CommonLengthUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, CommonMassUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, CommonVolumeUnit.class.getEnumConstants());
 
 	// If we're updating,
 	// return the object from redis.

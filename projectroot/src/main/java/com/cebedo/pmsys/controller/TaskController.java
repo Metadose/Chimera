@@ -163,6 +163,7 @@ public class TaskController {
      * @param task
      * @return
      */
+    @Deprecated
     @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + SystemConstants.FROM + "/{"
 	    + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
     public String createFromOrigin(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
@@ -362,6 +363,7 @@ public class TaskController {
      * @param model
      * @return
      */
+    @Deprecated
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Task.OBJECT_NAME + "}/"
 	    + SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID
 	    + "}", method = RequestMethod.GET)

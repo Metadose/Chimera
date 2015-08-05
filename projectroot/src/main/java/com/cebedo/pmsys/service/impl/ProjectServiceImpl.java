@@ -24,6 +24,7 @@ import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
+import com.cebedo.pmsys.dao.MilestoneDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -60,6 +61,13 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
     private TaskService taskService;
+    private MilestoneDAO milestoneDAO;
+
+    @Autowired
+    @Qualifier(value = "milestoneDAO")
+    public void setMilestoneDAO(MilestoneDAO milestoneDAO) {
+	this.milestoneDAO = milestoneDAO;
+    }
 
     @Autowired
     @Qualifier(value = "taskService")
@@ -567,6 +575,14 @@ public class ProjectServiceImpl implements ProjectService {
 	    allStaff.addAll(task.getStaff());
 	}
 	return allStaff;
+    }
+
+    @Transactional
+    @Override
+    public String deleteProgramOfWorks(Project project) {
+	this.taskService.deleteAllTasksByProject(project.getId());
+	this.milestoneDAO.deleteAllByProject(project.getId());
+	return "TODO";
     }
 
 }

@@ -13,7 +13,15 @@ public enum MaterialCategory {
     private String label;
 
     MaterialCategory(String lbl) {
-	this.label = lbl;
+	this.setLabel(lbl);
+    }
+
+    public String getLabel() {
+	return label;
+    }
+
+    public void setLabel(String label) {
+	this.label = label;
     }
 
 }

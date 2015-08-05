@@ -67,4 +67,6 @@ public interface ProjectService {
 
     public String createTasksFromExcel(MultipartFile multipartFile, Project project);
 
+    public String deleteProgramOfWorks(Project project);
+
 }

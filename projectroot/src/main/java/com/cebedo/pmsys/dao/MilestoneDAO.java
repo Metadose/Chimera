@@ -16,4 +16,6 @@ public interface MilestoneDAO {
 
     public List<Milestone> list();
 
+    public void deleteAllByProject(long id);
+
 }
