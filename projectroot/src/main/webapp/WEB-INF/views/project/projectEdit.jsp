@@ -90,12 +90,8 @@
                    									<h3 class="box-title">Basic</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>
-									                    In this section, we can examine the basic details of the project.<br/>
-									                    Name, Status, Location, and Notes for quick remarks.<br/>
-									                    A photo of the project site may also be uploaded in the section below.
-									                    </p>
+                   									<div class="callout callout-info">
+									                    <p>Basic details of the project.</p>
 									                </div>
 				                                    <c:if test="${project.id != 0}">
 				                                    <!-- Read only Output -->
@@ -175,10 +171,8 @@
                    									<h3 class="box-title">More Information</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>
-									                    This feature can be utilized to store extra fields.<br/>
-									                    </p>
+                   									<div class="callout callout-info">
+									                    <p>Save extra information.</p>
 									                </div>
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
@@ -247,50 +241,7 @@
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
                    				<div class="tab-pane" id="tab_project_estimate">
-                                	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Estimation Input</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>
-									                    This feature can be utilized to store extra fields.<br/>
-									                    </p>
-									                </div>
-                   								<form:form modelAttribute="estimationInput"
-													action="${contextPath}/project/create/estimate"
-													method="post"
-													enctype="multipart/form-data">
-<!--	 allowanceList -->
-<!--     private TableEstimationAllowance estimationAllowance; -->
-<!--     private MultipartFile estimationFile; -->
-			                                        <div class="form-group">
-			                                        
-													<label>Name</label>
-													<form:input placeholder="TODO" class="form-control" path="name"/><br/>													
-	
-			                                        <label>Excel File</label>
-													<form:input type="file" class="form-control" path="estimationFile"/><br/>
-													
-	                                                <label>Estimation Allowance</label>
-	                                                <form:select class="form-control" path="estimationAllowance"> 
-                                   						<c:forEach items="${allowanceList}" var="allowance"> 
-                                   							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
-                                   						</c:forEach> 
-	                                    			</form:select><br/>
-	                                    			
-													<label>Remarks</label>
-													<form:input placeholder="TODO" class="form-control" path="remarks"/><br/>
-	                                    			
-	                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
-			                                        </div>
-		                                        </form:form>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
+
               						<div class="row">
                    						<div class="col-md-12">
 		                                	<div class="box box-body box-default">
@@ -298,8 +249,11 @@
 <!-- 			              									<h3 class="box-title">Staff Members</h3> -->
 <!-- 			              								</div> -->
 				                                <div class="box-body table-responsive">
-				                                	<div class="callout callout-info callout-cebedo">
-									                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+				                                	<div class="callout callout-info">
+									                    <p>List of all project estimates.<br/><br/>
+									                    	To estimate a project:<br/>
+									                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
+									                    </p>
 									                </div>
 				                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
 				                                    	<thead>
@@ -337,7 +291,53 @@
 				                                </div><!-- /.box-body -->
 				                             </div>
 				                        </div>
-				                   	</div>
+				                   	</div> <!-- End of Row -->
+
+				                   	<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Estimation Input</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<div class="callout callout-info">
+									                    <p>
+									                    This feature can be utilized to store extra fields.<br/>
+									                    </p>
+									                </div>
+                   								<form:form modelAttribute="estimationInput"
+													action="${contextPath}/project/create/estimate"
+													method="post"
+													enctype="multipart/form-data">
+<!--	 allowanceList -->
+<!--     private TableEstimationAllowance estimationAllowance; -->
+<!--     private MultipartFile estimationFile; -->
+			                                        <div class="form-group">
+			                                        
+													<label>Name</label>
+													<form:input placeholder="TODO" class="form-control" path="name"/><br/>													
+	
+			                                        <label>Excel File</label>
+													<form:input type="file" class="form-control" path="estimationFile"/><br/>
+													
+	                                                <label>Estimation Allowance</label>
+	                                                <form:select class="form-control" path="estimationAllowance"> 
+                                   						<c:forEach items="${allowanceList}" var="allowance"> 
+                                   							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
+                                   						</c:forEach> 
+	                                    			</form:select><br/>
+	                                    			
+													<label>Remarks</label>
+													<form:input placeholder="TODO" class="form-control" path="remarks"/><br/>
+	                                    			
+	                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
+			                                        </div>
+		                                        </form:form>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	
@@ -357,7 +357,7 @@
 			              									<h3 class="box-title">Timeline</h3>
 			              								</div>
 						                                <div class="box-body">
-						                                <div class="callout callout-info callout-cebedo">
+						                                <div class="callout callout-info">
 										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 										                </div>
 										                <c:if test="${!empty project.assignedTasks}">
@@ -414,7 +414,7 @@
 		                   									<h3 class="box-title">Summary</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   									<div class="callout callout-info callout-cebedo">
+		                   									<div class="callout callout-info">
 											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 											                </div>
 		                   									<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
@@ -454,7 +454,7 @@
 		                   									<h3 class="box-title">Graph</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   								<div class="callout callout-info callout-cebedo">
+		                   								<div class="callout callout-info">
 										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 										                </div>
 										                Graph sa summary sa mga milestones
@@ -469,7 +469,7 @@
 		                   									<h3 class="box-title">Milestones</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   									<div class="callout callout-info callout-cebedo">
+		                   									<div class="callout callout-info">
 											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 											                </div>
 		                   									<button class="btn btn-cebedo-create btn-flat btn-sm" id="createMilestone">Create Milestone</button>
@@ -521,7 +521,7 @@
 	                   									<h3 class="box-title">Summary</h3>
 	                   								</div>
 	                   								<div class="box-body">
-	                   								<div class="callout callout-info callout-cebedo">
+	                   								<div class="callout callout-info">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 									                
@@ -559,7 +559,7 @@
 	                   									<h3 class="box-title">Graph</h3>
 	                   								</div>
 	                   								<div class="box-body">
-	                   								<div class="callout callout-info callout-cebedo">
+	                   								<div class="callout callout-info">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 									                
@@ -576,7 +576,7 @@
 	                   									<h3 class="box-title">Tasks</h3>
 	                   								</div>
 	                   								<div class="box-body">
-	                   									<div class="callout callout-info callout-cebedo">
+	                   									<div class="callout callout-info">
 										                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 										                </div>
 										                	<form:form modelAttribute="massUploadStaffBean"
@@ -713,7 +713,7 @@
                									<h3 class="box-title">Calendar</h3>
                								</div>
                								<div class="box-body">
-               									<div class="callout callout-info callout-cebedo">
+               									<div class="callout callout-info">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
                									<table>
@@ -747,7 +747,7 @@
                									Payroll List</h3>
                								</div>
                								<div class="box-body">
-               									<div class="callout callout-info callout-cebedo">
+               									<div class="callout callout-info">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
 										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
@@ -836,7 +836,7 @@
                									<h3 class="box-title">Graph</h3>
                								</div>
                								<div class="box-body">
-               									<div class="callout callout-info callout-cebedo">
+               									<div class="callout callout-info">
 								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 								                </div>
                									Line graph here of [release date, total]
@@ -862,7 +862,7 @@
 	               									<h3 class="box-title">Materials</h3>
 	               								</div>
 	               								<div class="box-body box-default">
-	               									<div class="callout callout-info callout-cebedo">
+	               									<div class="callout callout-info">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 									                <div class="pull-right">
@@ -973,7 +973,7 @@
 	               									<h3 class="box-title">Deliveries</h3>
 	               								</div>
 	               								<div class="box-body">
-	               									<div class="callout callout-info callout-cebedo">
+	               									<div class="callout callout-info">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 											  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
@@ -1031,7 +1031,7 @@
 	               									<h3 class="box-title">Pull-Outs</h3>
 	               								</div>
 	               								<div class="box-body">
-	               									<div class="callout callout-info callout-cebedo">
+	               									<div class="callout callout-info">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
 				                                    <table id="pull-out-table" class="table table-bordered table-striped">
@@ -1119,7 +1119,7 @@
 <!--           									<h3 class="box-title">Estimates</h3> -->
 <!--           								</div> -->
 		                                <div class="box-body table-responsive">
-                                   			<div class="callout callout-info callout-cebedo">
+                                   			<div class="callout callout-info">
 							                    <p>
 							                    Click Estimate Quantity<br/>
 							                    Results will display<br/>
@@ -1171,7 +1171,7 @@
 <!-- 						               									<h3 class="box-title">Cost Estimation</h3> -->
 <!-- 						               								</div> -->
 						               								<div class="box-body box-default">
-						               								<div class="callout callout-info callout-cebedo">
+						               								<div class="callout callout-info">
 													                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 													                </div>
 													                <button class="btn btn-cebedo-delete btn-flat btn-sm" id="detailsButton">Delete</button>
@@ -1333,7 +1333,7 @@
 <!-- 						               									<h3 class="box-title">Quantity Estimates</h3> -->
 <!-- 						               								</div> -->
 						               								<div class="box-body box-default">
-									                                	<div class="callout callout-info callout-cebedo">
+									                                	<div class="callout callout-info">
 														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 														                </div>
 														                
@@ -1507,7 +1507,7 @@
 							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity & Cost</h3>
 							               								</div>
 							               								<div class="box-body box-default">
-							               								<div class="callout callout-info callout-cebedo">
+							               								<div class="callout callout-info">
 														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 														                </div>
 							               								<table id="chb-cost-quantity-table" class="table table-bordered table-striped">
@@ -1599,7 +1599,7 @@
 							               									<h3 class="box-title">Concrete Hollow Blocks (CHB) Quantity Estimate</h3>
 							               								</div>
 							               								<div class="box-body box-default">
-							               								<div class="callout callout-info callout-cebedo">
+							               								<div class="callout callout-info">
 														                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
 														                </div>
 							               								<table id="chb-quantity-table" class="table table-bordered table-striped">
@@ -1760,7 +1760,7 @@
 <!-- 			               									Basic Details</h3> -->
 <!-- 			               								</div> -->
 <!-- 			               								<div class="box-body"> -->
-<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 			               								<div class="callout callout-info"> -->
 <!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
 <!-- 										                </div> -->
 <!-- 				                                        <div class="form-group"> -->
@@ -1786,7 +1786,7 @@
 <!-- 			               									Concrete Cost</h3> -->
 <!-- 			               								</div> -->
 <!-- 			               								<div class="box-body"> -->
-<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 			               								<div class="callout callout-info"> -->
 <!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
 <!-- 										                </div> -->
 <!-- 					                                        <div class="form-group"> -->
@@ -1820,7 +1820,7 @@
 <!-- 			               									Masonry Cost</h3> -->
 <!-- 			               								</div> -->
 <!-- 			               								<div class="box-body"> -->
-<!-- 			               								<div class="callout callout-info callout-cebedo"> -->
+<!-- 			               								<div class="callout callout-info"> -->
 <!-- 										                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p> -->
 <!-- 										                </div> -->
 <!-- 				                                        <div class="form-group"> -->
@@ -1961,9 +1961,20 @@
 <!-- 			              									<h3 class="box-title">Staff Members</h3> -->
 <!-- 			              								</div> -->
 						                                <div class="box-body table-responsive">
-						                                	<div class="callout callout-info callout-cebedo">
-											                    <p>Managers are system Users who have the previledge to edit/update this project TODO.</p>
+						                                	<div class="callout callout-info">
+											                    <p>List of all staff members <u>assigned to this project</u>.<br/>
+											                       The <u>payroll</u> will be based on this list.
+											                    </p>
 											                </div>
+
+											                <c:if test="${!empty project.assignedStaff}">
+		              											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
+							                                    <a href="${urlUnassignStaffAll}">
+		              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
+							                                    </a>
+																<p class="help-block">Unassign all staff members in this project</p>
+				                                    		</c:if>
+
 						                                    <table id="assigned-staff-table" class="table table-bordered table-striped">
 						                                    	<thead>
 						                                            <tr>
@@ -2015,8 +2026,21 @@
 <!-- 			              									<h3 class="box-title">Staff Assignment Controls</h3> -->
 <!-- 			              								</div> -->
 						                                <div class="box-body">
-						                                	<div class="callout callout-info callout-cebedo">
-											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
+						                                	<div class="callout callout-info">
+											                    <p>Below is a list of <u>all staff members</u> under your <u>company</u>.<br/>
+											                    	Here you can <u>assign staff members</u> to the project.<br/>
+											                    	There are <u>two ways</u> to assign staff members:<br/>
+											                    	<br/>
+											                    	<span class="badge bg-green">Method A: Excel</span><br/>
+											                    	<span class="badge bg-blue">1</span> <b>Prepare</b> the Excel file.<br/>
+											                    	<span class="badge bg-blue">2</span> Click <b>Choose file</b> button, and choose the file from Step 1.<br/>
+											                    	<span class="badge bg-blue">3</span> Click <b>Upload and Assign</b> button.<br/>
+											                    	<br/>
+											                    	<span class="badge bg-green">Method B: Manual</span><br/>
+											                    	<span class="badge bg-blue">1 (Optional)</span> If the staff you want to assign is <i>not in the list</i>, create an entry by clicking the <b>Create Staff</b> button.<br/>
+											                    	<span class="badge bg-blue">2</span> Choose the staff by <b>checking the box</b>. Or <i>Check All</i> if you want to include all company staff.<br/>
+											                    	<span class="badge bg-blue">3</span> Click the <b>Assign</b> button.
+											                    </p>
 											                </div>
 											                
 				                                    		<form:form modelAttribute="massUploadStaffBean"
@@ -2038,12 +2062,6 @@
 				                                    		
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
-				                                    		</c:if>
-				                                    		<c:if test="${!empty project.assignedStaff}">
-		              											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
-							                                    <a href="${urlUnassignStaffAll}">
-		              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-							                                    </a>
 				                                    		</c:if>
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		&nbsp;&nbsp;
