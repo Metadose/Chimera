@@ -543,11 +543,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Get the end date.
 	    String end = "";
-	    int duration = task.getDuration();
+	    double duration = task.getDuration();
 	    if (duration > 1) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
-		c.add(Calendar.DATE, duration);
+		c.add(Calendar.DATE, ((Double) Math.ceil(duration)).intValue());
 		end = DateUtils.formatDate(c.getTime(), "yyyy-MM-dd");
 		event.setEnd(end);
 	    }

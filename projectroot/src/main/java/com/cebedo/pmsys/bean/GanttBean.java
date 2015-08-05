@@ -23,7 +23,7 @@ public class GanttBean {
     private String color;
     private String textColor;
     private boolean open;
-    private int duration;
+    private double duration;
     private String parent;
     private String assignedTeams;
     private String assignedStaff;
@@ -188,11 +188,11 @@ public class GanttBean {
 	this.open = open;
     }
 
-    public int getDuration() {
+    public double getDuration() {
 	return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
 	this.duration = duration;
     }
 

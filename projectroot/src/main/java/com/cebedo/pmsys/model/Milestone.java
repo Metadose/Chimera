@@ -30,6 +30,16 @@ public class Milestone implements Serializable {
     private Set<Task> tasks;
     private Company company;
 
+    public Milestone() {
+	;
+    }
+
+    public Milestone(Company company2, Project project2, String milestoneName) {
+	setCompany(company2);
+	setName(milestoneName);
+	setProject(project2);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
@@ -86,6 +96,16 @@ public class Milestone implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof Milestone ? ((Milestone) obj).getId() == (getId()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return ((Long) getId()).hashCode();
     }
 
 }

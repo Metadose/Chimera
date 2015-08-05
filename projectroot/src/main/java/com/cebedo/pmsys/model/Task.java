@@ -44,17 +44,12 @@ public class Task implements Serializable {
     private String title;
     private String content;
     private Date dateStart;
-    private int duration;
+    private double duration;
     private Project project;
     private Milestone milestone;
     private Set<Staff> staff;
     private int status;
     private Company company;
-
-    /**
-     * Excel inputs.
-     */
-    private String milestoneString;
 
     public Task() {
 	;
@@ -62,6 +57,11 @@ public class Task implements Serializable {
 
     public Task(Project proj) {
 	setProject(proj);
+    }
+
+    public Task(Company company2, Project project2) {
+	setCompany(company2);
+	setProject(project2);
     }
 
     @Id
@@ -101,7 +101,7 @@ public class Task implements Serializable {
 
     @Transient
     public Date getEndDate() {
-	return DateUtils.addDays(dateStart, duration);
+	return DateUtils.addDays(dateStart, ((Double) Math.ceil(duration)).intValue());
     }
 
     public void setDateStart(Date dateStart) {
@@ -109,11 +109,11 @@ public class Task implements Serializable {
     }
 
     @Column(name = "duration", nullable = false)
-    public int getDuration() {
+    public double getDuration() {
 	return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
 	this.duration = duration;
     }
 
@@ -193,25 +193,4 @@ public class Task implements Serializable {
 	this.company = company;
     }
 
-    @Transient
-    public String getMilestoneString() {
-	return milestoneString;
-    }
-
-    public void setMilestoneString(String milestoneString) {
-	this.milestoneString = milestoneString;
-    }
-
-    // @ManyToMany
-    // @JoinTable(name = SubconTaskAssignment.TABLE_NAME, joinColumns = {
-    // @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
-    // @JoinColumn(name = Subcontractor.COLUMN_PRIMARY_KEY, nullable = false,
-    // updatable = false) })
-    // public Set<Subcontractor> getSubcontractor() {
-    // return subcontractor;
-    // }
-    //
-    // public void setSubcontractor(Set<Subcontractor> subcontractor) {
-    // this.subcontractor = subcontractor;
-    // }
 }

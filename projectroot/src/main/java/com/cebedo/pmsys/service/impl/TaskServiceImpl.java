@@ -3,21 +3,20 @@ package com.cebedo.pmsys.service.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.DateFormatConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.dao.MilestoneDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
@@ -28,6 +27,7 @@ import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -35,7 +35,6 @@ import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
-import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -55,6 +54,13 @@ public class TaskServiceImpl implements TaskService {
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
     private StaffDAO staffDAO;
+    private MilestoneDAO milestoneDAO;
+
+    @Autowired
+    @Qualifier(value = "milestoneDAO")
+    public void setMilestoneDAO(MilestoneDAO milestoneDAO) {
+	this.milestoneDAO = milestoneDAO;
+    }
 
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
@@ -91,13 +97,14 @@ public class TaskServiceImpl implements TaskService {
 
 	    // Construct estimate containers.
 	    List<Task> taskList = new ArrayList<Task>();
+	    List<Milestone> milestoneList = new ArrayList<Milestone>();
 	    while (rowIterator.hasNext()) {
 
 		Row row = rowIterator.next();
 		int rowCountDisplay = row.getRowNum() + 1;
 
-		// TODO Skip first 3 lines.
-		if (rowCountDisplay <= 3) {
+		// Skip first line.
+		if (rowCountDisplay <= 1) {
 		    continue;
 		}
 
@@ -105,9 +112,8 @@ public class TaskServiceImpl implements TaskService {
 		Iterator<Cell> cellIterator = row.cellIterator();
 
 		// Every row, is a Staff object.
-		Task task = new Task();
-		task.setCompany(project.getCompany());
-		task.setProject(project);
+		Company company = project.getCompany();
+		Task task = new Task(company, project);
 
 		while (cellIterator.hasNext()) {
 
@@ -118,33 +124,40 @@ public class TaskServiceImpl implements TaskService {
 		    switch (colCountDisplay) {
 
 		    case EXCEL_COLUMN_DATE_START:
-
-			// Apply a date format in the cell.
-			String excelFormatPattern = DateFormatConverter.convert(Locale.ENGLISH,
-				"yyyy-MM-dd");
-			CellStyle cellStyle = workbook.createCellStyle();
-			DataFormat poiFormat = workbook.createDataFormat();
-			cellStyle.setDataFormat(poiFormat.getFormat(excelFormatPattern));
-			cell.setCellStyle(cellStyle);
-
-			// Get the cell data.
-			String dateStart = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
-
-			// Convert the date string to date object.
-			task.setDateStart(DateUtils.convertStringToDate(dateStart));
+			task.setDateStart(cell.getDateCellValue());
 			continue;
 
 		    case EXCEL_COLUMN_DURATION:
-			int duration = (Integer) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setDuration(duration);
 			continue;
 
 		    case EXCEL_COLUMN_MILESTONE:
-			String milestone = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
-			task.setMilestoneString(milestone);
+			// Get the name from the Excel.
+			String milestoneName = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
+
+			// If this milestone has already been created earlier,
+			// use that milestone.
+			Milestone milestone = null;
+			for (Milestone mStone : milestoneList) {
+			    if (mStone.getName().equals(milestoneName)) {
+				milestone = mStone;
+				break;
+			    }
+			}
+
+			// If we didn't find any matching milestone.
+			// Commit to database.
+			if (milestone == null) {
+			    milestone = new Milestone(company, project, milestoneName);
+			    this.milestoneDAO.create(milestone);
+			    milestoneList.add(milestone);
+			}
+
+			// Set the object.
+			task.setMilestone(milestone);
 			continue;
 
 		    case EXCEL_COLUMN_TITLE:
