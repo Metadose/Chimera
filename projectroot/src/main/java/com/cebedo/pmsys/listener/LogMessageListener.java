@@ -1,40 +1,52 @@
 package com.cebedo.pmsys.listener;
 
-import java.util.Map;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.transaction.Transactional;
 
-import org.apache.activemq.command.ActiveMQMapMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
+
+import com.cebedo.pmsys.bean.SystemMessage;
+import com.cebedo.pmsys.helper.LogHelper;
 
 public class LogMessageListener implements MessageListener {
 
     public final static String MESSAGE_DESTINATION = "system.service.post.log";
-    public final static String KEY_LOG_NAME = "logName";
-    public final static String KEY_LOG_TEXT = "logText";
+    private LogHelper logHelper = new LogHelper();
 
     @Override
     @Transactional
     public void onMessage(Message message) {
-	if (message instanceof ActiveMQMapMessage) {
-	    Map<String, Object> messageMap;
+	if (message instanceof ActiveMQObjectMessage) {
+	    SystemMessage sysMessage;
 	    try {
-		// Get map contents.
-		messageMap = ((ActiveMQMapMessage) message).getContentMap();
+		// Get contents.
+		sysMessage = (SystemMessage) ((ActiveMQObjectMessage) message).getObject();
 
-		// Log the action.
-		Logger.getLogger(String.valueOf(messageMap.get(KEY_LOG_NAME)))
-			.info(String.valueOf(messageMap.get(KEY_LOG_TEXT)));
+		// Construct message.
+		String assocName = sysMessage.getAssocObjectName();
+		String content = assocName == null ?
 
+		this.logHelper.constructTextActionOnObj(sysMessage.getAuditAction(),
+			sysMessage.getObjectName(), sysMessage.getObjectID()) :
+
+		this.logHelper.constructTextActionOnObjWithAssoc(sysMessage.getAuditAction(),
+			sysMessage.getObjectName(), sysMessage.getObjectID(),
+			sysMessage.getAssocObjectName(), sysMessage.getAssocObjectID());
+
+		String logMessage = this.logHelper.logMessage(sysMessage.getAuth(), content);
+
+		// Log.
+		Logger.getLogger(sysMessage.getLogName()).info(logMessage);
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }
-	} else {
-	    throw new IllegalArgumentException(
-		    "MessageThread must be of type Map");
+	}
+
+	else {
+	    throw new IllegalArgumentException("MessageThread must be of type SystemMessage");
 	}
     }
 }

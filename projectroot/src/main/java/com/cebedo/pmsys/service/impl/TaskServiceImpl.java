@@ -25,7 +25,6 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.LogHelper;
-import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
@@ -40,7 +39,6 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 public class TaskServiceImpl implements TaskService {
 
     private AuthHelper authHelper = new AuthHelper();
-    private MessageHelper messageHelper = new MessageHelper();
     private LogHelper logHelper = new LogHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
     private static Logger logger = Logger.getLogger(Task.OBJECT_NAME);
@@ -196,7 +194,6 @@ public class TaskServiceImpl implements TaskService {
 	task.setCompany(authCompany);
 	if (this.authHelper.isActionAuthorized(task)) {
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.CREATE, task);
 
 	    // Do service.
 	    this.taskDAO.create(task);
@@ -249,7 +246,6 @@ public class TaskServiceImpl implements TaskService {
 
 	if (this.authHelper.isActionAuthorized(task)) {
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, task);
 
 	    // Do service.
 	    this.taskDAO.update(task);
@@ -277,7 +273,6 @@ public class TaskServiceImpl implements TaskService {
 
 	if (this.authHelper.isActionAuthorized(task)) {
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.DELETE, task);
 
 	    // Do service.
 	    this.taskDAO.delete(id);
@@ -355,7 +350,6 @@ public class TaskServiceImpl implements TaskService {
 
 	    // Log and notify.
 	    TaskStatus taskStatus = TaskStatus.of(status);
-	    this.messageHelper.sendMarkAs(AuditAction.MARK_AS, taskStatus, task);
 
 	    // Do service.
 	    task.setStatus(status);
@@ -386,7 +380,6 @@ public class TaskServiceImpl implements TaskService {
 	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(staff)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, staff, task);
 
 	    // Do service.
 	    TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
@@ -448,7 +441,6 @@ public class TaskServiceImpl implements TaskService {
 	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(staff)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, staff, task);
 
 	    // Do service.
 	    this.taskDAO.unassignStaffTask(taskID, staffID);
@@ -478,7 +470,6 @@ public class TaskServiceImpl implements TaskService {
 
 	if (this.authHelper.isActionAuthorized(task)) {
 	    // Log and notify.
-	    this.messageHelper.sendUnassignAll(Staff.OBJECT_NAME, task);
 
 	    // Do service.
 	    this.taskDAO.unassignAllStaffTasks(id);
@@ -507,7 +498,6 @@ public class TaskServiceImpl implements TaskService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendDeleteAll(Task.OBJECT_NAME, project);
 
 	    // Do service.
 	    this.taskDAO.deleteAllTasksByProject(projectID);
@@ -535,7 +525,6 @@ public class TaskServiceImpl implements TaskService {
 
 	if (this.authHelper.isActionAuthorized(proj)) {
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.CREATE, task);
 
 	    // Do service.
 	    task.setProject(proj);
@@ -576,7 +565,6 @@ public class TaskServiceImpl implements TaskService {
 	    }
 
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, oldTask);
 
 	    // Do service.
 	    this.taskDAO.merge(task);
@@ -613,7 +601,6 @@ public class TaskServiceImpl implements TaskService {
 
 	if (this.authHelper.isActionAuthorized(project)) {
 	    // Log and notify.
-	    this.messageHelper.sendUnassignAll(Task.OBJECT_NAME, project);
 
 	    // Do service.
 	    this.taskDAO.unassignAllTasksByProject(project);
@@ -644,7 +631,6 @@ public class TaskServiceImpl implements TaskService {
 	if (this.authHelper.isActionAuthorized(project) && this.authHelper.isActionAuthorized(task)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, project, task);
 
 	    // Do service.
 	    this.taskDAO.unassignTaskByProject(taskID, project);

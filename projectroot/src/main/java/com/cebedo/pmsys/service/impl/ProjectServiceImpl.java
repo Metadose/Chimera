@@ -114,13 +114,15 @@ public class ProjectServiceImpl implements ProjectService {
     public String create(Project project) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
-	// Construct and send system message.
-	this.messageHelper.sendAction(AuditAction.CREATE, project);
-
 	// Do service.
 	Company authCompany = auth.getCompany();
 	project.setCompany(authCompany);
 	this.projectDAO.create(project);
+
+	// Construct and send system message.
+	this.messageHelper.send(auth, AuditAction.CREATE, Project.OBJECT_NAME, project.getId());
+
+	// Set the project aux object.
 	this.projectAuxValueRepo.set(new ProjectAux(project));
 
 	// Return success response.
@@ -170,7 +172,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, project);
+	    this.messageHelper.send(auth, AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
 
 	    // Actual service.
 	    Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
@@ -249,7 +251,7 @@ public class ProjectServiceImpl implements ProjectService {
 	if (this.authHelper.isActionAuthorized(project)) {
 
 	    // Construct and send system message.
-	    this.messageHelper.sendAction(AuditAction.DELETE, project);
+	    this.messageHelper.send(auth, AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
 
 	    // If authorized, do actual service.
 	    this.projectDAO.delete(id);

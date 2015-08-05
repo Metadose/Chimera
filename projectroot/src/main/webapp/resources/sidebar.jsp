@@ -91,7 +91,8 @@ $(document).ready(function() {
                 </a>
             </li>
             </c:if>
-            <c:if test="${authUser.superAdmin == true}">
+<%--             <c:if test="${authUser.superAdmin == true}"> --%>
+HIDE TODO
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
@@ -111,7 +112,7 @@ $(document).ready(function() {
                     <li><a href="${urlConfigList}"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
                 </ul>
             </li>
-            </c:if>
+<%--             </c:if> --%>
         </ul>
     </section>
     <!-- /.sidebar -->

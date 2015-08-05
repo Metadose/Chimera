@@ -225,15 +225,15 @@ public class StaffServiceImpl implements StaffService {
     public String create(Staff staff) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
-	// Log and notify.
-	this.messageHelper.sendAction(AuditAction.CREATE, staff);
-
 	// Do service.
 	// Create the staff first since to attach it's relationship
 	// with the company.
 	Company authCompany = auth.getCompany();
 	staff.setCompany(authCompany);
 	this.staffDAO.create(staff);
+
+	// Log and notify.
+	this.messageHelper.send(auth, AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
@@ -273,8 +273,9 @@ public class StaffServiceImpl implements StaffService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	if (this.authHelper.isActionAuthorized(staff)) {
+
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, staff);
+	    this.messageHelper.send(auth, AuditAction.UPDATE, Staff.OBJECT_NAME, staff.getId());
 
 	    // Do service.
 	    this.staffDAO.update(staff);
@@ -302,7 +303,7 @@ public class StaffServiceImpl implements StaffService {
 
 	if (this.authHelper.isActionAuthorized(stf)) {
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.DELETE, stf);
+	    this.messageHelper.send(auth, AuditAction.DELETE, Staff.OBJECT_NAME, stf.getId());
 	    this.staffDAO.delete(id);
 
 	    // Return success.
@@ -471,7 +472,7 @@ public class StaffServiceImpl implements StaffService {
 		if (this.authHelper.isActionAuthorized(staff)) {
 
 		    // Log and notify.
-		    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+		    this.messageHelper.send(auth, AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
 		    // Do service.
 		    this.staffDAO.create(staff);
@@ -487,7 +488,7 @@ public class StaffServiceImpl implements StaffService {
 		if (this.authHelper.isActionAuthorized(staff)) {
 
 		    // Log and notify.
-		    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+		    this.messageHelper.send(auth, AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
 		    // Do service.
 		    // Update the staff.
@@ -519,7 +520,7 @@ public class StaffServiceImpl implements StaffService {
 	if (this.authHelper.isActionAuthorized(staff)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.CREATE, staff);
+	    this.messageHelper.send(auth, AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
 	    // Do service.
 	    this.staffDAO.create(staff);

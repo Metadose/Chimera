@@ -43,7 +43,6 @@ public class SystemUserDAOImpl implements SystemUserDAO {
 
 		Company co = dbUser.getCompany();
 		Hibernate.initialize(co);
-		Hibernate.initialize(co.getAdmins());
 		return dbUser;
 	    }
 	}

@@ -12,7 +12,6 @@ import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.LogHelper;
-import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
@@ -26,7 +25,6 @@ public class FieldServiceImpl implements FieldService {
     private static Logger logger = Logger.getLogger(Field.OBJECT_NAME);
     private AuthHelper authHelper = new AuthHelper();
     private LogHelper logHelper = new LogHelper();
-    private MessageHelper messageHelper = new MessageHelper();
 
     private FieldDAO fieldDAO;
     private ProjectDAO projectDAO;
@@ -49,7 +47,6 @@ public class FieldServiceImpl implements FieldService {
 	if (auth.isSuperAdmin()) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.CREATE, field);
 
 	    // Do service.
 	    this.fieldDAO.create(field);
@@ -88,7 +85,6 @@ public class FieldServiceImpl implements FieldService {
 	if (auth.isSuperAdmin()) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.UPDATE, field);
 
 	    // Do service.
 	    this.fieldDAO.update(field);
@@ -117,7 +113,6 @@ public class FieldServiceImpl implements FieldService {
 	if (auth.isSuperAdmin()) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAction(AuditAction.DELETE, field);
 
 	    // Do service.
 	    this.fieldDAO.delete(id);
@@ -171,7 +166,6 @@ public class FieldServiceImpl implements FieldService {
 	if (this.authHelper.isActionAuthorized(proj)) {
 
 	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.ASSIGN, proj, fieldAssignment);
 
 	    // Do service.
 	    fieldAssignment.setField(field);
@@ -206,7 +200,6 @@ public class FieldServiceImpl implements FieldService {
 
 	if (this.authHelper.isActionAuthorized(proj)) {
 	    // Log and notify.
-	    this.messageHelper.sendAssignUnassign(AuditAction.UNASSIGN, proj, fieldAssignment);
 
 	    // Do service.
 	    this.fieldDAO.unassignFieldFromProject(fieldID, projectID, label, value);
@@ -238,7 +231,6 @@ public class FieldServiceImpl implements FieldService {
 
 	if (this.authHelper.isActionAuthorized(proj)) {
 	    // Log and notify.
-	    this.messageHelper.sendUnassignAll(Field.OBJECT_NAME, proj);
 
 	    // Do service.
 	    this.fieldDAO.unassignAllFieldsFromProject(projectID);
@@ -272,7 +264,6 @@ public class FieldServiceImpl implements FieldService {
 	    // Log and notify.
 	    FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
 		    oldValue);
-	    this.messageHelper.sendActionWithField(AuditAction.UPDATE, proj, fieldAssignment);
 
 	    // Do service.
 	    this.fieldDAO.updateAssignedField(FieldAssignment.TABLE_NAME, Project.COLUMN_PRIMARY_KEY,

@@ -18,13 +18,11 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.cebedo.pmsys.constants.MessageDestinationRegistry;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -76,8 +74,6 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
 			user.getStaff(), null, "User company is expired.");
 		logger.warn(text);
-		MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
-		sender.send(MessageDestinationRegistry.SYSTEM_LOGIN_COMPANY_EXPIRED, text);
 		throw new BadCredentialsException(text);
 	    }
 
@@ -86,8 +82,6 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
 			user.getStaff(), null, "User account is locked.");
 		logger.warn(text);
-		MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
-		sender.send("notification.system.login.user.locked", text);
 		throw new BadCredentialsException(text);
 	    }
 	}

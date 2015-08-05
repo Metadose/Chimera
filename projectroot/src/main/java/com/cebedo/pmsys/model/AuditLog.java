@@ -62,12 +62,16 @@ public class AuditLog implements Serializable {
 	}
     }
 
-    public AuditLog(int action, SystemUser usr, String ipAddr) {
+    public AuditLog(int action, SystemUser usr, String ipAddr, Company company2, String objName,
+	    long objID) {
 	this.setAction(action);
 	this.setUser(usr);
 	Date dateExecuted = new Date(System.currentTimeMillis());
 	this.setDateExecuted(dateExecuted);
 	this.setIpAddress(ipAddr);
+	this.setCompany(company2);
+	this.setObjectName(objName);
+	this.setObjectID(objID);
     }
 
     private void setDetails() {

@@ -37,22 +37,19 @@ public class CompanyServiceImpl implements CompanyService {
 
 	String result = "";
 	if (auth.isSuperAdmin()) {
+	    this.companyDAO.create(company);
+
 	    // Log and notifications happen here.
-	    this.messageHelper.sendAction(Company.OBJECT_NAME,
-		    AuditAction.CREATE, company.getId(), company.getName());
+	    this.messageHelper.send(auth, AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual service and construct response.
-	    this.companyDAO.create(company);
-	    result = AlertBoxGenerator.SUCCESS.generateCreate(
-		    Company.OBJECT_NAME, company.getName());
+	    result = AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
 	} else {
 	    // If you are not a super admin,
 	    // you're not allowed to create a new company.
-	    result = AlertBoxGenerator.FAILED.generateCreate(Company.OBJECT_NAME,
-		    company.getName());
-	    logger.warn(this.logHelper.logUnauthorized(auth,
-		    AuditAction.CREATE, Company.OBJECT_NAME, company.getId(),
-		    company.getName()));
+	    result = AlertBoxGenerator.FAILED.generateCreate(Company.OBJECT_NAME, company.getName());
+	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Company.OBJECT_NAME,
+		    company.getId(), company.getName()));
 	}
 	return result;
     }
@@ -66,14 +63,13 @@ public class CompanyServiceImpl implements CompanyService {
 	if (this.authHelper.isActionAuthorized(company)) {
 	    // Log then
 	    // return actual object.
-	    logger.info(this.logHelper.logGetObject(auth, Company.OBJECT_NAME,
-		    id, company.getName()));
+	    logger.info(this.logHelper.logGetObject(auth, Company.OBJECT_NAME, id, company.getName()));
 	    return company;
 	}
 
 	// Warn in logs then return empty object.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET,
-		Company.OBJECT_NAME, id, company.getName()));
+	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, Company.OBJECT_NAME, id,
+		company.getName()));
 	return new Company();
     }
 
@@ -87,22 +83,18 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Create post-service operations.
-	    this.messageHelper.sendAction(Company.OBJECT_NAME,
-		    AuditAction.UPDATE, company.getId(), company.getName());
+	    this.messageHelper.send(auth, AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual update to object.
 	    // Construct alert box response.
 	    this.companyDAO.update(company);
-	    result = AlertBoxGenerator.SUCCESS.generateUpdate(
-		    Company.OBJECT_NAME, company.getName());
+	    result = AlertBoxGenerator.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
 	} else {
 	    // Warn
 	    // then construct response.
-	    logger.warn(this.logHelper.logUnauthorized(auth,
-		    AuditAction.UPDATE, Company.OBJECT_NAME, company.getId(),
-		    company.getName()));
-	    result = AlertBoxGenerator.FAILED.generateUpdate(Company.OBJECT_NAME,
-		    company.getName());
+	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Company.OBJECT_NAME,
+		    company.getId(), company.getName()));
+	    result = AlertBoxGenerator.FAILED.generateUpdate(Company.OBJECT_NAME, company.getName());
 	}
 	return result;
     }
@@ -118,22 +110,18 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Proceed to post-service operations.
-	    this.messageHelper.sendAction(Company.OBJECT_NAME,
-		    AuditAction.DELETE, id, company.getName());
+	    this.messageHelper.send(auth, AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual service.
 	    // Generate response.
 	    this.companyDAO.delete(id);
-	    result = AlertBoxGenerator.SUCCESS.generateDelete(
-		    Company.OBJECT_NAME, company.getName());
+	    result = AlertBoxGenerator.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
 	} else {
 	    // Log then
 	    // construct response.
-	    logger.warn(this.logHelper.logUnauthorized(auth,
-		    AuditAction.DELETE, Company.OBJECT_NAME, company.getId(),
-		    company.getName()));
-	    result = AlertBoxGenerator.FAILED.generateDelete(Company.OBJECT_NAME,
-		    company.getName());
+	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, Company.OBJECT_NAME,
+		    company.getId(), company.getName()));
+	    result = AlertBoxGenerator.FAILED.generateDelete(Company.OBJECT_NAME, company.getName());
 	}
 	return result;
     }
@@ -147,15 +135,14 @@ public class CompanyServiceImpl implements CompanyService {
 	if (token.isSuperAdmin()) {
 
 	    // List as super admin.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token,
-		    Company.OBJECT_NAME));
+	    logger.info(this.logHelper.logListAsSuperAdmin(token, Company.OBJECT_NAME));
 	    return this.companyDAO.list(null);
 	}
 
 	// Warning log.
 	// Return empty list.
-	logger.warn(this.logHelper.logUnauthorizedSuperAdminOnly(token,
-		AuditAction.LIST, Company.OBJECT_NAME));
+	logger.warn(this.logHelper.logUnauthorizedSuperAdminOnly(token, AuditAction.LIST,
+		Company.OBJECT_NAME));
 	return new ArrayList<Company>();
     }
 }

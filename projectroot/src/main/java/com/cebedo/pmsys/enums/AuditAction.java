@@ -1,19 +1,34 @@
 package com.cebedo.pmsys.enums;
 
 public enum AuditAction {
-    CREATE(1, "Create", "Created"), UPDATE(2, "Update", "Updated"), DELETE(3,
-	    "Delete", "Deleted"), GET(4, "Get", "Get"), GET_WITH_COLLECTIONS(4,
-	    "Get With All Collections", "Get With All Collections"), LIST(5,
-	    "List", "Listed"), LIST_WITH_COLLECTIONS(6,
-	    "List With All Collections", "Listed With All Collections"), MARK_READ(
-	    7, "Mark Read", "Marked Read"), ASSIGN(8, "Assign", "Assigned"), UNASSIGN(
-	    9, "Unassign", "Unassigned"), UNASSIGN_ALL(10, "Unassign All",
-	    "Unassigned All"), MARK_AS(11, "Mark As", "Marked As"), DELETE_ALL(
-	    12, "Delete All", "Deleted All"), GET_PARTIAL(13,
-	    "Get With Partial Properties", "Get With Partial Properties"), DELETE_PROFILE_PIC(
-	    14, "Delete the Profile Pic", "Deleted the Profile Pic"), UPLOAD_PROFILE_PIC(
-	    15, "Upload the Profile Pic", "Uploaded the Profile Pic"), UPLOAD(
-	    16, "Upload", "Uploaded");
+
+    CREATE(1, "Create", "Created"),
+
+    UPDATE(2, "Update", "Updated"),
+
+    DELETE(3, "Delete", "Deleted"),
+
+    GET(4, "Get", "Get"),
+
+    GET_WITH_COLLECTIONS(5, "Get With All Collections", "Get With All Collections"),
+
+    LIST(6, "List", "Listed"),
+
+    LIST_WITH_COLLECTIONS(7, "List With All Collections", "Listed With All Collections"),
+
+    ASSIGN(8, "Assign", "Assigned"),
+
+    UNASSIGN(9, "Unassign", "Unassigned"),
+
+    UNASSIGN_ALL(10, "Unassign All", "Unassigned All"),
+
+    MARK_AS(11, "Mark As", "Marked As"),
+
+    DELETE_ALL(12, "Delete All", "Deleted All"),
+
+    GET_PARTIAL(13, "Get With Partial Properties", "Get With Partial Properties"),
+
+    UPLOAD(14, "Upload", "Uploaded");
 
     String label;
     int id;

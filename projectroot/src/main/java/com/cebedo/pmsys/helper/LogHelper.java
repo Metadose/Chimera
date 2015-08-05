@@ -31,25 +31,28 @@ public class LogHelper {
      * @param name
      * @return
      */
-    public String logUnauthorized(AuthenticationToken auth, AuditAction action,
-	    String objectName, long id, String name) {
+    public String logUnauthorized(AuthenticationToken auth, AuditAction action, String objectName,
+	    long id, String name) {
 	String actionStr = action.label().toLowerCase();
-	String message = "(" + objectName + ") Not authorized to " + actionStr
-		+ ": " + id + " = " + name;
+	String message = "(" + objectName + ") Not authorized to " + actionStr + ": " + id + " = "
+		+ name;
 	return logMessage(auth, message);
     }
 
-    public String logUnauthorized(AuthenticationToken auth, AuditAction action,
-	    String objectName, String id, String name) {
+    public String logUnauthorized(AuthenticationToken auth, AuditAction action, String objectName,
+	    String id, String name) {
 	String actionStr = action.label().toLowerCase();
-	String message = "(" + objectName + ") Not authorized to " + actionStr
-		+ ": " + id + " = " + name;
+	String message = "(" + objectName + ") Not authorized to " + actionStr + ": " + id + " = "
+		+ name;
 	return logMessage(auth, message);
     }
 
-    public String constructTextActionOnObj(AuditAction action, String objName,
-	    String name) {
+    public String constructTextActionOnObj(AuditAction action, String objName, String name) {
 	return "(" + objName + ") " + action.label() + ": " + name;
+    }
+
+    public String constructTextActionOnObj(AuditAction action, String objName, long id) {
+	return "(" + objName + ") " + action.label() + ": " + id;
     }
 
     /**
@@ -62,11 +65,18 @@ public class LogHelper {
      * @param nameAssoc
      * @return
      */
-    public String constructTextActionOnObjWithAssoc(AuditAction action,
-	    String objName, String name, String objNameAssoc, String nameAssoc) {
+    public String constructTextActionOnObjWithAssoc(AuditAction action, String objName, String name,
+	    String objNameAssoc, String nameAssoc) {
 	// Sample: (Team under Project) Assign: Excavators under ABC Dorm
-	return "(" + objNameAssoc + " under " + objName + ") " + action.label()
-		+ ": " + objNameAssoc + " under " + name;
+	return "(" + objNameAssoc + " under " + objName + ") " + action.label() + ": " + objNameAssoc
+		+ " under " + name;
+    }
+
+    public String constructTextActionOnObjWithAssoc(AuditAction action, String objName, long objID,
+	    String objNameAssoc, long assocID) {
+	// Sample: (Team under Project) Assign: 23 under 435
+	return "(" + objNameAssoc + " under " + objName + ") " + action.label() + ": " + assocID
+		+ " under " + objID;
     }
 
     /**
@@ -85,18 +95,18 @@ public class LogHelper {
 
 	// Company.
 	Company company = auth.getCompany();
-	String companyStr = company == null ? "<td></td>\n" : "<td>"
-		+ company.getId() + " = " + company.getName() + "</td>\n";
+	String companyStr = company == null ? "<td></td>\n" : "<td>" + company.getId() + " = "
+		+ company.getName() + "</td>\n";
 
 	// User.
 	SystemUser user = auth.getUser();
-	String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId()
-		+ " = " + user.getUsername() + "</td>\n";
+	String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId() + " = "
+		+ user.getUsername() + "</td>\n";
 
 	// Staff.
 	Staff staff = auth.getStaff();
-	String staffStr = staff == null ? "<td></td>\n" : "<td>"
-		+ staff.getId() + " = " + staff.getFullName() + "</td>\n";
+	String staffStr = staff == null ? "<td></td>\n" : "<td>" + staff.getId() + " = "
+		+ staff.getFullName() + "</td>\n";
 
 	// Authorities.
 	String authorityStr = "";
@@ -111,26 +121,25 @@ public class LogHelper {
 	    authorityStr += "</td>\n";
 	}
 
-	return ip + userStr + staffStr + companyStr + authorityStr + "<td>"
-		+ message + "</td>";
+	return ip + userStr + staffStr + companyStr + authorityStr + "<td>" + message + "</td>";
     }
 
-    public String logMessage(String ipAddr, Company company, SystemUser user,
-	    Staff staff, Collection<GrantedAuthority> auths, String message) {
+    public String logMessage(String ipAddr, Company company, SystemUser user, Staff staff,
+	    Collection<GrantedAuthority> auths, String message) {
 	// IP address.
 	String ip = "<td>" + (ipAddr == null ? "" : ipAddr) + "</td>\n";
 
 	// Company.
-	String companyStr = company == null ? "<td></td>\n" : "<td>"
-		+ company.getId() + " = " + company.getName() + "</td>\n";
+	String companyStr = company == null ? "<td></td>\n" : "<td>" + company.getId() + " = "
+		+ company.getName() + "</td>\n";
 
 	// User.
-	String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId()
-		+ " = " + user.getUsername() + "</td>\n";
+	String userStr = user == null ? "<td></td>\n" : "<td>" + user.getId() + " = "
+		+ user.getUsername() + "</td>\n";
 
 	// Staff.
-	String staffStr = staff == null ? "<td></td>\n" : "<td>"
-		+ staff.getId() + " = " + staff.getFullName() + "</td>\n";
+	String staffStr = staff == null ? "<td></td>\n" : "<td>" + staff.getId() + " = "
+		+ staff.getFullName() + "</td>\n";
 
 	// Authorities.
 	String authorityStr = "";
@@ -143,13 +152,11 @@ public class LogHelper {
 	    }
 	    authorityStr += "</td>\n";
 	}
-	return ip + userStr + staffStr + companyStr + authorityStr + "<td>"
-		+ message + "</td>";
+	return ip + userStr + staffStr + companyStr + authorityStr + "<td>" + message + "</td>";
     }
 
     public boolean isSpecialView(String logPath, String sysHome, String module) {
-	return logPath.replace("//", "/")
-		.replace(getLogRootDir(sysHome).replace("//", "/"), "")
+	return logPath.replace("//", "/").replace(getLogRootDir(sysHome).replace("//", "/"), "")
 		.split("/")[0].equals(module);
     }
 
@@ -179,43 +186,35 @@ public class LogHelper {
 
 	String jsonData = "{'data' : [";
 	String rootDirID = rootDir.getAbsolutePath().replace("\\", "/");
-	jsonData += "{ 'id' : '"
-		+ rootDirID
+	jsonData += "{ 'id' : '" + rootDirID
 		+ "', 'parent' : '#', 'text' : 'Logs', 'icon': 'fa fa-angle-right' },";
 
 	for (File file : rootDir.listFiles()) {
 
 	    if (file.isDirectory()) {
 		String id = file.getAbsolutePath().replace("\\", "/");
-		String parentID = file.getParentFile().getAbsolutePath()
-			.replace("\\", "/");
+		String parentID = file.getParentFile().getAbsolutePath().replace("\\", "/");
 
-		jsonData += "{ 'id' : '" + id + "', 'parent' : '" + parentID
-			+ "', 'text' : '" + file.getName()
-			+ "', 'icon': 'fa fa-folder-open-o' },";
+		jsonData += "{ 'id' : '" + id + "', 'parent' : '" + parentID + "', 'text' : '"
+			+ file.getName() + "', 'icon': 'fa fa-folder-open-o' },";
 
 		for (File logFile : file.listFiles()) {
 
-		    String logFileID = logFile.getAbsolutePath().replace("\\",
-			    "/");
-		    String logFileParentID = logFile.getParentFile()
-			    .getAbsolutePath().replace("\\", "/");
+		    String logFileID = logFile.getAbsolutePath().replace("\\", "/");
+		    String logFileParentID = logFile.getParentFile().getAbsolutePath()
+			    .replace("\\", "/");
 
-		    jsonData += "{ 'id' : '" + logFileID + "', 'parent' : '"
-			    + logFileParentID + "', 'text' : '"
-			    + logFile.getName() + " ("
-			    + (logFile.length() / 1024) + "KB) "
-			    + sdf.format(logFile.lastModified())
+		    jsonData += "{ 'id' : '" + logFileID + "', 'parent' : '" + logFileParentID
+			    + "', 'text' : '" + logFile.getName() + " (" + (logFile.length() / 1024)
+			    + "KB) " + sdf.format(logFile.lastModified())
 			    + "', 'icon': 'fa fa-file-o' },";
 		}
 	    } else {
 		String id = file.getAbsolutePath().replace("\\", "/");
-		String parentID = file.getParentFile().getAbsolutePath()
-			.replace("\\", "/");
+		String parentID = file.getParentFile().getAbsolutePath().replace("\\", "/");
 
-		jsonData += "{ 'id' : '" + id + "', 'parent' : '" + parentID
-			+ "', 'text' : '" + file.getName()
-			+ "', 'icon': 'fa fa-file-o' },";
+		jsonData += "{ 'id' : '" + id + "', 'parent' : '" + parentID + "', 'text' : '"
+			+ file.getName() + "', 'icon': 'fa fa-file-o' },";
 	    }
 	}
 	jsonData += "]}";
@@ -227,10 +226,9 @@ public class LogHelper {
 	return "(" + objectName + ") Listing all as super admin.";
     }
 
-    private String constructTextListFromCompany(String objectName,
-	    Company company) {
-	return "(" + objectName + ") Listing all from company: "
-		+ company.getId() + " = " + company.getName();
+    private String constructTextListFromCompany(String objectName, Company company) {
+	return "(" + objectName + ") Listing all from company: " + company.getId() + " = "
+		+ company.getName();
     }
 
     private String constructTextListWithoutCompany(String objectName) {
@@ -257,81 +255,67 @@ public class LogHelper {
      * @param company
      * @return
      */
-    public String logListFromCompany(AuthenticationToken token, String objName,
-	    Company company) {
+    public String logListFromCompany(AuthenticationToken token, String objName, Company company) {
 	return logMessage(token, constructTextListFromCompany(objName, company));
     }
 
-    public String logGetProperty(AuthenticationToken auth, String objName,
-	    String objProperty, long id, String name) {
-	return logMessage(auth, "(" + objName + ") Get " + objProperty + ": "
-		+ id + " = " + name);
+    public String logGetProperty(AuthenticationToken auth, String objName, String objProperty, long id,
+	    String name) {
+	return logMessage(auth, "(" + objName + ") Get " + objProperty + ": " + id + " = " + name);
     }
 
-    public String logGetObjectWithProperty(AuthenticationToken auth,
-	    String objName, String objProperty, long id, String name) {
-	return logMessage(auth, "(" + objName + ") Get with " + objProperty
-		+ ": " + id + " = " + name);
-    }
-
-    public String logGetObject(AuthenticationToken auth, String objName,
+    public String logGetObjectWithProperty(AuthenticationToken auth, String objName, String objProperty,
 	    long id, String name) {
+	return logMessage(auth, "(" + objName + ") Get with " + objProperty + ": " + id + " = " + name);
+    }
+
+    public String logGetObject(AuthenticationToken auth, String objName, long id, String name) {
 	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
     }
 
-    public String logGetObject(AuthenticationToken auth, String objName,
-	    String id, String name) {
+    public String logGetObject(AuthenticationToken auth, String objName, String id, String name) {
 	return logMessage(auth, "(" + objName + ") Get: " + id + " = " + name);
     }
 
-    public String logUploadProfilePic(AuthenticationToken auth, String objName,
-	    long id, String name) {
-	return logMessage(auth, "(" + objName + ") Upload profile pic: " + id
-		+ " = " + name);
+    public String logUploadProfilePic(AuthenticationToken auth, String objName, long id, String name) {
+	return logMessage(auth, "(" + objName + ") Upload profile pic: " + id + " = " + name);
     }
 
-    public String logGetObjectWithAllCollections(AuthenticationToken auth,
-	    String objName, long id, String name) {
-	return logMessage(auth, "(" + objName + ") Get with all collections: "
-		+ id + " = " + name);
+    public String logGetObjectWithAllCollections(AuthenticationToken auth, String objName, long id,
+	    String name) {
+	return logMessage(auth, "(" + objName + ") Get with all collections: " + id + " = " + name);
     }
 
-    public String logListPartialCollectionsAsSuperAdmin(
-	    AuthenticationToken token, String objectName, String initializedObj) {
-	String text = "(" + objectName + ") Listing all (initiated with "
-		+ initializedObj + ") as super admin.";
+    public String logListPartialCollectionsAsSuperAdmin(AuthenticationToken token, String objectName,
+	    String initializedObj) {
+	String text = "(" + objectName + ") Listing all (initiated with " + initializedObj
+		+ ") as super admin.";
 	return logMessage(token, text);
     }
 
-    public String logListPartialCollectionsFromCompany(
-	    AuthenticationToken token, String objectName,
+    public String logListPartialCollectionsFromCompany(AuthenticationToken token, String objectName,
 	    String initializedObj, Company company) {
-	String text = "(" + objectName + ") Listing all (initiated with "
-		+ initializedObj + ") from company: " + company.getId() + " = "
-		+ company.getName();
+	String text = "(" + objectName + ") Listing all (initiated with " + initializedObj
+		+ ") from company: " + company.getId() + " = " + company.getName();
 	return logMessage(token, text);
     }
 
-    public String logListWithCollectionsAsSuperAdmin(AuthenticationToken token,
-	    String objectName) {
-	String text = "(" + objectName
-		+ ") Listing with all collections as super admin.";
+    public String logListWithCollectionsAsSuperAdmin(AuthenticationToken token, String objectName) {
+	String text = "(" + objectName + ") Listing with all collections as super admin.";
 	return logMessage(token, text);
     }
 
-    public String logListWithCollectionsFromCompany(AuthenticationToken token,
-	    String objectName, Company company) {
-	String text = "(" + objectName
-		+ ") Listing with all collections from company: "
+    public String logListWithCollectionsFromCompany(AuthenticationToken token, String objectName,
+	    Company company) {
+	String text = "(" + objectName + ") Listing with all collections from company: "
 		+ company.getId() + " = " + company.getName();
 	return logMessage(token, text);
     }
 
-    public String logUnauthorizedSuperAdminOnly(AuthenticationToken auth,
-	    AuditAction action, String objectName) {
+    public String logUnauthorizedSuperAdminOnly(AuthenticationToken auth, AuditAction action,
+	    String objectName) {
 	String actionStr = action.label().toLowerCase();
-	String message = "(" + objectName + ") Not authorized to " + actionStr
-		+ " if not super admin.";
+	String message = "(" + objectName + ") Not authorized to " + actionStr + " if not super admin.";
 	return logMessage(auth, message);
     }
 
@@ -344,15 +328,14 @@ public class LogHelper {
      * @param objectNameAssoc
      * @return
      */
-    public String constructTextActionOnObjWithAssoc(AuditAction action,
-	    String objectName, String name, String objectNameAssoc) {
+    public String constructTextActionOnObjWithAssoc(AuditAction action, String objectName, String name,
+	    String objectNameAssoc) {
 	// Sample: (Team under Project) Unassign All: All under ABC Dorm
-	return "(" + objectNameAssoc + " under " + objectName + ") "
-		+ action.label() + ": All under " + name;
+	return "(" + objectNameAssoc + " under " + objectName + ") " + action.label() + ": All under "
+		+ name;
     }
 
-    public String logListWithoutCompany(AuthenticationToken auth,
-	    String objectName) {
+    public String logListWithoutCompany(AuthenticationToken auth, String objectName) {
 	return logMessage(auth, constructTextListWithoutCompany(objectName));
     }
 }
