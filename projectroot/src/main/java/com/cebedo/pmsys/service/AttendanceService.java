@@ -8,7 +8,6 @@ import java.util.Set;
 import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 
 public interface AttendanceService {
@@ -39,15 +38,6 @@ public interface AttendanceService {
     public Set<Attendance> rangeStaffAttendance(Staff staff, Date min, Date max);
 
     public Set<Attendance> rangeStaffAttendance(Staff staff, long min, long max);
-
-    /**
-     * Get the total wage of all staff in a project in a range of dates.
-     * 
-     * @param min
-     * @param max
-     * @return
-     */
-    public double getTotalWageOfProjectInRange(Project project, Date min, Date max);
 
     /**
      * Get the total wage of a staff in a range of dates.

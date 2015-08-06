@@ -26,6 +26,12 @@ public class MessageHelper {
 	send(msg);
     }
 
+    public void unauthorized(String objectName, String objectKey) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, AuditAction.UNAUTHORIZED, objectName, objectKey);
+	send(msg);
+    }
+
     public void unauthorized(String objectName, long objectID) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	SystemMessage msg = new SystemMessage(auth, AuditAction.UNAUTHORIZED, objectName, objectID);

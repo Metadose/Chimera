@@ -20,6 +20,7 @@ public class SystemMessage implements Serializable {
     private AuditAction auditAction;
     private String objectName = "";
     private long objectID = -1;
+    private String objectKey = "";
     private String assocObjectName = "";
     private long assocObjectID = -1;
 
@@ -48,6 +49,14 @@ public class SystemMessage implements Serializable {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
+    }
+
+    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+	    String objectKey2) {
+	setAuth(auth2);
+	setAuditAction(action);
+	setObjectName(objectName2);
+	setObjectKey(objectKey2);
     }
 
     public AuthenticationToken getAuth() {
@@ -96,6 +105,14 @@ public class SystemMessage implements Serializable {
 
     public void setAssocObjectID(long assocObjectID) {
 	this.assocObjectID = assocObjectID;
+    }
+
+    public String getObjectKey() {
+	return objectKey;
+    }
+
+    public void setObjectKey(String objectKey) {
+	this.objectKey = objectKey;
     }
 
 }

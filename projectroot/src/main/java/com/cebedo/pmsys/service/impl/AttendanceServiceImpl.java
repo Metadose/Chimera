@@ -14,29 +14,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.MassAttendanceBean;
-import com.cebedo.pmsys.dao.StaffDAO;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
-import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
 
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
+
     private AttendanceValueRepo attendanceValueRepo;
-    private ProjectService projectService;
-
-    public void setStaffDAO(StaffDAO staffDAO) {
-    }
-
-    public void setProjectService(ProjectService projectService) {
-	this.projectService = projectService;
-    }
 
     public void setAttendanceValueRepo(AttendanceValueRepo r) {
 	this.attendanceValueRepo = r;
@@ -45,15 +40,26 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public void set(Attendance attendance) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(attendance)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	    return; // TODO Put notification.
+	}
+
+	// Set the status.
 	if (attendance.getStatus() == null) {
 	    attendance.setStatus(AttendanceStatus.of(attendance.getStatusID()));
 	}
 	AttendanceStatus status = attendance.getStatus();
 
+	// If status is delete.
 	if (status == AttendanceStatus.DELETE) {
 	    deleteAllInDate(attendance);
 	    return;
 	}
+
+	// If status is absent.
 	if (status == AttendanceStatus.ABSENT && attendance.getWage() > 0) {
 	    attendance.setWage(0);
 	}
@@ -61,6 +67,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    Staff staff = attendance.getStaff();
 	    attendance.setWage(getWage(staff, status));
 	}
+
 	// Delete all previously declared attendance in this date.
 	deleteAllInDate(attendance);
 	this.attendanceValueRepo.set(attendance);
@@ -71,8 +78,14 @@ public class AttendanceServiceImpl implements AttendanceService {
      * 
      * @param attendance
      */
-    public void deleteAllInDate(Attendance attendance) {
-	// Delete all previously declared attendance in this date.
+    private void deleteAllInDate(Attendance attendance) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(attendance)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	    return;
+	}
+
 	Staff staff = attendance.getStaff();
 	String key = Attendance.constructPattern(staff, attendance.getDate());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
@@ -82,6 +95,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public void set(Staff staff, AttendanceStatus status) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return; // TODO Put notification.
+	}
+
 	Attendance attendance = new Attendance(staff, status);
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
@@ -91,13 +111,34 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public void set(Staff staff, AttendanceStatus status, Date timestamp) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return; // TODO Put notification.
+	}
+
 	Attendance attendance = new Attendance(staff, status, timestamp);
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
     }
 
+    /**
+     * Get corresponding wage of a staff member.
+     * 
+     * @param staff
+     * @param status
+     * @return
+     */
     private double getWage(Staff staff, AttendanceStatus status) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return 0.0;
+	}
+
 	double wage = 0;
 
 	if (status == AttendanceStatus.PRESENT) {
@@ -118,22 +159,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	return wage;
     }
 
-    @Transactional
-    @Override
-    public double getTotalWageOfProjectInRange(Project project, Date min, Date max) {
-
-	// List of staff IDs that were already computed.
-	// Overall total.
-	List<Long> alreadyComputedStaff = new ArrayList<Long>();
-	double projectTotal = 0;
-
-	return projectTotal;
-    }
-
+    /**
+     * Get total wage of all attendances.
+     */
     @Transactional
     @Override
     public double getTotalWageFromAttendance(Collection<Attendance> attendances) {
-	// Get total wage of all attendances.
 	double totalWage = 0;
 	for (Attendance attd : attendances) {
 	    totalWage += attd.getWage();
@@ -141,9 +172,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 	return totalWage;
     }
 
+    /**
+     * Get total wage of staff given a min and max date.
+     */
     @Transactional
     @Override
     public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return 0.0;
+	}
 
 	// Get all the attendances.
 	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);
@@ -152,9 +192,19 @@ public class AttendanceServiceImpl implements AttendanceService {
 	return getTotalWageFromAttendance(attendances);
     }
 
+    /**
+     * Get attendances given a range of min and max.
+     */
     @Override
     @Transactional
     public Set<Attendance> rangeStaffAttendance(Staff staff, long min, long max) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return new HashSet<Attendance>();
+	}
+
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
 	for (String key : keys) {
@@ -179,6 +229,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public Attendance get(Staff staff, AttendanceStatus status, Date timestamp) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return new Attendance();
+	}
+
 	return this.attendanceValueRepo.get(Attendance.constructKey(staff, timestamp, status));
     }
 
@@ -186,18 +243,28 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public void multiSet(MassAttendanceBean attendanceMass) {
 	Staff staff = attendanceMass.getStaff();
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return; // TODO Notify?
+	}
+
+	// Get the wage.
 	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
 	if (status == AttendanceStatus.ABSENT) {
 	    attendanceMass.setWage(0);
 	}
 	double wage = attendanceMass.getWage();
 
-	// Iterate through all dates.
+	// Get the dates.
 	boolean includeWeekends = attendanceMass.isIncludeWeekends();
 	Date startDate = attendanceMass.getStartDate();
 	Date endDate = attendanceMass.getEndDate();
 	List<Date> dates = DateUtils.getDatesBetweenDates(startDate, endDate);
 	Map<String, Attendance> keyAttendanceMap = new HashMap<String, Attendance>();
+
+	// Iterate through all dates.
 	for (Date date : dates) {
 	    Company co = staff.getCompany();
 	    Attendance attendance = new Attendance(co, staff, status, date, wage);
@@ -229,6 +296,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public List<Attendance> getAllAttendance(Staff staff) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return new ArrayList<Attendance>();
+	}
+
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	return this.attendanceValueRepo.multiGet(keys);
     }

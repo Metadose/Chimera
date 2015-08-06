@@ -103,9 +103,6 @@ HIDE TODO
                 	<c:url var="urlCompanyList" value="/company/list/"/>
                     <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
                     
-                    <c:url var="urlLogList" value="/log/list"/>
-                    <li><a href="${urlLogList}"><i class="fa fa-angle-double-right"></i> Logs</a></li>
-                    
                     <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Licenses</a></li>
                     
                     <c:url var="urlConfigList" value="/config/list"/>

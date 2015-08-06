@@ -57,6 +57,7 @@ public class LogMessageListener implements MessageListener {
 		int actionID = action.id();
 		String actionName = action.label();
 		long objectID = sysMessage.getObjectID();
+		String objectKey = sysMessage.getObjectKey();
 		String objectName = sysMessage.getObjectName();
 		long assocObjID = sysMessage.getAssocObjectID();
 		String assocObjName = sysMessage.getAssocObjectName();
@@ -68,7 +69,8 @@ public class LogMessageListener implements MessageListener {
 		// Do log.
 		logger.info(String.format(logMessage, formatter.format(now), ipAddr, companyID,
 			companyName, userID, userName, staffID, staffName, companyAdmin, superAdmin,
-			actionID, actionName, objectID, objectName, assocObjID, assocObjName));
+			actionID, actionName, (objectID == -1 ? objectKey : objectID), objectName,
+			assocObjID, assocObjName));
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }

@@ -459,7 +459,6 @@
     </beans:bean>
     <beans:bean id="attendanceService" class="com.cebedo.pmsys.service.impl.AttendanceServiceImpl"> 
         <beans:property name="attendanceValueRepo" ref="attendanceValueRepo"></beans:property>
-        <beans:property name="projectService" ref="projectService"></beans:property>
     </beans:bean>
     
     
