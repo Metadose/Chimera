@@ -8,6 +8,13 @@
 	    </layout>
 	</appender>
 	
+	<appender name="logFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/system.log" />
+	    <layout class="org.apache.log4j.PatternLayout"/>
+	</appender>
+	
 	<appender name="errorFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
@@ -129,7 +136,8 @@
 	<!-- Application Loggers -->
 	<logger name="project">
 		<level value="info" />
-		<appender-ref ref="projectFile" />
+		<!-- <appender-ref ref="projectFile" /> -->
+		<appender-ref ref="logFile" />
 	</logger>
 	
 	<logger name="projectfile">

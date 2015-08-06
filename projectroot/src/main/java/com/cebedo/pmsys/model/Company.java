@@ -26,8 +26,8 @@ public class Company implements Serializable {
 
     public static final String PROPERTY_ID = "id";
 
-    private long id;
-    private String name;
+    private long id = 0;
+    private String name = "";
     private String description;
     private Date dateStarted;
     private Date dateExpiration;
