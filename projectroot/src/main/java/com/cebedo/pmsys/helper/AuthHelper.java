@@ -127,7 +127,7 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(Company company) {
+    public boolean isSuperAdmin() {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;

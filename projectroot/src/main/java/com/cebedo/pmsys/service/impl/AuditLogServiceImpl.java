@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.dao.AuditLogDAO;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.service.AuditLogService;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -15,6 +17,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 public class AuditLogServiceImpl implements AuditLogService {
 
     private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
     private AuditLogDAO auditLogDAO;
 
     public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
@@ -30,26 +33,47 @@ public class AuditLogServiceImpl implements AuditLogService {
     @Override
     @Transactional
     public AuditLog getByID(long id) {
+
 	AuditLog obj = this.auditLogDAO.getByID(id);
-	if (this.authHelper.isActionAuthorized(obj)) {
-	    return obj;
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(AuditLog.OBJECT_NAME);
+	    return new AuditLog();
 	}
-	return new AuditLog();
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, AuditLog.OBJECT_NAME, obj.getId());
+	return obj;
     }
 
     @Override
     @Transactional
     public void delete(long id) {
+
 	AuditLog obj = this.auditLogDAO.getByID(id);
-	if (this.authHelper.isActionAuthorized(obj)) {
-	    this.auditLogDAO.delete(id);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(AuditLog.OBJECT_NAME);
+	    return; // TODO Return notification?
 	}
+
+	// Do service.
+	this.auditLogDAO.delete(id);
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, AuditLog.OBJECT_NAME, obj.getId());
     }
 
     @Override
     @Transactional
     public List<AuditLog> list() {
 	AuthenticationToken token = this.authHelper.getAuth();
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, AuditLog.OBJECT_NAME);
+
 	if (token.isSuperAdmin()) {
 	    return this.auditLogDAO.list(null);
 	}

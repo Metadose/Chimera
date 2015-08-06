@@ -61,6 +61,28 @@ In taskEdit.jsp, see date selector, still using date input mask.
 
 
 
+Company-based security:
+attendace-done
+audit-done
+company-done
+project-done
+
+
+Log:
+attendace-og
+audit-done
+company-done
+project-done
+
+
+
+
+
+
+
+
+
+
 
 
 

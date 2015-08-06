@@ -3,26 +3,21 @@ package com.cebedo.pmsys.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
-import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private static Logger logger = Logger.getLogger(Company.OBJECT_NAME);
     private AuthHelper authHelper = new AuthHelper();
-    private LogHelper logHelper = new LogHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private CompanyDAO companyDAO;
 
@@ -30,119 +25,110 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyDAO = companyDAO;
     }
 
+    /**
+     * Create a new company.
+     */
     @Override
     @Transactional
     public String create(Company company) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 
-	String result = "";
-	if (auth.isSuperAdmin()) {
-	    this.companyDAO.create(company);
-
-	    // Log and notifications happen here.
-	    this.messageHelper.send(AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
-
-	    // Do actual service and construct response.
-	    result = AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
-	} else {
-	    // If you are not a super admin,
-	    // you're not allowed to create a new company.
-	    result = AlertBoxGenerator.FAILED.generateCreate(Company.OBJECT_NAME, company.getName());
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Company.OBJECT_NAME,
-		    company.getId(), company.getName()));
+	// Security check.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
-	return result;
+
+	this.companyDAO.create(company);
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
+
+	// Do actual service and construct response.
+	return AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
     }
 
+    /**
+     * Get a company by ID.
+     */
     @Override
     @Transactional
     public Company getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
+
 	Company company = this.companyDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(company)) {
-	    // Log then
-	    // return actual object.
-	    logger.info(this.logHelper.logGetObject(auth, Company.OBJECT_NAME, id, company.getName()));
-	    return company;
+	// Security check.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    return new Company();
 	}
 
-	// Warn in logs then return empty object.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, Company.OBJECT_NAME, id,
-		company.getName()));
-	return new Company();
+	// Log then
+	// return actual object.
+	this.messageHelper.send(AuditAction.GET, Company.OBJECT_NAME, company.getId());
+	return company;
     }
 
+    /**
+     * Update a company.
+     */
     @Override
     @Transactional
     public String update(Company company) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 
-	// Only super admins can update companies.
-	String result = "";
-	if (auth.isSuperAdmin()) {
-
-	    // Create post-service operations.
-	    this.messageHelper.send(AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
-
-	    // Do actual update to object.
-	    // Construct alert box response.
-	    this.companyDAO.update(company);
-	    result = AlertBoxGenerator.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
-	} else {
-	    // Warn
-	    // then construct response.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Company.OBJECT_NAME,
-		    company.getId(), company.getName()));
-	    result = AlertBoxGenerator.FAILED.generateUpdate(Company.OBJECT_NAME, company.getName());
+	// Security check.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
-	return result;
+
+	// Create post-service operations.
+	this.messageHelper.send(AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
+
+	// Do actual update to object.
+	// Construct alert box response.
+	this.companyDAO.update(company);
+	return AlertBoxGenerator.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
     }
 
+    /**
+     * Deletes a company.
+     */
     @Override
     @Transactional
     public String delete(long id) {
-	String result = "";
-	AuthenticationToken auth = this.authHelper.getAuth();
+
 	Company company = this.companyDAO.getByID(id);
 
-	// Only super admins can delete companies.
-	if (auth.isSuperAdmin()) {
-
-	    // Proceed to post-service operations.
-	    this.messageHelper.send(AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
-
-	    // Do actual service.
-	    // Generate response.
-	    this.companyDAO.delete(id);
-	    result = AlertBoxGenerator.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
-	} else {
-	    // Log then
-	    // construct response.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, Company.OBJECT_NAME,
-		    company.getId(), company.getName()));
-	    result = AlertBoxGenerator.FAILED.generateDelete(Company.OBJECT_NAME, company.getName());
+	// Security check.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
-	return result;
+
+	// Proceed to post-service operations.
+	this.messageHelper.send(AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
+
+	// Do actual service.
+	// Generate response.
+	this.companyDAO.delete(id);
+	return AlertBoxGenerator.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
     }
 
+    /**
+     * List all companies.
+     */
     @Override
     @Transactional
     public List<Company> list() {
-	AuthenticationToken token = this.authHelper.getAuth();
 
-	// Only super admins can see the list.
-	if (token.isSuperAdmin()) {
-
-	    // List as super admin.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token, Company.OBJECT_NAME));
-	    return this.companyDAO.list(null);
+	// Security check.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME);
+	    return new ArrayList<Company>();
 	}
 
-	// Warning log.
-	// Return empty list.
-	logger.warn(this.logHelper.logUnauthorizedSuperAdminOnly(token, AuditAction.LIST,
-		Company.OBJECT_NAME));
-	return new ArrayList<Company>();
+	// List as super admin.
+	this.messageHelper.send(AuditAction.LIST, Company.OBJECT_NAME);
+	return this.companyDAO.list(null);
     }
 }

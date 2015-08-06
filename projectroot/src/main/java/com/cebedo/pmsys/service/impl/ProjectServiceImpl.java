@@ -102,13 +102,13 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME);
-
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
 	this.taskService.createMassTasks(tasks);
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME);
 
 	// TODO
 	return "TODO";
@@ -153,10 +153,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
-		Staff.OBJECT_NAME);
-
 	// Convert excel to staff objects.
 	// Commit all in staff list.
 	// Assign all staff to project.
@@ -164,6 +160,10 @@ public class ProjectServiceImpl implements ProjectService {
 		proj.getCompany());
 	staffList = this.staffService.createOrGetStaffInList(staffList);
 	assignAllStaffToProject(proj, staffList);
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+		Staff.OBJECT_NAME);
 
 	// TODO
 	return "TODO";
@@ -203,14 +203,14 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
-
 	// Actual service.
 	Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
 		Project.COLUMN_PRIMARY_KEY, project.getId());
 	project.setCompany(company);
 	this.projectDAO.update(project);
+
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
 
 	// Response for the user.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
@@ -276,12 +276,12 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
-
 	// If authorized, do actual service.
 	this.projectDAO.delete(id);
 	this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
 
 	// Success response.
 	return AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
@@ -624,13 +624,13 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME + "+" + Milestone.OBJECT_NAME);
-
 	// Do service.
 	this.taskService.deleteAllTasksByProject(project.getId());
 	this.milestoneDAO.deleteAllByProject(project.getId());
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME + "+" + Milestone.OBJECT_NAME);
 
 	// TODO
 	return "TODO";

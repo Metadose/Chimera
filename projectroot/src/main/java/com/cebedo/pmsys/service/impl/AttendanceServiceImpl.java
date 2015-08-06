@@ -17,6 +17,7 @@ import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
@@ -46,6 +47,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
 	    return; // TODO Put notification.
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_ATTENDANCE,
+		attendance.getKey());
 
 	// Set the status.
 	if (attendance.getStatus() == null) {

@@ -60,4 +60,10 @@ public class MessageHelper {
 	// Send the message.
 	sender.send(dest, msg);
     }
+
+    public void send(AuditAction action, String objectName, String objectKey) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName, objectKey);
+	send(msg);
+    }
 }
