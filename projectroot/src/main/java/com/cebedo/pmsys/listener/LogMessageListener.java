@@ -21,7 +21,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 public class LogMessageListener implements MessageListener {
 
     public final static String MESSAGE_DESTINATION = "system.log.info";
-    private static Logger logger = Logger.getLogger("sysLogger");
+    private static Logger logger = Logger.getLogger("webappTailLogger");
 
     @Override
     @Transactional

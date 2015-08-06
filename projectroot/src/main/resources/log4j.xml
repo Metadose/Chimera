@@ -8,18 +8,30 @@
 	    </layout>
 	</appender>
 	
-	<appender name="sysLogFile" class="org.apache.log4j.RollingFileAppender">
+	<!-- Web app tail -->
+	<appender name="webappTailFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/system.log" />
+	    <param name="file" value="C:/vcc/sys/system/logs/webapp-tail.log" />
 	    <layout class="org.apache.log4j.PatternLayout"/>
 	</appender>
 	
-	<appender name="errorFile" class="org.apache.log4j.RollingFileAppender">
+	<!-- Web app performance -->
+	<appender name="webappPerformanceFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/error/error.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
+	    <param name="file" value="C:/vcc/sys/system/logs/webapp-performance.log" />
+	    <layout class="org.apache.log4j.PatternLayout"/>
+	</appender>
+	
+	<!-- Web app exception -->
+	<appender name="webappExceptionLogFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/webapp-exception.log" />
+	    <layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %p %m%n" />
+	    </layout>
 	</appender>
 	
 	<appender name="loginFile" class="org.apache.log4j.RollingFileAppender">
@@ -106,13 +118,6 @@
 	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
 	</appender>
 	
-	<appender name="performanceFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/performance/performance.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
 	<appender name="hdivFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
@@ -127,16 +132,22 @@
 <!-- 		<appender-ref ref="hdivFile"/> -->
 	</logger>
 	
+	<!-- Exception Logger -->
+	<logger name="webappExceptionLogger">
+	    <level value="warn" />
+		<appender-ref ref="webappExceptionLogFile" />
+	</logger>
+	
 	<!-- Performance Loggers -->
 	<logger name="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor">
 		<level value="trace"/>
-		<appender-ref ref="performanceFile"/>
+		<appender-ref ref="webappPerformanceFile"/>
 	</logger>
 	
 	<!-- Info Logger -->
-	<logger name="sysLogger">
+	<logger name="webappTailLogger">
 		<level value="info" />
-		<appender-ref ref="sysLogFile" />
+		<appender-ref ref="webappTailFile" />
 	</logger>
 	
 	<!-- Application Loggers -->
@@ -173,11 +184,6 @@
 	<logger name="login">
 		<level value="info" />
 		<appender-ref ref="loginFile" />
-	</logger>
-	
-	<logger name="error">
-	    <level value="warn" />
-		<appender-ref ref="errorFile" />
 	</logger>
 	
 	<logger name="company">

@@ -126,12 +126,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
     public String create(Project project) {
 
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
 	// Do service.
 	// Set the project aux object.
 	AuthenticationToken auth = this.authHelper.getAuth();
