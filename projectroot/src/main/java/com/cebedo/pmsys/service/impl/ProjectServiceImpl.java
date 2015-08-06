@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,7 +31,6 @@ import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
@@ -51,9 +49,7 @@ import com.google.gson.Gson;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
     private AuthHelper authHelper = new AuthHelper();
-    private LogHelper logHelper = new LogHelper();
     private MessageHelper messageHelper = new MessageHelper();
 
     private ProjectDAO projectDAO;
@@ -93,11 +89,28 @@ public class ProjectServiceImpl implements ProjectService {
 	this.companyDAO = companyDAO;
     }
 
+    /**
+     * Create Tasks from an Excel file.
+     */
     @Override
     @Transactional
     public String createTasksFromExcel(MultipartFile multipartFile, Project project) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME);
+
+	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
 	this.taskService.createMassTasks(tasks);
+
+	// TODO
 	return "TODO";
     }
 
@@ -112,39 +125,62 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
     public String create(Project project) {
-	AuthenticationToken auth = this.authHelper.getAuth();
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
 
 	// Do service.
-	Company authCompany = auth.getCompany();
-	project.setCompany(authCompany);
-	this.projectDAO.create(project);
-
-	// Construct and send system message.
-	this.messageHelper.send(auth, AuditAction.CREATE, Project.OBJECT_NAME, project.getId());
-
 	// Set the project aux object.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	project.setCompany(auth.getCompany());
+	this.projectDAO.create(project);
 	this.projectAuxValueRepo.set(new ProjectAux(project));
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, Project.OBJECT_NAME, project.getId());
 
 	// Return success response.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Project.OBJECT_NAME, project.getName());
     }
 
+    /**
+     * Create Staff members from Excel.
+     */
     @Override
     @Transactional
     public String createStaffFromExcel(MultipartFile multipartFile, Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+		Staff.OBJECT_NAME);
+
 	// Convert excel to staff objects.
+	// Commit all in staff list.
+	// Assign all staff to project.
 	List<Staff> staffList = this.staffService.convertExcelToStaffList(multipartFile,
 		proj.getCompany());
-
-	// Commit all in staff list.
 	staffList = this.staffService.createOrGetStaffInList(staffList);
-
-	// Assign all staff to project.
 	assignAllStaffToProject(proj, staffList);
 
+	// TODO
 	return "TODO";
     }
 
+    /**
+     * Assign all staff to project.
+     * 
+     * @param proj
+     * @param staffList
+     */
     private void assignAllStaffToProject(Project proj, List<Staff> staffList) {
 	Set<Staff> projectStaff = proj.getAssignedStaff();
 	projectStaff.addAll(staffList);
@@ -166,48 +202,41 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":getByID", key = "#project.getId()"),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
     public String update(Project project) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	String response = "";
 
-	if (this.authHelper.isActionAuthorized(project)) {
-
-	    // Construct and send system message.
-	    this.messageHelper.send(auth, AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
-
-	    // Actual service.
-	    Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
-		    Project.COLUMN_PRIMARY_KEY, project.getId());
-	    project.setCompany(company);
-	    this.projectDAO.update(project);
-
-	    // Response for the user.
-	    response = AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
-	} else {
-	    // Log a warning.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Project.OBJECT_NAME,
-		    project.getId(), project.getName()));
-
-	    // Construct failed response
-	    response = AlertBoxGenerator.FAILED.generateUpdate(Project.OBJECT_NAME, project.getName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
-	return response;
+
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
+
+	// Actual service.
+	Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
+		Project.COLUMN_PRIMARY_KEY, project.getId());
+	project.setCompany(company);
+	this.projectDAO.update(project);
+
+	// Response for the user.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
     }
 
     @Override
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":list", unless = "#result.isEmpty()")
     public List<Project> list() {
-	AuthenticationToken token = this.authHelper.getAuth();
 
+	AuthenticationToken token = this.authHelper.getAuth();
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
+
+	// List as super admin.
 	if (token.isSuperAdmin()) {
-	    // List as super admin.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token, Project.OBJECT_NAME));
 	    return this.projectDAO.list(null);
 	}
 
 	// List as not a super admin.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.logListFromCompany(token, Project.OBJECT_NAME, company));
 	return this.projectDAO.list(company.getId());
     }
 
@@ -215,18 +244,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":getByID", key = "#id")
     public Project getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
+
+	// Get.
 	Project project = this.projectDAO.getByID(id);
 
+	// Check security.
+	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    // Log the action.
-	    logger.info(this.logHelper.logGetObject(auth, Project.OBJECT_NAME, id, project.getName()));
+	    this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
-	// Create a warning log.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, Project.OBJECT_NAME, id,
-		project.getName()));
+	// Log a warning.
+	this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
 	return new Project();
     }
 
@@ -244,51 +274,39 @@ public class ProjectServiceImpl implements ProjectService {
     public String delete(long id) {
 
 	// Get auth and actual object.
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectDAO.getByID(id);
-	String response = "";
 
-	if (this.authHelper.isActionAuthorized(project)) {
-
-	    // Construct and send system message.
-	    this.messageHelper.send(auth, AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
-
-	    // If authorized, do actual service.
-	    this.projectDAO.delete(id);
-	    this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
-
-	    // Success response.
-	    response = AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
-	} else {
-	    // If not, log as warning.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, Project.OBJECT_NAME,
-		    id, project.getName()));
-
-	    // Failed response.
-	    response = AlertBoxGenerator.FAILED.generateDelete(Project.OBJECT_NAME, project.getName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
-	return response;
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
+
+	// If authorized, do actual service.
+	this.projectDAO.delete(id);
+	this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
+
+	// Success response.
+	return AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
     }
 
     @Override
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":listWithAllCollections")
     public List<Project> listWithAllCollections() {
+	// Log.
 	AuthenticationToken token = this.authHelper.getAuth();
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
-	    // Log the action.
-	    // And return the list.
-	    logger.info(this.logHelper.logListWithCollectionsAsSuperAdmin(token, Project.OBJECT_NAME));
 	    return this.projectDAO.listWithAllCollections(null);
 	}
 
-	// Log the action.
 	// Return the list.
 	Company company = token.getCompany();
-	logger.info(this.logHelper
-		.logListWithCollectionsFromCompany(token, Project.OBJECT_NAME, company));
-
 	return this.projectDAO.listWithAllCollections(company.getId());
     }
 
@@ -296,22 +314,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#id")
     public Project getByIDWithAllCollections(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 
-	Long companyID = auth.getCompany() == null ? 0 : auth.getCompany().getId();
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
+	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    // Log the action.
-	    // Then do the action.
-	    logger.info(this.logHelper.logGetObjectWithAllCollections(auth, Project.OBJECT_NAME, id,
-		    project.getName()));
+	    this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
 	// Log then return empty object.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET_WITH_COLLECTIONS,
-		Project.OBJECT_NAME, id, project.getName()));
+	this.messageHelper.unauthorized(Project.OBJECT_NAME, id);
 	return new Project();
     }
 
@@ -319,20 +332,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":listWithTasks")
     public List<Project> listWithTasks() {
+
 	AuthenticationToken token = this.authHelper.getAuth();
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
 
 	// Initiate with tasks.
 	if (token.isSuperAdmin()) {
-	    logger.info(this.logHelper.logListPartialCollectionsAsSuperAdmin(token, Project.OBJECT_NAME,
-		    Task.OBJECT_NAME));
 	    return this.projectDAO.listWithTasks(null);
 	}
 
 	// List with partial collections from company.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.logListPartialCollectionsFromCompany(token, Project.OBJECT_NAME,
-		Task.OBJECT_NAME, company));
-
 	return this.projectDAO.listWithTasks(company.getId());
     }
 
@@ -340,10 +350,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Cacheable(value = Project.OBJECT_NAME + ":getNameByID", key = "#projectID", unless = "#result.isEmpty()")
     public String getNameByID(long projectID) {
-	AuthenticationToken token = this.authHelper.getAuth();
 	String name = this.projectDAO.getNameByID(projectID);
-	logger.info(this.logHelper.logGetProperty(token, Project.OBJECT_NAME, Project.PROPERTY_NAME,
-		projectID, name));
+	this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, projectID);
 	return name;
     }
 
@@ -374,6 +382,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public String getGanttJSON(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET_JSON, Project.OBJECT_NAME, proj.getId(),
+		GanttBean.class.getName());
+
 	// Construct JSON data for the gantt chart.
 	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
 
@@ -412,6 +431,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Map<String, Object> getTimelineSummaryMap(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HashMap<String, Object>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET_MAP, Project.OBJECT_NAME, proj.getId(),
+		Milestone.class.getName());
+
 	String keyTotalTasks = ProjectController.KEY_SUMMARY_TOTAL_TASKS;
 	String keyTotalMilestones = ProjectController.KEY_SUMMARY_TOTAL_MILESTONES;
 	String keyTotalTasksAssigned = ProjectController.KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES;
@@ -507,6 +537,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HashMap<TaskStatus, Integer>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET_MAP, Project.OBJECT_NAME, proj.getId(),
+		TaskStatus.class.getName());
+
 	// Get summary of tasks.
 	// For each task status, count how many.
 	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
@@ -534,6 +575,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public String getCalendarJSON(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET_JSON, Project.OBJECT_NAME, proj.getId(),
+		CalendarEventBean.class.getName());
+
 	// Get calendar events.
 	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
 
@@ -570,20 +622,23 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public List<Staff> getAllStaff(Project proj) {
-	// Get all staff in this project.
-	List<Staff> allStaff = new ArrayList<Staff>();
-	for (Task task : proj.getAssignedTasks()) {
-	    allStaff.addAll(task.getStaff());
-	}
-	return allStaff;
-    }
-
-    @Transactional
-    @Override
     public String deleteProgramOfWorks(Project project) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME + "+" + Milestone.OBJECT_NAME);
+
+	// Do service.
 	this.taskService.deleteAllTasksByProject(project.getId());
 	this.milestoneDAO.deleteAllByProject(project.getId());
+
+	// TODO
 	return "TODO";
     }
 

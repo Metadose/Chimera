@@ -4,31 +4,31 @@ public enum AuditAction {
 
     CREATE(1, "Create", "Created"),
 
-    UPDATE(2, "Update", "Updated"),
+    CREATE_MASS(2, "Create Mass", "Created Mass"),
 
-    DELETE(3, "Delete", "Deleted"),
+    UPDATE(3, "Update", "Updated"),
 
-    GET(4, "Get", "Get"),
+    DELETE(4, "Delete", "Deleted"),
 
-    GET_WITH_COLLECTIONS(5, "Get With All Collections", "Get With All Collections"),
+    DELETE_ALL(5, "Delete All", "Deleted All"),
 
-    LIST(6, "List", "Listed"),
+    GET(6, "Get", "Get"),
 
-    LIST_WITH_COLLECTIONS(7, "List With All Collections", "Listed With All Collections"),
+    GET_JSON(7, "Get JSON", "Get JSON"),
 
-    ASSIGN(8, "Assign", "Assigned"),
+    GET_MAP(8, "Get Map", "Get Map"),
 
-    UNASSIGN(9, "Unassign", "Unassigned"),
+    LIST(9, "List", "Listed"),
 
-    UNASSIGN_ALL(10, "Unassign All", "Unassigned All"),
+    ASSIGN(10, "Assign", "Assigned"),
 
-    MARK_AS(11, "Mark As", "Marked As"),
+    ASSIGN_ALL(11, "Assign All", "Assigned All"),
 
-    DELETE_ALL(12, "Delete All", "Deleted All"),
+    UNASSIGN(12, "Unassign", "Unassigned"),
 
-    GET_PARTIAL(13, "Get With Partial Properties", "Get With Partial Properties"),
+    UNASSIGN_ALL(13, "Unassign All", "Unassigned All"),
 
-    UPLOAD(14, "Upload", "Uploaded");
+    UNAUTHORIZED(14, "Unauthorized", "Unauthorized");
 
     String label;
     int id;

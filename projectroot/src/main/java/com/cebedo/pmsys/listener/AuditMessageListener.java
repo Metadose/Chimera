@@ -16,7 +16,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class AuditMessageListener implements MessageListener {
 
-    public final static String MESSAGE_DESTINATION = "system.service.post.audit";
+    public final static String MESSAGE_DESTINATION = "system.audit";
 
     private AuditLogDAO auditLogDAO;
 

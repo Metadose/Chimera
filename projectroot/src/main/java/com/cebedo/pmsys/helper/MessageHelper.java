@@ -11,10 +11,36 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class MessageHelper {
 
+    private AuthHelper authHelper = new AuthHelper();
     private BeanHelper beanHelper = new BeanHelper();
 
-    public void send(AuthenticationToken auth, AuditAction action, String objectName, long objectID) {
+    public void send(AuditAction action, String objectName, long objectID, String assocName) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName, objectID, assocName);
+	send(msg);
+    }
+
+    public void unauthorized(String objectName) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, AuditAction.UNAUTHORIZED, objectName);
+	send(msg);
+    }
+
+    public void unauthorized(String objectName, long objectID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, AuditAction.UNAUTHORIZED, objectName, objectID);
+	send(msg);
+    }
+
+    public void send(AuditAction action, String objectName, long objectID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
 	SystemMessage msg = new SystemMessage(auth, action, objectName, objectID);
+	send(msg);
+    }
+
+    public void send(AuditAction action, String objectName) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName);
 	send(msg);
     }
 

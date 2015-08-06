@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.Staff;
 
 public interface ProjectService {
 
@@ -60,8 +59,6 @@ public interface ProjectService {
     public String getCalendarJSON(Project proj);
 
     public void clearListCache();
-
-    public List<Staff> getAllStaff(Project proj);
 
     public String createStaffFromExcel(MultipartFile multipartFile, Project proj);
 

@@ -116,8 +116,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (this.authHelper.isActionAuthorized(systemUser)) {
 
 	    // Log and notify.
-	    this.messageHelper
-		    .send(auth, AuditAction.CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
+	    this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
 
 	    // Do service.
 	    // Create the user and staff.
@@ -186,8 +185,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET_PARTIAL,
-		SystemUser.OBJECT_NAME, id, obj.getUsername()));
+	// logger.warn(this.logHelper.logUnauthorized(auth,
+	// AuditAction.GET_PARTIAL,
+	// SystemUser.OBJECT_NAME, id, obj.getUsername()));
 
 	// Return empty.
 	return new SystemUser();
@@ -231,7 +231,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (this.authHelper.isActionAuthorized(user)) {
 
 	    // Log and notify.
-	    this.messageHelper.send(auth, AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	    this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
 
 	    // Do service.
 	    this.systemUserDAO.update(user);
@@ -260,7 +260,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	    if (!systemOverride) {
 		// Log and notify.
-		this.messageHelper.send(auth, AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
+		this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
 	    }
 
 	    // Do service.
@@ -290,7 +290,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (this.authHelper.isActionAuthorized(obj)) {
 
 	    // Log and notify.
-	    this.messageHelper.send(auth, AuditAction.UPDATE, SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, obj.getId());
 
 	    // Do service.
 	    this.systemUserDAO.delete(id);

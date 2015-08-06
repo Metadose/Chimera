@@ -360,8 +360,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.MARK_AS, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
+	// logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.MARK_AS,
+	// Task.OBJECT_NAME,
+	// task.getId(), task.getTitle()));
 
 	// Return fail.
 	return AlertBoxGenerator.FAILED.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
@@ -420,8 +421,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET_WITH_COLLECTIONS,
-		Task.OBJECT_NAME, id, task.getTitle()));
+	// logger.warn(this.logHelper.logUnauthorized(auth,
+	// AuditAction.GET_WITH_COLLECTIONS,
+	// Task.OBJECT_NAME, id, task.getTitle()));
 
 	// Return empty.
 	return new Task();

@@ -40,7 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    this.companyDAO.create(company);
 
 	    // Log and notifications happen here.
-	    this.messageHelper.send(auth, AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.send(AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual service and construct response.
 	    result = AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
@@ -83,7 +83,7 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Create post-service operations.
-	    this.messageHelper.send(auth, AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.send(AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual update to object.
 	    // Construct alert box response.
@@ -110,7 +110,7 @@ public class CompanyServiceImpl implements CompanyService {
 	if (auth.isSuperAdmin()) {
 
 	    // Proceed to post-service operations.
-	    this.messageHelper.send(auth, AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.send(AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
 
 	    // Do actual service.
 	    // Generate response.

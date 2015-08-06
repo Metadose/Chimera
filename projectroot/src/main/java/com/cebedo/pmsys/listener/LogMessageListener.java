@@ -13,18 +13,15 @@ import org.apache.log4j.Logger;
 
 import com.cebedo.pmsys.bean.SystemMessage;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class LogMessageListener implements MessageListener {
 
-    public final static String MESSAGE_DESTINATION = "system.service.post.log";
-    private static Logger logger = Logger.getLogger(Project.OBJECT_NAME);
-    private LogHelper logHelper = new LogHelper();
+    public final static String MESSAGE_DESTINATION = "system.log.info";
+    private static Logger logger = Logger.getLogger("sysLogger");
 
     @Override
     @Transactional

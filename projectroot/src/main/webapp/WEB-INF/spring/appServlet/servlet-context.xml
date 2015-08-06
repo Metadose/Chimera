@@ -84,8 +84,8 @@
 	      connection-factory="connectionFactory"
 	      acknowledge="transacted">
 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
-	    <jms:listener destination="system.service.post.audit" ref="auditMessageListener" method="onMessage" />
-	    <jms:listener destination="system.service.post.log" ref="logMessageListener" method="onMessage" />
+	    <jms:listener destination="system.audit" ref="auditMessageListener" method="onMessage" />
+	    <jms:listener destination="system.log.info" ref="logMessageListener" method="onMessage" />
 	    <jms:listener destination="system.mail.send" ref="mailMessageListener" method="onMessage" />
 	</jms:listener-container>
 	  
