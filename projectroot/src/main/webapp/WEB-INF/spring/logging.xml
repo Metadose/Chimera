@@ -59,4 +59,5 @@
 		    <beans:property name="defaultErrorView" value="/fix" />
 		    <beans:property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
 		</beans:bean>
+		
 </beans:beans>

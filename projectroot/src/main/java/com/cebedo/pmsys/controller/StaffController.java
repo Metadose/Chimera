@@ -206,35 +206,6 @@ public class StaffController {
     }
 
     /**
-     * Open a page to create or edit an attendance.
-     * 
-     * @return
-     */
-    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_ATTENDANCE
-	    + "/{" + RedisConstants.OBJECT_ATTENDANCE + "}/{status}" }, method = RequestMethod.GET)
-    public String editAttendance(@PathVariable(RedisConstants.OBJECT_ATTENDANCE) long timestamp,
-	    @PathVariable("status") int status, HttpSession session, Model model) {
-
-	// Get staff from session.
-	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
-
-	// Construct bean.
-	Attendance attendance = new Attendance();
-	if (timestamp == 0) {
-	    Company co = staff.getCompany();
-	    attendance = new Attendance(co, staff);
-	} else {
-	    // TODO Make function for this in service.
-	    attendance = this.attendanceService.get(staff, AttendanceStatus.of(status), new Date(
-		    timestamp));
-	}
-
-	// Attach bean to model.
-	model.addAttribute(ATTR_ATTENDANCE, attendance);
-	return RedisConstants.JSP_ATTENDANCE_EDIT;
-    }
-
-    /**
      * Delete coming from the staff list page.
      * 
      * @param id

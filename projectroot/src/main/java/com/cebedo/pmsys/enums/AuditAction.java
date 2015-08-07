@@ -14,43 +14,45 @@ public enum AuditAction {
 
     UPDATE(6, "Update"),
 
-    DELETE(7, "Delete"),
+    MERGE(7, "Merge"),
 
-    DELETE_COLLECTION(8, "Delete Collection"),
+    DELETE(8, "Delete"),
 
-    DELETE_ALL(9, "Delete All"),
+    DELETE_COLLECTION(9, "Delete Collection"),
 
-    GET(10, "Get"),
+    DELETE_ALL(10, "Delete All"),
 
-    GET_MULTI(11, "Multi-Get"),
+    GET(11, "Get"),
 
-    GET_JSON(12, "Get JSON"),
+    GET_MULTI(12, "Multi-Get"),
 
-    GET_MAP(13, "Get Map"),
+    GET_JSON(13, "Get JSON"),
 
-    LIST(14, "List"),
+    GET_MAP(14, "Get Map"),
 
-    RANGE(15, "Range"),
+    LIST(15, "List"),
 
-    ASSIGN(16, "Assign"),
+    RANGE(16, "Range"),
 
-    ASSIGN_MASS(17, "Assign Mass"),
+    ASSIGN(17, "Assign"),
 
-    ASSIGN_ALL(18, "Assign All"),
+    ASSIGN_MASS(18, "Assign Mass"),
 
-    UNASSIGN(19, "Unassign"),
+    ASSIGN_ALL(19, "Assign All"),
 
-    UNASSIGN_ALL(20, "Unassign All"),
+    UNASSIGN(20, "Unassign"),
 
-    ESTIMATE(21, "Estimate"),
+    UNASSIGN_ALL(21, "Unassign All"),
 
-    COMPUTE(22, "Compute"),
+    ESTIMATE(22, "Estimate"),
 
-    CONVERT_FILE(23, "Convert File"),
+    COMPUTE(23, "Compute"),
 
-    RENAME(24, "Rename"),
+    CONVERT_FILE(24, "Convert File"),
 
-    UNAUTHORIZED(25, "Unauthorized");
+    RENAME(25, "Rename"),
+
+    UNAUTHORIZED(26, "Unauthorized");
 
     String label;
     int id;

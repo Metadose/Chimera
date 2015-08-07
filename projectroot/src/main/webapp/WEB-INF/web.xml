@@ -99,7 +99,7 @@
 	
 	<error-page>
 		<error-code>404</error-code>
-		<location>/fix/404</location>
+		<location>/fix</location>
 	</error-page>
 	
 	<error-page>
