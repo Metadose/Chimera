@@ -1,8 +1,7 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,7 +13,9 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
@@ -27,6 +28,8 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 public class MaterialServiceImpl implements MaterialService {
 
     private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
+
     private MaterialValueRepo materialValueRepo;
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxService projectAuxService;
@@ -50,23 +53,16 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public void rename(Material obj, String newKey) {
-	this.materialValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, Material> m) {
-	this.materialValueRepo.multiSet(m);
-    }
-
-    @Override
-    @Transactional
     public String create(Material obj) {
 
 	// If company is null.
 	if (obj.getCompany() == null) {
 	    obj.setCompany(this.authHelper.getAuth().getCompany());
+	}
+
+	else if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    return AlertBoxGenerator.ERROR;
 	}
 
 	// If we're creating.
@@ -100,48 +96,49 @@ public class MaterialServiceImpl implements MaterialService {
 	    projectAux.setGrandTotalDelivery(projectTotalDelivery);
 	    this.projectAuxService.set(projectAux);
 
+	    // Log.
+	    this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+
 	    // Return.
 	    return AlertBoxGenerator.SUCCESS.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
 	}
 
 	// This service used only for adding.
 	// Not updating.
-	return AlertBoxGenerator.FAILED.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
-    }
-
-    @Override
-    @Transactional
-    public void delete(Collection<String> keys) {
-	this.materialValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(Material obj) {
-	this.materialValueRepo.setIfAbsent(obj);
+	return AlertBoxGenerator.ERROR;
     }
 
     @Override
     @Transactional
     public Material get(String key) {
-	return this.materialValueRepo.get(key);
-    }
 
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.materialValueRepo.keys(pattern);
-    }
+	Material obj = this.materialValueRepo.get(key);
 
-    @Override
-    @Transactional
-    public Collection<Material> multiGet(Collection<String> keys) {
-	return this.materialValueRepo.multiGet(keys);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    return new Material();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+
+	return obj;
     }
 
     @Override
     @Transactional
     public List<Material> list(Delivery delivery) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(delivery)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	    return new ArrayList<Material>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, RedisConstants.OBJECT_DELIVERY, delivery.getKey(),
+		RedisConstants.OBJECT_MATERIAL);
+
 	String pattern = Material.constructPattern(delivery);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
 	return this.materialValueRepo.multiGet(keys);
@@ -156,6 +153,15 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Get the material.
 	Material material = this.materialValueRepo.get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(material)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, material.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_MATERIAL, material.getKey());
 
 	// Get the updated version of the objects.
 	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery().getKey());
@@ -194,6 +200,17 @@ public class MaterialServiceImpl implements MaterialService {
     @Transactional
     @Override
     public List<Material> list(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<Material>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+		RedisConstants.OBJECT_MATERIAL);
+
 	String pattern = Material.constructPattern(proj);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
 	return this.materialValueRepo.multiGet(keys);
@@ -202,6 +219,16 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public String update(Material material) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(material)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, material.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_MATERIAL, material.getKey());
+
 	// Set the material.
 	this.materialValueRepo.set(material);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_MATERIAL,

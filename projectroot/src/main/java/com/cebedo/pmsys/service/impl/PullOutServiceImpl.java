@@ -1,8 +1,7 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +12,9 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
@@ -22,6 +24,9 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class PullOutServiceImpl implements PullOutService {
+
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
 
     private PullOutValueRepo pullOutValueRepo;
     private StaffDAO staffDAO;
@@ -41,19 +46,13 @@ public class PullOutServiceImpl implements PullOutService {
 
     @Override
     @Transactional
-    public void rename(PullOut obj, String newKey) {
-	this.pullOutValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, PullOut> m) {
-	this.pullOutValueRepo.multiSet(m);
-    }
-
-    @Override
-    @Transactional
     public String create(PullOut obj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
 
 	Material material = obj.getMaterial();
 
@@ -92,38 +91,28 @@ public class PullOutServiceImpl implements PullOutService {
 	this.pullOutValueRepo.set(obj);
 	this.materialValueRepo.set(material);
 
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+
 	// Return.
 	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), "TODO", material.getName());
     }
 
     @Override
     @Transactional
-    public void delete(Collection<String> keys) {
-	this.pullOutValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(PullOut obj) {
-	this.pullOutValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
     public PullOut get(String key) {
-	return this.pullOutValueRepo.get(key);
-    }
 
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.pullOutValueRepo.keys(pattern);
-    }
+	PullOut obj = this.pullOutValueRepo.get(key);
 
-    @Override
-    @Transactional
-    public Collection<PullOut> multiGet(Collection<String> keys) {
-	return this.pullOutValueRepo.multiGet(keys);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    return new PullOut();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+
+	return obj;
     }
 
     @Transactional
@@ -131,6 +120,14 @@ public class PullOutServiceImpl implements PullOutService {
     public String delete(String key) {
 
 	PullOut obj = this.pullOutValueRepo.get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
 
 	// Do delete.
 	doDelete(key, obj);
@@ -168,6 +165,15 @@ public class PullOutServiceImpl implements PullOutService {
     @Override
     @Transactional
     public List<PullOut> list(Project proj) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<PullOut>();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+		RedisConstants.OBJECT_PULL_OUT);
+
 	String pattern = PullOut.constructPattern(proj);
 	Set<String> keys = this.pullOutValueRepo.keys(pattern);
 	return this.pullOutValueRepo.multiGet(keys);
@@ -177,6 +183,14 @@ public class PullOutServiceImpl implements PullOutService {
     @Transactional
     public String update(PullOut newPullout) {
 	PullOut oldPullOut = this.pullOutValueRepo.get(newPullout.getKey());
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(oldPullOut)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
 
 	// If the quantity has been changed.
 	// Just delete then commit new one.

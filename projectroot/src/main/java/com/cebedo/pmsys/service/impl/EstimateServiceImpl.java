@@ -22,10 +22,10 @@ import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
+import com.cebedo.pmsys.bean.ShapeBean;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationOutput;
-import com.cebedo.pmsys.domain.Shape;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -166,7 +166,7 @@ public class EstimateServiceImpl implements EstimateService {
 		// Every row, is an Estimate object.
 		// TODO Add Project object.
 		Estimate estimate = new Estimate(proj);
-		Shape shape = new Shape();
+		ShapeBean shapeBean = new ShapeBean();
 		List<EstimateType> estimateTypes = estimate.getEstimateTypes();
 
 		while (cellIterator.hasNext()) {
@@ -186,17 +186,17 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_COLUMN_DETAILS_AREA:
 			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			shape.setArea(area);
-			shape.setOriginalArea(area);
-			estimate.setShape(shape);
+			shapeBean.setArea(area);
+			shapeBean.setOriginalArea(area);
+			estimate.setShape(shapeBean);
 			continue;
 
 		    case EXCEL_COLUMN_DETAILS_VOLUME:
 			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			shape.setVolume(volume);
-			shape.setOriginalVolume(volume);
-			estimate.setShape(shape);
+			shapeBean.setVolume(volume);
+			shapeBean.setOriginalVolume(volume);
+			estimate.setShape(shapeBean);
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_CONCRETE:
@@ -249,8 +249,8 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH:
 			double footingLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
-			shape.setFootingLength(footingLength);
-			estimate.setShape(shape);
+			shapeBean.setFootingLength(footingLength);
+			estimate.setShape(shapeBean);
 			continue;
 
 		    case EXCEL_COLUMN_ESTIMATE_MR_CHB:
@@ -287,31 +287,31 @@ public class EstimateServiceImpl implements EstimateService {
 	// TODO What if area is negative?
 
 	// Shape to compute.
-	Shape shape = estimate.getShape();
+	ShapeBean shapeBean = estimate.getShape();
 
 	// Prepare area and volume.
 	// Set allowances.
 	double allowance = estimate.getEstimationAllowance().getAllowance();
 	if (allowance != 0.0) {
-	    double area = shape.getArea();
-	    double volume = shape.getVolume();
-	    shape.setArea(area + (area * allowance));
-	    shape.setVolume(volume + (volume * allowance));
+	    double area = shapeBean.getArea();
+	    double volume = shapeBean.getVolume();
+	    shapeBean.setArea(area + (area * allowance));
+	    shapeBean.setVolume(volume + (volume * allowance));
 	}
 
 	// If we're estimating masonry CHB.
 	if (estimate.willComputeMasonryCHB()) {
-	    estimateCHBTotal(estimate, shape);
+	    estimateCHBTotal(estimate, shapeBean);
 	}
 
 	// If we're estimating masonry block laying.
 	if (estimate.willComputeMasonryBlockLaying()) {
-	    estimateCHBLaying(estimate, shape);
+	    estimateCHBLaying(estimate, shapeBean);
 	}
 
 	// If we're estimating masonry plastering.
 	if (estimate.willComputeMasonryPlastering()) {
-	    estimateMasonryPlastering(estimate, shape);
+	    estimateMasonryPlastering(estimate, shapeBean);
 	}
 
 	// If we're estimating masonry CHB footing.
@@ -321,7 +321,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If computing concrete.
 	if (estimate.willComputeConcrete()) {
-	    estimateConcrete(estimate, shape);
+	    estimateConcrete(estimate, shapeBean);
 	}
 
 	estimate.setUuid(UUID.randomUUID());
@@ -417,16 +417,16 @@ public class EstimateServiceImpl implements EstimateService {
      * Add the area of the top side.
      * 
      * @param estimate
-     * @param shape
+     * @param shapeBean
      * @param shapeArea
      * @param length
      * @param area
      */
-    private double addAreaTopSide(Estimate estimate, Shape shape, double shapeArea, double length,
+    private double addAreaTopSide(Estimate estimate, ShapeBean shapeBean, double shapeArea, double length,
 	    double area) {
 
 	// Get the thickness.
-	double thickness = shape.getVolume() / shapeArea;
+	double thickness = shapeBean.getVolume() / shapeArea;
 
 	// Get the area and add to overall area.
 	double topSideArea = length * thickness;
@@ -439,18 +439,18 @@ public class EstimateServiceImpl implements EstimateService {
      * Estimate amount of plastering.
      * 
      * @param estimate
-     * @param shape
+     * @param shapeBean
      * @param proportions
      */
-    private void estimateMasonryPlastering(Estimate estimate, Shape shape) {
+    private void estimateMasonryPlastering(Estimate estimate, ShapeBean shapeBean) {
 
 	// Get the length "longest side of the shape".
-	double length = shape.getFootingLength();
+	double length = shapeBean.getFootingLength();
 
 	// Consider the height below ground.
 	// Get the height of foundation (height of wall below the
 	// ground) and don't include that to the area to be plastered.
-	double shapeArea = shape.getArea();
+	double shapeArea = shapeBean.getArea();
 	double area = minusAreaBelowGround(estimate, length, shapeArea);
 
 	// If we're plastering back to back,
@@ -460,7 +460,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If we're plastering the top side,
 	// get the thickness area then plaster it.
-	area = addAreaTopSide(estimate, shape, shapeArea, length, area);
+	area = addAreaTopSide(estimate, shapeBean, shapeArea, length, area);
 
 	double volume = area * TablePlasterMixture.STANDARD_PLASTER_THICKNESS;
 
@@ -495,10 +495,10 @@ public class EstimateServiceImpl implements EstimateService {
      * Estimate the block laying.
      * 
      * @param estimate
-     * @param shape
+     * @param shapeBean
      * @param chbList
      */
-    private void estimateCHBLaying(Estimate estimate, Shape shape) {
+    private void estimateCHBLaying(Estimate estimate, ShapeBean shapeBean) {
 
 	// Prepare needed arguments.
 	TableCHBDimensions chb = estimate.getChbDimensions();
@@ -506,7 +506,7 @@ public class EstimateServiceImpl implements EstimateService {
 	TableCHBLayingMixture chbLayingMix = getCHBLayingMixture(chb, proportion);
 
 	// Get the inputs.
-	double area = shape.getArea();
+	double area = shapeBean.getArea();
 	double bags = chbLayingMix.getPartCement40kgBag(); // 40kg bags.
 	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
@@ -551,13 +551,13 @@ public class EstimateServiceImpl implements EstimateService {
      * Estimate the number of components needed for this concrete.
      * 
      * @param estimate
-     * @param shape
+     * @param shapeBean
      */
-    private void estimateConcrete(Estimate estimate, Shape shape) {
+    private void estimateConcrete(Estimate estimate, ShapeBean shapeBean) {
 
 	// Now, compute the estimated concrete.
 	ConcreteEstimateResults concreteResults = getConcreteEstimateResults(estimate
-		.getEstimationClass().getConcreteProportion(), shape);
+		.getEstimationClass().getConcreteProportion(), shapeBean);
 
 	// Set the results.
 	estimate.setResultConcreteEstimate(concreteResults);
@@ -569,13 +569,13 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimate
      * 
      * @param estimate
-     * @param shape
+     * @param shapeBean
      * @param chb
      * @return
      */
-    private void estimateCHBTotal(Estimate estimate, Shape shape) {
+    private void estimateCHBTotal(Estimate estimate, ShapeBean shapeBean) {
 
-	double area = shape.getArea();
+	double area = shapeBean.getArea();
 
 	// Get total CHBs.
 	double totalCHB = area * TableCHBDimensions.STANDARD_CHB_PER_SQ_M;
@@ -596,9 +596,9 @@ public class EstimateServiceImpl implements EstimateService {
      * @return
      */
     private ConcreteEstimateResults getConcreteEstimateResults(
-	    TableConcreteProportion tableConcreteProportion, Shape shape) {
+	    TableConcreteProportion tableConcreteProportion, ShapeBean shapeBean) {
 
-	double volume = shape.getVolume();
+	double volume = shapeBean.getVolume();
 
 	// Get the ingredients.
 	// Now, compute the estimated concrete.

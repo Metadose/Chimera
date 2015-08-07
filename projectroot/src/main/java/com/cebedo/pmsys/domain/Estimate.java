@@ -13,6 +13,7 @@ import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
 import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
+import com.cebedo.pmsys.bean.ShapeBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -44,7 +45,7 @@ public class Estimate implements IDomainObject {
     /**
      * Computational specs.
      */
-    private Shape shape;
+    private ShapeBean shapeBean;
 
     /**
      * Bean-backed form.
@@ -159,12 +160,12 @@ public class Estimate implements IDomainObject {
 	this.remarks = remarks;
     }
 
-    public Shape getShape() {
-	return shape;
+    public ShapeBean getShape() {
+	return shapeBean;
     }
 
-    public void setShape(Shape shape) {
-	this.shape = shape;
+    public void setShape(ShapeBean shapeBean) {
+	this.shapeBean = shapeBean;
     }
 
     public Map<String, Object> getExtMap() {

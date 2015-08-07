@@ -7,6 +7,11 @@ import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimationOutput;
+import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
+import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
@@ -173,6 +178,66 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(MasonryCHBEstimationSummary obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Material obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(ProjectAux obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(ProjectPayroll obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(PullOut obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean hasAccess(Company company) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (company.getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

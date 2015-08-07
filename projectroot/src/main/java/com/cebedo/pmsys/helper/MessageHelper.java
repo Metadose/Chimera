@@ -72,4 +72,16 @@ public class MessageHelper {
 	SystemMessage msg = new SystemMessage(auth, action, objectName, objectID, assocName, key);
 	send(msg);
     }
+
+    public void send(AuditAction action, String objectName, String objectKey, String assocName) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName, objectKey, assocName);
+	send(msg);
+    }
+
+    public void send(AuditAction action, String objectName, long id, String assocName, long assocID) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName, id, assocName, assocID);
+	send(msg);
+    }
 }

@@ -70,8 +70,6 @@ public interface StaffService {
 
     public List<Staff> listUnassignedInProject(Long companyID, Project project);
 
-    public String getNameByID(long staffID);
-
     /**
      * Create a staff from a specific origin.
      * 
@@ -82,7 +80,7 @@ public interface StaffService {
      */
     public String createFromOrigin(Staff staff, String origin, String originID);
 
-    public String getCalendarJSON(Staff staff, Set<Attendance> attendanceList);
+    public String getCalendarJSON(Set<Attendance> attendanceList);
 
     public String getGanttJSON(Staff staff);
 
@@ -110,8 +108,6 @@ public interface StaffService {
 
     public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID, ProjectPayroll projectPayroll);
 
-    public List<Staff> listWithUsers(Long companyID);
-
     /**
      * List staff with users, and filter by given set.
      * 
@@ -119,7 +115,6 @@ public interface StaffService {
      * @param managers
      * @return
      */
-    public List<Staff> listWithUsersAndFilter(Long companyID, Set<Staff> filterList);
 
     public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company);
 

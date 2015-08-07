@@ -71,6 +71,15 @@ CostEstimationServiceImpl-done
 DeliveryServiceImpl-done
 EstimateServiceImpl-done
 EstimationOutputServiceImpl-done
+FieldServiceImpl-done
+MasonryCHBEstimationSummaryServiceImpl-done
+MaterialServiceImpl-done
+ProjectAuxServiceImpl-done
+ProjectPayrollComputerServiceImpl-done
+ProjectPayrollServiceImpl-done
+PullOutServiceImpl-done
+StaffServiceImpl-done
+
 
 
 Log:
@@ -83,13 +92,14 @@ project-done
 // DeliveryServiceImpl-done
 // EstimateServiceImpl-done
 // EstimationOutputServiceImpl-done
-
-
-
-
-
-
-
+// FieldServiceImpl-done
+// MasonryCHBEstimationSummaryServiceImpl-done
+// MaterialServiceImpl-done
+// ProjectAuxServiceImpl-done
+// ProjectPayrollComputerServiceImpl-done
+// ProjectPayrollServiceImpl-done
+// PullOutServiceImpl-done
+// StaffServiceImpl-done
 
 
 

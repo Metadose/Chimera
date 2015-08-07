@@ -34,17 +34,23 @@ public enum AuditAction {
 
     ASSIGN(16, "Assign"),
 
-    ASSIGN_ALL(17, "Assign All"),
+    ASSIGN_MASS(17, "Assign Mass"),
 
-    UNASSIGN(18, "Unassign"),
+    ASSIGN_ALL(18, "Assign All"),
 
-    UNASSIGN_ALL(19, "Unassign All"),
+    UNASSIGN(19, "Unassign"),
 
-    ESTIMATE(20, "Estimate"),
+    UNASSIGN_ALL(20, "Unassign All"),
 
-    RENAME(21, "Rename"),
+    ESTIMATE(21, "Estimate"),
 
-    UNAUTHORIZED(22, "Unauthorized");
+    COMPUTE(22, "Compute"),
+
+    CONVERT_FILE(23, "Convert File"),
+
+    RENAME(24, "Rename"),
+
+    UNAUTHORIZED(25, "Unauthorized");
 
     String label;
     int id;

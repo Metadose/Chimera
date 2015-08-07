@@ -165,7 +165,7 @@ public class ProjectController {
 
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
-    public static final String JSP_EDIT_FIELD = Field.OBJECT_NAME + "/assignedFieldEdit";
+    public static final String JSP_EDIT_FIELD = Project.OBJECT_NAME + "/assignedFieldEdit";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -1183,7 +1183,7 @@ public class ProjectController {
 	}
 
 	// Do service.
-	String response = this.projectPayrollService.createPayroll(session, proj, projectPayroll);
+	String response = this.projectPayrollService.createPayroll(proj, projectPayroll);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
@@ -1214,7 +1214,7 @@ public class ProjectController {
 	}
 
 	// Update the payroll then clear the computation.
-	String response = this.projectPayrollService.createPayrollClearComputation(session,
+	String response = this.projectPayrollService.updatePayrollClearComputation(session,
 		projectPayroll, toClear);
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
@@ -1244,8 +1244,8 @@ public class ProjectController {
 
 	// Get payroll maps.
 	// And assign to model.
-	String payrollJSON = this.projectPayrollService.setAndGetResultJSON(proj, startDate, endDate,
-		projectPayroll);
+	String payrollJSON = this.projectPayrollService.computeAndGetResultJSON(proj, startDate,
+		endDate, projectPayroll);
 
 	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
 

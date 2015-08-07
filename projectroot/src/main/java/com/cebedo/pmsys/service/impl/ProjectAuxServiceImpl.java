@@ -1,14 +1,14 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectAuxService;
@@ -16,6 +16,8 @@ import com.cebedo.pmsys.service.ProjectAuxService;
 @Service
 public class ProjectAuxServiceImpl implements ProjectAuxService {
 
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
     private ProjectAuxValueRepo projectAuxValueRepo;
 
     public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
@@ -24,56 +26,31 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 
     @Override
     @Transactional
-    public void rename(ProjectAux obj, String newKey) {
-	this.projectAuxValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, ProjectAux> m) {
-	this.projectAuxValueRepo.multiSet(m);
-    }
-
-    @Override
-    @Transactional
     public void set(ProjectAux obj) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	    return;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
 	this.projectAuxValueRepo.set(obj);
     }
 
     @Override
     @Transactional
-    public void delete(Collection<String> keys) {
-	this.projectAuxValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(ProjectAux obj) {
-	this.projectAuxValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
     public ProjectAux get(String key) {
-	return this.projectAuxValueRepo.get(key);
-    }
+	ProjectAux obj = this.projectAuxValueRepo.get(key);
 
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.projectAuxValueRepo.keys(pattern);
-    }
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	    return new ProjectAux();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
 
-    @Override
-    @Transactional
-    public Collection<ProjectAux> multiGet(Collection<String> keys) {
-	return this.projectAuxValueRepo.multiGet(keys);
-    }
-
-    @Override
-    @Transactional
-    public void delete(String key) {
-	this.projectAuxValueRepo.delete(key);
+	return obj;
     }
 
     @Override

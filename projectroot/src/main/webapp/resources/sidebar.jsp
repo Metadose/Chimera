@@ -76,20 +76,7 @@ $(document).ready(function() {
                     <i class="fa fa-male"></i> <span>User Accounts</span>
                 </a>
             </li>
-            <li>
-            	<c:url var="urlList" value="/shape/list/"/>
-                <a href="${urlList}">
-                    <i class="fa fa-cube"></i> <span>Shapes</span>
-                </a>
-            </li>
-            
             <c:if test="${authUser.superAdmin == true}">
-            <li>
-            	<c:url var="urlFieldList" value="/field/list/"/>
-                <a href="${urlFieldList}">
-                    <i class="fa fa-list"></i> <span>Fields</span>
-                </a>
-            </li>
             </c:if>
 <%--             <c:if test="${authUser.superAdmin == true}"> --%>
 HIDE TODO

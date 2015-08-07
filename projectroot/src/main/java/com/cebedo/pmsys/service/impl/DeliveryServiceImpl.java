@@ -64,9 +64,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
-
 	// If we're creating.
 	boolean isCreate = false;
 	if (obj.getUuid() == null) {
@@ -77,6 +74,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Do the action.
 	// Return success.
 	this.deliveryValueRepo.set(obj);
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
+
 	if (isCreate) {
 	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_DELIVERY,
 		    obj.getName());

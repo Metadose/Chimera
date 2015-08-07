@@ -61,7 +61,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     @Override
     @Transactional
     public List<SystemConfiguration> list() {
-	AuthenticationToken token = this.authHelper.getAuth();
+	AuthenticationToken token = this.auth Helper.getAuth();
 	if (token.isSuperAdmin()) {
 	    return this.systemConfigurationDAO.list(null);
 	}

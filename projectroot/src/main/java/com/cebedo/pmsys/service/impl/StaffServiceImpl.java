@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.CalendarEventBean;
 import com.cebedo.pmsys.bean.GanttBean;
-import com.cebedo.pmsys.dao.CompanyDAO;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
@@ -32,7 +31,6 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
-import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
@@ -52,8 +50,6 @@ public class StaffServiceImpl implements StaffService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
-    private LogHelper logHelper = new LogHelper();
-    private static Logger logger = Logger.getLogger(Staff.OBJECT_NAME);
     private ExcelHelper excelHelper = new ExcelHelper();
 
     public static final String STAFF_ATTENDANCE_STATUS_COUNT = "statusCount";
@@ -72,11 +68,6 @@ public class StaffServiceImpl implements StaffService {
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
     private SystemUserDAO systemUserDAO;
-    private CompanyDAO companyDAO;
-
-    public void setCompanyDAO(CompanyDAO companyDAO) {
-	this.companyDAO = companyDAO;
-    }
 
     public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
 	this.systemUserDAO = systemUserDAO;
@@ -93,6 +84,16 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company) {
+
+	// Security check.
+	if (!this.authHelper.hasAccess(company)) {
+	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    return new ArrayList<Staff>();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.CONVERT_FILE, Company.OBJECT_NAME, company.getId(),
+		MultipartFile.class.getName(), multipartFile.getOriginalFilename());
+
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -200,8 +201,17 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> createOrGetStaffInList(List<Staff> staffList) {
+
+	Company company = null;
 	List<Staff> refinedStaff = new ArrayList<Staff>();
 	for (Staff staff : staffList) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(staff)) {
+		this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+		return new ArrayList<Staff>();
+	    }
+	    company = company == null ? staff.getCompany() : company;
 
 	    // Search by name.
 	    // If the staff already exists.
@@ -214,6 +224,11 @@ public class StaffServiceImpl implements StaffService {
 	    create(staff);
 	    refinedStaff.add(staff);
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Company.OBJECT_NAME, company.getId(),
+		Staff.OBJECT_NAME);
+
 	return refinedStaff;
     }
 
@@ -245,23 +260,18 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public Staff getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Staff stf = this.staffDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(stf)) {
-	    // Log info.
-	    logger.info(this.logHelper.logGetObject(auth, Staff.OBJECT_NAME, id, stf.getFullName()));
-
-	    // Return obj.
-	    return stf;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(stf)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, stf.getId());
+	    return new Staff();
 	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, stf.getId());
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, Staff.OBJECT_NAME,
-		stf.getId(), stf.getFullName()));
-
-	// Return empty.
-	return new Staff();
+	// Return obj.
+	return stf;
     }
 
     /**
@@ -270,26 +280,19 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public String update(Staff staff) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-
-	if (this.authHelper.isActionAuthorized(staff)) {
-
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.UPDATE, Staff.OBJECT_NAME, staff.getId());
-
-	    // Do service.
-	    this.staffDAO.update(staff);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(Staff.OBJECT_NAME, staff.getFullName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, Staff.OBJECT_NAME, staff.getId());
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Staff.OBJECT_NAME,
-		staff.getId(), staff.getFullName()));
+	// Do service.
+	this.staffDAO.update(staff);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(Staff.OBJECT_NAME, staff.getFullName());
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -298,24 +301,20 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public String delete(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Staff stf = this.staffDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(stf)) {
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.DELETE, Staff.OBJECT_NAME, stf.getId());
-	    this.staffDAO.delete(id);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateDelete(Staff.OBJECT_NAME, stf.getFullName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(stf)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, stf.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, Staff.OBJECT_NAME, stf.getId());
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, Staff.OBJECT_NAME,
-		stf.getId(), stf.getFullName()));
+	this.staffDAO.delete(id);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateDelete(Staff.OBJECT_NAME, stf.getFullName());
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateDelete(Staff.OBJECT_NAME, stf.getFullName());
     }
 
     /**
@@ -324,18 +323,18 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> list() {
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
-	    // Log info.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token, Staff.OBJECT_NAME));
-
 	    // Return list.
 	    return this.staffDAO.list(null);
 	}
 
 	// Log info.
 	Company co = token.getCompany();
-	logger.info(this.logHelper.logListFromCompany(token, Staff.OBJECT_NAME, co));
 
 	// Return non-super list.
 	return this.staffDAO.list(co.getId());
@@ -347,18 +346,18 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> listWithAllCollections() {
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
-	    // Log info.
-	    logger.info(this.logHelper.logListWithCollectionsAsSuperAdmin(token, Staff.OBJECT_NAME));
-
 	    // Return list.
 	    return this.staffDAO.listWithAllCollections(null);
 	}
 
 	// Log info.
 	Company co = token.getCompany();
-	logger.info(this.logHelper.logListWithCollectionsFromCompany(token, Staff.OBJECT_NAME, co));
 
 	// Return list.
 	return this.staffDAO.listWithAllCollections(co.getId());
@@ -370,26 +369,18 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public Staff getWithAllCollectionsByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Staff stf = this.staffDAO.getWithAllCollectionsByID(id);
 
-	if (this.authHelper.isActionAuthorized(stf)) {
-
-	    // Log info.
-	    logger.info(this.logHelper.logGetObjectWithAllCollections(auth, Staff.OBJECT_NAME, id,
-		    stf.getFullName()));
-
-	    // Return obj.
-	    return stf;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(stf)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, stf.getId());
+	    return new Staff();
 	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, stf.getId());
 
-	// Log warn.
-	// logger.warn(this.logHelper.logUnauthorized(auth,
-	// AuditAction.GET_WITH_COLLECTIONS,
-	// Staff.OBJECT_NAME, id, stf.getFullName()));
-
-	// Return empty.
-	return new Staff();
+	// Return obj.
+	return stf;
     }
 
     /**
@@ -398,18 +389,15 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> list(Long companyID) {
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+
 	AuthenticationToken auth = this.authHelper.getAuth();
 	if (auth.isSuperAdmin()) {
-	    // Log info.
-	    logger.info(this.logHelper.logListAsSuperAdmin(auth, Staff.OBJECT_NAME));
-
 	    // Return list.
 	    return this.staffDAO.list(null);
 	}
-
-	// Log info.
-	Company co = this.companyDAO.getByID(companyID);
-	logger.info(this.logHelper.logListFromCompany(auth, Staff.OBJECT_NAME, co));
 
 	// Return list.
 	return this.staffDAO.list(companyID);
@@ -421,36 +409,28 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public List<Staff> listUnassignedInProject(Long companyID, Project project) {
-	if (this.authHelper.isActionAuthorized(project)) {
-
-	    // Complete list.
-	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
-	    List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(companyStaffList);
-
-	    // Staff assigned as staff.
-	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project.getAssignedStaff());
-
-	    // Remove assigned managers.
-	    // Remove assigned staff.
-	    wrappedStaffList.removeAll(assignedStaffList);
-
-	    // Return as unwrapped.
-	    return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return new ArrayList<Staff>();
 	}
-	return new ArrayList<Staff>();
-    }
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, project.getId(),
+		Staff.OBJECT_NAME);
 
-    /**
-     * Get name given an id.
-     */
-    @Override
-    @Transactional
-    public String getNameByID(long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Staff staff = this.staffDAO.getByID(staffID);
-	logger.info(this.logHelper.logGetProperty(auth, Staff.OBJECT_NAME,
-		Staff.PROPERTY_TRANSIENT_FULL_NAME, staff.getId(), staff.getFullName()));
-	return this.staffDAO.getNameByID(staffID);
+	// Complete list.
+	List<Staff> companyStaffList = this.staffDAO.list(companyID);
+	List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(companyStaffList);
+
+	// Staff assigned as staff.
+	List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project.getAssignedStaff());
+
+	// Remove assigned managers.
+	// Remove assigned staff.
+	wrappedStaffList.removeAll(assignedStaffList);
+
+	// Return as unwrapped.
+	return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
     }
 
     /**
@@ -459,6 +439,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public String createFromOrigin(Staff staff, String origin, String originID) {
+
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// If coming from the system user page.
@@ -468,74 +449,56 @@ public class StaffServiceImpl implements StaffService {
 	    if (user == null) {
 
 		// Get the company from the executor.
+		// Do service.
+		// Return success.
 		staff.setCompany(auth.getCompany());
+		this.staffDAO.create(staff);
 
-		if (this.authHelper.isActionAuthorized(staff)) {
+		// Log.
+		this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
-		    // Log and notify.
-		    this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+		return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
 
-		    // Do service.
-		    this.staffDAO.create(staff);
-
-		    // Return success.
-		    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME,
-			    staff.getFullName());
-		}
-	    } else {
-		// Get the company from the user.
-		staff.setCompany(user.getCompany());
-
-		if (this.authHelper.isActionAuthorized(staff)) {
-
-		    // Log and notify.
-		    this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
-
-		    // Do service.
-		    // Update the staff.
-		    this.staffDAO.create(staff);
-
-		    // If coming from the system user,
-		    // attach relationship with user.
-		    user.setStaff(staff);
-		    this.systemUserDAO.update(user);
-
-		    // Return success.
-		    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME,
-			    staff.getFullName());
-		}
 	    }
 
-	    // Log warn.
-	    logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Staff.OBJECT_NAME,
-		    staff.getId(), staff.getFullName()));
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(user)) {
+		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
+		return AlertBoxGenerator.ERROR;
+	    }
 
-	    // Return fail.
-	    return AlertBoxGenerator.FAILED.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
+	    // Get the company from the user.
+	    staff.setCompany(user.getCompany());
+
+	    // Do service.
+	    // Update the staff.
+	    this.staffDAO.create(staff);
+
+	    // If coming from the system user,
+	    // attach relationship with user.
+	    user.setStaff(staff);
+	    this.systemUserDAO.update(user);
+
+	    // Log.
+	    this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+
+	    // Return success.
+	    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
 	}
 
 	// Create the staff first since to attach it's relationship
 	// with the company.
 	Company authCompany = auth.getCompany();
 	staff.setCompany(authCompany);
-	if (this.authHelper.isActionAuthorized(staff)) {
 
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+	// Do service.
+	this.staffDAO.create(staff);
 
-	    // Do service.
-	    this.staffDAO.create(staff);
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
 
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Staff.OBJECT_NAME,
-		staff.getId(), staff.getFullName()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -547,11 +510,20 @@ public class StaffServiceImpl implements StaffService {
      */
     @Transactional
     @Override
-    public String getCalendarJSON(Staff staff, Set<Attendance> attendanceList) {
+    public String getCalendarJSON(Set<Attendance> attendanceList) {
 	// Get calendar events.
 	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
 
+	Staff staff = null;
 	for (Attendance attendance : attendanceList) {
+
+	    staff = staff == null ? attendance.getStaff() : staff;
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(attendance)) {
+		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+		return AlertBoxGenerator.ERROR;
+	    }
 
 	    Date myDate = attendance.getDate();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
@@ -572,6 +544,10 @@ public class StaffServiceImpl implements StaffService {
 	    calendarEvents.add(event);
 	}
 
+	// Log.
+	this.messageHelper.send(AuditAction.GET_JSON, Staff.OBJECT_NAME, staff.getId(),
+		CalendarEventBean.class.getName());
+
 	return new Gson().toJson(calendarEvents, ArrayList.class);
     }
 
@@ -584,6 +560,16 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public String getGanttJSON(Staff staff) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET_JSON, Staff.OBJECT_NAME, staff.getId(),
+		GanttBean.class.getName());
+
 	// Get gantt-data.
 	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
 
@@ -662,6 +648,16 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Staff staff) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return new HashMap<TaskStatus, Integer>();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.GET_MAP, Staff.OBJECT_NAME, staff.getId(),
+		TaskStatus.class.getName());
+
 	// Get summary of tasks.
 	// For each task status, count how many.
 	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
@@ -698,11 +694,21 @@ public class StaffServiceImpl implements StaffService {
     public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
 	    Set<Attendance> attendanceList) {
 
+	// Log.
+	this.messageHelper.send(AuditAction.GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator().next()
+		.getStaff().getId(), AttendanceStatus.class.getName());
+
 	// And count number per status.
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusSorted = new LinkedHashMap<AttendanceStatus, Map<String, Double>>();
 
 	for (Attendance attendance : attendanceList) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(attendance)) {
+		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+		return new HashMap<AttendanceStatus, Map<String, Double>>();
+	    }
 
 	    AttendanceStatus attnStat = attendance.getStatus();
 
@@ -742,8 +748,12 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public List<Staff> listExcept(Long coID, Set<Staff> doNotInclude) {
 
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+
 	// Get all staff from the company.
 	List<Staff> companyStaffList = this.staffDAO.list(coID);
+
 	List<StaffWrapper> wrappedCompanyStaffList = StaffWrapper.wrap(companyStaffList);
 
 	// Staff to NOT include.
@@ -759,6 +769,15 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public String assignStaffMass(Project project) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.ASSIGN_MASS, Project.OBJECT_NAME, project.getId(),
+		Staff.OBJECT_NAME);
 
 	// Transform the array of id's to
 	// actual objects.
@@ -784,6 +803,15 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public String unassignStaffMember(Project project, long staffID) {
 
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN, Project.OBJECT_NAME, project.getId(),
+		Staff.OBJECT_NAME, staffID);
+
 	// Get index of staff to remove.
 	Set<Staff> assignedStaffList = project.getAssignedStaff();
 	Set<Staff> newStaffList = new HashSet<Staff>();
@@ -806,6 +834,15 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public String unassignAllStaffMembers(Project project) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
+		Staff.OBJECT_NAME);
+
 	project.setAssignedStaff(new HashSet<Staff>());
 	this.projectDAO.merge(project);
 	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
@@ -814,6 +851,15 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     @Override
     public List<Staff> listUnassignedStaffInProject(Long companyID, Project project) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return new ArrayList<Staff>();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, project.getId(),
+		Staff.OBJECT_NAME);
+
 	if (this.authHelper.isActionAuthorized(project)) {
 	    // Full list.
 	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
@@ -833,6 +879,15 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID, ProjectPayroll projectPayroll) {
 
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    return new ArrayList<Staff>();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, RedisConstants.OBJECT_PAYROLL,
+		projectPayroll.getKey(), Staff.OBJECT_NAME);
+
 	Project project = projectPayroll.getProject();
 
 	if (this.authHelper.isActionAuthorized(project)) {
@@ -848,38 +903,6 @@ public class StaffServiceImpl implements StaffService {
 	    return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
 	}
 	return new ArrayList<Staff>();
-    }
-
-    @Override
-    @Transactional
-    public List<Staff> listWithUsers(Long companyID) {
-	List<Staff> staffList = this.staffDAO.list(companyID);
-	List<Staff> returnList = new ArrayList<Staff>();
-
-	for (Staff staff : staffList) {
-	    if (staff.getUser() == null) {
-		continue;
-	    }
-	    returnList.add(staff);
-	}
-	return returnList;
-    }
-
-    @Override
-    @Transactional
-    public List<Staff> listWithUsersAndFilter(Long companyID, Set<Staff> filterList) {
-
-	// Get staff with users.
-	List<Staff> staffList = listWithUsers(companyID);
-
-	// Wrap the staff list and filter list.
-	// Remove filterlist from staff list.
-	List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(staffList);
-	List<StaffWrapper> wrappedFilterList = StaffWrapper.wrapSet(filterList);
-	wrappedStaffList.removeAll(wrappedFilterList);
-
-	// Return unwrapped.
-	return StaffWrapper.unwrap(wrappedStaffList);
     }
 
 }

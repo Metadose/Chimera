@@ -32,10 +32,6 @@ public class ProjectPayroll implements IDomainObject {
     private Date startDate;
     private Date endDate;
 
-    /**
-     * Bean-backed form.
-     */
-    private long approverID;
     private int statusID;
 
     /**

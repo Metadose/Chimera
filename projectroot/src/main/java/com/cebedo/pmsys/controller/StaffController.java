@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,11 +28,8 @@ import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.AttendanceService;
-import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -69,26 +65,12 @@ public class StaffController {
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 
     private StaffService staffService;
-    private FieldService fieldService;
-    private ProjectService projectService;
     private AttendanceService attendanceService;
 
     @Autowired(required = true)
     @Qualifier(value = "attendanceService")
     public void setAttendanceService(AttendanceService s) {
 	this.attendanceService = s;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "projectService")
-    public void setProjectService(ProjectService s) {
-	this.projectService = s;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "fieldService")
-    public void setFieldService(FieldService s) {
-	this.fieldService = s;
     }
 
     @Autowired(required = true)
@@ -355,8 +337,6 @@ public class StaffController {
 	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) DateRangeBean rangeDates, HttpSession session,
 	    Model model) {
 	// Get prelim objects.
-	List<Field> fields = this.fieldService.list();
-	model.addAttribute(FieldController.JSP_LIST, fields);
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 
 	// Get the start and end date from the bean.
@@ -427,10 +407,6 @@ public class StaffController {
 	    minDate = minDateFromSession;
 	}
 
-	// TODO Check if where this is used.
-	// If not used, delete.
-	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
-
 	// Get staff object.
 	// Get the current year and month.
 	// This will be minimum.
@@ -451,10 +427,6 @@ public class StaffController {
      * @return
      */
     private String editStaffWithMinDate(Model model, HttpSession session) {
-
-	// TODO Check if where this is used.
-	// If not used, delete.
-	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
 
 	// Get staff object.
 	// Get the current year and month.
@@ -479,10 +451,6 @@ public class StaffController {
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
     public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model,
 	    HttpSession session) {
-
-	// TODO Check if where this is used.
-	// If not used, delete.
-	model.addAttribute(FieldController.JSP_LIST, this.fieldService.list());
 
 	// If action is to create new staff.
 	if (id == 0) {
@@ -545,7 +513,7 @@ public class StaffController {
 	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, staff));
 
 	// Add front-end JSONs.
-	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(staff, attendanceList));
+	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
 	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
     }
 

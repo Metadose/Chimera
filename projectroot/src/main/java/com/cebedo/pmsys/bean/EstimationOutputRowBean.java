@@ -3,7 +3,6 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.domain.Shape;
 
 public class EstimationOutputRowBean implements Serializable {
 
@@ -49,7 +48,7 @@ public class EstimationOutputRowBean implements Serializable {
 
     public EstimationOutputRowBean(Estimate estimate) {
 
-	Shape shape = estimate.getShape();
+	ShapeBean shapeBean = estimate.getShape();
 	ConcreteEstimateResults concrete = estimate.getResultConcreteEstimate();
 	MasonryCHBEstimateResults chb = estimate.getResultCHBEstimate();
 	MasonryCHBLayingEstimateResults chbLaying = estimate.getResultCHBLayingEstimate();
@@ -59,10 +58,10 @@ public class EstimationOutputRowBean implements Serializable {
 	this.uuid = estimate.getUuid().toString();
 	this.name = estimate.getName();
 	this.remarks = estimate.getRemarks();
-	this.area = shape.getOriginalArea();
-	this.volume = shape.getOriginalVolume();
+	this.area = shapeBean.getOriginalArea();
+	this.volume = shapeBean.getOriginalVolume();
 	this.chbFoundationHeight = estimate.getChbFoundationHeight();
-	this.footingLength = shape.getFootingLength();
+	this.footingLength = shapeBean.getFootingLength();
 
 	this.concreteCement40kg = concrete.getCement40kg();
 	this.concreteCement50kg = concrete.getCement50kg();

@@ -8,36 +8,6 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 public interface FieldService {
 
     /**
-     * Create a new field.
-     */
-    public String create(Field field);
-
-    /**
-     * Get a field given an id.
-     */
-    public Field getByID(long id);
-
-    /**
-     * Update a field.
-     */
-    public String update(Field field);
-
-    /**
-     * Delete a field.
-     */
-    public String delete(long id);
-
-    /**
-     * List all fields.
-     */
-    public List<Field> list();
-
-    /**
-     * List all fields with collections.
-     */
-    public List<Field> listWithAllCollections();
-
-    /**
      * Assign a field to a project.
      */
     public String assignFieldToProject(FieldAssignment fieldAssignment, long fieldID, long projectID);

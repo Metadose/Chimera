@@ -23,11 +23,9 @@ import com.cebedo.pmsys.bean.TeamAssignmentBean;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
-import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
@@ -57,7 +55,6 @@ public class TaskController {
 
     private TaskService taskService;
     private StaffService staffService;
-    private FieldService fieldService;
     private ProjectService projectService;
 
     @Autowired(required = true)
@@ -70,12 +67,6 @@ public class TaskController {
     @Qualifier(value = "taskService")
     public void setTaskService(TaskService s) {
 	this.taskService = s;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "fieldService")
-    public void setFieldService(FieldService s) {
-	this.fieldService = s;
     }
 
     @Autowired(required = true)
@@ -513,11 +504,6 @@ public class TaskController {
      */
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Task.COLUMN_PRIMARY_KEY + "}")
     public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id, Model model) {
-	// TODO Optimize by getting only name and id.
-	// Get list of teams for the selector.
-	// FIXME Team and field list? Do we need this?
-	List<Field> fieldList = this.fieldService.list();
-	model.addAttribute(FieldController.JSP_LIST, fieldList);
 
 	// If ID is zero,
 	// Open a page with empty values, ready to create.

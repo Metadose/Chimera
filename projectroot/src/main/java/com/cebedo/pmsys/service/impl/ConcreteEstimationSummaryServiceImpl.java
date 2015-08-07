@@ -52,10 +52,6 @@ public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationS
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
-		obj.getKey());
-
 	boolean isCreate = obj.getUuid() == null;
 
 	// Loop through each checked quantity estimate.
@@ -111,6 +107,10 @@ public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationS
 	    obj.setUuid(UUID.randomUUID());
 	    this.concreteEstimationSummaryValueRepo.set(obj);
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
+		obj.getKey());
 
 	// If create.
 	if (isCreate) {

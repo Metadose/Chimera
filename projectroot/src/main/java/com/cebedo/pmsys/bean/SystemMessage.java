@@ -69,6 +69,25 @@ public class SystemMessage implements Serializable {
 	setObjectKey(key);
     }
 
+    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+	    String objectKey2, String assocName) {
+	setAuth(auth2);
+	setAuditAction(action);
+	setObjectName(objectName2);
+	setObjectKey(objectKey2);
+	setAssocObjectName(assocName);
+    }
+
+    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long id,
+	    String assocName, long assocID) {
+	setAuth(auth2);
+	setAuditAction(action);
+	setObjectName(objectName2);
+	setObjectID(id);
+	setAssocObjectName(assocName);
+	setAssocObjectID(assocID);
+    }
+
     public AuthenticationToken getAuth() {
 	return auth;
     }

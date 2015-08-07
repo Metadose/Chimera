@@ -16,10 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.PayrollComputationResult;
 import com.cebedo.pmsys.bean.TreeGridRowBean;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CSSClass;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
@@ -33,6 +37,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
     private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
 
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
     private AttendanceService attendanceService;
     private StaffService staffService;
 
@@ -392,6 +398,16 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     @Transactional
     @Override
     public void compute(Date min, Date max, ProjectPayroll projectPayroll) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    return;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.COMPUTE, RedisConstants.OBJECT_PAYROLL,
+		projectPayroll.getKey());
 
 	// Clear old data.
 	clear();

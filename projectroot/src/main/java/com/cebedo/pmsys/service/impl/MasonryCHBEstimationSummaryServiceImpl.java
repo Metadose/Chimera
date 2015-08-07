@@ -1,9 +1,6 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,7 +10,9 @@ import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
-import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.MasonryCHBEstimationSummaryValueRepo;
 import com.cebedo.pmsys.service.MasonryCHBEstimationSummaryService;
@@ -21,9 +20,10 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DataStructUtils;
 
 @Service
-public class MasonryCHBEstimationSummaryServiceImpl implements
-	MasonryCHBEstimationSummaryService {
+public class MasonryCHBEstimationSummaryServiceImpl implements MasonryCHBEstimationSummaryService {
 
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
     private MasonryCHBEstimationSummaryValueRepo masonryCHBEstimationSummaryValueRepo;
     private EstimateValueRepo estimateValueRepo;
 
@@ -36,18 +36,6 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
 	this.masonryCHBEstimationSummaryValueRepo = masonryCHBEstimationSummaryValueRepo;
     }
 
-    @Override
-    @Transactional
-    public void rename(MasonryCHBEstimationSummary obj, String newKey) {
-	this.masonryCHBEstimationSummaryValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, MasonryCHBEstimationSummary> m) {
-	this.masonryCHBEstimationSummaryValueRepo.multiSet(m);
-    }
-
     /**
      * Set the estimationSummary.
      */
@@ -55,19 +43,24 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
     @Transactional
     public String set(MasonryCHBEstimationSummary obj) {
 
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY,
+		    obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
 	// If we're creating.
 	boolean isCreate = obj.getUuid() == null;
 
 	// Get the list of checked estimate list.
-	List<Estimate> estimateList = this.estimateValueRepo
-		.multiGet(DataStructUtils.convertArrayToList(obj
-			.getEstimationToCompute()));
+	List<Estimate> estimateList = this.estimateValueRepo.multiGet(DataStructUtils
+		.convertArrayToList(obj.getEstimationToCompute()));
 
 	for (Estimate estimate : estimateList) {
 
 	    // Get the estimated quantity.
-	    MasonryCHBEstimateResults chbEstimate = estimate
-		    .getResultCHBEstimate();
+	    MasonryCHBEstimateResults chbEstimate = estimate.getResultCHBEstimate();
 
 	    // Set the area specifics.
 	    obj.setArea(estimate.getShape().getArea());
@@ -93,66 +86,20 @@ public class MasonryCHBEstimationSummaryServiceImpl implements
 	    this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	}
 
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY,
+		obj.getKey());
+
 	// If create.
 	if (isCreate) {
-	    return AlertBoxGenerator.SUCCESS
-		    .generateCreate(
-			    RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY,
-			    obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateCreate(
+		    RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY, obj.getName());
 	}
 
 	// If update.
 	this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY,
-		obj.getName());
-    }
-
-    @Override
-    @Transactional
-    public void delete(Collection<String> keys) {
-	this.masonryCHBEstimationSummaryValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(MasonryCHBEstimationSummary obj) {
-	this.masonryCHBEstimationSummaryValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
-    public MasonryCHBEstimationSummary get(String key) {
-	return this.masonryCHBEstimationSummaryValueRepo.get(key);
-    }
-
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.masonryCHBEstimationSummaryValueRepo.keys(pattern);
-    }
-
-    @Override
-    @Transactional
-    public Collection<MasonryCHBEstimationSummary> multiGet(
-	    Collection<String> keys) {
-	return this.masonryCHBEstimationSummaryValueRepo.multiGet(keys);
-    }
-
-    @Override
-    @Transactional
-    public String delete(String key) {
-	this.masonryCHBEstimationSummaryValueRepo.delete(key);
-	return "";
-    }
-
-    @Override
-    @Transactional
-    public List<MasonryCHBEstimationSummary> list(Project proj) {
-	String pattern = MasonryCHBEstimationSummary.constructPattern(proj);
-	Set<String> keys = this.masonryCHBEstimationSummaryValueRepo
-		.keys(pattern);
-	return this.masonryCHBEstimationSummaryValueRepo.multiGet(keys);
+		RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY, obj.getName());
     }
 
 }
