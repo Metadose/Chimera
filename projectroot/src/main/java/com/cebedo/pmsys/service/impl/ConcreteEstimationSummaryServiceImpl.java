@@ -1,19 +1,19 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.ConcreteEstimateResults;
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.Estimate;
-import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo;
 import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.service.ConcreteEstimationSummaryService;
@@ -22,6 +22,9 @@ import com.cebedo.pmsys.utils.DataStructUtils;
 
 @Service
 public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationSummaryService {
+
+    private AuthHelper authHelper = new AuthHelper();
+    private MessageHelper messageHelper = new MessageHelper();
 
     private ConcreteEstimationSummaryValueRepo concreteEstimationSummaryValueRepo;
     private EstimateValueRepo estimateValueRepo;
@@ -35,24 +38,23 @@ public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationS
 	this.concreteEstimationSummaryValueRepo = concreteEstimationSummaryValueRepo;
     }
 
-    @Override
-    @Transactional
-    public void rename(ConcreteEstimationSummary obj, String newKey) {
-	this.concreteEstimationSummaryValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, ConcreteEstimationSummary> m) {
-	this.concreteEstimationSummaryValueRepo.multiSet(m);
-    }
-
     /**
      * Set the concreteEstimationSummary.
      */
     @Override
     @Transactional
     public String set(ConcreteEstimationSummary obj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
+		    obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
+		obj.getKey());
 
 	boolean isCreate = obj.getUuid() == null;
 
@@ -118,51 +120,6 @@ public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationS
 	// If update.
 	this.concreteEstimationSummaryValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate("TODO", obj.getName());
-    }
-
-    @Override
-    @Transactional
-    public void delete(Collection<String> keys) {
-	this.concreteEstimationSummaryValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(ConcreteEstimationSummary obj) {
-	this.concreteEstimationSummaryValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
-    public ConcreteEstimationSummary get(String key) {
-	return this.concreteEstimationSummaryValueRepo.get(key);
-    }
-
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.concreteEstimationSummaryValueRepo.keys(pattern);
-    }
-
-    @Override
-    @Transactional
-    public Collection<ConcreteEstimationSummary> multiGet(Collection<String> keys) {
-	return this.concreteEstimationSummaryValueRepo.multiGet(keys);
-    }
-
-    @Override
-    @Transactional
-    public String delete(String key) {
-	this.concreteEstimationSummaryValueRepo.delete(key);
-	return "";
-    }
-
-    @Override
-    @Transactional
-    public List<ConcreteEstimationSummary> list(Project proj) {
-	String pattern = ConcreteEstimationSummary.constructPattern(proj);
-	Set<String> keys = this.concreteEstimationSummaryValueRepo.keys(pattern);
-	return this.concreteEstimationSummaryValueRepo.multiGet(keys);
     }
 
 }

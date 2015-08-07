@@ -2,46 +2,60 @@ package com.cebedo.pmsys.enums;
 
 public enum AuditAction {
 
-    CREATE(1, "Create", "Created"),
+    CREATE(1, "Create"),
 
-    CREATE_MASS(2, "Create Mass", "Created Mass"),
+    CREATE_MASS(2, "Create Mass"),
 
-    UPDATE(3, "Update", "Updated"),
+    SET(3, "Set"),
 
-    DELETE(4, "Delete", "Deleted"),
+    SET_MULTI(4, "Multi-Set"),
 
-    DELETE_ALL(5, "Delete All", "Deleted All"),
+    SET_IF_ABSENT(5, "Set If Absent"),
 
-    GET(6, "Get", "Get"),
+    UPDATE(6, "Update"),
 
-    GET_JSON(7, "Get JSON", "Get JSON"),
+    DELETE(7, "Delete"),
 
-    GET_MAP(8, "Get Map", "Get Map"),
+    DELETE_COLLECTION(8, "Delete Collection"),
 
-    LIST(9, "List", "Listed"),
+    DELETE_ALL(9, "Delete All"),
 
-    ASSIGN(10, "Assign", "Assigned"),
+    GET(10, "Get"),
 
-    ASSIGN_ALL(11, "Assign All", "Assigned All"),
+    GET_MULTI(11, "Multi-Get"),
 
-    UNASSIGN(12, "Unassign", "Unassigned"),
+    GET_JSON(12, "Get JSON"),
 
-    UNASSIGN_ALL(13, "Unassign All", "Unassigned All"),
+    GET_MAP(13, "Get Map"),
 
-    UNAUTHORIZED(14, "Unauthorized", "Unauthorized");
+    LIST(14, "List"),
+
+    RANGE(15, "Range"),
+
+    ASSIGN(16, "Assign"),
+
+    ASSIGN_ALL(17, "Assign All"),
+
+    UNASSIGN(18, "Unassign"),
+
+    UNASSIGN_ALL(19, "Unassign All"),
+
+    ESTIMATE(20, "Estimate"),
+
+    RENAME(21, "Rename"),
+
+    UNAUTHORIZED(22, "Unauthorized");
 
     String label;
     int id;
-    String pastTense;
 
     AuditAction(int idn) {
 	this.id = idn;
     }
 
-    AuditAction(int idn, String lbl, String pastTense) {
+    AuditAction(int idn, String lbl) {
 	this.label = lbl;
 	this.id = idn;
-	this.pastTense = pastTense;
     }
 
     public static AuditAction of(int idn) {
@@ -56,10 +70,6 @@ public enum AuditAction {
 
 	}
 	return null;
-    }
-
-    public String pastTense() {
-	return this.pastTense;
     }
 
     public String label() {

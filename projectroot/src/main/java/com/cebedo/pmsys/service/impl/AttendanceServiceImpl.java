@@ -49,8 +49,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_ATTENDANCE,
-		attendance.getKey());
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
 
 	// Set the status.
 	if (attendance.getStatus() == null) {
@@ -95,6 +94,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	String key = Attendance.constructPattern(staff, attendance.getDate());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
 	this.attendanceValueRepo.delete(keys);
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_ATTENDANCE,
+		attendance.getKey());
     }
 
     @Override
@@ -111,6 +114,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET, Staff.OBJECT_NAME, staff.getId(),
+		RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
     }
 
     @Override
@@ -127,6 +134,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	double wage = getWage(staff, status);
 	attendance.setWage(wage);
 	this.attendanceValueRepo.set(attendance);
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
     }
 
     /**
@@ -143,6 +153,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
 
 	double wage = 0;
 
@@ -170,10 +183,25 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     @Override
     public double getTotalWageFromAttendance(Collection<Attendance> attendances) {
+
 	double totalWage = 0;
+	Staff staff = null;
+
 	for (Attendance attd : attendances) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(attd)) {
+		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attd.getKey());
+		return 0.0;
+	    }
+
 	    totalWage += attd.getWage();
+	    staff = staff == null ? attd.getStaff() : staff;
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+
 	return totalWage;
     }
 
@@ -189,6 +217,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
 	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);
@@ -209,6 +240,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return new HashSet<Attendance>();
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.RANGE, Staff.OBJECT_NAME, staff.getId(),
+		RedisConstants.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
@@ -241,7 +276,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    return new Attendance();
 	}
 
-	return this.attendanceValueRepo.get(Attendance.constructKey(staff, timestamp, status));
+	Attendance attn = this.attendanceValueRepo
+		.get(Attendance.constructKey(staff, timestamp, status));
+
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(),
+		RedisConstants.OBJECT_ATTENDANCE, attn.getKey());
+
+	return attn;
     }
 
     @Override
@@ -254,6 +296,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return; // TODO Notify?
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
+		MassAttendanceBean.class.getName());
 
 	// Get the wage.
 	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
@@ -307,6 +353,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return new ArrayList<Attendance>();
 	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME, staff.getId(),
+		RedisConstants.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	return this.attendanceValueRepo.multiGet(keys);

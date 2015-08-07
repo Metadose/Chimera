@@ -4,6 +4,9 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
+import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
@@ -140,6 +143,36 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (attendance.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(ConcreteEstimationSummary obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Delivery obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(EstimationOutput obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

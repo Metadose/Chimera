@@ -64,13 +64,12 @@ public class LogMessageListener implements MessageListener {
 
 		// Construct the log message.
 		String logMessage = "TSTAMP:\"%s\" IP:\"%s\" COM_ID:\"%s\" COM_NAME:\"%s\" USER_ID:\"%s\" USER_NAME:\"%s\" STAFF_ID:\"%s\" STAFF_NAME:\"%s\" COM_ADMIN:\"%s\" SUPER_ADMIN:\"%s\" ";
-		logMessage += "ACT_ID:\"%s\" ACT_NAME:\"%s\" OBJ_ID:\"%s\" OBJ_NAME:\"%s\" ASSOC_ID:\"%s\" ASSOC_NAME:\"%s\"";
+		logMessage += "ACT_ID:\"%s\" ACT_NAME:\"%s\" OBJ_ID:\"%s\" OBJ_NAME:\"%s\" OBJ_KEY:\"%s\" ASSOC_ID:\"%s\" ASSOC_NAME:\"%s\"";
 
 		// Do log.
 		logger.info(String.format(logMessage, formatter.format(now), ipAddr, companyID,
 			companyName, userID, userName, staffID, staffName, companyAdmin, superAdmin,
-			actionID, actionName, (objectID == -1 ? objectKey : objectID), objectName,
-			assocObjID, assocObjName));
+			actionID, actionName, objectID, objectName, objectKey, assocObjID, assocObjName));
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }

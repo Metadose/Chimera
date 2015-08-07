@@ -1,23 +1,26 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.EstimationOutput;
+import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimationOutputService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class EstimationOutputServiceImpl implements EstimationOutputService {
 
+    private MessageHelper messageHelper = new MessageHelper();
+    private AuthHelper authHelper = new AuthHelper();
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
     public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
@@ -26,75 +29,54 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
     @Override
     @Transactional
-    public void rename(EstimationOutput obj, String newKey) {
-	this.estimationOutputValueRepo.rename(obj, newKey);
-    }
+    public EstimationOutput get(String key) {
+	EstimationOutput obj = this.estimationOutputValueRepo.get(key);
 
-    @Override
-    @Transactional
-    public void multiSet(Map<String, EstimationOutput> m) {
-	this.estimationOutputValueRepo.multiSet(m);
-    }
-
-    /**
-     * Set the estimationOutput.
-     */
-    @Override
-    @Transactional
-    public String set(EstimationOutput obj) {
-
-	// If create.
-	if (obj.getUuid() == null) {
-	    obj.setUuid(UUID.randomUUID());
-	    this.estimationOutputValueRepo.set(obj);
-	    return AlertBoxGenerator.SUCCESS.generateCreate("TODO", "TODO");
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    return new EstimationOutput();
 	}
 
-	// If update.
-	this.estimationOutputValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate("TODO", "TODO");
-    }
+	// Log.
+	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 
-    @Override
-    @Transactional
-    public void delete(Collection<String> keys) {
-	this.estimationOutputValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(EstimationOutput obj) {
-	this.estimationOutputValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
-    public EstimationOutput get(String key) {
-	return this.estimationOutputValueRepo.get(key);
-    }
-
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.estimationOutputValueRepo.keys(pattern);
-    }
-
-    @Override
-    @Transactional
-    public Collection<EstimationOutput> multiGet(Collection<String> keys) {
-	return this.estimationOutputValueRepo.multiGet(keys);
+	return obj;
     }
 
     @Override
     @Transactional
     public String delete(String key) {
+	EstimationOutput obj = get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    return "TODO";
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_ESTIMATION_OUTPUT,
+		obj.getKey());
+
 	this.estimationOutputValueRepo.delete(key);
-	return "";
+	return "TODO";
     }
 
     @Override
     @Transactional
     public List<EstimationOutput> list(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<EstimationOutput>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+		RedisConstants.OBJECT_ESTIMATION_OUTPUT);
+
 	String pattern = EstimationOutput.constructPattern(proj);
 	Set<String> keys = this.estimationOutputValueRepo.keys(pattern);
 	return this.estimationOutputValueRepo.multiGet(keys);

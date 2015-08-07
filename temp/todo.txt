@@ -66,16 +66,23 @@ attendace-done
 audit-done
 company-done
 project-done
+ConcreteEstimationSummaryServiceImpl-done
+CostEstimationServiceImpl-done
+DeliveryServiceImpl-done
+EstimateServiceImpl-done
+EstimationOutputServiceImpl-done
 
 
 Log:
-attendace-og
+attendace-done
 audit-done
 company-done
 project-done
-
-
-
+// ConcreteEstimationSummaryServiceImpl-done
+// CostEstimationServiceImpl-done
+// DeliveryServiceImpl-done
+// EstimateServiceImpl-done
+// EstimationOutputServiceImpl-done
 
 
 

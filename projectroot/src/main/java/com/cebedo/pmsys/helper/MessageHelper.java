@@ -66,4 +66,10 @@ public class MessageHelper {
 	SystemMessage msg = new SystemMessage(auth, action, objectName, objectKey);
 	send(msg);
     }
+
+    public void send(AuditAction action, String objectName, long objectID, String assocName, String key) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	SystemMessage msg = new SystemMessage(auth, action, objectName, objectID, assocName, key);
+	send(msg);
+    }
 }

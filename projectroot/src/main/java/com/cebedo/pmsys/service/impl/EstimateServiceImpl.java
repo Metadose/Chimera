@@ -1,14 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +26,7 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Shape;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.TableCHBDimensions;
@@ -39,14 +35,14 @@ import com.cebedo.pmsys.enums.TableCHBFootingMixture;
 import com.cebedo.pmsys.enums.TableCHBLayingMixture;
 import com.cebedo.pmsys.enums.TableConcreteProportion;
 import com.cebedo.pmsys.enums.TablePlasterMixture;
+import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.EstimateValueRepo;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.google.gson.Gson;
-import com.udojava.evalex.Expression;
 
 @Service
 public class EstimateServiceImpl implements EstimateService {
@@ -64,33 +60,30 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 11;
     public static final int EXCEL_COLUMN_DETAILS_REMARKS = 12;
 
+    private MessageHelper messageHelper = new MessageHelper();
+    private AuthHelper authHelper = new AuthHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
-    private EstimateValueRepo estimateValueRepo;
+
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
     public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
-    public void setEstimateValueRepo(EstimateValueRepo estimateValueRepo) {
-	this.estimateValueRepo = estimateValueRepo;
-    }
-
-    @Override
-    @Transactional
-    public void rename(Estimate obj, String newKey) {
-	this.estimateValueRepo.rename(obj, newKey);
-    }
-
-    @Override
-    @Transactional
-    public void multiSet(Map<String, Estimate> m) {
-	this.estimateValueRepo.multiSet(m);
-    }
-
     @Override
     @Transactional
     public String estimate(EstimationInputBean estimateInput) {
+
+	// Security check.
+	Project proj = estimateInput.getProject();
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ESTIMATE, Project.OBJECT_NAME, proj.getId(),
+		EstimationInputBean.class.getName());
 
 	// Do the commit.
 	// If create.
@@ -123,72 +116,6 @@ public class EstimateServiceImpl implements EstimateService {
 	// TODO If update.
 	// this.estimateValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_ESTIMATE, "TODO");
-    }
-
-    /**
-     * Set the estimate.
-     */
-    @Override
-    @Transactional
-    public String set(Estimate obj) {
-
-	// Do the commit.
-	// If create.
-	if (obj.getUuid() == null) {
-	    obj.setUuid(UUID.randomUUID());
-	    this.estimateValueRepo.set(obj);
-	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_ESTIMATE,
-		    obj.getName());
-	}
-
-	// If update.
-	this.estimateValueRepo.set(obj);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_ESTIMATE, obj.getName());
-    }
-
-    @Override
-    @Transactional
-    public void delete(Collection<String> keys) {
-	this.estimateValueRepo.delete(keys);
-    }
-
-    @Override
-    @Transactional
-    public void setIfAbsent(Estimate obj) {
-	this.estimateValueRepo.setIfAbsent(obj);
-    }
-
-    @Override
-    @Transactional
-    public Estimate get(String key) {
-	return this.estimateValueRepo.get(key);
-    }
-
-    @Override
-    @Transactional
-    public Set<String> keys(String pattern) {
-	return this.estimateValueRepo.keys(pattern);
-    }
-
-    @Override
-    @Transactional
-    public Collection<Estimate> multiGet(Collection<String> keys) {
-	return this.estimateValueRepo.multiGet(keys);
-    }
-
-    @Override
-    @Transactional
-    public String delete(String key) {
-	this.estimateValueRepo.delete(key);
-	return "";
-    }
-
-    @Override
-    @Transactional
-    public List<Estimate> list(Project proj) {
-	String pattern = Estimate.constructPattern(proj);
-	Set<String> keys = this.estimateValueRepo.keys(pattern);
-	return this.estimateValueRepo.multiGet(keys);
     }
 
     /**
@@ -350,23 +277,6 @@ public class EstimateServiceImpl implements EstimateService {
 	    e.printStackTrace();
 	}
 	return new ArrayList<Estimate>();
-    }
-
-    public static void main(String[] args) {
-	try {
-
-	    // Create Workbook instance holding reference to .xls file
-	    // Get first/desired sheet from the workbook.
-	    FileInputStream file = new FileInputStream(new File(
-		    "C:/Users/AEA/git/PracticeRepo/estimation-test/Book2.xls"));
-	    EstimateServiceImpl estimateService = new EstimateServiceImpl();
-	    // List<Estimate> estimates =
-	    // estimateService.convertExcelToEstimates(
-	    // file, null);
-	    file.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
     }
 
     /**
@@ -654,60 +564,6 @@ public class EstimateServiceImpl implements EstimateService {
     }
 
     /**
-     * Get the volume of the shape.
-     * 
-     * @param estimate
-     * @param shape
-     * @return
-     */
-    // private double getVolume(Estimate estimate, Shape shape) {
-    //
-    // // If any of the following is null, can't compute area.
-    // if (shape.getVolumeFormula() == null
-    // || estimate.getVolumeFormulaInputs() == null
-    // || shape.getVolumeVariableNames() == null
-    // || estimate.getVolumeFormulaInputsUnits() == null) {
-    // return 0.0;
-    // }
-    //
-    // // Replace all variables with the inputs given by the user.
-    // Expression mathExp = replaceVariablesWithInputs(
-    // shape.getVolumeFormulaWithoutDelimiters(),
-    // estimate.getVolumeFormulaInputs(), estimate.getShape()
-    // .getVolumeVariableNames(),
-    // estimate.getVolumeFormulaInputsUnits());
-    //
-    // return mathExp.eval().doubleValue();
-    // }
-
-    /**
-     * Get the area of the shape.
-     * 
-     * @param estimate
-     * @param shape
-     * @return
-     */
-    // private double getArea(Estimate estimate, Shape shape) {
-    //
-    // // If any of the following is null, can't compute area.
-    // if (shape.getAreaFormula() == null
-    // || estimate.getAreaFormulaInputs() == null
-    // || shape.getAreaVariableNames() == null
-    // || estimate.getAreaFormulaInputsUnits() == null) {
-    // return 0.0;
-    // }
-    //
-    // // Compute for area.
-    // Expression mathExp = replaceVariablesWithInputs(
-    // shape.getAreaFormulaWithoutDelimiters(),
-    // estimate.getAreaFormulaInputs(), shape.getAreaVariableNames(),
-    // estimate.getAreaFormulaInputsUnits());
-    // BigDecimal area = mathExp.eval();
-    //
-    // return area.doubleValue();
-    // }
-
-    /**
      * Get quantity estimation of masonry.
      * 
      * @param estimate
@@ -761,40 +617,6 @@ public class EstimateServiceImpl implements EstimateService {
 		estCement50kg, estSand, estGravel);
 
 	return concreteResults;
-    }
-
-    /**
-     * Replace all variables with the inputs given by the user.
-     * 
-     * @param formula
-     * @param formulaInputs
-     * @param variableNames
-     * @param formulaInputUnits
-     * @return
-     */
-    private Expression replaceVariablesWithInputs(String formula, Map<String, String> formulaInputs,
-	    List<String> variableNames, Map<String, CommonLengthUnit> formulaInputUnits) {
-	Expression mathExp = new Expression(formula);
-
-	// Loop through each variable and replace each variable.
-	for (String variable : variableNames) {
-
-	    // Get the value and the unit.
-	    String rawValue = formulaInputs.get(variable);
-	    BigDecimal value = (rawValue == null || !StringUtils.isNumeric(rawValue)) ? new BigDecimal(
-		    0.0) : new BigDecimal(rawValue);
-	    CommonLengthUnit lengthUnit = formulaInputUnits.get(variable);
-
-	    // If the unit is not meter,
-	    // convert it.
-	    if (lengthUnit != CommonLengthUnit.METER) {
-		value = convertToMeter(lengthUnit, value);
-	    }
-
-	    mathExp = mathExp.with(variable, value);
-	}
-
-	return mathExp;
     }
 
     /**

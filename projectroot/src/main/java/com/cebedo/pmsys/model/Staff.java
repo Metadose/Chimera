@@ -33,6 +33,7 @@ public class Staff implements Serializable {
     public static final String PROPERTY_MIDDLE_NAME = "middleName";
     public static final String PROPERTY_LAST_NAME = "lastName";
     public static final String PROPERTY_SUFFIX = "suffix";
+    public static final String PROPERTY_WAGE = "wage";
 
     public static final String PROPERTY_TRANSIENT_FULL_NAME = "Full Name";
 
