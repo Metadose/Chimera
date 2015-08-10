@@ -5,17 +5,11 @@
 
 Start implementing max lengths on input fields
 
-Task predecessor, on or before task in project
-
-Choose either "predecerssor" or "start date"
-
 Fix css in payroll, smaller fonts
 
 Add end date in project -> timeline. 
 
 Re-render timeline if hiding the sidebar
-
-Pass serialized objects via JMS
 
 In project -> timeline, load only specific date range
 
@@ -34,9 +28,9 @@ Put max lengths in fields?
 
 Brosures for marketing
 
-Provide support via Irc, put irc to clients
+Provide support via skype
 
-Nver put font size in pixels
+Nver put font size in pixels: see igniteUI tables
 
 Gremlins.js, fuzz testing. In moderngrade repo
 
@@ -44,15 +38,7 @@ remove table-responsive classes
 
 more Mass uploaders (magamit pod for new clients, mass upload ilang data)
 
-Remove "approver" in payroll?
-
 Jm ig agaw roy pwede ma client or subcon
-
-use esapi in XSSRequestWrapper:78
-
-Check if pwde ma preauth ang company
-
-Remove concept of Project "Manager"
 
 and others
 2015-08-04 11:33:45 WARN  RootClass:289 - HHH000039: Composite-id class does not override hashCode(): com.cebedo.pmsys.model.assignment.FieldAssignmentID

@@ -3,6 +3,8 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+import com.cebedo.pmsys.domain.Estimate;
+
 public class ConcreteEstimateResults implements Serializable {
 
     private static final long serialVersionUID = -2748458108457052450L;
@@ -12,16 +14,26 @@ public class ConcreteEstimateResults implements Serializable {
     private double sand;
     private double gravel;
 
+    private double costCement40kg;
+    private double costCement50kg;
+    private double costSand;
+    private double costGravel;
+
     public ConcreteEstimateResults() {
 	;
     }
 
-    public ConcreteEstimateResults(double estCement40kg, double estCement50kg,
+    public ConcreteEstimateResults(Estimate estimate, double estCement40kg, double estCement50kg,
 	    double estSand, double estGravel) {
 	setCement40kg(estCement40kg);
 	setCement50kg(estCement50kg);
 	setSand(estSand);
 	setGravel(estGravel);
+
+	setCostCement40kg(estCement40kg * estimate.getCostPerUnitCement40kg());
+	setCostCement50kg(estCement50kg * estimate.getCostPerUnitCement50kg());
+	setCostSand(estSand * estimate.getCostPerUnitSand());
+	setCostSand(estGravel * estimate.getCostPerUnitGravel());
     }
 
     /**
@@ -82,6 +94,38 @@ public class ConcreteEstimateResults implements Serializable {
 
     public void setGravel(double gravel) {
 	this.gravel = gravel;
+    }
+
+    public double getCostCement40kg() {
+	return costCement40kg;
+    }
+
+    public void setCostCement40kg(double costCement40kg) {
+	this.costCement40kg = costCement40kg;
+    }
+
+    public double getCostCement50kg() {
+	return costCement50kg;
+    }
+
+    public void setCostCement50kg(double costCement50kg) {
+	this.costCement50kg = costCement50kg;
+    }
+
+    public double getCostSand() {
+	return costSand;
+    }
+
+    public void setCostSand(double costSand) {
+	this.costSand = costSand;
+    }
+
+    public double getCostGravel() {
+	return costGravel;
+    }
+
+    public void setCostGravel(double costGravel) {
+	this.costGravel = costGravel;
     }
 
 }

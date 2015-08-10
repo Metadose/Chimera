@@ -59,7 +59,9 @@
 	            			${project.name}
 	            		</c:when>
 	            	</c:choose>
-	                <small>${action} Project <a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a> </small>
+	                <small>${action} Project 
+	                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
+	                <a href="${clearCache}">Clear Cache</a> </small>
 	            </h1>
 	        </section>
 	        <section class="content">

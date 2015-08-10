@@ -59,7 +59,8 @@
 	                                								<a href="${urlDeleteProject}">
 																		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 	                                								</a>
-																	<a href="${contextPath}/project/clear/cache/${project.id}">Clear Cache</a>
+	                                								<c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
+																	<a href="${clearCache}">Clear Cache</a>
 																</center>
 															</td>
 															<td>

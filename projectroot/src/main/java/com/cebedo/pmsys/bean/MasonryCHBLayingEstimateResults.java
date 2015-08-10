@@ -2,20 +2,12 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.enums.TableCHBDimensions;
-import com.cebedo.pmsys.enums.TableCHBLayingMixture;
-import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.domain.Estimate;
+import com.cebedo.pmsys.utils.EstimateUtils;
 
 public class MasonryCHBLayingEstimateResults implements Serializable {
 
     private static final long serialVersionUID = -927040799981812601L;
-
-    /**
-     * Ingredients.
-     */
-    private TableCHBDimensions chb;
-    private TableCHBLayingMixture chbLayingMix;
-    private TableConcreteProportion proportion;
 
     /**
      * Results.
@@ -23,22 +15,26 @@ public class MasonryCHBLayingEstimateResults implements Serializable {
     private double bags;
     private double sand;
 
+    // Cost.
+    private double costCement40kg;
+    private double costCement50kg;
+    private double costSand;
+
     public MasonryCHBLayingEstimateResults() {
 	;
     }
 
-    public MasonryCHBLayingEstimateResults(TableCHBDimensions chb,
-	    TableCHBLayingMixture chbLayingMix,
-	    TableConcreteProportion proportion, double bagsNeeded,
-	    double sandNeeded) {
-	setChb(chb);
-	setChbLayingMix(chbLayingMix);
-	setProportion(proportion);
-	setBags(bagsNeeded);
+    public MasonryCHBLayingEstimateResults(Estimate estimate, double bags40kg, double sandNeeded) {
+	setBags(bags40kg);
 	setSand(sandNeeded);
+
+	double bags50kg = EstimateUtils.convert40kgTo50kg(bags40kg);
+	setCostCement40kg(bags40kg * estimate.getCostPerUnitCement40kg());
+	setCostCement50kg(bags50kg * estimate.getCostPerUnitCement50kg());
+	setCostSand(sandNeeded * estimate.getCostPerUnitSand());
     }
 
-    public double getBags() {
+    public double getCement40kg() {
 	return bags;
     }
 
@@ -54,28 +50,28 @@ public class MasonryCHBLayingEstimateResults implements Serializable {
 	this.sand = sand;
     }
 
-    public TableCHBDimensions getChb() {
-	return chb;
+    public double getCostCement40kg() {
+	return costCement40kg;
     }
 
-    public void setChb(TableCHBDimensions chb) {
-	this.chb = chb;
+    public void setCostCement40kg(double costCement40kg) {
+	this.costCement40kg = costCement40kg;
     }
 
-    public TableCHBLayingMixture getChbLayingMix() {
-	return chbLayingMix;
+    public double getCostCement50kg() {
+	return costCement50kg;
     }
 
-    public void setChbLayingMix(TableCHBLayingMixture chbLayingMix) {
-	this.chbLayingMix = chbLayingMix;
+    public void setCostCement50kg(double costCement50kg) {
+	this.costCement50kg = costCement50kg;
     }
 
-    public TableConcreteProportion getProportion() {
-	return proportion;
+    public double getCostSand() {
+	return costSand;
     }
 
-    public void setProportion(TableConcreteProportion proportion) {
-	this.proportion = proportion;
+    public void setCostSand(double costSand) {
+	this.costSand = costSand;
     }
 
 }

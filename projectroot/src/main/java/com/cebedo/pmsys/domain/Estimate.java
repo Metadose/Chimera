@@ -46,9 +46,14 @@ public class Estimate implements IDomainObject {
      * Computational specs.
      */
     private ShapeBean shapeBean;
+    private double costPerUnitCHB = 0;
+    private double costPerUnitCement40kg = 0;
+    private double costPerUnitCement50kg = 0;
+    private double costPerUnitSand = 0;
+    private double costPerUnitGravel = 0;
 
     /**
-     * Bean-backed form.
+     * Inputs.
      */
     // User input.
     private TableEstimationAllowance estimationAllowance = TableEstimationAllowance.ALLOWANCE_0;
@@ -76,6 +81,8 @@ public class Estimate implements IDomainObject {
     private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
     private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
     private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
+
+    // Used to generate the JSON for JSP display.
     private EstimationOutputRowBean resultRow;
 
     /**
@@ -308,6 +315,46 @@ public class Estimate implements IDomainObject {
 
     public void setResultRow(EstimationOutputRowBean resultRow) {
 	this.resultRow = resultRow;
+    }
+
+    public double getCostPerUnitCement40kg() {
+	return costPerUnitCement40kg;
+    }
+
+    public void setCostPerUnitCement40kg(double costPerUnitCement40kg) {
+	this.costPerUnitCement40kg = costPerUnitCement40kg;
+    }
+
+    public double getCostPerUnitCement50kg() {
+	return costPerUnitCement50kg;
+    }
+
+    public void setCostPerUnitCement50kg(double costPerUnitCement50kg) {
+	this.costPerUnitCement50kg = costPerUnitCement50kg;
+    }
+
+    public double getCostPerUnitSand() {
+	return costPerUnitSand;
+    }
+
+    public void setCostPerUnitSand(double costPerUnitSand) {
+	this.costPerUnitSand = costPerUnitSand;
+    }
+
+    public double getCostPerUnitGravel() {
+	return costPerUnitGravel;
+    }
+
+    public void setCostPerUnitGravel(double costPerUnitGravel) {
+	this.costPerUnitGravel = costPerUnitGravel;
+    }
+
+    public double getCostPerUnitCHB() {
+	return costPerUnitCHB;
+    }
+
+    public void setCostPerUnitCHB(double costPerUnitCHB) {
+	this.costPerUnitCHB = costPerUnitCHB;
     }
 
 }

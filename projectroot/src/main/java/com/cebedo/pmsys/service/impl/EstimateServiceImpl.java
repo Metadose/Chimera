@@ -59,6 +59,8 @@ public class EstimateServiceImpl implements EstimateService {
     public static final int EXCEL_COLUMN_ESTIMATE_MASONRY_FOOTING_LENGTH = 10;
     public static final int EXCEL_COLUMN_ESTIMATE_MR_CHB = 11;
     public static final int EXCEL_COLUMN_DETAILS_REMARKS = 12;
+    // TODO Where to input cost of CHB, cement, gravel, etc.
+    // TODO Re-check the result classes we created.
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -361,8 +363,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double gravel = footingVolume * footingMixture.getPartGravel();
 
 	// Put the results.
-	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(cement,
-		gravel, sand, chbFooting, footingMixture);
+	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(estimate,
+		cement, gravel, sand);
 
 	// Set the result map of the CHB footing estimate.
 	estimate.setResultCHBFootingEstimate(footingResults);
@@ -422,8 +424,8 @@ public class EstimateServiceImpl implements EstimateService {
      * @param length
      * @param area
      */
-    private double addAreaTopSide(Estimate estimate, ShapeBean shapeBean, double shapeArea, double length,
-	    double area) {
+    private double addAreaTopSide(Estimate estimate, ShapeBean shapeBean, double shapeArea,
+	    double length, double area) {
 
 	// Get the thickness.
 	double thickness = shapeBean.getVolume() / shapeArea;
@@ -487,7 +489,7 @@ public class EstimateServiceImpl implements EstimateService {
 	// Set the results, concrete proportion, plaster mixture,
 	// is back to back, plaster top side.
 	MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
-		bags40kg, bags50kg, sand, proportion, plasterMixture);
+		estimate, bags40kg, bags50kg, sand);
 	estimate.setResultPlasteringEstimate(plasteringResults);
     }
 
@@ -515,8 +517,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double sandNeeded = area * sand;
 
 	// Set the results.
-	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(chb,
-		chbLayingMix, proportion, bagsNeeded, sandNeeded);
+	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(estimate,
+		bagsNeeded, sandNeeded);
 	estimate.setResultCHBLayingEstimate(layingResults);
     }
 
@@ -555,9 +557,26 @@ public class EstimateServiceImpl implements EstimateService {
      */
     private void estimateConcrete(Estimate estimate, ShapeBean shapeBean) {
 
+	double volume = shapeBean.getVolume();
+
+	TableConcreteProportion tableConcreteProportion = estimate.getEstimationClass()
+		.getConcreteProportion();
+
+	// Get the ingredients.
 	// Now, compute the estimated concrete.
-	ConcreteEstimateResults concreteResults = getConcreteEstimateResults(estimate
-		.getEstimationClass().getConcreteProportion(), shapeBean);
+	double cement40kg = tableConcreteProportion.getPartCement40kg();
+	double cement50kg = tableConcreteProportion.getPartCement50kg();
+	double sand = tableConcreteProportion.getPartSand();
+	double gravel = tableConcreteProportion.getPartGravel();
+
+	// Compute.
+	double estCement40kg = volume * cement40kg;
+	double estCement50kg = volume * cement50kg;
+	double estSand = volume * sand;
+	double estGravel = volume * gravel;
+
+	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(estimate, estCement40kg,
+		estCement50kg, estSand, estGravel);
 
 	// Set the results.
 	estimate.setResultConcreteEstimate(concreteResults);
@@ -581,42 +600,9 @@ public class EstimateServiceImpl implements EstimateService {
 	double totalCHB = area * TableCHBDimensions.STANDARD_CHB_PER_SQ_M;
 
 	// Results of the estimate.
-	MasonryCHBEstimateResults masonryCHBEstimateResults = new MasonryCHBEstimateResults(
-		estimate.getChbDimensions(), totalCHB);
+	MasonryCHBEstimateResults masonryCHBEstimateResults = new MasonryCHBEstimateResults(estimate,
+		totalCHB);
 	estimate.setResultCHBEstimate(masonryCHBEstimateResults);
-    }
-
-    /**
-     * Compute the estimated concrete.
-     * 
-     * @param allowance
-     * 
-     * @param tableConcreteProportion
-     * @param mathExp
-     * @return
-     */
-    private ConcreteEstimateResults getConcreteEstimateResults(
-	    TableConcreteProportion tableConcreteProportion, ShapeBean shapeBean) {
-
-	double volume = shapeBean.getVolume();
-
-	// Get the ingredients.
-	// Now, compute the estimated concrete.
-	double cement40kg = tableConcreteProportion.getPartCement40kg();
-	double cement50kg = tableConcreteProportion.getPartCement50kg();
-	double sand = tableConcreteProportion.getPartSand();
-	double gravel = tableConcreteProportion.getPartGravel();
-
-	// Compute.
-	double estCement40kg = volume * cement40kg;
-	double estCement50kg = volume * cement50kg;
-	double estSand = volume * sand;
-	double estGravel = volume * gravel;
-
-	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(estCement40kg,
-		estCement50kg, estSand, estGravel);
-
-	return concreteResults;
     }
 
     /**

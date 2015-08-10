@@ -5,8 +5,8 @@ import javax.jms.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 
+import com.cebedo.pmsys.bean.MessageCreatorImpl;
 import com.cebedo.pmsys.bean.SystemMessage;
-import com.cebedo.pmsys.impl.MessageCreatorImpl;
 
 public class MessageSender {
     public final static String BEAN_NAME = "messageSender";

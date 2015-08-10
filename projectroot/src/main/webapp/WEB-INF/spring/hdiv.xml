@@ -92,7 +92,7 @@
 	</hdiv:editableValidations>
 	
 	<hdiv:config
-		debugMode="true"
+		debugMode="false"
 		errorPage="/fix"
 		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map"
 		randomName="true"

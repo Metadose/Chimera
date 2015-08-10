@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.cebedo.pmsys.model.Staff;
 
+@Deprecated
 public class StaffWrapper {
 
     private final Staff staff;

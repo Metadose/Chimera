@@ -66,11 +66,6 @@ public class MasonryCHBEstimationSummaryServiceImpl implements MasonryCHBEstimat
 	    obj.setArea(estimate.getShape().getArea());
 	    obj.setEstimationAllowance(estimate.getEstimationAllowance());
 
-	    // For every type of CHB type selected,
-	    // there is an individual cost estimate.
-
-	    obj.setChbDimensions(chbEstimate.getChbDimensions());
-
 	    // Get the result.
 	    // Get total cost =
 	    // cost per piece * no. of pieces
@@ -87,8 +82,8 @@ public class MasonryCHBEstimationSummaryServiceImpl implements MasonryCHBEstimat
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY,
-		obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET,
+		RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY, obj.getKey());
 
 	// If create.
 	if (isCreate) {

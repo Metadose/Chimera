@@ -11,7 +11,6 @@ public class ErrorController {
 
     @RequestMapping(value = { "", "/" })
     public String error() {
-	// return "error/error";
 	return URLRegistry.REDIRECT_DASHBOARD;
     }
 

@@ -48,8 +48,7 @@ public class TaskController {
     public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
     public static final String ATTR_ASSIGN_STAFF_ID = "assignStaffID";
 
-    public static final String JSP_LIST = Task.OBJECT_NAME + "/taskList";
-    public static final String JSP_EDIT = Task.OBJECT_NAME + "/taskEdit";
+    public static final String JSP_EDIT = Project.OBJECT_NAME + "/taskEdit";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -73,18 +72,6 @@ public class TaskController {
     @Qualifier(value = "staffService")
     public void setStaffService(StaffService s) {
 	this.staffService = s;
-    }
-
-    /**
-     * List all tasks and load all collections.
-     * 
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
-    public String listTasks(Model model) {
-	model.addAttribute(ATTR_LIST, this.taskService.listWithAllCollections());
-	return JSP_LIST;
     }
 
     /**

@@ -3,25 +3,24 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.NumberFormat;
 
-import com.cebedo.pmsys.enums.TableCHBDimensions;
+import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class MasonryCHBEstimateResults implements Serializable {
 
-    private static NumberFormat quantityFormatter = NumberFormatUtils
-	    .getQuantityFormatter();
+    private static NumberFormat quantityFormatter = NumberFormatUtils.getQuantityFormatter();
     private static final long serialVersionUID = -5533583947231752985L;
 
     private double totalCHB;
-    private TableCHBDimensions chbDimensions;
+    private double costCHB;
 
     public MasonryCHBEstimateResults() {
 	;
     }
 
-    public MasonryCHBEstimateResults(TableCHBDimensions chb, double totalCHB2) {
-	setChbDimensions(chb);
+    public MasonryCHBEstimateResults(Estimate estimate, double totalCHB2) {
 	setTotalCHB(totalCHB2);
+	setCostCHB(this.totalCHB * estimate.getCostPerUnitCHB());
     }
 
     public double getTotalCHB() {
@@ -36,11 +35,12 @@ public class MasonryCHBEstimateResults implements Serializable {
 	this.totalCHB = totalCHB;
     }
 
-    public TableCHBDimensions getChbDimensions() {
-	return chbDimensions;
+    public double getCostCHB() {
+	return costCHB;
     }
 
-    public void setChbDimensions(TableCHBDimensions chbDimensions) {
-	this.chbDimensions = chbDimensions;
+    public void setCostCHB(double costCHB) {
+	this.costCHB = costCHB;
     }
+
 }

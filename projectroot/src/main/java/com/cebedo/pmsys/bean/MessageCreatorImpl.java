@@ -1,12 +1,10 @@
-package com.cebedo.pmsys.impl;
+package com.cebedo.pmsys.bean;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
 import org.springframework.jms.core.MessageCreator;
-
-import com.cebedo.pmsys.bean.SystemMessage;
 
 public class MessageCreatorImpl implements MessageCreator {
 

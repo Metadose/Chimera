@@ -70,7 +70,7 @@ public class EstimationOutputRowBean implements Serializable {
 
 	this.totalCHB = chb.getTotalCHB();
 
-	double chbBags40 = chbLaying.getBags();
+	double chbBags40 = chbLaying.getCement40kg();
 	this.chbLayingBags40kg = chbBags40;
 	this.chbLayingBags50kg = chbBags40 - (chbBags40 * 0.2);
 	this.chbLayingSand = chbLaying.getSand();
@@ -79,7 +79,7 @@ public class EstimationOutputRowBean implements Serializable {
 	this.plasteringCement50kg = plaster.getCement50kg();
 	this.plasteringSand = plaster.getSand();
 
-	double footingBags40 = footing.getCement();
+	double footingBags40 = footing.getCement40kg();
 	this.footingCement40kg = footingBags40;
 	this.footingCement50kg = footingBags40 - (footingBags40 * 0.2);
 	this.footingSand = footing.getSand();

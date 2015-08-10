@@ -2,35 +2,34 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.enums.TableConcreteProportion;
-import com.cebedo.pmsys.enums.TablePlasterMixture;
+import com.cebedo.pmsys.domain.Estimate;
 
 public class MasonryPlasteringEstimateResults implements Serializable {
 
     private static final long serialVersionUID = 1206561790105254749L;
 
-    // Set the results, concrete proportion, plaster mixture,
-    // is back to back, plaster top side.
-
-    private TableConcreteProportion concreteProportion;
-    private TablePlasterMixture plasterMixture;
-
     private double cement40kg;
     private double cement50kg;
     private double sand;
+
+    // Cost.
+    private double costCement40kg;
+    private double costCement50kg;
+    private double costSand;
 
     public MasonryPlasteringEstimateResults() {
 	;
     }
 
-    public MasonryPlasteringEstimateResults(double bags40kg, double bags50kg,
-	    double sand2, TableConcreteProportion proportion,
-	    TablePlasterMixture plasterMixture2) {
+    public MasonryPlasteringEstimateResults(Estimate estimate, double bags40kg, double bags50kg,
+	    double sand2) {
 	setCement40kg(bags40kg);
 	setCement50kg(bags50kg);
 	setSand(sand2);
-	setConcreteProportion(proportion);
-	setPlasterMixture(plasterMixture2);
+
+	setCostCement40kg(bags40kg * estimate.getCostPerUnitCement40kg());
+	setCostCement50kg(bags50kg * estimate.getCostPerUnitCement50kg());
+	setCostSand(sand2 * estimate.getCostPerUnitSand());
     }
 
     public double getCement40kg() {
@@ -57,20 +56,28 @@ public class MasonryPlasteringEstimateResults implements Serializable {
 	this.sand = sand;
     }
 
-    public TableConcreteProportion getConcreteProportion() {
-	return concreteProportion;
+    public double getCostCement40kg() {
+	return costCement40kg;
     }
 
-    public void setConcreteProportion(TableConcreteProportion concreteProportion) {
-	this.concreteProportion = concreteProportion;
+    public void setCostCement40kg(double costCement40kg) {
+	this.costCement40kg = costCement40kg;
     }
 
-    public TablePlasterMixture getPlasterMixture() {
-	return plasterMixture;
+    public double getCostCement50kg() {
+	return costCement50kg;
     }
 
-    public void setPlasterMixture(TablePlasterMixture plasterMixture) {
-	this.plasterMixture = plasterMixture;
+    public void setCostCement50kg(double costCement50kg) {
+	this.costCement50kg = costCement50kg;
+    }
+
+    public double getCostSand() {
+	return costSand;
+    }
+
+    public void setCostSand(double costSand) {
+	this.costSand = costSand;
     }
 
 }
