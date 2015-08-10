@@ -23,6 +23,14 @@
 	    <param name="file" value="C:/vcc/sys/system/logs/webapp-performance.log" />
 	    <layout class="org.apache.log4j.PatternLayout"/>
 	</appender>
+		
+	<!-- HDIV log -->
+	<appender name="webappHdivFile" class="org.apache.log4j.RollingFileAppender">
+	    <param name="maxFileSize" value="10MB" />
+	    <param name="maxBackupIndex" value="10" />
+	    <param name="file" value="C:/vcc/sys/system/logs/webapp-hdiv.log" />
+	    <layout class="org.apache.log4j.PatternLayout"/>
+	</appender>
 	
 	<!-- Web app exception -->
 	<appender name="webappExceptionLogFile" class="org.apache.log4j.RollingFileAppender">
@@ -39,10 +47,9 @@
 	
 	
 	<!-- HDIV Logger -->
-	<!-- TODO Make this the same as webappExceptionLogger -->
 	<logger name="org.hdiv.logs">
 		<level value="debug" />
-		<appender-ref ref="console" />
+		<appender-ref ref="webappHdivFile" />
 	</logger>
 	
 	<!-- Exception Logger -->

@@ -11,7 +11,7 @@ public class DashboardController {
     public static final String REQUEST_MAPPING = "dashboard";
     public static final String JSP_DASHBOARD = REQUEST_MAPPING + "/dashboard";
 
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT })
+    @RequestMapping(value = { "", SystemConstants.REQUEST_ROOT })
     public String view() {
 	return JSP_DASHBOARD;
     }

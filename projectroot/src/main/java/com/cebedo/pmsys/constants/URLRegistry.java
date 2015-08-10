@@ -22,4 +22,6 @@ public class URLRegistry {
 
     public static final String REDIRECT_PROJECT_EDIT = "redirect:/project/edit/%s";
 
+    public static final String REDIRECT_DASHBOARD = "redirect:/dashboard/";
+
 }
