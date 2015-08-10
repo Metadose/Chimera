@@ -109,7 +109,7 @@ public class ConcreteEstimationSummaryServiceImpl implements ConcreteEstimationS
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY,
 		obj.getKey());
 
 	// If create.

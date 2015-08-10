@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -18,10 +17,11 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.BeanHelper;
-import com.cebedo.pmsys.helper.LogHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -33,10 +33,9 @@ import com.cebedo.pmsys.token.AuthenticationToken;
  */
 public class CustomAuthenticationManager implements AuthenticationManager, ServletContextAware {
 
-    private static Logger logger = Logger.getLogger(SystemConstants.LOGGER_LOGIN);
-    private LogHelper logHelper = new LogHelper();
     private AuthHelper authHelper = new AuthHelper();
-    private BeanHelper beanHelper = new BeanHelper();
+    private MessageHelper messageHelper = new MessageHelper();
+
     private static final int MAX_LOGIN_ATTEMPT = 5;
 
     private SystemUserService systemUserService;
@@ -60,74 +59,60 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	    user = this.systemUserService.searchDatabase(auth.getName());
 	}
 	// If user does not exist.
-	// TODO Put alert boxes.
 	catch (Exception e) {
-	    String text = this.logHelper.logMessage(ipAddress, null, null, null, null,
-		    "User does not exist: " + auth.getName());
-	    logger.warn(text);
-	    throw new BadCredentialsException(text);
+	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_NOT_EXIST);
+	    throw new BadCredentialsException(AuditAction.LOGIN_USER_NOT_EXIST.label());
 	}
 
+	Company company = user.getCompany();
+	Staff staff = user.getStaff();
+	Object credentials = auth.getCredentials();
+
 	if (!user.isSuperAdmin()) {
+
 	    // If the current date is already after the company's expiration.
-	    if (new Date(System.currentTimeMillis()).after(user.getCompany().getDateExpiration())) {
-		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
-			user.getStaff(), null, "User company is expired.");
-		logger.warn(text);
-		throw new BadCredentialsException(text);
+	    if (new Date(System.currentTimeMillis()).after(company.getDateExpiration())) {
+		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_COMPANY_EXPIRED);
+		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_EXPIRED.label());
 	    }
 
 	    // If user is locked.
 	    if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
-		String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user,
-			user.getStaff(), null, "User account is locked.");
-		logger.warn(text);
-		throw new BadCredentialsException(text);
+		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_LOCKED);
+		throw new BadCredentialsException(AuditAction.LOGIN_USER_LOCKED.label());
 	    }
 	}
 
 	// Compare passwords.
 	// Make sure to encode the password first before comparing.
-	if (this.authHelper.isPasswordValid((String) auth.getCredentials(), user) == false) {
-	    // Add 1 to the user login attempts.
+	// Add 1 to the user login attempts.
+	if (this.authHelper.isPasswordValid((String) credentials, user) == false) {
 	    user.setLoginAttempts(user.getLoginAttempts() + 1);
 	    this.systemUserService.update(user, true);
-
-	    String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user, user.getStaff(),
-		    null, "Invalid password.");
-	    logger.warn(text);
-	    throw new BadCredentialsException(text);
+	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_INVALID_PASSWORD);
+	    throw new BadCredentialsException(AuditAction.LOGIN_INVALID_PASSWORD.label());
 	}
 
 	// Here's the main logic of this custom authentication manager.
-	// Username and password must not be the same to authenticate.
-	if (auth.getName().equals(auth.getCredentials()) == true) {
-	    String text = this.logHelper.logMessage(ipAddress, user.getCompany(), user, user.getStaff(),
-		    null, "Username and password are the same.");
-	    logger.warn(text);
-	    throw new BadCredentialsException(text);
-
-	} else {
-	    if (user.getLoginAttempts() > 0) {
-		user.setLoginAttempts(0);
-		this.systemUserService.update(user, true);
-	    }
-
-	    AuthenticationToken token = new AuthenticationToken(auth.getName(), auth.getCredentials(),
-		    getAuthorities(user), user.getStaff(), user.getCompany(), user.isSuperAdmin(),
-		    user.isCompanyAdmin(), user);
-	    token.setIpAddress(ipAddress);
-	    logger.info(this.logHelper.logMessage(token, "User is authenticated."));
-	    return token;
+	if (user.getLoginAttempts() > 0) {
+	    user.setLoginAttempts(0);
+	    this.systemUserService.update(user, true);
 	}
+
+	AuthenticationToken token = new AuthenticationToken(auth.getName(), credentials,
+		getAuthorities(user), staff, company, user.isSuperAdmin(), user.isCompanyAdmin(), user);
+	token.setIpAddress(ipAddress);
+	this.messageHelper.login(AuditAction.LOGIN_AUTHENTICATED, token);
+	return token;
     }
 
     /**
-     * Get all the granted authorities from a specific user.
+     * TODO Get all the granted authorities from a specific user.
      * 
      * @param user
      * @return
      */
+    @Deprecated
     public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
 	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 	// authList.add(new SimpleGrantedAuthority(access.getName()));

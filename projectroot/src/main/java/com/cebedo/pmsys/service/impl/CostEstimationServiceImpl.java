@@ -43,7 +43,7 @@ public class CostEstimationServiceImpl implements CostEstimationService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ESTIMATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
 		CostEstimationBean.class.getName());
 
 	// Construct objects.

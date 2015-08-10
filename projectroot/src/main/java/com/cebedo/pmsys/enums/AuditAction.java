@@ -2,57 +2,73 @@ package com.cebedo.pmsys.enums;
 
 public enum AuditAction {
 
-    CREATE(1, "Create"),
+    // Actions.
 
-    CREATE_MASS(2, "Create Mass"),
+    ACTION_CREATE(100, "Create"),
 
-    SET(3, "Set"),
+    ACTION_CREATE_MASS(101, "Create Mass"),
 
-    SET_MULTI(4, "Multi-Set"),
+    ACTION_SET(102, "Set"),
 
-    SET_IF_ABSENT(5, "Set If Absent"),
+    ACTION_SET_MULTI(103, "Multi-Set"),
 
-    UPDATE(6, "Update"),
+    ACTION_SET_IF_ABSENT(104, "Set If Absent"),
 
-    MERGE(7, "Merge"),
+    ACTION_UPDATE(105, "Update"),
 
-    DELETE(8, "Delete"),
+    ACTION_MERGE(106, "Merge"),
 
-    DELETE_COLLECTION(9, "Delete Collection"),
+    ACTION_DELETE(107, "Delete"),
 
-    DELETE_ALL(10, "Delete All"),
+    ACTION_DELETE_COLLECTION(108, "Delete Collection"),
 
-    GET(11, "Get"),
+    ACTION_DELETE_ALL(109, "Delete All"),
 
-    GET_MULTI(12, "Multi-Get"),
+    ACTION_GET(110, "Get"),
 
-    GET_JSON(13, "Get JSON"),
+    ACTION_GET_MULTI(111, "Multi-Get"),
 
-    GET_MAP(14, "Get Map"),
+    ACTION_GET_JSON(112, "Get JSON"),
 
-    LIST(15, "List"),
+    ACTION_GET_MAP(113, "Get Map"),
 
-    RANGE(16, "Range"),
+    ACTION_LIST(114, "List"),
 
-    ASSIGN(17, "Assign"),
+    ACTION_RANGE(115, "Range"),
 
-    ASSIGN_MASS(18, "Assign Mass"),
+    ACTION_ASSIGN(116, "Assign"),
 
-    ASSIGN_ALL(19, "Assign All"),
+    ACTION_ASSIGN_MASS(117, "Assign Mass"),
 
-    UNASSIGN(20, "Unassign"),
+    ACTION_ASSIGN_ALL(118, "Assign All"),
 
-    UNASSIGN_ALL(21, "Unassign All"),
+    ACTION_UNASSIGN(119, "Unassign"),
 
-    ESTIMATE(22, "Estimate"),
+    ACTION_UNASSIGN_ALL(120, "Unassign All"),
 
-    COMPUTE(23, "Compute"),
+    ACTION_ESTIMATE(121, "Estimate"),
 
-    CONVERT_FILE(24, "Convert File"),
+    ACTION_COMPUTE(122, "Compute"),
 
-    RENAME(25, "Rename"),
+    ACTION_CONVERT_FILE(123, "Convert File"),
 
-    UNAUTHORIZED(26, "Unauthorized");
+    ACTION_RENAME(124, "Rename"),
+
+    // Login.
+
+    LOGIN_USER_NOT_EXIST(800, "User does not exist"),
+
+    LOGIN_COMPANY_EXPIRED(801, "Company expired"),
+
+    LOGIN_USER_LOCKED(802, "User locked"),
+
+    LOGIN_INVALID_PASSWORD(803, "Invalid password"),
+
+    LOGIN_AUTHENTICATED(804, "User authenticated"),
+
+    // Errors.
+
+    ERROR_UNAUTHORIZED(900, "Unauthorized");
 
     String label;
     int id;
@@ -67,14 +83,14 @@ public enum AuditAction {
     }
 
     public static AuditAction of(int idn) {
-	if (idn == CREATE.id()) {
-	    return CREATE;
+	if (idn == ACTION_CREATE.id()) {
+	    return ACTION_CREATE;
 
-	} else if (idn == UPDATE.id()) {
-	    return UPDATE;
+	} else if (idn == ACTION_UPDATE.id()) {
+	    return ACTION_UPDATE;
 
-	} else if (idn == DELETE.id()) {
-	    return DELETE;
+	} else if (idn == ACTION_DELETE.id()) {
+	    return ACTION_DELETE;
 
 	}
 	return null;

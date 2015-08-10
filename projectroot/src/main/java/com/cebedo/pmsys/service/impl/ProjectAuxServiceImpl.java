@@ -33,7 +33,7 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 	    return;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
 	this.projectAuxValueRepo.set(obj);
     }
 
@@ -48,7 +48,7 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 	    return new ProjectAux();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
 
 	return obj;
     }

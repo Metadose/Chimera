@@ -35,7 +35,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	this.systemConfigurationDAO.create(systemConfiguration);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, SystemConfiguration.OBJECT_NAME,
+	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getId());
 
     }
@@ -51,7 +51,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return new SystemConfiguration();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemConfiguration.OBJECT_NAME, conf.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME, conf.getId());
 
 	return conf;
     }
@@ -67,7 +67,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, SystemConfiguration.OBJECT_NAME,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getId());
 
 	this.systemConfigurationDAO.update(systemConfiguration);
@@ -84,7 +84,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, SystemConfiguration.OBJECT_NAME, conf.getId());
+	this.messageHelper
+		.send(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME, conf.getId());
 
 	this.systemConfigurationDAO.delete(id);
     }
@@ -94,7 +95,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     public List<SystemConfiguration> list() {
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, SystemConfiguration.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, SystemConfiguration.OBJECT_NAME);
 
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
@@ -105,16 +106,19 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public String getValueByName(String name) {
+    public String getValueByName(String name, boolean override) {
 	SystemConfiguration conf = this.systemConfigurationDAO.getByName(name);
 
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(conf)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
-	    return "";
+	if (!override) {
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(conf)) {
+		this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
+		return "";
+	    }
+	    // Log.
+	    this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME,
+		    conf.getId());
 	}
-	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemConfiguration.OBJECT_NAME, conf.getId());
 
 	return conf.getValue();
     }
@@ -129,7 +133,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return new SystemConfiguration();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemConfiguration.OBJECT_NAME, config.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME, config.getId());
 	return config;
     }
 
@@ -143,7 +147,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.MERGE, SystemConfiguration.OBJECT_NAME, config.getId());
+	this.messageHelper.send(AuditAction.ACTION_MERGE, SystemConfiguration.OBJECT_NAME,
+		config.getId());
 
 	this.systemConfigurationDAO.merge(config);
     }

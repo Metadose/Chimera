@@ -81,7 +81,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE_MASS, Task.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
 
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
@@ -99,7 +99,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
 		MultipartFile.class.getName());
 
 	try {
@@ -216,7 +216,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.create(task);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Task.OBJECT_NAME, task.getId());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
@@ -237,7 +237,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
 
 	// Return obj.
 	return task;
@@ -258,7 +258,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
 
 	// Do service.
 	this.taskDAO.update(task);
@@ -282,7 +282,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Task.OBJECT_NAME, task.getId());
 
 	// Do service.
 	this.taskDAO.delete(id);
@@ -300,7 +300,7 @@ public class TaskServiceImpl implements TaskService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Task.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Task.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 
@@ -324,7 +324,7 @@ public class TaskServiceImpl implements TaskService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Task.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Task.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 
@@ -355,7 +355,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
 
 	// Do service.
 	task.setStatus(status);
@@ -381,7 +381,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ASSIGN, Staff.OBJECT_NAME, staff.getId(), Task.OBJECT_NAME,
+	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Staff.OBJECT_NAME, staff.getId(), Task.OBJECT_NAME,
 		task.getId());
 
 	// Do service.
@@ -409,7 +409,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
 
 	// Return obj.
 	return task;
@@ -432,7 +432,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Staff.OBJECT_NAME, staff.getId(),
 		Task.OBJECT_NAME, task.getId());
 
 	// Do service.
@@ -457,7 +457,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
 		Staff.OBJECT_NAME);
 
 	// Do service.
@@ -482,7 +482,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME);
 
 	// Do service.
@@ -514,7 +514,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.create(task);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, Project.OBJECT_NAME, proj.getId(), Task.OBJECT_NAME,
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(), Task.OBJECT_NAME,
 		task.getId());
 
 	// Return success.
@@ -545,7 +545,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.MERGE, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.send(AuditAction.ACTION_MERGE, Task.OBJECT_NAME, task.getId());
 
 	// Do service.
 	this.taskDAO.merge(task);
@@ -578,7 +578,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME);
 
 	// Do service.
@@ -605,7 +605,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME, task.getId());
 
 	// Do service.

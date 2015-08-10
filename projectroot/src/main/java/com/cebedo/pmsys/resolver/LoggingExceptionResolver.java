@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import com.cebedo.pmsys.constants.LoggerRegistry;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -16,7 +17,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 
-    private Logger logger = Logger.getLogger("webappExceptionLogger");
+    private Logger logger = Logger.getLogger(LoggerRegistry.LOGGER_EXCEPTION);
     private AuthHelper authHelper = new AuthHelper();
 
     @SuppressWarnings("rawtypes")
@@ -71,15 +72,6 @@ public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 	while (enums.hasMoreElements()) {
 	    String nextElem = enums.nextElement().toString();
 	    logString += nextElem + " = " + request.getHeader(nextElem) + "\n";
-	}
-	logString += "\n";
-
-	// Attributes.
-	logString += "ATTRIBUTES\n";
-	enums = request.getAttributeNames();
-	while (enums.hasMoreElements()) {
-	    String nextElem = enums.nextElement().toString();
-	    logString += nextElem + " = " + request.getAttribute(nextElem) + "\n";
 	}
 	logString += "\n";
 

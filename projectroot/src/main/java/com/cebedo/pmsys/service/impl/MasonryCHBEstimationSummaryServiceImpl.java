@@ -87,19 +87,19 @@ public class MasonryCHBEstimationSummaryServiceImpl implements MasonryCHBEstimat
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY,
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY,
 		obj.getKey());
 
 	// If create.
 	if (isCreate) {
 	    return AlertBoxGenerator.SUCCESS.generateCreate(
-		    RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY, obj.getName());
+		    RedisConstants.DISPLAY_MASONRY_CHB_ESTIMATION_SUMMARY, obj.getName());
 	}
 
 	// If update.
 	this.masonryCHBEstimationSummaryValueRepo.set(obj);
 	return AlertBoxGenerator.SUCCESS.generateUpdate(
-		RedisConstants.OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY, obj.getName());
+		RedisConstants.DISPLAY_MASONRY_CHB_ESTIMATION_SUMMARY, obj.getName());
     }
 
 }

@@ -107,7 +107,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.taskService.createMassTasks(tasks);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME);
 
 	// TODO
@@ -134,7 +134,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectAuxValueRepo.set(new ProjectAux(project));
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId());
 
 	// Return success response.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Project.OBJECT_NAME, project.getName());
@@ -162,7 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
 	assignAllStaffToProject(proj, staffList);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
 		Staff.OBJECT_NAME);
 
 	// TODO
@@ -210,7 +210,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.update(project);
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
 
 	// Response for the user.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
@@ -222,7 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> list() {
 
 	AuthenticationToken token = this.authHelper.getAuth();
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
 
 	// List as super admin.
 	if (token.isSuperAdmin()) {
@@ -245,7 +245,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Check security.
 	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, id);
+	    this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
@@ -281,7 +281,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, project.getId());
 
 	// Success response.
 	return AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
@@ -293,7 +293,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> listWithAllCollections() {
 	// Log.
 	AuthenticationToken token = this.authHelper.getAuth();
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 	    return this.projectDAO.listWithAllCollections(null);
@@ -313,7 +313,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, id);
+	    this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
@@ -328,7 +328,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> listWithTasks() {
 
 	AuthenticationToken token = this.authHelper.getAuth();
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
 
 	// Initiate with tasks.
 	if (token.isSuperAdmin()) {
@@ -345,7 +345,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Cacheable(value = Project.OBJECT_NAME + ":getNameByID", key = "#projectID", unless = "#result.isEmpty()")
     public String getNameByID(long projectID) {
 	String name = this.projectDAO.getNameByID(projectID);
-	this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, projectID);
+	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, projectID);
 	return name;
     }
 
@@ -384,7 +384,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_JSON, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
 		GanttBean.class.getName());
 
 	// Construct JSON data for the gantt chart.
@@ -433,7 +433,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_MAP, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME, proj.getId(),
 		Milestone.class.getName());
 
 	String keyTotalTasks = ProjectController.KEY_SUMMARY_TOTAL_TASKS;
@@ -539,7 +539,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_MAP, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME, proj.getId(),
 		TaskStatus.class.getName());
 
 	// Get summary of tasks.
@@ -577,7 +577,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_JSON, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
 		CalendarEventBean.class.getName());
 
 	// Get calendar events.
@@ -629,7 +629,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.milestoneDAO.deleteAllByProject(project.getId());
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME + "+" + Milestone.OBJECT_NAME);
 
 	// TODO

@@ -49,7 +49,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
 
 	// Set the status.
 	if (attendance.getStatus() == null) {
@@ -96,7 +96,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.delete(keys);
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_ATTENDANCE,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_ATTENDANCE,
 		attendance.getKey());
     }
 
@@ -116,7 +116,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.set(attendance);
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
 		RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
     }
 
@@ -136,7 +136,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.set(attendance);
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
     }
 
     /**
@@ -155,7 +155,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
 
 	double wage = 0;
 
@@ -200,7 +200,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
 
 	return totalWage;
     }
@@ -219,7 +219,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
 	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);
@@ -242,7 +242,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.RANGE, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
 		RedisConstants.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
@@ -280,7 +280,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		.get(Attendance.constructKey(staff, timestamp, status));
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
 		RedisConstants.OBJECT_ATTENDANCE, attn.getKey());
 
 	return attn;
@@ -298,7 +298,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
 		MassAttendanceBean.class.getName());
 
 	// Get the wage.
@@ -355,7 +355,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME, staff.getId(),
 		RedisConstants.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));

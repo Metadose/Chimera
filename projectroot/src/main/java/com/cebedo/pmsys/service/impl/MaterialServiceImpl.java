@@ -97,7 +97,7 @@ public class MaterialServiceImpl implements MaterialService {
 	    this.projectAuxService.set(projectAux);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_MATERIAL, obj.getKey());
 
 	    // Return.
 	    return AlertBoxGenerator.SUCCESS.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
@@ -121,7 +121,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_MATERIAL, obj.getKey());
 
 	return obj;
     }
@@ -136,7 +136,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, RedisConstants.OBJECT_DELIVERY, delivery.getKey(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_DELIVERY, delivery.getKey(),
 		RedisConstants.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(delivery);
@@ -161,7 +161,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_MATERIAL, material.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_MATERIAL, material.getKey());
 
 	// Get the updated version of the objects.
 	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery().getKey());
@@ -208,7 +208,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(proj);
@@ -227,7 +227,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_MATERIAL, material.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_MATERIAL, material.getKey());
 
 	// Set the material.
 	this.materialValueRepo.set(material);

@@ -16,7 +16,7 @@ public interface SystemConfigurationService {
 
     public List<SystemConfiguration> list();
 
-    public String getValueByName(String name);
+    public String getValueByName(String name, boolean override);
 
     public SystemConfiguration getByName(String name);
 

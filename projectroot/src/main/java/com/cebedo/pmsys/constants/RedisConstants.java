@@ -4,9 +4,7 @@ import com.cebedo.pmsys.model.Project;
 
 public abstract class RedisConstants {
 
-    /**
-     * Redis objects.
-     */
+    // Redis objects.
     public static final String OBJECT_ATTENDANCE = "attendance";
     public static final String OBJECT_PAYROLL = "payroll";
     public static final String OBJECT_MATERIAL = "material";
@@ -17,13 +15,13 @@ public abstract class RedisConstants {
     public static final String OBJECT_PROJECT_AUX = "projectAux";
     public static final String OBJECT_PULL_OUT = "pullout";
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
-    public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY_DISPLAY = "masonry (CHB) estimation summary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
-    public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY_DISPLAY = "concrete estimation summary";
 
-    /**
-     * Redis objects Edit and List pages.
-     */
+    // Displays.
+    public static final String DISPLAY_MASONRY_CHB_ESTIMATION_SUMMARY = "masonry (CHB) estimation summary";
+    public static final String DISPLAY_OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concrete estimation summary";
+
+    // Redis objects Edit and List pages.
     public static final String JSP_ESTIMATION_OUTPUT_EDIT = Project.OBJECT_NAME
 	    + "/estimationOutputEdit";
     public static final String JSP_DELIVERY_EDIT = Project.OBJECT_NAME + "/deliveryEdit";

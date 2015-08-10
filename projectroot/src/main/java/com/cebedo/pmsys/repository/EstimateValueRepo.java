@@ -27,6 +27,7 @@ public class EstimateValueRepo implements IValueRepository<Estimate> {
 	this.redisTemplate.delete(keys);
     }
 
+    @Deprecated
     @Override
     public void set(Estimate obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);

@@ -28,7 +28,7 @@ public class SystemUser implements Serializable {
     public static final String COLUMN_ACCESS = "access";
 
     private long id;
-    private String username;
+    private String username = "";
     private String password;
     private String retypePassword;
     private Staff staff;
@@ -153,4 +153,5 @@ public class SystemUser implements Serializable {
     public String toString() {
 	return String.valueOf(this.id);
     }
+
 }

@@ -4,8 +4,7 @@ public class RedisKeyRegistry {
 
     public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 
-    public static final String KEY_UNITS = "company.fk:%s:units:%s";
-
+    @Deprecated
     public static final String KEY_ESTIMATE = "company.fk:%s:project.fk:%s:estimate:%s";
 
     public static final String KEY_ESTIMATION_OUTPUT = "company.fk:%s:project.fk:%s:estimation.output:%s";
@@ -20,7 +19,6 @@ public class RedisKeyRegistry {
      * 2nd-level dependents.
      */
     public static final String KEY_PROJECT_PAYROLL = "company.fk:%s:project.fk:%s:payroll:%s";
-    public static final String KEY_SHAPE = "company.fk:%s:shape:%s";
 
     /**
      * Order of dependency. 2nd, 3rd, 4th.

@@ -92,7 +92,7 @@ public class PullOutServiceImpl implements PullOutService {
 	this.materialValueRepo.set(material);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
 
 	// Return.
 	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), "TODO", material.getName());
@@ -110,7 +110,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    return new PullOut();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
 
 	return obj;
     }
@@ -127,7 +127,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
 
 	// Do delete.
 	doDelete(key, obj);
@@ -171,7 +171,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    return new ArrayList<PullOut>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_PULL_OUT);
 
 	String pattern = PullOut.constructPattern(proj);
@@ -190,7 +190,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
 
 	// If the quantity has been changed.
 	// Just delete then commit new one.

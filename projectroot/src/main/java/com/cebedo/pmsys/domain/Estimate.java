@@ -176,6 +176,7 @@ public class Estimate implements IDomainObject {
 	this.extMap = extMap;
     }
 
+    @Deprecated
     @Override
     public String getKey() {
 	return String.format(RedisKeyRegistry.KEY_ESTIMATE, this.company.getId(), this.project.getId(),

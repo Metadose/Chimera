@@ -91,7 +91,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.CONVERT_FILE, Company.OBJECT_NAME, company.getId(),
+	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Company.OBJECT_NAME, company.getId(),
 		MultipartFile.class.getName(), multipartFile.getOriginalFilename());
 
 	try {
@@ -226,7 +226,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Company.OBJECT_NAME, company.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Company.OBJECT_NAME, company.getId(),
 		Staff.OBJECT_NAME);
 
 	return refinedStaff;
@@ -248,7 +248,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.create(staff);
 
 	// Log and notify.
-	this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
@@ -268,7 +268,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new Staff();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, stf.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, stf.getId());
 
 	// Return obj.
 	return stf;
@@ -286,7 +286,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Staff.OBJECT_NAME, staff.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Staff.OBJECT_NAME, staff.getId());
 
 	// Do service.
 	this.staffDAO.update(staff);
@@ -309,7 +309,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, Staff.OBJECT_NAME, stf.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Staff.OBJECT_NAME, stf.getId());
 
 	this.staffDAO.delete(id);
 
@@ -325,7 +325,7 @@ public class StaffServiceImpl implements StaffService {
     public List<Staff> list() {
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME);
 
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
@@ -348,7 +348,7 @@ public class StaffServiceImpl implements StaffService {
     public List<Staff> listWithAllCollections() {
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME);
 
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
@@ -377,7 +377,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new Staff();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Staff.OBJECT_NAME, stf.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, stf.getId());
 
 	// Return obj.
 	return stf;
@@ -391,7 +391,7 @@ public class StaffServiceImpl implements StaffService {
     public List<Staff> list(Long companyID) {
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME);
 
 	AuthenticationToken auth = this.authHelper.getAuth();
 	if (auth.isSuperAdmin()) {
@@ -415,7 +415,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, project.getId(),
 		Staff.OBJECT_NAME);
 
 	// Complete list.
@@ -455,7 +455,7 @@ public class StaffServiceImpl implements StaffService {
 		this.staffDAO.create(staff);
 
 		// Log.
-		this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+		this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
 
 		return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
 
@@ -480,7 +480,7 @@ public class StaffServiceImpl implements StaffService {
 	    this.systemUserDAO.update(user);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
 
 	    // Return success.
 	    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
@@ -495,7 +495,7 @@ public class StaffServiceImpl implements StaffService {
 	this.staffDAO.create(staff);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, Staff.OBJECT_NAME, staff.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
@@ -545,7 +545,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_JSON, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
 		CalendarEventBean.class.getName());
 
 	return new Gson().toJson(calendarEvents, ArrayList.class);
@@ -567,7 +567,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET_JSON, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
 		GanttBean.class.getName());
 
 	// Get gantt-data.
@@ -655,7 +655,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new HashMap<TaskStatus, Integer>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET_MAP, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, staff.getId(),
 		TaskStatus.class.getName());
 
 	// Get summary of tasks.
@@ -695,7 +695,7 @@ public class StaffServiceImpl implements StaffService {
 	    Set<Attendance> attendanceList) {
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator().next()
+	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator().next()
 		.getStaff().getId(), AttendanceStatus.class.getName());
 
 	// And count number per status.
@@ -749,7 +749,7 @@ public class StaffServiceImpl implements StaffService {
     public List<Staff> listExcept(Long coID, Set<Staff> doNotInclude) {
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Staff.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME);
 
 	// Get all staff from the company.
 	List<Staff> companyStaffList = this.staffDAO.list(coID);
@@ -776,7 +776,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ASSIGN_MASS, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_ASSIGN_MASS, Project.OBJECT_NAME, project.getId(),
 		Staff.OBJECT_NAME);
 
 	// Transform the array of id's to
@@ -809,7 +809,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, project.getId(),
 		Staff.OBJECT_NAME, staffID);
 
 	// Get index of staff to remove.
@@ -840,7 +840,7 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
 		Staff.OBJECT_NAME);
 
 	project.setAssignedStaff(new HashSet<Staff>());
@@ -857,7 +857,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, project.getId(),
 		Staff.OBJECT_NAME);
 
 	if (this.authHelper.isActionAuthorized(project)) {
@@ -885,7 +885,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey(), Staff.OBJECT_NAME);
 
 	Project project = projectPayroll.getProject();

@@ -406,7 +406,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.COMPUTE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_COMPUTE, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	// Clear old data.

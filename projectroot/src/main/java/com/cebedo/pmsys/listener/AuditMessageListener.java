@@ -37,23 +37,26 @@ public class AuditMessageListener implements MessageListener {
 		// Get the user details.
 		// Get action details.
 		AuthenticationToken auth = sysMessage.getAuth();
-		SystemUser user = auth.getUser();
-		String ipAddr = auth.getIpAddress();
+		Company company = auth == null ? null : auth.getCompany();
+		SystemUser user = auth == null ? null : auth.getUser();
+		String ipAddr = (auth == null || auth.getIpAddress().isEmpty()) ? sysMessage
+			.getIpAddress() : auth.getIpAddress();
 		int actionID = sysMessage.getAuditAction().id();
 		String objName = sysMessage.getObjectName();
 		long objID = sysMessage.getObjectID();
-		Company company = auth.getCompany();
 
 		// Do the audit.
-		AuditLog audit = new AuditLog(actionID, user, ipAddr, company, objName, objID);
+		AuditLog audit = new AuditLog(actionID, user, ipAddr, auth == null ? null : company,
+			objName, objID);
 		this.auditLogDAO.create(audit);
 
 		// If a slave exists, create separate entry.
 		String associatedObjName = sysMessage.getAssocObjectName();
 		Long associatedObjID = sysMessage.getAssocObjectID();
-		if (associatedObjName != null) {
-		    AuditLog assocAudit = new AuditLog(actionID, user, ipAddr, company,
-			    associatedObjName, associatedObjID);
+
+		if (associatedObjName != null && !associatedObjName.isEmpty()) {
+		    AuditLog assocAudit = new AuditLog(actionID, user, ipAddr, auth == null ? null
+			    : company, associatedObjName, associatedObjID);
 		    this.auditLogDAO.create(assocAudit);
 		}
 	    } catch (JMSException e) {

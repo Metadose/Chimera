@@ -34,102 +34,15 @@
 	    </layout>
 	</appender>
 	
-	<appender name="loginFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/login/login.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
 	
-	<appender name="companyFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/company/company.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
 	
-	<appender name="deliveryFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/delivery/delivery.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
 	
-	<appender name="teamFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/team/team.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="conversationFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/conversation/conversation.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="projectFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/project/project.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="projectfileFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/projectfile/projectfile.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="taskFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/task/task.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="staffFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/staff/staff.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="fieldFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/field/field.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="photoFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/photo/photo.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="projectFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/project/project.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
-	
-	<appender name="hdivFile" class="org.apache.log4j.RollingFileAppender">
-	    <param name="maxFileSize" value="10MB" />
-	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/hdiv/hdiv.html" />
-	    <layout class="com.cebedo.pmsys.layout.CustomHTMLLayout"/>
-	</appender>
 	
 	<!-- HDIV Logger -->
+	<!-- TODO Make this the same as webappExceptionLogger -->
 	<logger name="org.hdiv.logs">
 		<level value="debug" />
 		<appender-ref ref="console" />
-<!-- 		<appender-ref ref="hdivFile"/> -->
 	</logger>
 	
 	<!-- Exception Logger -->
@@ -144,83 +57,31 @@
 		<appender-ref ref="webappPerformanceFile"/>
 	</logger>
 	
-	<!-- Info Logger -->
+	<!-- Tail Logger -->
 	<logger name="webappTailLogger">
 		<level value="info" />
 		<appender-ref ref="webappTailFile" />
 	</logger>
 	
-	<!-- Application Loggers -->
-	<logger name="project">
-		<level value="info" />
-		<appender-ref ref="projectFile" />
-	</logger>
-	
-	<logger name="projectfile">
-		<level value="info" />
-		<appender-ref ref="projectfileFile" />
-	</logger>
-	
-	<logger name="staff">
-		<level value="info" />
-		<appender-ref ref="staffFile" />
-	</logger>
-	
-	<logger name="field">
-		<level value="info" />
-		<appender-ref ref="fieldFile" />
-	</logger>
-	
-	<logger name="photo">
-		<level value="info" />
-		<appender-ref ref="photoFile" />
-	</logger>
-	
-	<logger name="task">
-		<level value="info" />
-		<appender-ref ref="taskFile" />
-	</logger>
-	
-	<logger name="login">
-		<level value="info" />
-		<appender-ref ref="loginFile" />
-	</logger>
-	
-	<logger name="company">
-		<level value="info" />
-		<appender-ref ref="companyFile" />
-	</logger>
-	
-	<logger name="delivery">
-		<level value="info" />
-		<appender-ref ref="deliveryFile" />
-	</logger>
-	
-	<logger name="team">
-		<level value="info" />
-		<appender-ref ref="teamFile" />
-	</logger>
-	
-	<logger name="conversation">
-		<level value="info" />
-		<appender-ref ref="conversationFile" />
-	</logger>
-	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="warn" />
+		<level value="info" />
+		<appender-ref ref="console" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
 		<level value="warn" />
+		<appender-ref ref="console" />
 	</logger>
 	
 	<logger name="org.springframework.context">
 		<level value="warn" />
+		<appender-ref ref="console" />
 	</logger>
 
 	<logger name="org.springframework.web">
 		<level value="warn" />
+		<appender-ref ref="console" />
 	</logger>
 
 	<!-- Root Logger -->

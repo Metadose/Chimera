@@ -39,7 +39,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 
 	return obj;
     }
@@ -56,7 +56,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_ESTIMATION_OUTPUT,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_ESTIMATION_OUTPUT,
 		obj.getKey());
 
 	this.estimationOutputValueRepo.delete(key);
@@ -74,7 +74,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_ESTIMATION_OUTPUT);
 
 	String pattern = EstimationOutput.constructPattern(proj);

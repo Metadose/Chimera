@@ -74,7 +74,6 @@
     </beans:bean>
     
 	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.MessageListenerImpl"/>
-	<beans:bean id="mailMessageListener" class="com.cebedo.pmsys.listener.MailMessageListener"/>
 	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListener">
 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
 	</beans:bean>
@@ -85,8 +84,7 @@
 	      acknowledge="transacted">
 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
 	    <jms:listener destination="system.audit" ref="auditMessageListener" method="onMessage" />
-	    <jms:listener destination="system.log.info" ref="logMessageListener" method="onMessage" />
-	    <jms:listener destination="system.mail.send" ref="mailMessageListener" method="onMessage" />
+	    <jms:listener destination="system.log.tail" ref="logMessageListener" method="onMessage" />
 	</jms:listener-container>
 	  
     
@@ -142,18 +140,15 @@
 		<!-- Permit everyone to see the login page and the js css resources -->
 		<security:intercept-url pattern="/auth/**" access="permitAll"/>
 		
-		<!-- Only an authenticated user can view the dashboard and images -->
-		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
-		
 		<!-- These are just general access security, a finer security level resides in the Controller and JSP -->
 		<security:intercept-url pattern="/company/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/field/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/dashboard/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/fix/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/project/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/staff/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/task/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/systemuser/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/config/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/log/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/systemuser/**" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/task/**" access="isAuthenticated()"/>
 		
 		<security:logout 
 				invalidate-session="true" 
@@ -266,6 +261,11 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
+    </beans:bean>
+    
+    <!-- Milestone -->
+    <beans:bean id="milestoneDAO" class="com.cebedo.pmsys.dao.MilestoneDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     
     <!-- Project Payroll Computer -->

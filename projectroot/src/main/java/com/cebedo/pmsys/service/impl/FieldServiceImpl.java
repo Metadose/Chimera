@@ -50,7 +50,7 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ASSIGN, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel());
 
 	Field field = this.fieldDAO.getByID(fieldID);
@@ -82,7 +82,7 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel());
 
 	// Log and notify.
@@ -109,7 +109,7 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME);
 
 	// Do service.
@@ -139,7 +139,7 @@ public class FieldServiceImpl implements FieldService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel());
 
 	// Do service.

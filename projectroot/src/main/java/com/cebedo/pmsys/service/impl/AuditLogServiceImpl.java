@@ -43,7 +43,7 @@ public class AuditLogServiceImpl implements AuditLogService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, AuditLog.OBJECT_NAME, obj.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, AuditLog.OBJECT_NAME, obj.getId());
 	return obj;
     }
 
@@ -63,7 +63,7 @@ public class AuditLogServiceImpl implements AuditLogService {
 	this.auditLogDAO.delete(id);
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, AuditLog.OBJECT_NAME, obj.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, AuditLog.OBJECT_NAME, obj.getId());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class AuditLogServiceImpl implements AuditLogService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, AuditLog.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, AuditLog.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 	    return this.auditLogDAO.list(null);

@@ -12,6 +12,7 @@ import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
 
 import com.cebedo.pmsys.bean.SystemMessage;
+import com.cebedo.pmsys.constants.LoggerRegistry;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -20,8 +21,8 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class LogMessageListener implements MessageListener {
 
-    public final static String MESSAGE_DESTINATION = "system.log.info";
-    private static Logger logger = Logger.getLogger("webappTailLogger");
+    public final static String MESSAGE_DESTINATION = "system.log.tail";
+    private static Logger logger = Logger.getLogger(LoggerRegistry.LOGGER_TAIL);
 
     @Override
     @Transactional
@@ -35,23 +36,24 @@ public class LogMessageListener implements MessageListener {
 		// Log.
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		AuthenticationToken auth = sysMessage.getAuth();
-		Company company = auth.getCompany() == null ? new Company() : auth.getCompany();
-		SystemUser user = auth.getUser();
-		Staff staff = auth.getStaff();
+		Company company = auth == null ? null : auth.getCompany();
+		SystemUser user = auth == null ? null : auth.getUser();
+		Staff staff = auth == null ? null : auth.getStaff();
 		AuditAction action = sysMessage.getAuditAction();
 
 		// Identification.
 		long nowLong = System.currentTimeMillis();
 		Date now = new Date(nowLong);
-		String ipAddr = auth.getIpAddress();
-		long companyID = company.getId();
-		String companyName = company.getName();
-		long userID = user.getId();
-		String userName = user.getUsername();
-		long staffID = staff.getId();
-		String staffName = staff.getFullName();
-		boolean companyAdmin = auth.isCompanyAdmin();
-		boolean superAdmin = auth.isSuperAdmin();
+		String ipAddr = (auth == null || auth.getIpAddress().isEmpty()) ? sysMessage
+			.getIpAddress() : auth.getIpAddress();
+		long companyID = (auth == null || company == null) ? 0 : company.getId();
+		String companyName = (auth == null || company == null) ? "" : company.getName();
+		long userID = auth == null ? 0 : user.getId();
+		String userName = auth == null ? "" : user.getUsername();
+		long staffID = (auth == null || staff == null) ? 0 : staff.getId();
+		String staffName = (auth == null || staff == null) ? "" : staff.getFullName();
+		boolean companyAdmin = auth == null ? false : auth.isCompanyAdmin();
+		boolean superAdmin = auth == null ? false : auth.isSuperAdmin();
 
 		// Action.
 		int actionID = action.id();

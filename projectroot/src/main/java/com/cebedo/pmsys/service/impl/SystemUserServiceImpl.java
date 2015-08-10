@@ -67,7 +67,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.create(rootUser);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, rootUser.getId(),
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, rootUser.getId(),
 		    "Super Admin");
 
 	    // Update the config value.
@@ -78,8 +78,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemConfigurationDAO.merge(appInit);
 
 	    // Log the results.
-	    this.messageHelper
-		    .send(AuditAction.UPDATE, SystemConfiguration.OBJECT_NAME, appInit.getId());
+	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
+		    appInit.getId());
 	}
     }
 
@@ -126,7 +126,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.staffDAO.create(staff);
 
 	// Log and notify.
-	this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
 
 	// Then link them together.
 	systemUser.setStaff(staff);
@@ -145,14 +145,16 @@ public class SystemUserServiceImpl implements SystemUserService {
     public SystemUser getByID(long id, boolean override) {
 	SystemUser obj = this.systemUserDAO.getByID(id);
 
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj) && !override) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
-	    return new SystemUser();
-	}
+	if (!override) {
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+		return new SystemUser();
+	    }
 
-	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
+	    // Log.
+	    this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	}
 
 	// Return obj.
 	return obj;
@@ -173,7 +175,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
 
 	// Return obj.
 	return obj;
@@ -194,7 +196,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
 
 	// Return obj.
 	return obj;
@@ -216,7 +218,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId());
 
 	// Do service.
 	this.systemUserDAO.update(user);
@@ -232,14 +234,16 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Transactional
     public String update(SystemUser user, boolean systemOverride) {
 
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(user) && !systemOverride) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
+	if (!systemOverride) {
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(user)) {
+		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
+		return AlertBoxGenerator.ERROR;
+	    }
 
-	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	    // Log.
+	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	}
 
 	// Do service.
 	this.systemUserDAO.update(user);
@@ -263,7 +267,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId());
 
 	// Do service.
 	this.systemUserDAO.delete(id);
@@ -281,7 +285,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, SystemUser.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, SystemUser.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 

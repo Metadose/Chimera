@@ -41,7 +41,7 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyDAO.create(company);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Company.OBJECT_NAME, company.getId());
 
 	// Do actual service and construct response.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
@@ -64,7 +64,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Log then
 	// return actual object.
-	this.messageHelper.send(AuditAction.GET, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.send(AuditAction.ACTION_GET, Company.OBJECT_NAME, company.getId());
 	return company;
     }
 
@@ -82,7 +82,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// Create post-service operations.
-	this.messageHelper.send(AuditAction.UPDATE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Company.OBJECT_NAME, company.getId());
 
 	// Do actual update to object.
 	// Construct alert box response.
@@ -106,7 +106,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// Proceed to post-service operations.
-	this.messageHelper.send(AuditAction.DELETE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Company.OBJECT_NAME, company.getId());
 
 	// Do actual service.
 	// Generate response.
@@ -128,7 +128,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// List as super admin.
-	this.messageHelper.send(AuditAction.LIST, Company.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_LIST, Company.OBJECT_NAME);
 	return this.companyDAO.list(null);
     }
 }

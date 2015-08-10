@@ -82,7 +82,7 @@ public class EstimateServiceImpl implements EstimateService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ESTIMATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
 		EstimationInputBean.class.getName());
 
 	// Do the commit.

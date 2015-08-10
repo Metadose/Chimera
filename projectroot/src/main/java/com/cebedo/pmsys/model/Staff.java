@@ -189,12 +189,9 @@ public class Staff implements Serializable {
 
     @Transient
     public String getFullName() {
-	String fullName = getPrefix() == null ? "" : getPrefix() + " ";
-	fullName += getFirstName() == null ? "" : getFirstName() + " ";
-	fullName += getMiddleName() == null ? "" : getMiddleName().charAt(0) + ". ";
-	fullName += getLastName() == null ? "" : getLastName() + " ";
-	fullName += getSuffix() == null ? "" : getSuffix();
-	return fullName;
+	String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " " + getLastName()
+		+ " " + getSuffix();
+	return name;
     }
 
     @Transient

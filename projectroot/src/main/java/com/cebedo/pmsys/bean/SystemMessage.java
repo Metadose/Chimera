@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.listener.AuditMessageListener;
 import com.cebedo.pmsys.listener.LogMessageListener;
+import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class SystemMessage implements Serializable {
@@ -23,6 +24,9 @@ public class SystemMessage implements Serializable {
     private String objectKey = "";
     private String assocObjectName = "";
     private long assocObjectID = -1;
+
+    // Transients.
+    private String ipAddress = "";
 
     public SystemMessage() {
 	;
@@ -88,6 +92,18 @@ public class SystemMessage implements Serializable {
 	setAssocObjectID(assocID);
     }
 
+    public SystemMessage(AuthenticationToken auth2, AuditAction action) {
+	setAuth(auth2);
+	setAuditAction(action);
+    }
+
+    public SystemMessage(String ipAddress, SystemUser user, AuditAction action) {
+	setIpAddress(ipAddress);
+	setObjectID(user.getId());
+	setObjectName(user.getUsername());
+	setAuditAction(action);
+    }
+
     public AuthenticationToken getAuth() {
 	return auth;
     }
@@ -142,6 +158,14 @@ public class SystemMessage implements Serializable {
 
     public void setObjectKey(String objectKey) {
 	this.objectKey = objectKey;
+    }
+
+    public String getIpAddress() {
+	return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+	this.ipAddress = ipAddress;
     }
 
 }

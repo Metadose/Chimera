@@ -76,7 +76,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.deliveryValueRepo.set(obj);
 
 	// Log.
-	this.messageHelper.send(AuditAction.SET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
 
 	if (isCreate) {
 	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_DELIVERY,
@@ -97,7 +97,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
 
 	return obj;
     }
@@ -113,7 +113,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);
@@ -134,7 +134,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_DELIVERY, delivery.getKey());
 
 	// Get the necessary objects.
 	Project proj = delivery.getProject();

@@ -57,7 +57,7 @@ public class LoginLogoutController {
     public String getLoginPage() {
 	// If no value, get value.
 	if (appInit == null) {
-	    String valStr = this.configService.getValueByName(SystemConstants.CONFIG_ROOT_INIT);
+	    String valStr = this.configService.getValueByName(SystemConstants.CONFIG_ROOT_INIT, true);
 
 	    // If the configuration is not found,
 	    // app init is false, and create a new config.

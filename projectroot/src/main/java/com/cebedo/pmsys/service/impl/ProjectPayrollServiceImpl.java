@@ -75,7 +75,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.COMPUTE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	String payrollJSON = getPayrollJSON(proj, startDate, endDate, projectPayroll);
@@ -127,7 +127,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return new ProjectPayroll();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, RedisConstants.OBJECT_PAYROLL, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PAYROLL, obj.getKey());
 
 	return obj;
     }
@@ -147,7 +147,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.DELETE, RedisConstants.OBJECT_PAYROLL, payroll.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PAYROLL, payroll.getKey());
 
 	// Revert the grand total in project auxillary.
 	// Get the aux obj.
@@ -197,7 +197,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    }
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.GET, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_PAYROLL, PROPERTY_GRAND_TOTAL);
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
@@ -242,7 +242,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Log.
-	this.messageHelper.send(AuditAction.CREATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	return response;
@@ -279,7 +279,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollComputerService.compute(startDate, endDate, projectPayroll);
 
 	// Log.
-	this.messageHelper.send(AuditAction.GET_JSON, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	// Return the JSON equivalent of the result.
@@ -300,7 +300,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		RedisConstants.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
@@ -340,7 +340,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	// If the update button is clicked from the "right-side"
@@ -380,7 +380,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.UPDATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	Set<Staff> staffList = projectPayroll.getStaffList();

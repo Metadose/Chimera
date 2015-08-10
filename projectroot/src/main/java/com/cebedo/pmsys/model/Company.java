@@ -26,7 +26,7 @@ public class Company implements Serializable {
 
     public static final String PROPERTY_ID = "id";
 
-    private long id = 0;
+    private long id;
     private String name = "";
     private String description;
     private Date dateStarted;
@@ -151,7 +151,7 @@ public class Company implements Serializable {
 	this.tasks = tasks;
     }
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     public Set<AuditLog> getAuditLogs() {
 	return auditLogs;
     }
