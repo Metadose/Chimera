@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,10 +20,9 @@ import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
-import com.cebedo.pmsys.helper.LogHelper;
+import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
@@ -39,9 +37,8 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 public class TaskServiceImpl implements TaskService {
 
     private AuthHelper authHelper = new AuthHelper();
-    private LogHelper logHelper = new LogHelper();
+    private MessageHelper messageHelper = new MessageHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
-    private static Logger logger = Logger.getLogger(Task.OBJECT_NAME);
 
     private static final int EXCEL_COLUMN_DATE_START = 1;
     private static final int EXCEL_COLUMN_DURATION = 2;
@@ -75,6 +72,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void createMassTasks(List<Task> tasks) {
+
+	// Security check.
+	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
+	    Task sampleTask = tasks.get(0);
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, sampleTask.getId());
+	    return;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE_MASS, Task.OBJECT_NAME);
+
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
 	}
@@ -83,6 +91,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return new ArrayList<Task>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
+		MultipartFile.class.getName());
+
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -192,22 +211,15 @@ public class TaskServiceImpl implements TaskService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Company authCompany = auth.getCompany();
 	task.setCompany(authCompany);
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log and notify.
 
-	    // Do service.
-	    this.taskDAO.create(task);
+	// Do service.
+	this.taskDAO.create(task);
 
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
-	}
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, Task.OBJECT_NAME, task.getId());
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateCreate(Task.OBJECT_NAME, task.getTitle());
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -216,23 +228,19 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log the get.
-	    logger.info(this.logHelper.logGetObject(auth, Task.OBJECT_NAME, id, task.getTitle()));
-
-	    // Return obj.
-	    return task;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return new Task();
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Task.OBJECT_NAME, id,
-		task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Task.OBJECT_NAME, task.getId());
 
-	// Return empty.
-	return new Task();
+	// Return obj.
+	return task;
     }
 
     /**
@@ -242,24 +250,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String update(Task task) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.update(task);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, Task.OBJECT_NAME, task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(Task.OBJECT_NAME, task.getTitle());
+	// Do service.
+	this.taskDAO.update(task);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -268,25 +273,22 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String delete(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.delete(id);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateDelete(Task.OBJECT_NAME, task.getTitle());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, Task.OBJECT_NAME, id,
-		task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, Task.OBJECT_NAME, task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateDelete(Task.OBJECT_NAME, task.getTitle());
+	// Do service.
+	this.taskDAO.delete(id);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateDelete(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -296,9 +298,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public List<Task> list() {
 	AuthenticationToken token = this.authHelper.getAuth();
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Task.OBJECT_NAME);
+
 	if (token.isSuperAdmin()) {
-	    // Log info super admin.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token, Task.OBJECT_NAME));
 
 	    // Return list.
 	    return this.taskDAO.list(null);
@@ -306,7 +310,6 @@ public class TaskServiceImpl implements TaskService {
 
 	// Log warn.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.logListFromCompany(token, Task.OBJECT_NAME, company));
 
 	// Return list.
 	return this.taskDAO.list(company.getId());
@@ -319,9 +322,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public List<Task> listWithAllCollections() {
 	AuthenticationToken token = this.authHelper.getAuth();
+
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, Task.OBJECT_NAME);
+
 	if (token.isSuperAdmin()) {
-	    // Log info super admin.
-	    logger.info(this.logHelper.logListWithCollectionsAsSuperAdmin(token, Task.OBJECT_NAME));
 
 	    // Return list.
 	    return this.taskDAO.listWithAllCollections(null);
@@ -329,7 +334,6 @@ public class TaskServiceImpl implements TaskService {
 
 	// Log info non-super admin.
 	Company company = token.getCompany();
-	logger.info(this.logHelper.logListWithCollectionsFromCompany(token, Task.OBJECT_NAME, company));
 
 	// Return list.
 	return this.taskDAO.listWithAllCollections(company.getId());
@@ -342,30 +346,23 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public String mark(long taskID, int status) {
 	// Get the task.
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByID(taskID);
 
-	// Set the status and update, if authorized.
-	if (this.authHelper.isActionAuthorized(task)) {
-
-	    // Log and notify.
-	    TaskStatus taskStatus = TaskStatus.of(status);
-
-	    // Do service.
-	    task.setStatus(status);
-	    this.taskDAO.update(task);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	// logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.MARK_AS,
-	// Task.OBJECT_NAME,
-	// task.getId(), task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, Task.OBJECT_NAME, task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
+	// Do service.
+	task.setStatus(status);
+	this.taskDAO.update(task);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -374,32 +371,27 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String assignStaffTask(long taskID, long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
-	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(staff)) {
-
-	    // Log and notify.
-
-	    // Do service.
-	    TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
-	    taskStaffAssign.setTaskID(taskID);
-	    taskStaffAssign.setStaffID(staffID);
-	    this.taskDAO.assignStaffTask(taskStaffAssign);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.ASSIGN, Staff.OBJECT_NAME,
-		staff.getId(), staff.getFullName()));
+	// Log.
+	this.messageHelper.send(AuditAction.ASSIGN, Staff.OBJECT_NAME, staff.getId(), Task.OBJECT_NAME,
+		task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
+	// Do service.
+	TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
+	taskStaffAssign.setTaskID(taskID);
+	taskStaffAssign.setStaffID(staffID);
+	this.taskDAO.assignStaffTask(taskStaffAssign);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -408,25 +400,19 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task getByIDWithAllCollections(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByIDWithAllCollections(id);
 
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log info.
-	    logger.info(this.logHelper.logGetObjectWithAllCollections(auth, Task.OBJECT_NAME, id,
-		    task.getTitle()));
-
-	    // Return obj.
-	    return task;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return new Task();
 	}
 
-	// Log warn.
-	// logger.warn(this.logHelper.logUnauthorized(auth,
-	// AuditAction.GET_WITH_COLLECTIONS,
-	// Task.OBJECT_NAME, id, task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.GET, Task.OBJECT_NAME, task.getId());
 
-	// Return empty.
-	return new Task();
+	// Return obj.
+	return task;
     }
 
     /**
@@ -436,29 +422,24 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String unassignStaffTask(long taskID, long staffID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
-	if (this.authHelper.isActionAuthorized(task) && this.authHelper.isActionAuthorized(staff)) {
-
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.unassignStaffTask(taskID, staffID);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(staff)) {
+	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Staff.OBJECT_NAME,
-		staff.getId(), staff.getFullName()));
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN, Staff.OBJECT_NAME, staff.getId(),
+		Task.OBJECT_NAME, task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
+	// Do service.
+	this.taskDAO.unassignStaffTask(taskID, staffID);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -466,26 +447,24 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String unassignAllStaffTasks(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
+    public String unassignAllStaffUnderTask(long id) {
 	Task task = this.taskDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(task)) {
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.unassignAllStaffTasks(id);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN_ALL, Task.OBJECT_NAME, id,
-		task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
+		Staff.OBJECT_NAME);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUnassignAll(Staff.OBJECT_NAME);
+	// Do service.
+	this.taskDAO.unassignAllStaffTasks(id);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
     }
 
     /**
@@ -494,26 +473,23 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String deleteAllTasksByProject(long projectID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectDAO.getByID(projectID);
 
-	if (this.authHelper.isActionAuthorized(project)) {
-
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.deleteAllTasksByProject(projectID);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE_ALL, Project.OBJECT_NAME,
-		project.getId(), project.getName()));
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateDeleteAll(Task.OBJECT_NAME);
+	// Do service.
+	this.taskDAO.deleteAllTasksByProject(projectID);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
     }
 
     /**
@@ -525,25 +501,24 @@ public class TaskServiceImpl implements TaskService {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Project proj = this.projectDAO.getByID(projectID);
 
-	if (this.authHelper.isActionAuthorized(proj)) {
-	    // Log and notify.
-
-	    // Do service.
-	    task.setProject(proj);
-	    Company authCompany = auth.getCompany();
-	    task.setCompany(authCompany);
-	    this.taskDAO.create(task);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
+	// Do service.
+	task.setProject(proj);
+	Company authCompany = auth.getCompany();
+	task.setCompany(authCompany);
+	this.taskDAO.create(task);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateCreate(Task.OBJECT_NAME, task.getTitle());
+	// Log.
+	this.messageHelper.send(AuditAction.CREATE, Project.OBJECT_NAME, proj.getId(), Task.OBJECT_NAME,
+		task.getId());
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -552,35 +527,31 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String merge(Task task) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Task oldTask = this.taskDAO.getByIDWithAllCollections(task.getId());
 
-	if (this.authHelper.isActionAuthorized(oldTask)) {
-
-	    // Prepare object.
-	    task.setCompany(oldTask.getCompany());
-	    if (task.getProject() == null) {
-		task.setProject(oldTask.getProject());
-	    }
-	    if (task.getStaff() == null) {
-		task.setStaff(oldTask.getStaff());
-	    }
-
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.merge(task);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
+	// Prepare object.
+	task.setCompany(oldTask.getCompany());
+	if (task.getProject() == null) {
+	    task.setProject(oldTask.getProject());
+	}
+	if (task.getStaff() == null) {
+	    task.setStaff(oldTask.getStaff());
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(task)) {
+	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(Task.OBJECT_NAME, task.getTitle());
+	// Log.
+	this.messageHelper.send(AuditAction.MERGE, Task.OBJECT_NAME, task.getId());
+
+	// Do service.
+	this.taskDAO.merge(task);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -598,25 +569,23 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String unassignAllTasksByProject(long projectID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectDAO.getByID(projectID);
 
-	if (this.authHelper.isActionAuthorized(project)) {
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.unassignAllTasksByProject(project);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUnassignAll(Task.OBJECT_NAME);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME,
-		project.getId(), project.getName()));
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME);
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUnassignAll(Task.OBJECT_NAME);
+	// Do service.
+	this.taskDAO.unassignAllTasksByProject(project);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Task.OBJECT_NAME);
     }
 
     /**
@@ -626,28 +595,23 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public String unassignTaskByProject(long taskID, long projectID) {
 
-	AuthenticationToken auth = this.authHelper.getAuth();
 	Project project = this.projectDAO.getByID(projectID);
 	Task task = this.taskDAO.getByID(taskID);
 
-	if (this.authHelper.isActionAuthorized(project) && this.authHelper.isActionAuthorized(task)) {
-
-	    // Log and notify.
-
-	    // Do service.
-	    this.taskDAO.unassignTaskByProject(taskID, project);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUnassign(Task.OBJECT_NAME, task.getTitle());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Project.OBJECT_NAME,
-		project.getId(), project.getName()));
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UNASSIGN, Task.OBJECT_NAME,
-		task.getId(), task.getTitle()));
+	// Log.
+	this.messageHelper.send(AuditAction.UNASSIGN, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME, task.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUnassign(Task.OBJECT_NAME, task.getTitle());
+	// Do service.
+	this.taskDAO.unassignTaskByProject(taskID, project);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Task.OBJECT_NAME, task.getTitle());
     }
 }

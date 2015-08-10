@@ -2,7 +2,6 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +12,6 @@ import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.LogHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -28,8 +26,6 @@ public class SystemUserServiceImpl implements SystemUserService {
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
-    private LogHelper logHelper = new LogHelper();
-    private static Logger logger = Logger.getLogger(SystemUser.OBJECT_NAME);
 
     private SystemUserDAO systemUserDAO;
     private StaffDAO staffDAO;
@@ -70,6 +66,10 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    // Create the account.
 	    this.systemUserDAO.create(rootUser);
 
+	    // Log.
+	    this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, rootUser.getId(),
+		    "Super Admin");
+
 	    // Update the config value.
 	    LoginLogoutController.appInit = true;
 	    SystemConfiguration appInit = this.systemConfigurationDAO
@@ -78,8 +78,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemConfigurationDAO.merge(appInit);
 
 	    // Log the results.
-	    String message = "Super admin " + ROOT_USER_NAME + " account was generated.";
-	    logger.warn(this.logHelper.logMessage(message));
+	    this.messageHelper
+		    .send(AuditAction.UPDATE, SystemConfiguration.OBJECT_NAME, appInit.getId());
 	}
     }
 
@@ -106,6 +106,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    Company company = new Company(systemUser.getCompanyID());
 	    systemUser.setCompany(company);
 	    staff.setCompany(company);
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(systemUser)) {
+		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, systemUser.getId());
+		return AlertBoxGenerator.ERROR;
+	    }
 	} else {
 	    // Else, get it somewhere else.
 	    Company authCompany = auth.getCompany();
@@ -113,32 +119,22 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    staff.setCompany(authCompany);
 	}
 
-	if (this.authHelper.isActionAuthorized(systemUser)) {
+	// Do service.
+	// Create the user and staff.
+	// Create the objects first.
+	this.systemUserDAO.create(systemUser);
+	this.staffDAO.create(staff);
 
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
+	// Log and notify.
+	this.messageHelper.send(AuditAction.CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
 
-	    // Do service.
-	    // Create the user and staff.
-	    // Create the objects first.
-	    this.systemUserDAO.create(systemUser);
-	    this.staffDAO.create(staff);
+	// Then link them together.
+	systemUser.setStaff(staff);
+	this.systemUserDAO.update(systemUser);
 
-	    // Then link them together.
-	    systemUser.setStaff(staff);
-	    this.systemUserDAO.update(systemUser);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateCreate(SystemUser.OBJECT_NAME,
-		    systemUser.getUsername());
-	}
-
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.CREATE, SystemUser.OBJECT_NAME,
-		systemUser.getId(), systemUser.getUsername()));
-
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateCreate(SystemUser.OBJECT_NAME, systemUser.getUsername());
+	// Return success.
+	return AlertBoxGenerator.SUCCESS
+		.generateCreate(SystemUser.OBJECT_NAME, systemUser.getUsername());
     }
 
     /**
@@ -147,23 +143,19 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public SystemUser getByID(long id, boolean override) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	SystemUser obj = this.systemUserDAO.getByID(id);
 
-	if (override || this.authHelper.isActionAuthorized(obj)) {
-	    // Log info.
-	    logger.info(this.logHelper.logGetObject(auth, SystemUser.OBJECT_NAME, id, obj.getUsername()));
-
-	    // Return obj.
-	    return obj;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj) && !override) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    return new SystemUser();
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, SystemUser.OBJECT_NAME, id,
-		obj.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
 
-	// Return empty.
-	return new SystemUser();
+	// Return obj.
+	return obj;
     }
 
     /**
@@ -172,25 +164,19 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public SystemUser getWithSecurityByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	SystemUser obj = this.systemUserDAO.getWithSecurityByID(id);
 
-	if (this.authHelper.isActionAuthorized(obj)) {
-	    // Log info.
-	    logger.info(this.logHelper.logGetObjectWithProperty(auth, SystemUser.OBJECT_NAME,
-		    "securityAccess,securityRoles", id, obj.getUsername()));
-
-	    // Return obj.
-	    return obj;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    return new SystemUser();
 	}
 
-	// Log warn.
-	// logger.warn(this.logHelper.logUnauthorized(auth,
-	// AuditAction.GET_PARTIAL,
-	// SystemUser.OBJECT_NAME, id, obj.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
 
-	// Return empty.
-	return new SystemUser();
+	// Return obj.
+	return obj;
     }
 
     /**
@@ -199,23 +185,19 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public SystemUser getByID(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	SystemUser user = getByID(id, false);
+	SystemUser obj = getByID(id, false);
 
-	if (this.authHelper.isActionAuthorized(user)) {
-	    // Log info.
-	    logger.info(this.logHelper.logGetObject(auth, SystemUser.OBJECT_NAME, id, user.getUsername()));
-
-	    // Return obj.
-	    return user;
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    return new SystemUser();
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.GET, SystemUser.OBJECT_NAME, id,
-		user.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.GET, SystemUser.OBJECT_NAME, obj.getId());
 
-	// Return empty.
-	return new SystemUser();
+	// Return obj.
+	return obj;
     }
 
     /**
@@ -224,28 +206,23 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String update(SystemUser user) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
 	user.setPassword(encPassword);
 
-	if (this.authHelper.isActionAuthorized(user)) {
-
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
-
-	    // Do service.
-	    this.systemUserDAO.update(user);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(user)) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, SystemUser.OBJECT_NAME,
-		user.getId(), user.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	// Do service.
+	this.systemUserDAO.update(user);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
     }
 
     /**
@@ -254,28 +231,21 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String update(SystemUser user, boolean systemOverride) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 
-	if (systemOverride || this.authHelper.isActionAuthorized(user)) {
-
-	    if (!systemOverride) {
-		// Log and notify.
-		this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
-	    }
-
-	    // Do service.
-	    this.systemUserDAO.update(user);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(user) && !systemOverride) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.UPDATE, SystemUser.OBJECT_NAME,
-		user.getId(), user.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, user.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	// Do service.
+	this.systemUserDAO.update(user);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
     }
 
     /**
@@ -284,27 +254,22 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String delete(long id) {
-	AuthenticationToken auth = this.authHelper.getAuth();
 	SystemUser obj = this.systemUserDAO.getByID(id);
 
-	if (this.authHelper.isActionAuthorized(obj)) {
-
-	    // Log and notify.
-	    this.messageHelper.send(AuditAction.UPDATE, SystemUser.OBJECT_NAME, obj.getId());
-
-	    // Do service.
-	    this.systemUserDAO.delete(id);
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, obj.getUsername());
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log warn.
-	logger.warn(this.logHelper.logUnauthorized(auth, AuditAction.DELETE, SystemUser.OBJECT_NAME,
-		obj.getId(), obj.getUsername()));
+	// Log.
+	this.messageHelper.send(AuditAction.DELETE, SystemUser.OBJECT_NAME, obj.getId());
 
-	// Return fail.
-	return AlertBoxGenerator.FAILED.generateUpdate(SystemUser.OBJECT_NAME, obj.getUsername());
+	// Do service.
+	this.systemUserDAO.delete(id);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, obj.getUsername());
     }
 
     /**
@@ -315,18 +280,16 @@ public class SystemUserServiceImpl implements SystemUserService {
     public List<SystemUser> list() {
 	AuthenticationToken token = this.authHelper.getAuth();
 
+	// Log.
+	this.messageHelper.send(AuditAction.LIST, SystemUser.OBJECT_NAME);
+
 	if (token.isSuperAdmin()) {
-	    // Log info.
-	    logger.info(this.logHelper.logListAsSuperAdmin(token, SystemUser.OBJECT_NAME));
 
 	    // Return list.
 	    return this.systemUserDAO.list(null);
 	}
 
 	Company co = token.getCompany();
-
-	// Log info.
-	logger.info(this.logHelper.logListFromCompany(token, SystemUser.OBJECT_NAME, co));
 
 	// Return list.
 	return this.systemUserDAO.list(co.getId());

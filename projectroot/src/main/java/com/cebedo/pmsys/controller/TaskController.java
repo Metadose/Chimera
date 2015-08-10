@@ -404,7 +404,7 @@ public class TaskController {
 	}
 
 	long taskID = task.getId();
-	this.taskService.unassignAllStaffTasks(taskID);
+	this.taskService.unassignAllStaffUnderTask(taskID);
 
 	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
@@ -637,7 +637,7 @@ public class TaskController {
 	    + SystemConstants.ALL, method = RequestMethod.POST)
     public ModelAndView unassignAllTaskStaff(@RequestParam(Task.COLUMN_PRIMARY_KEY) long id,
 	    RedirectAttributes redirectAttrs) {
-	this.taskService.unassignAllStaffTasks(id);
+	this.taskService.unassignAllStaffUnderTask(id);
 
 	String taskTitle = this.taskService.getTitleByID(id);
 	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;

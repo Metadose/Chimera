@@ -93,7 +93,7 @@ public interface TaskService {
      * @param taskID
      * @return
      */
-    public String unassignAllStaffTasks(long taskID);
+    public String unassignAllStaffUnderTask(long taskID);
 
     /**
      * Delete all tasks given a project.
