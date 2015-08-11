@@ -1,6 +1,10 @@
 package com.cebedo.pmsys.bean;
 
-public class ShapeBean {
+import java.io.Serializable;
+
+public class ShapeBean implements Serializable {
+
+    private static final long serialVersionUID = -8565430166993517307L;
 
     private double area;
     private double volume;

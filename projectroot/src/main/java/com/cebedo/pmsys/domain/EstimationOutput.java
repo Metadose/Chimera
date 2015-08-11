@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cebedo.pmsys.bean.EstimateBean;
 import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
@@ -31,7 +32,7 @@ public class EstimationOutput implements IDomainObject {
     /**
      * Output.
      */
-    private List<Estimate> estimates;
+    private List<EstimateBean> estimateBeans;
     private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
@@ -84,12 +85,12 @@ public class EstimationOutput implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public List<Estimate> getEstimates() {
-	return estimates;
+    public List<EstimateBean> getEstimates() {
+	return estimateBeans;
     }
 
-    public void setEstimates(List<Estimate> estimates) {
-	this.estimates = estimates;
+    public void setEstimates(List<EstimateBean> estimateBeans) {
+	this.estimateBeans = estimateBeans;
     }
 
     public Date getLastComputed() {
@@ -154,14 +155,13 @@ public class EstimationOutput implements IDomainObject {
 	this.remarks = remarks;
     }
 
-    public void setResults(EstimationInputBean estimateInput, List<Estimate> estimates2,
+    public void setResults(EstimationInputBean estimateInput, List<EstimateBean> estimates2,
 	    String rowListJson) {
 	setName(estimateInput.getName());
 	setRemarks(estimateInput.getRemarks());
 	setEstimates(estimates2);
 	setEstimatesAsJson(rowListJson);
 	setLastComputed(new Date(System.currentTimeMillis()));
-	setUuid(UUID.randomUUID());
     }
 
 }

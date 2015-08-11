@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.CostEstimationBean;
+import com.cebedo.pmsys.bean.EstimateBean;
 import com.cebedo.pmsys.bean.EstimationInputBean;
 import com.cebedo.pmsys.bean.FieldAssignmentBean;
 import com.cebedo.pmsys.bean.MassUploadBean;
@@ -29,7 +29,6 @@ import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.constants.URLRegistry;
 import com.cebedo.pmsys.domain.Delivery;
-import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -53,7 +52,6 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
-import com.cebedo.pmsys.service.CostEstimationService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
@@ -78,7 +76,7 @@ value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectCont
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN, ProjectController.ATTR_TASK },
 
 types = { Project.class, FieldAssignmentBean.class, ProjectPayroll.class, Delivery.class,
-	Material.class, PullOut.class, Estimate.class, MassUploadBean.class, Task.class }
+	Material.class, PullOut.class, EstimateBean.class, MassUploadBean.class, Task.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -100,7 +98,6 @@ public class ProjectController {
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_CONCRETE_ESTIMATION_SUMMARIES = "concreteEstimationSummaries";
     public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
-    public static final String ATTR_COST_ESTIMATION_BEAN = "costEstimationBean";
     public static final String ATTR_SHAPE_LIST = "shapeList";
 
     public static final String ATTR_MASS_UPLOAD_STAFF_BEAN = "massUploadStaffBean";
@@ -178,7 +175,6 @@ public class ProjectController {
     private ProjectAuxService projectAuxService;
     private PullOutService pullOutService;
     private EstimateService estimateService;
-    private CostEstimationService costEstimationService;
     private EstimationOutputService estimationOutputService;
     private TaskService taskService;
 
@@ -192,12 +188,6 @@ public class ProjectController {
     @Qualifier(value = "estimationOutputService")
     public void setEstimationOutputService(EstimationOutputService estimationOutputService) {
 	this.estimationOutputService = estimationOutputService;
-    }
-
-    @Autowired(required = true)
-    @Qualifier(value = "costEstimationService")
-    public void setCostEstimationService(CostEstimationService costEstimationService) {
-	this.costEstimationService = costEstimationService;
     }
 
     @Autowired(required = true)
@@ -669,32 +659,6 @@ public class ProjectController {
 	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
 	return deliveryEdit;
-    }
-
-    /**
-     * Do create/update on an estimate summary.
-     * 
-     * @param delivery
-     * @param redirectAttrs
-     * @param status
-     * @return
-     */
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + CostEstimationBean.BEAN_NAME }, method = RequestMethod.POST)
-    public String createConcreteEstimationSummary(
-	    @ModelAttribute(ATTR_COST_ESTIMATION_BEAN) CostEstimationBean costEstimationBean,
-	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
-
-	// Do service, get response.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	String response = this.costEstimationService.estimateCosts(proj, costEstimationBean);
-
-	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
-
-	// Complete the transaction.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
     }
 
     /**

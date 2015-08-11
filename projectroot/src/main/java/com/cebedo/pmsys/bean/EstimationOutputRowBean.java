@@ -1,8 +1,7 @@
 package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
-
-import com.cebedo.pmsys.domain.Estimate;
+import java.util.UUID;
 
 public class EstimationOutputRowBean implements Serializable {
 
@@ -46,21 +45,21 @@ public class EstimationOutputRowBean implements Serializable {
 	;
     }
 
-    public EstimationOutputRowBean(Estimate estimate) {
+    public EstimationOutputRowBean(EstimateBean estimateBean) {
 
-	ShapeBean shapeBean = estimate.getShape();
-	ConcreteEstimateResults concrete = estimate.getResultConcreteEstimate();
-	MasonryCHBEstimateResults chb = estimate.getResultCHBEstimate();
-	MasonryCHBLayingEstimateResults chbLaying = estimate.getResultCHBLayingEstimate();
-	MasonryPlasteringEstimateResults plaster = estimate.getResultPlasteringEstimate();
-	MasonryCHBFootingEstimateResults footing = estimate.getResultCHBFootingEstimate();
+	ShapeBean shapeBean = estimateBean.getShape();
+	ConcreteEstimateResults concrete = estimateBean.getResultConcreteEstimate();
+	MasonryCHBEstimateResults chb = estimateBean.getResultCHBEstimate();
+	MasonryCHBLayingEstimateResults chbLaying = estimateBean.getResultCHBLayingEstimate();
+	MasonryPlasteringEstimateResults plaster = estimateBean.getResultPlasteringEstimate();
+	MasonryCHBFootingEstimateResults footing = estimateBean.getResultCHBFootingEstimate();
 
-	this.uuid = estimate.getUuid().toString();
-	this.name = estimate.getName();
-	this.remarks = estimate.getRemarks();
+	this.uuid = UUID.randomUUID().toString();
+	this.name = estimateBean.getName();
+	this.remarks = estimateBean.getRemarks();
 	this.area = shapeBean.getOriginalArea();
 	this.volume = shapeBean.getOriginalVolume();
-	this.chbFoundationHeight = estimate.getChbFoundationHeight();
+	this.chbFoundationHeight = estimateBean.getChbFoundationHeight();
 	this.footingLength = shapeBean.getFootingLength();
 
 	this.concreteCement40kg = concrete.getCement40kg();

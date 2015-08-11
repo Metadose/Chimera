@@ -2,7 +2,6 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.utils.EstimateUtils;
 
 public class MasonryCHBLayingEstimateResults implements Serializable {
@@ -24,14 +23,14 @@ public class MasonryCHBLayingEstimateResults implements Serializable {
 	;
     }
 
-    public MasonryCHBLayingEstimateResults(Estimate estimate, double bags40kg, double sandNeeded) {
+    public MasonryCHBLayingEstimateResults(EstimateBean estimateBean, double bags40kg, double sandNeeded) {
 	setBags(bags40kg);
 	setSand(sandNeeded);
 
 	double bags50kg = EstimateUtils.convert40kgTo50kg(bags40kg);
-	setCostCement40kg(bags40kg * estimate.getCostPerUnitCement40kg());
-	setCostCement50kg(bags50kg * estimate.getCostPerUnitCement50kg());
-	setCostSand(sandNeeded * estimate.getCostPerUnitSand());
+	setCostCement40kg(bags40kg * estimateBean.getCostPerUnitCement40kg());
+	setCostCement50kg(bags50kg * estimateBean.getCostPerUnitCement50kg());
+	setCostSand(sandNeeded * estimateBean.getCostPerUnitSand());
     }
 
     public double getCement40kg() {

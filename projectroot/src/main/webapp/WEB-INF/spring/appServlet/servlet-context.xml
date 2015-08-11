@@ -353,36 +353,9 @@
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
-    <!-- Cost Estimation -->
-    <beans:bean id="costEstimationService" class="com.cebedo.pmsys.service.impl.CostEstimationServiceImpl">
-        <beans:property name="concreteEstimationSummaryService" ref="concreteEstimationSummaryService"></beans:property>
-        <beans:property name="masonryCHBEstimationSummaryService" ref="masonryCHBEstimationSummaryService"></beans:property>
-    </beans:bean>
-    
-    <!-- Masonry Estimation Summary -->
-    <beans:bean id="masonryCHBEstimationSummaryService" class="com.cebedo.pmsys.service.impl.MasonryCHBEstimationSummaryServiceImpl">
-        <beans:property name="masonryCHBEstimationSummaryValueRepo" ref="masonryCHBEstimationSummaryValueRepo"></beans:property>
-        <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="masonryCHBEstimationSummaryValueRepo" class="com.cebedo.pmsys.repository.MasonryCHBEstimationSummaryValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
-    <!-- Concrete Estimation Summary -->
-    <beans:bean id="concreteEstimationSummaryService" class="com.cebedo.pmsys.service.impl.ConcreteEstimationSummaryServiceImpl">
-        <beans:property name="concreteEstimationSummaryValueRepo" ref="concreteEstimationSummaryValueRepo"></beans:property>
-        <beans:property name="estimateValueRepo" ref="estimateValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="concreteEstimationSummaryValueRepo" class="com.cebedo.pmsys.repository.ConcreteEstimationSummaryValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
-    </beans:bean>
-    
     <!-- Estimate -->
     <beans:bean id="estimateService" class="com.cebedo.pmsys.service.impl.EstimateServiceImpl">
         <beans:property name="estimationOutputValueRepo" ref="estimationOutputValueRepo"></beans:property>
-    </beans:bean>
-    <beans:bean id="estimateValueRepo" class="com.cebedo.pmsys.repository.EstimateValueRepo">
-        <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
     <!-- Estimation Output -->

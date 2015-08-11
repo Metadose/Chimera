@@ -145,7 +145,7 @@ public class TaskServiceImpl implements TaskService {
 			continue;
 
 		    case EXCEL_COLUMN_DURATION:
-			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setDuration(duration);
 			continue;
@@ -381,8 +381,8 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Staff.OBJECT_NAME, staff.getId(), Task.OBJECT_NAME,
-		task.getId());
+	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Staff.OBJECT_NAME, staff.getId(),
+		Task.OBJECT_NAME, task.getId());
 
 	// Do service.
 	TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
@@ -514,8 +514,8 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.create(task);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(), Task.OBJECT_NAME,
-		task.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		Task.OBJECT_NAME, task.getId());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());

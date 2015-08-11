@@ -2,8 +2,6 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-import com.cebedo.pmsys.domain.Estimate;
-
 public class MasonryPlasteringEstimateResults implements Serializable {
 
     private static final long serialVersionUID = 1206561790105254749L;
@@ -21,15 +19,15 @@ public class MasonryPlasteringEstimateResults implements Serializable {
 	;
     }
 
-    public MasonryPlasteringEstimateResults(Estimate estimate, double bags40kg, double bags50kg,
+    public MasonryPlasteringEstimateResults(EstimateBean estimateBean, double bags40kg, double bags50kg,
 	    double sand2) {
 	setCement40kg(bags40kg);
 	setCement50kg(bags50kg);
 	setSand(sand2);
 
-	setCostCement40kg(bags40kg * estimate.getCostPerUnitCement40kg());
-	setCostCement50kg(bags50kg * estimate.getCostPerUnitCement50kg());
-	setCostSand(sand2 * estimate.getCostPerUnitSand());
+	setCostCement40kg(bags40kg * estimateBean.getCostPerUnitCement40kg());
+	setCostCement50kg(bags50kg * estimateBean.getCostPerUnitCement50kg());
+	setCostSand(sand2 * estimateBean.getCostPerUnitSand());
     }
 
     public double getCement40kg() {

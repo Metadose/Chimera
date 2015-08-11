@@ -3,8 +3,6 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
-import com.cebedo.pmsys.domain.Estimate;
-
 public class ConcreteEstimateResults implements Serializable {
 
     private static final long serialVersionUID = -2748458108457052450L;
@@ -23,17 +21,17 @@ public class ConcreteEstimateResults implements Serializable {
 	;
     }
 
-    public ConcreteEstimateResults(Estimate estimate, double estCement40kg, double estCement50kg,
-	    double estSand, double estGravel) {
+    public ConcreteEstimateResults(EstimateBean estimateBean, double estCement40kg,
+	    double estCement50kg, double estSand, double estGravel) {
 	setCement40kg(estCement40kg);
 	setCement50kg(estCement50kg);
 	setSand(estSand);
 	setGravel(estGravel);
 
-	setCostCement40kg(estCement40kg * estimate.getCostPerUnitCement40kg());
-	setCostCement50kg(estCement50kg * estimate.getCostPerUnitCement50kg());
-	setCostSand(estSand * estimate.getCostPerUnitSand());
-	setCostSand(estGravel * estimate.getCostPerUnitGravel());
+	setCostCement40kg(estCement40kg * estimateBean.getCostPerUnitCement40kg());
+	setCostCement50kg(estCement50kg * estimateBean.getCostPerUnitCement50kg());
+	setCostSand(estSand * estimateBean.getCostPerUnitSand());
+	setCostGravel(estGravel * estimateBean.getCostPerUnitGravel());
     }
 
     /**

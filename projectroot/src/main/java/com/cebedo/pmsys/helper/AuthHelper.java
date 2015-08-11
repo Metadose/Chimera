@@ -4,10 +4,8 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.domain.ConcreteEstimationSummary;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimationOutput;
-import com.cebedo.pmsys.domain.MasonryCHBEstimationSummary;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -153,16 +151,6 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean isActionAuthorized(ConcreteEstimationSummary obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
     public boolean isActionAuthorized(Delivery obj) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
@@ -174,16 +162,6 @@ public class AuthHelper {
     }
 
     public boolean isActionAuthorized(EstimationOutput obj) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(MasonryCHBEstimationSummary obj) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;

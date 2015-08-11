@@ -168,7 +168,7 @@ public class StaffServiceImpl implements StaffService {
 			continue;
 
 		    case EXCEL_COLUMN_WAGE:
-			double wage = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+			double wage = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setWage(wage);
 			continue;
@@ -695,8 +695,8 @@ public class StaffServiceImpl implements StaffService {
 	    Set<Attendance> attendanceList) {
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator().next()
-		.getStaff().getId(), AttendanceStatus.class.getName());
+	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator()
+		.next().getStaff().getId(), AttendanceStatus.class.getName());
 
 	// And count number per status.
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();

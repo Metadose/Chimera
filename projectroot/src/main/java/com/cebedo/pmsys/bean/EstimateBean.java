@@ -1,20 +1,11 @@
-package com.cebedo.pmsys.domain;
+package com.cebedo.pmsys.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.EstimationOutputRowBean;
-import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
-import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
-import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
-import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
-import com.cebedo.pmsys.bean.ShapeBean;
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.MappingEstimationClass;
@@ -25,7 +16,7 @@ import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
-public class Estimate implements IDomainObject {
+public class EstimateBean implements Serializable {
 
     private static final long serialVersionUID = -3521975517764441834L;
 
@@ -34,7 +25,6 @@ public class Estimate implements IDomainObject {
      */
     private Company company;
     private Project project;
-    private UUID uuid;
 
     /**
      * Basic specs.
@@ -56,15 +46,15 @@ public class Estimate implements IDomainObject {
      * Inputs.
      */
     // User input.
-    private TableEstimationAllowance estimationAllowance = TableEstimationAllowance.ALLOWANCE_0;
     private MultipartFile estimationFile;
+    private TableEstimationAllowance estimationAllowance = TableEstimationAllowance.ALLOWANCE_0;
 
     // Standard constants.
     private MappingEstimationClass estimationClass = MappingEstimationClass.CLASS_A;
     private TableCHBDimensions chbDimensions = TableCHBDimensions.CHB_20_20_40;
     private TableCHBFootingDimensions chbFootingDimensions = TableCHBFootingDimensions.FOOTING_15_60;
 
-    // TODO Let them choose in the Excel file.
+    // Yes/No in the Excel file.
     private List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
 
     // Masonry (Plastering) inputs.
@@ -76,25 +66,25 @@ public class Estimate implements IDomainObject {
     /**
      * Results
      */
+    // Materials quantity and cost per estimate type.
     private ConcreteEstimateResults resultConcreteEstimate = new ConcreteEstimateResults();
     private MasonryCHBEstimateResults resultCHBEstimate = new MasonryCHBEstimateResults();
     private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
     private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
     private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
 
-    // Used to generate the JSON for JSP display.
-    private EstimationOutputRowBean resultRow;
+    // Cost of the whole row.
+    double costCement40kg = 0;
+    double costCement50kg = 0;
+    double costSand = 0;
+    double costGravel = 0;
+    double costCHB = 0;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
-    public Estimate() {
+    public EstimateBean() {
 	;
     }
 
-    public Estimate(Project proj) {
+    public EstimateBean(Project proj) {
 	setCompany(proj.getCompany());
 	setProject(proj);
     }
@@ -143,14 +133,6 @@ public class Estimate implements IDomainObject {
 	this.project = project;
     }
 
-    public UUID getUuid() {
-	return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-	this.uuid = uuid;
-    }
-
     public String getName() {
 	return name;
     }
@@ -175,42 +157,12 @@ public class Estimate implements IDomainObject {
 	this.shapeBean = shapeBean;
     }
 
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
-    }
-
-    @Deprecated
-    @Override
-    public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATE, this.company.getId(), this.project.getId(),
-		this.uuid);
-    }
-
     public List<EstimateType> getEstimateTypes() {
 	return estimateTypes;
     }
 
     public void setEstimateTypes(List<EstimateType> estimateTypes) {
 	this.estimateTypes = estimateTypes;
-    }
-
-    public static String constructPattern(Project proj) {
-	return String
-		.format(RedisKeyRegistry.KEY_ESTIMATE, proj.getCompany().getId(), proj.getId(), "*");
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	return obj instanceof Estimate ? ((Estimate) obj).getKey().equals(getKey()) : false;
-    }
-
-    @Override
-    public int hashCode() {
-	return getKey().hashCode();
     }
 
     public double getChbFoundationHeight() {
@@ -309,14 +261,6 @@ public class Estimate implements IDomainObject {
 	this.estimationFile = estimationFile;
     }
 
-    public EstimationOutputRowBean getResultRow() {
-	return resultRow;
-    }
-
-    public void setResultRow(EstimationOutputRowBean resultRow) {
-	this.resultRow = resultRow;
-    }
-
     public double getCostPerUnitCement40kg() {
 	return costPerUnitCement40kg;
     }
@@ -355,6 +299,46 @@ public class Estimate implements IDomainObject {
 
     public void setCostPerUnitCHB(double costPerUnitCHB) {
 	this.costPerUnitCHB = costPerUnitCHB;
+    }
+
+    public double getCostCement40kg() {
+	return costCement40kg;
+    }
+
+    public void setCostCement40kg(double costCement40kg) {
+	this.costCement40kg = costCement40kg;
+    }
+
+    public double getCostCement50kg() {
+	return costCement50kg;
+    }
+
+    public void setCostCement50kg(double costCement50kg) {
+	this.costCement50kg = costCement50kg;
+    }
+
+    public double getCostSand() {
+	return costSand;
+    }
+
+    public void setCostSand(double costSand) {
+	this.costSand = costSand;
+    }
+
+    public double getCostGravel() {
+	return costGravel;
+    }
+
+    public void setCostGravel(double costGravel) {
+	this.costGravel = costGravel;
+    }
+
+    public double getCostCHB() {
+	return costCHB;
+    }
+
+    public void setCostCHB(double costCHB) {
+	this.costCHB = costCHB;
     }
 
 }

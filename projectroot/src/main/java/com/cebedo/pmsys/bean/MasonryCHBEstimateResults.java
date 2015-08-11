@@ -3,7 +3,6 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.NumberFormat;
 
-import com.cebedo.pmsys.domain.Estimate;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class MasonryCHBEstimateResults implements Serializable {
@@ -18,9 +17,9 @@ public class MasonryCHBEstimateResults implements Serializable {
 	;
     }
 
-    public MasonryCHBEstimateResults(Estimate estimate, double totalCHB2) {
+    public MasonryCHBEstimateResults(EstimateBean estimateBean, double totalCHB2) {
 	setTotalCHB(totalCHB2);
-	setCostCHB(this.totalCHB * estimate.getCostPerUnitCHB());
+	setCostCHB(this.totalCHB * estimateBean.getCostPerUnitCHB());
     }
 
     public double getTotalCHB() {
