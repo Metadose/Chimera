@@ -74,11 +74,11 @@ public class EstimateBean implements Serializable {
     private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
 
     // Cost of the whole row.
-    double costCement40kg = 0;
-    double costCement50kg = 0;
-    double costSand = 0;
-    double costGravel = 0;
-    double costCHB = 0;
+    private double costCement40kg = 0;
+    private double costCement50kg = 0;
+    private double costSand = 0;
+    private double costGravel = 0;
+    private double costCHB = 0;
 
     public EstimateBean() {
 	;

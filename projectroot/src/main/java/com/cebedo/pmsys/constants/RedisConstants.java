@@ -17,10 +17,6 @@ public abstract class RedisConstants {
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
 
-    // Displays.
-    public static final String DISPLAY_MASONRY_CHB_ESTIMATION_SUMMARY = "masonry (CHB) estimation summary";
-    public static final String DISPLAY_OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concrete estimation summary";
-
     // Redis objects Edit and List pages.
     public static final String JSP_ESTIMATION_OUTPUT_EDIT = Project.OBJECT_NAME
 	    + "/estimationOutputEdit";
@@ -28,5 +24,4 @@ public abstract class RedisConstants {
     public static final String JSP_PAYROLL_EDIT = Project.OBJECT_NAME + "/payrollEdit";
     public static final String JSP_MATERIAL_EDIT = Project.OBJECT_NAME + "/materialEdit";
     public static final String JSP_MATERIAL_PULLOUT = Project.OBJECT_NAME + "/materialPulloutEdit";
-    public static final String JSP_ESTIMATE_EDIT = Project.OBJECT_NAME + "/estimateEdit";
 }

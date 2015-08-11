@@ -22,24 +22,43 @@ public class EstimationOutputRowBean implements Serializable {
     private double concreteSand;
     private double concreteGravel;
 
+    private double concreteCostCement40kg;
+    private double concreteCostCement50kg;
+    private double concreteCostSand;
+    private double concreteCostGravel;
+
     // CHB.
-    private double totalCHB;
+    private double chbTotal;
+    private double chbCostTotal;
 
     // CHB Laying.
     private double chbLayingBags40kg;
     private double chbLayingBags50kg;
     private double chbLayingSand;
 
+    private double chbLayingCostBags40kg;
+    private double chbLayingCostBags50kg;
+    private double chbLayingCostSand;
+
     // Platering.
     private double plasteringCement40kg;
     private double plasteringCement50kg;
     private double plasteringSand;
+
+    private double plasteringCostCement40kg;
+    private double plasteringCostCement50kg;
+    private double plasteringCostSand;
 
     // CHB Footing.
     private double footingCement40kg;
     private double footingCement50kg;
     private double footingSand;
     private double footingGravel;
+
+    private double footingCostCement40kg;
+    private double footingCostCement50kg;
+    private double footingCostSand;
+    private double footingCostGravel;
 
     public EstimationOutputRowBean() {
 	;
@@ -54,6 +73,7 @@ public class EstimationOutputRowBean implements Serializable {
 	MasonryPlasteringEstimateResults plaster = estimateBean.getResultPlasteringEstimate();
 	MasonryCHBFootingEstimateResults footing = estimateBean.getResultCHBFootingEstimate();
 
+	// Details.
 	this.uuid = UUID.randomUUID().toString();
 	this.name = estimateBean.getName();
 	this.remarks = estimateBean.getRemarks();
@@ -62,27 +82,51 @@ public class EstimationOutputRowBean implements Serializable {
 	this.chbFoundationHeight = estimateBean.getChbFoundationHeight();
 	this.footingLength = shapeBean.getFootingLength();
 
+	// CHB.
+	this.chbTotal = chb.getTotalCHB();
+	this.chbCostTotal = chb.getCostCHB();
+
+	// Concrete.
 	this.concreteCement40kg = concrete.getCement40kg();
 	this.concreteCement50kg = concrete.getCement50kg();
 	this.concreteSand = concrete.getSand();
 	this.concreteGravel = concrete.getGravel();
 
-	this.totalCHB = chb.getTotalCHB();
+	this.concreteCostCement40kg = concrete.getCostCement40kg();
+	this.concreteCostCement50kg = concrete.getCostCement50kg();
+	this.concreteCostSand = concrete.getCostSand();
+	this.concreteCostGravel = concrete.getCostGravel();
 
-	double chbBags40 = chbLaying.getCement40kg();
-	this.chbLayingBags40kg = chbBags40;
-	this.chbLayingBags50kg = chbBags40 - (chbBags40 * 0.2);
+	// CHB Laying.
+	double chbLayingBags40 = chbLaying.getCement40kg();
+	this.chbLayingBags40kg = chbLayingBags40;
+	this.chbLayingBags50kg = chbLayingBags40 - (chbLayingBags40 * 0.2);
 	this.chbLayingSand = chbLaying.getSand();
 
+	this.chbLayingCostBags40kg = chbLaying.getCostCement40kg();
+	this.chbLayingCostBags50kg = chbLaying.getCostCement50kg();
+	this.chbLayingCostSand = chbLaying.getCostSand();
+
+	// Plaster.
 	this.plasteringCement40kg = plaster.getCement40kg();
 	this.plasteringCement50kg = plaster.getCement50kg();
 	this.plasteringSand = plaster.getSand();
 
+	this.plasteringCostCement40kg = plaster.getCostCement40kg();
+	this.plasteringCostCement50kg = plaster.getCostCement50kg();
+	this.plasteringCostSand = plaster.getCostSand();
+
+	// Footing.
 	double footingBags40 = footing.getCement40kg();
 	this.footingCement40kg = footingBags40;
 	this.footingCement50kg = footingBags40 - (footingBags40 * 0.2);
 	this.footingSand = footing.getSand();
 	this.footingGravel = footing.getGravel();
+
+	this.footingCostCement40kg = footing.getCostCement40kg();
+	this.footingCostCement50kg = footing.getCostCement50kg();
+	this.footingCostSand = footing.getCostSand();
+	this.footingCostGravel = footing.getCostGravel();
     }
 
     // Setters and Getters.
@@ -167,12 +211,12 @@ public class EstimationOutputRowBean implements Serializable {
 	this.concreteGravel = concreteGravel;
     }
 
-    public double getTotalCHB() {
-	return totalCHB;
+    public double getCHBTotal() {
+	return chbTotal;
     }
 
-    public void setTotalCHB(double totalCHB) {
-	this.totalCHB = totalCHB;
+    public void setCHBTotal(double totalCHB) {
+	this.chbTotal = totalCHB;
     }
 
     public double getChbLayingBags40kg() {
@@ -261,6 +305,126 @@ public class EstimationOutputRowBean implements Serializable {
 
     public void setUuid(String uuid) {
 	this.uuid = uuid;
+    }
+
+    public double getConcreteCostCement40kg() {
+	return concreteCostCement40kg;
+    }
+
+    public void setConcreteCostCement40kg(double concreteCostCement40kg) {
+	this.concreteCostCement40kg = concreteCostCement40kg;
+    }
+
+    public double getConcreteCostCement50kg() {
+	return concreteCostCement50kg;
+    }
+
+    public void setConcreteCostCement50kg(double concreteCostCement50kg) {
+	this.concreteCostCement50kg = concreteCostCement50kg;
+    }
+
+    public double getConcreteCostSand() {
+	return concreteCostSand;
+    }
+
+    public void setConcreteCostSand(double concreteCostSand) {
+	this.concreteCostSand = concreteCostSand;
+    }
+
+    public double getConcreteCostGravel() {
+	return concreteCostGravel;
+    }
+
+    public void setConcreteCostGravel(double concreteCostGravel) {
+	this.concreteCostGravel = concreteCostGravel;
+    }
+
+    public double getChbCostTotal() {
+	return chbCostTotal;
+    }
+
+    public void setChbCostTotal(double chbCostTotal) {
+	this.chbCostTotal = chbCostTotal;
+    }
+
+    public double getChbLayingCostBags40kg() {
+	return chbLayingCostBags40kg;
+    }
+
+    public void setChbLayingCostBags40kg(double chbLayingCostBags40kg) {
+	this.chbLayingCostBags40kg = chbLayingCostBags40kg;
+    }
+
+    public double getChbLayingCostBags50kg() {
+	return chbLayingCostBags50kg;
+    }
+
+    public void setChbLayingCostBags50kg(double chbLayingCostBags50kg) {
+	this.chbLayingCostBags50kg = chbLayingCostBags50kg;
+    }
+
+    public double getChbLayingCostSand() {
+	return chbLayingCostSand;
+    }
+
+    public void setChbLayingCostSand(double chbLayingCostSand) {
+	this.chbLayingCostSand = chbLayingCostSand;
+    }
+
+    public double getPlasteringCostCement40kg() {
+	return plasteringCostCement40kg;
+    }
+
+    public void setPlasteringCostCement40kg(double plasteringCostCement40kg) {
+	this.plasteringCostCement40kg = plasteringCostCement40kg;
+    }
+
+    public double getPlasteringCostCement50kg() {
+	return plasteringCostCement50kg;
+    }
+
+    public void setPlasteringCostCement50kg(double plasteringCostCement50kg) {
+	this.plasteringCostCement50kg = plasteringCostCement50kg;
+    }
+
+    public double getPlasteringCostSand() {
+	return plasteringCostSand;
+    }
+
+    public void setPlasteringCostSand(double plasteringCostSand) {
+	this.plasteringCostSand = plasteringCostSand;
+    }
+
+    public double getFootingCostCement40kg() {
+	return footingCostCement40kg;
+    }
+
+    public void setFootingCostCement40kg(double footingCostCement40kg) {
+	this.footingCostCement40kg = footingCostCement40kg;
+    }
+
+    public double getFootingCostCement50kg() {
+	return footingCostCement50kg;
+    }
+
+    public void setFootingCostCement50kg(double footingCostCement50kg) {
+	this.footingCostCement50kg = footingCostCement50kg;
+    }
+
+    public double getFootingCostSand() {
+	return footingCostSand;
+    }
+
+    public void setFootingCostSand(double footingCostSand) {
+	this.footingCostSand = footingCostSand;
+    }
+
+    public double getFootingCostGravel() {
+	return footingCostGravel;
+    }
+
+    public void setFootingCostGravel(double footingCostGravel) {
+	this.footingCostGravel = footingCostGravel;
     }
 
 }

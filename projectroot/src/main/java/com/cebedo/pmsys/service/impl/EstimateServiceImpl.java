@@ -215,6 +215,15 @@ public class EstimateServiceImpl implements EstimateService {
 
 	    // Construct estimate containers.
 	    List<EstimateBean> estimateBeans = new ArrayList<EstimateBean>();
+
+	    double costCHB = 0;
+	    double costCement40kg = 0;
+	    double costCement50kg = 0;
+	    double costSand = 0;
+	    double costGravel = 0;
+	    boolean firstRow = true;
+
+	    // Looping all rows.
 	    while (rowIterator.hasNext()) {
 
 		Row row = rowIterator.next();
@@ -233,6 +242,17 @@ public class EstimateServiceImpl implements EstimateService {
 		ShapeBean shapeBean = new ShapeBean();
 		List<EstimateType> estimateTypes = estimateBean.getEstimateTypes();
 
+		// If this is not the first row,
+		// then the costs must have already been initialized.
+		if (!firstRow) {
+		    estimateBean.setCostPerUnitCHB(costCHB);
+		    estimateBean.setCostPerUnitCement40kg(costCement40kg);
+		    estimateBean.setCostPerUnitCement50kg(costCement50kg);
+		    estimateBean.setCostPerUnitSand(costSand);
+		    estimateBean.setCostPerUnitGravel(costGravel);
+		}
+
+		// Looping all cells in this row.
 		while (cellIterator.hasNext()) {
 
 		    // Cell in this row and column.
@@ -332,39 +352,38 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_CHB:
-			double costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+			costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateBean.setCostPerUnitCHB(costCHB);
 			continue;
 
 		    case EXCEL_COST_CEMENT_40KG:
-			double costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook,
-				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateBean.setCostPerUnitCement40kg(costCement40kg);
 			continue;
 
 		    case EXCEL_COST_CEMENT_50KG:
-			double costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook,
-				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateBean.setCostPerUnitCement50kg(costCement50kg);
 			continue;
 
 		    case EXCEL_COST_SAND:
-			double costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+			costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateBean.setCostPerUnitSand(costSand);
 			continue;
 
 		    case EXCEL_COST_GRAVEL:
-			double costGravel = (Double) (this.excelHelper
-				.getValueAsExpected(workbook, cell) == null ? 0 : this.excelHelper
-				.getValueAsExpected(workbook, cell));
+			costGravel = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateBean.setCostPerUnitGravel(costGravel);
 			continue;
 
 		    }
 		}
-
+		firstRow = false;
 		estimateBeans.add(estimateBean);
 	    }
 	    return estimateBeans;
