@@ -44,7 +44,30 @@
 	<c:import url="/resources/header.jsp" />
 	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
 	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
-	
+
+	<!-- Modal -->
+	<div id="deleteModal" class="modal fade" role="dialog">
+		<!-- Modal content-->
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Confirmation</h4>
+			</div>
+			<div class="modal-body">
+				<p>Do you really want to delete this project?</p>
+			</div>
+			<div class="modal-footer">
+	            <c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
+				<a href="${urlProjectDelete}">
+				<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+				</a>
+				<button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
 		<aside class="right-side">
@@ -152,10 +175,7 @@
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
-                               								<a href="${urlProjectDelete}">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Project</button>
-       														</a>
+															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete This Project</button>
 		                                            	</c:when>
 		                                            </c:choose>
 		                                            <c:if test="${project.id != 0}">

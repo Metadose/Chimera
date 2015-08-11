@@ -280,6 +280,17 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.delete(id);
 	this.projectAuxValueRepo.delete(ProjectAux.constructKey(project));
 
+	// Delete also linked redis objects.
+	// company.fk:4:*project:139*
+	// company.fk:4:*project.fk:139*
+	long companyID = project.getCompany().getId();
+	Set<String> keysSet = this.projectAuxValueRepo.keys(String.format("company.fk:%s:*project:%s*",
+		companyID, id));
+	Set<String> keysSet2 = this.projectAuxValueRepo.keys(String.format(
+		"company.fk:%s:*project.fk:%s*", companyID, id));
+	keysSet.addAll(keysSet2);
+	this.projectAuxValueRepo.delete(keysSet);
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, project.getId());
 
