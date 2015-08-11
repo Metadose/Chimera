@@ -60,7 +60,6 @@
 	<hdiv:validation id="SymantecUNIONSQLInjection">
 		<hdiv:rejectedPattern><![CDATA[/((\%27)|(\'))union/ix]]></hdiv:rejectedPattern>
 	</hdiv:validation>
-	
 	<hdiv:validation id="execCommand">
 		<hdiv:rejectedPattern><![CDATA[(\s|\S)*(exec(\s|\+)+(s|x)p\w+)(\s|\S)*]]></hdiv:rejectedPattern>
 	</hdiv:validation>
@@ -109,7 +108,7 @@
 	
 	<!-- HDIV multipart resolver -->
     <beans:bean id="multipartResolver" class="org.hdiv.web.multipart.HdivCommonsMultipartResolver">
-	    <beans:property name="maxUploadSize" value="20000000" />
+	    <beans:property name="maxUploadSize" value="100000000" />
 	</beans:bean>
 	
 </beans:beans>

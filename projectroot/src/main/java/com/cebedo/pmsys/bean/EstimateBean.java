@@ -27,20 +27,11 @@ public class EstimateBean implements Serializable {
     private Project project;
 
     /**
-     * Basic specs.
+     * Specs.
      */
     private String name;
     private String remarks;
-
-    /**
-     * Computational specs.
-     */
     private ShapeBean shapeBean;
-    private double costPerUnitCHB = 0;
-    private double costPerUnitCement40kg = 0;
-    private double costPerUnitCement50kg = 0;
-    private double costPerUnitSand = 0;
-    private double costPerUnitGravel = 0;
 
     /**
      * Inputs.
@@ -63,6 +54,13 @@ public class EstimateBean implements Serializable {
     private double chbFoundationHeight;
     private CommonLengthUnit chbFoundationUnit = CommonLengthUnit.METER;
 
+    // Prices per Unit.
+    private double costPerUnitCHB = 0;
+    private double costPerUnitCement40kg = 0;
+    private double costPerUnitCement50kg = 0;
+    private double costPerUnitSand = 0;
+    private double costPerUnitGravel = 0;
+
     /**
      * Results
      */
@@ -72,6 +70,13 @@ public class EstimateBean implements Serializable {
     private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
     private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
     private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
+
+    // Quantity of the whole row.
+    private double quantityCement40kg = 0;
+    private double quantityCement50kg = 0;
+    private double quantitySand = 0;
+    private double quantityGravel = 0;
+    private double quantityCHB = 0;
 
     // Cost of the whole row.
     private double costCement40kg = 0;
@@ -339,6 +344,46 @@ public class EstimateBean implements Serializable {
 
     public void setCostCHB(double costCHB) {
 	this.costCHB = costCHB;
+    }
+
+    public double getQuantityCement40kg() {
+	return quantityCement40kg;
+    }
+
+    public void setQuantityCement40kg(double quantityCement40kg) {
+	this.quantityCement40kg = quantityCement40kg;
+    }
+
+    public double getQuantityCement50kg() {
+	return quantityCement50kg;
+    }
+
+    public void setQuantityCement50kg(double quantityCement50kg) {
+	this.quantityCement50kg = quantityCement50kg;
+    }
+
+    public double getQuantitySand() {
+	return quantitySand;
+    }
+
+    public void setQuantitySand(double quantitySand) {
+	this.quantitySand = quantitySand;
+    }
+
+    public double getQuantityGravel() {
+	return quantityGravel;
+    }
+
+    public void setQuantityGravel(double quantityGravel) {
+	this.quantityGravel = quantityGravel;
+    }
+
+    public double getQuantityCHB() {
+	return quantityCHB;
+    }
+
+    public void setQuantityCHB(double quantityCHB) {
+	this.quantityCHB = quantityCHB;
     }
 
 }

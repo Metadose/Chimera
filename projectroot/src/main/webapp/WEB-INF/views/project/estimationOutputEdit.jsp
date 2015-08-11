@@ -38,7 +38,7 @@
 	        <section class="content">
 			<div class="row">
 				<div class="col-md-12">
-					<c:url var="urlBack" value="/project/edit/" />
+					<c:url var="urlBack" value="/project/edit/${estimationoutput.project.id}" />
 	                <a href="${urlBack}">
 						<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 					</a>
@@ -53,6 +53,54 @@
 						<div class="callout callout-info callout-cebedo">
 						<p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 						</div>
+
+						<table id="summary-table" class="table table-bordered table-striped">
+						<thead>
+                    		<tr>
+                                <th>Material</th>
+                                <th>Quantity</th>
+                                <th>Cost (PHP/unit)</th>
+                            </tr>
+                    	</thead>
+						<tbody>
+							<tr>
+								<td>Concrete Hollow Blocks (CHB)</td>
+								<td>${estimationoutput.quantityCHB}</td>
+								<td>${estimationoutput.costCHB}</td>
+							</tr>
+							<tr>
+								<td>Cement (40kg)</td>
+								<td>${estimationoutput.quantityCement40kg}</td>
+								<td>${estimationoutput.costCement40kg}</td>
+							</tr>
+							<tr>
+								<td>Cement (50kg)</td>
+								<td>${estimationoutput.quantityCement50kg}</td>
+								<td>${estimationoutput.costCement50kg}</td>
+							</tr>
+							<tr>
+								<td>Sand</td>
+								<td>${estimationoutput.quantitySand}</td>
+								<td>${estimationoutput.costSand}</td>
+							</tr>
+							<tr>
+								<td>Gravel</td>
+								<td>${estimationoutput.quantityGravel}</td>
+								<td>${estimationoutput.costGravel}</td>
+							</tr>
+						</tbody>
+						</table>
+						
+						<div class="pull-right">
+                  		<h3>Grand Total <b><u>
+                    	${estimationoutput.getCostGrandTotalAsString()}
+						</u></b></h3>
+						</div>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+
 						<label>Input</label>
 						<table id="treegrid-details"></table><br/>
 						
@@ -94,6 +142,9 @@ $(document).ready(function() {
 	$("#treegrid-chb-footing").igTreeGrid({
 		dataSource: flatDS,
 		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" }
+		],
 		primaryKey: "uuid",
 		columns: [
 
@@ -103,49 +154,53 @@ $(document).ready(function() {
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
 			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing Length",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement (40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB (pieces)", 	 key: "chbTotal", dataType: "number" },
-			{ headerText: "CHB (PHP/piece)", key: "chbCostTotal", dataType: "number" },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number" },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number" },
 			
 			/* CHB Laying */
-			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement (PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement (40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
 			
 			
 			/* Footing */
-			{ headerText: "Cement (40kg)",  key: "footingCement40kg", dataType: "number" },
-			{ headerText: "Cement (50kg)",  key: "footingCement50kg", dataType: "number" },
-			{ headerText: "Sand (cu.m.)",   key: "footingSand", dataType: "number" },
-			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number" },
-			{ headerText: "Cement (PHP/40kg)",  key: "footingCostCement40kg", dataType: "number" },
-			{ headerText: "Cement (PHP/50kg)",  key: "footingCostCement50kg", dataType: "number" },
-			{ headerText: "Sand (PHP/cu.m.)",   key: "footingCostSand", dataType: "number" },
-			{ headerText: "Gravel (PHP/cu.m.)", key: "footingCostGravel", dataType: "number" }
+			{ headerText: "Quantity", group: [
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number" },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number" }
+			]},
+			{ headerText: "Cost", group: [
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number" },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number" }
+			]}
 		]
 	});
 
@@ -153,6 +208,9 @@ $(document).ready(function() {
 	$("#treegrid-chb-plastering").igTreeGrid({
 		dataSource: flatDS,
 		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" }
+		],
 		primaryKey: "uuid",
 		columns: [
 
@@ -162,49 +220,53 @@ $(document).ready(function() {
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
 			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing Length",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement (40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB (pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB (PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement (PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement (40kg)",	  key: "plasteringCement40kg", dataType: "number" },
-			{ headerText: "Cement (50kg)", 	  key: "plasteringCement50kg", dataType: "number" },
-			{ headerText: "Sand (cu.m.)", 	  key: "plasteringSand", dataType: "number" },
-			{ headerText: "Cement (PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number" },
-			{ headerText: "Cement (PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number" },
-			{ headerText: "Sand (PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number" },
+			{ headerText: "Quantity", group: [
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number" }
+			]},
+			{ headerText: "Cost", group: [
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number" }
+			]},
 			
 			
 			/* Footing */
-			{ headerText: "Cement (40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
 		]
 	});
 
@@ -224,49 +286,53 @@ $(document).ready(function() {
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
 			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing Length",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement (40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB (pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB (PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number" },
-			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number" },
-			{ headerText: "Sand (cu.m.)",  key: "chbLayingSand", dataType: "number" },			
-			{ headerText: "Cement (PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number" },
-			{ headerText: "Cement (PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number" },
-			{ headerText: "Sand (PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number" },
+			{ headerText: "Quantity", group: [
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number" }
+			]},
+			{ headerText: "Cost", group: [
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number" }
+			]},
 
 			/* Plastering */
-			{ headerText: "Cement (40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
 			
 			
 			/* Footing */
-			{ headerText: "Cement (40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
 		]
 	});
 
@@ -274,6 +340,9 @@ $(document).ready(function() {
 	$("#treegrid-concrete").igTreeGrid({
 		dataSource: flatDS,
 		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" }
+		],
 		primaryKey: "uuid",
 		columns: [
 
@@ -283,48 +352,52 @@ $(document).ready(function() {
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
 			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing Length",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement (40kg)",  key: "concreteCement40kg", dataType: "number"},
-			{ headerText: "Cement (50kg)",  key: "concreteCement50kg", dataType: "number"},
-			{ headerText: "Sand (cu.m.)",   key: "concreteSand", dataType: "number"},
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number"},
-			{ headerText: "Cement (PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number"},
-			{ headerText: "Cement (PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number"},
-			{ headerText: "Sand (PHP/cu.m.)",   key: "concreteCostSand", dataType: "number"},
-			{ headerText: "Gravel (PHP/cu.m.)", key: "concreteCostGravel", dataType: "number"},
+			{ headerText: "Quantity", group: [
+				{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number"},
+				{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number"},
+				{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number"},
+				{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number"}
+			]},
+			{ headerText: "Cost", group: [
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number"},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number"},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number"},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number"}
+			]},
 			
 			/* CHB */
-			{ headerText: "CHB (pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB (PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement (PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement (40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
 			
 			/* Footing */
-			{ headerText: "Cement (40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
 		]
 	});
 
@@ -332,6 +405,9 @@ $(document).ready(function() {
 	$("#treegrid-details").igTreeGrid({
 		dataSource: flatDS,
 		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" }
+		],
 		primaryKey: "uuid",
 		columns: [
 
@@ -341,48 +417,48 @@ $(document).ready(function() {
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string" },
 			{ headerText: "Area", 				   key: "area", dataType: "number" },
 			{ headerText: "Volume", 			   key: "volume", dataType: "number" },
-			{ headerText: "CHB Foundation Height", key: "chbFoundationHeight", dataType: "number" },
-			{ headerText: "CHB Footing Length",    key: "footingLength", dataType: "number" },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number" },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number" },
 			
 			/* Concrete */
-			{ headerText: "Cement (40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement (PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand (PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel (PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB (pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB (PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement (40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement (PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement (40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
 			
 			/* Footing */
-			{ headerText: "Cement (40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement (PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand (PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel (PHP/cu.m.)", key: "footingCostGravel", dataType: "number",  hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number",  hidden: true }
 		]
 	});
 });

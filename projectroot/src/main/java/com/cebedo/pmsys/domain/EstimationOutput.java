@@ -11,6 +11,7 @@ import com.cebedo.pmsys.constants.RedisKeyRegistry;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class EstimationOutput implements IDomainObject {
 
@@ -36,6 +37,21 @@ public class EstimationOutput implements IDomainObject {
     private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
+
+    // Quantity of the whole row.
+    private double quantityCement40kg = 0;
+    private double quantityCement50kg = 0;
+    private double quantitySand = 0;
+    private double quantityGravel = 0;
+    private double quantityCHB = 0;
+
+    // Cost of the whole row.
+    private double costCement40kg = 0;
+    private double costCement50kg = 0;
+    private double costSand = 0;
+    private double costGravel = 0;
+    private double costCHB = 0;
+    private double costGrandTotal = 0;
 
     /**
      * Extension map.
@@ -162,6 +178,98 @@ public class EstimationOutput implements IDomainObject {
 	setEstimates(estimates2);
 	setEstimatesAsJson(rowListJson);
 	setLastComputed(new Date(System.currentTimeMillis()));
+    }
+
+    public double getQuantityCement40kg() {
+	return quantityCement40kg;
+    }
+
+    public void setQuantityCement40kg(double quantityCement40kg) {
+	this.quantityCement40kg = quantityCement40kg;
+    }
+
+    public double getQuantityCement50kg() {
+	return quantityCement50kg;
+    }
+
+    public void setQuantityCement50kg(double quantityCement50kg) {
+	this.quantityCement50kg = quantityCement50kg;
+    }
+
+    public double getQuantitySand() {
+	return quantitySand;
+    }
+
+    public void setQuantitySand(double quantitySand) {
+	this.quantitySand = quantitySand;
+    }
+
+    public double getQuantityGravel() {
+	return quantityGravel;
+    }
+
+    public void setQuantityGravel(double quantityGravel) {
+	this.quantityGravel = quantityGravel;
+    }
+
+    public double getQuantityCHB() {
+	return quantityCHB;
+    }
+
+    public void setQuantityCHB(double quantityCHB) {
+	this.quantityCHB = quantityCHB;
+    }
+
+    public double getCostCement40kg() {
+	return costCement40kg;
+    }
+
+    public void setCostCement40kg(double costCement40kg) {
+	this.costCement40kg = costCement40kg;
+    }
+
+    public double getCostCement50kg() {
+	return costCement50kg;
+    }
+
+    public void setCostCement50kg(double costCement50kg) {
+	this.costCement50kg = costCement50kg;
+    }
+
+    public double getCostSand() {
+	return costSand;
+    }
+
+    public void setCostSand(double costSand) {
+	this.costSand = costSand;
+    }
+
+    public double getCostGravel() {
+	return costGravel;
+    }
+
+    public void setCostGravel(double costGravel) {
+	this.costGravel = costGravel;
+    }
+
+    public double getCostCHB() {
+	return costCHB;
+    }
+
+    public void setCostCHB(double costCHB) {
+	this.costCHB = costCHB;
+    }
+
+    public String getCostGrandTotalAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal);
+    }
+
+    public double getCostGrandTotal() {
+	return costGrandTotal;
+    }
+
+    public void setCostGrandTotal(double costGrandTotal) {
+	this.costGrandTotal = costGrandTotal;
     }
 
 }

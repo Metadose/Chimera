@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Encoder;
-import org.owasp.esapi.codecs.MySQLCodec;
-import org.owasp.esapi.codecs.MySQLCodec.Mode;
 
 public class SecureRequestWrapper extends HttpServletRequestWrapper {
 
@@ -84,8 +82,11 @@ public class SecureRequestWrapper extends HttpServletRequestWrapper {
 	    // Encoded attacks.
 	    value = this.esapiEncoder.canonicalize(value);
 
+	    // Commented since ESAPI MySQL encoding does not work well with
+	    // HDIV.
 	    // SQLi attacks.
-	    value = this.esapiEncoder.encodeForSQL(new MySQLCodec(Mode.STANDARD), value);
+	    // value = this.esapiEncoder.encodeForSQL(new
+	    // MySQLCodec(Mode.STANDARD), value);
 
 	    // Avoid null characters.
 	    value = value.replaceAll("", "");
