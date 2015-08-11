@@ -6,10 +6,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
+import org.owasp.esapi.codecs.MySQLCodec;
+import org.owasp.esapi.codecs.MySQLCodec.Mode;
 
-public class XSSRequestWrapper extends HttpServletRequestWrapper {
+public class SecureRequestWrapper extends HttpServletRequestWrapper {
+
+    private Encoder esapiEncoder = ESAPI.encoder();
 
     private static Pattern[] patterns = new Pattern[] {
+
 	    // Script fragments.
 	    Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE),
 
@@ -42,7 +48,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 	    Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
 		    | Pattern.DOTALL) };
 
-    public XSSRequestWrapper(HttpServletRequest servletRequest) {
+    public SecureRequestWrapper(HttpServletRequest servletRequest) {
 	super(servletRequest);
     }
 
@@ -55,7 +61,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 	int count = values.length;
 	String[] encodedValues = new String[count];
 	for (int i = 0; i < count; i++) {
-	    encodedValues[i] = stripXSS(values[i]);
+	    encodedValues[i] = stripUnsafe(values[i]);
 	}
 
 	return encodedValues;
@@ -64,26 +70,27 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String parameter) {
 	String value = super.getParameter(parameter);
-	return stripXSS(value);
+	return stripUnsafe(value);
     }
 
     @Override
     public String getHeader(String name) {
 	String value = super.getHeader(name);
-	return stripXSS(value);
+	return stripUnsafe(value);
     }
 
-    private String stripXSS(String value) {
+    private String stripUnsafe(String value) {
 	if (value != null) {
-	    // NOTE: It's highly recommended to use the ESAPI library and
-	    // uncomment the following line to
-	    // avoid encoded attacks.
-	    value = ESAPI.encoder().canonicalize(value);
+	    // Encoded attacks.
+	    value = this.esapiEncoder.canonicalize(value);
 
-	    // Avoid null characters
+	    // SQLi attacks.
+	    value = this.esapiEncoder.encodeForSQL(new MySQLCodec(Mode.STANDARD), value);
+
+	    // Avoid null characters.
 	    value = value.replaceAll("", "");
 
-	    // Remove all sections that match a pattern
+	    // Remove all sections that match a pattern.
 	    for (Pattern scriptPattern : patterns) {
 		value = scriptPattern.matcher(value).replaceAll("");
 	    }

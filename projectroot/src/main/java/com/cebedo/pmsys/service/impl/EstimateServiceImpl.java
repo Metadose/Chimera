@@ -413,6 +413,11 @@ public class EstimateServiceImpl implements EstimateService {
 	    shapeBean.setVolume(volume + (volume * allowance));
 	}
 
+	// If computing concrete.
+	if (estimateBean.willComputeConcrete()) {
+	    estimateConcrete(estimateBean, shapeBean);
+	}
+
 	// If we're estimating masonry CHB.
 	if (estimateBean.willComputeMasonryCHB()) {
 	    estimateCHBTotal(estimateBean, shapeBean);
@@ -433,10 +438,6 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimateMasonryCHBFooting(estimateBean);
 	}
 
-	// If computing concrete.
-	if (estimateBean.willComputeConcrete()) {
-	    estimateConcrete(estimateBean, shapeBean);
-	}
     }
 
     /**
