@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.NotificationMessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
@@ -61,10 +62,12 @@ public class PullOutServiceImpl implements PullOutService {
 	double quantity = obj.getQuantity();
 	double available = material.getAvailable();
 
-	// You're also not allowed if you already have a uuid.
-	if (quantity <= 0 || obj.getDatetime() == null || available <= 0 || quantity > available) {
-	    return AlertBoxGenerator.FAILED.generatePullout(obj.getQuantity(), "TODO",
-		    material.getName());
+	// Error: Pullout more than the available.
+	if (quantity > available) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(NotificationMessageRegistry.ERROR_PULLOUT_EXCEED);
+	} else if (quantity <= 0 || obj.getDatetime() == null || available <= 0) {
+	    return AlertBoxGenerator.ERROR;
 	}
 
 	// If we're creating.
@@ -190,7 +193,8 @@ public class PullOutServiceImpl implements PullOutService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PULL_OUT,
+		oldPullOut.getKey());
 
 	// If the quantity has been changed.
 	// Just delete then commit new one.

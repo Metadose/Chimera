@@ -86,7 +86,7 @@
 				                                        <div class="form-group">
 				                                            
 				                                            <label>Name</label>
-				                                            <form:input type="text" placeholder="Sample: Gravel for Flooring" class="form-control" path="name"/>
+				                                            <form:input type="text" placeholder="Sample: Cement for Flooring" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the name of this delivery</p>
 				                                            
 				                                            <label>Date and Time</label>
@@ -94,7 +94,7 @@
 				                                            <p class="help-block">Choose the date and time when the delivery was made</p>
 				                                            
 				                                            <label>Description</label>
-				                                            <form:input type="text" placeholder="Sample: Initial gravel delivery for flooring" class="form-control" path="description"/>
+				                                            <form:input type="text" placeholder="Sample: Initial cement delivery for flooring" class="form-control" path="description"/>
 				                                            <p class="help-block">Enter additional details</p>
 				                                            
 				                                        </div>
@@ -126,6 +126,7 @@
 				                                        
 				                                        	<label>Material Category</label>
 				                                            <form:select class="form-control" path="materialCategory"> 
+				                                            	<form:option value="" label=""/> 
 	                                     						<c:forEach items="${materialCategoryList}" var="materialCategory"> 
 	                                     							<form:option value="${materialCategory}" label="${materialCategory.getLabel()}"/> 
 	                                     						</c:forEach> 
@@ -136,7 +137,7 @@
 				                                            <form:input type="text" placeholder="Sample: Ordinary Portland Cement" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the specific name of the material</p>
 				                                            
-				                                            <label>Unit of Measure</label>
+				                                            <label>Unit of Measure (Choose One)</label>
 				                                            <form:select class="form-control" path="unitLength"> 
 				                                            	<form:option value="" label=""/> 
 	                                     						<c:forEach items="${unitListLength}" var="unit"> 
@@ -200,7 +201,6 @@
 																<th>Material Category</th>
 																<th>Specific Name</th>
 																<th>Unit</th>
-																<th>Remarks</th>
 																<th>Available</th>
 																<th>Used / Pulled-Out</th>
 																<th>Total Quantity</th>
@@ -232,7 +232,6 @@
 																<td>${row.materialCategory.getLabel()}</td>
 																<td>${row.name}</td>
 																<td>${row.getUnitName()}</td>
-																<td>${row.remarks}</td>
 																
 																<td align="center">
 																<div class="progress">

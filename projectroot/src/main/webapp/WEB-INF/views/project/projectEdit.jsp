@@ -892,7 +892,6 @@
 				                                            	<th>Material Category</th>
 				                                                <th>Specific Name</th>
 				                                                <th>Unit</th>
-				                                                <th>Remarks</th>
 				                                                <th>Available</th>
 				                                                <th>Used / Pulled-Out</th>
 				                                            	<th>Total Quantity</th>
@@ -928,9 +927,15 @@
 							                                    </a>
 																</td>
 																<td>${row.materialCategory.getLabel()}</td>
-																<td>${row.name}</td>
+
+																<td>
+																<c:url var="urlLink" value="/project/edit/material/${row.getKey()}-end"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.name}
+							                                    </a>
+																</td>
+
 																<td>${row.getUnitName()}</td>
-																<td>${row.remarks}</td>
 																
 																
 																<td align="center">
@@ -1073,12 +1078,7 @@
 							                                    </a>
 																</td>
 																
-																<td>
-																<c:url var="urlLink" value="/materialcategory/edit/${row.material.materialCategory.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.material.materialCategory.name}
-							                                    </a>
-																</td>
+																<td>${row.material.materialCategory.getLabel()}</td>
 																
 																<td>
 																<c:url var="urlLink" value="/project/edit/material/${row.material.getKey()}-end"/>
@@ -1087,12 +1087,7 @@
 							                                    </a>
 																</td>
 																
-																<td>
-																<c:url var="urlLink" value="/unit/edit/${row.material.unit.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.material.unit.name}
-							                                    </a>
-																</td>
+																<td>${row.material.getUnitName()}</td>
 																
 																<td>
 																<c:url var="urlLink" value="/staff/edit/${row.staff.id}/from/project/${project.id}"/>

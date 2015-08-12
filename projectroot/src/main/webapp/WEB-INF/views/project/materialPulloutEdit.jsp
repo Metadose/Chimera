@@ -96,20 +96,8 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td>
-									                	<label>
-									                	<c:url var="urlLink" value="/materialcategory/list"/>
-									                	<a class="general-link" href="${urlLink}">
-									                	Material Category
-									                	</a>
-									                	</label>
-									                	</td>
-									                	<td>
-									                	<c:url var="urlLink" value="/materialcategory/edit/${pullout.material.materialCategory.getKey()}-end"/>
-									                	<a class="general-link" href="${urlLink}">
-									                	${pullout.material.materialCategory.name}
-									                	</a>
-									                	</td>
+									                	<td><label>Material Category</label></td>
+									                	<td>${pullout.material.materialCategory.getLabel()}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Specific Name</label></td>
@@ -121,18 +109,8 @@
 									                	</td>
 									                </tr>
 									                <tr>
-									                	<td><label>
-									                	<c:url var="urlLink" value="/unit/list"/>
-									                	<a class="general-link" href="${urlLink}">
-									                	Units
-									                	</a>
-									                	</label></td>
-									                	<td>
-									                	<c:url var="urlLink" value="/unit/edit/${pullout.material.unit.getKey()}-end"/>
-									                	<a class="general-link" href="${urlLink}">
-									                	${pullout.material.unit.name}
-									                	</a>
-									                	</td>
+									                	<td><label>Units</label></td>
+									                	<td>${pullout.material.getUnitName()}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Available</label></td>

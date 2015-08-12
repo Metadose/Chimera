@@ -2,20 +2,16 @@ package com.cebedo.pmsys.ui;
 
 import java.util.Date;
 
+import com.cebedo.pmsys.constants.NotificationMessageRegistry;
 import com.cebedo.pmsys.constants.SystemConstants;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class AlertBoxGenerator {
 
-    /**
-     * Generic Error.
-     */
-    private static String TEMPLATE_FAILED_GENERIC = "There was an <b>error</b> on your request. Please try again.";
-
     public static AlertBoxGenerator SUCCESS = new AlertBoxGenerator(SystemConstants.UI_STATUS_SUCCESS);
     public static AlertBoxGenerator FAILED = new AlertBoxGenerator(SystemConstants.UI_STATUS_DANGER);
     public static String ERROR = new AlertBoxGenerator(SystemConstants.UI_STATUS_DANGER,
-	    TEMPLATE_FAILED_GENERIC).generateHTML();
+	    NotificationMessageRegistry.ERROR_GENERIC).generateHTML();
 
     private final String CONFIG_ALERT_STATUS = "ALERT_STATUS";
     private final String CONFIG_ALERT_HEADER = "ALERT_HEADER";
@@ -521,6 +517,11 @@ public class AlertBoxGenerator {
     public AlertBoxGenerator setMessage(String message) {
 	this.message = message;
 	return this;
+    }
+
+    public String generateHTML(String msg) {
+	setMessage(msg);
+	return generateHTML();
     }
 
 }

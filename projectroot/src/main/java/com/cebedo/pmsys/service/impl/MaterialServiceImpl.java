@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.NotificationMessageRegistry;
 import com.cebedo.pmsys.constants.RedisConstants;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
@@ -65,6 +66,16 @@ public class MaterialServiceImpl implements MaterialService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Can only choose one unit of measure for each material.
+	int unitCount = 0;
+	unitCount = obj.getUnitLength() == null ? unitCount : unitCount + 1;
+	unitCount = obj.getUnitMass() == null ? unitCount : unitCount + 1;
+	unitCount = obj.getUnitVolume() == null ? unitCount : unitCount + 1;
+	if (unitCount > 1) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(NotificationMessageRegistry.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+	}
+
 	// If we're creating.
 	if (obj.getUuid() == null) {
 
@@ -97,7 +108,8 @@ public class MaterialServiceImpl implements MaterialService {
 	    this.projectAuxService.set(projectAux);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_MATERIAL,
+		    obj.getKey());
 
 	    // Return.
 	    return AlertBoxGenerator.SUCCESS.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
@@ -136,8 +148,8 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_DELIVERY, delivery.getKey(),
-		RedisConstants.OBJECT_MATERIAL);
+	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_DELIVERY,
+		delivery.getKey(), RedisConstants.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(delivery);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
@@ -161,7 +173,8 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_MATERIAL, material.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_MATERIAL,
+		material.getKey());
 
 	// Get the updated version of the objects.
 	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery().getKey());
@@ -226,8 +239,19 @@ public class MaterialServiceImpl implements MaterialService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Can only choose one unit of measure for each material.
+	int unitCount = 0;
+	unitCount = material.getUnitLength() == null ? unitCount : unitCount + 1;
+	unitCount = material.getUnitMass() == null ? unitCount : unitCount + 1;
+	unitCount = material.getUnitVolume() == null ? unitCount : unitCount + 1;
+	if (unitCount > 1) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(NotificationMessageRegistry.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+	}
+
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_MATERIAL, material.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_MATERIAL,
+		material.getKey());
 
 	// Set the material.
 	this.materialValueRepo.set(material);

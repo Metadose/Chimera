@@ -275,9 +275,19 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
+	return editPage(project.getId(), status);
+    }
+
+    /**
+     * Complete the session and return back to the project edit page.
+     * 
+     * @param projectID
+     * @param status
+     * @return
+     */
+    private String editPage(long projectID, SessionStatus status) {
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, projectID);
     }
 
     /**
@@ -294,7 +304,6 @@ public class ProjectController {
 	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
 
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	long projectID = project.getId();
 
 	// Get response.
 	String response = this.staffService.unassignStaffMember(project, staffID);
@@ -302,9 +311,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	return editPage(project.getId(), status);
     }
 
     /**
@@ -328,9 +335,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+	return editPage(project.getId(), status);
     }
 
     /**
@@ -354,9 +359,7 @@ public class ProjectController {
 	    // Attach response.
 	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/"
-		    + SystemConstants.REQUEST_EDIT + "/" + project.getId();
+	    return editPage(project.getId(), status);
 	}
 
 	// Get response.
@@ -366,9 +369,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_EDIT
-		+ "/" + project.getId();
+	return editPage(project.getId(), status);
     }
 
     /**
@@ -398,9 +399,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Clear session and redirect.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
+	return editPage(faBean.getProjectID(), status);
     }
 
     /**
@@ -426,9 +425,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + faBean.getProjectID();
+	return editPage(faBean.getProjectID(), status);
     }
 
     /**
@@ -497,6 +494,16 @@ public class ProjectController {
 	// Alert result.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
+	return listPage(status);
+    }
+
+    /**
+     * Return to the list page.
+     * 
+     * @param status
+     * @return
+     */
+    public String listPage(SessionStatus status) {
 	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_LIST;
     }
@@ -526,9 +533,7 @@ public class ProjectController {
 
 	// Do service and clear session vars.
 	// Then return.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + projectID;
+	return editPage(projectID, status);
     }
 
     /**
@@ -564,9 +569,7 @@ public class ProjectController {
 
 	// Remove session variables.
 	// Evict project cache.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
@@ -594,7 +597,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
     public String updatePullout(@ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.pullOutService.update(pullout);
@@ -603,9 +606,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + pullout.getProject().getId();
+	return editSubmodulePage(RedisConstants.OBJECT_PULL_OUT, pullout.getKey());
     }
 
     /**
@@ -618,7 +619,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String updateMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.materialService.update(material);
@@ -627,9 +628,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + material.getProject().getId();
+	return editSubmodulePage(RedisConstants.OBJECT_MATERIAL, material.getKey());
     }
 
     /**
@@ -642,7 +641,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
     public String createDelivery(@ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.deliveryService.set(delivery);
@@ -650,12 +649,17 @@ public class ProjectController {
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	// Complete the transaction.
-	status.setComplete();
-	return getSubmoduleEditRedirect(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	return editSubmodulePage(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
     }
 
-    private String getSubmoduleEditRedirect(String submodule, String key) {
+    /**
+     * Return to the edit page of the submodule.
+     * 
+     * @param submodule
+     * @param key
+     * @return
+     */
+    private String editSubmodulePage(String submodule, String key) {
 	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
 	return deliveryEdit;
@@ -678,8 +682,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	status.setComplete();
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -699,8 +702,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	status.setComplete();
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -725,9 +727,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -773,10 +773,8 @@ public class ProjectController {
 
 	// Set completed.
 	// Return.
-	status.setComplete();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -801,10 +799,8 @@ public class ProjectController {
 
 	// Set completed.
 	// Return.
-	status.setComplete();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -829,10 +825,8 @@ public class ProjectController {
 
 	// Set completed.
 	// Return.
-	status.setComplete();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -857,10 +851,8 @@ public class ProjectController {
 
 	// Set completed.
 	// Return.
-	status.setComplete();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + proj.getId();
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -886,9 +878,8 @@ public class ProjectController {
 	    this.taskService.update(task);
 	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
 	}
-	status.setComplete();
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, task.getProject().getId());
+	return editPage(task.getProject().getId(), status);
     }
 
     /**
@@ -938,8 +929,7 @@ public class ProjectController {
 
 	// Complete the transaction.
 	// Redirect.
-	status.setComplete();
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -962,8 +952,7 @@ public class ProjectController {
 
 	// Complete the transaction.
 	// Redirect.
-	status.setComplete();
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -985,9 +974,8 @@ public class ProjectController {
 
 	// Complete the transaction.
 	// Redirect.
-	status.setComplete();
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, proj.getId());
+	return editPage(proj.getId(), status);
     }
 
     /**
@@ -1012,6 +1000,13 @@ public class ProjectController {
 	// Who pulled-out the material?
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	Set<Staff> staffList = proj.getAssignedStaff();
+
+	// Add material category list.
+	// And Units list.
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, MaterialCategory.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, CommonLengthUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, CommonMassUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, CommonVolumeUnit.class.getEnumConstants());
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -1056,8 +1051,8 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String doPullOutMaterial(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+    public String createPullOut(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
+	    RedirectAttributes redirectAttrs) {
 
 	// Do service
 	// and get response.
@@ -1066,12 +1061,7 @@ public class ProjectController {
 	// Add to model.
 	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	// Complete the request.
-	status.setComplete();
-
-	// Return to the project.
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + pullOut.getProject().getId();
+	return editSubmodulePage(RedisConstants.OBJECT_PULL_OUT, pullOut.getKey());
     }
 
     /**
@@ -1095,13 +1085,9 @@ public class ProjectController {
 	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
 	// Set completed.
-	// Then redirect back to the delivery.
-	status.setComplete();
-
 	// Return to the project.
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + project.getId();
+	return editPage(project.getId(), status);
     }
 
     /**
@@ -1123,9 +1109,6 @@ public class ProjectController {
 	// Attach to redirect attributes.
 	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
 
-	// Set completed.
-	// Then redirect back to the delivery.
-	status.setComplete();
 	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/"
 		+ material.getDelivery().getKey() + "-end";

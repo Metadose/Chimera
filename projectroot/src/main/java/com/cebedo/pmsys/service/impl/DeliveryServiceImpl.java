@@ -88,7 +88,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Transactional
     public Delivery get(String key) {
-	Delivery obj = get(key);
+	Delivery obj = this.deliveryValueRepo.get(key);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
@@ -134,7 +134,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_DELIVERY,
+		delivery.getKey());
 
 	// Get the necessary objects.
 	Project proj = delivery.getProject();
