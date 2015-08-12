@@ -620,14 +620,6 @@
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
 				               											<!-- Delete All button -->
-								                                        <c:url value="/project/delete/task/all" var="urlButton"/>
-								                                        <a href="${urlButton}">
-				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks</button>
-								                                        </a>
-						                                    		</td>
-						                                    		<td>&nbsp;</td>
-						                                    		<td>
-				               											<!-- Delete All button -->
 								                                        <c:url value="/project/delete/program-of-works" var="urlButton"/>
 								                                        <a href="${urlButton}">
 				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks & Milestones</button>
@@ -2060,7 +2052,7 @@
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
 				                                    		</c:if>
-				                                    		
+
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		&nbsp;&nbsp;
 				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;

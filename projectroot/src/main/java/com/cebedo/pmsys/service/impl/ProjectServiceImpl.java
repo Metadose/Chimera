@@ -102,6 +102,9 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Clear everything first to avoid redundant entries.
+	deleteProgramOfWorks(project);
+
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
 	this.taskService.createMassTasks(tasks);
