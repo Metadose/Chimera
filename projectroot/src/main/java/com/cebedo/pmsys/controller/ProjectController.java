@@ -324,7 +324,7 @@ public class ProjectController {
      */
     @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
 	    + SystemConstants.MASS, method = RequestMethod.POST)
-    public String assignStaffMass(HttpSession session, SessionStatus status,
+    public String assignMassStaff(HttpSession session, SessionStatus status,
 	    @ModelAttribute(ATTR_PROJECT) Project project, RedirectAttributes redirectAttrs) {
 
 	// Get response.
@@ -1394,11 +1394,11 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = "/clear/cache/{id}")
-    public void clearCache(@PathVariable("id") long id) {
+    public String clearCache(@PathVariable("id") long id, SessionStatus status) {
 	this.projectService.clearProjectCache(id);
 	this.projectService.clearListCache();
 
-	System.out.println("Cache cleared.");
+	return editPage(id, status);
     }
 
     /**

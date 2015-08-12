@@ -178,7 +178,9 @@
                    									<div class="callout callout-info callout-cebedo">
 									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
 									                </div>
+
 													<c:set value="" var="alreadyRendered"/>
+													
                    									<form:form modelAttribute="projectPayroll"
 														id="checkboxesForm"
 														method="post"

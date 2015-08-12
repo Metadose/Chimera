@@ -122,6 +122,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      */
     private void compute() {
 
+	// this.staffIDsToCompute
+
 	for (Staff staff : this.projectPayroll.getAssignedStaffList()) {
 
 	    // Get the staff,

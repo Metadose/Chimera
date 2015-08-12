@@ -695,8 +695,10 @@ public class StaffServiceImpl implements StaffService {
 	    Set<Attendance> attendanceList) {
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList.iterator()
-		.next().getStaff().getId(), AttendanceStatus.class.getName());
+	if (attendanceList.size() > 0) {
+	    this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList
+		    .iterator().next().getStaff().getId(), AttendanceStatus.class.getName());
+	}
 
 	// And count number per status.
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();

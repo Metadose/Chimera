@@ -2060,19 +2060,22 @@
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
 				                                    		</c:if>
+				                                    		
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		&nbsp;&nbsp;
 				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
-				                                    		</c:if>
+							                                <br/>
+							                                <br/>
+
 				                                    		
-							                                <br/>
-							                                <br/>
-				                                    		<form:form modelAttribute="project" 
-				                                    		method="post" 
-				                                    		id="assignStaffForm"
-				                                    		action="${contextPath}/project/assign/staff/mass">
-				                                    		<table id="assign-staff-table" class="table table-bordered table-striped">
+
+					                                    	<form:form modelAttribute="project" 
+							                                    method="post" 
+							                                    id="assignStaffForm"
+							                                    action="${contextPath}/project/assign/staff/mass">
+				                                    		<div class="form-group">
+				                                    		<table class="table table-bordered table-striped">
 				                                    			<thead>
 				                                    			<tr>
 				                                    			<th>Check/Uncheck</th>
@@ -2083,22 +2086,27 @@
 				                                                <th>Contact Number</th>
 				                                    			</tr>
 				                                    			</thead>
+
 				                                    			<tbody>
-				                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
-				                                    			<tr>
-				                                    			<td align="center">
-					                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
-				                                    			</td>
-				                                    			<td>${staff.getFullName()}</td>
-				                                    			<td>${staff.companyPosition}</td>
-			                                                	<td>${staff.getWageAsString()}</td>
-			                                                	<td>${staff.email}</td>
-			                                                	<td>${staff.contactNumber}</td>
-				                                    			</tr>
-					                                    		</c:forEach>
+					                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
+						                                    			<tr>
+						                                    			<td align="center">
+							                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
+						                                    			</td>
+						                                    			<td>${staff.getFullName()}</td>
+						                                    			<td>${staff.companyPosition}</td>
+					                                                	<td>${staff.getWageAsString()}</td>
+					                                                	<td>${staff.email}</td>
+					                                                	<td>${staff.contactNumber}</td>
+						                                    			</tr>
+						                                    		</c:forEach>
 				                                    			</tbody>
 				                                    		</table>
-				                                    		</form:form>
+				                                    		</div>
+						                                    </form:form>
+
+				                                    		</c:if>
+
 						                                </div>
 						                             </div>
 						                        </div>
@@ -2274,7 +2282,6 @@
 			$("#milestones-table").dataTable();
 			$("#managers-table").dataTable();
 			$("#assigned-staff-table").dataTable();
-			$("#assign-staff-table").dataTable();
 			$("#tasks-table").dataTable();
 			$(".is-data-table").dataTable();
 			

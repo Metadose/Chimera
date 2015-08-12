@@ -49,7 +49,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE,
+		attendance.getKey());
 
 	// Set the status.
 	if (attendance.getStatus() == null) {
@@ -136,7 +137,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.set(attendance);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE,
+		attendance.getKey());
     }
 
     /**
@@ -155,7 +157,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+		Staff.PROPERTY_WAGE);
 
 	double wage = 0;
 
@@ -200,7 +203,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	if (attendances.size() > 0) {
+	    this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+		    Staff.PROPERTY_WAGE);
+	}
 
 	return totalWage;
     }
@@ -219,7 +225,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(), Staff.PROPERTY_WAGE);
+	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+		Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
 	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);

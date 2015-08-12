@@ -31,6 +31,7 @@ import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DataStructUtils;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
@@ -147,7 +148,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PAYROLL, payroll.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PAYROLL,
+		payroll.getKey());
 
 	// Revert the grand total in project auxillary.
 	// Get the aux obj.
@@ -156,7 +158,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Get value.
 	// Recompute reverted value.
 	double totalAllPayrolls = projAux.getGrandTotalPayroll();
-	double totalThisPayroll = payroll.getPayrollComputationResult().getOverallTotalOfStaff();
+	PayrollComputationResult result = payroll.getPayrollComputationResult();
+	double totalThisPayroll = result == null ? 0 : result.getOverallTotalOfStaff();
 	double revertedTotal = totalAllPayrolls - totalThisPayroll;
 
 	// Set the reverted value.
@@ -383,13 +386,30 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
+	// Get current list of staff.
+	// Add the staff member.
+	// Set the list back, and set it back to data store.
+	long newStaffID = includeStaffBean.getStaffID();
 	Set<Staff> staffList = projectPayroll.getStaffList();
-	Staff staff = this.staffDAO.getByID(includeStaffBean.getStaffID());
-	staffList.add(staff);
+	Staff newStaff = this.staffDAO.getByID(newStaffID);
+	staffList.add(newStaff);
 	projectPayroll.setStaffList(staffList);
 	this.projectPayrollValueRepo.set(projectPayroll);
 
-	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, staff.getFullName());
+	// Get list of checked ID's.
+	// Add new staff ID.
+	long[] newIDArray = DataStructUtils.addElemToArray(projectPayroll.getStaffIDs(), newStaffID);
+	projectPayroll.setStaffIDs(newIDArray);
+
+	// Add the actual staff object to the list to compute.
+	Set<Staff> assignedStaffList = projectPayroll.getAssignedStaffList();
+	assignedStaffList.add(newStaff);
+	projectPayroll.setAssignedStaffList(assignedStaffList);
+
+	// Commit the payroll object.
+	this.projectPayrollValueRepo.set(projectPayroll);
+
+	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
     }
 
 }

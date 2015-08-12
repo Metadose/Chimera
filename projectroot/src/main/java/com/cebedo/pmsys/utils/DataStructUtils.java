@@ -1,7 +1,7 @@
 package com.cebedo.pmsys.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +31,36 @@ public class DataStructUtils {
 	return staffList;
     }
 
-    public static Collection<String> convertArrayToList(
-	    String[] estimationToCompute) {
-	List<String> strList = new ArrayList<String>();
-	for (String str : estimationToCompute) {
-	    strList.add(str);
+    public static Object[] addElemToArray(Object[] elems, Object elem) {
+	List<Object> stringList = convertArrayToList(elems);
+	stringList.add(elem);
+	return (Object[]) stringList.toArray();
+    }
+
+    public static List<Object> convertArrayToList(Object[] strings) {
+	return Arrays.asList(strings);
+    }
+
+    public static long[] toPrimitives(Long... objects) {
+	long[] primitives = new long[objects.length];
+	for (int i = 0; i < objects.length; i++) {
+	    primitives[i] = objects[i];
 	}
-	return strList;
+	return primitives;
+    }
+
+    public static long[] toPrimitives(List<Long> objects) {
+	long[] primitives = new long[objects.size()];
+	for (int i = 0; i < objects.size(); i++) {
+	    primitives[i] = objects.get(i);
+	}
+	return primitives;
+    }
+
+    public static long[] addElemToArray(long[] elems, long elem) {
+	List<Long> elemList = convertArrayToList(elems);
+	elemList.add(elem);
+	return toPrimitives(elemList);
     }
 
 }
