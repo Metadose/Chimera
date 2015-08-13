@@ -9,10 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.MappingEstimationClass;
-import com.cebedo.pmsys.enums.TableCHBDimensions;
-import com.cebedo.pmsys.enums.TableCHBFootingDimensions;
-import com.cebedo.pmsys.enums.TableConcreteProportion;
+import com.cebedo.pmsys.enums.TableDimensionCHB;
+import com.cebedo.pmsys.enums.TableDimensionCHBFooting;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
+import com.cebedo.pmsys.enums.TableMRCHBHorizontal;
+import com.cebedo.pmsys.enums.TableMRCHBTieWire;
+import com.cebedo.pmsys.enums.TableMRCHBVertical;
+import com.cebedo.pmsys.enums.TableProportionConcrete;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
@@ -42,8 +45,11 @@ public class EstimateComputationBean implements Serializable {
 
     // Standard constants.
     private MappingEstimationClass estimationClass = MappingEstimationClass.CLASS_A;
-    private TableCHBDimensions chbDimensions = TableCHBDimensions.CHB_20_20_40;
-    private TableCHBFootingDimensions chbFootingDimensions = TableCHBFootingDimensions.FOOTING_15_60;
+    private TableDimensionCHB chbDimensions = TableDimensionCHB.CHB_20_20_40;
+    private TableDimensionCHBFooting chbFootingDimensions = TableDimensionCHBFooting.FOOTING_15_60;
+    private TableMRCHBVertical mrCHBVertical = TableMRCHBVertical.SAFEST;
+    private TableMRCHBHorizontal mrCHBHorizontal = TableMRCHBHorizontal.SAFEST;
+    private TableMRCHBTieWire mrCHBTieWire = TableMRCHBTieWire.SAFEST;
 
     // Yes/No in the Excel file.
     private List<EstimateType> estimateTypes = new ArrayList<EstimateType>();
@@ -65,11 +71,13 @@ public class EstimateComputationBean implements Serializable {
      * Results
      */
     // Materials quantity and cost per estimate type.
+    // TODO Remove suffix "*Estimate" on below variables.
     private EstimateResultConcrete resultConcreteEstimate = new EstimateResultConcrete();
     private EstimateResultMasonryCHB resultCHBEstimate = new EstimateResultMasonryCHB();
     private EstimateResultMasonryCHBLaying resultCHBLayingEstimate = new EstimateResultMasonryCHBLaying();
     private EstimateResultMasonryPlastering resultPlasteringEstimate = new EstimateResultMasonryPlastering();
     private EstimateResultMasonryCHBFooting resultCHBFootingEstimate = new EstimateResultMasonryCHBFooting();
+    private EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB();
 
     // Quantity of the whole row.
     private double quantityCement40kg = 0;
@@ -130,7 +138,7 @@ public class EstimateComputationBean implements Serializable {
 	return project;
     }
 
-    public TableConcreteProportion getConcreteProportion() {
+    public TableProportionConcrete getConcreteProportion() {
 	return getEstimationClass().getConcreteProportion();
     }
 
@@ -186,11 +194,11 @@ public class EstimateComputationBean implements Serializable {
 	this.chbFoundationUnit = chbFoundationUnit;
     }
 
-    public TableCHBDimensions getChbDimensions() {
+    public TableDimensionCHB getChbDimensions() {
 	return chbDimensions;
     }
 
-    public void setChbDimensions(TableCHBDimensions chbDimensions) {
+    public void setChbDimensions(TableDimensionCHB chbDimensions) {
 	this.chbDimensions = chbDimensions;
     }
 
@@ -226,11 +234,11 @@ public class EstimateComputationBean implements Serializable {
 	this.resultPlasteringEstimate = resultPlasteringEstimate;
     }
 
-    public TableCHBFootingDimensions getChbFootingDimensions() {
+    public TableDimensionCHBFooting getChbFootingDimensions() {
 	return chbFootingDimensions;
     }
 
-    public void setChbFootingDimensions(TableCHBFootingDimensions chbFootingDimensions) {
+    public void setChbFootingDimensions(TableDimensionCHBFooting chbFootingDimensions) {
 	this.chbFootingDimensions = chbFootingDimensions;
     }
 
@@ -384,6 +392,38 @@ public class EstimateComputationBean implements Serializable {
 
     public void setQuantityCHB(double quantityCHB) {
 	this.quantityCHB = quantityCHB;
+    }
+
+    public TableMRCHBVertical getMrCHBVertical() {
+	return mrCHBVertical;
+    }
+
+    public void setMrCHBVertical(TableMRCHBVertical mrCHBVertical) {
+	this.mrCHBVertical = mrCHBVertical;
+    }
+
+    public TableMRCHBHorizontal getMrCHBHorizontal() {
+	return mrCHBHorizontal;
+    }
+
+    public void setMrCHBHorizontal(TableMRCHBHorizontal mrCHBHorizontal) {
+	this.mrCHBHorizontal = mrCHBHorizontal;
+    }
+
+    public TableMRCHBTieWire getMrCHBTieWire() {
+	return mrCHBTieWire;
+    }
+
+    public void setMrCHBTieWire(TableMRCHBTieWire mrCHBTieWire) {
+	this.mrCHBTieWire = mrCHBTieWire;
+    }
+
+    public EstimateResultMRCHB getResultMRCHB() {
+	return resultMRCHB;
+    }
+
+    public void setResultMRCHB(EstimateResultMRCHB resultMRCHB) {
+	this.resultMRCHB = resultMRCHB;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum TableCHBDimensions {
+public enum TableDimensionCHB {
 
     CHB_10_20_40("10cm x 20cm x 40cm", 10, CommonLengthUnit.CENTIMETER, 20,
 	    CommonLengthUnit.CENTIMETER, 40, CommonLengthUnit.CENTIMETER),
@@ -21,7 +21,7 @@ public enum TableCHBDimensions {
     private CommonLengthUnit heightUnit;
     private CommonLengthUnit lengthUnit;
 
-    TableCHBDimensions(String label, double thickness,
+    TableDimensionCHB(String label, double thickness,
 	    CommonLengthUnit thicknessUnit, double height,
 	    CommonLengthUnit heightUnit, double length,
 	    CommonLengthUnit lengthUnit) {

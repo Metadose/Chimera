@@ -2,14 +2,14 @@ package com.cebedo.pmsys.enums;
 
 public enum MappingEstimationClass {
 
-    CLASS_A("Class A", "A", TableConcreteProportion.CLASS_AA);
+    CLASS_A("Class A", "A", TableProportionConcrete.CLASS_AA);
 
     private String label;
     private String mixClass;
-    private TableConcreteProportion concreteProportion;
+    private TableProportionConcrete concreteProportion;
 
     MappingEstimationClass(String label, String mixClass,
-	    TableConcreteProportion concreteProportion) {
+	    TableProportionConcrete concreteProportion) {
 	this.mixClass = mixClass;
 	this.label = label;
 	this.concreteProportion = concreteProportion;
@@ -23,11 +23,11 @@ public enum MappingEstimationClass {
 	this.label = label;
     }
 
-    public TableConcreteProportion getConcreteProportion() {
+    public TableProportionConcrete getConcreteProportion() {
 	return concreteProportion;
     }
 
-    public void setConcreteProportion(TableConcreteProportion concreteProportion) {
+    public void setConcreteProportion(TableProportionConcrete concreteProportion) {
 	this.concreteProportion = concreteProportion;
     }
 

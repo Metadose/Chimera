@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum TableCHBFootingDimensions {
+public enum TableDimensionCHBFooting {
 
     FOOTING_10_30("10cm x 30cm", 10, CommonLengthUnit.CENTIMETER, 30,
 	    CommonLengthUnit.CENTIMETER),
@@ -32,7 +32,7 @@ public enum TableCHBFootingDimensions {
     private double width;
     private CommonLengthUnit widthUnit;
 
-    TableCHBFootingDimensions(String label, double thickness,
+    TableDimensionCHBFooting(String label, double thickness,
 	    CommonLengthUnit thickessUnit, double width,
 	    CommonLengthUnit widthUnit) {
 	this.label = label;

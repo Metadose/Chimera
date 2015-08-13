@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum TablePlasterMixture {
+public enum TableMixturePlaster {
 
     CLASS_A("Class A", "A", 1, 2, 18.0, CommonMassUnit.CEMENT_BAG_40KG, 14.5,
 	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER),
@@ -27,7 +27,7 @@ public enum TablePlasterMixture {
     private double partSand;
     private CommonVolumeUnit partSandUnit;
 
-    TablePlasterMixture(String label, String mixClass, double ratioCement,
+    TableMixturePlaster(String label, String mixClass, double ratioCement,
 	    double ratioSand, double partCement40kg,
 	    CommonMassUnit partCement40kgUnit, double partCement50kg,
 	    CommonMassUnit partCement50kgUnit, double partSand,

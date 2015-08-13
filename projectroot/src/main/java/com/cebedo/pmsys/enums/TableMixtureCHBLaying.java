@@ -1,52 +1,52 @@
 package com.cebedo.pmsys.enums;
 
-public enum TableCHBLayingMixture {
+public enum TableMixtureCHBLaying {
 
-    CLASS_A_10_20_40("Class A (10cm x 20cm x 40cm)", "A", TableCHBDimensions.CHB_10_20_40, 0.792,
+    CLASS_A_10_20_40("Class A (10cm x 20cm x 40cm)", "A", TableDimensionCHB.CHB_10_20_40, 0.792,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_A_15_20_40("Class A (15cm x 20cm x 40cm)", "A", TableCHBDimensions.CHB_15_20_40, 1.526,
+    CLASS_A_15_20_40("Class A (15cm x 20cm x 40cm)", "A", TableDimensionCHB.CHB_15_20_40, 1.526,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_A_20_20_40("Class A (20cm x 20cm x 40cm)", "A", TableCHBDimensions.CHB_20_20_40, 2.260,
+    CLASS_A_20_20_40("Class A (20cm x 20cm x 40cm)", "A", TableDimensionCHB.CHB_20_20_40, 2.260,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_B_10_20_40("Class B (10cm x 20cm x 40cm)", "B", TableCHBDimensions.CHB_10_20_40, 0.522,
+    CLASS_B_10_20_40("Class B (10cm x 20cm x 40cm)", "B", TableDimensionCHB.CHB_10_20_40, 0.522,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_B_15_20_40("Class B (15cm x 20cm x 40cm)", "B", TableCHBDimensions.CHB_15_20_40, 1.018,
+    CLASS_B_15_20_40("Class B (15cm x 20cm x 40cm)", "B", TableDimensionCHB.CHB_15_20_40, 1.018,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_B_20_20_40("Class B (20cm x 20cm x 40cm)", "B", TableCHBDimensions.CHB_20_20_40, 1.500,
+    CLASS_B_20_20_40("Class B (20cm x 20cm x 40cm)", "B", TableDimensionCHB.CHB_20_20_40, 1.500,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_C_10_20_40("Class C (10cm x 20cm x 40cm)", "C", TableCHBDimensions.CHB_10_20_40, 0.394,
+    CLASS_C_10_20_40("Class C (10cm x 20cm x 40cm)", "C", TableDimensionCHB.CHB_10_20_40, 0.394,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_C_15_20_40("Class C (15cm x 20cm x 40cm)", "C", TableCHBDimensions.CHB_15_20_40, 0.763,
+    CLASS_C_15_20_40("Class C (15cm x 20cm x 40cm)", "C", TableDimensionCHB.CHB_15_20_40, 0.763,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_C_20_20_40("Class C (20cm x 20cm x 40cm)", "C", TableCHBDimensions.CHB_20_20_40, 1.125,
+    CLASS_C_20_20_40("Class C (20cm x 20cm x 40cm)", "C", TableDimensionCHB.CHB_20_20_40, 1.125,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_D_10_20_40("Class D (10cm x 20cm x 40cm)", "D", TableCHBDimensions.CHB_10_20_40, 0.328,
+    CLASS_D_10_20_40("Class D (10cm x 20cm x 40cm)", "D", TableDimensionCHB.CHB_10_20_40, 0.328,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0435, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_D_15_20_40("Class D (15cm x 20cm x 40cm)", "D", TableCHBDimensions.CHB_15_20_40, 0.633,
+    CLASS_D_15_20_40("Class D (15cm x 20cm x 40cm)", "D", TableDimensionCHB.CHB_15_20_40, 0.633,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.0844, CommonVolumeUnit.CUBIC_METER),
 
-    CLASS_D_20_20_40("Class D (20cm x 20cm x 40cm)", "D", TableCHBDimensions.CHB_20_20_40, 0.938,
+    CLASS_D_20_20_40("Class D (20cm x 20cm x 40cm)", "D", TableDimensionCHB.CHB_20_20_40, 0.938,
 	    CommonMassUnit.CEMENT_BAG_40KG, 0.1250, CommonVolumeUnit.CUBIC_METER);
 
     private String label;
     private String mixClass;
-    private TableCHBDimensions chb;
+    private TableDimensionCHB chb;
     private double partCement40kgBag;
     private CommonMassUnit partCement40kgBagUnit;
     private double partSand;
     private CommonVolumeUnit partSandUnit;
 
-    TableCHBLayingMixture(String label, String mixClass, TableCHBDimensions chb,
+    TableMixtureCHBLaying(String label, String mixClass, TableDimensionCHB chb,
 	    double partCement40kgBag, CommonMassUnit partCement40kgBagUnit, double partSand,
 	    CommonVolumeUnit partSandUnit) {
 	this.mixClass = mixClass;
@@ -74,11 +74,11 @@ public enum TableCHBLayingMixture {
 	this.label = label;
     }
 
-    public TableCHBDimensions getChb() {
+    public TableDimensionCHB getChb() {
 	return chb;
     }
 
-    public void setChb(TableCHBDimensions chb) {
+    public void setChb(TableDimensionCHB chb) {
 	this.chb = chb;
     }
 

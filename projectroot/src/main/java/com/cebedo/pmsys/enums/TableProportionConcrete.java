@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum TableConcreteProportion {
+public enum TableProportionConcrete {
 
     CLASS_AA("Class AA", "A", 1, 1.5, 3, 12, CommonMassUnit.CEMENT_BAG_40KG,
 	    9.5, CommonMassUnit.CEMENT_BAG_50KG, 0.5,
@@ -32,7 +32,7 @@ public enum TableConcreteProportion {
     private CommonVolumeUnit partSandUnit;
     private CommonVolumeUnit partGravelUnit;
 
-    TableConcreteProportion(String label, String mixClass, double ratioCement,
+    TableProportionConcrete(String label, String mixClass, double ratioCement,
 	    double ratioGravel, double ratioSand, double partCement40kg,
 	    CommonMassUnit partCement40kgUnit, double partCement50kg,
 	    CommonMassUnit partCement50kgUnit, double partSand,
