@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.cebedo.pmsys.bean.PayrollComputationResult;
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -56,14 +56,14 @@ public class ProjectPayroll implements IDomainObject {
      */
     private String payrollJSON;
     private Date lastComputed;
-    private PayrollComputationResult payrollComputationResult;
+    private PayrollResultComputation payrollResultComputation;
 
-    public PayrollComputationResult getPayrollComputationResult() {
-	return payrollComputationResult;
+    public PayrollResultComputation getPayrollComputationResult() {
+	return payrollResultComputation;
     }
 
-    public void setPayrollComputationResult(PayrollComputationResult payrollComputationResult) {
-	this.payrollComputationResult = payrollComputationResult;
+    public void setPayrollComputationResult(PayrollResultComputation payrollResultComputation) {
+	this.payrollResultComputation = payrollResultComputation;
     }
 
     public Date getLastComputed() {
@@ -204,7 +204,7 @@ public class ProjectPayroll implements IDomainObject {
      * @return
      */
     public static String constructPattern(long companyID, Long projectID) {
-	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, companyID, projectID, "*");
+	return String.format(RegistryRedisKeys.KEY_PROJECT_PAYROLL, companyID, projectID, "*");
     }
 
     /**
@@ -213,7 +213,7 @@ public class ProjectPayroll implements IDomainObject {
     @Override
     public String getKey() {
 	// company:%s:project:%s:payroll:%s
-	return String.format(RedisKeyRegistry.KEY_PROJECT_PAYROLL, this.company.getId(),
+	return String.format(RegistryRedisKeys.KEY_PROJECT_PAYROLL, this.company.getId(),
 		this.project.getId(), this.uuid);
     }
 

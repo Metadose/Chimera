@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 
 import org.apache.activemq.command.ActiveMQObjectMessage;
 
-import com.cebedo.pmsys.bean.SystemMessage;
+import com.cebedo.pmsys.bean.JMSMessage;
 import com.cebedo.pmsys.dao.AuditLogDAO;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -29,10 +29,10 @@ public class AuditMessageListener implements MessageListener {
     public void onMessage(Message message) {
 
 	if (message instanceof ActiveMQObjectMessage) {
-	    SystemMessage sysMessage;
+	    JMSMessage sysMessage;
 	    try {
 		// Get the contents.
-		sysMessage = (SystemMessage) ((ActiveMQObjectMessage) message).getObject();
+		sysMessage = (JMSMessage) ((ActiveMQObjectMessage) message).getObject();
 
 		// Get the user details.
 		// Get action details.

@@ -1,6 +1,6 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
-public class CalendarEventBean {
+public class JSONCalendarEvent {
 
     private String id;
     private String title;

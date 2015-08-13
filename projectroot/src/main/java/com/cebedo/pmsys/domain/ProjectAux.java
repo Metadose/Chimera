@@ -2,7 +2,7 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Map;
 
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -48,7 +48,7 @@ public class ProjectAux implements IDomainObject {
      */
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_PROJECT_AUX,
+	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX,
 		this.company.getId(), this.project.getId());
     }
 
@@ -70,7 +70,7 @@ public class ProjectAux implements IDomainObject {
 
     public static String constructKey(Project project) {
 	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_PROJECT_AUX, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, company.getId(),
 		project.getId());
     }
 

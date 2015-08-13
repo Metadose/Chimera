@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.NotificationMessageRegistry;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -62,7 +62,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -73,7 +73,7 @@ public class MaterialServiceImpl implements MaterialService {
 	unitCount = obj.getUnitVolume() == null ? unitCount : unitCount + 1;
 	if (unitCount > 1) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(NotificationMessageRegistry.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+		    .generateHTML(RegistryResponseMessage.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
 
 	// If we're creating.
@@ -108,11 +108,11 @@ public class MaterialServiceImpl implements MaterialService {
 	    this.projectAuxService.set(projectAux);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_MATERIAL,
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_MATERIAL,
 		    obj.getKey());
 
 	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generateAdd(RedisConstants.OBJECT_MATERIAL, obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateAdd(ConstantsRedis.OBJECT_MATERIAL, obj.getName());
 	}
 
 	// This service used only for adding.
@@ -128,12 +128,12 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return new Material();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_MATERIAL, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 
 	return obj;
     }
@@ -143,13 +143,13 @@ public class MaterialServiceImpl implements MaterialService {
     public List<Material> list(Delivery delivery) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return new ArrayList<Material>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_DELIVERY,
-		delivery.getKey(), RedisConstants.OBJECT_MATERIAL);
+	this.messageHelper.send(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_DELIVERY,
+		delivery.getKey(), ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(delivery);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
@@ -168,12 +168,12 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, material.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_MATERIAL,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_MATERIAL,
 		material.getKey());
 
 	// Get the updated version of the objects.
@@ -203,7 +203,7 @@ public class MaterialServiceImpl implements MaterialService {
 	this.pullOutValueRepo.delete(keys);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDelete(RedisConstants.OBJECT_MATERIAL,
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_MATERIAL,
 		material.getName());
     }
 
@@ -222,7 +222,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_MATERIAL);
+		ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(proj);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
@@ -235,7 +235,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_MATERIAL, material.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -246,16 +246,16 @@ public class MaterialServiceImpl implements MaterialService {
 	unitCount = material.getUnitVolume() == null ? unitCount : unitCount + 1;
 	if (unitCount > 1) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(NotificationMessageRegistry.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+		    .generateHTML(RegistryResponseMessage.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_MATERIAL,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_MATERIAL,
 		material.getKey());
 
 	// Set the material.
 	this.materialValueRepo.set(material);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_MATERIAL,
+	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_MATERIAL,
 		material.getName());
     }
 

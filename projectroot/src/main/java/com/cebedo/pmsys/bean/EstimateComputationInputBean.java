@@ -1,11 +1,15 @@
 package com.cebedo.pmsys.bean;
 
+import java.io.Serializable;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Project;
 
-public class EstimationInputBean {
+public class EstimateComputationInputBean implements Serializable {
+
+    private static final long serialVersionUID = -5059743520903240466L;
 
     private String name;
     private String remarks;
@@ -13,11 +17,11 @@ public class EstimationInputBean {
     private TableEstimationAllowance estimationAllowance;
     private MultipartFile estimationFile;
 
-    public EstimationInputBean() {
+    public EstimateComputationInputBean() {
 	;
     }
 
-    public EstimationInputBean(Project proj) {
+    public EstimateComputationInputBean(Project proj) {
 	setProject(proj);
     }
 

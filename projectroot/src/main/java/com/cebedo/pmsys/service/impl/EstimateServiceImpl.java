@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.ConcreteEstimateResults;
-import com.cebedo.pmsys.bean.EstimateBean;
-import com.cebedo.pmsys.bean.EstimationInputBean;
-import com.cebedo.pmsys.bean.EstimationOutputRowBean;
-import com.cebedo.pmsys.bean.MasonryCHBEstimateResults;
-import com.cebedo.pmsys.bean.MasonryCHBFootingEstimateResults;
-import com.cebedo.pmsys.bean.MasonryCHBLayingEstimateResults;
-import com.cebedo.pmsys.bean.MasonryPlasteringEstimateResults;
-import com.cebedo.pmsys.bean.ShapeBean;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.bean.EstimateResultConcrete;
+import com.cebedo.pmsys.bean.EstimateComputationBean;
+import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.bean.EstimateComputationOutputRowJSON;
+import com.cebedo.pmsys.bean.EstimateResultMasonryCHB;
+import com.cebedo.pmsys.bean.EstimateResultMasonryCHBFooting;
+import com.cebedo.pmsys.bean.EstimateResultMasonryCHBLaying;
+import com.cebedo.pmsys.bean.EstimateResultMasonryPlastering;
+import com.cebedo.pmsys.bean.EstimateComputationShape;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
@@ -83,7 +83,7 @@ public class EstimateServiceImpl implements EstimateService {
 
     @Override
     @Transactional
-    public String estimate(EstimationInputBean estimateInput) {
+    public String estimate(EstimateComputationInputBean estimateInput) {
 
 	// Security check.
 	Project proj = estimateInput.getProject();
@@ -94,7 +94,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
-		EstimationInputBean.class.getName());
+		EstimateComputationInputBean.class.getName());
 
 	// Do the commit.
 	// If create.
@@ -104,39 +104,39 @@ public class EstimateServiceImpl implements EstimateService {
 	    EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
 
 	    // Convert the excel file to objects.
-	    List<EstimateBean> estimateBeans = convertExcelToEstimates(
+	    List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
 		    estimateInput.getEstimationFile(), estimateInput.getProject());
 
 	    // Process each object.
-	    List<EstimationOutputRowBean> rowListForJSON = new ArrayList<EstimationOutputRowBean>();
-	    for (EstimateBean estimateBean : estimateBeans) {
+	    List<EstimateComputationOutputRowJSON> rowListForJSON = new ArrayList<EstimateComputationOutputRowJSON>();
+	    for (EstimateComputationBean estimateComputationBean : estimateComputationBeans) {
 
 		// Set allowance.
-		estimateBean.setEstimationAllowance(estimateInput.getEstimationAllowance());
+		estimateComputationBean.setEstimationAllowance(estimateInput.getEstimationAllowance());
 
 		// For each row, compute the total quantity.
 		// For each type in the row, compute the cost.
-		computeRowQuantityAndPerTypeCost(estimateBean);
+		computeRowQuantityAndPerTypeCost(estimateComputationBean);
 
 		// For each row, compute the total cost.
-		computeRowCost(estimateBean);
+		computeRowCost(estimateComputationBean);
 
 		// Update the grand total of the estimation.
-		updateGrandTotals(estimationOutput, estimateBean);
+		updateGrandTotals(estimationOutput, estimateComputationBean);
 
 		// Add to list of beans to be converted to JSON later.
-		rowListForJSON.add(new EstimationOutputRowBean(estimateBean));
+		rowListForJSON.add(new EstimateComputationOutputRowJSON(estimateComputationBean));
 	    }
 
 	    // Set the list.
 	    String rowListJson = new Gson().toJson(rowListForJSON, ArrayList.class);
-	    estimationOutput.setResults(estimateInput, estimateBeans, rowListJson);
+	    estimationOutput.setResults(estimateInput, estimateComputationBeans, rowListJson);
 
 	    // Save the object.
 	    estimationOutput.setUuid(UUID.randomUUID());
 	    this.estimationOutputValueRepo.set(estimationOutput);
 
-	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_ESTIMATE, "TODO");
+	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE, "TODO");
 	}
 
 	// If file is null, return an error.
@@ -147,16 +147,16 @@ public class EstimateServiceImpl implements EstimateService {
      * Update the quantity and cost grand totals of this estimation.
      * 
      * @param estimationOutput
-     * @param estimateBean
+     * @param estimateComputationBean
      */
-    private void updateGrandTotals(EstimationOutput estimationOutput, EstimateBean estimateBean) {
+    private void updateGrandTotals(EstimationOutput estimationOutput, EstimateComputationBean estimateComputationBean) {
 
 	// Cost.
-	double costCHB = estimationOutput.getCostCHB() + estimateBean.getCostCHB();
-	double costCement40kg = estimationOutput.getCostCement40kg() + estimateBean.getCostCement40kg();
-	double costCement50kg = estimationOutput.getCostCement50kg() + estimateBean.getCostCement50kg();
-	double costSand = estimationOutput.getCostSand() + estimateBean.getCostSand();
-	double costGravel = estimationOutput.getCostGravel() + estimateBean.getCostGravel();
+	double costCHB = estimationOutput.getCostCHB() + estimateComputationBean.getCostCHB();
+	double costCement40kg = estimationOutput.getCostCement40kg() + estimateComputationBean.getCostCement40kg();
+	double costCement50kg = estimationOutput.getCostCement50kg() + estimateComputationBean.getCostCement50kg();
+	double costSand = estimationOutput.getCostSand() + estimateComputationBean.getCostSand();
+	double costGravel = estimationOutput.getCostGravel() + estimateComputationBean.getCostGravel();
 	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel;
 
 	estimationOutput.setCostCHB(costCHB);
@@ -167,13 +167,13 @@ public class EstimateServiceImpl implements EstimateService {
 	estimationOutput.setCostGrandTotal(estimationOutput.getCostGrandTotal() + rowTotal);
 
 	// Quantity.
-	double quantCHB = estimationOutput.getQuantityCHB() + estimateBean.getQuantityCHB();
+	double quantCHB = estimationOutput.getQuantityCHB() + estimateComputationBean.getQuantityCHB();
 	double quantCement40kg = estimationOutput.getQuantityCement40kg()
-		+ estimateBean.getQuantityCement40kg();
+		+ estimateComputationBean.getQuantityCement40kg();
 	double quantCement50kg = estimationOutput.getQuantityCement50kg()
-		+ estimateBean.getQuantityCement50kg();
-	double quantSand = estimationOutput.getQuantitySand() + estimateBean.getQuantitySand();
-	double quantGravel = estimationOutput.getQuantityGravel() + estimateBean.getQuantityGravel();
+		+ estimateComputationBean.getQuantityCement50kg();
+	double quantSand = estimationOutput.getQuantitySand() + estimateComputationBean.getQuantitySand();
+	double quantGravel = estimationOutput.getQuantityGravel() + estimateComputationBean.getQuantityGravel();
 
 	estimationOutput.setQuantityCHB(quantCHB);
 	estimationOutput.setQuantityCement40kg(quantCement40kg);
@@ -185,15 +185,15 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate the cost for the whole row.
      * 
-     * @param estimateBean
+     * @param estimateComputationBean
      */
-    private void computeRowCost(EstimateBean estimateBean) {
+    private void computeRowCost(EstimateComputationBean estimateComputationBean) {
 
-	ConcreteEstimateResults concrete = estimateBean.getResultConcreteEstimate();
-	MasonryCHBEstimateResults chb = estimateBean.getResultCHBEstimate();
-	MasonryCHBLayingEstimateResults chbLaying = estimateBean.getResultCHBLayingEstimate();
-	MasonryPlasteringEstimateResults plaster = estimateBean.getResultPlasteringEstimate();
-	MasonryCHBFootingEstimateResults footing = estimateBean.getResultCHBFootingEstimate();
+	EstimateResultConcrete concrete = estimateComputationBean.getResultConcreteEstimate();
+	EstimateResultMasonryCHB chb = estimateComputationBean.getResultCHBEstimate();
+	EstimateResultMasonryCHBLaying chbLaying = estimateComputationBean.getResultCHBLayingEstimate();
+	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
+	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
 
 	// Concrete.
 	double costCement40kg = 0, costCement50kg = 0, costSand = 0, costGravel = 0, costCHB = 0;
@@ -222,11 +222,11 @@ public class EstimateServiceImpl implements EstimateService {
 	costGravel += footing.getCostGravel();
 
 	// Set the results for the whole row.
-	estimateBean.setCostCement40kg(costCement40kg);
-	estimateBean.setCostCement50kg(costCement50kg);
-	estimateBean.setCostSand(costSand);
-	estimateBean.setCostGravel(costGravel);
-	estimateBean.setCostCHB(costCHB);
+	estimateComputationBean.setCostCement40kg(costCement40kg);
+	estimateComputationBean.setCostCement50kg(costCement50kg);
+	estimateComputationBean.setCostSand(costSand);
+	estimateComputationBean.setCostGravel(costGravel);
+	estimateComputationBean.setCostCHB(costCHB);
     }
 
     /**
@@ -248,7 +248,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param multipartFile
      * @return
      */
-    private List<EstimateBean> convertExcelToEstimates(MultipartFile multipartFile, Project proj) {
+    private List<EstimateComputationBean> convertExcelToEstimates(MultipartFile multipartFile, Project proj) {
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -260,7 +260,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    Iterator<Row> rowIterator = sheet.iterator();
 
 	    // Construct estimate containers.
-	    List<EstimateBean> estimateBeans = new ArrayList<EstimateBean>();
+	    List<EstimateComputationBean> estimateComputationBeans = new ArrayList<EstimateComputationBean>();
 
 	    double costCHB = 0;
 	    double costCement40kg = 0;
@@ -284,18 +284,18 @@ public class EstimateServiceImpl implements EstimateService {
 		Iterator<Cell> cellIterator = row.cellIterator();
 
 		// Every row, is an Estimate object.
-		EstimateBean estimateBean = new EstimateBean(proj);
-		ShapeBean shapeBean = new ShapeBean();
-		List<EstimateType> estimateTypes = estimateBean.getEstimateTypes();
+		EstimateComputationBean estimateComputationBean = new EstimateComputationBean(proj);
+		EstimateComputationShape estimateComputationShape = new EstimateComputationShape();
+		List<EstimateType> estimateTypes = estimateComputationBean.getEstimateTypes();
 
 		// If this is not the first row,
 		// then the costs must have already been initialized.
 		if (!firstRow) {
-		    estimateBean.setCostPerUnitCHB(costCHB);
-		    estimateBean.setCostPerUnitCement40kg(costCement40kg);
-		    estimateBean.setCostPerUnitCement50kg(costCement50kg);
-		    estimateBean.setCostPerUnitSand(costSand);
-		    estimateBean.setCostPerUnitGravel(costGravel);
+		    estimateComputationBean.setCostPerUnitCHB(costCHB);
+		    estimateComputationBean.setCostPerUnitCement40kg(costCement40kg);
+		    estimateComputationBean.setCostPerUnitCement50kg(costCement50kg);
+		    estimateComputationBean.setCostPerUnitSand(costSand);
+		    estimateComputationBean.setCostPerUnitGravel(costGravel);
 		}
 
 		// Looping all cells in this row.
@@ -310,30 +310,30 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_DETAILS_NAME:
 			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setName(name);
+			estimateComputationBean.setName(name);
 			continue;
 
 		    case EXCEL_DETAILS_AREA:
 			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			shapeBean.setArea(area);
-			shapeBean.setOriginalArea(area);
-			estimateBean.setShape(shapeBean);
+			estimateComputationShape.setArea(area);
+			estimateComputationShape.setOriginalArea(area);
+			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
 		    case EXCEL_DETAILS_VOLUME:
 			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			shapeBean.setVolume(volume);
-			shapeBean.setOriginalVolume(volume);
-			estimateBean.setShape(shapeBean);
+			estimateComputationShape.setVolume(volume);
+			estimateComputationShape.setOriginalVolume(volume);
+			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
 		    case EXCEL_ESTIMATE_MASONRY_CONCRETE:
 			boolean concrete = getEstimateBooleanFromExcel(workbook, cell);
 			if (concrete) {
 			    estimateTypes.add(EstimateType.CONCRETE);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
@@ -341,7 +341,7 @@ public class EstimateServiceImpl implements EstimateService {
 			boolean chb = getEstimateBooleanFromExcel(workbook, cell);
 			if (chb) {
 			    estimateTypes.add(EstimateType.MASONRY_CHB);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
@@ -349,7 +349,7 @@ public class EstimateServiceImpl implements EstimateService {
 			boolean chbLaying = getEstimateBooleanFromExcel(workbook, cell);
 			if (chbLaying) {
 			    estimateTypes.add(EstimateType.MASONRY_BLOCK_LAYING);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
@@ -357,7 +357,7 @@ public class EstimateServiceImpl implements EstimateService {
 			boolean plaster = getEstimateBooleanFromExcel(workbook, cell);
 			if (plaster) {
 			    estimateTypes.add(EstimateType.MASONRY_PLASTERING);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
@@ -365,78 +365,78 @@ public class EstimateServiceImpl implements EstimateService {
 			double foundation = (Double) (this.excelHelper
 				.getValueAsExpected(workbook, cell) == null ? 0 : this.excelHelper
 				.getValueAsExpected(workbook, cell));
-			estimateBean.setChbFoundationHeight(foundation);
+			estimateComputationBean.setChbFoundationHeight(foundation);
 			continue;
 
 		    case EXCEL_ESTIMATE_MASONRY_CHB_FOOTING:
 			boolean footing = getEstimateBooleanFromExcel(workbook, cell);
 			if (footing) {
 			    estimateTypes.add(EstimateType.MASONRY_CHB_FOOTING);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
 		    case EXCEL_ESTIMATE_MASONRY_FOOTING_LENGTH:
 			double footingLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
-			shapeBean.setFootingLength(footingLength);
-			estimateBean.setShape(shapeBean);
+			estimateComputationShape.setFootingLength(footingLength);
+			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
 		    case EXCEL_ESTIMATE_MR_CHB:
 			boolean mrCHB = getEstimateBooleanFromExcel(workbook, cell);
 			if (mrCHB) {
 			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_CHB);
-			    estimateBean.setEstimateTypes(estimateTypes);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
 
 		    case EXCEL_DETAILS_REMARKS:
 			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setRemarks(remarks);
+			estimateComputationBean.setRemarks(remarks);
 			continue;
 
 		    case EXCEL_COST_CHB:
 			costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setCostPerUnitCHB(costCHB);
+			estimateComputationBean.setCostPerUnitCHB(costCHB);
 			continue;
 
 		    case EXCEL_COST_CEMENT_40KG:
 			costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setCostPerUnitCement40kg(costCement40kg);
+			estimateComputationBean.setCostPerUnitCement40kg(costCement40kg);
 			continue;
 
 		    case EXCEL_COST_CEMENT_50KG:
 			costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setCostPerUnitCement50kg(costCement50kg);
+			estimateComputationBean.setCostPerUnitCement50kg(costCement50kg);
 			continue;
 
 		    case EXCEL_COST_SAND:
 			costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setCostPerUnitSand(costSand);
+			estimateComputationBean.setCostPerUnitSand(costSand);
 			continue;
 
 		    case EXCEL_COST_GRAVEL:
 			costGravel = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
-			estimateBean.setCostPerUnitGravel(costGravel);
+			estimateComputationBean.setCostPerUnitGravel(costGravel);
 			continue;
 
 		    }
 		}
 		firstRow = false;
-		estimateBeans.add(estimateBean);
+		estimateComputationBeans.add(estimateComputationBean);
 	    }
-	    return estimateBeans;
+	    return estimateComputationBeans;
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	return new ArrayList<EstimateBean>();
+	return new ArrayList<EstimateComputationBean>();
     }
 
     /**
@@ -445,46 +445,46 @@ public class EstimateServiceImpl implements EstimateService {
      * 2) Quantity: The whole row.<br>
      * 3) Cost: Each Estimation type.
      */
-    private void computeRowQuantityAndPerTypeCost(EstimateBean estimateBean) {
+    private void computeRowQuantityAndPerTypeCost(EstimateComputationBean estimateComputationBean) {
 
 	// TODO What if area is negative?
 
 	// Shape to compute.
-	ShapeBean shapeBean = estimateBean.getShape();
+	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();
 
 	// Prepare area and volume.
 	// Set allowances.
-	double allowance = estimateBean.getEstimationAllowance().getAllowance();
+	double allowance = estimateComputationBean.getEstimationAllowance().getAllowance();
 	if (allowance != 0.0) {
-	    double area = shapeBean.getArea();
-	    double volume = shapeBean.getVolume();
-	    shapeBean.setArea(area + (area * allowance));
-	    shapeBean.setVolume(volume + (volume * allowance));
+	    double area = estimateComputationShape.getArea();
+	    double volume = estimateComputationShape.getVolume();
+	    estimateComputationShape.setArea(area + (area * allowance));
+	    estimateComputationShape.setVolume(volume + (volume * allowance));
 	}
 
 	// If computing concrete.
-	if (estimateBean.willComputeConcrete()) {
-	    estimateConcrete(estimateBean, shapeBean);
+	if (estimateComputationBean.willComputeConcrete()) {
+	    estimateConcrete(estimateComputationBean, estimateComputationShape);
 	}
 
 	// If we're estimating masonry CHB.
-	if (estimateBean.willComputeMasonryCHB()) {
-	    estimateCHBTotal(estimateBean, shapeBean);
+	if (estimateComputationBean.willComputeMasonryCHB()) {
+	    estimateCHBTotal(estimateComputationBean, estimateComputationShape);
 	}
 
 	// If we're estimating masonry block laying.
-	if (estimateBean.willComputeMasonryBlockLaying()) {
-	    estimateCHBLaying(estimateBean, shapeBean);
+	if (estimateComputationBean.willComputeMasonryBlockLaying()) {
+	    estimateCHBLaying(estimateComputationBean, estimateComputationShape);
 	}
 
 	// If we're estimating masonry plastering.
-	if (estimateBean.willComputeMasonryPlastering()) {
-	    estimateMasonryPlastering(estimateBean, shapeBean);
+	if (estimateComputationBean.willComputeMasonryPlastering()) {
+	    estimateMasonryPlastering(estimateComputationBean, estimateComputationShape);
 	}
 
 	// If we're estimating masonry CHB footing.
-	if (estimateBean.willComputeMasonryCHBFooting()) {
-	    estimateMasonryCHBFooting(estimateBean);
+	if (estimateComputationBean.willComputeMasonryCHBFooting()) {
+	    estimateMasonryCHBFooting(estimateComputationBean);
 	}
 
     }
@@ -492,15 +492,15 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate the CHB footings.
      * 
-     * @param estimateBean
+     * @param estimateComputationBean
      * @param proportions
      */
-    private void estimateMasonryCHBFooting(EstimateBean estimateBean) {
+    private void estimateMasonryCHBFooting(EstimateComputationBean estimateComputationBean) {
 
 	// Get the dimension key.
 	// And the footing mixes.
-	TableCHBFootingDimensions chbFooting = estimateBean.getChbFootingDimensions();
-	String mixClass = estimateBean.getEstimationClass().getConcreteProportion().getMixClass();
+	TableCHBFootingDimensions chbFooting = estimateComputationBean.getChbFootingDimensions();
+	String mixClass = estimateComputationBean.getEstimationClass().getConcreteProportion().getMixClass();
 
 	// Get the footing mixture given the mix class and footing dimensions.
 	TableCHBFootingMixture footingMixture = getCHBFootingMixture(chbFooting, mixClass);
@@ -512,7 +512,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// TODO Optimize below code.
 	// getLength(estimate) is called somewhere else in this class.
-	double length = estimateBean.getShape().getFootingLength();
+	double length = estimateComputationBean.getShape().getFootingLength();
 	double footingVolume = footingThickness * footingWidth * length;
 
 	// Estimations.
@@ -523,15 +523,15 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Put the results.
 	// Set the result map of the CHB footing estimate.
-	MasonryCHBFootingEstimateResults footingResults = new MasonryCHBFootingEstimateResults(
-		estimateBean, cement40kg, gravel, sand);
-	estimateBean.setResultCHBFootingEstimate(footingResults);
+	EstimateResultMasonryCHBFooting footingResults = new EstimateResultMasonryCHBFooting(
+		estimateComputationBean, cement40kg, gravel, sand);
+	estimateComputationBean.setResultCHBFootingEstimate(footingResults);
 
 	// Update the quantity.
-	estimateBean.setQuantityCement40kg(estimateBean.getQuantityCement40kg() + cement40kg);
-	estimateBean.setQuantityCement50kg(estimateBean.getQuantityCement50kg() + cement50kg);
-	estimateBean.setQuantitySand(estimateBean.getQuantitySand() + sand);
-	estimateBean.setQuantityGravel(estimateBean.getQuantityGravel() + gravel);
+	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + cement40kg);
+	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + cement50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sand);
+	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel() + gravel);
     }
 
     /**
@@ -560,16 +560,16 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Don't include the area below ground when plastering.
      * 
-     * @param estimateBean
+     * @param estimateComputationBean
      * @param length
      * @param area
      */
-    private double minusAreaBelowGround(EstimateBean estimateBean, double length, double area) {
+    private double minusAreaBelowGround(EstimateComputationBean estimateComputationBean, double length, double area) {
 
 	// If the unit is not meter,
 	// convert it.
-	double foundationHeight = estimateBean.getChbFoundationHeight();
-	CommonLengthUnit lengthUnit = estimateBean.getChbFoundationUnit();
+	double foundationHeight = estimateComputationBean.getChbFoundationHeight();
+	CommonLengthUnit lengthUnit = estimateComputationBean.getChbFoundationUnit();
 	if (lengthUnit != CommonLengthUnit.METER) {
 	    foundationHeight = convertToMeter(lengthUnit, foundationHeight);
 	}
@@ -582,17 +582,17 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Add the area of the top side.
      * 
-     * @param estimateBean
-     * @param shapeBean
+     * @param estimateComputationBean
+     * @param estimateComputationShape
      * @param shapeArea
      * @param length
      * @param area
      */
-    private double addAreaTopSide(EstimateBean estimateBean, ShapeBean shapeBean, double shapeArea,
+    private double addAreaTopSide(EstimateComputationBean estimateComputationBean, EstimateComputationShape estimateComputationShape, double shapeArea,
 	    double length, double area) {
 
 	// Get the thickness.
-	double thickness = shapeBean.getVolume() / shapeArea;
+	double thickness = estimateComputationShape.getVolume() / shapeArea;
 
 	// Get the area and add to overall area.
 	double topSideArea = length * thickness;
@@ -604,20 +604,20 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate amount of plastering.
      * 
-     * @param estimateBean
-     * @param shapeBean
+     * @param estimateComputationBean
+     * @param estimateComputationShape
      * @param proportions
      */
-    private void estimateMasonryPlastering(EstimateBean estimateBean, ShapeBean shapeBean) {
+    private void estimateMasonryPlastering(EstimateComputationBean estimateComputationBean, EstimateComputationShape estimateComputationShape) {
 
 	// Get the length "longest side of the shape".
-	double length = shapeBean.getFootingLength();
+	double length = estimateComputationShape.getFootingLength();
 
 	// Consider the height below ground.
 	// Get the height of foundation (height of wall below the
 	// ground) and don't include that to the area to be plastered.
-	double shapeArea = shapeBean.getArea();
-	double area = minusAreaBelowGround(estimateBean, length, shapeArea);
+	double shapeArea = estimateComputationShape.getArea();
+	double area = minusAreaBelowGround(estimateComputationBean, length, shapeArea);
 
 	// If we're plastering back to back,
 	// multiply the area by 2.
@@ -626,13 +626,13 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If we're plastering the top side,
 	// get the thickness area then plaster it.
-	area = addAreaTopSide(estimateBean, shapeBean, shapeArea, length, area);
+	area = addAreaTopSide(estimateComputationBean, estimateComputationShape, shapeArea, length, area);
 
 	double volume = area * TablePlasterMixture.STANDARD_PLASTER_THICKNESS;
 
 	// Find the appropriate plaster mixture
 	// given this proportion.
-	TableConcreteProportion proportion = estimateBean.getEstimationClass().getConcreteProportion();
+	TableConcreteProportion proportion = estimateComputationBean.getEstimationClass().getConcreteProportion();
 	String proportionMixClass = proportion.getMixClass();
 
 	// Find the plaster mix.
@@ -652,30 +652,30 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Set the results, concrete proportion, plaster mixture,
 	// is back to back, plaster top side.
-	MasonryPlasteringEstimateResults plasteringResults = new MasonryPlasteringEstimateResults(
-		estimateBean, bags40kg, bags50kg, sand);
-	estimateBean.setResultPlasteringEstimate(plasteringResults);
-	estimateBean.setQuantityCement40kg(estimateBean.getQuantityCement40kg() + bags40kg);
-	estimateBean.setQuantityCement50kg(estimateBean.getQuantityCement50kg() + bags50kg);
-	estimateBean.setQuantitySand(estimateBean.getQuantitySand() + sand);
+	EstimateResultMasonryPlastering plasteringResults = new EstimateResultMasonryPlastering(
+		estimateComputationBean, bags40kg, bags50kg, sand);
+	estimateComputationBean.setResultPlasteringEstimate(plasteringResults);
+	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + bags40kg);
+	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + bags50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sand);
     }
 
     /**
      * Estimate the block laying.
      * 
-     * @param estimateBean
-     * @param shapeBean
+     * @param estimateComputationBean
+     * @param estimateComputationShape
      * @param chbList
      */
-    private void estimateCHBLaying(EstimateBean estimateBean, ShapeBean shapeBean) {
+    private void estimateCHBLaying(EstimateComputationBean estimateComputationBean, EstimateComputationShape estimateComputationShape) {
 
 	// Prepare needed arguments.
-	TableCHBDimensions chb = estimateBean.getChbDimensions();
-	TableConcreteProportion proportion = estimateBean.getEstimationClass().getConcreteProportion();
+	TableCHBDimensions chb = estimateComputationBean.getChbDimensions();
+	TableConcreteProportion proportion = estimateComputationBean.getEstimationClass().getConcreteProportion();
 	TableCHBLayingMixture chbLayingMix = getCHBLayingMixture(chb, proportion);
 
 	// Get the inputs.
-	double area = shapeBean.getArea();
+	double area = estimateComputationShape.getArea();
 	double bags40kg = chbLayingMix.getPartCement40kgBag(); // 40kg bags.
 	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
@@ -685,14 +685,14 @@ public class EstimateServiceImpl implements EstimateService {
 	double sandNeeded = area * sand;
 
 	// Set the results.
-	MasonryCHBLayingEstimateResults layingResults = new MasonryCHBLayingEstimateResults(
-		estimateBean, bags40kgNeeded, sandNeeded);
-	estimateBean.setResultCHBLayingEstimate(layingResults);
+	EstimateResultMasonryCHBLaying layingResults = new EstimateResultMasonryCHBLaying(
+		estimateComputationBean, bags40kgNeeded, sandNeeded);
+	estimateComputationBean.setResultCHBLayingEstimate(layingResults);
 
 	// Update the quantity.
-	estimateBean.setQuantityCement40kg(estimateBean.getQuantityCement40kg() + bags40kgNeeded);
-	estimateBean.setQuantityCement50kg(estimateBean.getQuantityCement50kg() + bags50kgNeeded);
-	estimateBean.setQuantitySand(estimateBean.getQuantitySand() + sandNeeded);
+	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + bags40kgNeeded);
+	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + bags50kgNeeded);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sandNeeded);
     }
 
     /**
@@ -725,14 +725,14 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate the number of components needed for this concrete.
      * 
-     * @param estimateBean
-     * @param shapeBean
+     * @param estimateComputationBean
+     * @param estimateComputationShape
      */
-    private void estimateConcrete(EstimateBean estimateBean, ShapeBean shapeBean) {
+    private void estimateConcrete(EstimateComputationBean estimateComputationBean, EstimateComputationShape estimateComputationShape) {
 
-	double volume = shapeBean.getVolume();
+	double volume = estimateComputationShape.getVolume();
 
-	TableConcreteProportion tableConcreteProportion = estimateBean.getEstimationClass()
+	TableConcreteProportion tableConcreteProportion = estimateComputationBean.getEstimationClass()
 		.getConcreteProportion();
 
 	// Get the ingredients.
@@ -749,39 +749,39 @@ public class EstimateServiceImpl implements EstimateService {
 	double estGravel = volume * gravel;
 
 	// Set the results.
-	ConcreteEstimateResults concreteResults = new ConcreteEstimateResults(estimateBean,
+	EstimateResultConcrete concreteResults = new EstimateResultConcrete(estimateComputationBean,
 		estCement40kg, estCement50kg, estSand, estGravel);
-	estimateBean.setResultConcreteEstimate(concreteResults);
+	estimateComputationBean.setResultConcreteEstimate(concreteResults);
 
 	// Update the quantity.
-	estimateBean.setQuantityCement40kg(estimateBean.getQuantityCement40kg() + estCement40kg);
-	estimateBean.setQuantityCement50kg(estimateBean.getQuantityCement50kg() + estCement50kg);
-	estimateBean.setQuantitySand(estimateBean.getQuantitySand() + estSand);
-	estimateBean.setQuantityGravel(estimateBean.getQuantityGravel() + estGravel);
+	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + estCement40kg);
+	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + estCement50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
+	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel() + estGravel);
     }
 
     /**
      * Get quantity estimation of masonry.
      * 
-     * @param estimateBean
+     * @param estimateComputationBean
      * 
-     * @param estimateBean
-     * @param shapeBean
+     * @param estimateComputationBean
+     * @param estimateComputationShape
      * @param chb
      * @return
      */
-    private void estimateCHBTotal(EstimateBean estimateBean, ShapeBean shapeBean) {
+    private void estimateCHBTotal(EstimateComputationBean estimateComputationBean, EstimateComputationShape estimateComputationShape) {
 
-	double area = shapeBean.getArea();
+	double area = estimateComputationShape.getArea();
 
 	// Get total CHBs.
 	double totalCHB = area * TableCHBDimensions.STANDARD_CHB_PER_SQ_M;
 
 	// Results of the estimate.
-	MasonryCHBEstimateResults masonryCHBEstimateResults = new MasonryCHBEstimateResults(
-		estimateBean, totalCHB);
-	estimateBean.setResultCHBEstimate(masonryCHBEstimateResults);
-	estimateBean.setQuantityCHB(estimateBean.getQuantityCHB() + totalCHB);
+	EstimateResultMasonryCHB estimateResultMasonryCHB = new EstimateResultMasonryCHB(
+		estimateComputationBean, totalCHB);
+	estimateComputationBean.setResultCHBEstimate(estimateResultMasonryCHB);
+	estimateComputationBean.setQuantityCHB(estimateComputationBean.getQuantityCHB() + totalCHB);
     }
 
     /**

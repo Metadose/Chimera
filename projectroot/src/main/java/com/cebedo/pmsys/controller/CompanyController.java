@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
 
@@ -36,8 +36,8 @@ public class CompanyController {
 	this.companyService = ps;
     }
 
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT,
-	    SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
+	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listCompanies(Model model) {
 	logger.info("Listing all companies.");
 	model.addAttribute(ATTR_LIST, this.companyService.list());
@@ -50,7 +50,7 @@ public class CompanyController {
      * @param company
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_COMPANY) Company company,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 	// TODO This has a bug.
@@ -59,19 +59,19 @@ public class CompanyController {
 	if (company.getId() == 0) {
 	    logger.info("Creating company: " + company.toString());
 	    uiAlert = this.companyService.create(company);
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		    uiAlert);
 	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
-		    + SystemConstants.REQUEST_LIST;
+	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
+		    + ConstantsSystem.REQUEST_LIST;
 	}
 	logger.info("Updating company: " + company.toString());
 	uiAlert = this.companyService.update(company);
 	redirectAttrs
-		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, uiAlert);
+		.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, uiAlert);
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + company.getId();
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
+		+ ConstantsSystem.REQUEST_EDIT + "/" + company.getId();
     }
 
     /**
@@ -80,17 +80,17 @@ public class CompanyController {
      * @param id
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/{"
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/{"
 	    + Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.GET)
     public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 	logger.info("Deleting company: " + id);
 	String uiAlert = this.companyService.delete(id);
 	redirectAttrs
-		.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, uiAlert);
+		.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, uiAlert);
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
-		+ SystemConstants.REQUEST_LIST;
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_COMPANY + "/"
+		+ ConstantsSystem.REQUEST_LIST;
     }
 
     /**
@@ -100,7 +100,7 @@ public class CompanyController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/{"
+    @RequestMapping(value = { ConstantsSystem.REQUEST_EDIT + "/{"
 	    + Company.COLUMN_PRIMARY_KEY + "}" })
     public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 	    Model model) {

@@ -3,7 +3,7 @@ package com.cebedo.pmsys.domain;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.CommonMassUnit;
 import com.cebedo.pmsys.enums.CommonVolumeUnit;
@@ -88,7 +88,7 @@ public class Material implements IDomainObject {
     @Override
     public String getKey() {
 	// company:%s:project:%s:delivery:%s:material:%s
-	return String.format(RedisKeyRegistry.KEY_MATERIAL, this.company.getId(), this.project.getId(),
+	return String.format(RegistryRedisKeys.KEY_MATERIAL, this.company.getId(), this.project.getId(),
 		this.delivery.getUuid(), this.uuid);
     }
 
@@ -285,13 +285,13 @@ public class Material implements IDomainObject {
     public static String constructPattern(Delivery delivery2) {
 	Company company = delivery2.getCompany();
 	Project project = delivery2.getProject();
-	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(), project.getId(),
+	return String.format(RegistryRedisKeys.KEY_MATERIAL, company.getId(), project.getId(),
 		delivery2.getUuid(), "*");
     }
 
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_MATERIAL, company.getId(), project.getId(), "*", "*");
+	return String.format(RegistryRedisKeys.KEY_MATERIAL, company.getId(), project.getId(), "*", "*");
     }
 
     @Override

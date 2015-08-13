@@ -1,15 +1,15 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
-public class TeamAssignmentBean {
+public class FormTeamAssignment {
 
 	private long teamID;
 	private long taskID;
 
-	public TeamAssignmentBean() {
+	public FormTeamAssignment() {
 		;
 	}
 
-	public TeamAssignmentBean(long sampleID) {
+	public FormTeamAssignment(long sampleID) {
 		setTeamID(sampleID);
 	}
 
@@ -25,7 +25,7 @@ public class TeamAssignmentBean {
 		return taskID;
 	}
 
-	public TeamAssignmentBean setTaskID(long taskID) {
+	public FormTeamAssignment setTaskID(long taskID) {
 		this.taskID = taskID;
 		return this;
 	}

@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -60,7 +60,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -76,13 +76,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.deliveryValueRepo.set(obj);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 
 	if (isCreate) {
-	    return AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_DELIVERY,
+	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
 		    obj.getName());
 	}
-	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_DELIVERY, obj.getName());
+	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
     }
 
     @Override
@@ -92,12 +92,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return new Delivery();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 
 	return obj;
     }
@@ -114,7 +114,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_DELIVERY);
+		ConstantsRedis.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);
 	Set<String> keys = this.deliveryValueRepo.keys(pattern);
@@ -129,12 +129,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_DELIVERY,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_DELIVERY,
 		delivery.getKey());
 
 	// Get the necessary objects.
@@ -166,7 +166,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Delete this object.
 	this.deliveryValueRepo.delete(key);
 
-	return AlertBoxGenerator.SUCCESS.generateDelete(RedisConstants.OBJECT_DELIVERY,
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_DELIVERY,
 		delivery.getName());
     }
 

@@ -8,7 +8,7 @@ import com.cebedo.pmsys.listener.LogMessageListener;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
-public class SystemMessage implements Serializable {
+public class JMSMessage implements Serializable {
 
     private static final long serialVersionUID = 1678239421332274417L;
     public static final String DESTINATIONS = AuditMessageListener.MESSAGE_DESTINATION + ","
@@ -28,11 +28,11 @@ public class SystemMessage implements Serializable {
     // Transients.
     private String ipAddress = "";
 
-    public SystemMessage() {
+    public JMSMessage() {
 	;
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
 	    long objectID2) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -40,7 +40,7 @@ public class SystemMessage implements Serializable {
 	setObjectID(objectID2);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
 	    long objectID2, String assocName) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -49,13 +49,13 @@ public class SystemMessage implements Serializable {
 	setAssocObjectName(assocName);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
 	    String objectKey2) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -63,7 +63,7 @@ public class SystemMessage implements Serializable {
 	setObjectKey(objectKey2);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
 	    long objectID2, String assocName, String key) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -73,7 +73,7 @@ public class SystemMessage implements Serializable {
 	setObjectKey(key);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
 	    String objectKey2, String assocName) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -82,7 +82,7 @@ public class SystemMessage implements Serializable {
 	setAssocObjectName(assocName);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long id,
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long id,
 	    String assocName, long assocID) {
 	setAuth(auth2);
 	setAuditAction(action);
@@ -92,12 +92,12 @@ public class SystemMessage implements Serializable {
 	setAssocObjectID(assocID);
     }
 
-    public SystemMessage(AuthenticationToken auth2, AuditAction action) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action) {
 	setAuth(auth2);
 	setAuditAction(action);
     }
 
-    public SystemMessage(String ipAddress, SystemUser user, AuditAction action) {
+    public JMSMessage(String ipAddress, SystemUser user, AuditAction action) {
 	setIpAddress(ipAddress);
 	setObjectID(user.getId());
 	setObjectName(user.getUsername());

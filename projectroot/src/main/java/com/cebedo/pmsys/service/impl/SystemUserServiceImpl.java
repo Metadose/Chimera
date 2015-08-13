@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.controller.LoginLogoutController;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
@@ -73,7 +73,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    // Update the config value.
 	    LoginLogoutController.appInit = true;
 	    SystemConfiguration appInit = this.systemConfigurationDAO
-		    .getByName(SystemConstants.CONFIG_ROOT_INIT);
+		    .getByName(ConstantsSystem.CONFIG_ROOT_INIT);
 	    appInit.setValue("1");
 	    this.systemConfigurationDAO.merge(appInit);
 

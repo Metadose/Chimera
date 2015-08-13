@@ -2,16 +2,16 @@ package com.cebedo.pmsys.ui;
 
 import java.util.Date;
 
-import com.cebedo.pmsys.constants.NotificationMessageRegistry;
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class AlertBoxGenerator {
 
-    public static AlertBoxGenerator SUCCESS = new AlertBoxGenerator(SystemConstants.UI_STATUS_SUCCESS);
-    public static AlertBoxGenerator FAILED = new AlertBoxGenerator(SystemConstants.UI_STATUS_DANGER);
-    public static String ERROR = new AlertBoxGenerator(SystemConstants.UI_STATUS_DANGER,
-	    NotificationMessageRegistry.ERROR_GENERIC).generateHTML();
+    public static AlertBoxGenerator SUCCESS = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_SUCCESS);
+    public static AlertBoxGenerator FAILED = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_DANGER);
+    public static String ERROR = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_DANGER,
+	    RegistryResponseMessage.ERROR_GENERIC).generateHTML();
 
     private final String CONFIG_ALERT_STATUS = "ALERT_STATUS";
     private final String CONFIG_ALERT_HEADER = "ALERT_HEADER";
@@ -200,10 +200,10 @@ public class AlertBoxGenerator {
     public String generateDeleteProfilePic(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_DELETE_PROFILE_PIC.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE_PROFILE_PIC.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -214,10 +214,10 @@ public class AlertBoxGenerator {
     public String generateUploadProfilePic(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UPLOAD_PROFILE_PIC.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPLOAD_PROFILE_PIC.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -228,10 +228,10 @@ public class AlertBoxGenerator {
     public String generateDelete(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_DELETE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -242,10 +242,10 @@ public class AlertBoxGenerator {
     public String generateMarkAs(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_MARK_AS.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_MARK_AS.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -256,9 +256,9 @@ public class AlertBoxGenerator {
     public String generateDeleteAll(String object) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_DELETE_ALL.replace(DELIMITER_OBJECT_TYPE, object);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE_ALL.replace(DELIMITER_OBJECT_TYPE, object);
 	}
 	this.message = result;
@@ -268,9 +268,9 @@ public class AlertBoxGenerator {
     public String generateUnassignAll(String object) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UNASSIGN_ALL.replace(DELIMITER_OBJECT_TYPE, object);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UNASSIGN_ALL.replace(DELIMITER_OBJECT_TYPE, object);
 	}
 	this.message = result;
@@ -280,10 +280,10 @@ public class AlertBoxGenerator {
     public String generateUnassign(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UNASSIGN.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UNASSIGN.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -294,10 +294,10 @@ public class AlertBoxGenerator {
     public String generateAssign(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_ASSIGN.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ASSIGN.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -308,9 +308,9 @@ public class AlertBoxGenerator {
     public String generateAssignEntries(String object) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_ASSIGN_ENTRIES.replace(DELIMITER_OBJECT_TYPE, object);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ASSIGN_ENTRIES.replace(DELIMITER_OBJECT_TYPE, object);
 	}
 	this.message = result;
@@ -320,10 +320,10 @@ public class AlertBoxGenerator {
     public String generateInclude(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_INCLUDE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_INCLUDE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	    result += " Please compute to view results.";
@@ -335,10 +335,10 @@ public class AlertBoxGenerator {
     public String generateUpdatePayroll(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UPDATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPDATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	    result += " Please compute to view results.";
@@ -350,10 +350,10 @@ public class AlertBoxGenerator {
     public String generateCompute(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_COMPUTE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_COMPUTE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -364,10 +364,10 @@ public class AlertBoxGenerator {
     public String generateUpdate(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UPDATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPDATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -378,10 +378,10 @@ public class AlertBoxGenerator {
     public String generateUpload(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_UPLOAD.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_UPLOAD.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -392,10 +392,10 @@ public class AlertBoxGenerator {
     public String generatePulloutDelete(Date datetime, String staffName) {
 	String result = "";
 	String dateStr = DateUtils.formatDate(datetime, "yyyy/MM/dd hh:mm a");
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = String.format(TEMPLATE_FAILED_PULL_OUT_DELETE, dateStr, staffName);
 
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = String.format(TEMPLATE_SUCCESS_PULL_OUT_DELETE, dateStr, staffName);
 	}
 	this.message = result;
@@ -404,10 +404,10 @@ public class AlertBoxGenerator {
 
     public String generatePullout(double quantity, String units, String materialName) {
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = String.format(TEMPLATE_FAILED_PULL_OUT, quantity, units, materialName);
 
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = String.format(TEMPLATE_SUCCESS_PULL_OUT, quantity, units, materialName);
 	}
 	this.message = result;
@@ -417,10 +417,10 @@ public class AlertBoxGenerator {
     public String generateAdd(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_ADD.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_ADD.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -431,10 +431,10 @@ public class AlertBoxGenerator {
     public String generateCreate(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
-	if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    result = TEMPLATE_FAILED_CREATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_CREATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
 	}
@@ -464,16 +464,16 @@ public class AlertBoxGenerator {
     public String getIcon() {
 	if (icon != null) {
 	    return icon;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_INFO)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_INFO)) {
 	    setIcon("info");
 	    return icon;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    setIcon("ban");
 	    return icon;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_WARNING)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_WARNING)) {
 	    setIcon("warning");
 	    return icon;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    setIcon("check");
 	    return icon;
 	}
@@ -487,16 +487,16 @@ public class AlertBoxGenerator {
     public String getHeader() {
 	if (header != null) {
 	    return header;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_INFO)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_INFO)) {
 	    setHeader("Notice");
 	    return header;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_DANGER)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
 	    setHeader("Error!");
 	    return header;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_WARNING)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_WARNING)) {
 	    setHeader("Warning");
 	    return header;
-	} else if (this.status.equals(SystemConstants.UI_STATUS_SUCCESS)) {
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    setHeader("Success!");
 	    return header;
 	}

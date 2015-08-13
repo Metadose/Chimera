@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.DateRangeBean;
-import com.cebedo.pmsys.bean.MassAttendanceBean;
-import com.cebedo.pmsys.constants.RedisConstants;
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.FormDateRange;
+import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -38,7 +38,7 @@ import com.cebedo.pmsys.utils.DateUtils;
 @SessionAttributes(value = { StaffController.ATTR_STAFF, StaffController.ATTR_ATTENDANCE,
 	StaffController.ATTR_ATTENDANCE_MASS, StaffController.ATTR_CALENDAR_MIN_DATE,
 	StaffController.ATTR_CALENDAR_MAX_DATE, StaffController.ATTR_CALENDAR_MAX_DATE_STR }, types = {
-	Staff.class, Attendance.class, MassAttendanceBean.class, })
+	Staff.class, Attendance.class, FormMassAttendance.class, })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
@@ -59,7 +59,7 @@ public class StaffController {
     public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
     public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
 
-    public static final String ATTR_ATTENDANCE = RedisConstants.OBJECT_ATTENDANCE;
+    public static final String ATTR_ATTENDANCE = ConstantsRedis.OBJECT_ATTENDANCE;
     public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
     public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
@@ -79,7 +79,7 @@ public class StaffController {
 	this.staffService = s;
     }
 
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listStaff(Model model) {
 	model.addAttribute(ATTR_LIST, this.staffService.listWithAllCollections());
 	return JSP_LIST;
@@ -92,7 +92,7 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_STAFF) Staff staff, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 	// Add ui notifications.
@@ -105,18 +105,18 @@ public class StaffController {
 		    + "</b>.");
 
 	    // Add redirs attrs.
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + SystemConstants.REQUEST_LIST;
+	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
 	}
 	// Update staff.
 	this.staffService.update(staff);
 	alertFactory.setMessage("Successfully <b>updated</b> staff <b>" + staff.getFullName() + "</b>.");
 
 	// Add redirs attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + SystemConstants.REQUEST_EDIT
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_EDIT
 		+ "/" + staff.getId();
     }
 
@@ -127,11 +127,11 @@ public class StaffController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE + "/" + SystemConstants.FROM + "/{"
-	    + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID + "}", method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE + "/" + ConstantsSystem.FROM + "/{"
+	    + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID + "}", method = RequestMethod.POST)
     public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
-	    @PathVariable(value = SystemConstants.ORIGIN) String origin,
-	    @PathVariable(value = SystemConstants.ORIGIN_ID) String originID, SessionStatus status,
+	    @PathVariable(value = ConstantsSystem.ORIGIN) String origin,
+	    @PathVariable(value = ConstantsSystem.ORIGIN_ID) String originID, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	if (staff.getId() == 0) {
@@ -146,8 +146,8 @@ public class StaffController {
 	    this.staffService.update(staff);
 	}
 	status.setComplete();
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return SystemConstants.CONTROLLER_REDIRECT + origin + "/" + SystemConstants.REQUEST_EDIT + "/"
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
+	return ConstantsSystem.CONTROLLER_REDIRECT + origin + "/" + ConstantsSystem.REQUEST_EDIT + "/"
 		+ originID;
     }
 
@@ -156,10 +156,10 @@ public class StaffController {
      * 
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/" + RedisConstants.OBJECT_ATTENDANCE + "/"
-	    + SystemConstants.MASS }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_ATTENDANCE + "/"
+	    + ConstantsSystem.MASS }, method = RequestMethod.POST)
     public String addAttendanceMass(
-	    @ModelAttribute(ATTR_ATTENDANCE_MASS) MassAttendanceBean attendanceMass,
+	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model, SessionStatus status) {
 
 	// If start date is > end date.
@@ -168,20 +168,20 @@ public class StaffController {
 
 	if (startDate.after(endDate)) {
 	    // TODO
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		    AlertBoxGenerator.FAILED.generateCreate("test", "TODO"));
 	    // Dont set completed.
 	    // Otherwise, min and max dates will be deleted in session.
 	    // status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
-		    + SystemConstants.REQUEST_EDIT + "/" + attendanceMass.getStaff().getId();
+	    return ConstantsSystem.CONTROLLER_REDIRECT + Staff.OBJECT_NAME + "/"
+		    + ConstantsSystem.REQUEST_EDIT + "/" + attendanceMass.getStaff().getId();
 	}
 
 	// Do service.
 	this.attendanceService.multiSet(attendanceMass);
 
 	// TODO
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 
 	return editStaffWithMaxDate(model, session, startDate);
@@ -192,7 +192,7 @@ public class StaffController {
      * 
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/" + RedisConstants.OBJECT_ATTENDANCE }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_ATTENDANCE }, method = RequestMethod.POST)
     public String addAttendance(@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model, SessionStatus status) {
 
@@ -200,7 +200,7 @@ public class StaffController {
 	this.attendanceService.set(attendance);
 
 	// TODO
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 	return editStaffWithMaxDate(model, session, attendance.getDate());
     }
@@ -212,7 +212,7 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Staff.OBJECT_NAME) long id, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -220,11 +220,11 @@ public class StaffController {
 
 	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>" + staff.getFullName() + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 
 	this.staffService.delete(id);
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + SystemConstants.REQUEST_LIST;
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
     }
 
     /**
@@ -235,7 +235,7 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE, method = RequestMethod.POST)
     public String delete(SessionStatus status, HttpSession session, RedirectAttributes redirectAttrs) {
 
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
@@ -243,18 +243,18 @@ public class StaffController {
 	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
 	    alertFactory
 		    .setMessage("Error occured when you tried to <b>delete</b> staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + SystemConstants.REQUEST_LIST;
+	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
 	}
 
 	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
 	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>" + staff.getFullName() + "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 
 	this.staffService.delete(staff.getId());
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + SystemConstants.REQUEST_LIST;
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
     }
 
     /**
@@ -266,16 +266,16 @@ public class StaffController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}/"
-	    + SystemConstants.FROM + "/{" + SystemConstants.ORIGIN + "}/{" + SystemConstants.ORIGIN_ID
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}/"
+	    + ConstantsSystem.FROM + "/{" + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID
 	    + "}", method = RequestMethod.GET)
     public String editStaffFromOrigin(HttpSession session,
 	    @PathVariable(Staff.OBJECT_NAME) long staffID,
-	    @PathVariable(value = SystemConstants.ORIGIN) String origin,
-	    @PathVariable(value = SystemConstants.ORIGIN_ID) long originID, Model model) {
+	    @PathVariable(value = ConstantsSystem.ORIGIN) String origin,
+	    @PathVariable(value = ConstantsSystem.ORIGIN_ID) long originID, Model model) {
 	// Add origin details.
-	model.addAttribute(SystemConstants.ORIGIN, origin);
-	model.addAttribute(SystemConstants.ORIGIN_ID, originID);
+	model.addAttribute(ConstantsSystem.ORIGIN, origin);
+	model.addAttribute(ConstantsSystem.ORIGIN_ID, originID);
 
 	// If new, create it.
 	if (staffID == 0) {
@@ -303,9 +303,9 @@ public class StaffController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + SystemConstants.RANGE)
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsSystem.RANGE)
     public String editStaffRangeDates(
-	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) DateRangeBean rangeDates, HttpSession session,
+	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates, HttpSession session,
 	    Model model) {
 	// Get prelim objects.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
@@ -419,7 +419,7 @@ public class StaffController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
     public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model,
 	    HttpSession session) {
 
@@ -479,8 +479,8 @@ public class StaffController {
 	Company co = staff.getCompany();
 	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 	model.addAttribute(ATTR_STAFF, staff);
-	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new DateRangeBean());
-	model.addAttribute(ATTR_ATTENDANCE_MASS, new MassAttendanceBean(staff));
+	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new FormDateRange());
+	model.addAttribute(ATTR_ATTENDANCE_MASS, new FormMassAttendance(staff));
 	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, staff));
 
 	// Add front-end JSONs.

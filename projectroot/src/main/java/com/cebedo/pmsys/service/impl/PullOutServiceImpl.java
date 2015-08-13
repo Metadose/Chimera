@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.NotificationMessageRegistry;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
@@ -51,7 +51,7 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -65,7 +65,7 @@ public class PullOutServiceImpl implements PullOutService {
 	// Error: Pullout more than the available.
 	if (quantity > available) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(NotificationMessageRegistry.ERROR_PULLOUT_EXCEED);
+		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
 	} else if (quantity <= 0 || obj.getDatetime() == null || available <= 0) {
 	    return AlertBoxGenerator.ERROR;
 	}
@@ -95,7 +95,7 @@ public class PullOutServiceImpl implements PullOutService {
 	this.materialValueRepo.set(material);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 
 	// Return.
 	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), "TODO", material.getName());
@@ -109,11 +109,11 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return new PullOut();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 
 	return obj;
     }
@@ -126,11 +126,11 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 
 	// Do delete.
 	doDelete(key, obj);
@@ -175,7 +175,7 @@ public class PullOutServiceImpl implements PullOutService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_PULL_OUT);
+		ConstantsRedis.OBJECT_PULL_OUT);
 
 	String pattern = PullOut.constructPattern(proj);
 	Set<String> keys = this.pullOutValueRepo.keys(pattern);
@@ -189,11 +189,11 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(oldPullOut)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PULL_OUT, oldPullOut.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, oldPullOut.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PULL_OUT,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PULL_OUT,
 		oldPullOut.getKey());
 
 	// If the quantity has been changed.
@@ -212,7 +212,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    create(newPullout);
 
 	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_PULL_OUT, newPullout
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_PULL_OUT, newPullout
 		    .getMaterial().getName());
 	}
 
@@ -220,7 +220,7 @@ public class PullOutServiceImpl implements PullOutService {
 	this.pullOutValueRepo.set(newPullout);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(RedisConstants.OBJECT_PULL_OUT, newPullout
+	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_PULL_OUT, newPullout
 		.getMaterial().getName());
     }
 

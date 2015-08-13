@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.CalendarEventBean;
-import com.cebedo.pmsys.bean.GanttBean;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.MilestoneDAO;
@@ -37,6 +35,8 @@ import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.pojo.JSONCalendarEvent;
+import com.cebedo.pmsys.pojo.JSONTimelineGantt;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -399,23 +399,23 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		GanttBean.class.getName());
+		JSONTimelineGantt.class.getName());
 
 	// Construct JSON data for the gantt chart.
-	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
+	List<JSONTimelineGantt> ganttBeanList = new ArrayList<JSONTimelineGantt>();
 
 	// Add myself.
-	GanttBean myGanttBean = new GanttBean(proj);
+	JSONTimelineGantt myGanttBean = new JSONTimelineGantt(proj);
 	ganttBeanList.add(myGanttBean);
 
 	// Add all milestones and included tasks.
 	for (Milestone milestone : proj.getMilestones()) {
-	    GanttBean milestoneBean = new GanttBean(milestone, myGanttBean);
+	    JSONTimelineGantt milestoneBean = new JSONTimelineGantt(milestone, myGanttBean);
 	    ganttBeanList.add(milestoneBean);
 
 	    for (Task taskInMilestone : milestone.getTasks()) {
-		GanttBean ganttBean = new GanttBean(taskInMilestone, milestoneBean);
-		ganttBeanList.add(ganttBean);
+		JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(taskInMilestone, milestoneBean);
+		ganttBeanList.add(jSONTimelineGantt);
 	    }
 	}
 
@@ -425,8 +425,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	    // Add only tasks without a milestone.
 	    if (task.getMilestone() == null) {
-		GanttBean ganttBean = new GanttBean(task, myGanttBean);
-		ganttBeanList.add(ganttBean);
+		JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, myGanttBean);
+		ganttBeanList.add(jSONTimelineGantt);
 	    }
 	}
 
@@ -592,10 +592,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		CalendarEventBean.class.getName());
+		JSONCalendarEvent.class.getName());
 
 	// Get calendar events.
-	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
+	List<JSONCalendarEvent> jSONCalendarEvents = new ArrayList<JSONCalendarEvent>();
 
 	// Process all tasks to be included in the calendar.
 	for (Task task : proj.getAssignedTasks()) {
@@ -605,7 +605,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    String name = task.getTitle();
 
 	    // Set values to bean.
-	    CalendarEventBean event = new CalendarEventBean();
+	    JSONCalendarEvent event = new JSONCalendarEvent();
 	    event.setId(Task.OBJECT_NAME + "-" + start + "-" + StringUtils.remove(name, " "));
 	    event.setTitle("(Task) " + name);
 	    event.setStart(start);
@@ -622,10 +622,10 @@ public class ProjectServiceImpl implements ProjectService {
 		event.setEnd(end);
 	    }
 
-	    calendarEvents.add(event);
+	    jSONCalendarEvents.add(event);
 	}
 
-	return new Gson().toJson(calendarEvents, ArrayList.class);
+	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
     }
 
     @Transactional

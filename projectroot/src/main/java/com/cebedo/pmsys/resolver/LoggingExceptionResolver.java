@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import com.cebedo.pmsys.constants.LoggerRegistry;
+import com.cebedo.pmsys.constants.RegistryLogger;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -17,7 +17,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 
-    private Logger logger = Logger.getLogger(LoggerRegistry.LOGGER_EXCEPTION);
+    private Logger logger = Logger.getLogger(RegistryLogger.LOGGER_EXCEPTION);
     private AuthHelper authHelper = new AuthHelper();
 
     @SuppressWarnings("rawtypes")

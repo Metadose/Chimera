@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -62,7 +62,7 @@ public class Delivery implements IDomainObject {
     @Override
     public String getKey() {
 	// "company:%s:project:%s:delivery:uuid:%s"
-	return String.format(RedisKeyRegistry.KEY_DELIVERY,
+	return String.format(RegistryRedisKeys.KEY_DELIVERY,
 		this.company.getId(), this.project.getId(), this.uuid);
     }
 
@@ -151,7 +151,7 @@ public class Delivery implements IDomainObject {
      */
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_DELIVERY, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_DELIVERY, company.getId(),
 		project.getId(), "*");
     }
 

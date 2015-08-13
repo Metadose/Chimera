@@ -2,7 +2,7 @@ package com.cebedo.pmsys.constants;
 
 import com.cebedo.pmsys.model.Project;
 
-public abstract class SystemConstants {
+public abstract class ConstantsSystem {
 
     public static final String CONFIG_SYS_HOME = "SYS_HOME";
     public static final String CONFIG_ROOT_INIT = "ROOT_INIT";

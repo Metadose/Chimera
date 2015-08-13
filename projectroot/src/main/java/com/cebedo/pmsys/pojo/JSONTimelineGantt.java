@@ -1,4 +1,4 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,8 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.utils.DateUtils;
 
-public class GanttBean {
+public class JSONTimelineGantt {
+
     private String id;
     private int status;
     private String text;
@@ -28,11 +29,11 @@ public class GanttBean {
     private String assignedTeams;
     private String assignedStaff;
 
-    public GanttBean() {
+    public JSONTimelineGantt() {
 	;
     }
 
-    public GanttBean(Milestone milestone, GanttBean parent) {
+    public JSONTimelineGantt(Milestone milestone, JSONTimelineGantt parent) {
 	setId(Milestone.OBJECT_NAME + "-" + milestone.getId());
 	setText(milestone.getName());
 	setOpen(true);
@@ -43,7 +44,7 @@ public class GanttBean {
 	setTextColor(GanttElement.MILESTONE.color());
     }
 
-    public GanttBean(Project proj) {
+    public JSONTimelineGantt(Project proj) {
 	setId(Project.OBJECT_NAME + "-" + proj.getId());
 	setText(proj.getName());
 	setOpen(true);
@@ -53,7 +54,7 @@ public class GanttBean {
 	setTextColor(GanttElement.PROJECT.color());
     }
 
-    public GanttBean(Task task, GanttBean parent) {
+    public JSONTimelineGantt(Task task, JSONTimelineGantt parent) {
 	setId(Task.OBJECT_NAME + "-" + task.getId());
 	setStatus(task.getStatus());
 	setText(task.getTitle());
@@ -82,7 +83,7 @@ public class GanttBean {
 	setTextColor(ganttElem.color());
     }
 
-    public GanttBean(Staff staff) {
+    public JSONTimelineGantt(Staff staff) {
 	setId(Staff.OBJECT_NAME + "-" + staff.getId());
 	setText(staff.getFullName());
 	setOpen(true);
@@ -92,7 +93,7 @@ public class GanttBean {
 	setTextColor(GanttElement.STAFF.color());
     }
 
-    public GanttBean(Task task, String parent) {
+    public JSONTimelineGantt(Task task, String parent) {
 	setId(Task.OBJECT_NAME + "-" + task.getId());
 	setStatus(task.getStatus());
 	setText(task.getTitle());
@@ -121,7 +122,7 @@ public class GanttBean {
 	setTextColor(ganttElem.color());
     }
 
-    public GanttBean(Project proj, GanttBean parent) {
+    public JSONTimelineGantt(Project proj, JSONTimelineGantt parent) {
 	setId(Project.OBJECT_NAME + "-" + proj.getId());
 	setText(proj.getName());
 	setOpen(true);

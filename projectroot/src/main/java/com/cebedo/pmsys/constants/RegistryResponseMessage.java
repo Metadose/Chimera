@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.constants;
 
-public class NotificationMessageRegistry {
+public class RegistryResponseMessage {
 
     public static final String ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT = "You <b>cannot</b> choose <b>more than one unit of measure</b> for a material.";
 

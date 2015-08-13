@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
 
@@ -42,7 +42,7 @@ public interface ProjectPayrollService {
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList);
 
     public String includeStaffToPayroll(ProjectPayroll projectPayroll,
-	    PayrollIncludeStaffBean includeStaffBean);
+	    FormPayrollIncludeStaff includeStaffBean);
 
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll getPayrollJSON);

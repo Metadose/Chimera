@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.CalendarEventBean;
-import com.cebedo.pmsys.bean.GanttBean;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
@@ -38,6 +36,8 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.pojo.JSONCalendarEvent;
+import com.cebedo.pmsys.pojo.JSONTimelineGantt;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -512,7 +512,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public String getCalendarJSON(Set<Attendance> attendanceList) {
 	// Get calendar events.
-	List<CalendarEventBean> calendarEvents = new ArrayList<CalendarEventBean>();
+	List<JSONCalendarEvent> jSONCalendarEvents = new ArrayList<JSONCalendarEvent>();
 
 	Staff staff = null;
 	for (Attendance attendance : attendanceList) {
@@ -521,7 +521,7 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attendance)) {
-		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 		return AlertBoxGenerator.ERROR;
 	    }
 
@@ -531,7 +531,7 @@ public class StaffServiceImpl implements StaffService {
 		    .getStatusID()) : attendance.getStatus();
 
 	    // Construct the event bean for this attendance.
-	    CalendarEventBean event = new CalendarEventBean();
+	    JSONCalendarEvent event = new JSONCalendarEvent();
 	    event.setStart(start);
 	    event.setTitle(attnStat.name());
 	    event.setId(start);
@@ -541,14 +541,14 @@ public class StaffServiceImpl implements StaffService {
 	    if (attnStat == AttendanceStatus.OVERTIME) {
 		event.setBorderColor("Red");
 	    }
-	    calendarEvents.add(event);
+	    jSONCalendarEvents.add(event);
 	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
-		CalendarEventBean.class.getName());
+		JSONCalendarEvent.class.getName());
 
-	return new Gson().toJson(calendarEvents, ArrayList.class);
+	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
     }
 
     /**
@@ -568,13 +568,13 @@ public class StaffServiceImpl implements StaffService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
-		GanttBean.class.getName());
+		JSONTimelineGantt.class.getName());
 
 	// Get gantt-data.
-	List<GanttBean> ganttBeanList = new ArrayList<GanttBean>();
+	List<JSONTimelineGantt> ganttBeanList = new ArrayList<JSONTimelineGantt>();
 
 	// Add myself.
-	GanttBean myGanttBean = new GanttBean(staff);
+	JSONTimelineGantt myGanttBean = new JSONTimelineGantt(staff);
 	ganttBeanList.add(myGanttBean);
 
 	// Get the gantt parent data.
@@ -599,7 +599,7 @@ public class StaffServiceImpl implements StaffService {
 		if (!addedMilestones.contains(milestone.getId())) {
 
 		    Project project = milestone.getProject();
-		    GanttBean projectBean = new GanttBean(project, myGanttBean);
+		    JSONTimelineGantt projectBean = new JSONTimelineGantt(project, myGanttBean);
 		    long projID = project.getId();
 
 		    // If the project has not yet been added.
@@ -616,7 +616,7 @@ public class StaffServiceImpl implements StaffService {
 			if (addedMilestones.contains(projectMilestone.getId())) {
 			    continue;
 			}
-			GanttBean milestoneBean = new GanttBean(projectMilestone, projectBean);
+			JSONTimelineGantt milestoneBean = new JSONTimelineGantt(projectMilestone, projectBean);
 			ganttBeanList.add(milestoneBean);
 			addedMilestones.add(projectMilestone.getId());
 		    }
@@ -632,8 +632,8 @@ public class StaffServiceImpl implements StaffService {
 		parentId = Staff.OBJECT_NAME + "-" + staff.getId();
 	    }
 
-	    GanttBean ganttBean = new GanttBean(task, parentId);
-	    ganttBeanList.add(ganttBean);
+	    JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, parentId);
+	    ganttBeanList.add(jSONTimelineGantt);
 	}
 
 	return new Gson().toJson(ganttBeanList, ArrayList.class);
@@ -708,7 +708,7 @@ public class StaffServiceImpl implements StaffService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attendance)) {
-		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 		return new HashMap<AttendanceStatus, Map<String, Double>>();
 	    }
 
@@ -883,11 +883,11 @@ public class StaffServiceImpl implements StaffService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey(), Staff.OBJECT_NAME);
 
 	Project project = projectPayroll.getProject();

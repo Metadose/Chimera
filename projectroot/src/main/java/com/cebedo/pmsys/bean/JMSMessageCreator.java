@@ -6,15 +6,15 @@ import javax.jms.Session;
 
 import org.springframework.jms.core.MessageCreator;
 
-public class MessageCreatorImpl implements MessageCreator {
+public class JMSMessageCreator implements MessageCreator {
 
-    private SystemMessage message;
+    private JMSMessage message;
 
-    public MessageCreatorImpl() {
+    public JMSMessageCreator() {
 	;
     }
 
-    public MessageCreatorImpl(SystemMessage msg) {
+    public JMSMessageCreator(JMSMessage msg) {
 	setMessage(msg);
     }
 
@@ -23,11 +23,11 @@ public class MessageCreatorImpl implements MessageCreator {
 	return session.createObjectMessage(this.message);
     }
 
-    public SystemMessage getMessage() {
+    public JMSMessage getMessage() {
 	return message;
     }
 
-    public void setMessage(SystemMessage message) {
+    public void setMessage(JMSMessage message) {
 	this.message = message;
     }
 

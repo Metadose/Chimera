@@ -11,8 +11,8 @@ import javax.transaction.Transactional;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.log4j.Logger;
 
-import com.cebedo.pmsys.bean.SystemMessage;
-import com.cebedo.pmsys.constants.LoggerRegistry;
+import com.cebedo.pmsys.bean.JMSMessage;
+import com.cebedo.pmsys.constants.RegistryLogger;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -22,16 +22,16 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 public class LogMessageListener implements MessageListener {
 
     public final static String MESSAGE_DESTINATION = "system.log.tail";
-    private static Logger logger = Logger.getLogger(LoggerRegistry.LOGGER_TAIL);
+    private static Logger logger = Logger.getLogger(RegistryLogger.LOGGER_TAIL);
 
     @Override
     @Transactional
     public void onMessage(Message message) {
 	if (message instanceof ActiveMQObjectMessage) {
-	    SystemMessage sysMessage;
+	    JMSMessage sysMessage;
 	    try {
 		// Get contents.
-		sysMessage = (SystemMessage) ((ActiveMQObjectMessage) message).getObject();
+		sysMessage = (JMSMessage) ((ActiveMQObjectMessage) message).getObject();
 
 		// Log.
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");

@@ -1,19 +1,19 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.model.Project;
 
-public class MassUploadBean {
+public class FormMassUpload {
 
     private Project project;
     private MultipartFile file;
 
-    public MassUploadBean() {
+    public FormMassUpload() {
 	;
     }
 
-    public MassUploadBean(Project proj) {
+    public FormMassUpload(Project proj) {
 	setProject(proj);
     }
 

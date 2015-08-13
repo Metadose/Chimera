@@ -1,8 +1,8 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 import java.util.Date;
 
-public class DateRangeBean {
+public class FormDateRange {
 
 	private Date startDate;
 	private Date endDate;

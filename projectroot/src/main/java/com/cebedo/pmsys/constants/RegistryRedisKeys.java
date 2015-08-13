@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.constants;
 
-public class RedisKeyRegistry {
+public class RegistryRedisKeys {
 
     public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 

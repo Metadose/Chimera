@@ -13,8 +13,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.bean.MassAttendanceBean;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -22,6 +21,7 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -44,12 +44,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return; // TODO Put notification.
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE,
+	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_ATTENDANCE,
 		attendance.getKey());
 
 	// Set the status.
@@ -87,7 +87,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return;
 	}
 
@@ -97,7 +97,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.delete(keys);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_ATTENDANCE,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ATTENDANCE,
 		attendance.getKey());
     }
 
@@ -118,7 +118,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
-		RedisConstants.OBJECT_ATTENDANCE, attendance.getKey());
+		ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo.set(attendance);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_ATTENDANCE,
+	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_ATTENDANCE,
 		attendance.getKey());
     }
 
@@ -194,7 +194,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attd)) {
-		this.messageHelper.unauthorized(RedisConstants.OBJECT_ATTENDANCE, attd.getKey());
+		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attd.getKey());
 		return 0.0;
 	    }
 
@@ -250,7 +250,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
-		RedisConstants.OBJECT_ATTENDANCE);
+		ConstantsRedis.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
@@ -288,14 +288,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
-		RedisConstants.OBJECT_ATTENDANCE, attn.getKey());
+		ConstantsRedis.OBJECT_ATTENDANCE, attn.getKey());
 
 	return attn;
     }
 
     @Override
     @Transactional
-    public void multiSet(MassAttendanceBean attendanceMass) {
+    public void multiSet(FormMassAttendance attendanceMass) {
 	Staff staff = attendanceMass.getStaff();
 
 	// Security check.
@@ -306,7 +306,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
-		MassAttendanceBean.class.getName());
+		FormMassAttendance.class.getName());
 
 	// Get the wage.
 	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
@@ -363,7 +363,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME, staff.getId(),
-		RedisConstants.OBJECT_ATTENDANCE);
+		ConstantsRedis.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
 	return this.attendanceValueRepo.multiGet(keys);

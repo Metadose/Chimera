@@ -2,12 +2,16 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-public class MasonryPlasteringEstimateResults implements Serializable {
+import com.cebedo.pmsys.utils.EstimateUtils;
 
-    private static final long serialVersionUID = 1206561790105254749L;
+public class EstimateResultMasonryCHBLaying implements Serializable {
 
-    private double cement40kg;
-    private double cement50kg;
+    private static final long serialVersionUID = -927040799981812601L;
+
+    /**
+     * Results.
+     */
+    private double bags;
     private double sand;
 
     // Cost.
@@ -15,35 +19,26 @@ public class MasonryPlasteringEstimateResults implements Serializable {
     private double costCement50kg;
     private double costSand;
 
-    public MasonryPlasteringEstimateResults() {
+    public EstimateResultMasonryCHBLaying() {
 	;
     }
 
-    public MasonryPlasteringEstimateResults(EstimateBean estimateBean, double bags40kg, double bags50kg,
-	    double sand2) {
-	setCement40kg(bags40kg);
-	setCement50kg(bags50kg);
-	setSand(sand2);
+    public EstimateResultMasonryCHBLaying(EstimateComputationBean estimateComputationBean, double bags40kg, double sandNeeded) {
+	setBags(bags40kg);
+	setSand(sandNeeded);
 
-	setCostCement40kg(bags40kg * estimateBean.getCostPerUnitCement40kg());
-	setCostCement50kg(bags50kg * estimateBean.getCostPerUnitCement50kg());
-	setCostSand(sand2 * estimateBean.getCostPerUnitSand());
+	double bags50kg = EstimateUtils.convert40kgTo50kg(bags40kg);
+	setCostCement40kg(bags40kg * estimateComputationBean.getCostPerUnitCement40kg());
+	setCostCement50kg(bags50kg * estimateComputationBean.getCostPerUnitCement50kg());
+	setCostSand(sandNeeded * estimateComputationBean.getCostPerUnitSand());
     }
 
     public double getCement40kg() {
-	return cement40kg;
+	return bags;
     }
 
-    public void setCement40kg(double cement40kg) {
-	this.cement40kg = cement40kg;
-    }
-
-    public double getCement50kg() {
-	return cement50kg;
-    }
-
-    public void setCement50kg(double cement50kg) {
-	this.cement50kg = cement50kg;
+    public void setBags(double bags) {
+	this.bags = bags;
     }
 
     public double getSand() {

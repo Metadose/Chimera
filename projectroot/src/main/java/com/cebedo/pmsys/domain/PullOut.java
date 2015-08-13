@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -63,7 +63,7 @@ public class PullOut implements IDomainObject {
     @Override
     public String getKey() {
 	// company.fk:%s:project.fk:%s:delivery.fk:%s:material.fk:%s:pullout:%s
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, this.company.getId(), this.project.getId(),
+	return String.format(RegistryRedisKeys.KEY_PULL_OUT, this.company.getId(), this.project.getId(),
 		this.delivery.getUuid(), this.material.getUuid(), this.uuid);
     }
 
@@ -151,20 +151,20 @@ public class PullOut implements IDomainObject {
 	Company company = material2.getCompany();
 	Project project = material2.getProject();
 	Delivery delivery = material2.getDelivery();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(),
+	return String.format(RegistryRedisKeys.KEY_PULL_OUT, company.getId(), project.getId(),
 		delivery.getUuid(), material2.getUuid(), "*");
     }
 
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(), "*", "*",
+	return String.format(RegistryRedisKeys.KEY_PULL_OUT, company.getId(), project.getId(), "*", "*",
 		"*");
     }
 
     public static String constructPattern(Delivery delivery2) {
 	Company company = delivery2.getCompany();
 	Project project = delivery2.getProject();
-	return String.format(RedisKeyRegistry.KEY_PULL_OUT, company.getId(), project.getId(),
+	return String.format(RegistryRedisKeys.KEY_PULL_OUT, company.getId(), project.getId(),
 		delivery2.getUuid(), "*", "*");
     }
 

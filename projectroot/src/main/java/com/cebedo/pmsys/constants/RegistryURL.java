@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.constants;
 
-public class URLRegistry {
+public class RegistryURL {
 
     public static final String MASS_UPLOAD_AND_ASSIGN_STAFF = "/mass/upload-and-assign/staff";
 

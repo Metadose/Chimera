@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cebedo.pmsys.bean.EstimateBean;
-import com.cebedo.pmsys.bean.EstimationInputBean;
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.bean.EstimateComputationBean;
+import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -33,7 +33,7 @@ public class EstimationOutput implements IDomainObject {
     /**
      * Output.
      */
-    private List<EstimateBean> estimateBeans;
+    private List<EstimateComputationBean> estimateComputationBeans;
     private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
@@ -62,7 +62,7 @@ public class EstimationOutput implements IDomainObject {
 	;
     }
 
-    public EstimationOutput(EstimationInputBean estimateInput) {
+    public EstimationOutput(EstimateComputationInputBean estimateInput) {
 	Project proj = estimateInput.getProject();
 	setCompany(proj.getCompany());
 	setProject(proj);
@@ -101,12 +101,12 @@ public class EstimationOutput implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public List<EstimateBean> getEstimates() {
-	return estimateBeans;
+    public List<EstimateComputationBean> getEstimates() {
+	return estimateComputationBeans;
     }
 
-    public void setEstimates(List<EstimateBean> estimateBeans) {
-	this.estimateBeans = estimateBeans;
+    public void setEstimates(List<EstimateComputationBean> estimateComputationBeans) {
+	this.estimateComputationBeans = estimateComputationBeans;
     }
 
     public Date getLastComputed() {
@@ -127,7 +127,7 @@ public class EstimationOutput implements IDomainObject {
 
     @Override
     public String getKey() {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, this.company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ESTIMATION_OUTPUT, this.company.getId(),
 		this.project.getId(), this.uuid);
     }
 
@@ -143,7 +143,7 @@ public class EstimationOutput implements IDomainObject {
     }
 
     public static String constructPattern(Project proj) {
-	return String.format(RedisKeyRegistry.KEY_ESTIMATION_OUTPUT, proj.getCompany().getId(),
+	return String.format(RegistryRedisKeys.KEY_ESTIMATION_OUTPUT, proj.getCompany().getId(),
 		proj.getId(), "*");
     }
 
@@ -171,7 +171,7 @@ public class EstimationOutput implements IDomainObject {
 	this.remarks = remarks;
     }
 
-    public void setResults(EstimationInputBean estimateInput, List<EstimateBean> estimates2,
+    public void setResults(EstimateComputationInputBean estimateInput, List<EstimateComputationBean> estimates2,
 	    String rowListJson) {
 	setName(estimateInput.getName());
 	setRemarks(estimateInput.getRemarks());

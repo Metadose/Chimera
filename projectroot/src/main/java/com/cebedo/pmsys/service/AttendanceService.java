@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.cebedo.pmsys.bean.MassAttendanceBean;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.FormMassAttendance;
 
 public interface AttendanceService {
 
@@ -50,6 +50,6 @@ public interface AttendanceService {
 
     public double getTotalWageFromAttendance(Collection<Attendance> attendances);
 
-    public void multiSet(MassAttendanceBean attendanceMass);
+    public void multiSet(FormMassAttendance attendanceMass);
 
 }

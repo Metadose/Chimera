@@ -3,7 +3,7 @@ package com.cebedo.pmsys.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -29,11 +29,11 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
     public void set(ProjectAux obj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 	    return;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 	this.projectAuxValueRepo.set(obj);
     }
 
@@ -44,11 +44,11 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 	    return new ProjectAux();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PROJECT_AUX, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 
 	return obj;
     }

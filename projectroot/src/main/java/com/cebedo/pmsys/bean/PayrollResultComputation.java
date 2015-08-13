@@ -9,16 +9,17 @@ import java.util.Map;
 
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class PayrollComputationResult implements Serializable {
+public class PayrollResultComputation implements Serializable {
 
     private static final long serialVersionUID = 6109887323126902978L;
     private Date startDate, endDate;
     private Map<Staff, String> staffToWageMap = new HashMap<Staff, String>();
     private double overallTotalOfStaff = 0;
     private Map<Staff, Map<AttendanceStatus, Map<String, Double>>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
-    private List<TreeGridRowBean> treeGrid = new ArrayList<TreeGridRowBean>();
+    private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
     public void setStartDate(Date startDate) {
 	this.startDate = startDate;
@@ -41,7 +42,7 @@ public class PayrollComputationResult implements Serializable {
 	this.staffPayrollBreakdownMap = staffPayrollBreakdownMap;
     }
 
-    public void setTreeGrid(List<TreeGridRowBean> treeGrid) {
+    public void setTreeGrid(List<JSONPayrollResult> treeGrid) {
 	this.treeGrid = treeGrid;
     }
 
@@ -70,7 +71,7 @@ public class PayrollComputationResult implements Serializable {
 	return staffPayrollBreakdownMap;
     }
 
-    public List<TreeGridRowBean> getTreeGrid() {
+    public List<JSONPayrollResult> getTreeGrid() {
 	return treeGrid;
     }
 

@@ -14,9 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.bean.PayrollComputationResult;
-import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -26,6 +25,7 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
@@ -77,15 +77,15 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	String payrollJSON = getPayrollJSON(proj, startDate, endDate, projectPayroll);
 
 	// Get the resulting state of the computation.
 	// And save it.
-	PayrollComputationResult payrollComputationResult = this.projectPayrollComputerService
+	PayrollResultComputation payrollResultComputation = this.projectPayrollComputerService
 		.getPayrollResult();
-	projectPayroll.setPayrollComputationResult(payrollComputationResult);
+	projectPayroll.setPayrollComputationResult(payrollResultComputation);
 	projectPayroll.setLastComputed(new Date(System.currentTimeMillis()));
 	projectPayroll.setPayrollJSON(payrollJSON);
 
@@ -103,7 +103,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Get new payroll result.
 	// Construct new grand total.
-	double newPayrollResult = payrollComputationResult.getOverallTotalOfStaff();
+	double newPayrollResult = payrollResultComputation.getOverallTotalOfStaff();
 	double newGrandTotal = revertedGrandTotal + newPayrollResult;
 
 	// The new grandtotal.
@@ -124,11 +124,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new ProjectPayroll();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_PAYROLL, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 
 	return obj;
     }
@@ -144,11 +144,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(payroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, payroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_PAYROLL,
 		payroll.getKey());
 
 	// Revert the grand total in project auxillary.
@@ -158,7 +158,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Get value.
 	// Recompute reverted value.
 	double totalAllPayrolls = projAux.getGrandTotalPayroll();
-	PayrollComputationResult result = payroll.getPayrollComputationResult();
+	PayrollResultComputation result = payroll.getPayrollComputationResult();
 	double totalThisPayroll = result == null ? 0 : result.getOverallTotalOfStaff();
 	double revertedTotal = totalAllPayrolls - totalThisPayroll;
 
@@ -171,7 +171,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.delete(key);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateDelete(RedisConstants.OBJECT_PAYROLL,
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_PAYROLL,
 		payroll.getStartEndDisplay());
     }
 
@@ -188,20 +188,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(payroll)) {
-		this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, payroll.getKey());
+		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 		return NumberFormatUtils.getCurrencyFormatter().format(0);
 	    }
 
 	    proj = proj == null ? payroll.getProject() : proj;
 
-	    PayrollComputationResult result = payroll.getPayrollComputationResult();
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
 	    if (result != null) {
 		total += result.getOverallTotalOfStaff();
 	    }
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_PAYROLL, PROPERTY_GRAND_TOTAL);
+		ConstantsRedis.OBJECT_PAYROLL, PROPERTY_GRAND_TOTAL);
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
@@ -234,10 +234,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	if (isUpdating) {
-	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(RedisConstants.OBJECT_PAYROLL,
+	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		    datePart);
 	} else {
-	    response = AlertBoxGenerator.SUCCESS.generateCreate(RedisConstants.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_PAYROLL, datePart);
 	    projectPayroll.setUuid(UUID.randomUUID());
 	}
 
@@ -245,7 +245,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	return response;
@@ -274,7 +274,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -283,7 +283,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	// Return the JSON equivalent of the result.
 	return this.projectPayrollComputerService.getPayrollJSONResult();
@@ -304,7 +304,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_PAYROLL);
+		ConstantsRedis.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
 	// Construct the key.
@@ -339,11 +339,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	// If the update button is clicked from the "right-side"
@@ -368,7 +368,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	String datePart = getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(RedisConstants.OBJECT_PAYROLL,
+	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		datePart);
 	return response;
     }
@@ -376,14 +376,14 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Transactional
     @Override
     public String includeStaffToPayroll(ProjectPayroll projectPayroll,
-	    PayrollIncludeStaffBean includeStaffBean) {
+	    FormPayrollIncludeStaff includeStaffBean) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	// Get current list of staff.

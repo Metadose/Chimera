@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
@@ -23,7 +23,7 @@ import com.cebedo.pmsys.service.SystemUserService;
 @RequestMapping(LoginLogoutController.MAPPING_CONTROLLER)
 public class LoginLogoutController {
 
-    protected static Logger logger = Logger.getLogger(SystemConstants.LOGGER_LOGIN);
+    protected static Logger logger = Logger.getLogger(ConstantsSystem.LOGGER_LOGIN);
     public static final String MAPPING_CONTROLLER = "auth";
     public static final String JSP_LOGIN = MAPPING_CONTROLLER + "/login";
     public static Boolean appInit = null;
@@ -44,7 +44,7 @@ public class LoginLogoutController {
 
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
     public String loginError(Model model) {
-	model.addAttribute(SystemConstants.UI_PARAM_ALERT, "Login failed");
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");
 	return getLoginPage();
     }
 
@@ -57,14 +57,14 @@ public class LoginLogoutController {
     public String getLoginPage() {
 	// If no value, get value.
 	if (appInit == null) {
-	    String valStr = this.configService.getValueByName(SystemConstants.CONFIG_ROOT_INIT, true);
+	    String valStr = this.configService.getValueByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
 
 	    // If the configuration is not found,
 	    // app init is false, and create a new config.
 	    if (valStr == null) {
 		appInit = false;
 		SystemConfiguration config = new SystemConfiguration();
-		config.setName(SystemConstants.CONFIG_ROOT_INIT);
+		config.setName(ConstantsSystem.CONFIG_ROOT_INIT);
 		config.setValue("1");
 		this.configService.create(config);
 	    }
@@ -81,7 +81,7 @@ public class LoginLogoutController {
 	    else {
 		appInit = false;
 		SystemConfiguration config = this.configService
-			.getByName(SystemConstants.CONFIG_ROOT_INIT);
+			.getByName(ConstantsSystem.CONFIG_ROOT_INIT);
 		config.setValue("1");
 		this.configService.merge(config);
 	    }

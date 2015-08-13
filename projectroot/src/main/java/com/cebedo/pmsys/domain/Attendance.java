@@ -3,7 +3,7 @@ package com.cebedo.pmsys.domain;
 import java.util.Date;
 import java.util.Map;
 
-import com.cebedo.pmsys.constants.RedisKeyRegistry;
+import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
@@ -152,13 +152,13 @@ public class Attendance implements IDomainObject {
     public static String constructPattern(Staff staff, Date myDate) {
 	Company company = staff.getCompany();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
-	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
 		staff.getId(), date, "*");
     }
 
     public static String constructPattern(Staff staff) {
 	Company company = staff.getCompany();
-	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
 		staff.getId(), "*", "*");
     }
 
@@ -167,7 +167,7 @@ public class Attendance implements IDomainObject {
 	Company company = staff.getCompany();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
 	int status = myStatus.id();
-	return String.format(RedisKeyRegistry.KEY_ATTENDANCE, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
 		staff.getId(), date, status);
     }
 
@@ -179,7 +179,7 @@ public class Attendance implements IDomainObject {
 	Date myDate = getDate();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
 	int status = (getStatus() == null ? getStatusID() : getStatus().id());
-	return String.format(RedisKeyRegistry.KEY_ATTENDANCE,
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE,
 		this.company.getId(), this.staff.getId(), date, status);
     }
 

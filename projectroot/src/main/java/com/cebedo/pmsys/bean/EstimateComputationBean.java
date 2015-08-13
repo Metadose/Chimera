@@ -16,7 +16,7 @@ import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
-public class EstimateBean implements Serializable {
+public class EstimateComputationBean implements Serializable {
 
     private static final long serialVersionUID = -3521975517764441834L;
 
@@ -31,7 +31,7 @@ public class EstimateBean implements Serializable {
      */
     private String name;
     private String remarks;
-    private ShapeBean shapeBean;
+    private EstimateComputationShape estimateComputationShape;
 
     /**
      * Inputs.
@@ -65,11 +65,11 @@ public class EstimateBean implements Serializable {
      * Results
      */
     // Materials quantity and cost per estimate type.
-    private ConcreteEstimateResults resultConcreteEstimate = new ConcreteEstimateResults();
-    private MasonryCHBEstimateResults resultCHBEstimate = new MasonryCHBEstimateResults();
-    private MasonryCHBLayingEstimateResults resultCHBLayingEstimate = new MasonryCHBLayingEstimateResults();
-    private MasonryPlasteringEstimateResults resultPlasteringEstimate = new MasonryPlasteringEstimateResults();
-    private MasonryCHBFootingEstimateResults resultCHBFootingEstimate = new MasonryCHBFootingEstimateResults();
+    private EstimateResultConcrete resultConcreteEstimate = new EstimateResultConcrete();
+    private EstimateResultMasonryCHB resultCHBEstimate = new EstimateResultMasonryCHB();
+    private EstimateResultMasonryCHBLaying resultCHBLayingEstimate = new EstimateResultMasonryCHBLaying();
+    private EstimateResultMasonryPlastering resultPlasteringEstimate = new EstimateResultMasonryPlastering();
+    private EstimateResultMasonryCHBFooting resultCHBFootingEstimate = new EstimateResultMasonryCHBFooting();
 
     // Quantity of the whole row.
     private double quantityCement40kg = 0;
@@ -85,11 +85,11 @@ public class EstimateBean implements Serializable {
     private double costGravel = 0;
     private double costCHB = 0;
 
-    public EstimateBean() {
+    public EstimateComputationBean() {
 	;
     }
 
-    public EstimateBean(Project proj) {
+    public EstimateComputationBean(Project proj) {
 	setCompany(proj.getCompany());
 	setProject(proj);
     }
@@ -154,12 +154,12 @@ public class EstimateBean implements Serializable {
 	this.remarks = remarks;
     }
 
-    public ShapeBean getShape() {
-	return shapeBean;
+    public EstimateComputationShape getShape() {
+	return estimateComputationShape;
     }
 
-    public void setShape(ShapeBean shapeBean) {
-	this.shapeBean = shapeBean;
+    public void setShape(EstimateComputationShape estimateComputationShape) {
+	this.estimateComputationShape = estimateComputationShape;
     }
 
     public List<EstimateType> getEstimateTypes() {
@@ -202,27 +202,27 @@ public class EstimateBean implements Serializable {
 	this.estimationClass = estimationClass;
     }
 
-    public MasonryCHBEstimateResults getResultCHBEstimate() {
+    public EstimateResultMasonryCHB getResultCHBEstimate() {
 	return resultCHBEstimate;
     }
 
-    public void setResultCHBEstimate(MasonryCHBEstimateResults resultCHBEstimate) {
+    public void setResultCHBEstimate(EstimateResultMasonryCHB resultCHBEstimate) {
 	this.resultCHBEstimate = resultCHBEstimate;
     }
 
-    public MasonryCHBLayingEstimateResults getResultCHBLayingEstimate() {
+    public EstimateResultMasonryCHBLaying getResultCHBLayingEstimate() {
 	return resultCHBLayingEstimate;
     }
 
-    public void setResultCHBLayingEstimate(MasonryCHBLayingEstimateResults resultCHBLayingEstimate) {
+    public void setResultCHBLayingEstimate(EstimateResultMasonryCHBLaying resultCHBLayingEstimate) {
 	this.resultCHBLayingEstimate = resultCHBLayingEstimate;
     }
 
-    public MasonryPlasteringEstimateResults getResultPlasteringEstimate() {
+    public EstimateResultMasonryPlastering getResultPlasteringEstimate() {
 	return resultPlasteringEstimate;
     }
 
-    public void setResultPlasteringEstimate(MasonryPlasteringEstimateResults resultPlasteringEstimate) {
+    public void setResultPlasteringEstimate(EstimateResultMasonryPlastering resultPlasteringEstimate) {
 	this.resultPlasteringEstimate = resultPlasteringEstimate;
     }
 
@@ -234,19 +234,19 @@ public class EstimateBean implements Serializable {
 	this.chbFootingDimensions = chbFootingDimensions;
     }
 
-    public MasonryCHBFootingEstimateResults getResultCHBFootingEstimate() {
+    public EstimateResultMasonryCHBFooting getResultCHBFootingEstimate() {
 	return resultCHBFootingEstimate;
     }
 
-    public void setResultCHBFootingEstimate(MasonryCHBFootingEstimateResults resultCHBFootingEstimate) {
+    public void setResultCHBFootingEstimate(EstimateResultMasonryCHBFooting resultCHBFootingEstimate) {
 	this.resultCHBFootingEstimate = resultCHBFootingEstimate;
     }
 
-    public ConcreteEstimateResults getResultConcreteEstimate() {
+    public EstimateResultConcrete getResultConcreteEstimate() {
 	return resultConcreteEstimate;
     }
 
-    public void setResultConcreteEstimate(ConcreteEstimateResults resultConcreteEstimate) {
+    public void setResultConcreteEstimate(EstimateResultConcrete resultConcreteEstimate) {
 	this.resultConcreteEstimate = resultConcreteEstimate;
     }
 

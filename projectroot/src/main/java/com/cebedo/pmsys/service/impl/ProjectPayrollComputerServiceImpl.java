@@ -14,9 +14,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.bean.PayrollComputationResult;
-import com.cebedo.pmsys.bean.TreeGridRowBean;
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -25,6 +24,7 @@ import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.StaffService;
@@ -74,14 +74,14 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     private Map<Staff, Map<AttendanceStatus, Map<String, Double>>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
 
     // JSON tree grid.
-    private List<TreeGridRowBean> treeGrid = new ArrayList<TreeGridRowBean>();
+    private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
     // Currency formatter.
     private NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
 
     // Results.
     private double overallTotalOfWage = 0;
-    private PayrollComputationResult payrollResult = new PayrollComputationResult();
+    private PayrollResultComputation payrollResult = new PayrollResultComputation();
     private Map<AttendanceStatus, Integer> overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
     private Map<AttendanceStatus, Double> overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
 
@@ -98,10 +98,10 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	this.overallTotalOfStaff = 0;
 
 	this.staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
-	this.treeGrid = new ArrayList<TreeGridRowBean>();
+	this.treeGrid = new ArrayList<JSONPayrollResult>();
 
 	this.overallTotalOfWage = 0;
-	this.payrollResult = new PayrollComputationResult();
+	this.payrollResult = new PayrollResultComputation();
 	this.overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
 	this.overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
     }
@@ -250,8 +250,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param rowBean
      * @return
      */
-    private TreeGridRowBean setAttendanceBreakdown(
-	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown, TreeGridRowBean rowBean) {
+    private JSONPayrollResult setAttendanceBreakdown(
+	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown, JSONPayrollResult rowBean) {
 
 	// OVERTIME.
 	rowBean.setBreakdownOvertimeCount(getBreakdownCount(staffWageBreakdown,
@@ -314,7 +314,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	// Add header beans.
 	String staffTotalStr = this.formatter.format(this.overallTotalOfStaff);
 	long headerPKey = Math.abs(randomno.nextLong());
-	TreeGridRowBean headerBean = new TreeGridRowBean(headerPKey, -1,
+	JSONPayrollResult headerBean = new JSONPayrollResult(headerPKey, -1,
 		CSSClass.PRIMARY.getSpanHTML("TOTAL"), staffTotalStr, "&nbsp;");
 	this.treeGrid.add(headerBean);
 
@@ -347,7 +347,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	    double staffWage = staff.getWage();
 	    this.overallTotalOfWage += staffWage;
 	    String staffWageStr = NumberFormatUtils.getCurrencyFormatter().format(staffWage);
-	    TreeGridRowBean rowBean = new TreeGridRowBean(rowPKey, headerPKey, rowName, rowValue,
+	    JSONPayrollResult rowBean = new JSONPayrollResult(rowPKey, headerPKey, rowName, rowValue,
 		    staffWageStr);
 
 	    // Breakdown.
@@ -370,7 +370,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * Set the breakdown for the motherbean.
      */
     private void setBreakdownMotherBean() {
-	TreeGridRowBean motherBean = this.treeGrid.get(0);
+	JSONPayrollResult motherBean = this.treeGrid.get(0);
 	motherBean.setWage(this.formatter.format(this.overallTotalOfWage));
 	motherBean.setBreakdownAbsentCount(getOverallBreakdownCountStr(AttendanceStatus.ABSENT));
 	motherBean.setBreakdownAbsentWage(getOverallBreakdownWageStr(AttendanceStatus.ABSENT));
@@ -403,12 +403,12 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_COMPUTE, RedisConstants.OBJECT_PAYROLL,
+	this.messageHelper.send(AuditAction.ACTION_COMPUTE, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey());
 
 	// Clear old data.
@@ -436,7 +436,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
     @Transactional
     @Override
-    public PayrollComputationResult getPayrollResult() {
+    public PayrollResultComputation getPayrollResult() {
 	return payrollResult;
     }
 

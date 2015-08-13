@@ -1,17 +1,17 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 
-public class StaffAssignmentBean {
+public class FormStaffAssignment {
 
 	private long staffID;
 	private long taskID;
 	private String position;
 
-	public StaffAssignmentBean() {
+	public FormStaffAssignment() {
 		;
 	}
 
-	public StaffAssignmentBean(long sampleID, String pos) {
+	public FormStaffAssignment(long sampleID, String pos) {
 		setStaffID(sampleID);
 		setPosition(pos);
 	}
@@ -36,7 +36,7 @@ public class StaffAssignmentBean {
 		return taskID;
 	}
 
-	public StaffAssignmentBean setTaskID(long taskID) {
+	public FormStaffAssignment setTaskID(long taskID) {
 		this.taskID = taskID;
 		return this;
 	}

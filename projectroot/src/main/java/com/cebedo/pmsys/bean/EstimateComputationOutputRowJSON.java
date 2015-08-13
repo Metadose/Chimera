@@ -3,7 +3,7 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class EstimationOutputRowBean implements Serializable {
+public class EstimateComputationOutputRowJSON implements Serializable {
 
     private static final long serialVersionUID = 5377007792468931713L;
 
@@ -60,27 +60,27 @@ public class EstimationOutputRowBean implements Serializable {
     private double footingCostSand;
     private double footingCostGravel;
 
-    public EstimationOutputRowBean() {
+    public EstimateComputationOutputRowJSON() {
 	;
     }
 
-    public EstimationOutputRowBean(EstimateBean estimateBean) {
+    public EstimateComputationOutputRowJSON(EstimateComputationBean estimateComputationBean) {
 
-	ShapeBean shapeBean = estimateBean.getShape();
-	ConcreteEstimateResults concrete = estimateBean.getResultConcreteEstimate();
-	MasonryCHBEstimateResults chb = estimateBean.getResultCHBEstimate();
-	MasonryCHBLayingEstimateResults chbLaying = estimateBean.getResultCHBLayingEstimate();
-	MasonryPlasteringEstimateResults plaster = estimateBean.getResultPlasteringEstimate();
-	MasonryCHBFootingEstimateResults footing = estimateBean.getResultCHBFootingEstimate();
+	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();
+	EstimateResultConcrete concrete = estimateComputationBean.getResultConcreteEstimate();
+	EstimateResultMasonryCHB chb = estimateComputationBean.getResultCHBEstimate();
+	EstimateResultMasonryCHBLaying chbLaying = estimateComputationBean.getResultCHBLayingEstimate();
+	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
+	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
 
 	// Details.
 	this.uuid = UUID.randomUUID().toString();
-	this.name = estimateBean.getName();
-	this.remarks = estimateBean.getRemarks();
-	this.area = shapeBean.getOriginalArea();
-	this.volume = shapeBean.getOriginalVolume();
-	this.chbFoundationHeight = estimateBean.getChbFoundationHeight();
-	this.footingLength = shapeBean.getFootingLength();
+	this.name = estimateComputationBean.getName();
+	this.remarks = estimateComputationBean.getRemarks();
+	this.area = estimateComputationShape.getOriginalArea();
+	this.volume = estimateComputationShape.getOriginalVolume();
+	this.chbFoundationHeight = estimateComputationBean.getChbFoundationHeight();
+	this.footingLength = estimateComputationShape.getFootingLength();
 
 	// CHB.
 	this.chbTotal = chb.getTotalCHB();

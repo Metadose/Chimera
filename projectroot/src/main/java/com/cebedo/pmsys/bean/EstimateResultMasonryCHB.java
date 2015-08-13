@@ -5,7 +5,7 @@ import java.text.NumberFormat;
 
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class MasonryCHBEstimateResults implements Serializable {
+public class EstimateResultMasonryCHB implements Serializable {
 
     private static NumberFormat quantityFormatter = NumberFormatUtils.getQuantityFormatter();
     private static final long serialVersionUID = -5533583947231752985L;
@@ -13,13 +13,13 @@ public class MasonryCHBEstimateResults implements Serializable {
     private double totalCHB;
     private double costCHB;
 
-    public MasonryCHBEstimateResults() {
+    public EstimateResultMasonryCHB() {
 	;
     }
 
-    public MasonryCHBEstimateResults(EstimateBean estimateBean, double totalCHB2) {
+    public EstimateResultMasonryCHB(EstimateComputationBean estimateComputationBean, double totalCHB2) {
 	setTotalCHB(totalCHB2);
-	setCostCHB(this.totalCHB * estimateBean.getCostPerUnitCHB());
+	setCostCHB(this.totalCHB * estimateComputationBean.getCostPerUnitCHB());
     }
 
     public double getTotalCHB() {

@@ -3,7 +3,7 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
-public class ConcreteEstimateResults implements Serializable {
+public class EstimateResultConcrete implements Serializable {
 
     private static final long serialVersionUID = -2748458108457052450L;
 
@@ -17,21 +17,21 @@ public class ConcreteEstimateResults implements Serializable {
     private double costSand;
     private double costGravel;
 
-    public ConcreteEstimateResults() {
+    public EstimateResultConcrete() {
 	;
     }
 
-    public ConcreteEstimateResults(EstimateBean estimateBean, double estCement40kg,
+    public EstimateResultConcrete(EstimateComputationBean estimateComputationBean, double estCement40kg,
 	    double estCement50kg, double estSand, double estGravel) {
 	setCement40kg(estCement40kg);
 	setCement50kg(estCement50kg);
 	setSand(estSand);
 	setGravel(estGravel);
 
-	setCostCement40kg(estCement40kg * estimateBean.getCostPerUnitCement40kg());
-	setCostCement50kg(estCement50kg * estimateBean.getCostPerUnitCement50kg());
-	setCostSand(estSand * estimateBean.getCostPerUnitSand());
-	setCostGravel(estGravel * estimateBean.getCostPerUnitGravel());
+	setCostCement40kg(estCement40kg * estimateComputationBean.getCostPerUnitCement40kg());
+	setCostCement50kg(estCement50kg * estimateComputationBean.getCostPerUnitCement50kg());
+	setCostSand(estSand * estimateComputationBean.getCostPerUnitSand());
+	setCostGravel(estGravel * estimateComputationBean.getCostPerUnitGravel());
     }
 
     /**

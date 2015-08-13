@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.constants;
 
-public class LoggerRegistry {
+public class RegistryLogger {
 
     public static final String LOGGER_EXCEPTION = "webappExceptionLogger";
 

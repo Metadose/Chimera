@@ -2,7 +2,7 @@ package com.cebedo.pmsys.constants;
 
 import com.cebedo.pmsys.model.Project;
 
-public abstract class RedisConstants {
+public abstract class ConstantsRedis {
 
     // Redis objects.
     public static final String OBJECT_ATTENDANCE = "attendance";
@@ -24,4 +24,5 @@ public abstract class RedisConstants {
     public static final String JSP_PAYROLL_EDIT = Project.OBJECT_NAME + "/payrollEdit";
     public static final String JSP_MATERIAL_EDIT = Project.OBJECT_NAME + "/materialEdit";
     public static final String JSP_MATERIAL_PULLOUT = Project.OBJECT_NAME + "/materialPulloutEdit";
+
 }

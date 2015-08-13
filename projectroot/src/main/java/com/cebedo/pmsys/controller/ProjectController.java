@@ -19,15 +19,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.EstimateBean;
-import com.cebedo.pmsys.bean.EstimationInputBean;
-import com.cebedo.pmsys.bean.FieldAssignmentBean;
-import com.cebedo.pmsys.bean.MassUploadBean;
-import com.cebedo.pmsys.bean.PayrollIncludeStaffBean;
-import com.cebedo.pmsys.bean.StaffAssignmentBean;
-import com.cebedo.pmsys.constants.RedisConstants;
-import com.cebedo.pmsys.constants.SystemConstants;
-import com.cebedo.pmsys.constants.URLRegistry;
+import com.cebedo.pmsys.bean.EstimateComputationBean;
+import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
@@ -52,6 +48,10 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
+import com.cebedo.pmsys.pojo.FormFieldAssignment;
+import com.cebedo.pmsys.pojo.FormMassUpload;
+import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
+import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
@@ -71,12 +71,12 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @SessionAttributes(
 
 value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
-	RedisConstants.OBJECT_PAYROLL, RedisConstants.OBJECT_DELIVERY, RedisConstants.OBJECT_MATERIAL,
-	RedisConstants.OBJECT_PULL_OUT, RedisConstants.OBJECT_ESTIMATE,
+	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
+	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN, ProjectController.ATTR_TASK },
 
-types = { Project.class, FieldAssignmentBean.class, ProjectPayroll.class, Delivery.class,
-	Material.class, PullOut.class, EstimateBean.class, MassUploadBean.class, Task.class }
+types = { Project.class, FormFieldAssignment.class, ProjectPayroll.class, Delivery.class,
+	Material.class, PullOut.class, EstimateComputationBean.class, FormMassUpload.class, Task.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -85,10 +85,10 @@ public class ProjectController {
     // TODO Clean this whole thing.
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
-    public static final String ATTR_PROJECT_AUX = RedisConstants.OBJECT_PROJECT_AUX;
-    public static final String ATTR_DELIVERY = RedisConstants.OBJECT_DELIVERY;
-    public static final String ATTR_MATERIAL = RedisConstants.OBJECT_MATERIAL;
-    public static final String ATTR_PULL_OUT = RedisConstants.OBJECT_PULL_OUT;
+    public static final String ATTR_PROJECT_AUX = ConstantsRedis.OBJECT_PROJECT_AUX;
+    public static final String ATTR_DELIVERY = ConstantsRedis.OBJECT_DELIVERY;
+    public static final String ATTR_MATERIAL = ConstantsRedis.OBJECT_MATERIAL;
+    public static final String ATTR_PULL_OUT = ConstantsRedis.OBJECT_PULL_OUT;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
@@ -101,7 +101,7 @@ public class ProjectController {
     public static final String ATTR_SHAPE_LIST = "shapeList";
 
     public static final String ATTR_MASS_UPLOAD_STAFF_BEAN = "massUploadStaffBean";
-    public static final String ATTR_ESTIMATE = RedisConstants.OBJECT_ESTIMATE;
+    public static final String ATTR_ESTIMATE = ConstantsRedis.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
     public static final String ATTR_ESTIMATE_OUTPUT_JSON = "estimateJSON";
@@ -110,7 +110,7 @@ public class ProjectController {
     public static final String ATTR_ESTIMATE_TYPES = "estimateTypes";
     public static final String ATTR_ESTIMATE_CONCRETE_LIST = "concreteEstimateList";
     public static final String ATTR_ESTIMATE_COMBINED_LIST = "combinedEstimateList";
-    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARY = RedisConstants.OBJECT_CONCRETE_ESTIMATION_SUMMARY;
+    public static final String ATTR_CONCRETE_ESTIMATION_SUMMARY = ConstantsRedis.OBJECT_CONCRETE_ESTIMATION_SUMMARY;
     public static final String ATTR_CONCRETE_PROPORTION_LIST = "concreteProportionList";
     public static final String ATTR_CHB_LIST = "chbList";
     public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
@@ -250,7 +250,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
 	model.addAttribute(ATTR_LIST, this.projectService.list());
 	return JSP_LIST;
@@ -262,8 +262,8 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/"
-	    + SystemConstants.ALL, method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/"
+	    + ConstantsSystem.ALL, method = RequestMethod.GET)
     public String unassignAllStaffMembers(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -273,7 +273,7 @@ public class ProjectController {
 	String response = this.staffService.unassignAllStaffMembers(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(project.getId(), status);
     }
@@ -287,7 +287,7 @@ public class ProjectController {
      */
     private String editPage(long projectID, SessionStatus status) {
 	status.setComplete();
-	return String.format(URLRegistry.REDIRECT_PROJECT_EDIT, projectID);
+	return String.format(RegistryURL.REDIRECT_PROJECT_EDIT, projectID);
     }
 
     /**
@@ -298,7 +298,7 @@ public class ProjectController {
      * @param position
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member"
+    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member"
 	    + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String unassignStaffMember(HttpSession session, SessionStatus status,
 	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
@@ -309,7 +309,7 @@ public class ProjectController {
 	String response = this.staffService.unassignStaffMember(project, staffID);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(project.getId(), status);
     }
@@ -322,8 +322,8 @@ public class ProjectController {
      * @param staffAssignment
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
-	    + SystemConstants.MASS, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
+	    + ConstantsSystem.MASS, method = RequestMethod.POST)
     public String assignMassStaff(HttpSession session, SessionStatus status,
 	    @ModelAttribute(ATTR_PROJECT) Project project, RedirectAttributes redirectAttrs) {
 
@@ -333,7 +333,7 @@ public class ProjectController {
 	String response = this.staffService.assignStaffMass(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(project.getId(), status);
     }
@@ -346,7 +346,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_PROJECT) Project project,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
@@ -357,7 +357,7 @@ public class ProjectController {
 	    String response = this.projectService.create(project);
 
 	    // Attach response.
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	    return editPage(project.getId(), status);
 	}
@@ -367,7 +367,7 @@ public class ProjectController {
 	String response = this.projectService.update(project);
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(project.getId(), status);
     }
@@ -381,13 +381,13 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_UPDATE, method = RequestMethod.POST)
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_UPDATE, method = RequestMethod.POST)
     public String updateField(HttpSession session,
-	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean newFaBean, SessionStatus status,
+	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment newFaBean, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
 	// Old values.
-	FieldAssignmentBean faBean = (FieldAssignmentBean) session.getAttribute("old" + ATTR_FIELD);
+	FormFieldAssignment faBean = (FormFieldAssignment) session.getAttribute("old" + ATTR_FIELD);
 
 	// Get response.
 	// Do service.
@@ -396,7 +396,7 @@ public class ProjectController {
 		newFaBean.getValue());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Clear session and redirect.
 	return editPage(faBean.getProjectID(), status);
@@ -409,12 +409,12 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_DELETE, method = RequestMethod.GET)
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_DELETE, method = RequestMethod.GET)
     public String deleteProjectField(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
 	// Fetch bean from session.
-	FieldAssignmentBean faBean = (FieldAssignmentBean) session.getAttribute(ATTR_FIELD);
+	FormFieldAssignment faBean = (FormFieldAssignment) session.getAttribute(ATTR_FIELD);
 
 	// Do service.
 	// Clear session attrs then redirect.
@@ -423,7 +423,7 @@ public class ProjectController {
 		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
 
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(faBean.getProjectID(), status);
     }
@@ -436,7 +436,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + SystemConstants.REQUEST_EDIT + "/{"
+    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_EDIT + "/{"
 	    + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String editField(HttpSession session,
 	    @PathVariable(Field.OBJECT_NAME) String fieldIdentifiers, Model model) {
@@ -450,8 +450,8 @@ public class ProjectController {
 
 	// Set to model attribute "field".
 	model.addAttribute(ATTR_PROJECT, proj);
-	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(projectID, fieldID, label, value));
-	session.setAttribute("old" + ATTR_FIELD, new FieldAssignmentBean(projectID, fieldID, label,
+	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label, value));
+	session.setAttribute("old" + ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label,
 		value));
 
 	return JSP_EDIT_FIELD;
@@ -465,7 +465,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
@@ -492,7 +492,7 @@ public class ProjectController {
 
 	// Attach response.
 	// Alert result.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return listPage(status);
     }
@@ -505,7 +505,7 @@ public class ProjectController {
      */
     public String listPage(SessionStatus status) {
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + SystemConstants.REQUEST_LIST;
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + ConstantsSystem.REQUEST_LIST;
     }
 
     /**
@@ -515,8 +515,8 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_UNASSIGN + "/" + Field.OBJECT_NAME + "/"
-	    + SystemConstants.ALL, method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Field.OBJECT_NAME + "/"
+	    + ConstantsSystem.ALL, method = RequestMethod.GET)
     public String unassignAllFields(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -529,7 +529,7 @@ public class ProjectController {
 
 	// Attach response.
 	// Construct notification.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Do service and clear session vars.
 	// Then return.
@@ -544,9 +544,9 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
     public String assignField(HttpSession session,
-	    @ModelAttribute(ATTR_FIELD) FieldAssignmentBean faBean, RedirectAttributes redirectAttrs,
+	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment faBean, RedirectAttributes redirectAttrs,
 	    SessionStatus status) {
 
 	// Get project from session.
@@ -565,24 +565,24 @@ public class ProjectController {
 
 	// Construct ui notifications.
 	// Attach response.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Remove session variables.
 	// Evict project cache.
 	return editPage(proj.getId(), status);
     }
 
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
-	    + SystemConstants.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
+	    + ConstantsSystem.REQUEST_INCLUDE + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
     public String includeStaffToPayroll(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) PayrollIncludeStaffBean includeStaffBean,
+	    @ModelAttribute(ATTR_PAYROLL_INCLUDE_STAFF) FormPayrollIncludeStaff includeStaffBean,
 	    RedirectAttributes redirectAttrs) {
 
 	String response = this.projectPayrollService.includeStaffToPayroll(projectPayroll,
 		includeStaffBean);
 
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return payrollEndState(projectPayroll);
     }
@@ -595,18 +595,18 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_PULL_OUT }, method = RequestMethod.POST)
-    public String updatePullout(@ModelAttribute(RedisConstants.OBJECT_PULL_OUT) PullOut pullout,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_PULL_OUT }, method = RequestMethod.POST)
+    public String updatePullout(@ModelAttribute(ConstantsRedis.OBJECT_PULL_OUT) PullOut pullout,
 	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.pullOutService.update(pullout);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editSubmodulePage(RedisConstants.OBJECT_PULL_OUT, pullout.getKey());
+	return editSubmodulePage(ConstantsRedis.OBJECT_PULL_OUT, pullout.getKey());
     }
 
     /**
@@ -617,18 +617,18 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_UPDATE + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String updateMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String updateMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.materialService.update(material);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editSubmodulePage(RedisConstants.OBJECT_MATERIAL, material.getKey());
+	return editSubmodulePage(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
     }
 
     /**
@@ -639,17 +639,17 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_DELIVERY }, method = RequestMethod.POST)
-    public String createDelivery(@ModelAttribute(RedisConstants.OBJECT_DELIVERY) Delivery delivery,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_DELIVERY }, method = RequestMethod.POST)
+    public String createDelivery(@ModelAttribute(ConstantsRedis.OBJECT_DELIVERY) Delivery delivery,
 	    RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
 	String response = this.deliveryService.set(delivery);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editSubmodulePage(RedisConstants.OBJECT_DELIVERY, delivery.getKey());
+	return editSubmodulePage(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
     }
 
     /**
@@ -660,17 +660,17 @@ public class ProjectController {
      * @return
      */
     private String editSubmodulePage(String submodule, String key) {
-	String deliveryEdit = SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
+	String deliveryEdit = ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ ConstantsSystem.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
 	return deliveryEdit;
     }
 
     /**
      * Create many tasks by uploading an Excel file.
      */
-    @RequestMapping(value = { URLRegistry.MASS_UPLOAD_AND_ASSIGN_TASK }, method = RequestMethod.POST)
+    @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_TASK }, method = RequestMethod.POST)
     public String createMassTask(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadBean massUploadTask,
+	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadTask,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	Project proj = massUploadTask.getProject();
@@ -679,7 +679,7 @@ public class ProjectController {
 	String response = this.projectService.createTasksFromExcel(massUploadTask.getFile(), proj);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	return editPage(proj.getId(), status);
@@ -688,9 +688,9 @@ public class ProjectController {
     /**
      * Create many staff members by uploading an Excel file.
      */
-    @RequestMapping(value = { URLRegistry.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
+    @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
     public String createMassStaff(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) MassUploadBean massUploadStaff,
+	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadStaff,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	Project proj = massUploadStaff.getProject();
@@ -699,7 +699,7 @@ public class ProjectController {
 	String response = this.projectService.createStaffFromExcel(massUploadStaff.getFile(), proj);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	return editPage(proj.getId(), status);
@@ -713,9 +713,9 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_ESTIMATE }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
-	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimationInputBean estimateInput,
+	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimateComputationInputBean estimateInput,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service and get response.
@@ -724,7 +724,7 @@ public class ProjectController {
 	String response = this.estimateService.estimate(estimateInput);
 
 	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	return editPage(proj.getId(), status);
@@ -738,18 +738,18 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { URLRegistry.VIEW_ESTIMATION_RESULTS }, method = RequestMethod.GET)
-    public String viewEstimation(@PathVariable(RedisConstants.OBJECT_ESTIMATION_OUTPUT) String key,
+    @RequestMapping(value = { RegistryURL.VIEW_ESTIMATION_RESULTS }, method = RequestMethod.GET)
+    public String viewEstimation(@PathVariable(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT) String key,
 	    Model model) {
 
 	// Get estimation output.
 	EstimationOutput output = this.estimationOutputService.get(key);
 
 	// Attach to model.
-	model.addAttribute(RedisConstants.OBJECT_ESTIMATION_OUTPUT, output);
+	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output);
 
 	// Return.
-	return RedisConstants.JSP_ESTIMATION_OUTPUT_EDIT;
+	return ConstantsRedis.JSP_ESTIMATION_OUTPUT_EDIT;
     }
 
     /**
@@ -760,8 +760,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { URLRegistry.DELETE_ESTIMATION_RESULTS }, method = RequestMethod.GET)
-    public String deleteEstimate(@PathVariable(RedisConstants.OBJECT_ESTIMATION_OUTPUT) String key,
+    @RequestMapping(value = { RegistryURL.DELETE_ESTIMATION_RESULTS }, method = RequestMethod.GET)
+    public String deleteEstimate(@PathVariable(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
@@ -769,7 +769,7 @@ public class ProjectController {
 	String response = this.estimationOutputService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -785,9 +785,9 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_DELIVERY
-	    + "/{" + RedisConstants.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
-    public String deleteDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_DELIVERY
+	    + "/{" + ConstantsRedis.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
+    public String deleteDelivery(@PathVariable(ConstantsRedis.OBJECT_DELIVERY) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
@@ -795,7 +795,7 @@ public class ProjectController {
 	String response = this.deliveryService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -811,9 +811,9 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PAYROLL
-	    + "/{" + RedisConstants.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
-    public String deleteProjectPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String key,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_PAYROLL
+	    + "/{" + ConstantsRedis.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
+    public String deleteProjectPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
@@ -821,7 +821,7 @@ public class ProjectController {
 	String response = this.projectPayrollService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -837,9 +837,9 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_PULL_OUT
-	    + "/{" + RedisConstants.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
-    public String deletePullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_PULL_OUT
+	    + "/{" + ConstantsRedis.OBJECT_PULL_OUT + "}-end" }, method = RequestMethod.GET)
+    public String deletePullOut(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
@@ -847,7 +847,7 @@ public class ProjectController {
 	String response = this.pullOutService.delete(key);
 
 	// Attach to redirect.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
@@ -865,7 +865,7 @@ public class ProjectController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = URLRegistry.CREATE_TASK, method = RequestMethod.POST)
+    @RequestMapping(value = RegistryURL.CREATE_TASK, method = RequestMethod.POST)
     public String createTask(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -878,7 +878,7 @@ public class ProjectController {
 	    this.taskService.update(task);
 	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
 	}
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	return editPage(task.getProject().getId(), status);
     }
 
@@ -890,7 +890,7 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @RequestMapping(value = URLRegistry.EDIT_TASK, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.EDIT_TASK, method = RequestMethod.GET)
     public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model, HttpSession session) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
@@ -918,14 +918,14 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = URLRegistry.DELETE_TASK_ALL, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.DELETE_TASK_ALL, method = RequestMethod.GET)
     public String deleteAllTask(HttpSession session, RedirectAttributes redirectAttrs,
 	    SessionStatus status) {
 
 	// Do service and get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	String response = this.taskService.deleteAllTasksByProject(proj.getId());
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	// Redirect.
@@ -941,14 +941,14 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = URLRegistry.DELETE_PROGRAM_OF_WORKS, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.DELETE_PROGRAM_OF_WORKS, method = RequestMethod.GET)
     public String deleteAllTaskAndMilestone(HttpSession session, RedirectAttributes redirectAttrs,
 	    SessionStatus status) {
 
 	// Do service and get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	String response = this.projectService.deleteProgramOfWorks(proj);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	// Redirect.
@@ -964,13 +964,13 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = URLRegistry.DELETE_TASK, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.DELETE_TASK, method = RequestMethod.GET)
     public String deleteTask(@PathVariable(Task.OBJECT_NAME) long taskID, HttpSession session,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
 	String response = this.taskService.delete(taskID);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	// Redirect.
@@ -986,9 +986,9 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_MATERIAL + "/{"
-	    + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String editMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_MATERIAL + "/{"
+	    + ConstantsRedis.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String editMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key, Model model,
 	    HttpSession session) {
 
 	// Construct the bean for the form.
@@ -1011,7 +1011,7 @@ public class ProjectController {
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
-	return RedisConstants.JSP_MATERIAL_EDIT;
+	return ConstantsRedis.JSP_MATERIAL_EDIT;
     }
 
     /**
@@ -1022,9 +1022,9 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL
-	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String pulloutMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key, Model model,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL
+	    + "/{" + ConstantsRedis.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String pulloutMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key, Model model,
 	    HttpSession session) {
 
 	// Construct the bean for the form.
@@ -1041,7 +1041,7 @@ public class ProjectController {
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
-	return RedisConstants.JSP_MATERIAL_PULLOUT;
+	return ConstantsRedis.JSP_MATERIAL_PULLOUT;
     }
 
     /**
@@ -1050,7 +1050,7 @@ public class ProjectController {
      * @param pullOut
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DO_PULL_OUT + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DO_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String createPullOut(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
 	    RedirectAttributes redirectAttrs) {
 
@@ -1059,9 +1059,9 @@ public class ProjectController {
 	String response = this.pullOutService.create(pullOut);
 
 	// Add to model.
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editSubmodulePage(RedisConstants.OBJECT_PULL_OUT, pullOut.getKey());
+	return editSubmodulePage(ConstantsRedis.OBJECT_PULL_OUT, pullOut.getKey());
     }
 
     /**
@@ -1072,9 +1072,9 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_DELETE + "/" + RedisConstants.OBJECT_MATERIAL
-	    + "/{" + RedisConstants.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String deleteMaterial(@PathVariable(RedisConstants.OBJECT_MATERIAL) String key,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_MATERIAL
+	    + "/{" + ConstantsRedis.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
+    public String deleteMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key,
 	    RedirectAttributes redirecAttrs, SessionStatus status, HttpSession session) {
 
 	// Do service
@@ -1082,7 +1082,7 @@ public class ProjectController {
 	String response = this.materialService.delete(key);
 
 	// Attach to redirect attributes.
-	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirecAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return to the project.
@@ -1098,8 +1098,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ADD + "/" + RedisConstants.OBJECT_MATERIAL }, method = RequestMethod.POST)
-    public String addMaterial(@ModelAttribute(RedisConstants.OBJECT_MATERIAL) Material material,
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    public String addMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirecAttrs, SessionStatus status) {
 
 	// Do service
@@ -1107,10 +1107,10 @@ public class ProjectController {
 	String response = this.materialService.create(material);
 
 	// Attach to redirect attributes.
-	redirecAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirecAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/"
+	return ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_DELIVERY + "/"
 		+ material.getDelivery().getKey() + "-end";
     }
 
@@ -1120,7 +1120,7 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
@@ -1131,7 +1131,7 @@ public class ProjectController {
 
 	// Do service.
 	String response = this.projectPayrollService.createPayroll(proj, projectPayroll);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -1146,11 +1146,11 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_CREATE + "/" + RedisConstants.OBJECT_PAYROLL + "/"
-	    + SystemConstants.CLEAR + "/{" + SystemConstants.CLEAR + "}" }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
+	    + ConstantsSystem.CLEAR + "/{" + ConstantsSystem.CLEAR + "}" }, method = RequestMethod.POST)
     public String createPayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
-	    @PathVariable(SystemConstants.CLEAR) String toClear, Model model, HttpSession session,
+	    @PathVariable(ConstantsSystem.CLEAR) String toClear, Model model, HttpSession session,
 	    RedirectAttributes redirectAttrs) {
 
 	// End the session after this.
@@ -1163,7 +1163,7 @@ public class ProjectController {
 	// Update the payroll then clear the computation.
 	String response = this.projectPayrollService.updatePayrollClearComputation(session,
 		projectPayroll, toClear);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
@@ -1178,7 +1178,7 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_COMPUTE + "/" + RedisConstants.OBJECT_PAYROLL, method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_COMPUTE + "/" + ConstantsRedis.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
@@ -1198,9 +1198,9 @@ public class ProjectController {
 
 	// Construct response.
 	String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateCompute(RedisConstants.OBJECT_PAYROLL,
+	String response = AlertBoxGenerator.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
 		datePart);
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, response);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
 	// Get all managers in this project.
@@ -1220,8 +1220,8 @@ public class ProjectController {
     private String payrollEndState(ProjectPayroll projectPayroll) {
 
 	// /edit/payroll/${payrollRow.getKey()}-end
-	return SystemConstants.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/"
+	return ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
+		+ ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
 		+ projectPayroll.getKey() + "-end";
     }
 
@@ -1233,9 +1233,9 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PULL_OUT + "/{"
-	    + RedisConstants.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
-    public String editPullOut(@PathVariable(RedisConstants.OBJECT_PULL_OUT) String key, Model model,
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PULL_OUT + "/{"
+	    + ConstantsRedis.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
+    public String editPullOut(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key, Model model,
 	    HttpSession session) {
 
 	// Get the object.
@@ -1252,7 +1252,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
 	// redirect to edit page.
-	return RedisConstants.JSP_MATERIAL_PULLOUT;
+	return ConstantsRedis.JSP_MATERIAL_PULLOUT;
     }
 
     /**
@@ -1263,9 +1263,9 @@ public class ProjectController {
      * @param session
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_DELIVERY + "/{"
-	    + RedisConstants.OBJECT_DELIVERY + "}-end", method = RequestMethod.GET)
-    public String editDelivery(@PathVariable(RedisConstants.OBJECT_DELIVERY) String key, Model model,
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_DELIVERY + "/{"
+	    + ConstantsRedis.OBJECT_DELIVERY + "}-end", method = RequestMethod.GET)
+    public String editDelivery(@PathVariable(ConstantsRedis.OBJECT_DELIVERY) String key, Model model,
 	    HttpSession session) {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
@@ -1274,7 +1274,7 @@ public class ProjectController {
 	// Return an empty object.
 	if (key.equals("0")) {
 	    model.addAttribute(ATTR_DELIVERY, new Delivery(proj));
-	    return RedisConstants.JSP_DELIVERY_EDIT;
+	    return ConstantsRedis.JSP_DELIVERY_EDIT;
 	}
 
 	// Add material category list.
@@ -1295,7 +1295,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
 	model.addAttribute(ATTR_MATERIAL, new Material(delivery));
 
-	return RedisConstants.JSP_DELIVERY_EDIT;
+	return ConstantsRedis.JSP_DELIVERY_EDIT;
     }
 
     /**
@@ -1304,9 +1304,9 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/" + RedisConstants.OBJECT_PAYROLL + "/{"
-	    + RedisConstants.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
-    public String editPayroll(@PathVariable(RedisConstants.OBJECT_PAYROLL) String payrollKey,
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PAYROLL + "/{"
+	    + ConstantsRedis.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
+    public String editPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String payrollKey,
 	    Model model, HttpSession session) {
 
 	// Common to both edit new and existing.
@@ -1328,7 +1328,7 @@ public class ProjectController {
 	    // Then redirect.
 	    SystemUser creator = this.authHelper.getAuth().getUser();
 	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(co, proj, creator));
-	    return RedisConstants.JSP_PAYROLL_EDIT;
+	    return ConstantsRedis.JSP_PAYROLL_EDIT;
 	}
 
 	// Attach to response.
@@ -1340,7 +1340,7 @@ public class ProjectController {
 	Long companyID = co == null ? 0 : co.getId();
 	setModelAttributesOfPayroll(projectPayroll, proj, model, companyID);
 
-	return RedisConstants.JSP_PAYROLL_EDIT;
+	return ConstantsRedis.JSP_PAYROLL_EDIT;
     }
 
     /**
@@ -1375,7 +1375,7 @@ public class ProjectController {
 
 	// Set attributes.
 	// Manually include team/staff beans.
-	model.addAttribute(ATTR_PAYROLL_INCLUDE_STAFF, new PayrollIncludeStaffBean());
+	model.addAttribute(ATTR_PAYROLL_INCLUDE_STAFF, new FormPayrollIncludeStaff());
 
 	// Actual object and result JSON.
 	model.addAttribute(ATTR_PROJECT_PAYROLL, projectPayroll);
@@ -1408,7 +1408,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + Project.COLUMN_PRIMARY_KEY + "}")
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Project.COLUMN_PRIMARY_KEY + "}")
     public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
 
 	// Set model attributes that are common in both create and update.
@@ -1478,8 +1478,8 @@ public class ProjectController {
 	// Get lists for selectors.
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
-	model.addAttribute(ATTR_STAFF_POSITION, new StaffAssignmentBean());
-	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new MassUploadBean(proj));
+	model.addAttribute(ATTR_STAFF_POSITION, new FormStaffAssignment());
+	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new FormMassUpload(proj));
     }
 
     /**
@@ -1503,10 +1503,10 @@ public class ProjectController {
     private void setModelAttributes(Model model, long id) {
 	// Set common attributes.
 	// Model for forms.
-	model.addAttribute(ATTR_FIELD, new FieldAssignmentBean(id, 1));
+	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(id, 1));
 
 	// Estimation input.
-	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimationInputBean());
+	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimateComputationInputBean());
 	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST,
 		TableEstimationAllowance.class.getEnumConstants());
     }

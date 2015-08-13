@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.constants.SystemConstants;
+import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
@@ -59,13 +59,13 @@ public class SystemUserController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { SystemConstants.REQUEST_ROOT, SystemConstants.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemUsers(Model model) {
 	model.addAttribute(ATTR_LIST, this.systemUserService.list());
 	return JSP_LIST;
     }
 
-    @RequestMapping(value = SystemConstants.REQUEST_CREATE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -73,39 +73,39 @@ public class SystemUserController {
 
 	// If the passwords provided were not equal.
 	if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
-	    alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+	    alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
 	    alertFactory.setMessage("The passwords you entered were not the same.");
-	    redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	    status.setComplete();
-	    return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		    + SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
+	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+		    + ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
 	}
 
 	// If request is to create new user.
-	alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+	alertFactory.setStatus(ConstantsSystem.UI_STATUS_SUCCESS);
 	if (systemUser.getId() == 0) {
 	    try {
 		@SuppressWarnings("unused")
 		SystemUser user = this.systemUserService.searchDatabase(systemUser.getUsername());
-		alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+		alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
 		alertFactory
 			.setMessage("<b>Username</b> provided is <b>no longer available</b>. Please pick a different one.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 			alertFactory.generateHTML());
 		status.setComplete();
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-			+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
+		return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+			+ ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
 	    } catch (Exception e) {
 		this.systemUserService.create(systemUser);
 
 		// Redirect back to list page.
 		alertFactory.setMessage("Successfully <b>created</b> user <b>"
 			+ systemUser.getUsername() + "</b>.");
-		redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT,
+		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 			alertFactory.generateHTML());
 		status.setComplete();
-		return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-			+ SystemConstants.REQUEST_LIST;
+		return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+			+ ConstantsSystem.REQUEST_LIST;
 	    }
 	}
 
@@ -115,18 +115,18 @@ public class SystemUserController {
 	// Redirect back to the edit page.
 	alertFactory.setMessage("Successfully <b>updated</b> user <b>" + systemUser.getUsername()
 		+ "</b>.");
-	redirectAttrs.addFlashAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	status.setComplete();
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		+ SystemConstants.REQUEST_EDIT + "/" + systemUser.getId();
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+		+ ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
     }
 
-    @RequestMapping(value = { SystemConstants.REQUEST_CHANGE_PASSWORD })
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CHANGE_PASSWORD })
     public String redirectChangePassword() {
 	return JSP_CHANGE_PASSWORD;
     }
 
-    @RequestMapping(value = SystemConstants.REQUEST_CHANGE_PASSWORD + "/" + SystemConstants.EXECUTE, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_CHANGE_PASSWORD + "/" + ConstantsSystem.EXECUTE, method = RequestMethod.POST)
     public String changePassword(@RequestParam(PARAM_OLD_PASS) String passwordOld,
 	    @RequestParam(PARAM_OLD_PASS_RETYPE) String passwordOldRetype,
 	    @RequestParam(PARAM_NEW_PASS) String passwordNew,
@@ -145,32 +145,32 @@ public class SystemUserController {
 		String encPassword = this.authHelper.encodePassword(passwordNew, user);
 		user.setPassword(encPassword);
 		this.systemUserService.update(user);
-		alertFactory.setStatus(SystemConstants.UI_STATUS_SUCCESS);
+		alertFactory.setStatus(ConstantsSystem.UI_STATUS_SUCCESS);
 		alertFactory.setMessage("Successfully changed your password.");
 	    } else {
 		// Construct error alert. Password is not valid.
-		alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+		alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
 		alertFactory.setMessage("Incorrect password. Please try again.");
 	    }
 	} else {
 	    // Construct error alert. Old passwords are not equal.
-	    alertFactory.setStatus(SystemConstants.UI_STATUS_DANGER);
+	    alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
 	    alertFactory
 		    .setMessage("The old passwords you entered were not the same. Please try again.");
 	}
-	model.addAttribute(SystemConstants.UI_PARAM_ALERT, alertFactory.generateHTML());
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
 	// Redirect back to change pass page.
 	return JSP_CHANGE_PASSWORD;
     }
 
-    @RequestMapping(value = SystemConstants.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
     public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id) {
 	this.systemUserService.delete(id);
-	return SystemConstants.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		+ SystemConstants.REQUEST_LIST;
+	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
+		+ ConstantsSystem.REQUEST_LIST;
     }
 
-    @RequestMapping(value = SystemConstants.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String editSystemUser(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
 
 	// Only super admins can change company,

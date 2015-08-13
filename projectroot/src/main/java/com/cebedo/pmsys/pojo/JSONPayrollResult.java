@@ -1,10 +1,10 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 import java.io.Serializable;
 
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class TreeGridRowBean implements Serializable {
+public class JSONPayrollResult implements Serializable {
 
     private static final long serialVersionUID = 3657789273539338468L;
     private long primaryKey;
@@ -194,18 +194,18 @@ public class TreeGridRowBean implements Serializable {
 	this.breakdownAbsent = breakdownAbsent;
     }
 
-    public TreeGridRowBean() {
+    public JSONPayrollResult() {
 	;
     }
 
-    public TreeGridRowBean(long pKey, long fKey, String n, String v) {
+    public JSONPayrollResult(long pKey, long fKey, String n, String v) {
 	setPrimaryKey(pKey);
 	setForeignKey(fKey);
 	setName(n);
 	setValue(v);
     }
 
-    public TreeGridRowBean(long pKey, long fKey, String n, String v, String w) {
+    public JSONPayrollResult(long pKey, long fKey, String n, String v, String w) {
 	setPrimaryKey(pKey);
 	setForeignKey(fKey);
 	setName(n);

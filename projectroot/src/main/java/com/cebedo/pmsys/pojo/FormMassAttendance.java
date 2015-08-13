@@ -1,10 +1,10 @@
-package com.cebedo.pmsys.bean;
+package com.cebedo.pmsys.pojo;
 
 import java.util.Date;
 
 import com.cebedo.pmsys.model.Staff;
 
-public class MassAttendanceBean {
+public class FormMassAttendance {
 
 	private Staff staff;
 	private Date startDate;
@@ -13,11 +13,11 @@ public class MassAttendanceBean {
 	private double wage;
 	private boolean includeWeekends;
 
-	public MassAttendanceBean() {
+	public FormMassAttendance() {
 		;
 	}
 
-	public MassAttendanceBean(Staff stf) {
+	public FormMassAttendance(Staff stf) {
 		setStaff(stf);
 		setWage(stf.getWage());
 	}

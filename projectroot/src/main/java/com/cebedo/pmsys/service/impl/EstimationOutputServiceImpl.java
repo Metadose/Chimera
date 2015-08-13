@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RedisConstants;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -34,12 +34,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return new EstimationOutput();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 
 	return obj;
     }
@@ -51,12 +51,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(RedisConstants.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return "TODO";
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, RedisConstants.OBJECT_ESTIMATION_OUTPUT,
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
 		obj.getKey());
 
 	this.estimationOutputValueRepo.delete(key);
@@ -75,7 +75,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		RedisConstants.OBJECT_ESTIMATION_OUTPUT);
+		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT);
 
 	String pattern = EstimationOutput.constructPattern(proj);
 	Set<String> keys = this.estimationOutputValueRepo.keys(pattern);
