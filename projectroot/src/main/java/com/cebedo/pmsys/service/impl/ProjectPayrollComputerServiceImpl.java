@@ -20,7 +20,6 @@ import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Staff;
@@ -34,8 +33,6 @@ import com.google.gson.Gson;
 
 @Service
 public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputerService {
-
-    private static final String IDENTIFIER_ALREADY_EXISTS = "Check ";
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
@@ -133,14 +130,6 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 		continue;
 	    }
 
-	    // If a staff has already been computed before,
-	    // don't compute again.
-	    if (this.alreadyComputedMap.containsKey(staffID)) {
-		this.staffToWageMap.put(staff,
-			IDENTIFIER_ALREADY_EXISTS + this.alreadyComputedMap.get(staffID));
-		continue;
-	    }
-
 	    // Get wage then add to map.
 	    // Get the total of this guy.
 	    double staffWageTotal = this.attendanceService.getTotalWageOfStaffInRange(staff,
@@ -199,7 +188,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param overtime
      * @return
      */
-    private String getBreakdownCount(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
+    private int getBreakdownCount(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
 	    AttendanceStatus status) {
 
 	// Get the count, wage and format.
@@ -214,7 +203,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 		: this.overallBreakdownCountMap.get(status);
 	this.overallBreakdownCountMap.put(status, oldValue + intValueOfCount);
 
-	return intValueOfCount == 0 ? "-" : "(" + intValueOfCount + ")";
+	return intValueOfCount;
     }
 
     /**
@@ -223,7 +212,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param countAndWage
      * @return
      */
-    private String getBreakdownWage(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
+    private double getBreakdownWage(Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown,
 	    AttendanceStatus status) {
 
 	// Get the count, wage and format.
@@ -237,10 +226,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 		: this.overallBreakdownWageMap.get(status);
 	this.overallBreakdownWageMap.put(status, oldValue + wage);
 
-	if (wage == 0.0) {
-	    return "-";
-	}
-	return this.formatter.format(wage);
+	return wage;
     }
 
     /**
@@ -282,20 +268,6 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     }
 
     /**
-     * Return value of tree grid.
-     * 
-     * @param skip
-     * @param value
-     * @param this.formatter
-     * @return
-     */
-    private String getTreeGridRowValue(boolean skip, String value) {
-	// return skip ? "<i>(" + value + ")</i>" : this.formatter.format(Double
-	// .valueOf(value));
-	return skip ? "" : this.formatter.format(Double.valueOf(value));
-    }
-
-    /**
      * Get partial tree grid for managers.
      * 
      * @param managerPayrollMap
@@ -312,10 +284,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	// Manager total.
 	// Add header beans.
-	String staffTotalStr = this.formatter.format(this.overallTotalOfStaff);
-	long headerPKey = Math.abs(randomno.nextLong());
-	JSONPayrollResult headerBean = new JSONPayrollResult(headerPKey, -1,
-		CSSClass.PRIMARY.getSpanHTML("TOTAL"), staffTotalStr, "&nbsp;");
+	JSONPayrollResult headerBean = new JSONPayrollResult("Total", this.overallTotalOfStaff, 0);
 	this.treeGrid.add(headerBean);
 
 	// Loop through managers.
@@ -337,25 +306,18 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	for (Staff staff : staffList) {
 
 	    // Get details.
-	    long rowPKey = Math.abs(randomno.nextLong());
-	    String rowName = CSSClass.SUCCESS.getSpanHTML("STAFF", staff.getFormalName());
 	    String value = this.staffToWageMap.get(staff);
-	    boolean skip = value.contains(IDENTIFIER_ALREADY_EXISTS);
-	    String rowValue = getTreeGridRowValue(skip, value);
+	    double rowValue = Double.valueOf(value);
 
 	    // Add to bean.
 	    double staffWage = staff.getWage();
 	    this.overallTotalOfWage += staffWage;
-	    String staffWageStr = NumberFormatUtils.getCurrencyFormatter().format(staffWage);
-	    JSONPayrollResult rowBean = new JSONPayrollResult(rowPKey, headerPKey, rowName, rowValue,
-		    staffWageStr);
+	    JSONPayrollResult rowBean = new JSONPayrollResult(staff.getFormalName(), rowValue, staffWage);
 
 	    // Breakdown.
-	    if (!skip) {
-		Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = this.staffPayrollBreakdownMap
-			.get(staff);
-		rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
-	    }
+	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = this.staffPayrollBreakdownMap
+		    .get(staff);
+	    rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
 
 	    // Add to tree grid list.
 	    this.treeGrid.add(rowBean);
@@ -371,7 +333,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      */
     private void setBreakdownMotherBean() {
 	JSONPayrollResult motherBean = this.treeGrid.get(0);
-	motherBean.setWage(this.formatter.format(this.overallTotalOfWage));
+	motherBean.setWage(this.overallTotalOfWage);
 	motherBean.setBreakdownAbsentCount(getOverallBreakdownCountStr(AttendanceStatus.ABSENT));
 	motherBean.setBreakdownAbsentWage(getOverallBreakdownWageStr(AttendanceStatus.ABSENT));
 	motherBean.setBreakdownHalfdayCount(getOverallBreakdownCountStr(AttendanceStatus.HALFDAY));
@@ -387,14 +349,12 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	this.treeGrid.set(0, motherBean);
     }
 
-    private String getOverallBreakdownWageStr(AttendanceStatus status) {
-	return this.overallBreakdownWageMap.get(status) == 0.0 ? "-" : this.formatter
-		.format(this.overallBreakdownWageMap.get(status));
+    private double getOverallBreakdownWageStr(AttendanceStatus status) {
+	return this.overallBreakdownWageMap.get(status);
     }
 
-    private String getOverallBreakdownCountStr(AttendanceStatus status) {
-	return this.overallBreakdownCountMap.get(status) == 0 ? "-" : "("
-		+ this.overallBreakdownCountMap.get(status) + ")";
+    private double getOverallBreakdownCountStr(AttendanceStatus status) {
+	return this.overallBreakdownCountMap.get(status);
     }
 
     @Transactional

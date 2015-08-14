@@ -317,44 +317,43 @@
 		
 		// Tree grid.
 		var flatDS = ${payrollJSON};
-        $("#treegrid1").igTreeGrid({
+        $("#treegrid1").igGrid({
             dataSource: flatDS,
-            width: "100%",
-            primaryKey: "primaryKey",
-            foreignKey: "foreignKey",
+            primaryKey: "uuid",
             features:[
                 { name: "MultiColumnHeaders" }
             ],
             columns: [
-               	{ headerText: "primaryKey", key: "primaryKey", dataType: "number", hidden: true },
-               	{ headerText: "foreignKey", key: "foreignKey", dataType: "number", hidden: true },
-               	{ headerText: "Name", width: "26%", key: "name", dataType: "string" },
-               	{ headerText: "Total", width: "8%", key: "value", dataType: "string" },
-               	{ headerText: "Salary (Daily)", width: "8%", key: "wage", dataType: "string" },
-               	{ headerText: "Overtime", key: "breakdownOvertime", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownOvertimeCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownOvertimeWage", dataType: "string" }
+               	{ headerText: "primaryKey", key: "uuid", dataType: "number", hidden: true },
+               	{ headerText: "Name", key: "name", dataType: "string" },
+               	{ headerText: "Total", key: "value", dataType: "number" },
+               	{ headerText: "Salary (Daily)", key: "wage", dataType: "number" },
+
+               	{ headerText: "Overtime", group: [
+               			{ headerText: "Count", key: "breakdownOvertimeCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownOvertimeWage", dataType: "number" }
                		]},
-               	{ headerText: "Present", key: "breakdownPresent", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownPresentCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownPresentWage", dataType: "string" }
+               	{ headerText: "Present", group: [
+               			{ headerText: "Count", key: "breakdownPresentCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownPresentWage", dataType: "number" }
                		]},
-               	{ headerText: "Late", key: "breakdownLate", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownLateCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownLateWage", dataType: "string" }
+               	{ headerText: "Late", group: [
+               			{ headerText: "Count", key: "breakdownLateCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLateWage", dataType: "number" }
                		]},
-               	{ headerText: "Half-day", key: "breakdownHalfday", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownHalfdayCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownHalfdayWage", dataType: "string" }
+               	{ headerText: "Half-day", group: [
+               			{ headerText: "Count", key: "breakdownHalfdayCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownHalfdayWage", dataType: "number" }
                		]},
-               	{ headerText: "Leave", key: "breakdownLeave", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownLeaveCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownLeaveWage", dataType: "string" }
+               	{ headerText: "Leave", group: [
+               			{ headerText: "Count", key: "breakdownLeaveCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLeaveWage", dataType: "number" }
                		]},
-               	{ headerText: "Absent", key: "breakdownAbsent", group: [
-               			{ headerText: "Count", width: "4%", key: "breakdownAbsentCount", dataType: "string" },
-               			{ headerText: "Subtotal", width: "7%", key: "breakdownAbsentWage", dataType: "string" }
+               	{ headerText: "Absent", group: [
+               			{ headerText: "Count", key: "breakdownAbsentCount", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownAbsentWage", dataType: "number" }
                		]}
+
             ],
             dataRendered: function (evt, ui) {
                 ui.owner.element.find("tr td:nth-child(2)").css("text-align", "right");

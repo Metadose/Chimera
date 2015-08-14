@@ -6,6 +6,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PULLOUT_EXCEED = "You <b>cannot</b> pull-out <b>more than the available</b> material.";
 
+    public static final String ERROR_PAYROLL_NO_STAFF = "You <b>cannot</b> create a payroll <b>without staff</b> assigned to this project. <b>Assign staff members first</b>.";
+
     public static final String ERROR_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
 
 }

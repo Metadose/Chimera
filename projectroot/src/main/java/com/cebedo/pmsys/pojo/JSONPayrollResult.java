@@ -1,232 +1,158 @@
 package com.cebedo.pmsys.pojo;
 
 import java.io.Serializable;
-
-import com.cebedo.pmsys.utils.NumberFormatUtils;
+import java.util.UUID;
 
 public class JSONPayrollResult implements Serializable {
 
     private static final long serialVersionUID = 3657789273539338468L;
-    private long primaryKey;
-    private long foreignKey;
+    private UUID uuid;
     private String name;
-    private String value;
-    private String wage = NumberFormatUtils.getCurrencyFormatter().format(0.0);
+    private double value;
+    private double wage = 0;
 
     /**
      * Attendance breakdown.
      */
 
     // Overtime.
-    private String breakdownOvertime;
-    private String breakdownOvertimeCount = "&nbsp;";
-    private String breakdownOvertimeWage = "&nbsp;";
+    private double breakdownOvertimeCount = 0;
+    private double breakdownOvertimeWage = 0;
 
     // Present.
-    private String breakdownPresent;
-    private String breakdownPresentCount = "&nbsp;";
-    private String breakdownPresentWage = "&nbsp;";
+    private double breakdownPresentCount = 0;
+    private double breakdownPresentWage = 0;
 
     // Late.
-    private String breakdownLate;
-    private String breakdownLateCount = "&nbsp;";
-    private String breakdownLateWage = "&nbsp;";
+    private double breakdownLateCount = 0;
+    private double breakdownLateWage = 0;
 
     // Half-day.
-    private String breakdownHalfday;
-    private String breakdownHalfdayCount = "&nbsp;";
-    private String breakdownHalfdayWage = "&nbsp;";
+    private double breakdownHalfdayCount = 0;
+    private double breakdownHalfdayWage = 0;
 
     // Leave.
-    private String breakdownLeave;
-    private String breakdownLeaveCount = "&nbsp;";
-    private String breakdownLeaveWage = "&nbsp;";
+    private double breakdownLeaveCount = 0;
+    private double breakdownLeaveWage = 0;
 
     // Absent.
-    private String breakdownAbsent;
-    private String breakdownAbsentCount = "&nbsp;";
-    private String breakdownAbsentWage = "&nbsp;";
+    private double breakdownAbsentCount = 0;
+    private double breakdownAbsentWage = 0;
 
     /**
      * Getters and setters.
      */
-    public String getBreakdownOvertimeCount() {
+    public double getBreakdownOvertimeCount() {
 	return breakdownOvertimeCount;
     }
 
-    public void setBreakdownOvertimeCount(String breakdownOvertimeCount) {
+    public void setBreakdownOvertimeCount(double breakdownOvertimeCount) {
 	this.breakdownOvertimeCount = breakdownOvertimeCount;
     }
 
-    public String getBreakdownOvertimeWage() {
+    public double getBreakdownOvertimeWage() {
 	return breakdownOvertimeWage;
     }
 
-    public void setBreakdownOvertimeWage(String breakdownOvertimeWage) {
+    public void setBreakdownOvertimeWage(double breakdownOvertimeWage) {
 	this.breakdownOvertimeWage = breakdownOvertimeWage;
     }
 
-    public String getBreakdownPresentCount() {
+    public double getBreakdownPresentCount() {
 	return breakdownPresentCount;
     }
 
-    public void setBreakdownPresentCount(String breakdownPresentCount) {
+    public void setBreakdownPresentCount(double breakdownPresentCount) {
 	this.breakdownPresentCount = breakdownPresentCount;
     }
 
-    public String getBreakdownPresentWage() {
+    public double getBreakdownPresentWage() {
 	return breakdownPresentWage;
     }
 
-    public void setBreakdownPresentWage(String breakdownPresentWage) {
+    public void setBreakdownPresentWage(double breakdownPresentWage) {
 	this.breakdownPresentWage = breakdownPresentWage;
     }
 
-    public String getBreakdownLateCount() {
+    public double getBreakdownLateCount() {
 	return breakdownLateCount;
     }
 
-    public void setBreakdownLateCount(String breakdownLateCount) {
+    public void setBreakdownLateCount(double breakdownLateCount) {
 	this.breakdownLateCount = breakdownLateCount;
     }
 
-    public String getBreakdownLateWage() {
+    public double getBreakdownLateWage() {
 	return breakdownLateWage;
     }
 
-    public void setBreakdownLateWage(String breakdownLateWage) {
+    public void setBreakdownLateWage(double breakdownLateWage) {
 	this.breakdownLateWage = breakdownLateWage;
     }
 
-    public String getBreakdownHalfdayCount() {
+    public double getBreakdownHalfdayCount() {
 	return breakdownHalfdayCount;
     }
 
-    public void setBreakdownHalfdayCount(String breakdownHalfdayCount) {
+    public void setBreakdownHalfdayCount(double breakdownHalfdayCount) {
 	this.breakdownHalfdayCount = breakdownHalfdayCount;
     }
 
-    public String getBreakdownHalfdayWage() {
+    public double getBreakdownHalfdayWage() {
 	return breakdownHalfdayWage;
     }
 
-    public void setBreakdownHalfdayWage(String breakdownHalfdayWage) {
+    public void setBreakdownHalfdayWage(double breakdownHalfdayWage) {
 	this.breakdownHalfdayWage = breakdownHalfdayWage;
     }
 
-    public String getBreakdownLeaveCount() {
+    public double getBreakdownLeaveCount() {
 	return breakdownLeaveCount;
     }
 
-    public void setBreakdownLeaveCount(String breakdownLeaveCount) {
+    public void setBreakdownLeaveCount(double breakdownLeaveCount) {
 	this.breakdownLeaveCount = breakdownLeaveCount;
     }
 
-    public String getBreakdownLeaveWage() {
+    public double getBreakdownLeaveWage() {
 	return breakdownLeaveWage;
     }
 
-    public void setBreakdownLeaveWage(String breakdownLeaveWage) {
+    public void setBreakdownLeaveWage(double breakdownLeaveWage) {
 	this.breakdownLeaveWage = breakdownLeaveWage;
     }
 
-    public String getBreakdownAbsentCount() {
+    public double getBreakdownAbsentCount() {
 	return breakdownAbsentCount;
     }
 
-    public void setBreakdownAbsentCount(String breakdownAbsentCount) {
+    public void setBreakdownAbsentCount(double breakdownAbsentCount) {
 	this.breakdownAbsentCount = breakdownAbsentCount;
     }
 
-    public String getBreakdownAbsentWage() {
+    public double getBreakdownAbsentWage() {
 	return breakdownAbsentWage;
     }
 
-    public void setBreakdownAbsentWage(String breakdownAbsentWage) {
+    public void setBreakdownAbsentWage(double breakdownAbsentWage) {
 	this.breakdownAbsentWage = breakdownAbsentWage;
-    }
-
-    public String getBreakdownOvertime() {
-	return breakdownOvertime;
-    }
-
-    public void setBreakdownOvertime(String breakdownOvertime) {
-	this.breakdownOvertime = breakdownOvertime;
-    }
-
-    public String getBreakdownPresent() {
-	return breakdownPresent;
-    }
-
-    public void setBreakdownPresent(String breakdownPresent) {
-	this.breakdownPresent = breakdownPresent;
-    }
-
-    public String getBreakdownLate() {
-	return breakdownLate;
-    }
-
-    public void setBreakdownLate(String breakdownLate) {
-	this.breakdownLate = breakdownLate;
-    }
-
-    public String getBreakdownHalfday() {
-	return breakdownHalfday;
-    }
-
-    public void setBreakdownHalfday(String breakdownHalfday) {
-	this.breakdownHalfday = breakdownHalfday;
-    }
-
-    public String getBreakdownLeave() {
-	return breakdownLeave;
-    }
-
-    public void setBreakdownLeave(String breakdownLeave) {
-	this.breakdownLeave = breakdownLeave;
-    }
-
-    public String getBreakdownAbsent() {
-	return breakdownAbsent;
-    }
-
-    public void setBreakdownAbsent(String breakdownAbsent) {
-	this.breakdownAbsent = breakdownAbsent;
     }
 
     public JSONPayrollResult() {
 	;
     }
 
-    public JSONPayrollResult(long pKey, long fKey, String n, String v) {
-	setPrimaryKey(pKey);
-	setForeignKey(fKey);
+    public JSONPayrollResult(String n, double v) {
+	setUuid(UUID.randomUUID());
 	setName(n);
 	setValue(v);
     }
 
-    public JSONPayrollResult(long pKey, long fKey, String n, String v, String w) {
-	setPrimaryKey(pKey);
-	setForeignKey(fKey);
+    public JSONPayrollResult(String n, double v, double w) {
+	setUuid(UUID.randomUUID());
 	setName(n);
 	setValue(v);
 	setWage(w);
-    }
-
-    public long getPrimaryKey() {
-	return primaryKey;
-    }
-
-    public void setPrimaryKey(long primaryKey) {
-	this.primaryKey = primaryKey;
-    }
-
-    public long getForeignKey() {
-	return foreignKey;
-    }
-
-    public void setForeignKey(long foreignKey) {
-	this.foreignKey = foreignKey;
     }
 
     public String getName() {
@@ -237,20 +163,28 @@ public class JSONPayrollResult implements Serializable {
 	this.name = name;
     }
 
-    public String getValue() {
+    public double getValue() {
 	return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
 	this.value = value;
     }
 
-    public String getWage() {
+    public double getWage() {
 	return wage;
     }
 
-    public void setWage(String wage) {
+    public void setWage(double wage) {
 	this.wage = wage;
+    }
+
+    public UUID getUuid() {
+	return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+	this.uuid = uuid;
     }
 
 }

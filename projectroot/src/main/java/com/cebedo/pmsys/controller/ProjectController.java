@@ -23,6 +23,7 @@ import com.cebedo.pmsys.bean.EstimateComputationBean;
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimationOutput;
@@ -1307,11 +1308,17 @@ public class ProjectController {
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PAYROLL + "/{"
 	    + ConstantsRedis.OBJECT_PAYROLL + "}-end", method = RequestMethod.GET)
     public String editPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String payrollKey,
-	    Model model, HttpSession session) {
+	    Model model, HttpSession session, SessionStatus status, RedirectAttributes redirectAttrs) {
 
 	// Common to both edit new and existing.
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	if (proj.getAssignedStaff().size() < 1) {
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PAYROLL_NO_STAFF));
+	    return editPage(proj.getId(), status);
+	}
 
 	// Set the form selectors.
 	// Managers and status.
