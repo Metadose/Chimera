@@ -568,10 +568,10 @@ public class EstimateServiceImpl implements EstimateService {
 	double footingVolume = footingThickness * footingWidth * length;
 
 	// Estimations.
-	double cement40kg = footingVolume * footingMixture.getPartCement40kg();
-	double cement50kg = EstimateUtils.convert40kgTo50kg(cement40kg);
-	double sand = footingVolume * footingMixture.getPartSand();
-	double gravel = footingVolume * footingMixture.getPartGravel();
+	double cement40kg = Math.ceil(footingVolume * footingMixture.getPartCement40kg());
+	double cement50kg = Math.ceil(EstimateUtils.convert40kgTo50kg(cement40kg));
+	double sand = Math.ceil(footingVolume * footingMixture.getPartSand());
+	double gravel = Math.ceil(footingVolume * footingMixture.getPartGravel());
 
 	// Put the results.
 	// Set the result map of the CHB footing estimate.
@@ -704,9 +704,9 @@ public class EstimateServiceImpl implements EstimateService {
 	    }
 	}
 
-	double bags40kg = volume * plasterMixture.getPartCement40kg();
-	double bags50kg = volume * plasterMixture.getPartCement50kg();
-	double sand = volume * plasterMixture.getPartSand();
+	double bags40kg = Math.ceil(volume * plasterMixture.getPartCement40kg());
+	double bags50kg = Math.ceil(volume * plasterMixture.getPartCement50kg());
+	double sand = Math.ceil(volume * plasterMixture.getPartSand());
 
 	// Set the results, concrete proportion, plaster mixture,
 	// is back to back, plaster top side.
@@ -742,9 +742,9 @@ public class EstimateServiceImpl implements EstimateService {
 	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
 	// Compute.
-	double bags40kgNeeded = area * bags40kg;
-	double bags50kgNeeded = EstimateUtils.convert40kgTo50kg(bags40kgNeeded);
-	double sandNeeded = area * sand;
+	double bags40kgNeeded = Math.ceil(area * bags40kg);
+	double bags50kgNeeded = Math.ceil(EstimateUtils.convert40kgTo50kg(bags40kgNeeded));
+	double sandNeeded = Math.ceil(area * sand);
 
 	// Set the results.
 	EstimateResultMasonryCHBLaying layingResults = new EstimateResultMasonryCHBLaying(
@@ -808,10 +808,10 @@ public class EstimateServiceImpl implements EstimateService {
 	double gravel = tableProportionConcrete.getPartGravel();
 
 	// Compute.
-	double estCement40kg = volume * cement40kg;
-	double estCement50kg = volume * cement50kg;
-	double estSand = volume * sand;
-	double estGravel = volume * gravel;
+	double estCement40kg = Math.ceil(volume * cement40kg);
+	double estCement50kg = Math.ceil(volume * cement50kg);
+	double estSand = Math.ceil(volume * sand);
+	double estGravel = Math.ceil(volume * gravel);
 
 	// Set the results.
 	EstimateResultConcrete concreteResults = new EstimateResultConcrete(estimateComputationBean,

@@ -199,3 +199,9 @@
 .callout-cebedo {
 	color: rgb(137, 137, 124);
 }
+
+
+/* Misc */
+.cebedo-text-align-right {
+	text-align: right;
+}

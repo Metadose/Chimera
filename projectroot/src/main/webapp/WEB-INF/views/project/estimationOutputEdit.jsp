@@ -11,6 +11,25 @@
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
+	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script>
+
+	<script type="text/javascript">
+	function formatQuantity(val) {
+		return accounting.formatMoney(val, "", 0, ",", ".");
+	}
+
+	function formatCurrency(val) {
+		return accounting.formatMoney(val, "&#8369;", 2, ",", ".");
+	}
+
+	function sumColumn(data) {
+        var i, total = 0, elem;
+        for (i = 0; i < data.length; i++) {
+            total += data[i];
+        }
+        return total;
+    }
+	</script>
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -65,28 +84,28 @@
 						<tbody>
 							<tr>
 								<td>Concrete Hollow Blocks (CHB)</td>
-								<td>${estimationoutput.quantityCHB}</td>
-								<td>${estimationoutput.costCHB}</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCHB}))</script></td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCHB}))</script></td>
 							</tr>
 							<tr>
 								<td>Cement (40kg)</td>
-								<td>${estimationoutput.quantityCement40kg}</td>
-								<td>${estimationoutput.costCement40kg}</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement40kg}))</script></td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement40kg}))</script></td>
 							</tr>
 							<tr>
 								<td>Cement (50kg)</td>
-								<td>${estimationoutput.quantityCement50kg}</td>
-								<td>${estimationoutput.costCement50kg}</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement50kg}))</script></td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement50kg}))</script></td>
 							</tr>
 							<tr>
 								<td>Sand</td>
-								<td>${estimationoutput.quantitySand}</td>
-								<td>${estimationoutput.costSand}</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantitySand}))</script></td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costSand}))</script></td>
 							</tr>
 							<tr>
 								<td>Gravel</td>
-								<td>${estimationoutput.quantityGravel}</td>
-								<td>${estimationoutput.costGravel}</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityGravel}))</script></td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costGravel}))</script></td>
 							</tr>
 						</tbody>
 						</table>
@@ -135,11 +154,12 @@ function submitForm(id) {
 	$('#'+id).submit();
 }
 
+
 $(document).ready(function() {
 	
 	/* Footing */
 	var flatDS = ${estimationoutput.estimatesAsJson};
-	$("#treegrid-chb-footing").igTreeGrid({
+	$("#treegrid-chb-footing").igGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
@@ -152,54 +172,54 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
-			
-			/* CHB */
-			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number" },
-			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number" },
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
 			
 			/* CHB Laying */
-			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
+			
+			/* CHB */
+			{ headerText: "CHB<br/>(pieces)", 	key: "chbTotal", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true  },
+			{ headerText: "CHB<br/>(PHP/piece)", 	key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Footing */
 			{ headerText: "Quantity", group: [
-			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number" },
-			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number" }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			{ headerText: "Cost", group: [
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number" },
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number" }
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]}
 		]
 	});
@@ -218,55 +238,55 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "Area", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 
 			/* Plastering */
 			{ headerText: "Quantity", group: [
-			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number" }
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			{ headerText: "Cost", group: [
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number" }
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			
 			
 			/* Footing */
-			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true }
 		]
 	});
 
@@ -284,55 +304,54 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
-			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
-			
-			/* CHB */
-			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
 			
 			/* CHB Laying */
+			/* CHB */
 			{ headerText: "Quantity", group: [
-			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number" }
+			{ headerText: "CHB<br/>(pieces)", 	key: "chbTotal", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			{ headerText: "Cost", group: [
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number" },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number" },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number" }
+			{ headerText: "CHB<br/>(PHP/piece)", 	key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 
 			/* Plastering */
-			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			
 			/* Footing */
-			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true }
 		]
 	});
 
@@ -350,54 +369,54 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number", hidden: true },
+			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Quantity", group: [
-				{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number"},
-				{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number"},
-				{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number"},
-				{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number"}
+				{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number"},
+				{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number"},
+				{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number"},
+				{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number"}
 			]},
 			{ headerText: "Cost", group: [
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number"},
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number"},
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number"},
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number"}
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number"},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number"},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number"},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number"}
 			]},
 			
 			/* CHB */
-			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Footing */
-			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number", hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true }
 		]
 	});
 
@@ -415,50 +434,50 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string" },
-			{ headerText: "Area", 				   key: "area", dataType: "number" },
-			{ headerText: "Volume", 			   key: "volume", dataType: "number" },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", dataType: "number" },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", dataType: "number" },
+			{ headerText: "Area", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Volume", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			
 			/* Concrete */
-			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", dataType: "number", hidden: true},
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", dataType: "number", hidden: true},
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", dataType: "number", hidden: true},
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
 			
 			/* CHB */
-			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", dataType: "number", hidden: true },
-			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(pieces)", 	 key: "chbTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP/piece)", key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* CHB Laying */
-			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", dataType: "number", hidden: true },			
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 
 			/* Plastering */
-			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Footing */
-			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", dataType: "number", hidden: true },
-			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", dataType: "number", hidden: true },
-			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", dataType: "number", hidden: true },
-			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", dataType: "number",  hidden: true }
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/40kg)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP/50kg)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP/cu.m.)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number",  hidden: true }
 		]
 	});
 });
