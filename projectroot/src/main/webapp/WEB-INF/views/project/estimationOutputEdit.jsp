@@ -147,23 +147,22 @@
 <script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
 <script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
-<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
 
 <script type="text/javascript">
 function submitForm(id) {
 	$('#'+id).submit();
 }
 
-
 $(document).ready(function() {
-	
+
 	/* Footing */
 	var flatDS = ${estimationoutput.estimatesAsJson};
 	$("#treegrid-chb-footing").igGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
-			{ name: "MultiColumnHeaders" }
+			{ name: "MultiColumnHeaders" },
+			{ name: "Summaries" }
 		],
 		primaryKey: "uuid",
 		columns: [
@@ -225,11 +224,12 @@ $(document).ready(function() {
 	});
 
 	/* Plastering */
-	$("#treegrid-chb-plastering").igTreeGrid({
+	$("#treegrid-chb-plastering").igGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
-			{ name: "MultiColumnHeaders" }
+			{ name: "MultiColumnHeaders" },
+			{ name: "Summaries" }
 		],
 		primaryKey: "uuid",
 		columns: [
@@ -291,11 +291,12 @@ $(document).ready(function() {
 	});
 
 	/* CHB Laying */
-	$("#treegrid-chb-setting").igTreeGrid({
+	$("#treegrid-chb-setting").igGrid({
 		dataSource: flatDS,
 		width: "100%",
         features:[
-            { name: "MultiColumnHeaders" }
+            { name: "MultiColumnHeaders" },
+			{ name: "Summaries" }
         ],
 		primaryKey: "uuid",
 		columns: [
@@ -356,11 +357,12 @@ $(document).ready(function() {
 	});
 
 	/* Concrete */
-	$("#treegrid-concrete").igTreeGrid({
+	$("#treegrid-concrete").igGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
-			{ name: "MultiColumnHeaders" }
+			{ name: "MultiColumnHeaders" },
+			{ name: "Summaries" }
 		],
 		primaryKey: "uuid",
 		columns: [
@@ -421,7 +423,7 @@ $(document).ready(function() {
 	});
 
 	/* Details */
-	$("#treegrid-details").igTreeGrid({
+	$("#treegrid-details").igGrid({
 		dataSource: flatDS,
 		width: "100%",
 		features:[
@@ -480,6 +482,33 @@ $(document).ready(function() {
 			{ headerText: "Gravel<br/>(PHP/cu.m.)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number",  hidden: true }
 		]
 	});
+});
+
+$(document).ready(function() {
+	$('#treegrid-concrete_summaries_footer_row_count').hide();
+	$('#treegrid-concrete_summaries_footer_row_min').hide();
+	$('#treegrid-concrete_summaries_footer_row_max').hide();
+	$('#treegrid-concrete_summaries_footer_row_avg').hide();
+	
+	$('#treegrid-chb-footing_summaries_footer_row_count').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_min').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_max').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_avg').hide();
+	
+	$('#treegrid-chb-setting_summaries_footer_row_count').hide();
+	$('#treegrid-chb-setting_summaries_footer_row_min').hide();
+	$('#treegrid-chb-setting_summaries_footer_row_max').hide();
+	$('#treegrid-chb-setting_summaries_footer_row_avg').hide();
+	
+	$('#treegrid-chb-plastering_summaries_footer_row_count').hide();
+	$('#treegrid-chb-plastering_summaries_footer_row_min').hide();
+	$('#treegrid-chb-plastering_summaries_footer_row_max').hide();
+	$('#treegrid-chb-plastering_summaries_footer_row_avg').hide();
+
+	$('#treegrid-chb-footing_summaries_footer_row_count').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_min').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_max').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_avg').hide();
 });
 </script>
 </html>
