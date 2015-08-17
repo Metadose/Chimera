@@ -32,9 +32,14 @@ import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
-@SessionAttributes(value = { TaskController.ATTR_TASK, TaskController.ATTR_STAFF_ASSIGNMENT,
-	TaskController.ATTR_TEAM_ASSIGNMENT }, types = { Task.class, FormStaffAssignment.class,
-	FormTeamAssignment.class })
+@SessionAttributes(
+
+value = { TaskController.ATTR_TASK, TaskController.ATTR_STAFF_ASSIGNMENT,
+	TaskController.ATTR_TEAM_ASSIGNMENT },
+
+types = { Task.class, FormStaffAssignment.class, FormTeamAssignment.class }
+
+)
 @RequestMapping(Task.OBJECT_NAME)
 public class TaskController {
 

@@ -92,8 +92,8 @@ value = {
 	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
 
 	// Staff.
-	ProjectController.ATTR_STAFF, StaffController.ATTR_ATTENDANCE_MASS,
-	StaffController.ATTR_CALENDAR_MIN_DATE, StaffController.ATTR_CALENDAR_MAX_DATE },
+	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
+	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE },
 
 types = {
 	// Project.
@@ -194,6 +194,21 @@ public class ProjectController {
     public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
     public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
     public static final String JSP_EDIT_FIELD = Project.OBJECT_NAME + "/assignedFieldEdit";
+
+    // Staff constants backup.
+    public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
+    public static final String ATTR_TASK_STATUS_MAP = "taskStatusMap";
+
+    public static final String ATTR_CALENDAR_STATUS_LIST = "calendarStatusList";
+    public static final String ATTR_CALENDAR_MAX_DATE_STR = "maxDateStr";
+    public static final String ATTR_CALENDAR_MIN_DATE = "minDate";
+    public static final String ATTR_CALENDAR_MAX_DATE = "maxDate";
+    public static final String ATTR_CALENDAR_RANGE_DATES = "rangeDate";
+
+    public static final String ATTR_ATTENDANCE = ConstantsRedis.OBJECT_ATTENDANCE;
+    public static final String ATTR_ATTENDANCE_LIST = "attendanceList";
+    public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
+    public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -929,8 +944,8 @@ public class ProjectController {
      */
     @RequestMapping(value = RegistryURL.EDIT_ATTENDANCE_RANGE)
     public String editStaffRangeDates(
-	    @ModelAttribute(StaffController.ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates,
-	    HttpSession session, Model model) {
+	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates, HttpSession session,
+	    Model model) {
 	// Get prelim objects.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 
@@ -944,7 +959,7 @@ public class ProjectController {
 
 	// Add attributes to model.
 	setStaffAttributes(model, staff, min, max, maxDateStr);
-	return StaffController.JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
 
     /**
@@ -953,7 +968,7 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = { RegistryURL.ADD_ATTENDACE }, method = RequestMethod.POST)
-    public String addAttendance(@ModelAttribute(StaffController.ATTR_ATTENDANCE) Attendance attendance,
+    public String addAttendance(@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
 
 	// Do service.
@@ -973,7 +988,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addAttendanceMass(
-	    @ModelAttribute(StaffController.ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
+	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
 
 	Date startDate = attendanceMass.getStartDate();
@@ -1008,7 +1023,7 @@ public class ProjectController {
 
 	// If the min date from session is lesser
 	// than min date passed, use from session.
-	Date minDateFromSession = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MIN_DATE);
+	Date minDateFromSession = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
 	if (minDateFromSession.before(minDate)) {
 	    minDate = minDateFromSession;
 	}
@@ -1017,12 +1032,12 @@ public class ProjectController {
 	// Get the current year and month.
 	// This will be minimum.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
-	Date maxDate = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE);
-	String maxDateStr = (String) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE_STR);
+	Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
+	String maxDateStr = (String) session.getAttribute(ATTR_CALENDAR_MAX_DATE_STR);
 
 	// Set model attributes.
 	setStaffAttributes(model, staff, minDate, maxDate, maxDateStr);
-	return StaffController.JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
 
     /**
@@ -1054,8 +1069,8 @@ public class ProjectController {
 	model.addAttribute(ATTR_PROJECT, proj);
 
 	Map<String, Date> datePair = getCalendarRangeDates(session);
-	Date min = datePair.get(StaffController.ATTR_CALENDAR_MIN_DATE);
-	Date max = datePair.get(StaffController.ATTR_CALENDAR_MAX_DATE);
+	Date min = datePair.get(ATTR_CALENDAR_MIN_DATE);
+	Date max = datePair.get(ATTR_CALENDAR_MAX_DATE);
 
 	// Set model attributes.
 	setStaffAttributes(model, staff, min, max, null);
@@ -1081,32 +1096,30 @@ public class ProjectController {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	model.addAttribute(StaffController.ATTR_PAYROLL_TOTAL_WAGE,
+	model.addAttribute(ATTR_PAYROLL_TOTAL_WAGE,
 		this.attendanceService.getTotalWageFromAttendance(attendanceList));
 
 	// Get attendance status map based on enum.
-	model.addAttribute(StaffController.ATTR_CALENDAR_STATUS_LIST,
-		AttendanceStatus.getAllStatusInMap());
+	model.addAttribute(ATTR_CALENDAR_STATUS_LIST, AttendanceStatus.getAllStatusInMap());
 
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.
-	model.addAttribute(StaffController.ATTR_CALENDAR_MAX_DATE_STR,
+	model.addAttribute(ATTR_CALENDAR_MAX_DATE_STR,
 		maxDateStr == null ? DateUtils.formatDate(max, "yyyy-MM-dd") : maxDateStr);
-	model.addAttribute(StaffController.ATTR_CALENDAR_MIN_DATE, min);
-	model.addAttribute(StaffController.ATTR_CALENDAR_MAX_DATE, max);
-	model.addAttribute(StaffController.ATTR_TASK_STATUS_MAP,
-		this.staffService.getTaskStatusCountMap(staff));
-	model.addAttribute(StaffController.ATTR_ATTENDANCE_STATUS_MAP,
+	model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
+	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
+	model.addAttribute(ATTR_TASK_STATUS_MAP, this.staffService.getTaskStatusCountMap(staff));
+	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP,
 		this.staffService.getAttendanceStatusCountMap(attendanceList));
 
 	// Add objects.
 	// Add form beans.
 	Company co = staff.getCompany();
 	model.addAttribute(ATTR_STAFF, staff);
-	model.addAttribute(StaffController.ATTR_ATTENDANCE_LIST, attendanceList);
-	model.addAttribute(StaffController.ATTR_CALENDAR_RANGE_DATES, new FormDateRange());
-	model.addAttribute(StaffController.ATTR_ATTENDANCE_MASS, new FormMassAttendance(staff));
-	model.addAttribute(StaffController.ATTR_ATTENDANCE, new Attendance(co, staff));
+	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
+	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new FormDateRange());
+	model.addAttribute(ATTR_ATTENDANCE_MASS, new FormMassAttendance(staff));
+	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, staff));
 
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
@@ -1120,8 +1133,8 @@ public class ProjectController {
      * @return
      */
     private Map<String, Date> getCalendarRangeDates(HttpSession session) {
-	Date min = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MIN_DATE);
-	Date max = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE);
+	Date min = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
+	Date max = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
 
 	// TODO This will always be null.
 	// Will always go to this condition.
@@ -1138,8 +1151,8 @@ public class ProjectController {
 	    max = new GregorianCalendar(year, month, maxDays).getTime();
 	}
 	Map<String, Date> datePair = new HashMap<String, Date>();
-	datePair.put(StaffController.ATTR_CALENDAR_MIN_DATE, min);
-	datePair.put(StaffController.ATTR_CALENDAR_MAX_DATE, max);
+	datePair.put(ATTR_CALENDAR_MIN_DATE, min);
+	datePair.put(ATTR_CALENDAR_MAX_DATE, max);
 	return datePair;
     }
 
