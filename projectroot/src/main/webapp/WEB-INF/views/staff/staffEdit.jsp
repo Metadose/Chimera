@@ -55,6 +55,14 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-md-12">
+
+                    	<c:if test="${!empty project}">
+                    	<c:url var="urlBack" value="/project/edit/${project.id}" />
+	                    <a href="${urlBack}">
+							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
+						</a><br/><br/>
+                    	</c:if>
+
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -63,7 +71,6 @@
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
                                 <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
-                                <li><a href="#tab_7" data-toggle="tab">Projects</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -75,35 +82,7 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<c:if test="${staff.id != 0}">
-                   									<div class="form-group">
-                   										<form action="${contextPath}/photo/upload/staff/profile" method="post" enctype="multipart/form-data">	
-                   											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	                										<input type="hidden" value="${staff.id}" id="staff_id" name="staff_id"/>
-	                   										<table>
-	                   											<tr>
-	                   												<td>
-	                   													<label for="exampleInputFile">Update Photo</label>
-	                   												</td>
-	                   												<td>
-	                   													&nbsp;&nbsp;
-	                   												</td>
-	                   												<td>
-	                   													<input type="file" id="file" name="file"/>
-	                   												</td>
-	                   											</tr>
-	                   										</table>
-	                   										<br/>
-					                                        <button class="btn btn-default btn-flat btn-sm">Upload</button>
-					                                        <button class="btn btn-default btn-flat btn-sm">Delete</button>
-				                                        </form>
-                   									</div>
-				                                    <br/>
-				                                    </c:if>
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
-				                                    <c:if test="${!empty origin && !empty originID}">
-				                                    	<c:set var="detailsFormURL" value="${contextPath}/staff/create/from/${origin}/${originID}"/>
-				                                    </c:if>
                    									<form:form modelAttribute="staff" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
 				                                            <label>Prefix</label>
@@ -148,282 +127,9 @@
                    								</div>
                    							</div>
                    						</div>
-                   						<c:if test="${staff.id != 0}">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">More Info</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<div class="form-group">
-                   										<table>
-                   											<c:set var="fields" value="${staff.fieldAssignments}"/>
-                   											<c:if test="${!empty fields}">
-                   												<c:set var="fieldFormID" value="${0}"/>
-                   												<c:forEach var="field" items="${fields}">
-                   													<tr>
-	                   													<form id="field_unassign_${fieldFormID}" method="post" action="${contextPath}/field/unassign/staff">
-	                   														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																			<input type="hidden" name="staff_id" value="${staff.id}"/>
-																			<input type="hidden" name="field_id" value="${field.field.id}"/>
-																			<input type="hidden" id="old_label" name="old_label" value="${field.label}"/>
-																			<input type="hidden" id="old_value" name="old_value" value="${field.value}"/>
-																			<td style="padding-bottom: 3px;">
-																				<input type="text" class="form-control" id="label" name="label" value="${field.label}">
-																			</td>
-																			<td style="padding-bottom: 3px;">
-																				&nbsp;
-																			</td>
-																			<td style="padding-bottom: 3px;">
-																				<input type="text" class="form-control" id="value" name="value" value="${field.value}">
-																			</td>
-																			<td style="padding-bottom: 3px;">
-																				&nbsp;
-																			</td>
-																		</form>
-																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-default btn-flat btn-sm" onclick="submitAjax('field_unassign_${fieldFormID}')">Update</button>
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			&nbsp;
-																		</td>
-																		<td style="padding-bottom: 3px;">
-																			<button class="btn btn-default btn-flat btn-sm" onclick="submitForm('field_unassign_${fieldFormID}')">Unassign</button>
-																		</td>
-																	</tr>
-																	<c:set var="fieldFormID" value="${fieldFormID + 1}"/>
-																</c:forEach>
-															</c:if>
-														</table>
-														<br/>
-														<c:choose>
-														<c:when test="${!empty fields}">
-															<form method="post" action="${contextPath}/field/unassign/staff/all">
-																<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																<input type="hidden" name="staff_id" value="${staff.id}"/>
-																<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-															</form>
-														</c:when>
-														<c:when test="${empty fields}">
-															<h5>No field assigned.</h5>
-														</c:when>
-														</c:choose>
-														<br/>
-														<br/>
-														<h4>Assign Fields</h4>
-														<form role="form" name="fieldsForm" id="fieldsForm" method="post" action="${contextPath}/field/assign/staff">
-															<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-															<input type="hidden" name="staff_id" value="${staff.id}"/>
-															<table>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Field Type </label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<select class="form-control" id="field_id" name="field_id">
-																			<c:if test="${!empty fieldList}">
-																				<c:forEach items="${fieldList}" var="field">
-									                                                <option value="${field.id}">${field.name}</option>
-								                                                </c:forEach>
-							                                                </c:if>
-							                                            </select>
-																	</td>
-																</tr>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Label</label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<input type="text" name="label" id="label" class="form-control" placeholder="Example: SSS, Building Permit No., Sub-contractor, etc...">
-																	</td>
-																</tr>
-																<tr>
-																	<td style="padding-right: 3px;">
-																		<label>Value</label>
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		&nbsp;
-																	</td>
-																	<td style="padding-bottom: 3px;">
-																		<input type="text" name="value" id="value" class="form-control" placeholder="Example: 000-123-456, AEE-123, OneForce Construction, etc...">
-																	</td>
-																</tr>
-															</table>
-															<br/>
-															<button class="btn btn-default btn-flat btn-sm">Assign</button>
-														</form>
-			                                        </div>
-                   								</div>
-                   							</div>
-                   						</div>
-                   						</c:if>
               						</div>
-              						<c:if test="${staff.id != 0}">
-              						<h2 class="page-header">Assignments</h2>
-              						<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Teams</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									<table>
-                   										<c:choose>
-               											<c:when test="${!empty staff.teams}">
-               												<c:forEach items="${staff.teams}" var="team">
-               													<tr style="padding-bottom: 5px">
-	                   											<td>
-	                   												<div class="user-panel">
-	                   													<div class="pull-left info">
-															                <p>${team.name}</p>
-															                <h6>Maya Villanueva</h6>
-															                <h6>(+63) 922 062 2345</h6>
-															                <h6>5 Members</h6>
-															            </div>
-	                   												</div>
-	                   											</td>
-	                   											<td style="padding-right: 50px">
-	                   												&nbsp;
-	                   											</td>
-	                   											<td>
-	                   												<form method="post" action="${contextPath}/staff/unassign/team">
-	                   													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-	                   													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-	                   													<input type="hidden" id="team_id" name="team_id" value="${team.id}"/>
-	                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Unassign</button>
-	                   												</form>
-	                   												<a href="${contextPath}/team/edit/${team.id}">
-	                   													<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">View Team</button>
-	                   												</a>
-	                   											</td>
-		                   										</tr>
-               												</c:forEach>
-               											</c:when>
-               											</c:choose>
-                   									</table>
-                   									<c:choose>
-                   										<c:when test="${!empty staff.teams}">
-                   											<form method="post" action="${contextPath}/staff/unassign/team/all">
-                   												<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                   												<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-                   												<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-                   											</form>
-                   										</c:when>
-                   										<c:when test="${empty staff.teams}">
-                   											<h5>No team assigned.</h5>
-                   										</c:when>
-                   									</c:choose>
-													<br/>
-													<br/>
-													<h4>Assign Teams&nbsp;
-													<a href="${contextPath}/team/edit/0">
-                   										<button class="btn btn-default btn-flat btn-sm" style="padding: 3px; margin-bottom: 3px">Create Team</button>
-                   									</a>
-													</h4>
-													<form method="post" action="${contextPath}/staff/assign/team">
-													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-													<input type="hidden" id="staff_id" name="staff_id" value="${staff.id}"/>
-													<table>
-														<tr>
-															<td style="padding-right: 3px;">
-																<label>Teams </label>
-															</td>
-															<td style="padding-bottom: 3px;">
-																&nbsp;
-															</td>
-															<td style="padding-bottom: 3px;">
-																<select id="team_id" name="team_id" class="form-control">
-																	<c:if test="${!empty teamList}">
-																		<c:forEach items="${teamList}" var="team">
-																			<option value="${team.id}">${team.name}</option>
-																		</c:forEach>
-																	</c:if>
-					                                            </select>
-															</td>
-														</tr>
-													</table>
-													<br/>
-													<button class="btn btn-default btn-flat btn-sm">Assign</button>
-													</form>
-                   								</div>
-                   							</div>
-                   						</div>
-               						</div>
-               						</c:if>
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
-                                <div class="tab-pane" id="tab_7">
-                                	<div class="box">
-		                                <div class="box-body table-responsive">
-		                                	<a href="${contextPath}/project/edit/0">
-		                                		<button class="btn btn-default btn-flat btn-sm">Create Project</button>
-		                                	</a><br/><br/>
-		                                    <table id="project-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                    		<tr>
-		                                            	<th>&nbsp;</th>
-		                                            	<th>Status</th>
-		                                                <th>Project</th>
-		                                                <th>Location</th>
-		                                                <th>Notes</th>
-		                                            </tr>
-		                                    	</thead>
-		                                        <tbody>
-			                                        <c:set var="assignmentList" value="${staff.assignedManagers}"/>
-				                                	<c:if test="${!empty assignmentList}">
-				                                		<c:forEach items="${assignmentList}" var="projectAssignment">
-				                                		<c:set var="project" value="${projectAssignment.project}"/>	
-			                                            <tr>
-		                                            	<td>
-		                                            		<center>
-																<form action="${contextPath}/project/edit/${project.id}" method="post">
-																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																	<button class="btn btn-default btn-flat btn-sm">View</button>
-																</form>&nbsp;
-																<form action="${contextPath}/project/delete/${project.id}" method="post">
-																	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
-																</form>
-															</center>
-														</td>
-														<td>
-		                                                	<c:choose>
-				                                            	<c:when test="${project.status == 0}">
-				                                            		<span class="label label-info">New</span>
-				                                            	</c:when>
-				                                            	<c:when test="${project.status == 1}">
-				                                            		<span class="label label-primary">Ongoing</span>
-				                                            	</c:when>
-				                                            	<c:when test="${project.status == 2}">
-				                                            		<span class="label label-success">Completed</span>
-				                                            	</c:when>
-				                                            	<c:when test="${project.status == 3}">
-				                                            		<span class="label label-danger">Failed</span>
-				                                            	</c:when>
-				                                            	<c:when test="${project.status == 4}">
-				                                            		<span class="label label">Cancelled</span>
-				                                            	</c:when>
-				                                            </c:choose>
-		                                                </td>
-		                                                <td>
-				                                            ${project.name}
-		                                                </td>
-		                                                <td>${project.location}</td>
-		                                                <td>${project.notes}</td>
-		                                            </tr>
-		                                            </c:forEach>
-	                                        		</c:if>
-			                                    </tbody>
-			                                </table>
-		                                </div><!-- /.box-body -->
-		                            </div>
-                                </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="row">
                    						<div class="col-md-12">
@@ -462,7 +168,6 @@
 				                                            <th>Title</th>
 				                                            <th>Content</th>
 				                                            <th>Project</th>
-				                                            <th>Team</th>
 				                                            <th>Start</th>
 				                                            <th>Duration</th>
 				                                        </tr>
@@ -510,21 +215,6 @@
 					                                            			<h5>No project assigned.</h5>
 					                                            		</c:when>
 						                                            	</c:choose>					                                            
-						                                            </td>
-						                                            <td>
-						                                            	<c:choose>
-					                                            		<c:when test="${!empty task.teams}">
-					                                            			<c:forEach items="${task.teams}" var="taskTeam">
-					                                            			<a class="general-link" href="${contextPath}/team/edit/${taskTeam.id}">
-							                                            	${taskTeam.name}
-							                                            	</a>
-							                                            	<br/>
-					                                            			</c:forEach>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.teams}">
-					                                            			<h5>No team assigned.</h5>
-					                                            		</c:when>
-						                                            	</c:choose>
 						                                            </td>
 						                                            <td>${task.dateStart}</td>
 						                                            <td>${task.duration}</td>
@@ -597,7 +287,7 @@
 									                	modelAttribute="rangeDate"
 														id="rangeDateForm"
 														method="post"
-														action="${contextPath}/staff/edit/range">
+														action="${contextPath}/project/edit/attendance/range">
 														<table>
 														<tr>
 															<td>
@@ -637,7 +327,7 @@
 									                	modelAttribute="massAttendance"
 														id="massAttendanceForm"
 														method="post"
-														action="${contextPath}/staff/add/attendance/mass">
+														action="${contextPath}/project/mass/add/attendance">
 								                        <div class="form-group">
 								                            <label>Start Date</label>
 								                            <div class='input-group date date-picker'>
@@ -795,7 +485,7 @@
 	                	modelAttribute="attendance"
 						id="attendanceForm"
 						method="post"
-						action="${contextPath}/staff/add/attendance">
+						action="${contextPath}/project/add/attendance">
                         <div class="form-group">
                             <label>Date</label>
                             <form:input type="text" class="form-control" id="modalDate" path="date"/>

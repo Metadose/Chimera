@@ -1982,7 +1982,7 @@
 							                                            <tr>
 							                                            	<td>
 							                                            		<center>
-							                                            			<c:url var="urlViewStaff" value="/staff/edit/${assignedStaffMember.id}/from/project/${project.id}"/>
+							                                            			<c:url var="urlViewStaff" value="/project/edit/staff/${assignedStaffMember.id}"/>
 							                                            			<a href="${urlViewStaff}">
 											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>

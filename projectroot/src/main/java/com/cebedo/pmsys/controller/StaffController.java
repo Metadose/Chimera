@@ -38,7 +38,7 @@ import com.cebedo.pmsys.utils.DateUtils;
 @SessionAttributes(value = { StaffController.ATTR_STAFF, StaffController.ATTR_ATTENDANCE,
 	StaffController.ATTR_ATTENDANCE_MASS, StaffController.ATTR_CALENDAR_MIN_DATE,
 	StaffController.ATTR_CALENDAR_MAX_DATE, StaffController.ATTR_CALENDAR_MAX_DATE_STR }, types = {
-	Staff.class, Attendance.class, FormMassAttendance.class, })
+	Staff.class, Attendance.class, FormMassAttendance.class })
 @RequestMapping(Staff.OBJECT_NAME)
 public class StaffController {
 
@@ -156,6 +156,7 @@ public class StaffController {
      * 
      * @return
      */
+    @Deprecated
     @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_ATTENDANCE + "/"
 	    + ConstantsSystem.MASS }, method = RequestMethod.POST)
     public String addAttendanceMass(
@@ -192,6 +193,7 @@ public class StaffController {
      * 
      * @return
      */
+    @Deprecated
     @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_ATTENDANCE }, method = RequestMethod.POST)
     public String addAttendance(@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model, SessionStatus status) {
@@ -266,6 +268,7 @@ public class StaffController {
      * @param model
      * @return
      */
+    @Deprecated
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Staff.OBJECT_NAME + "}/"
 	    + ConstantsSystem.FROM + "/{" + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID
 	    + "}", method = RequestMethod.GET)
@@ -303,6 +306,7 @@ public class StaffController {
      * @param model
      * @return
      */
+    @Deprecated
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsSystem.RANGE)
     public String editStaffRangeDates(
 	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates, HttpSession session,

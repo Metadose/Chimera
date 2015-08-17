@@ -7,10 +7,19 @@ import java.util.Map;
 
 public enum AttendanceStatus {
 
-    OVERTIME(6, "Overtime", "btn-success"), PRESENT(1, "Present", "btn-success"), LATE(
-	    3, "Late", "btn-warning"), HALFDAY(5, "Half-day", "btn-info"), LEAVE(
-	    4, "Leave", "btn-primary"), ABSENT(2, "Absent", "btn-danger"), DELETE(
-	    -1, "Delete", "");
+    PRESENT(1, "Present", "btn-success"),
+
+    OVERTIME(6, "Overtime", "btn-success"),
+
+    LATE(3, "Late", "btn-warning"),
+
+    HALFDAY(5, "Half-day", "btn-info"),
+
+    LEAVE(4, "Leave", "btn-primary"),
+
+    ABSENT(2, "Absent", "btn-danger"),
+
+    DELETE(-1, "Delete", "");
 
     String label;
     int id;

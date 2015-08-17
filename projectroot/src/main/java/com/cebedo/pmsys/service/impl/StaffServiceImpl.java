@@ -545,8 +545,10 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
-		JSONCalendarEvent.class.getName());
+	if (attendanceList.size() > 0) {
+	    this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),
+		    JSONCalendarEvent.class.getName());
+	}
 
 	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
     }
@@ -616,7 +618,8 @@ public class StaffServiceImpl implements StaffService {
 			if (addedMilestones.contains(projectMilestone.getId())) {
 			    continue;
 			}
-			JSONTimelineGantt milestoneBean = new JSONTimelineGantt(projectMilestone, projectBean);
+			JSONTimelineGantt milestoneBean = new JSONTimelineGantt(projectMilestone,
+				projectBean);
 			ganttBeanList.add(milestoneBean);
 			addedMilestones.add(projectMilestone.getId());
 		    }

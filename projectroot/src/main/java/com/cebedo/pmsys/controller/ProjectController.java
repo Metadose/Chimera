@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.controller;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,14 +26,17 @@ import com.cebedo.pmsys.bean.EstimateComputationBean;
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.CommonMassUnit;
@@ -49,10 +55,13 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
+import com.cebedo.pmsys.pojo.FormDateRange;
 import com.cebedo.pmsys.pojo.FormFieldAssignment;
+import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.pojo.FormMassUpload;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
+import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
@@ -67,17 +76,38 @@ import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DateUtils;
 
 @Controller
 @SessionAttributes(
 
-value = { Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
+value = {
+	// Project.
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
+	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
+	ProjectController.ATTR_TASK,
+
+	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
 	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
-	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN, ProjectController.ATTR_TASK },
 
-types = { Project.class, FormFieldAssignment.class, ProjectPayroll.class, Delivery.class,
-	Material.class, PullOut.class, EstimateComputationBean.class, FormMassUpload.class, Task.class }
+	// Staff.
+	ProjectController.ATTR_STAFF, StaffController.ATTR_ATTENDANCE_MASS,
+	StaffController.ATTR_CALENDAR_MIN_DATE, StaffController.ATTR_CALENDAR_MAX_DATE },
+
+types = {
+	// Project.
+	Project.class, FormFieldAssignment.class,
+
+	// Task.
+	Task.class,
+
+	// Staff.
+	Staff.class, Attendance.class, FormMassAttendance.class,
+
+	// Others.
+	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
+	EstimateComputationBean.class, FormMassUpload.class }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -178,6 +208,13 @@ public class ProjectController {
     private EstimateService estimateService;
     private EstimationOutputService estimationOutputService;
     private TaskService taskService;
+    private AttendanceService attendanceService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "attendanceService")
+    public void setAttendanceService(AttendanceService s) {
+	this.attendanceService = s;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "taskService")
@@ -750,7 +787,7 @@ public class ProjectController {
 	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output);
 
 	// Return.
-	return ConstantsRedis.JSP_ESTIMATION_OUTPUT_EDIT;
+	return RegistryJSPPath.JSP_EDIT_ESTIMATION_OUTPUT;
     }
 
     /**
@@ -884,6 +921,229 @@ public class ProjectController {
     }
 
     /**
+     * Open a view page where the user can edit the staff.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.EDIT_ATTENDANCE_RANGE)
+    public String editStaffRangeDates(
+	    @ModelAttribute(StaffController.ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates,
+	    HttpSession session, Model model) {
+	// Get prelim objects.
+	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+
+	// Get the start and end date from the bean.
+	Date min = rangeDates.getStartDate();
+	Date max = rangeDates.getEndDate();
+
+	// Given min and max, get range of attendances.
+	// Get wage given attendances.
+	String maxDateStr = DateUtils.formatDate(max, "yyyy-MM-dd");
+
+	// Add attributes to model.
+	setStaffAttributes(model, staff, min, max, maxDateStr);
+	return StaffController.JSP_EDIT;
+    }
+
+    /**
+     * Add an attendance.
+     * 
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.ADD_ATTENDACE }, method = RequestMethod.POST)
+    public String addAttendance(@ModelAttribute(StaffController.ATTR_ATTENDANCE) Attendance attendance,
+	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
+
+	// Do service.
+	this.attendanceService.set(attendance);
+
+	// TODO
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
+	return editStaffWithMaxDate(model, session, attendance.getDate());
+    }
+
+    /**
+     * TODO Clean up.<br>
+     * Add an attendance in mass.
+     * 
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
+    public String addAttendanceMass(
+	    @ModelAttribute(StaffController.ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
+	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
+
+	Date startDate = attendanceMass.getStartDate();
+	Date endDate = attendanceMass.getEndDate();
+
+	// If start date is > end date, error.
+	if (startDate.after(endDate)) {
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
+	    return String.format(RegistryURL.REDIRECT_PROJECT_EDIT_STAFF, attendanceMass.getStaff()
+		    .getId());
+	}
+
+	// Do service.
+	this.attendanceService.multiSet(attendanceMass);
+
+	// TODO
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
+
+	return editStaffWithMaxDate(model, session, startDate);
+    }
+
+    /**
+     * Open a view page where the user can edit the staff.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    private String editStaffWithMaxDate(Model model, HttpSession session, Date minDate) {
+
+	// If the min date from session is lesser
+	// than min date passed, use from session.
+	Date minDateFromSession = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MIN_DATE);
+	if (minDateFromSession.before(minDate)) {
+	    minDate = minDateFromSession;
+	}
+
+	// Get staff object.
+	// Get the current year and month.
+	// This will be minimum.
+	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+	Date maxDate = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE);
+	String maxDateStr = (String) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE_STR);
+
+	// Set model attributes.
+	setStaffAttributes(model, staff, minDate, maxDate, maxDateStr);
+	return StaffController.JSP_EDIT;
+    }
+
+    /**
+     * TODO Clean up. <br>
+     * Edit a staff.
+     * 
+     * @param taskID
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.EDIT_STAFF, method = RequestMethod.GET)
+    public String editStaff(@PathVariable(Staff.OBJECT_NAME) long staffID, Model model,
+	    HttpSession session) {
+
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	// If ID is zero,
+	// Open a page with empty values, ready to create.
+	if (staffID == 0) {
+	    // TODO
+	    // model.addAttribute(ATTR_STAFF, new Staff(proj));
+	    return TaskController.JSP_EDIT;
+	}
+
+	// Else, get the object from DB
+	// then populate the fields in JSP.
+	Staff staff = this.staffService.getWithAllCollectionsByID(staffID);
+	model.addAttribute(ATTR_PROJECT, proj);
+
+	Map<String, Date> datePair = getCalendarRangeDates(session);
+	Date min = datePair.get(StaffController.ATTR_CALENDAR_MIN_DATE);
+	Date max = datePair.get(StaffController.ATTR_CALENDAR_MAX_DATE);
+
+	// Set model attributes.
+	setStaffAttributes(model, staff, min, max, null);
+
+	return RegistryJSPPath.JSP_EDIT_STAFF;
+    }
+
+    /**
+     * TODO Clean up. <br>
+     * Set model attributes before forwarding to JSP.
+     * 
+     * @param model
+     * @param staff
+     * @param min
+     * @param max
+     * @param maxDateStr
+     */
+    private void setStaffAttributes(Model model, Staff staff, Date min, Date max, String maxDateStr) {
+
+	// Given min and max, get range of attendances.
+	// Get wage given attendances.
+	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(staff, min, max);
+
+	// Given min and max, get range of attendances.
+	// Get wage given attendances.
+	model.addAttribute(StaffController.ATTR_PAYROLL_TOTAL_WAGE,
+		this.attendanceService.getTotalWageFromAttendance(attendanceList));
+
+	// Get attendance status map based on enum.
+	model.addAttribute(StaffController.ATTR_CALENDAR_STATUS_LIST,
+		AttendanceStatus.getAllStatusInMap());
+
+	// Get start date of calendar.
+	// Add minimum and maximum of data loaded.
+	model.addAttribute(StaffController.ATTR_CALENDAR_MAX_DATE_STR,
+		maxDateStr == null ? DateUtils.formatDate(max, "yyyy-MM-dd") : maxDateStr);
+	model.addAttribute(StaffController.ATTR_CALENDAR_MIN_DATE, min);
+	model.addAttribute(StaffController.ATTR_CALENDAR_MAX_DATE, max);
+	model.addAttribute(StaffController.ATTR_TASK_STATUS_MAP,
+		this.staffService.getTaskStatusCountMap(staff));
+	model.addAttribute(StaffController.ATTR_ATTENDANCE_STATUS_MAP,
+		this.staffService.getAttendanceStatusCountMap(attendanceList));
+
+	// Add objects.
+	// Add form beans.
+	Company co = staff.getCompany();
+	model.addAttribute(ATTR_STAFF, staff);
+	model.addAttribute(StaffController.ATTR_ATTENDANCE_LIST, attendanceList);
+	model.addAttribute(StaffController.ATTR_CALENDAR_RANGE_DATES, new FormDateRange());
+	model.addAttribute(StaffController.ATTR_ATTENDANCE_MASS, new FormMassAttendance(staff));
+	model.addAttribute(StaffController.ATTR_ATTENDANCE, new Attendance(co, staff));
+
+	// Add front-end JSONs.
+	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
+	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
+    }
+
+    /**
+     * Get calendar min and max dates from session.
+     * 
+     * @param session
+     * @return
+     */
+    private Map<String, Date> getCalendarRangeDates(HttpSession session) {
+	Date min = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MIN_DATE);
+	Date max = (Date) session.getAttribute(StaffController.ATTR_CALENDAR_MAX_DATE);
+
+	// TODO This will always be null.
+	// Will always go to this condition.
+	if (min == null) {
+	    Calendar cal = Calendar.getInstance();
+	    int year = cal.get(Calendar.YEAR);
+	    int month = cal.get(Calendar.MONTH); // Zero-based.
+	    min = new GregorianCalendar(year, month, 1).getTime();
+
+	    // Based on minimum, get max days in current month.
+	    // Given max days, create max object.
+	    cal.setTime(min);
+	    int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+	    max = new GregorianCalendar(year, month, maxDays).getTime();
+	}
+	Map<String, Date> datePair = new HashMap<String, Date>();
+	datePair.put(StaffController.ATTR_CALENDAR_MIN_DATE, min);
+	datePair.put(StaffController.ATTR_CALENDAR_MAX_DATE, max);
+	return datePair;
+    }
+
+    /**
      * Edit a task.
      * 
      * @param taskID
@@ -1012,7 +1272,7 @@ public class ProjectController {
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
-	return ConstantsRedis.JSP_MATERIAL_EDIT;
+	return RegistryJSPPath.JSP_EDIT_MATERIAL;
     }
 
     /**
@@ -1042,7 +1302,7 @@ public class ProjectController {
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
-	return ConstantsRedis.JSP_MATERIAL_PULLOUT;
+	return RegistryJSPPath.JSP_EDIT_MATERIAL_PULLOUT;
     }
 
     /**
@@ -1253,7 +1513,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
 	// redirect to edit page.
-	return ConstantsRedis.JSP_MATERIAL_PULLOUT;
+	return RegistryJSPPath.JSP_EDIT_MATERIAL_PULLOUT;
     }
 
     /**
@@ -1275,7 +1535,7 @@ public class ProjectController {
 	// Return an empty object.
 	if (key.equals("0")) {
 	    model.addAttribute(ATTR_DELIVERY, new Delivery(proj));
-	    return ConstantsRedis.JSP_DELIVERY_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_DELIVERY;
 	}
 
 	// Add material category list.
@@ -1296,7 +1556,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
 	model.addAttribute(ATTR_MATERIAL, new Material(delivery));
 
-	return ConstantsRedis.JSP_DELIVERY_EDIT;
+	return RegistryJSPPath.JSP_EDIT_DELIVERY;
     }
 
     /**
@@ -1335,7 +1595,7 @@ public class ProjectController {
 	    // Then redirect.
 	    SystemUser creator = this.authHelper.getAuth().getUser();
 	    model.addAttribute(ATTR_PROJECT_PAYROLL, new ProjectPayroll(co, proj, creator));
-	    return ConstantsRedis.JSP_PAYROLL_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_PAYROLL;
 	}
 
 	// Attach to response.
@@ -1347,7 +1607,7 @@ public class ProjectController {
 	Long companyID = co == null ? 0 : co.getId();
 	setModelAttributesOfPayroll(projectPayroll, proj, model, companyID);
 
-	return ConstantsRedis.JSP_PAYROLL_EDIT;
+	return RegistryJSPPath.JSP_EDIT_PAYROLL;
     }
 
     /**
