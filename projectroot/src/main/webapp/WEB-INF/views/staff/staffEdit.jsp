@@ -67,14 +67,32 @@
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
+
+                            	<c:choose>
+                            	<c:when test="${!empty project}">
+                                <li class="active"><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
+                                <li><a href="#tab_1" data-toggle="tab">Details</a></li>
+                            	</c:when>
+
+                            	<c:when test="${empty project}">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                            	</c:when>
+                            	</c:choose>
+
                                 <c:if test="${staff.id != 0}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
-                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
+                            	<c:choose>
+                            	<c:when test="${!empty project}">
+                            	<div class="tab-pane" id="tab_1">
+                            	</c:when>
+
+                            	<c:when test="${empty project}">
                                 <div class="tab-pane active" id="tab_1">
+                            	</c:when>
+                            	</c:choose>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -262,7 +280,17 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
+
+                                <c:choose>
+                            	<c:when test="${!empty project}">
+                                <div class="tab-pane active" id="tab_payroll">
+                            	</c:when>
+                            	
+                            	<c:when test="${empty project}">
                                 <div class="tab-pane" id="tab_payroll">
+                            	</c:when>
+                            	</c:choose>
+
                                 	<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
