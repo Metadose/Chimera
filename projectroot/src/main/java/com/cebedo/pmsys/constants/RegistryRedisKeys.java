@@ -2,7 +2,7 @@ package com.cebedo.pmsys.constants;
 
 public class RegistryRedisKeys {
 
-    public static final String KEY_ATTENDANCE = "company.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
+    public static final String KEY_ATTENDANCE = "company.fk:%s:project.fk:%s:staff.fk:%s:attendance:date:%s:status:%s";
 
     public static final String KEY_ESTIMATION_OUTPUT = "company.fk:%s:project.fk:%s:estimation.output:%s";
 

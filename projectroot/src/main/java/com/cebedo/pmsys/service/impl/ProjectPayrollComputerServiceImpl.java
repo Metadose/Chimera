@@ -22,6 +22,7 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.service.AttendanceService;
@@ -110,7 +111,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      */
     private void putStaffBreakdown(Staff staff) {
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = getStaffBreakdownMap(
-		staff, this.startDate, this.endDate);
+		this.projectPayroll.getProject(), staff, this.startDate, this.endDate);
 	this.staffPayrollBreakdownMap.put(staff, attendanceStatusCountMap);
     }
 
@@ -132,8 +133,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	    // Get wage then add to map.
 	    // Get the total of this guy.
-	    double staffWageTotal = this.attendanceService.getTotalWageOfStaffInRange(staff,
-		    this.startDate, this.endDate);
+	    double staffWageTotal = this.attendanceService.getTotalWageOfStaffInRange(
+		    this.projectPayroll.getProject(), staff, this.startDate, this.endDate);
 
 	    // Add it to the overall total of managers.
 	    this.overallTotalOfStaff += staffWageTotal;
@@ -152,15 +153,18 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     /**
      * Get the breakdown of the total wage.
      * 
+     * @param project
+     * 
      * @param manager
      * @param min
      * @param max
      * @return
      */
-    private Map<AttendanceStatus, Map<String, Double>> getStaffBreakdownMap(Staff manager, Date min,
-	    Date max) {
+    private Map<AttendanceStatus, Map<String, Double>> getStaffBreakdownMap(Project project,
+	    Staff manager, Date min, Date max) {
 	// Attendance count map.
-	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(manager, min, max);
+	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(project, manager,
+		min, max);
 	Map<AttendanceStatus, Map<String, Double>> attendanceStatusCountMap = this.staffService
 		.getAttendanceStatusCountMap(attendanceList);
 	return attendanceStatusCountMap;

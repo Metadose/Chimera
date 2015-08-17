@@ -6,16 +6,16 @@ import java.util.Map;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class Attendance implements IDomainObject {
 
     private static final long serialVersionUID = -724701840751019923L;
-    /**
-     * Key: company:123:staff:123:attendance:date:2014.12.31:status:123
-     */
+
     private Company company;
+    private Project project;
     private Staff staff;
     private Date date;
     private AttendanceStatus status;
@@ -47,52 +47,20 @@ public class Attendance implements IDomainObject {
 	;
     }
 
-    public Attendance(Company coID, Staff stf) {
+    public Attendance(Company coID, Project project, Staff stf) {
 	setCompany(coID);
+	setProject(project);
 	setStaff(stf);
     }
 
-    public Attendance(Company coID, Staff stf, AttendanceStatus stat) {
+    public Attendance(Company coID, Project project, Staff stf, AttendanceStatus stat, Date tstamp,
+	    double w) {
 	setCompany(coID);
-	setStaff(stf);
-	setStatus(stat);
-	setDate(new Date(System.currentTimeMillis()));
-    }
-
-    public Attendance(Company coID, Staff stf, Date tstamp) {
-	setCompany(coID);
-	setStaff(stf);
-	setDate(tstamp);
-    }
-
-    public Attendance(Company coID, Staff stf, AttendanceStatus stat,
-	    Date tstamp) {
-	setCompany(coID);
-	setStaff(stf);
-	setStatus(stat);
-	setDate(tstamp);
-    }
-
-    public Attendance(Company coID, Staff stf, AttendanceStatus stat,
-	    Date tstamp, double w) {
-	setCompany(coID);
+	setProject(project);
 	setStaff(stf);
 	setStatus(stat);
 	setDate(tstamp);
 	setWage(w);
-    }
-
-    public Attendance(Staff staff, AttendanceStatus status) {
-	setCompany(staff.getCompany());
-	setStaff(staff);
-	setStatus(status);
-    }
-
-    public Attendance(Staff staff, AttendanceStatus status, Date timestamp2) {
-	setCompany(staff.getCompany());
-	setStaff(staff);
-	setStatus(status);
-	setDate(timestamp2);
     }
 
     public Staff getStaff() {
@@ -149,26 +117,17 @@ public class Attendance implements IDomainObject {
 	this.extMap = extMap;
     }
 
-    public static String constructPattern(Staff staff, Date myDate) {
+    public static String constructPattern(Project project, Staff staff, Date myDate) {
 	Company company = staff.getCompany();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
-	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(), project.getId(),
 		staff.getId(), date, "*");
     }
 
-    public static String constructPattern(Staff staff) {
+    public static String constructPattern(Project project, Staff staff) {
 	Company company = staff.getCompany();
-	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(), project.getId(),
 		staff.getId(), "*", "*");
-    }
-
-    public static String constructKey(Staff staff, Date myDate,
-	    AttendanceStatus myStatus) {
-	Company company = staff.getCompany();
-	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
-	int status = myStatus.id();
-	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, company.getId(),
-		staff.getId(), date, status);
     }
 
     /**
@@ -179,18 +138,25 @@ public class Attendance implements IDomainObject {
 	Date myDate = getDate();
 	String date = DateUtils.formatDate(myDate, "yyyy.MM.dd");
 	int status = (getStatus() == null ? getStatusID() : getStatus().id());
-	return String.format(RegistryRedisKeys.KEY_ATTENDANCE,
-		this.company.getId(), this.staff.getId(), date, status);
+	return String.format(RegistryRedisKeys.KEY_ATTENDANCE, this.company.getId(),
+		this.project.getId(), this.staff.getId(), date, status);
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof Attendance ? ((Attendance) obj).getKey().equals(
-		getKey()) : false;
+	return obj instanceof Attendance ? ((Attendance) obj).getKey().equals(getKey()) : false;
     }
 
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    public Project getProject() {
+	return project;
+    }
+
+    public void setProject(Project project) {
+	this.project = project;
     }
 }

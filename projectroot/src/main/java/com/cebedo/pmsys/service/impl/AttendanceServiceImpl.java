@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +19,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
@@ -92,52 +92,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	Staff staff = attendance.getStaff();
-	String key = Attendance.constructPattern(staff, attendance.getDate());
+	String key = Attendance.constructPattern(attendance.getProject(), staff, attendance.getDate());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
 	this.attendanceValueRepo.delete(keys);
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ATTENDANCE,
-		attendance.getKey());
-    }
-
-    @Override
-    @Transactional
-    public void set(Staff staff, AttendanceStatus status) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return; // TODO Put notification.
-	}
-
-	Attendance attendance = new Attendance(staff, status);
-	double wage = getWage(staff, status);
-	attendance.setWage(wage);
-	this.attendanceValueRepo.set(attendance);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
-		ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
-    }
-
-    @Override
-    @Transactional
-    public void set(Staff staff, AttendanceStatus status, Date timestamp) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return; // TODO Put notification.
-	}
-
-	Attendance attendance = new Attendance(staff, status, timestamp);
-	double wage = getWage(staff, status);
-	attendance.setWage(wage);
-	this.attendanceValueRepo.set(attendance);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_ATTENDANCE,
 		attendance.getKey());
     }
 
@@ -216,7 +176,7 @@ public class AttendanceServiceImpl implements AttendanceService {
      */
     @Transactional
     @Override
-    public double getTotalWageOfStaffInRange(Staff staff, Date min, Date max) {
+    public double getTotalWageOfStaffInRange(Project project, Staff staff, Date min, Date max) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
@@ -229,7 +189,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
-	Set<Attendance> attendances = this.rangeStaffAttendance(staff, min, max);
+	Set<Attendance> attendances = this.rangeStaffAttendance(project, staff, min, max);
 
 	// Get total wage of all attendances.
 	return getTotalWageFromAttendance(attendances);
@@ -237,10 +197,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     /**
      * Get attendances given a range of min and max.
+     * 
+     * @param project
      */
     @Override
     @Transactional
-    public Set<Attendance> rangeStaffAttendance(Staff staff, long min, long max) {
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, long min, long max) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
@@ -252,7 +214,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.messageHelper.send(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
 		ConstantsRedis.OBJECT_ATTENDANCE);
 
-	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
+	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(project, staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
 	for (String key : keys) {
 	    Attendance attn = this.attendanceValueRepo.get(key);
@@ -269,28 +231,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    public Set<Attendance> rangeStaffAttendance(Staff staff, Date min, Date max) {
-	return this.rangeStaffAttendance(staff, min.getTime(), max.getTime());
-    }
-
-    @Override
-    @Transactional
-    public Attendance get(Staff staff, AttendanceStatus status, Date timestamp) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return new Attendance();
-	}
-
-	Attendance attn = this.attendanceValueRepo
-		.get(Attendance.constructKey(staff, timestamp, status));
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
-		ConstantsRedis.OBJECT_ATTENDANCE, attn.getKey());
-
-	return attn;
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, Date min, Date max) {
+	return this.rangeStaffAttendance(project, staff, min.getTime(), max.getTime());
     }
 
     @Override
@@ -325,7 +267,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Iterate through all dates.
 	for (Date date : dates) {
 	    Company co = staff.getCompany();
-	    Attendance attendance = new Attendance(co, staff, status, date, wage);
+	    Attendance attendance = new Attendance(co, attendanceMass.getProject(), staff, status, date,
+		    wage);
 
 	    // Check if date is a weekend.
 	    int dayOfWeek = DateUtils.getDayOfWeek(date);
@@ -349,24 +292,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	if (status != AttendanceStatus.DELETE) {
 	    this.attendanceValueRepo.multiSet(keyAttendanceMap);
 	}
-    }
-
-    @Override
-    @Transactional
-    public List<Attendance> getAllAttendance(Staff staff) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return new ArrayList<Attendance>();
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Staff.OBJECT_NAME, staff.getId(),
-		ConstantsRedis.OBJECT_ATTENDANCE);
-
-	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(staff));
-	return this.attendanceValueRepo.multiGet(keys);
     }
 
 }

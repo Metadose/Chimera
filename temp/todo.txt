@@ -94,4 +94,4 @@ project-done
 
 make the attendace project-based, oh shit. what if staff has multiple projects?
 
-
+optimize code sa project > staff edit/attendance

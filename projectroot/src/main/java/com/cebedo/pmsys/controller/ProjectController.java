@@ -943,11 +943,12 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = RegistryURL.EDIT_ATTENDANCE_RANGE)
-    public String editStaffRangeDates(
+    public String editAttendanceRange(
 	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates, HttpSession session,
 	    Model model) {
 	// Get prelim objects.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 
 	// Get the start and end date from the bean.
 	Date min = rangeDates.getStartDate();
@@ -958,7 +959,8 @@ public class ProjectController {
 	String maxDateStr = DateUtils.formatDate(max, "yyyy-MM-dd");
 
 	// Add attributes to model.
-	setStaffAttributes(model, staff, min, max, maxDateStr);
+	setStaffAttributes(model, project, staff, min, max, maxDateStr);
+
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
 
@@ -977,7 +979,7 @@ public class ProjectController {
 	// TODO
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
-	return editStaffWithMaxDate(model, session, attendance.getDate());
+	return editPageStaffCalMaxDate(model, session, attendance.getDate());
     }
 
     /**
@@ -987,7 +989,7 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
-    public String addAttendanceMass(
+    public String addMassAttendance(
 	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
 	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
 
@@ -1009,7 +1011,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 
-	return editStaffWithMaxDate(model, session, startDate);
+	return editPageStaffCalMaxDate(model, session, startDate);
     }
 
     /**
@@ -1019,7 +1021,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    private String editStaffWithMaxDate(Model model, HttpSession session, Date minDate) {
+    private String editPageStaffCalMaxDate(Model model, HttpSession session, Date minDate) {
 
 	// If the min date from session is lesser
 	// than min date passed, use from session.
@@ -1032,11 +1034,12 @@ public class ProjectController {
 	// Get the current year and month.
 	// This will be minimum.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	Date maxDate = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
 	String maxDateStr = (String) session.getAttribute(ATTR_CALENDAR_MAX_DATE_STR);
 
 	// Set model attributes.
-	setStaffAttributes(model, staff, minDate, maxDate, maxDateStr);
+	setStaffAttributes(model, project, staff, minDate, maxDate, maxDateStr);
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
 
@@ -1073,7 +1076,7 @@ public class ProjectController {
 	Date max = datePair.get(ATTR_CALENDAR_MAX_DATE);
 
 	// Set model attributes.
-	setStaffAttributes(model, staff, min, max, null);
+	setStaffAttributes(model, proj, staff, min, max, null);
 
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
@@ -1088,11 +1091,13 @@ public class ProjectController {
      * @param max
      * @param maxDateStr
      */
-    private void setStaffAttributes(Model model, Staff staff, Date min, Date max, String maxDateStr) {
+    private void setStaffAttributes(Model model, Project project, Staff staff, Date min, Date max,
+	    String maxDateStr) {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(staff, min, max);
+	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(project, staff,
+		min, max);
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
@@ -1118,8 +1123,8 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF, staff);
 	model.addAttribute(ATTR_ATTENDANCE_LIST, attendanceList);
 	model.addAttribute(ATTR_CALENDAR_RANGE_DATES, new FormDateRange());
-	model.addAttribute(ATTR_ATTENDANCE_MASS, new FormMassAttendance(staff));
-	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, staff));
+	model.addAttribute(ATTR_ATTENDANCE_MASS, new FormMassAttendance(project, staff));
+	model.addAttribute(ATTR_ATTENDANCE, new Attendance(co, project, staff));
 
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
@@ -1136,8 +1141,8 @@ public class ProjectController {
 	Date min = (Date) session.getAttribute(ATTR_CALENDAR_MIN_DATE);
 	Date max = (Date) session.getAttribute(ATTR_CALENDAR_MAX_DATE);
 
-	// TODO This will always be null.
-	// Will always go to this condition.
+	// If null,
+	// get current month.
 	if (min == null) {
 	    Calendar cal = Calendar.getInstance();
 	    int year = cal.get(Calendar.YEAR);
@@ -1150,6 +1155,7 @@ public class ProjectController {
 	    int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	    max = new GregorianCalendar(year, month, maxDays).getTime();
 	}
+
 	Map<String, Date> datePair = new HashMap<String, Date>();
 	datePair.put(ATTR_CALENDAR_MIN_DATE, min);
 	datePair.put(ATTR_CALENDAR_MAX_DATE, max);
