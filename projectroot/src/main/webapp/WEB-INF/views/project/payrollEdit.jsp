@@ -16,6 +16,9 @@
 		<title>Payroll Edit</title>
    	</c:when>
    	</c:choose>
+
+   	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/accounting-aux.js" />"type="text/javascript"></script>
 	
 	<!-- Ignite UI Required Combined CSS Files -->
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
@@ -33,6 +36,9 @@
 	  ul li img {
 	      cursor: pointer;
 	  }
+	.ui-widget-header {
+		width: 100%;
+	}
 	</style>
 </head>
 <body class="skin-blue">
@@ -224,10 +230,10 @@
 								                                			/>
 																	</td>
 																	<td>
-																		<c:url value="/staff/edit/${staff.id}/from/project/${projectPayroll.project.id}" var="staffLink"/>
+																		<c:url var="staffLink" value="/project/edit/staff/${staff.id}"/>
 																		<a href="${staffLink}" class="general-link">
 																		${staff.getFullName()}
-																		</a>
+				                                            			</a>
 																	</td>
 																</tr>
 																</c:if>
@@ -321,57 +327,49 @@
             dataSource: flatDS,
             primaryKey: "uuid",
             features:[
-                { name: "MultiColumnHeaders" }
+                { name: "MultiColumnHeaders" },
+				{ name: "Summaries" }
             ],
             columns: [
-               	{ headerText: "primaryKey", key: "uuid", dataType: "number", hidden: true },
-               	{ headerText: "Name", key: "name", dataType: "string" },
-               	{ headerText: "Total", key: "value", dataType: "number" },
-               	{ headerText: "Salary (Daily)", key: "wage", dataType: "number" },
+               	{ headerText: "primaryKey", key: "uuid", dataType: "string", hidden: true },
+               	{ headerText: "Name", key: "name", columnCssClass: "cebedo-no-wrap", dataType: "string" },
+               	{ headerText: "Total", key: "value", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               	{ headerText: "Salary (Daily)", key: "wage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
 
-               	{ headerText: "Overtime", group: [
-               			{ headerText: "Count", key: "breakdownOvertimeCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownOvertimeWage", dataType: "number" }
-               		]},
                	{ headerText: "Present", group: [
-               			{ headerText: "Count", key: "breakdownPresentCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownPresentWage", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownPresentCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownPresentWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               		]},
+               	{ headerText: "Overtime", group: [
+               			{ headerText: "Count", key: "breakdownOvertimeCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownOvertimeWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
                		]},
                	{ headerText: "Late", group: [
-               			{ headerText: "Count", key: "breakdownLateCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownLateWage", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownLateCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLateWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
                		]},
                	{ headerText: "Half-day", group: [
-               			{ headerText: "Count", key: "breakdownHalfdayCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownHalfdayWage", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownHalfdayCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownHalfdayWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
                		]},
                	{ headerText: "Leave", group: [
-               			{ headerText: "Count", key: "breakdownLeaveCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownLeaveWage", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownLeaveCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLeaveWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
                		]},
                	{ headerText: "Absent", group: [
-               			{ headerText: "Count", key: "breakdownAbsentCount", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownAbsentWage", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownAbsentCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownAbsentWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
                		]}
 
-            ],
-            dataRendered: function (evt, ui) {
-                ui.owner.element.find("tr td:nth-child(2)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(3)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(4)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(5)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(6)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(7)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(8)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(9)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(10)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(11)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(12)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(13)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(14)").css("text-align", "right");
-                ui.owner.element.find("tr td:nth-child(15)").css("text-align", "right");
-            }
+            ]
         });
+	});
+
+	$(document).ready(function() {
+		$('#treegrid1_summaries_footer_row_count').hide();
+		$('#treegrid1_summaries_footer_row_min').hide();
+		$('#treegrid1_summaries_footer_row_max').hide();
+		$('#treegrid1_summaries_footer_row_avg').hide();
 	});
 	</script>
 	</c:if>

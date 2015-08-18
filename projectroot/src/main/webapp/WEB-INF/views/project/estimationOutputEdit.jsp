@@ -12,24 +12,7 @@
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
 	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script>
-
-	<script type="text/javascript">
-	function formatQuantity(val) {
-		return accounting.formatMoney(val, "", 0, ",", ".");
-	}
-
-	function formatCurrency(val) {
-		return accounting.formatMoney(val, "&#8369;", 2, ",", ".");
-	}
-
-	function sumColumn(data) {
-        var i, total = 0, elem;
-        for (i = 0; i < data.length; i++) {
-            total += data[i];
-        }
-        return total;
-    }
-	</script>
+	<script src="<c:url value="/resources/js/accounting-aux.js" />"type="text/javascript"></script>
 	<style>
 	  ul {         
 	      padding:0 0 0 0;

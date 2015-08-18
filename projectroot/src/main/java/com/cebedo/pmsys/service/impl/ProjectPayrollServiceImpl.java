@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -213,6 +214,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Start date > end date.
+	if (projectPayroll.getStartDate().after(projectPayroll.getEndDate())) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE);
 	}
 
 	// Take a snapshot of the project structure

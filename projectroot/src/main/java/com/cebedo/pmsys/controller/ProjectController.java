@@ -339,7 +339,9 @@ public class ProjectController {
      * @return
      */
     private String editPage(long projectID, SessionStatus status) {
-	status.setComplete();
+	if (status != null) {
+	    status.setComplete();
+	}
 	return String.format(RegistryURL.REDIRECT_PROJECT_EDIT, projectID);
     }
 
@@ -1413,11 +1415,21 @@ public class ProjectController {
 	String response = this.projectPayrollService.createPayroll(proj, projectPayroll);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
+	// If payroll creation was rejected,
+	// return back to project.
+	if (projectPayroll.getUuid() == null) {
+	    return editPage(proj.getId());
+	}
+
 	// List of possible approvers.
 	setFormSelectors(proj, model);
 
 	// Complete the transaction.
 	return payrollEndState(projectPayroll);
+    }
+
+    private String editPage(long id) {
+	return editPage(id, null);
     }
 
     /**

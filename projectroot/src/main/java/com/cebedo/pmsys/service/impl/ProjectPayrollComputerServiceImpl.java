@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -283,13 +282,6 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @return
      */
     private void constructTreeGridStaff() {
-
-	Random randomno = new Random();
-
-	// Manager total.
-	// Add header beans.
-	JSONPayrollResult headerBean = new JSONPayrollResult("Total", this.overallTotalOfStaff, 0);
-	this.treeGrid.add(headerBean);
 
 	// Loop through managers.
 	// Sort by formal name.
