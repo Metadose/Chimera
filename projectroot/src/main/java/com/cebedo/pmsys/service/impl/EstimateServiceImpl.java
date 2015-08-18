@@ -28,7 +28,6 @@ import com.cebedo.pmsys.constants.ConstantsEstimation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.TableDimensionCHB;
 import com.cebedo.pmsys.enums.TableDimensionCHBFooting;
@@ -47,7 +46,6 @@ import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.EstimateUtils;
-import com.cebedo.pmsys.utils.UnitConversionUtils;
 import com.google.gson.Gson;
 
 @Service
@@ -63,21 +61,23 @@ public class EstimateServiceImpl implements EstimateService {
     private static final int EXCEL_ESTIMATE_MASONRY_CHB = 5;
     private static final int EXCEL_ESTIMATE_MASONRY_CHB_LAYING = 6;
     private static final int EXCEL_ESTIMATE_MASONRY_PLASTERING = 7;
-    private static final int EXCEL_ESTIMATE_MASONRY_FOUNDATION_HEIGHT = 8;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOUNDATION_AREA = 8;
     private static final int EXCEL_ESTIMATE_MASONRY_CHB_FOOTING = 9;
     private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_LENGTH = 10;
-    private static final int EXCEL_ESTIMATE_MR_CHB = 11;
-    private static final int EXCEL_DETAILS_REMARKS = 12;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH = 11;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT = 12;
+    private static final int EXCEL_ESTIMATE_MR_CHB = 13;
+    private static final int EXCEL_DETAILS_REMARKS = 14;
 
     // Cost
-    private static final int EXCEL_COST_CHB = 13;
-    private static final int EXCEL_COST_CEMENT_40KG = 14;
-    private static final int EXCEL_COST_CEMENT_50KG = 15;
-    private static final int EXCEL_COST_SAND = 16;
-    private static final int EXCEL_COST_GRAVEL = 17;
-    private static final int EXCEL_COST_STEEL_BAR = 18;
-    private static final int EXCEL_COST_TIE_WIRE_KILOS = 19;
-    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 20;
+    private static final int EXCEL_COST_CHB = 15;
+    private static final int EXCEL_COST_CEMENT_40KG = 16;
+    private static final int EXCEL_COST_CEMENT_50KG = 17;
+    private static final int EXCEL_COST_SAND = 18;
+    private static final int EXCEL_COST_GRAVEL = 19;
+    private static final int EXCEL_COST_STEEL_BAR = 20;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 21;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 22;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -324,8 +324,8 @@ public class EstimateServiceImpl implements EstimateService {
 		Row row = rowIterator.next();
 		int rowCountDisplay = row.getRowNum() + 1;
 
-		// Skip first 3 lines.
-		if (rowCountDisplay <= 3) {
+		// Skip lines.
+		if (rowCountDisplay <= 4) {
 		    continue;
 		}
 
@@ -413,11 +413,10 @@ public class EstimateServiceImpl implements EstimateService {
 			}
 			continue;
 
-		    case EXCEL_ESTIMATE_MASONRY_FOUNDATION_HEIGHT:
-			double foundation = (Double) (this.excelHelper
-				.getValueAsExpected(workbook, cell) == null ? 0 : this.excelHelper
-				.getValueAsExpected(workbook, cell));
-			estimateComputationBean.setChbFoundationHeight(foundation);
+		    case EXCEL_ESTIMATE_MASONRY_FOUNDATION_AREA:
+			double foundationArea = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationBean.setAreaBelowGround(foundationArea);
 			continue;
 
 		    case EXCEL_ESTIMATE_MASONRY_CHB_FOOTING:
@@ -432,6 +431,20 @@ public class EstimateServiceImpl implements EstimateService {
 			double footingLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateComputationShape.setFootingLength(footingLength);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
+		    case EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH:
+			double footingWidth = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationShape.setFootingWidth(footingWidth);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
+		    case EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT:
+			double footingHeight = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationShape.setFootingHeight(footingHeight);
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
@@ -620,17 +633,12 @@ public class EstimateServiceImpl implements EstimateService {
 	// Get the footing mixture given the mix class and footing dimensions.
 	TableMixtureCHBFooting footingMixture = getCHBFootingMixture(chbFooting, mixClass);
 
-	// Get thickness and width.
-	// TODO Do conversion for other calculations also.
-	double footingThickness = UnitConversionUtils.convertToMeter(chbFooting.getThickessUnit(),
-		chbFooting.getThickness());
-	double footingWidth = UnitConversionUtils.convertToMeter(chbFooting.getWidthUnit(),
-		chbFooting.getWidth());
-
-	// TODO Optimize below code.
-	// getLength(estimate) is called somewhere else in this class.
-	double length = estimateComputationBean.getShape().getFootingLength();
-	double footingVolume = footingThickness * footingWidth * length;
+	// Compute for volume.
+	EstimateComputationShape shape = estimateComputationBean.getShape();
+	double length = shape.getFootingLength();
+	double width = shape.getFootingWidth();
+	double height = shape.getFootingHeight();
+	double footingVolume = height * width * length;
 
 	// Estimations.
 	double cement40kg = Math.ceil(footingVolume * footingMixture.getPartCement40kg());
@@ -677,29 +685,6 @@ public class EstimateServiceImpl implements EstimateService {
     }
 
     /**
-     * Don't include the area below ground when plastering.
-     * 
-     * @param estimateComputationBean
-     * @param length
-     * @param area
-     */
-    private double minusAreaBelowGround(EstimateComputationBean estimateComputationBean, double length,
-	    double area) {
-
-	// If the unit is not meter,
-	// convert it.
-	double foundationHeight = estimateComputationBean.getChbFoundationHeight();
-	CommonLengthUnit lengthUnit = estimateComputationBean.getChbFoundationUnit();
-	if (lengthUnit != CommonLengthUnit.METER) {
-	    foundationHeight = UnitConversionUtils.convertToMeter(lengthUnit, foundationHeight);
-	}
-
-	double areaBelowGround = length * foundationHeight;
-	area -= areaBelowGround;
-	return area;
-    }
-
-    /**
      * Add the area of the top side.
      * 
      * @param estimateComputationBean
@@ -708,15 +693,14 @@ public class EstimateServiceImpl implements EstimateService {
      * @param length
      * @param area
      */
-    private double addAreaTopSide(EstimateComputationBean estimateComputationBean,
-	    EstimateComputationShape estimateComputationShape, double shapeArea, double length,
-	    double area) {
+    private double addAreaTopSide(final EstimateComputationShape estimateComputationShape,
+	    final double shapeArea, double area) {
 
 	// Get the thickness.
 	double thickness = estimateComputationShape.getVolume() / shapeArea;
 
 	// Get the area and add to overall area.
-	double topSideArea = length * thickness;
+	double topSideArea = estimateComputationShape.getFootingLength() * thickness;
 	area += topSideArea;
 
 	return area;
@@ -732,49 +716,31 @@ public class EstimateServiceImpl implements EstimateService {
     private void estimateMasonryPlastering(EstimateComputationBean estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
-	// Get the length "longest side of the shape".
-	double length = estimateComputationShape.getFootingLength();
-
 	// Consider the height below ground.
-	// Get the height of foundation (height of wall below the
-	// ground) and don't include that to the area to be plastered.
+	// Don't include that to the area to be plastered.
 	double shapeArea = estimateComputationShape.getArea();
-	double area = minusAreaBelowGround(estimateComputationBean, length, shapeArea);
+	double area = shapeArea - estimateComputationBean.getAreaBelowGround();
 
-	// If we're plastering back to back,
+	// The default is to plaster back to back,
 	// multiply the area by 2.
-	// Else, plaster only 1 side.
 	area = area * 2;
 
-	// If we're plastering the top side,
-	// get the thickness area then plaster it.
-	area = addAreaTopSide(estimateComputationBean, estimateComputationShape, shapeArea, length, area);
+	// Plaster also the top side.
+	area = addAreaTopSide(estimateComputationShape, shapeArea, area);
 
-	double volume = area * TableMixturePlaster.STANDARD_PLASTER_THICKNESS;
+	// Get the volume of the plaster.
+	double volume = area * ConstantsEstimation.PLASTER_THICKNESS;
 
-	// Find the appropriate plaster mixture
-	// given this proportion.
-	TableProportionConcrete proportion = estimateComputationBean.getEstimationClass()
-		.getConcreteProportion();
-	String proportionMixClass = proportion.getMixClass();
+	// Get the appropriate plaster mixture.
+	TableMixturePlaster plasterMixture = estimateComputationBean.getEstimationClass()
+		.getPlasterMixture();
 
-	// Find the plaster mix.
-	TableMixturePlaster plasterMixture = TableMixturePlaster.CLASS_A;
-	for (TableMixturePlaster plasterMix : TableMixturePlaster.class.getEnumConstants()) {
-
-	    String plasterMixClass = plasterMix.getMixClass();
-	    if (plasterMixClass.equals(proportionMixClass)) {
-		plasterMixture = plasterMix;
-		break;
-	    }
-	}
-
+	// Solve for the needed materials.
 	double bags40kg = Math.ceil(volume * plasterMixture.getPartCement40kg());
 	double bags50kg = Math.ceil(volume * plasterMixture.getPartCement50kg());
 	double sand = Math.ceil(volume * plasterMixture.getPartSand());
 
-	// Set the results, concrete proportion, plaster mixture,
-	// is back to back, plaster top side.
+	// Set the results.
 	EstimateResultMasonryPlastering plasteringResults = new EstimateResultMasonryPlastering(
 		estimateComputationBean, bags40kg, bags50kg, sand);
 	estimateComputationBean.setResultPlasteringEstimate(plasteringResults);

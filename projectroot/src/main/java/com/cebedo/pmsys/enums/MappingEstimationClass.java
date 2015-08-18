@@ -8,8 +8,7 @@ public enum MappingEstimationClass {
     private String mixClass;
     private TableProportionConcrete concreteProportion;
 
-    MappingEstimationClass(String label, String mixClass,
-	    TableProportionConcrete concreteProportion) {
+    MappingEstimationClass(String label, String mixClass, TableProportionConcrete concreteProportion) {
 	this.mixClass = mixClass;
 	this.label = label;
 	this.concreteProportion = concreteProportion;
@@ -37,6 +36,22 @@ public enum MappingEstimationClass {
 
     public void setMixClass(String mixClass) {
 	this.mixClass = mixClass;
+    }
+
+    public TableMixturePlaster getPlasterMixture() {
+	String proportionMixClass = getConcreteProportion().getMixClass();
+
+	// Find the plaster mix.
+	TableMixturePlaster plasterMixture = TableMixturePlaster.CLASS_A;
+	for (TableMixturePlaster plasterMix : TableMixturePlaster.class.getEnumConstants()) {
+
+	    String plasterMixClass = plasterMix.getMixClass();
+	    if (plasterMixClass.equals(proportionMixClass)) {
+		plasterMixture = plasterMix;
+		break;
+	    }
+	}
+	return plasterMixture;
     }
 
 }

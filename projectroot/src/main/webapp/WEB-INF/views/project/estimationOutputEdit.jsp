@@ -172,10 +172,9 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
@@ -229,7 +228,10 @@ $(document).ready(function() {
 			{ key: "mrCHBTieWireRoll", dataType: "number", hidden: true },
 			{ key: "mrCHBCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrCHBCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true },
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true }
 		]
 	});
 
@@ -248,10 +250,9 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
@@ -305,7 +306,10 @@ $(document).ready(function() {
 			{ key: "mrCHBTieWireRoll", dataType: "number", hidden: true },
 			{ key: "mrCHBCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrCHBCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true },
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true }
 		]
 	});
 
@@ -324,10 +328,9 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
@@ -380,7 +383,10 @@ $(document).ready(function() {
 			{ key: "mrCHBTieWireRoll", dataType: "number", hidden: true },
 			{ key: "mrCHBCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrCHBCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true },
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true }
 		]
 	});
 
@@ -399,10 +405,9 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Quantity", group: [
@@ -455,7 +460,10 @@ $(document).ready(function() {
 			{ key: "mrCHBTieWireRoll", dataType: "number", hidden: true },
 			{ key: "mrCHBCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrCHBCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true },
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true }
 		]
 	});
 
@@ -473,10 +481,14 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string" },
-			{ headerText: "Area", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "Volume", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Area Below<br/>Ground (sq.m.)", key: "areaBelowGround", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Footing", group: [
+			{ headerText: "Length (m)",	key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Width (m)", 	key: "footingWidth", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Height (m)",	key: "footingHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			]},
 			
 			/* Concrete */
 			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
@@ -544,10 +556,9 @@ $(document).ready(function() {
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
-			{ headerText: "Area", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "Volume", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Foundation<br/>Height (m)", key: "chbFoundationHeight", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
-			{ headerText: "CHB Footing<br/>Length (m)",    key: "footingLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			
 			/* Concrete */
 			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
@@ -592,14 +603,18 @@ $(document).ready(function() {
 			/* METAL REINFORCEMENT CHB */
 			{ headerText: "Quantity", group: [
 			{ headerText: "Steel Bar<br/>(Pieces)", key: "mrCHBSteelBar",					columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "Tie Wire (kg)<br/>(Kilos)", key: "mrCHBTieWireKg",				columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "Tie Wire (Roll)<br/>(Rolls)", key: "mrCHBTieWireRoll",			columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			{ headerText: "Tie Wire<br/>(Kilos)", key: "mrCHBTieWireKg",				columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(Rolls)", key: "mrCHBTieWireRoll",			columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			{ headerText: "Cost", group: [
 			{ headerText: "Steel Bar<br/>(PHP/Piece)", key: "mrCHBCostSteelBar", 			formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "Tie Wire (kg)<br/>(PHP/Kilo)", key: "mrCHBCostTieWireKg",		formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
-			{ headerText: "Tie Wire (Roll)<br/>(PHP/Roll)", key: "mrCHBCostTieWireRoll",	formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
-			]}
+			{ headerText: "Tie Wire<br/>(PHP/Kilo)", key: "mrCHBCostTieWireKg",		formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(PHP/Roll)", key: "mrCHBCostTieWireRoll",	formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			]},
+
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true }
 		]
 	});
 

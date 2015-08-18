@@ -12,4 +12,9 @@ public class ConstantsEstimation {
      */
     public static final double TIE_WIRE_ONE_ROLL_KILOGRAM = 45;
 
+    /**
+     * Standard plaster thickness.
+     */
+    public static final double PLASTER_THICKNESS = 0.016;
+
 }

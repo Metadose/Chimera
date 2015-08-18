@@ -13,8 +13,10 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private String remarks;
     private double area;
     private double volume;
-    private double chbFoundationHeight;
+    private double areaBelowGround;
     private double footingLength;
+    private double footingWidth;
+    private double footingHeight;
 
     // Concrete.
     private double concreteCement40kg;
@@ -89,8 +91,10 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.remarks = estimateComputationBean.getRemarks();
 	this.area = estimateComputationShape.getOriginalArea();
 	this.volume = estimateComputationShape.getOriginalVolume();
-	this.chbFoundationHeight = estimateComputationBean.getChbFoundationHeight();
+	this.areaBelowGround = estimateComputationBean.getAreaBelowGround();
 	this.footingLength = estimateComputationShape.getFootingLength();
+	this.footingWidth = estimateComputationShape.getFootingWidth();
+	this.footingHeight = estimateComputationShape.getFootingHeight();
 
 	// CHB.
 	this.chbTotal = chb.getTotalCHB();
@@ -180,14 +184,6 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setVolume(double volume) {
 	this.volume = volume;
-    }
-
-    public double getChbFoundationHeight() {
-	return chbFoundationHeight;
-    }
-
-    public void setChbFoundationHeight(double chbFoundationHeight) {
-	this.chbFoundationHeight = chbFoundationHeight;
     }
 
     public double getFootingLength() {
@@ -492,6 +488,30 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setMrCHBCostTieWireRoll(double mrCHBCostTieWireRoll) {
 	this.mrCHBCostTieWireRoll = mrCHBCostTieWireRoll;
+    }
+
+    public double getAreaBelowGround() {
+	return areaBelowGround;
+    }
+
+    public void setAreaBelowGround(double areaBelowGround) {
+	this.areaBelowGround = areaBelowGround;
+    }
+
+    public double getFootingHeight() {
+	return footingHeight;
+    }
+
+    public void setFootingHeight(double footingHeight) {
+	this.footingHeight = footingHeight;
+    }
+
+    public double getFootingWidth() {
+	return footingWidth;
+    }
+
+    public void setFootingWidth(double footingWidth) {
+	this.footingWidth = footingWidth;
     }
 
 }

@@ -11,6 +11,8 @@ public class EstimateComputationShape implements Serializable {
     private double originalArea;
     private double originalVolume;
     private double footingLength;
+    private double footingWidth;
+    private double footingHeight;
 
     public double getArea() {
 	return area;
@@ -50,5 +52,21 @@ public class EstimateComputationShape implements Serializable {
 
     public void setOriginalVolume(double originalVolume) {
 	this.originalVolume = originalVolume;
+    }
+
+    public double getFootingWidth() {
+	return footingWidth;
+    }
+
+    public void setFootingWidth(double footingWidth) {
+	this.footingWidth = footingWidth;
+    }
+
+    public double getFootingHeight() {
+	return footingHeight;
+    }
+
+    public void setFootingHeight(double footingHeight) {
+	this.footingHeight = footingHeight;
     }
 }

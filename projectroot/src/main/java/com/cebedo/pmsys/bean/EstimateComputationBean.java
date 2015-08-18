@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.MappingEstimationClass;
 import com.cebedo.pmsys.enums.TableDimensionCHB;
@@ -57,8 +56,7 @@ public class EstimateComputationBean implements Serializable {
     // Masonry (Plastering) inputs.
     // TODO Is there a way to compute foundation based on area?
     // If no, choose this in JSP.
-    private double chbFoundationHeight;
-    private CommonLengthUnit chbFoundationUnit = CommonLengthUnit.METER;
+    private double areaBelowGround = 0;
 
     // Prices per Unit.
     private double costPerUnitCHB = 0;
@@ -185,22 +183,6 @@ public class EstimateComputationBean implements Serializable {
 
     public void setEstimateTypes(List<EstimateType> estimateTypes) {
 	this.estimateTypes = estimateTypes;
-    }
-
-    public double getChbFoundationHeight() {
-	return chbFoundationHeight;
-    }
-
-    public void setChbFoundationHeight(double chbFoundationHeight) {
-	this.chbFoundationHeight = chbFoundationHeight;
-    }
-
-    public CommonLengthUnit getChbFoundationUnit() {
-	return chbFoundationUnit;
-    }
-
-    public void setChbFoundationUnit(CommonLengthUnit chbFoundationUnit) {
-	this.chbFoundationUnit = chbFoundationUnit;
     }
 
     public TableDimensionCHB getChbDimensions() {
@@ -505,6 +487,14 @@ public class EstimateComputationBean implements Serializable {
 
     public void setQuantityTieWireRolls(double quantityTieWireRolls) {
 	this.quantityTieWireRolls = quantityTieWireRolls;
+    }
+
+    public double getAreaBelowGround() {
+	return areaBelowGround;
+    }
+
+    public void setAreaBelowGround(double areaBelowGround) {
+	this.areaBelowGround = areaBelowGround;
     }
 
 }

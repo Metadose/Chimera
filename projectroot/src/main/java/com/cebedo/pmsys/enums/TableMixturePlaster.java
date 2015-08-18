@@ -14,8 +14,6 @@ public enum TableMixturePlaster {
     CLASS_D("Class D", "D", 1, 5, 7.5, CommonMassUnit.CEMENT_BAG_40KG, 6.0,
 	    CommonMassUnit.CEMENT_BAG_50KG, 1.0, CommonVolumeUnit.CUBIC_METER);
 
-    public static final double STANDARD_PLASTER_THICKNESS = 0.016;
-
     private String label;
     private String mixClass;
     private double ratioCement;
@@ -27,11 +25,9 @@ public enum TableMixturePlaster {
     private double partSand;
     private CommonVolumeUnit partSandUnit;
 
-    TableMixturePlaster(String label, String mixClass, double ratioCement,
-	    double ratioSand, double partCement40kg,
-	    CommonMassUnit partCement40kgUnit, double partCement50kg,
-	    CommonMassUnit partCement50kgUnit, double partSand,
-	    CommonVolumeUnit partSandUnit) {
+    TableMixturePlaster(String label, String mixClass, double ratioCement, double ratioSand,
+	    double partCement40kg, CommonMassUnit partCement40kgUnit, double partCement50kg,
+	    CommonMassUnit partCement50kgUnit, double partSand, CommonVolumeUnit partSandUnit) {
 	this.mixClass = mixClass;
 	this.label = label;
 	this.ratioCement = ratioCement;
