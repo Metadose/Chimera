@@ -24,13 +24,13 @@ public class EstimateResultMasonryCHBFooting implements Serializable {
 	;
     }
 
-    public EstimateResultMasonryCHBFooting(EstimateComputationBean estimateComputationBean, double cement40kg, double gravel2,
-	    double sand2) {
+    public EstimateResultMasonryCHBFooting(EstimateComputationBean estimateComputationBean,
+	    double cement40kg, double gravel2, double sand2) {
 	setCement40kg(cement40kg);
 	setGravel(gravel2);
 	setSand(sand2);
 
-	double cement50kg = EstimateUtils.convert40kgTo50kg(cement40kg);
+	double cement50kg = Math.ceil(EstimateUtils.convert40kgTo50kg(cement40kg));
 	setCostCement40kg(cement40kg * estimateComputationBean.getCostPerUnitCement40kg());
 	setCostCement50kg(cement50kg * estimateComputationBean.getCostPerUnitCement50kg());
 	setCostSand(sand2 * estimateComputationBean.getCostPerUnitSand());
