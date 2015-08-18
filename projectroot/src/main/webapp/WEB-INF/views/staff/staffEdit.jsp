@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-md-12">
 
-                    	<c:if test="${!empty project}">
+                    	<c:if test="${fromProject}">
                     	<c:url var="urlBack" value="/project/edit/${project.id}" />
 	                    <a href="${urlBack}">
 							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
@@ -69,12 +69,12 @@
                             <ul class="nav nav-tabs">
 
                             	<c:choose>
-                            	<c:when test="${!empty project}">
+                            	<c:when test="${fromProject}">
                                 <li class="active"><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 <li><a href="#tab_1" data-toggle="tab">Details</a></li>
                             	</c:when>
 
-                            	<c:when test="${empty project}">
+                            	<c:when test="${!fromProject}">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                             	</c:when>
                             	</c:choose>
@@ -85,11 +85,11 @@
                             </ul>
                             <div class="tab-content">
                             	<c:choose>
-                            	<c:when test="${!empty project}">
+                            	<c:when test="${fromProject}">
                             	<div class="tab-pane" id="tab_1">
                             	</c:when>
 
-                            	<c:when test="${empty project}">
+                            	<c:when test="${!fromProject}">
                                 <div class="tab-pane active" id="tab_1">
                             	</c:when>
                             	</c:choose>
@@ -281,16 +281,9 @@
               						</div>
                                 </div><!-- /.tab-pane -->
 
-                                <c:choose>
-                            	<c:when test="${!empty project}">
-                                <div class="tab-pane active" id="tab_payroll">
-                            	</c:when>
                             	
-                            	<c:when test="${empty project}">
-                                <div class="tab-pane" id="tab_payroll">
-                            	</c:when>
-                            	</c:choose>
-
+                            	<c:if test="${fromProject}">
+                                <div class="tab-pane active" id="tab_payroll">
                                 	<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
@@ -492,6 +485,7 @@
                    					</div>
                                 </div><!-- /.tab-pane -->
                                 </c:if>
+                                </c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
@@ -500,7 +494,7 @@
         </aside>
 	</div>
 	
-	<c:if test="${staff.id != 0}">
+	<c:if test="${fromProject}">
 	<div id="myModal" class="modal fade">
 	    <div class="modal-dialog">
 	        <div class="modal-content">

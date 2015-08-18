@@ -210,6 +210,8 @@ public class ProjectController {
     public static final String ATTR_ATTENDANCE_STATUS_MAP = "attendanceStatusMap";
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 
+    public static final String ATTR_FROM_PROJECT = "fromProject";
+
     private AuthHelper authHelper = new AuthHelper();
 
     private ProjectService projectService;
@@ -1131,6 +1133,8 @@ public class ProjectController {
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
 	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
+
+	model.addAttribute(ATTR_FROM_PROJECT, true);
     }
 
     /**

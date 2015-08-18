@@ -211,8 +211,9 @@ public class EstimateServiceImpl implements EstimateService {
 	estimationOutput.setQuantityTieWireRolls(quantityTieWireRolls);
 
 	// Grand total.
-	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel;
-	estimationOutput.setCostGrandTotal(estimationOutput.getCostGrandTotal() + rowTotal);
+	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel
+		+ costSteelBars + costTieWireKilos + costTieWireRolls;
+	estimationOutput.setCostGrandTotal(rowTotal);
     }
 
     /**
