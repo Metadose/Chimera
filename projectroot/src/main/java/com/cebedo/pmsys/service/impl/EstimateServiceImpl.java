@@ -75,6 +75,9 @@ public class EstimateServiceImpl implements EstimateService {
     private static final int EXCEL_COST_CEMENT_50KG = 15;
     private static final int EXCEL_COST_SAND = 16;
     private static final int EXCEL_COST_GRAVEL = 17;
+    private static final int EXCEL_COST_STEEL_BAR = 18;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 19;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 20;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -165,14 +168,21 @@ public class EstimateServiceImpl implements EstimateService {
 		+ estimateComputationBean.getCostCement50kg();
 	double costSand = estimationOutput.getCostSand() + estimateComputationBean.getCostSand();
 	double costGravel = estimationOutput.getCostGravel() + estimateComputationBean.getCostGravel();
-	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel;
+	double costSteelBars = estimationOutput.getCostSteelBars()
+		+ estimateComputationBean.getCostSteelBars();
+	double costTieWireKilos = estimationOutput.getCostTieWireKilos()
+		+ estimateComputationBean.getCostTieWireKilos();
+	double costTieWireRolls = estimationOutput.getCostTieWireRolls()
+		+ estimateComputationBean.getCostTieWireRolls();
 
 	estimationOutput.setCostCHB(costCHB);
 	estimationOutput.setCostCement40kg(costCement40kg);
 	estimationOutput.setCostCement50kg(costCement50kg);
 	estimationOutput.setCostSand(costSand);
 	estimationOutput.setCostGravel(costGravel);
-	estimationOutput.setCostGrandTotal(estimationOutput.getCostGrandTotal() + rowTotal);
+	estimationOutput.setCostSteelBars(costSteelBars);
+	estimationOutput.setCostTieWireKilos(costTieWireKilos);
+	estimationOutput.setCostTieWireRolls(costTieWireRolls);
 
 	// Quantity.
 	double quantCHB = estimationOutput.getQuantityCHB() + estimateComputationBean.getQuantityCHB();
@@ -184,12 +194,25 @@ public class EstimateServiceImpl implements EstimateService {
 		+ estimateComputationBean.getQuantitySand();
 	double quantGravel = estimationOutput.getQuantityGravel()
 		+ estimateComputationBean.getQuantityGravel();
+	double quantitySteelBars = estimationOutput.getQuantitySteelBars()
+		+ estimateComputationBean.getQuantitySteelBars();
+	double quantityTieWireKilos = estimationOutput.getQuantityTieWireKilos()
+		+ estimateComputationBean.getQuantityTieWireKilos();
+	double quantityTieWireRolls = estimationOutput.getQuantityTieWireRolls()
+		+ estimateComputationBean.getQuantityTieWireRolls();
 
 	estimationOutput.setQuantityCHB(quantCHB);
 	estimationOutput.setQuantityCement40kg(quantCement40kg);
 	estimationOutput.setQuantityCement50kg(quantCement50kg);
 	estimationOutput.setQuantitySand(quantSand);
 	estimationOutput.setQuantityGravel(quantGravel);
+	estimationOutput.setQuantitySteelBars(quantitySteelBars);
+	estimationOutput.setQuantityTieWireKilos(quantityTieWireKilos);
+	estimationOutput.setQuantityTieWireRolls(quantityTieWireRolls);
+
+	// Grand total.
+	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel;
+	estimationOutput.setCostGrandTotal(estimationOutput.getCostGrandTotal() + rowTotal);
     }
 
     /**
@@ -204,9 +227,12 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimateResultMasonryCHBLaying chbLaying = estimateComputationBean.getResultCHBLayingEstimate();
 	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
 	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
+	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
+
+	double costCement40kg = 0, costCement50kg = 0, costSand = 0, costGravel = 0, costCHB = 0;
+	double costSteelBar = 0, costTieWireKG = 0, costTieWireRoll = 0;
 
 	// Concrete.
-	double costCement40kg = 0, costCement50kg = 0, costSand = 0, costGravel = 0, costCHB = 0;
 	costCement40kg += concrete.getCostCement40kg();
 	costCement50kg += concrete.getCostCement50kg();
 	costSand += concrete.getCostSand();
@@ -231,12 +257,20 @@ public class EstimateServiceImpl implements EstimateService {
 	costSand += footing.getCostSand();
 	costGravel += footing.getCostGravel();
 
+	// Metal reinforcement (CHB).
+	costSteelBar += mrCHB.getCostSteelBars();
+	costTieWireKG += mrCHB.getCostTieWireKilos();
+	costTieWireRoll += mrCHB.getCostTieWireRolls();
+
 	// Set the results for the whole row.
 	estimateComputationBean.setCostCement40kg(costCement40kg);
 	estimateComputationBean.setCostCement50kg(costCement50kg);
 	estimateComputationBean.setCostSand(costSand);
 	estimateComputationBean.setCostGravel(costGravel);
 	estimateComputationBean.setCostCHB(costCHB);
+	estimateComputationBean.setCostSteelBars(costSteelBar);
+	estimateComputationBean.setCostTieWireKilos(costTieWireKG);
+	estimateComputationBean.setCostTieWireRolls(costTieWireRoll);
     }
 
     /**
@@ -278,6 +312,10 @@ public class EstimateServiceImpl implements EstimateService {
 	    double costCement50kg = 0;
 	    double costSand = 0;
 	    double costGravel = 0;
+	    double costSteelBars = 0;
+	    double costTieWireKilos = 0;
+	    double costTieWireRoll = 0;
+
 	    boolean firstRow = true;
 
 	    // Looping all rows.
@@ -307,6 +345,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    estimateComputationBean.setCostPerUnitCement50kg(costCement50kg);
 		    estimateComputationBean.setCostPerUnitSand(costSand);
 		    estimateComputationBean.setCostPerUnitGravel(costGravel);
+		    estimateComputationBean.setCostPerUnitSteelBars(costSteelBars);
+		    estimateComputationBean.setCostPerUnitTieWireKilos(costTieWireKilos);
+		    estimateComputationBean.setCostPerUnitTieWireRolls(costTieWireRoll);
 		}
 
 		// Looping all cells in this row.
@@ -438,6 +479,24 @@ public class EstimateServiceImpl implements EstimateService {
 			estimateComputationBean.setCostPerUnitGravel(costGravel);
 			continue;
 
+		    case EXCEL_COST_STEEL_BAR:
+			costSteelBars = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationBean.setCostPerUnitSteelBars(costSteelBars);
+			continue;
+
+		    case EXCEL_COST_TIE_WIRE_KILOS:
+			costTieWireKilos = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationBean.setCostPerUnitTieWireKilos(costTieWireKilos);
+			continue;
+
+		    case EXCEL_COST_TIE_WIRE_ROLLS:
+			costTieWireRoll = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			estimateComputationBean.setCostPerUnitTieWireRolls(costTieWireRoll);
+			continue;
+
 		    }
 		}
 		firstRow = false;
@@ -527,15 +586,21 @@ public class EstimateServiceImpl implements EstimateService {
 	TableMRCHBTieWire tieWireTable = estimateComputationBean.getMrCHBTieWire();
 	double kgPerSqMeter = tieWireTable.getKgPerSqMeter();
 
-	// Number of tie wire rolls to buy.
+	// Number of tie wire kilos to buy.
 	double tieWireKilos = Math.ceil(area * kgPerSqMeter);
+
+	// Number of tie wire rolls to buy.
 	double tieWireRolls = Math.ceil(tieWireKilos / ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
 
 	// Create the result bean.
-	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(steelBars, tieWireKilos, tieWireRolls);
+	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(estimateComputationBean, steelBars,
+		tieWireKilos, tieWireRolls);
 
 	// Set the result to the estimation object.
 	estimateComputationBean.setResultMRCHB(resultMRCHB);
+	estimateComputationBean.setQuantitySteelBars(steelBars);
+	estimateComputationBean.setQuantityTieWireKilos(tieWireKilos);
+	estimateComputationBean.setQuantityTieWireRolls(tieWireRolls);
     }
 
     /**

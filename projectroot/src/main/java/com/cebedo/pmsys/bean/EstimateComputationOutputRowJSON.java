@@ -60,6 +60,15 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private double footingCostSand;
     private double footingCostGravel;
 
+    // Metal reinforcement (CHB).
+    private double mrCHBSteelBar;
+    private double mrCHBTieWireKg;
+    private double mrCHBTieWireRoll;
+
+    private double mrCHBCostSteelBar;
+    private double mrCHBCostTieWireKg;
+    private double mrCHBCostTieWireRoll;
+
     public EstimateComputationOutputRowJSON() {
 	;
     }
@@ -72,6 +81,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	EstimateResultMasonryCHBLaying chbLaying = estimateComputationBean.getResultCHBLayingEstimate();
 	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
 	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
+	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
 
 	// Details.
 	this.uuid = UUID.randomUUID().toString();
@@ -127,6 +137,15 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.footingCostCement50kg = footing.getCostCement50kg();
 	this.footingCostSand = footing.getCostSand();
 	this.footingCostGravel = footing.getCostGravel();
+
+	// Metal reinforcement (CHB).
+	this.mrCHBSteelBar = mrCHB.getSteelBarsQuantity();
+	this.mrCHBTieWireKg = mrCHB.getTieWireKilos();
+	this.mrCHBTieWireRoll = mrCHB.getTieWireRolls();
+
+	this.mrCHBCostSteelBar = mrCHB.getCostSteelBars();
+	this.mrCHBCostTieWireKg = mrCHB.getCostTieWireKilos();
+	this.mrCHBCostTieWireRoll = mrCHB.getCostTieWireRolls();
     }
 
     // Setters and Getters.
@@ -425,6 +444,54 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setFootingCostGravel(double footingCostGravel) {
 	this.footingCostGravel = footingCostGravel;
+    }
+
+    public double getMrCHBSteelBar() {
+	return mrCHBSteelBar;
+    }
+
+    public void setMrCHBSteelBar(double mrCHBSteelBar) {
+	this.mrCHBSteelBar = mrCHBSteelBar;
+    }
+
+    public double getMrCHBTieWireKg() {
+	return mrCHBTieWireKg;
+    }
+
+    public void setMrCHBTieWireKg(double mrCHBTieWireKg) {
+	this.mrCHBTieWireKg = mrCHBTieWireKg;
+    }
+
+    public double getMrCHBTieWireRoll() {
+	return mrCHBTieWireRoll;
+    }
+
+    public void setMrCHBTieWireRoll(double mrCHBTieWireRoll) {
+	this.mrCHBTieWireRoll = mrCHBTieWireRoll;
+    }
+
+    public double getMrCHBCostSteelBar() {
+	return mrCHBCostSteelBar;
+    }
+
+    public void setMrCHBCostSteelBar(double mrCHBCostSteelBar) {
+	this.mrCHBCostSteelBar = mrCHBCostSteelBar;
+    }
+
+    public double getMrCHBCostTieWireKg() {
+	return mrCHBCostTieWireKg;
+    }
+
+    public void setMrCHBCostTieWireKg(double mrCHBCostTieWireKg) {
+	this.mrCHBCostTieWireKg = mrCHBCostTieWireKg;
+    }
+
+    public double getMrCHBCostTieWireRoll() {
+	return mrCHBCostTieWireRoll;
+    }
+
+    public void setMrCHBCostTieWireRoll(double mrCHBCostTieWireRoll) {
+	this.mrCHBCostTieWireRoll = mrCHBCostTieWireRoll;
     }
 
 }

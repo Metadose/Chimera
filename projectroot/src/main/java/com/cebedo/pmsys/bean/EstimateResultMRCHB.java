@@ -10,14 +10,27 @@ public class EstimateResultMRCHB implements Serializable {
     private double tieWireKilos;
     private double tieWireRolls;
 
+    private double costSteelBars;
+    private double costTieWireKilos;
+    private double costTieWireRolls;
+
     public EstimateResultMRCHB() {
 	;
     }
 
-    public EstimateResultMRCHB(double steelBars, double tieWireKilos2, double tieWireRolls2) {
+    public EstimateResultMRCHB(EstimateComputationBean estimateComputationBean, double steelBars,
+	    double tieWireKilos2, double tieWireRolls2) {
 	setSteelBarsQuantity(steelBars);
 	setTieWireKilos(tieWireKilos2);
 	setTieWireRolls(tieWireRolls2);
+
+	double costSB = steelBars * estimateComputationBean.getCostPerUnitSteelBars();
+	double costTWK = tieWireKilos2 * estimateComputationBean.getCostPerUnitTieWireKilos();
+	double costTWR = tieWireRolls2 * estimateComputationBean.getCostPerUnitTieWireRolls();
+
+	setCostSteelBars(costSB);
+	setCostTieWireKilos(costTWK);
+	setCostTieWireRolls(costTWR);
     }
 
     public double getSteelBarsQuantity() {
@@ -42,6 +55,30 @@ public class EstimateResultMRCHB implements Serializable {
 
     public void setTieWireRolls(double tieWireRolls) {
 	this.tieWireRolls = tieWireRolls;
+    }
+
+    public double getCostTieWireKilos() {
+	return costTieWireKilos;
+    }
+
+    public void setCostTieWireKilos(double costTieWireKilos) {
+	this.costTieWireKilos = costTieWireKilos;
+    }
+
+    public double getCostTieWireRolls() {
+	return costTieWireRolls;
+    }
+
+    public void setCostTieWireRolls(double costTieWireRolls) {
+	this.costTieWireRolls = costTieWireRolls;
+    }
+
+    public double getCostSteelBars() {
+	return costSteelBars;
+    }
+
+    public void setCostSteelBars(double costSteelBars) {
+	this.costSteelBars = costSteelBars;
     }
 
 }

@@ -44,6 +44,9 @@ public class EstimationOutput implements IDomainObject {
     private double quantitySand = 0;
     private double quantityGravel = 0;
     private double quantityCHB = 0;
+    private double quantitySteelBars = 0;
+    private double quantityTieWireKilos = 0;
+    private double quantityTieWireRolls = 0;
 
     // Cost of the whole row.
     private double costCement40kg = 0;
@@ -51,6 +54,11 @@ public class EstimationOutput implements IDomainObject {
     private double costSand = 0;
     private double costGravel = 0;
     private double costCHB = 0;
+    private double costSteelBars = 0;
+    private double costTieWireKilos = 0;
+    private double costTieWireRolls = 0;
+
+    // Grand total.
     private double costGrandTotal = 0;
 
     /**
@@ -171,8 +179,8 @@ public class EstimationOutput implements IDomainObject {
 	this.remarks = remarks;
     }
 
-    public void setResults(EstimateComputationInputBean estimateInput, List<EstimateComputationBean> estimates2,
-	    String rowListJson) {
+    public void setResults(EstimateComputationInputBean estimateInput,
+	    List<EstimateComputationBean> estimates2, String rowListJson) {
 	setName(estimateInput.getName());
 	setRemarks(estimateInput.getRemarks());
 	setEstimates(estimates2);
@@ -270,6 +278,54 @@ public class EstimationOutput implements IDomainObject {
 
     public void setCostGrandTotal(double costGrandTotal) {
 	this.costGrandTotal = costGrandTotal;
+    }
+
+    public double getQuantitySteelBars() {
+	return quantitySteelBars;
+    }
+
+    public void setQuantitySteelBars(double quantitySteelBars) {
+	this.quantitySteelBars = quantitySteelBars;
+    }
+
+    public double getQuantityTieWireKilos() {
+	return quantityTieWireKilos;
+    }
+
+    public void setQuantityTieWireKilos(double quantityTieWireKilos) {
+	this.quantityTieWireKilos = quantityTieWireKilos;
+    }
+
+    public double getQuantityTieWireRolls() {
+	return quantityTieWireRolls;
+    }
+
+    public void setQuantityTieWireRolls(double quantityTieWireRolls) {
+	this.quantityTieWireRolls = quantityTieWireRolls;
+    }
+
+    public double getCostSteelBars() {
+	return costSteelBars;
+    }
+
+    public void setCostSteelBars(double costSteelBars) {
+	this.costSteelBars = costSteelBars;
+    }
+
+    public double getCostTieWireKilos() {
+	return costTieWireKilos;
+    }
+
+    public void setCostTieWireKilos(double costTieWireKilos) {
+	this.costTieWireKilos = costTieWireKilos;
+    }
+
+    public double getCostTieWireRolls() {
+	return costTieWireRolls;
+    }
+
+    public void setCostTieWireRolls(double costTieWireRolls) {
+	this.costTieWireRolls = costTieWireRolls;
     }
 
 }
