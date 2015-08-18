@@ -52,11 +52,9 @@ public class StaffDAOImpl implements StaffDAO {
 	Set<Task> taskList = staff.getTasks();
 	for (Task task : taskList) {
 	    Hibernate.initialize(task.getStaff());
-	    Hibernate.initialize(task.getMilestone());
 
 	    Project proj = task.getProject();
 	    Hibernate.initialize(proj);
-	    Hibernate.initialize(proj.getMilestones());
 	}
 	return staff;
     }

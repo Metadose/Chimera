@@ -43,13 +43,11 @@ import com.cebedo.pmsys.enums.CommonMassUnit;
 import com.cebedo.pmsys.enums.CommonVolumeUnit;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MaterialCategory;
-import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
@@ -170,8 +168,6 @@ public class ProjectController {
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
-    public static final String ATTR_TIMELINE_MILESTONE_SUMMARY_MAP = "milestoneSummary";
-    public static final String ATTR_TIMELINE_SUMMARY_MAP = "timelineSummaryMap";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
@@ -179,15 +175,6 @@ public class ProjectController {
     public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
     public static final String ATTR_PAYROLL_MANUAL_STAFF_LIST = "manualStaffList";
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
-
-    public static final String ATTR_MAP_ID_TO_MILESTONE = "idToMilestoneMap";
-
-    public static final String KEY_SUMMARY_TOTAL_TASKS = "Total Tasks";
-    public static final String KEY_SUMMARY_TOTAL_MILESTONES = "Total Milestones";
-    public static final String KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES = "Total Tasks Assigned to Milestones";
-    public static final String KEY_SUMMARY_TOTAL_MILESTONE_NEW = "Total Milestones (Not Yet Started)";
-    public static final String KEY_SUMMARY_TOTAL_MILESTONE_ONGOING = "Total Milestones (Ongoing)";
-    public static final String KEY_SUMMARY_TOTAL_MILESTONE_DONE = "Total Milestones (Done)";
 
     public static final String KEY_PROJECT_STRUCTURE_MANAGERS = "Managers";
 
@@ -1219,7 +1206,7 @@ public class ProjectController {
     }
 
     /**
-     * Delete all tasks and milestones.
+     * Delete all tasks.
      * 
      * @param taskID
      * @param session
@@ -1227,8 +1214,10 @@ public class ProjectController {
      * @param status
      * @return
      */
+    // TODO Just use deleteAllTask()
+    @Deprecated
     @RequestMapping(value = RegistryURL.DELETE_PROGRAM_OF_WORKS, method = RequestMethod.GET)
-    public String deleteAllTaskAndMilestone(HttpSession session, RedirectAttributes redirectAttrs,
+    public String deleteAllTasks(HttpSession session, RedirectAttributes redirectAttrs,
 	    SessionStatus status) {
 
 	// Do service and get response.
@@ -1857,7 +1846,6 @@ public class ProjectController {
      * @param proj
      * @param model
      */
-    @SuppressWarnings("unchecked")
     private void setProgramOfWorksAttributes(Project proj, Model model) {
 
 	// Gant JSON to be used by the chart in timeline.
@@ -1871,17 +1859,5 @@ public class ProjectController {
 		this.projectService.getTaskStatusCountMap(proj));
 	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, CalendarEventType.class.getEnumConstants());
 	model.addAttribute(ATTR_GANTT_TYPE_LIST, GanttElement.class.getEnumConstants());
-
-	// Summary of per milestones.
-	// Summary of timeline on all milestones.
-	// Add map of id to milestone enum.
-	Map<String, Object> milestoneSummaryMap = this.projectService.getTimelineSummaryMap(proj);
-	Map<Milestone, Map<String, Object>> milestoneCountMap = (Map<Milestone, Map<String, Object>>) milestoneSummaryMap
-		.get(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP);
-	Map<String, Integer> summaryMap = (Map<String, Integer>) milestoneSummaryMap
-		.get(ATTR_TIMELINE_SUMMARY_MAP);
-	model.addAttribute(ATTR_TIMELINE_MILESTONE_SUMMARY_MAP, milestoneCountMap);
-	model.addAttribute(ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
-	model.addAttribute(ATTR_MAP_ID_TO_MILESTONE, MilestoneStatus.getIdToStatusMap());
     }
 }

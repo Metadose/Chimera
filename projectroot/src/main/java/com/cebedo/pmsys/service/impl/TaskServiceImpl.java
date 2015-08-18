@@ -8,14 +8,11 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.dao.MilestoneDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
@@ -24,7 +21,6 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -42,20 +38,12 @@ public class TaskServiceImpl implements TaskService {
 
     private static final int EXCEL_COLUMN_DATE_START = 1;
     private static final int EXCEL_COLUMN_DURATION = 2;
-    private static final int EXCEL_COLUMN_MILESTONE = 3;
-    private static final int EXCEL_COLUMN_TITLE = 4;
-    private static final int EXCEL_COLUMN_CONTENT = 5;
+    private static final int EXCEL_COLUMN_TITLE = 3;
+    private static final int EXCEL_COLUMN_CONTENT = 4;
 
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
     private StaffDAO staffDAO;
-    private MilestoneDAO milestoneDAO;
-
-    @Autowired
-    @Qualifier(value = "milestoneDAO")
-    public void setMilestoneDAO(MilestoneDAO milestoneDAO) {
-	this.milestoneDAO = milestoneDAO;
-    }
 
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
@@ -114,7 +102,6 @@ public class TaskServiceImpl implements TaskService {
 
 	    // Construct estimate containers.
 	    List<Task> taskList = new ArrayList<Task>();
-	    List<Milestone> milestoneList = new ArrayList<Milestone>();
 	    while (rowIterator.hasNext()) {
 
 		Row row = rowIterator.next();
@@ -148,33 +135,6 @@ public class TaskServiceImpl implements TaskService {
 			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setDuration(duration);
-			continue;
-
-		    case EXCEL_COLUMN_MILESTONE:
-			// Get the name from the Excel.
-			String milestoneName = (String) (this.excelHelper.getValueAsExpected(workbook,
-				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
-
-			// If this milestone has already been created earlier,
-			// use that milestone.
-			Milestone milestone = null;
-			for (Milestone mStone : milestoneList) {
-			    if (mStone.getName().equals(milestoneName)) {
-				milestone = mStone;
-				break;
-			    }
-			}
-
-			// If we didn't find any matching milestone.
-			// Commit to database.
-			if (milestone == null) {
-			    milestone = new Milestone(company, project, milestoneName);
-			    this.milestoneDAO.create(milestone);
-			    milestoneList.add(milestone);
-			}
-
-			// Set the object.
-			task.setMilestone(milestone);
 			continue;
 
 		    case EXCEL_COLUMN_TITLE:

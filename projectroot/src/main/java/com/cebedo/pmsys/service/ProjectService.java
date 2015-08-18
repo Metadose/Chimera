@@ -52,8 +52,6 @@ public interface ProjectService {
 
     public String getGanttJSON(Project proj);
 
-    public Map<String, Object> getTimelineSummaryMap(Project proj);
-
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
 
     public String getCalendarJSON(Project proj);

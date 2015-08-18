@@ -35,7 +35,6 @@ gantt.templates.tooltip_text = function(start, end, task){
 // Column configurations.
 gantt.config.columns = [
     {name:"text",       label:" ",  width:"200", tree:true },
-    {name:"type",       label:"Type",  align: "center" },
     {name:"start_date", label:"Start", width:"100", align: "center" },
     {name:"duration",   label:"Man Days", width:"80",  align: "center" }
 ];

@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.TaskStatus;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -31,17 +30,6 @@ public class JSONTimelineGantt {
 
     public JSONTimelineGantt() {
 	;
-    }
-
-    public JSONTimelineGantt(Milestone milestone, JSONTimelineGantt parent) {
-	setId(Milestone.OBJECT_NAME + "-" + milestone.getId());
-	setText(milestone.getName());
-	setOpen(true);
-	setDuration(0);
-	setParent(parent.getId());
-	setType("Milestone");
-	setColor(GanttElement.MILESTONE.backgroundColor());
-	setTextColor(GanttElement.MILESTONE.color());
     }
 
     public JSONTimelineGantt(Project proj) {

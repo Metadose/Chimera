@@ -46,7 +46,6 @@ public class Task implements Serializable {
     private Date dateStart;
     private double duration;
     private Project project;
-    private Milestone milestone;
     private Set<Staff> staff;
     private int status;
     private Company company;
@@ -129,16 +128,6 @@ public class Task implements Serializable {
 
     public void setProject(Project project) {
 	this.project = project;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = Milestone.COLUMN_PRIMARY_KEY)
-    public Milestone getMilestone() {
-	return milestone;
-    }
-
-    public void setMilestone(Milestone milestone) {
-	this.milestone = milestone;
     }
 
     @ManyToMany

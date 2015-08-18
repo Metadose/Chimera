@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 public enum CalendarEventType {
-    REMINDER("Reminder", "btn-info"), TASK("Task", "btn-primary"), DELIVERY(
-	    "Delivery", "btn-success");
+    REMINDER("Reminder", "btn-info"),
+
+    TASK("Task", "btn-primary"),
+
+    DELIVERY("Delivery", "btn-success");
 
     String label;
     String css;
@@ -19,8 +22,7 @@ public enum CalendarEventType {
 
     public static List<Map<String, String>> getEventTypePropertyMaps() {
 	List<Map<String, String>> eventProperties = new ArrayList<Map<String, String>>();
-	for (CalendarEventType eventType : CalendarEventType.class
-		.getEnumConstants()) {
+	for (CalendarEventType eventType : CalendarEventType.class.getEnumConstants()) {
 	    Map<String, String> propertyMap = new HashMap<String, String>();
 	    propertyMap.put(eventType.label(), eventType.css());
 	    eventProperties.add(propertyMap);

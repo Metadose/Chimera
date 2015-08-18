@@ -31,7 +31,6 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
@@ -579,62 +578,12 @@ public class StaffServiceImpl implements StaffService {
 	JSONTimelineGantt myGanttBean = new JSONTimelineGantt(staff);
 	ganttBeanList.add(myGanttBean);
 
-	// Get the gantt parent data.
-	List<Long> addedProjects = new ArrayList<Long>();
-	List<Long> addedMilestones = new ArrayList<Long>();
-
 	// Get the tasks (children) of each parent.
 	for (Task task : staff.getTasks()) {
 
-	    // Get the data for the gantt chart.
-	    // Get the parent of this task.
-	    String parentId = "";
+	    // Construct parent ID.
 	    Project proj = task.getProject();
-
-	    // If this milestone has been added,
-	    // then simply pass the id.
-	    Milestone milestone = task.getMilestone();
-	    if (milestone != null) {
-
-		// Else, add this project.
-		// Then add all milestones.
-		if (!addedMilestones.contains(milestone.getId())) {
-
-		    Project project = milestone.getProject();
-		    JSONTimelineGantt projectBean = new JSONTimelineGantt(project, myGanttBean);
-		    long projID = project.getId();
-
-		    // If the project has not yet been added.
-		    if (!addedProjects.contains(projID)) {
-			addedProjects.add(projID);
-			ganttBeanList.add(projectBean);
-		    }
-
-		    // For each milestone in this project, add.
-		    for (Milestone projectMilestone : project.getMilestones()) {
-
-			// If has already been added,
-			// continue.
-			if (addedMilestones.contains(projectMilestone.getId())) {
-			    continue;
-			}
-			JSONTimelineGantt milestoneBean = new JSONTimelineGantt(projectMilestone,
-				projectBean);
-			ganttBeanList.add(milestoneBean);
-			addedMilestones.add(projectMilestone.getId());
-		    }
-
-		}
-
-		// Construct the id.
-		parentId = Milestone.OBJECT_NAME + "-" + task.getMilestone().getId();
-
-	    } else if (proj != null) {
-		parentId = Project.OBJECT_NAME + "-" + proj.getId();
-	    } else {
-		parentId = Staff.OBJECT_NAME + "-" + staff.getId();
-	    }
-
+	    String parentId = Project.OBJECT_NAME + "-" + proj.getId();
 	    JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, parentId);
 	    ganttBeanList.add(jSONTimelineGantt);
 	}

@@ -35,7 +35,6 @@ public class Company implements Serializable {
     private Set<Staff> admins;
     private Set<SystemUser> employees;
     private Set<Project> projects;
-    private Set<Milestone> milestones;
     private Set<SystemConfiguration> configs;
     private Set<Task> tasks;
     private Set<AuditLog> auditLogs;
@@ -122,15 +121,6 @@ public class Company implements Serializable {
 
     public void setProjects(Set<Project> projects) {
 	this.projects = projects;
-    }
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Milestone> getMilestones() {
-	return milestones;
-    }
-
-    public void setMilestones(Set<Milestone> milestones) {
-	this.milestones = milestones;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

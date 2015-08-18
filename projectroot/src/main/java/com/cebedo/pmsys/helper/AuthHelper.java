@@ -12,7 +12,6 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
@@ -118,16 +117,6 @@ public class AuthHelper {
 	if (auth.isSuperAdmin()) {
 	    return true;
 	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
-	    return true;
-	}
-	return false;
-    }
-
-    public boolean isActionAuthorized(Milestone milestone) {
-	AuthenticationToken auth = getAuth();
-	if (auth.isSuperAdmin()) {
-	    return true;
-	} else if (milestone.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
 	}
 	return false;

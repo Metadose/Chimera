@@ -19,19 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.dao.CompanyDAO;
-import com.cebedo.pmsys.dao.MilestoneDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
-import com.cebedo.pmsys.enums.MilestoneStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -57,13 +53,6 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
     private TaskService taskService;
-    private MilestoneDAO milestoneDAO;
-
-    @Autowired
-    @Qualifier(value = "milestoneDAO")
-    public void setMilestoneDAO(MilestoneDAO milestoneDAO) {
-	this.milestoneDAO = milestoneDAO;
-    }
 
     @Autowired
     @Qualifier(value = "taskService")
@@ -408,132 +397,14 @@ public class ProjectServiceImpl implements ProjectService {
 	JSONTimelineGantt myGanttBean = new JSONTimelineGantt(proj);
 	ganttBeanList.add(myGanttBean);
 
-	// Add all milestones and included tasks.
-	for (Milestone milestone : proj.getMilestones()) {
-	    JSONTimelineGantt milestoneBean = new JSONTimelineGantt(milestone, myGanttBean);
-	    ganttBeanList.add(milestoneBean);
-
-	    for (Task taskInMilestone : milestone.getTasks()) {
-		JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(taskInMilestone, milestoneBean);
-		ganttBeanList.add(jSONTimelineGantt);
-	    }
-	}
-
 	// Get the gantt parent data.
-	// All tasks without a milestone.
+	// All tasks.
 	for (Task task : proj.getAssignedTasks()) {
-
-	    // Add only tasks without a milestone.
-	    if (task.getMilestone() == null) {
-		JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, myGanttBean);
-		ganttBeanList.add(jSONTimelineGantt);
-	    }
+	    JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, myGanttBean);
+	    ganttBeanList.add(jSONTimelineGantt);
 	}
 
 	return new Gson().toJson(ganttBeanList, ArrayList.class);
-    }
-
-    /**
-     * Get summary of timeline data.
-     */
-    @Override
-    @Transactional
-    public Map<String, Object> getTimelineSummaryMap(Project proj) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return new HashMap<String, Object>();
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME, proj.getId(),
-		Milestone.class.getName());
-
-	String keyTotalTasks = ProjectController.KEY_SUMMARY_TOTAL_TASKS;
-	String keyTotalMilestones = ProjectController.KEY_SUMMARY_TOTAL_MILESTONES;
-	String keyTotalTasksAssigned = ProjectController.KEY_SUMMARY_TOTAL_TASKS_ASSIGNED_MILESTONES;
-	String keyTotalMsNew = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_NEW;
-	String keyTotalMsOngoing = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_ONGOING;
-	String keyTotalMsDone = ProjectController.KEY_SUMMARY_TOTAL_MILESTONE_DONE;
-
-	// Summary table map.
-	Map<String, Integer> summaryMap = new HashMap<String, Integer>();
-	Map<Milestone, Map<String, Object>> milestoneCountMap = new HashMap<Milestone, Map<String, Object>>();
-	summaryMap.put(keyTotalTasks, proj.getAssignedTasks().size());
-	summaryMap.put(keyTotalMilestones, proj.getMilestones().size());
-
-	// Count all milestone statuses.
-	int msNys = 0;
-	int msOngoing = 0;
-	int msDone = 0;
-
-	// Add all milestones and included tasks.
-	for (Milestone milestone : proj.getMilestones()) {
-
-	    // Actual adding of tasks under this milestone.
-	    Map<String, Object> milestoneStatusMap = new HashMap<String, Object>();
-	    int tasksNew = 0;
-	    int tasksOngoing = 0;
-	    int tasksEndState = 0;
-
-	    for (Task taskInMilestone : milestone.getTasks()) {
-
-		// Check if task is New, Ongoing, or neither (end state).
-		int taskStatusId = taskInMilestone.getStatus();
-		if (taskStatusId == TaskStatus.NEW.id()) {
-		    tasksNew++;
-		} else if (taskStatusId == TaskStatus.ONGOING.id()) {
-		    tasksOngoing++;
-		} else {
-		    tasksEndState++;
-		}
-	    }
-
-	    // Status of this milestone.
-	    MilestoneStatus msStatus;
-
-	    // If number of tasks is equal to
-	    // number of end state, milestone is finished.
-	    int tasksInMilestone = milestone.getTasks().size();
-	    if (tasksInMilestone == tasksEndState) {
-		msDone++;
-		msStatus = MilestoneStatus.DONE;
-	    } else if (tasksInMilestone == tasksNew) {
-		// Else if task size == new, then milestone is not yet started.
-		msNys++;
-		msStatus = MilestoneStatus.NOT_YET_STARTED;
-	    } else {
-		// Else, it's still ongoing.
-		msOngoing++;
-		msStatus = MilestoneStatus.ONGOING;
-	    }
-
-	    // Add collected data for milestone status and
-	    // corresponding count.
-	    milestoneStatusMap.put("Status", msStatus);
-	    milestoneStatusMap.put(MilestoneStatus.NOT_YET_STARTED.label(), tasksNew);
-	    milestoneStatusMap.put(MilestoneStatus.ONGOING.label(), tasksOngoing);
-	    milestoneStatusMap.put(MilestoneStatus.DONE.label(), tasksEndState);
-	    milestoneCountMap.put(milestone, milestoneStatusMap);
-
-	    // Get number of tasks assigned to milestones.
-	    summaryMap.put(keyTotalTasksAssigned, summaryMap.get(keyTotalTasksAssigned) == null ? 1
-		    : summaryMap.get(keyTotalTasksAssigned) + milestone.getTasks().size());
-	}
-
-	// Add collected data.
-	summaryMap.put(keyTotalMsNew, msNys);
-	summaryMap.put(keyTotalMsOngoing, msOngoing);
-	summaryMap.put(keyTotalMsDone, msDone);
-
-	// Organize the two maps, before returning.
-	Map<String, Object> milestoneSummaryMap = new HashMap<String, Object>();
-	milestoneSummaryMap
-		.put(ProjectController.ATTR_TIMELINE_MILESTONE_SUMMARY_MAP, milestoneCountMap);
-	milestoneSummaryMap.put(ProjectController.ATTR_TIMELINE_SUMMARY_MAP, summaryMap);
-
-	return milestoneSummaryMap;
     }
 
     /**
@@ -628,6 +499,8 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
     }
 
+    // TODO Update naming scheme. We're only deleting tasks now.
+    @Deprecated
     @Transactional
     @Override
     public String deleteProgramOfWorks(Project project) {
@@ -640,11 +513,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Do service.
 	this.taskService.deleteAllTasksByProject(project.getId());
-	this.milestoneDAO.deleteAllByProject(project.getId());
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME + "+" + Milestone.OBJECT_NAME);
+		Task.OBJECT_NAME);
 
 	// TODO
 	return "TODO";

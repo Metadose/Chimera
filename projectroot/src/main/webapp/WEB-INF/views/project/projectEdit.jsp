@@ -370,7 +370,6 @@
 									<ul class="nav nav-tabs" id="subtabs-timeline">
 										<li class="active"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
 										<li><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
-										<li><a href="#subtab_milestones" data-toggle="tab">Milestones</a></li>
 									</ul>
 									<div class="tab-content">
 									
@@ -426,107 +425,6 @@
 						                            </div>
 					                            </div>
 				                            </div>
-										</div>
-										
-										<div class="tab-pane" id="subtab_milestones">
-											<div class="row">
-		                   						<div class="col-md-6">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-header">
-		                   									<h3 class="box-title">Summary</h3>
-		                   								</div>
-		                   								<div class="box-body">
-															<b>TOTAL MILESTONES:</b> ${timelineSummaryMap.get("Total Milestones")}<br/>
-		                   									<b>Total Tasks Assigned to Milestones:</b> ${timelineSummaryMap.get("Total Tasks Assigned to Milestones")}<br/>
-															<b>Breakdown</b> of Total Milestones by Milestone Status:<br/><br/>
-															<table id="milestone-breakdown-table" class="table table-bordered table-striped">
-															<thead>
-					                                    		<tr>
-						                                            <th>Milestone Status</th>
-						                                            <th>Count</th>
-						                                        </tr>
-					                                    	</thead>
-															<tbody>
-																<tr>
-																	<c:set value="${idToMilestoneMap.get(\"NOT YET STARTED\").css()}" var="css"></c:set>
-																	<td><span class="label ${css}">${idToMilestoneMap.get("NOT YET STARTED").label()}</span></td>
-																	<td>${timelineSummaryMap.get("Total Milestones (Not Yet Started)")}</td>
-																</tr>
-																<tr>
-																	<c:set value="${idToMilestoneMap.get(\"ONGOING\").css()}" var="css"></c:set>
-																	<td><span class="label ${css}">${idToMilestoneMap.get("ONGOING")}</span></td>
-																	<td>${timelineSummaryMap.get("Total Milestones (Ongoing)")}</td>
-																</tr>
-																<tr>
-																	<c:set value="${idToMilestoneMap.get(\"DONE\").css()}" var="css"></c:set>
-																	<td><span class="label ${css}">${idToMilestoneMap.get("DONE")}</span></td>
-																	<td>${timelineSummaryMap.get("Total Milestones (Done)")}</td>
-																</tr>
-															</tbody>
-															</table>
-		                   								</div>
-	                   								</div>
-	                   							</div>
-	                   							<div class="col-md-6">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-header">
-		                   									<h3 class="box-title">Graph</h3>
-		                   								</div>
-		                   								<div class="box-body">
-										                Graph sa summary sa mga milestones
-		                   								</div>
-	                   								</div>
-	                   							</div>
-	                   						</div>
-											<div class="row">
-		                   						<div class="col-md-12">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-header">
-		                   									<h3 class="box-title">Milestones</h3>
-		                   								</div>
-		                   								<div class="box-body">
-		                   									<div class="callout callout-info">
-											                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-											                </div>
-		                   									<button class="btn btn-cebedo-create btn-flat btn-sm" id="createMilestone">Create Milestone</button>
-		                   									<br/>
-		                   									<br/>
-		                   									<table id="milestones-table" class="table table-bordered table-striped">
-						                                    	<thead>
-						                                            <tr>
-			              											<th>&nbsp;</th>
-			              											<th>Milestone</th>
-			              											<th>Status</th>
-			              											<th>New Task</th>
-			              											<th>Ongoing Task</th>
-			              											<th>Done Task</th>
-			              											</tr>
-				                                        		</thead>
-							                                    <tbody>
-																	<c:forEach items="${milestoneSummary}" var="milestoneMap">
-																	<c:set value="${milestoneMap.key}" var="milestone"/>
-								                                	<c:set value="${milestoneMap.value}" var="msCount"/>
-																	<tr>
-																		<td>
-																		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-																		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-																		</td>
-																		<td>${milestone.name}</td>
-																		<td>
-																		<c:set value="${msCount.get(\"Status\").css()}" var="css"></c:set>
-																		<span class="label ${css}">${msCount.get("Status")}</span>
-																		</td>
-																		<td>${msCount.get("NOT YET STARTED")}</td>
-																		<td>${msCount.get("ONGOING")}</td>
-																		<td>${msCount.get("DONE")}</td>
-																	</tr>
-																	</c:forEach>
-																</tbody>
-							                                </table>
-		                   								</div>
-		                   							</div>
-		                   						</div>
-		              						</div>
 										</div>
 										
 										<div class="tab-pane" id="subtab_tasks">
@@ -622,7 +520,7 @@
 				               											<!-- Delete All button -->
 								                                        <c:url value="/project/delete/program-of-works" var="urlButton"/>
 								                                        <a href="${urlButton}">
-				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks & Milestones</button>
+				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks</button>
 								                                        </a>
 						                                    		</td>
 						                                    		</c:if>
@@ -636,7 +534,6 @@
 							                                            <th>Start</th>
 							                                            <th>End</th>
 							                                            <th>Duration</th>
-							                                            <th>Milestone</th>
 							                                            <th>Title</th>
 							                                            <th>Content</th>
 							                                            <th>Staff</th>
@@ -682,7 +579,6 @@
 									                                            <fmt:formatDate pattern="yyyy-MM-dd" value="${task.getEndDate()}" var="taskEndDate"/>
 									                                            <td>${taskEndDate}</td>
 									                                            <td>${task.duration}</td>
-									                                            <td>${task.milestone.name}</td>
 									                                            <td>${task.title}</td>
 									                                            <td>${task.content}</td>
 									                                            <td>
@@ -2269,7 +2165,6 @@
 			$("#pull-out-table").dataTable();
 			$("#delivery-table").dataTable();
 			$("#payroll-table").dataTable();
-			$("#milestones-table").dataTable();
 			$("#managers-table").dataTable();
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();

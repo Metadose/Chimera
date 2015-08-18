@@ -46,7 +46,6 @@ public class Project implements Serializable {
     private Set<Staff> assignedStaff;
     private String location;
     private String notes;
-    private Set<Milestone> milestones;
     private Set<Task> assignedTasks;
     private Company company;
 
@@ -133,15 +132,6 @@ public class Project implements Serializable {
 
     public void setStaffIDs(long[] staffIDs) {
 	this.staffIDs = staffIDs;
-    }
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<Milestone> getMilestones() {
-	return milestones;
-    }
-
-    public void setMilestones(Set<Milestone> milestones) {
-	this.milestones = milestones;
     }
 
     /**

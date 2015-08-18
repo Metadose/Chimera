@@ -241,7 +241,6 @@
                 <beans:value>com.cebedo.pmsys.model.SystemUser</beans:value>
                 <beans:value>com.cebedo.pmsys.model.Company</beans:value>
                 <beans:value>com.cebedo.pmsys.model.AuditLog</beans:value>
-                <beans:value>com.cebedo.pmsys.model.Milestone</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -261,11 +260,6 @@
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
         <beans:property name="companyDAO" ref="companyDAO"></beans:property>
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
-    </beans:bean>
-    
-    <!-- Milestone -->
-    <beans:bean id="milestoneDAO" class="com.cebedo.pmsys.dao.MilestoneDAOImpl">
-        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     
     <!-- Project Payroll Computer -->

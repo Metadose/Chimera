@@ -12,7 +12,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -49,9 +48,6 @@ public class TaskDAOImpl implements TaskDAO {
 
 	Project proj = task.getProject();
 	Hibernate.initialize(proj);
-	for (Milestone milestone : proj.getMilestones()) {
-	    Hibernate.initialize(milestone);
-	}
 
 	return task;
     }

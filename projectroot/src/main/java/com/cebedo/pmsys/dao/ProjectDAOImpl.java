@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Milestone;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -91,24 +90,12 @@ public class ProjectDAOImpl implements ProjectDAO {
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getAssignedStaff());
 
-	// Initialize milestones.
-	Set<Milestone> milestones = project.getMilestones();
-	Hibernate.initialize(milestones);
-	for (Milestone milestone : milestones) {
-	    Set<Task> tasks = milestone.getTasks();
-	    Hibernate.initialize(tasks);
-	    for (Task task : tasks) {
-		Hibernate.initialize(task.getStaff());
-	    }
-	}
-
 	// Initialize all tasks.
 	// And all teams and staff of each task.
 	Set<Task> assignedTasks = project.getAssignedTasks();
 	Hibernate.initialize(assignedTasks);
 	for (Task task : assignedTasks) {
 	    Hibernate.initialize(task.getStaff());
-	    Hibernate.initialize(task.getMilestone());
 	}
 
 	return project;
