@@ -25,9 +25,11 @@
 	  ul li img {
 	      cursor: pointer;
 	  }
+	  #cover {position: fixed; height: 100%; width: 100%; top:0; left: 0; background: rgba(0, 0, 0, 0.77); z-index:10;}
 	</style>
 </head>
 <body class="skin-blue">
+	<div id="cover"></div>
 	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
@@ -150,6 +152,7 @@
 <script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
 
 <script type="text/javascript">
+
 function submitForm(id) {
 	$('#'+id).submit();
 }
@@ -621,6 +624,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+
 	$('#treegrid-concrete_summaries_footer_row_count').hide();
 	$('#treegrid-concrete_summaries_footer_row_min').hide();
 	$('#treegrid-concrete_summaries_footer_row_max').hide();
@@ -650,6 +654,9 @@ $(document).ready(function() {
 	$('#treegrid-mr-chb_summaries_footer_row_min').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_max').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_avg').hide();
+});
+$(window).on('load', function() {
+   $("#cover").hide();
 });
 </script>
 </html>
