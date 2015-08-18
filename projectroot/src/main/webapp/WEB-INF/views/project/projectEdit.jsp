@@ -102,7 +102,7 @@
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
-		                                <li><a href="#tab_calendar" data-toggle="tab">Calendar</a></li>
+		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
                                 </c:choose>
                             </ul>
@@ -636,6 +636,7 @@
 							                                            <th>Start</th>
 							                                            <th>End</th>
 							                                            <th>Duration</th>
+							                                            <th>Milestone</th>
 							                                            <th>Title</th>
 							                                            <th>Content</th>
 							                                            <th>Staff</th>
@@ -681,12 +682,9 @@
 									                                            <fmt:formatDate pattern="yyyy-MM-dd" value="${task.getEndDate()}" var="taskEndDate"/>
 									                                            <td>${taskEndDate}</td>
 									                                            <td>${task.duration}</td>
-									                                            <td>
-									                                            ${task.title}
-									                                            </td>
-									                                            <td>
-									                                            ${task.content}
-									                                            </td>
+									                                            <td>${task.milestone.name}</td>
+									                                            <td>${task.title}</td>
+									                                            <td>${task.content}</td>
 									                                            <td>
 									                                            	<c:choose>
 									                                            		<c:when test="${!empty task.staff}">
