@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.service.impl;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +27,6 @@ import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.utils.DataStructUtils;
-import com.cebedo.pmsys.utils.NumberFormatUtils;
 import com.google.gson.Gson;
 
 @Service
@@ -57,11 +55,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     private List<Long> staffIDsToCompute;
     private Date startDate, endDate;
 
-    // Already computed? Add ID to map "computedMap".
-    private Map<Long, String> alreadyComputedMap = new HashMap<Long, String>();
-
     // Map of staff and corresponding wage.
-    private Map<Staff, String> staffToWageMap = new HashMap<Staff, String>();
+    private Map<Staff, Double> staffToWageMap = new HashMap<Staff, Double>();
 
     // Total wage for group "managersTotal".
     private double overallTotalOfStaff = 0;
@@ -73,11 +68,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     // JSON tree grid.
     private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
-    // Currency formatter.
-    private NumberFormat formatter = NumberFormatUtils.getCurrencyFormatter();
-
     // Results.
-    private double overallTotalOfWage = 0;
     private PayrollResultComputation payrollResult = new PayrollResultComputation();
     private Map<AttendanceStatus, Integer> overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
     private Map<AttendanceStatus, Double> overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
@@ -90,14 +81,12 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	this.startDate = null;
 	this.endDate = null;
 
-	this.alreadyComputedMap = new HashMap<Long, String>();
-	this.staffToWageMap = new HashMap<Staff, String>();
+	this.staffToWageMap = new HashMap<Staff, Double>();
 	this.overallTotalOfStaff = 0;
 
 	this.staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
 	this.treeGrid = new ArrayList<JSONPayrollResult>();
 
-	this.overallTotalOfWage = 0;
 	this.payrollResult = new PayrollResultComputation();
 	this.overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
 	this.overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
@@ -140,8 +129,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	    // Add the value to the map.
 	    // And to the "already computed" map.
-	    this.staffToWageMap.put(staff, String.valueOf(staffWageTotal));
-	    this.alreadyComputedMap.put(staffID, "Staff List");
+	    this.staffToWageMap.put(staff, staffWageTotal);
 
 	    // Get the breakdown of this total.
 	    // Add the breakdown to the map.
@@ -204,6 +192,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	int intValueOfCount = (int) count;
 	Integer oldValue = this.overallBreakdownCountMap.get(status) == null ? 0
 		: this.overallBreakdownCountMap.get(status);
+
+	// Update overall breakdown.
 	this.overallBreakdownCountMap.put(status, oldValue + intValueOfCount);
 
 	return intValueOfCount;
@@ -227,6 +217,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	// Add new value to old.
 	Double oldValue = this.overallBreakdownWageMap.get(status) == null ? 0
 		: this.overallBreakdownWageMap.get(status);
+
+	// Update overall.
 	this.overallBreakdownWageMap.put(status, oldValue + wage);
 
 	return wage;
@@ -283,7 +275,6 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      */
     private void constructTreeGridStaff() {
 
-	// Loop through managers.
 	// Sort by formal name.
 	Set<Staff> staffSet = this.staffToWageMap.keySet();
 	List<Staff> staffList = DataStructUtils.convertSetToList(staffSet);
@@ -302,13 +293,11 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	for (Staff staff : staffList) {
 
 	    // Get details.
-	    String value = this.staffToWageMap.get(staff);
-	    double rowValue = Double.valueOf(value);
+	    double rowValue = this.staffToWageMap.get(staff);
 
 	    // Add to bean.
-	    double staffWage = staff.getWage();
-	    this.overallTotalOfWage += staffWage;
-	    JSONPayrollResult rowBean = new JSONPayrollResult(staff.getFormalName(), rowValue, staffWage);
+	    JSONPayrollResult rowBean = new JSONPayrollResult(staff.getFormalName(), rowValue,
+		    staff.getWage());
 
 	    // Breakdown.
 	    Map<AttendanceStatus, Map<String, Double>> staffWageBreakdown = this.staffPayrollBreakdownMap
@@ -318,39 +307,6 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	    // Add to tree grid list.
 	    this.treeGrid.add(rowBean);
 	}
-
-	// Update the mother bean.
-	// Add the breakdown.
-	setBreakdownMotherBean();
-    }
-
-    /**
-     * Set the breakdown for the motherbean.
-     */
-    private void setBreakdownMotherBean() {
-	JSONPayrollResult motherBean = this.treeGrid.get(0);
-	motherBean.setWage(this.overallTotalOfWage);
-	motherBean.setBreakdownAbsentCount(getOverallBreakdownCountStr(AttendanceStatus.ABSENT));
-	motherBean.setBreakdownAbsentWage(getOverallBreakdownWageStr(AttendanceStatus.ABSENT));
-	motherBean.setBreakdownHalfdayCount(getOverallBreakdownCountStr(AttendanceStatus.HALFDAY));
-	motherBean.setBreakdownHalfdayWage(getOverallBreakdownWageStr(AttendanceStatus.HALFDAY));
-	motherBean.setBreakdownLateCount(getOverallBreakdownCountStr(AttendanceStatus.LATE));
-	motherBean.setBreakdownLateWage(getOverallBreakdownWageStr(AttendanceStatus.LATE));
-	motherBean.setBreakdownLeaveCount(getOverallBreakdownCountStr(AttendanceStatus.LEAVE));
-	motherBean.setBreakdownLeaveWage(getOverallBreakdownWageStr(AttendanceStatus.LEAVE));
-	motherBean.setBreakdownOvertimeCount(getOverallBreakdownCountStr(AttendanceStatus.OVERTIME));
-	motherBean.setBreakdownOvertimeWage(getOverallBreakdownWageStr(AttendanceStatus.OVERTIME));
-	motherBean.setBreakdownPresentCount(getOverallBreakdownCountStr(AttendanceStatus.PRESENT));
-	motherBean.setBreakdownPresentWage(getOverallBreakdownWageStr(AttendanceStatus.PRESENT));
-	this.treeGrid.set(0, motherBean);
-    }
-
-    private double getOverallBreakdownWageStr(AttendanceStatus status) {
-	return this.overallBreakdownWageMap.get(status);
-    }
-
-    private double getOverallBreakdownCountStr(AttendanceStatus status) {
-	return this.overallBreakdownCountMap.get(status);
     }
 
     @Transactional
