@@ -80,8 +80,8 @@ public class LoginLogoutController {
 	    // set config, and set flag to false.
 	    else {
 		appInit = false;
-		SystemConfiguration config = this.configService
-			.getByName(ConstantsSystem.CONFIG_ROOT_INIT);
+		SystemConfiguration config = this.configService.getByName(
+			ConstantsSystem.CONFIG_ROOT_INIT, true);
 		config.setValue("1");
 		this.configService.merge(config);
 	    }

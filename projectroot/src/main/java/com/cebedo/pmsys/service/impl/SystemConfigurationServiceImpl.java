@@ -125,15 +125,19 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public SystemConfiguration getByName(String name) {
+    public SystemConfiguration getByName(String name, boolean override) {
 	SystemConfiguration config = this.systemConfigurationDAO.getByName(name);
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(config)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
-	    return new SystemConfiguration();
+
+	if (override) {
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(config)) {
+		this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
+		return new SystemConfiguration();
+	    }
+	    // Log.
+	    this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME,
+		    config.getId());
 	}
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME, config.getId());
 	return config;
     }
 

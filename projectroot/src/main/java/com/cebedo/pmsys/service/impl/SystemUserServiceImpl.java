@@ -76,20 +76,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    // Create the account.
 	    this.systemUserDAO.create(rootUser);
 
-	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, rootUser.getId(),
-		    "Super Admin");
-
 	    // Update the config value.
 	    LoginLogoutController.appInit = true;
 	    SystemConfiguration appInit = this.systemConfigurationDAO
 		    .getByName(ConstantsSystem.CONFIG_ROOT_INIT);
 	    appInit.setValue("1");
 	    this.systemConfigurationDAO.merge(appInit);
-
-	    // Log the results.
-	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
-		    appInit.getId());
 	}
     }
 

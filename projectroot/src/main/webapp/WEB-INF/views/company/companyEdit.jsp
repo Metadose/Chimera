@@ -5,7 +5,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Company ${action}</title>
+	<c:choose>
+		<c:when test="${company.id == 0}">
+		<title>Create Company</title>
+		</c:when>
+		<c:when test="${company.id > 0}">
+		<title>Edit Company</title>
+		</c:when>
+	</c:choose>
 	
 	<style>
 	  ul {         
@@ -29,8 +36,16 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${company.name}
-	                <small>${action} Company</small>
+	            	<c:choose>
+                    	<c:when test="${company.id == 0}">
+                    	New Company
+		                <small>Create Company</small>
+                    	</c:when>
+                    	<c:when test="${company.id > 0}">
+		                ${company.name}
+		                <small>Edit Company</small>
+                    	</c:when>
+                    </c:choose>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -50,25 +65,44 @@
                    								<div class="box-body">
                    									<form:form modelAttribute="company" id="companyForm" role="form" method="post" action="${contextPath}/company/create/">
 				                                        <div class="form-group">
+
 				                                            <label>Name</label>
-				                                            <form:input type="text" class="form-control" path="name"/><br/>
+				                                            <form:input type="text" class="form-control" placeholder="Sample: ABC Construction, XYZ Builders, City Contractors" path="name"/>
+				                                            <p class="help-block">Enter the name of this company</p>
+
 				                                            <label>Description</label>
-				                                            <form:input type="text" class="form-control" path="description"/><br/>
+				                                            <form:input type="text" class="form-control" placeholder="Sample: A construction company specialized in real estates" path="description"/>
+				                                            <p class="help-block">Enter a company description</p>
+
 			                                                <label>Date Started</label>
-			                                                <form:input type="text" class="form-control" path="dateStarted"/><br/>
+			                                                <div class='input-group date date-picker'>
+									                            <form:input type="text" class="form-control" placeholder="Sample: 2016/06/25" path="dateStarted"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+				                                            <p class="help-block">Choose the company start date</p>
+
 			                                                <label>Date Expiration</label>
-			                                                <form:input type="text" class="form-control" path="dateExpiration"/><br/>
+			                                                <div class='input-group date date-picker'>
+			                                                	<form:input type="text" class="form-control" placeholder="Sample: 2016/12/25" path="dateExpiration"/>
+											                    <span class="input-group-addon">
+											                        <span class="glyphicon glyphicon-calendar"></span>
+											                    </span>
+											                </div>
+				                                            <p class="help-block">Choose the company expiration date</p>
+
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>
 				                                    	<c:when test="${company.id == 0}">
-				                                        	<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Create</button>
+				                                        	<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Create</button>
 				                                    	</c:when>
 		                                            	<c:when test="${company.id > 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Update</button>
+		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Update</button>
 		                                            		<c:url value="/company/delete/${company.id}" var="urlDeleteCompany"/>
 		                                            		<a href="${urlDeleteCompany}">
-																<button class="btn btn-default btn-flat btn-sm">Delete This Company</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Company</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -91,9 +125,9 @@
 		}
 		
 		$(document).ready(function() {
-// 			$("#members-table").dataTable();
-// 			$("#project-table").dataTable();
-// 			$("#task-table").dataTable();
+			$('.date-picker').datepicker({
+			    format: 'yyyy/mm/dd'
+			})
 	    });
 	</script>
 </body>

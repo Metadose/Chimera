@@ -1,10 +1,11 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Company ${action}</title>
+	<title>List Company</title>
 	
 </head>
 <body class="skin-blue">
@@ -15,8 +16,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Company ${action}
-	                <small>Complete list of all company members</small>
+	                List Company
+	                <small>Complete list of all companies</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -30,14 +31,13 @@
                                 <div class="box-body table-responsive">
                                 	<c:url value="/company/edit/0" var="urlCreateCompany"/>
                                 	<a href="${urlCreateCompany}">
-                                		<button class="btn btn-default btn-flat btn-sm">Create Company</button>
+                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Company</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
                                                 <th>Date Started</th>
@@ -52,19 +52,20 @@
 		                                            		<center>
 		                                            			<c:url value="/company/edit/${company.id}" var="urlEditCompany"/>
 																<a href="${urlEditCompany}">
-																	<button class="btn btn-default btn-flat btn-sm">View</button>
+																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
 																<c:url value="/company/delete/${company.id}" var="urlDeleteCompany"/>
 																<a href="${urlDeleteCompany}">
-																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
-														<td>${company.id}</td>
 		                                                <td>${company.name}</td>
 		                                                <td>${company.description}</td>
-		                                                <td>${company.dateStarted}</td>
-		                                                <td>${company.dateExpiration}</td>
+                                                        <fmt:formatDate pattern="yyyy/MM/dd" value="${company.dateStarted}" var="comDateStarted"/>
+		                                                <td>${comDateStarted}</td>
+                                                        <fmt:formatDate pattern="yyyy/MM/dd" value="${company.dateExpiration}" var="comDateExpire"/>
+		                                                <td>${comDateExpire}</td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -72,7 +73,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
                                                 <th>Date Started</th>

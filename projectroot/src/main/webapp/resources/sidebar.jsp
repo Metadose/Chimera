@@ -1,7 +1,9 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!-- Left side column. contains the logo and sidebar -->
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
 <style>
 .autocomplete-suggestions { background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden;}
@@ -77,9 +79,6 @@ $(document).ready(function() {
                 </a>
             </li>
             <c:if test="${authUser.superAdmin == true}">
-            </c:if>
-<%--             <c:if test="${authUser.superAdmin == true}"> --%>
-HIDE TODO
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
@@ -89,14 +88,11 @@ HIDE TODO
                 <ul class="treeview-menu">
                 	<c:url var="urlCompanyList" value="/company/list/"/>
                     <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
-                    
-                    <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Licenses</a></li>
-                    
                     <c:url var="urlConfigList" value="/config/list"/>
                     <li><a href="${urlConfigList}"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
                 </ul>
             </li>
-<%--             </c:if> --%>
+            </c:if>
         </ul>
     </section>
     <!-- /.sidebar -->

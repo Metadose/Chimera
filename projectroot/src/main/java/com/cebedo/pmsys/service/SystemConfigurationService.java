@@ -18,7 +18,7 @@ public interface SystemConfigurationService {
 
     public String getValueByName(String name, boolean override);
 
-    public SystemConfiguration getByName(String name);
+    public SystemConfiguration getByName(String name, boolean override);
 
     public void merge(SystemConfiguration config);
 

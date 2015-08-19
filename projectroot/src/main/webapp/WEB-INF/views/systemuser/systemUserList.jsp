@@ -71,7 +71,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Name</th>
                                                 <th>Staff</th>
                                                 <th>Company</th>

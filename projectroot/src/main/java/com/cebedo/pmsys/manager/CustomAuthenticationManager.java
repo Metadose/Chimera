@@ -60,6 +60,7 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	}
 	// If user does not exist.
 	catch (Exception e) {
+	    // TODO Below line fails.
 	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_NOT_EXIST);
 	    throw new BadCredentialsException(AuditAction.LOGIN_USER_NOT_EXIST.label());
 	}
