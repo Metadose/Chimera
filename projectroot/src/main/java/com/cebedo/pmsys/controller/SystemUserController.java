@@ -13,6 +13,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -30,12 +31,6 @@ public class SystemUserController {
     public static final String ATTR_LIST = "systemUserList";
     public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
     public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
-    public static final String JSP_LIST = SystemUser.OBJECT_NAME + "/systemUserList";
-    public static final String JSP_EDIT = SystemUser.OBJECT_NAME + "/systemUserEdit";
-
-    public static final String PARAM_OLD_PASS = "password";
-    public static final String PARAM_OLD_PASS_RETYPE = "password_retype";
-    public static final String PARAM_NEW_PASS = "password_new";
 
     private AuthHelper authHelper = new AuthHelper();
     private SystemUserService systemUserService;
@@ -62,7 +57,7 @@ public class SystemUserController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemUsers(Model model) {
 	model.addAttribute(ATTR_LIST, this.systemUserService.list());
-	return JSP_LIST;
+	return RegistryJSPPath.JSP_LIST_SYSTEM_USER;
     }
 
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
@@ -156,7 +151,7 @@ public class SystemUserController {
 	// return with an empty object.
 	if (id == 0) {
 	    model.addAttribute(ATTR_SYSTEM_USER, new SystemUser());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_SYSTEM_USER;
 	}
 
 	SystemUser resultUser = this.systemUserService.getWithSecurityByID(id);
@@ -165,6 +160,6 @@ public class SystemUserController {
 		.setCompanyID(resultUser.getCompany() == null ? null : resultUser.getCompany().getId());
 
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_SYSTEM_USER;
     }
 }

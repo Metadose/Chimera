@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>User ${action}</title>
+	<title>List Users</title>
 	
 </head>
 <body class="skin-blue">
@@ -15,7 +15,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                User ${action}
+	                List Users
 	                <small>Complete list of all system users</small>
 	            </h1>
 	        </section>
@@ -27,10 +27,10 @@
                                 <div class="box-header">
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
-                                <div class="box-body table-responsive">
+                                <div class="box-body">
                                 	<c:url value="/systemuser/edit/0" var="urlCreateUser"/>
                                 	<a href="${urlCreateUser}">
-                                		<button class="btn btn-default btn-flat btn-sm">Create User</button>
+                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create User</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
@@ -51,10 +51,11 @@
 		                                            		<center>
 		                                            			<c:url value="/systemuser/edit/${systemUser.id}" var="urlViewUser"/>
 																<a href="${urlViewUser}">
-																	<button class="btn btn-default btn-flat btn-sm">View</button>
+																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
-																<a href="${contextPath}/systemuser/delete/${systemUser.id}">
-																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
+                                                                <c:url value="/systemuser/delete/${systemUser.id}" var="urlDeleteUser"/>
+																<a href="${urlDeleteUser}">
+																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>

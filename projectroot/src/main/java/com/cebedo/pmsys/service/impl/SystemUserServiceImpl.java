@@ -273,7 +273,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.systemUserDAO.delete(id);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, obj.getUsername());
+	return AlertBoxGenerator.SUCCESS.generateDelete(SystemUser.OBJECT_NAME, obj.getUsername());
     }
 
     /**
