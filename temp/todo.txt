@@ -101,3 +101,7 @@ ang wage, dapat project-based sad, like attendance.
 dapat inig delete sa user, ma-delete sad ang staff.
 
 add delete confirmations
+
+
+SYS_HOME = C:/vcc/sys/
+ROOT_INIT = 0

@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
+@Deprecated
 @Entity
 @Table(name = Field.TABLE_NAME)
 public class Field implements Serializable {

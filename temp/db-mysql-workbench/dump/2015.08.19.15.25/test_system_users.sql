@@ -1,0 +1,63 @@
+CREATE DATABASE  IF NOT EXISTS `test` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `test`;
+-- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
+--
+-- Host: 127.0.0.1    Database: test
+-- ------------------------------------------------------
+-- Server version	5.6.24
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `system_users`
+--
+
+DROP TABLE IF EXISTS `system_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `system_users` (
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `super_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `company_id` bigint(20) DEFAULT NULL,
+  `staff_id` bigint(20) DEFAULT NULL,
+  `company_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `login_attempts` int(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`),
+  KEY `FK_system_users_company` (`company_id`),
+  KEY `FK_system_users_staff` (`staff_id`),
+  CONSTRAINT `FK_system_users_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`),
+  CONSTRAINT `FK_system_users_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=189 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `system_users`
+--
+
+LOCK TABLES `system_users` WRITE;
+/*!40000 ALTER TABLE `system_users` DISABLE KEYS */;
+INSERT INTO `system_users` VALUES (32,'root2','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,1),(34,'com_admin1','2f3d253e456b75b2686dfb72a500aa0b',0,4,62,1,0),(35,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(36,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(37,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(38,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(39,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(40,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(41,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(42,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(43,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(44,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(45,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(46,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(47,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(48,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(49,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(50,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(51,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(52,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(53,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(54,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(55,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(56,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(57,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(58,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(59,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(60,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(61,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(62,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(63,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(64,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(65,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(66,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(67,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(68,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(69,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(70,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(71,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(72,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(73,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(74,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(75,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(76,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(77,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(78,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(79,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(80,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(81,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(82,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(83,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(84,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(85,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(86,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(87,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(88,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(89,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(90,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(91,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(92,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(93,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(94,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(95,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(96,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(97,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(98,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(99,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(100,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(101,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(102,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(103,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(104,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(105,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(106,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(107,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(108,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(109,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(110,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(111,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(112,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(113,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(114,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(115,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(116,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(117,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(118,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(119,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(120,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(121,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(122,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(123,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(124,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(125,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(126,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(127,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(128,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(129,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(130,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(131,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(132,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(133,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(134,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(135,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(136,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(137,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(138,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(139,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(140,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(141,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(142,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(143,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(144,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(145,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(146,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(147,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(148,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(149,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(150,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(151,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(152,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(153,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(154,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(155,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(156,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(157,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(158,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(159,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(160,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(161,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(162,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(163,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(164,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(165,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(166,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(167,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(168,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(169,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(170,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(171,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(172,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(173,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(174,'root','691b0eec514f5033ebdb6b6144aa016a',1,NULL,NULL,0,0),(188,'root_098','4ca3c78a6db368685a6a1a67045de747',0,4,105,0,0);
+/*!40000 ALTER TABLE `system_users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-08-19 15:27:08

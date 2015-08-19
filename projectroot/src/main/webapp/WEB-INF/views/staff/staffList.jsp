@@ -8,7 +8,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Staff ${action}</title>
+	<title>List Staff</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -17,7 +17,7 @@
 		<aside class="right-side">
 			<section class="content-header">
 	            <h1>
-	                Staff ${action}
+	                List Staff
 	                <small>Complete list of all staff members</small>
 	            </h1>
 	        </section>
@@ -48,8 +48,8 @@
 					                                        <thead>
 					                                            <tr>
 					                                            	<th>&nbsp;</th>
-					                                                <th>Photo</th>
 					                                                <th>Full Name</th>
+					                                                <th>User Account</th>
 					                                                <th>Position</th>
 					                                                <th>E-Mail</th>
 					                                                <th>Contact Number</th>
@@ -63,28 +63,20 @@
 							                                            		<center>
 							                                            			<c:url var="urlEditStaff" value="/staff/edit/${staff.id}"/>
 																					<a href="${urlEditStaff}">
-																						<button class="btn btn-default btn-flat btn-sm">View</button>
+																						<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																					</a>
 																					<c:url var="urlDeleteStaff" value="/staff/delete/${staff.id}"/>
 																					<a href="${urlDeleteStaff}">
-																						<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																						<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 																					</a>
-																					<c:if test="${!empty staff.getUser().getId() && staff.getUser().getId() != authUser.id}">
-																					<c:url var="urlSendMessage" value="/message/view/${staff.getUser().getId()}"/>
-																					<a href="${urlSendMessage}">
-																						<button class="btn btn-default btn-flat btn-sm">Message</button>
-																					</a>
-																					</c:if>
 																				</center>
 																			</td>
-							                                                <td>
-							                                                	<div class="user-panel">
-																	            <div class="pull-left image">
-																	            	TODO
-																	            </div>
-																		        </div>
-							                                                </td>
 							                                                <td>${staff.getFullName()}</td>
+							                                                <td>
+																				<a href="<c:url value="/systemuser/edit/${staff.user.id}"/>" class="general-link">
+							                                                	${staff.user.username}
+																				</a>
+							                                                </td>
 							                                                <td>${staff.companyPosition}</td>
 							                                                <td>${staff.email}</td>
 							                                                <td>${staff.contactNumber}</td>

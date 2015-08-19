@@ -52,7 +52,7 @@
 																<a href="${urlViewUser}">
 																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
-                                                                <a href="<c:url value="/systemuser/delete/${systemuser.id}"/>">
+                                                                <a href="<c:url value="/systemuser/delete/${systemUser.id}"/>">
                                                                     <button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
                                                                 </a>
 															</center>
