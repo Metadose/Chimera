@@ -2,6 +2,10 @@ package com.cebedo.pmsys.constants;
 
 public class RegistryResponseMessage {
 
+    public static final String ERROR_USERNAME_INVALID_PATTERN = "A <b>Username</b> must contain the following:<br/>1.) Lowercase letters from <b>a-z</b>.<br/>2.) Numbers <b>0-9</b> or symbols <b>underscore</b> or <b>hyphen</b>.<br/>3.) Length at least <b>4 characters</b> and maximum length of 32.";
+
+    public static final String ERROR_PASSWORD_INVALID_PATTERN = "Password must be between <b>8 and 16 digits long</b> and includes <b>at least one numeric digit</b>.";
+
     public static final String ERROR_PASSWORDS_NOT_EQUAL = "The <b>passwords</b> you entered were <b>not the same</b>.";
 
     public static final String ERROR_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";

@@ -37,8 +37,7 @@
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
-                                                <th>Name</th>
+                                                <th>Username</th>
                                                 <th>Staff</th>
                                                 <th>Company</th>
                                             </tr>
@@ -53,15 +52,17 @@
 																<a href="${urlViewUser}">
 																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
-                                                                <c:url value="/systemuser/delete/${systemUser.id}" var="urlDeleteUser"/>
-																<a href="${urlDeleteUser}">
-																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-																</a>
+                                                                <a href="<c:url value="/systemuser/delete/${systemuser.id}"/>">
+                                                                    <button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+                                                                </a>
 															</center>
 														</td>
-														<td>${systemUser.id}</td>
 		                                                <td>${systemUser.username}</td>
-		                                                <td>${systemUser.staff.getFullName()}</td>
+		                                                <td>
+                                                            <a href="<c:url value="/staff/edit/${systemUser.staff.id}"/>" class="general-link">
+                                                            ${systemUser.staff.getFullName()}
+                                                            </a>
+                                                        </td>
 		                                                <td>${systemUser.company.name}</td>
 		                                            </tr>
 	                                            </c:forEach>

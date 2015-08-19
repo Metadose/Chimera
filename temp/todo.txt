@@ -99,3 +99,5 @@ optimize code sa project > staff edit/attendance
 ang wage, dapat project-based sad, like attendance.
 
 dapat inig delete sa user, ma-delete sad ang staff.
+
+add delete confirmations

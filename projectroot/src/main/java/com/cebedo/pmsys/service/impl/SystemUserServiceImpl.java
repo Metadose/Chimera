@@ -1,11 +1,14 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.controller.LoginLogoutController;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
@@ -24,6 +27,13 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @Service
 public class SystemUserServiceImpl implements SystemUserService {
 
+    private static final String PATTERN_USERNAME = "^[a-z0-9_-]{4,32}$";
+    private static final String PATTERN_PASSWORD = "^(?=.*\\d).{8,16}$";
+
+    private final Pattern patternUsername = Pattern.compile(PATTERN_USERNAME);
+    private final Pattern patternPassword = Pattern.compile(PATTERN_PASSWORD);
+    private Matcher matcher;
+
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
 
@@ -31,7 +41,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     private StaffDAO staffDAO;
     private SystemConfigurationDAO systemConfigurationDAO;
 
-    private static final String ROOT_USER_NAME = "root";
+    private static final String ROOT_USER_NAME = "root_098";
     private static final String ROOT_PASSWORD = "0p;/9ol.8ik,";
 
     public void setSystemConfigurationDAO(SystemConfigurationDAO systemConfigurationDAO) {
@@ -90,7 +100,19 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Transactional
     public String create(SystemUser systemUser) {
 
-	AuthenticationToken auth = this.authHelper.getAuth();
+	// Check if the user name is valid.
+	this.matcher = this.patternUsername.matcher(systemUser.getUsername());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+	}
+
+	// Check if the password is valid.
+	this.matcher = this.patternPassword.matcher(systemUser.getPassword());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+	}
 
 	// Encrpyt password.
 	String encPassword = this.authHelper.encodePassword(systemUser.getPassword(), systemUser);
@@ -114,6 +136,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    }
 	} else {
 	    // Else, get it somewhere else.
+	    AuthenticationToken auth = this.authHelper.getAuth();
 	    Company authCompany = auth.getCompany();
 	    systemUser.setCompany(authCompany);
 	    staff.setCompany(authCompany);
@@ -208,6 +231,21 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String update(SystemUser user) {
+
+	// Check if the user name is valid.
+	this.matcher = this.patternUsername.matcher(user.getUsername());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+	}
+
+	// Check if the password is valid.
+	this.matcher = this.patternPassword.matcher(user.getPassword());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+	}
+
 	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
 	user.setPassword(encPassword);
 
@@ -233,6 +271,20 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String update(SystemUser user, boolean systemOverride) {
+
+	// Check if the user name is valid.
+	this.matcher = this.patternUsername.matcher(user.getUsername());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+	}
+
+	// Check if the password is valid.
+	this.matcher = this.patternPassword.matcher(user.getPassword());
+	if (!this.matcher.matches()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+	}
 
 	if (!systemOverride) {
 	    // Security check.
