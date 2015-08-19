@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
@@ -31,7 +32,6 @@ public class SystemUserController {
     public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
     public static final String JSP_LIST = SystemUser.OBJECT_NAME + "/systemUserList";
     public static final String JSP_EDIT = SystemUser.OBJECT_NAME + "/systemUserEdit";
-    public static final String JSP_CHANGE_PASSWORD = SystemUser.OBJECT_NAME + "/changePassword";
 
     public static final String PARAM_OLD_PASS = "password";
     public static final String PARAM_OLD_PASS_RETYPE = "password_retype";
@@ -69,105 +69,78 @@ public class SystemUserController {
     public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
-	AlertBoxGenerator alertFactory = new AlertBoxGenerator();
-
 	// If the passwords provided were not equal.
 	if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
-	    alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
-	    alertFactory.setMessage("The passwords you entered were not the same.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORDS_NOT_EQUAL));
 	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		    + ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
+	    return editPage(systemUser.getId());
 	}
 
 	// If request is to create new user.
-	alertFactory.setStatus(ConstantsSystem.UI_STATUS_SUCCESS);
 	if (systemUser.getId() == 0) {
+
+	    // If there is already an existing user with that user name.
 	    try {
 		@SuppressWarnings("unused")
 		SystemUser user = this.systemUserService.searchDatabase(systemUser.getUsername());
-		alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
-		alertFactory
-			.setMessage("<b>Username</b> provided is <b>no longer available</b>. Please pick a different one.");
-		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-			alertFactory.generateHTML());
+		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+			.generateHTML(RegistryResponseMessage.ERROR_USERNAME_NOT_AVAILABLE));
 		status.setComplete();
-		return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-			+ ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
-	    } catch (Exception e) {
-		this.systemUserService.create(systemUser);
+		return editPage(systemUser.getId());
 
-		// Redirect back to list page.
-		alertFactory.setMessage("Successfully <b>created</b> user <b>"
-			+ systemUser.getUsername() + "</b>.");
-		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-			alertFactory.generateHTML());
+	    }
+	    // If everything is ok, create.
+	    catch (Exception e) {
+		String response = this.systemUserService.create(systemUser);
+		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 		status.setComplete();
-		return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-			+ ConstantsSystem.REQUEST_LIST;
+		return editPage(systemUser.getId());
 	    }
 	}
 
 	// If request is to update user.
-	this.systemUserService.update(systemUser);
-
 	// Redirect back to the edit page.
-	alertFactory.setMessage("Successfully <b>updated</b> user <b>" + systemUser.getUsername()
-		+ "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
+	String response = this.systemUserService.update(systemUser);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + systemUser.getId();
+	return editPage(systemUser.getId());
     }
 
-    @RequestMapping(value = { ConstantsSystem.REQUEST_CHANGE_PASSWORD })
-    public String redirectChangePassword() {
-	return JSP_CHANGE_PASSWORD;
+    /**
+     * Return back to the list page.
+     * 
+     * @return
+     */
+    private String listPage() {
+	return RegistryURL.REDIRECT_LIST_SYSTEM_USER;
     }
 
-    @RequestMapping(value = ConstantsSystem.REQUEST_CHANGE_PASSWORD + "/" + ConstantsSystem.EXECUTE, method = RequestMethod.POST)
-    public String changePassword(@RequestParam(PARAM_OLD_PASS) String passwordOld,
-	    @RequestParam(PARAM_OLD_PASS_RETYPE) String passwordOldRetype,
-	    @RequestParam(PARAM_NEW_PASS) String passwordNew,
-	    @RequestParam(SystemUser.COLUMN_PRIMARY_KEY) long userID, Model model) {
-
-	AlertBoxGenerator alertFactory = new AlertBoxGenerator();
-
-	// Check if the passwords typed are equal.
-	if (passwordOld.equals(passwordOldRetype)) {
-	    SystemUser user = this.systemUserService.getByID(userID);
-
-	    // If the password passed is valid.
-	    if (this.authHelper.isPasswordValid(passwordOld, user)) {
-
-		// TODO Move this inside the service class.
-		String encPassword = this.authHelper.encodePassword(passwordNew, user);
-		user.setPassword(encPassword);
-		this.systemUserService.update(user);
-		alertFactory.setStatus(ConstantsSystem.UI_STATUS_SUCCESS);
-		alertFactory.setMessage("Successfully changed your password.");
-	    } else {
-		// Construct error alert. Password is not valid.
-		alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
-		alertFactory.setMessage("Incorrect password. Please try again.");
-	    }
-	} else {
-	    // Construct error alert. Old passwords are not equal.
-	    alertFactory.setStatus(ConstantsSystem.UI_STATUS_DANGER);
-	    alertFactory
-		    .setMessage("The old passwords you entered were not the same. Please try again.");
-	}
-	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	// Redirect back to change pass page.
-	return JSP_CHANGE_PASSWORD;
+    /**
+     * Return to edit page.
+     * 
+     * @param id
+     * @return
+     */
+    private String editPage(long id) {
+	return String.format(RegistryURL.REDIRECT_EDIT_SYSTEM_USER, id);
     }
 
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
-    public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id) {
-	this.systemUserService.delete(id);
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_USER + "/"
-		+ ConstantsSystem.REQUEST_LIST;
+    /**
+     * Delete a user account.
+     * 
+     * @param id
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
+	String response = this.systemUserService.delete(id);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	status.setComplete();
+	return listPage();
     }
 
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)

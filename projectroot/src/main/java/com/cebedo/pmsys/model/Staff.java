@@ -178,7 +178,7 @@ public class Staff implements Serializable {
 	this.company = company;
     }
 
-    @OneToOne(mappedBy = Staff.OBJECT_NAME, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = Staff.OBJECT_NAME, cascade = CascadeType.REMOVE)
     public SystemUser getUser() {
 	return user;
     }

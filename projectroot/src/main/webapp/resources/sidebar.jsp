@@ -65,15 +65,15 @@ $(document).ready(function() {
                 </a>
             </li>
             <li>
-            	<c:url var="urlStaffList" value="/staff/list/"/>
-                <a href="${urlStaffList}">
-                    <i class="fa fa-user"></i> <span>Company Staff</span>
-                </a>
-            </li>
-            <li>
             	<c:url var="urlSystemUserList" value="/systemuser/list/"/>
                 <a href="${urlSystemUserList}">
                     <i class="fa fa-male"></i> <span>User Accounts</span>
+                </a>
+            </li>
+            <li>
+                <c:url var="urlStaffList" value="/staff/list/"/>
+                <a href="${urlStaffList}">
+                    <i class="fa fa-user"></i> <span>Company Staff</span>
                 </a>
             </li>
             <c:if test="${authUser.superAdmin == true}">

@@ -14,6 +14,10 @@ public class RegistryURL {
 
     public static final String EDIT_STAFF = "/edit/staff/{staff}";
 
+    public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";
+
+    public static final String REDIRECT_LIST_SYSTEM_USER = "redirect:/systemuser/list";
+
     public static final String REDIRECT_PROJECT_EDIT_STAFF = "redirect:/project/edit/staff/%s";
 
     public static final String EDIT_TASK = "/edit/task/{task}";

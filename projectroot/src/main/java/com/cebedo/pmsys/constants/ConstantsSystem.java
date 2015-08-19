@@ -25,7 +25,6 @@ public abstract class ConstantsSystem {
     public static final String REQUEST_DO_PULL_OUT = "do-pullout";
     public static final String REQUEST_INCLUDE = "include";
     public static final String REQUEST_DELETE = "delete";
-    public static final String REQUEST_CHANGE_PASSWORD = "changepassword";
     public static final String REQUEST_CREATE = "create";
     public static final String REQUEST_COMPUTE = "compute";
     public static final String REQUEST_UPDATE = "update";

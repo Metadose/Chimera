@@ -31,9 +31,11 @@
 		ul li img {
 		    cursor: pointer;
 		}
+		/*TODO Estimation tables. Needed?*/
 		#concrete-estimation-summary-table, #concrete-table, #form-estimate-cost {
 			font-size: 11px;
 		}
+		/*TODO Toggle visibility of columns. Do we still need this?*/
 		.toggle-vis {
 			cursor: pointer;
 			font-size: 12px !important;

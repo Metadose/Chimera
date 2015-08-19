@@ -1,12 +1,20 @@
-
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>User ${action}</title>
+	<c:choose>
+    	<c:when test="${systemuser.id == 0}">
+    	<title>Create User</title>
+    	</c:when>
+    	<c:when test="${systemuser.id > 0}">
+		<title>Update User</title>
+    	</c:when>
+    </c:choose>
 	
 	<style>
 	  ul {         
@@ -26,12 +34,44 @@
 	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<c:import url="/resources/sidebar.jsp" />
+
+	<!-- Modal -->
+	<div id="deleteModal" class="modal fade" role="dialog">
+		<!-- Modal content-->
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Confirmation</h4>
+			</div>
+			<div class="modal-body">
+				<p>Do you really want to delete this user?</p>
+			</div>
+			<div class="modal-footer">
+				<c:url value="/systemuser/delete/${systemuser.id}" var="urlDeleteUser"/>
+        		<a href="${urlDeleteUser}">
+					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+				</a>
+				<button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                ${systemuser.username}
-	                <small>${action} User</small>
+	            	<c:choose>
+                    	<c:when test="${systemuser.id == 0}">
+                    	New User
+                    	<small>Create User</small>
+                    	</c:when>
+                    	<c:when test="${systemuser.id > 0}">
+	                	${systemuser.username}
+	                	<small>Update User</small>
+                    	</c:when>
+                    </c:choose>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -42,218 +82,84 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
-                                <c:if test="${systemuser.id != 0}">
-                                <li><a href="#tab_data_access" data-toggle="tab">Data Access</a></li>
-                                <li><a href="#tab_authority" data-toggle="tab">Authority</a></li>
-                                </c:if>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
-                                	<c:choose>
-                                		<c:when test="${!empty systemuser.staff}">
-	                                	<h2 class="page-header">
-	                                	<c:url value="/staff/edit/${systemuser.staff.id}/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
-	                                	<a href="${urlViewStaff}">
-	                                	<button class="btn btn-default btn-flat btn-sm">View Staff</button>
-	                                	</a>
-										</h2>
-                                		</c:when>
-                                		<c:when test="${empty systemuser.staff}">
-                                		<h2 class="page-header">
-	                                	<c:url value="/staff/edit/0/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
-	                                	<a href="${urlViewStaff}">
-	                                	<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
-	                                	</a>
-										</h2>
-                                		</c:when>
-                                	</c:choose>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
                    									<form:form modelAttribute="systemuser" method="post" id="detailsForm" action="${contextPath}/systemuser/create">
 				                                        <div class="form-group">
+				                                            
 				                                            <label>Username</label>
-				                                            <form:input type="text" class="form-control" path="username"/><br/>
+				                                            <c:choose>
+						                                    	<c:when test="${systemuser.id == 0}">
+						                                        <form:input type="text" placeholder="Sample: user_john, jane_account, etc." class="form-control" path="username"/>
+				                                            	<p class="help-block">Enter the username of this account</p>
+						                                    	</c:when>
+				                                            	<c:when test="${systemuser.id > 0}">
+				                                            	<br/>
+				                                            	${systemuser.username}
+				                                            	<p class="help-block">Username of this account</p>
+				                                            	</c:when>
+				                                            </c:choose>
+
 				                                            <label>Password</label>
-				                                            <form:password class="form-control" path="password"/><br/>
+				                                            <form:password class="form-control" path="password"/>
+				                                            <p class="help-block">Type the password</p>
+
 				                                            <label>Re-type Password</label>
 				                                            <form:password class="form-control" path="retypePassword"/>
+				                                            <p class="help-block">Verify the password</p>
 				                                            
 				                                            <c:if test="${authUser.superAdmin == true}">
-				                                            <br/>
-				                                            <label>Super Admin</label>
-				                                            <form:checkbox class="form-control" path="superAdmin"/><br/>
-				                                            <label>Company Admin</label>
-				                                            <form:checkbox class="form-control" path="companyAdmin"/><br/>
+				                                            <label>Super Admin</label><br/>
+				                                            <form:checkbox class="form-control" path="superAdmin"/>
+				                                            <p class="help-block">Is this user a super admin?</p>
+
+				                                            <label>Company Admin</label><br/>
+				                                            <form:checkbox class="form-control" path="companyAdmin"/>
+				                                            <p class="help-block">Is this user a company admin?</p>
+
 				                                            <label>Company</label>
 				                                            <form:select path="companyID" class="form-control" items="${companyList}" itemValue="id" itemLabel="name"/>
-				                                            <br/>
+				                                            <p class="help-block">Select the company of this user</p>
 				                                            </c:if>
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>
 				                                    	<c:when test="${systemuser.id == 0}">
-				                                        <button class="btn btn-default btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Create</button>
+				                                        	<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Create</button>
 				                                    	</c:when>
+
 		                                            	<c:when test="${systemuser.id > 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/systemuser/delete/${systemuser.id}">
-																<button class="btn btn-default btn-flat btn-sm">Delete This User</button>
-															</a>
+		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Update</button>
+															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete This User</button>
 		                                            	</c:when>
 		                                            </c:choose>
+
+				                                	<c:choose>
+				                                		<c:when test="${systemuser.id > 0 && !empty systemuser.staff}">
+					                                	<c:url value="/staff/edit/${systemuser.staff.id}" var="urlViewStaff"/>
+					                                	<a href="${urlViewStaff}">
+					                                		<button class="btn btn-cebedo-view btn-flat btn-sm">View Staff</button>
+					                                	</a>
+				                                		</c:when>
+
+				                                		<c:when test="${systemuser.id > 0 && empty systemuser.staff}">
+					                                	<c:url value="/staff/edit/0/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
+					                                	<a href="${urlViewStaff}">
+					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
+					                                	</a>
+				                                		</c:when>
+				                                	</c:choose>
+
                    								</div>
                    							</div>
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <c:if test="${systemuser.id != 0}">
-                                <div class="tab-pane" id="tab_data_access">
-                                	<div class="box box-body box-default">
-		                                	<table>
-		                                    	<tr>
-<!-- 		                                    		<td> -->
-<%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
-<%-- 		                                    			<a href="${urlCreateStaff}"> --%>
-<!-- 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button> -->
-<!-- 		                                    			</a> -->
-<!-- 		                                    		</td> -->
-<!-- 		                                    		<td> -->
-<!-- 		                                    			&nbsp; -->
-<!-- 		                                    		</td> -->
- 		                                    		<form:form 
- 		                                    		modelAttribute="securityaccess"  
- 		                                    		method="post" 
- 		                                    		action="${contextPath}/systemuser/assign/securityaccess"> 
- 		                                    			<td>
- 		                                    			<form:select class="form-control" path="securityAccessID" items="${accessList}" itemLabel="label" itemValue="id"/>
-<%--  		                                    			<form:select class="form-control" path="securityAccessID"> --%>
-<%--                                      						<c:forEach items="${accessList}" var="access">   --%>
-<%--                                      							<form:option value="${access.id}" label="${access.name}"/>  --%>
-<%--                                      						</c:forEach>  --%>
-<%--  		                                    			</form:select>  --%>
- 		                                    			</td>
- 		                                    			<td>
-			                                    			&nbsp;
-			                                    		</td>
- 														<td>
- 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
- 		                                    			</td> 
- 		                                    		</form:form> 
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-               											<c:url var="urlUnassignAllSecAccess" value="/systemuser/unassign/securityaccess/all"/>
-		                                    			<a href="${urlUnassignAllSecAccess}">
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-		                                    			</a>
-		                                    		</td>
-		                                    	</tr>
-		                                    </table>
-		                                    <br/>
-		                                    <table id="dataaccess-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                                <th>ID</th>
-		                                                <th>Name</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                		<c:forEach items="${systemuser.securityAccess}" var="access">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-<%-- 			                                            			<c:url var="urlViewStaff" value="/staff/edit/${manager.id}/from/project/${project.id}" /> --%>
-<%-- 			                                            			<a href="${urlViewStaff}"> --%>
-<!-- 							                                    	<button class="btn btn-default btn-flat btn-sm">View</button> -->
-<!-- 			                                            			</a> -->
-	                   												<c:url var="urlUnassignUserAccess" value="/systemuser/unassign/securityaccess/${access.id}"/>
-	                   												<a href="${urlUnassignUserAccess}">
-																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-	                   												</a>
-																</center>
-															</td>
-			                                                <td>${access.id}</td>
-			                                                <td>${access.label}</td>
-			                                            </tr>
-		                                            </c:forEach>
-			                                    </tbody>
-			                                </table>
-		                            </div>
-                                </div><!-- /.tab-pane -->
-                                <div class="tab-pane" id="tab_authority">
-                                	<div class="box box-body box-default">
-		                                	<table>
-		                                    	<tr>
-<!-- 		                                    		<td> -->
-<%-- 		                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/> --%>
-<%-- 		                                    			<a href="${urlCreateStaff}"> --%>
-<!-- 				                                    	<button class="btn btn-default btn-flat btn-sm">Create Staff</button> -->
-<!-- 		                                    			</a> -->
-<!-- 		                                    		</td> -->
-<!-- 		                                    		<td> -->
-<!-- 		                                    			&nbsp; -->
-<!-- 		                                    		</td> -->
- 		                                    		<form:form 
- 		                                    		modelAttribute="securityrole"  
- 		                                    		method="post" 
- 		                                    		action="${contextPath}/systemuser/assign/securityrole"> 
- 		                                    			<td>
- 		                                    			<form:select class="form-control" path="securityRoleID" items="${roleList}" itemLabel="label" itemValue="id"/>
- 		                                    			</td>
- 		                                    			<td>
-			                                    			&nbsp;
-			                                    		</td>
- 														<td>
- 														<button class="btn btn-default btn-flat btn-sm">Assign</button>
- 		                                    			</td> 
- 		                                    		</form:form> 
-		                                    		<td>
-		                                    			&nbsp;
-		                                    		</td>
-		                                    		<td>
-               											<c:url var="urlUnassignAllSecRole" value="/systemuser/unassign/securityrole/all"/>
-		                                    			<a href="${urlUnassignAllSecRole}">
-                											<button class="btn btn-default btn-flat btn-sm">Unassign All</button>
-		                                    			</a>
-		                                    		</td>
-		                                    	</tr>
-		                                    </table>
-		                                    <br/>
-		                                    <table id="authority-table" class="table table-bordered table-striped">
-		                                    	<thead>
-		                                            <tr>
-		                                            	<th>&nbsp;</th>
-		                                                <th>ID</th>
-		                                                <th>Name</th>
-		                                            </tr>
-                                        		</thead>
-		                                        <tbody>
-			                                		<c:forEach items="${systemuser.securityRoles}" var="role">
-			                                            <tr>
-			                                            	<td>
-			                                            		<center>
-	                   												<c:url var="urlUnassignUserRole" value="/systemuser/unassign/securityrole/${role.id}"/>
-	                   												<a href="${urlUnassignUserRole}">
-																		<button class="btn btn-default btn-flat btn-sm">Unassign</button>
-	                   												</a>
-																</center>
-															</td>
-			                                                <td>${role.id}</td>
-			                                                <td>${role.label}</td>
-			                                            </tr>
-		                                            </c:forEach>
-			                                    </tbody>
-			                                </table>
-		                            </div>
-                                </div><!-- /.tab-pane -->
-                                </c:if>
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->
