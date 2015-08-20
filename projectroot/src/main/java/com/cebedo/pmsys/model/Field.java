@@ -14,6 +14,9 @@ import javax.persistence.Table;
 
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
+/**
+ * TODO Update this whole class. Introduce UUID's as primary keys.
+ */
 @Deprecated
 @Entity
 @Table(name = Field.TABLE_NAME)

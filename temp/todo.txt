@@ -103,8 +103,9 @@ dapat inig delete sa user, ma-delete sad ang staff.
 add delete confirmations
 
 
+DEPLOY:
 SYS_HOME = C:/vcc/sys/
 ROOT_INIT = 0
+Field ID = 1:"Textfield"
 
 date started ug date expiration format display sa companyEdit
-

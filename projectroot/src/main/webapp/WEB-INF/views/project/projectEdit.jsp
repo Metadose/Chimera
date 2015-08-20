@@ -5,15 +5,18 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<c:set var="action" value="Create"/>
-<c:if test="${project.id > 0}">
-	<c:set var="action" value="Edit"/>
-</c:if>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Project ${action}</title>
+	<c:choose>
+    	<c:when test="${project.id == 0}">
+    	<title>Create Project</title>
+    	</c:when>
+    	<c:when test="${project.id > 0}">
+		<title>Edit Project</title>
+    	</c:when>
+    </c:choose>
 	
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
@@ -79,14 +82,18 @@
 	            	<c:choose>
 	            		<c:when test="${project.id == 0}">
 	            			New Project
+			                <small>Create Project 
+			                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
+			                <a href="${clearCache}">Clear Cache</a> </small>
 	            		</c:when>
+
 	            		<c:when test="${project.id != 0}">
 	            			${project.name}
+			                <small>Edit Project 
+			                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
+			                <a href="${clearCache}">Clear Cache</a> </small>
 	            		</c:when>
 	            	</c:choose>
-	                <small>${action} Project 
-	                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
-	                <a href="${clearCache}">Clear Cache</a> </small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -117,29 +124,6 @@
                    									<h3 class="box-title">Basic</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info">
-									                    <p>Basic details of the project.</p>
-									                </div>
-				                                    <c:if test="${project.id != 0}">
-				                                    <!-- Read only Output -->
-				                                    <div class="form-group" id="detailsDivViewer">
-			                                            <label>Name</label><br/>
-			                                            <c:out value="${project.name}"/><br/><br/>
-			                                            
-			                                            <label>Status</label><br/>
-			                                            <c:set value="${project.getStatusEnum().css()}" var="css"></c:set>
-														<span class="label ${css}">${project.getStatusEnum()}</span><br/><br/>
-			                                            
-			                                            <label>Location</label><br/>
-			                                            <c:out value="${project.location}"/><br/><br/>
-			                                            
-			                                            <label>Notes</label><br/>
-			                                            <c:out value="${project.notes}"/><br/><br/>
-			                                            
-			                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivViewer, detailsDivEditor)">Edit Details</button>
-			                                            <p class="help-block">Edit the details above</p>
-			                                        </div>
-			                                        </c:if>
 			                                        <div class="form-group" id="detailsDivEditor">
 			                                        
 			                                        	<!-- Update form Input -->
@@ -169,7 +153,6 @@
 				                                            <label>Notes</label>
 				                                            <form:input type="text" placeholder="Sample: This is only the first phase" class="form-control" path="notes"/>
 				                                            <p class="help-block">Add additional notes and remarks</p>
-				                                            <br/>
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
@@ -180,9 +163,6 @@
 															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete This Project</button>
 		                                            	</c:when>
 		                                            </c:choose>
-		                                            <c:if test="${project.id != 0}">
-		                                            <button class="btn btn-cebedo-edit btn-flat btn-sm" onclick="switchDisplay(detailsDivEditor, detailsDivViewer)">Done Editing</button>
-		                                            </c:if>
 			                                        </div>
                    								</div>
                    							</div>
@@ -195,9 +175,6 @@
                    									<h3 class="box-title">More Information</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info">
-									                    <p>Save extra information.</p>
-									                </div>
                    									<div class="form-group">
                    											<c:set var="projectFields" value="${project.assignedFields}"/>
                												
@@ -242,7 +219,6 @@
 																	<p class="help-block">Enter the information to be added</p>
 															
 															</form:form>
-															<br/>
 	                                           				<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add Information</button>
 	                                           				<c:if test="${!empty projectFields}">
 																<c:url var="urlProjectUnassignFieldAll" value="/project/unassign/field/all"/>
@@ -2041,8 +2017,6 @@
    	<c:if test="${project.id != 0}">
    	<script type="text/javascript">
    	$(document).ready(function() {
-		$('#detailsDivEditor').hide();
-		
 		var eventsJSON = ${calendarJSON};
 		$('#calendar').fullCalendar({
 			events: eventsJSON,
@@ -2075,55 +2049,14 @@
    	</script>
 	</c:if>
 	
-	<c:if test="${project.id != 0 && !empty project.assignedFields}">
-   	<script type="text/javascript">
-   	$(document).ready(function() {
-		$('#detailsDivEditor').hide();
-		$('#fieldsDivEditor').hide();
-	});
-   	</script>
-	</c:if>
-	
 	<script type="text/javascript">
-	    // Photos event handler.
-		$(document).on('click', 'a.controls', function(){
-	        var index = $(this).attr('href');
-	        var src = $('ul.row li:nth-child('+ index +') img').attr('src');             
-	        $('.modal-body img').attr('src', src);
-            
-	        var newPrevIndex = parseInt(index) - 1; 
-	        var newNextIndex = parseInt(newPrevIndex) + 2; 
-	        
-	        if($(this).hasClass('previous')){               
-	            $(this).attr('href', newPrevIndex); 
-	            $('a.next').attr('href', newNextIndex);
-	        }else{
-	            $(this).attr('href', newNextIndex); 
-	            $('a.previous').attr('href', newPrevIndex);
-	        }
-	        
-	        var total = $('ul.row li').length + 1; 
-	        // Hide next button.
-	        if(total === newNextIndex){
-	            $('a.next').hide();
-	        }else{
-	            $('a.next').show()
-	        }
-	        
-	        // Hide previous button.
-	        if(newPrevIndex === 0){
-	            $('a.previous').hide();
-	        }else{
-	            $('a.previous').show()
-	        }
-	        
-	        return false;
-	    });
 	    
+	    // TODO Not sure if we still need the below code.
 		$(document).ready(function() {
 		    var estimationTable = $('#concrete-estimation-summary-table').DataTable();
 		    var concreteBreakdownTable = $("#concrete-table").DataTable();
 		 
+		 	// Hide/show data table columns.
 		    $('a.toggle-vis').on( 'click', function (e) {
 		        e.preventDefault();
 		 
@@ -2159,6 +2092,7 @@
 	        }
 		});
 		
+		// Data tables.
 		$(document).ready(function() {
 			$("#chb-cost-quantity-table").dataTable();
 			$("#chb-quantity-table").dataTable();
@@ -2171,37 +2105,6 @@
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();
 			$(".is-data-table").dataTable();
-			
-			// Event handler for photos.
-			$('li img').on('click',function(){
-                var src = $(this).attr('src');
-                var img = '<img id="popupImage" src="' + src + '" class="img-responsive"/>';
-                var index = $(this).parent('li').index();
-                var html = '';
-                html += img;                
-                html += '<br/><div>';
-               
-                // Previous button.
-                html += '<a class="controls previous" href="' + (index) + '">';
-                html += '<button class="btn btn-default btn-flat btn-sm">Previous</button>';
-                html += '</a>';
-                html += '&nbsp;';
-               
-                // Next button.
-                html += '<a class="controls next" href="'+ (index+2) + '">';
-                html += '<button class="btn btn-default btn-flat btn-sm">Next</button>';
-                html += '</a>';
-                html += '</div>';
-                $('#myModal').modal();
-                $('#myModal').on('shown.bs.modal', function(){
-                    $('#myModal .modal-body').html(html);
-                    $('a.controls').trigger('click');
-                })
-                $('#myModal').on('hidden.bs.modal', function(){
-                    $('#myModal .modal-body').html('');
-                });
-           });
-			
 	    });
 		
 		function checkAll(checkboxClass) {
