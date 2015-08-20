@@ -27,7 +27,7 @@
                                 <div class="box-header">
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
-                                <div class="box-body table-responsive">
+                                <div class="box-body">
                                 	<a href="<c:url value="/config/edit/0"/>">
                                 		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Configuration</button>
                                 	</a>

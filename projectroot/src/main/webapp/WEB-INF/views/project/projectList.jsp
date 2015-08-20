@@ -29,7 +29,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="box">
-									<div class="box-body table-responsive">
+									<div class="box-body">
 										<c:url var="urlCreateProject" value="/project/edit/0"/>
 	                                	<a href="${urlCreateProject}">
 	                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>

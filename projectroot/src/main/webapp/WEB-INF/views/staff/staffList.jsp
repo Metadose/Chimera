@@ -38,7 +38,7 @@
 					                                <div class="box-header">
 					<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 					                                </div><!-- /.box-header -->
-					                                <div class="box-body table-responsive">
+					                                <div class="box-body">
 					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
 					                                	<a href="${urlCreateStaff}">
 					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>

@@ -78,10 +78,18 @@ $(window).on('load', function() {
                                 </a>
                             </div>
                             <div class="col-md-4 text-center">
-                                <c:url value="/staff/edit/${authStaff.id}" var="urlViewStaff"/>
-                                <a href="${urlViewStaff}">
-                                    Staff Profile
-                                </a>
+                            	<c:if test="${empty authStaff}">
+                            		<c:url value="/staff/edit/0" var="urlViewStaff"/>
+	                                <a href="${urlViewStaff}">
+	                                    Create Staff
+	                                </a>
+                            	</c:if>
+                            	<c:if test="${!empty authStaff}">
+	                                <c:url value="/staff/edit/${authStaff.id}" var="urlViewStaff"/>
+	                                <a href="${urlViewStaff}">
+	                                    Staff Profile
+	                                </a>
+                            	</c:if>
                             </div>
                         </li>
                         <!-- Menu Footer-->

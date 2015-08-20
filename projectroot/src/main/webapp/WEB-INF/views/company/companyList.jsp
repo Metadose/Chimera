@@ -28,7 +28,7 @@
                                 <div class="box-header">
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
-                                <div class="box-body table-responsive">
+                                <div class="box-body">
                                 	<c:url value="/company/edit/0" var="urlCreateCompany"/>
                                 	<a href="${urlCreateCompany}">
                                 		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Company</button>
