@@ -547,7 +547,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    public String listPage(SessionStatus status) {
+    private String listPage(SessionStatus status) {
 	status.setComplete();
 	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + ConstantsSystem.REQUEST_LIST;
     }

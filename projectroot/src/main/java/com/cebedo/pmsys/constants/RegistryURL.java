@@ -18,6 +18,10 @@ public class RegistryURL {
 
     public static final String REDIRECT_LIST_SYSTEM_USER = "redirect:/systemuser/list";
 
+    public static final String REDIRECT_EDIT_SYS_CONFIG = "redirect:/config/edit/%s";
+
+    public static final String REDIRECT_LIST_SYS_CONFIG = "redirect:/config/list";
+
     public static final String REDIRECT_EDIT_COMPANY = "redirect:/company/edit/%s";
 
     public static final String REDIRECT_LIST_COMPANY = "redirect:/company/list";

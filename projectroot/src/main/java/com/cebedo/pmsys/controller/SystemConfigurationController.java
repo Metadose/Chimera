@@ -8,19 +8,29 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryJSPPath;
+import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 
 @Controller
 @RequestMapping(SystemConfiguration.OBJECT_NAME)
+@SessionAttributes(
+
+value = { SystemConfigurationController.ATTR_SYSTEM_CONFIGURATION },
+
+types = { SystemConfiguration.class }
+
+)
 public class SystemConfigurationController {
 
     public static final String ATTR_LIST = "systemConfigurationList";
     public static final String ATTR_SYSTEM_CONFIGURATION = SystemConfiguration.OBJECT_NAME;
-    public static final String JSP_LIST = SystemConfiguration.OBJECT_NAME + "/systemConfigurationList";
-    public static final String JSP_EDIT = SystemConfiguration.OBJECT_NAME + "/systemConfigurationEdit";
 
     private SystemConfigurationService systemConfigurationService;
 
@@ -30,42 +40,101 @@ public class SystemConfigurationController {
 	this.systemConfigurationService = ps;
     }
 
+    /**
+     * List all system configurations.
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemConfigurations(Model model) {
 	model.addAttribute(ATTR_LIST, this.systemConfigurationService.list());
-	return JSP_LIST;
+	return RegistryJSPPath.JSP_LIST_SYS_CONFIG;
     }
 
+    /**
+     * Create or update a system configuration object.
+     * 
+     * @param systemConfiguration
+     * @return
+     */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(
-	    @ModelAttribute(ATTR_SYSTEM_CONFIGURATION) SystemConfiguration systemConfiguration) {
+	    @ModelAttribute(ATTR_SYSTEM_CONFIGURATION) SystemConfiguration systemConfiguration,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	String response = "";
 	if (systemConfiguration.getId() == 0) {
-	    this.systemConfigurationService.create(systemConfiguration);
+	    response = this.systemConfigurationService.create(systemConfiguration);
 	} else {
-	    this.systemConfigurationService.update(systemConfiguration);
+	    response = this.systemConfigurationService.update(systemConfiguration);
 	}
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_CONFIGURATION + "/"
-		+ ConstantsSystem.REQUEST_LIST;
+
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	status.setComplete();
+	return editPage(systemConfiguration.getId());
     }
 
+    /**
+     * Return to edit page.
+     * 
+     * @param id
+     * @return
+     */
+    private String editPage(long id) {
+	return String.format(RegistryURL.REDIRECT_EDIT_SYS_CONFIG, id);
+    }
+
+    /**
+     * Delete a configuration.
+     * 
+     * @param id
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{"
-	    + SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
-    public String delete(@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id) {
-	this.systemConfigurationService.delete(id);
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_SYSTEM_CONFIGURATION + "/"
-		+ ConstantsSystem.REQUEST_LIST;
+	    + SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    public String delete(@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	String response = this.systemConfigurationService.delete(id);
+
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	status.setComplete();
+	return listPage();
     }
 
+    /**
+     * Redirect to list page.
+     * 
+     * @return
+     */
+    private String listPage() {
+	return RegistryURL.REDIRECT_LIST_SYS_CONFIG;
+    }
+
+    /**
+     * Edit a system configuration.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemConfiguration.COLUMN_PRIMARY_KEY
 	    + "}")
     public String editSystemConfiguration(@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id,
 	    Model model) {
+
+	// If empty config.
 	if (id == 0) {
 	    model.addAttribute(ATTR_SYSTEM_CONFIGURATION, new SystemConfiguration());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_SYS_CONFIG;
 	}
+
+	// If config already exists.
 	model.addAttribute(ATTR_SYSTEM_CONFIGURATION, this.systemConfigurationService.getByID(id));
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_SYS_CONFIG;
     }
 
 }

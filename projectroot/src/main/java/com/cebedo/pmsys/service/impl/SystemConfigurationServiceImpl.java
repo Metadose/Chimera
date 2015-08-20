@@ -13,6 +13,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class SystemConfigurationServiceImpl implements SystemConfigurationService {
@@ -28,7 +29,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public void create(SystemConfiguration systemConfiguration) {
+    public String create(SystemConfiguration systemConfiguration) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Company authCompany = auth.getCompany();
 	systemConfiguration.setCompany(authCompany);
@@ -38,6 +39,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getId());
 
+	return AlertBoxGenerator.SUCCESS.generateCreate(SystemConfiguration.OBJECT_NAME,
+		systemConfiguration.getName());
     }
 
     @Override
@@ -58,36 +61,41 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public void update(SystemConfiguration systemConfiguration) {
+    public String update(SystemConfiguration systemConfiguration) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
 	    this.messageHelper
 		    .unauthorized(SystemConfiguration.OBJECT_NAME, systemConfiguration.getId());
-	    return;
+	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getId());
 
 	this.systemConfigurationDAO.update(systemConfiguration);
+
+	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
+		systemConfiguration.getName());
     }
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public String delete(long id) {
 	SystemConfiguration conf = this.systemConfigurationDAO.getByID(id);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(conf)) {
 	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
-	    return;
+	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	this.messageHelper
 		.send(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME, conf.getId());
 
 	this.systemConfigurationDAO.delete(id);
+
+	return AlertBoxGenerator.SUCCESS.generateDelete(SystemConfiguration.OBJECT_NAME, conf.getName());
     }
 
     @Override
@@ -143,17 +151,20 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public void merge(SystemConfiguration config) {
+    public String merge(SystemConfiguration config) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(config)) {
 	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
-	    return;
+	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_MERGE, SystemConfiguration.OBJECT_NAME,
 		config.getId());
 
 	this.systemConfigurationDAO.merge(config);
+
+	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
+		config.getName());
     }
 }

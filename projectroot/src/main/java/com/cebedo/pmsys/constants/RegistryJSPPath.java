@@ -2,6 +2,7 @@ package com.cebedo.pmsys.constants;
 
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
 
 public class RegistryJSPPath {
@@ -24,5 +25,11 @@ public class RegistryJSPPath {
     public static final String JSP_LIST_SYSTEM_USER = SystemUser.OBJECT_NAME + "/systemUserList";
 
     public static final String JSP_EDIT_SYSTEM_USER = SystemUser.OBJECT_NAME + "/systemUserEdit";
+
+    public static final String JSP_LIST_SYS_CONFIG = SystemConfiguration.OBJECT_NAME
+	    + "/systemConfigurationList";
+
+    public static final String JSP_EDIT_SYS_CONFIG = SystemConfiguration.OBJECT_NAME
+	    + "/systemConfigurationEdit";
 
 }

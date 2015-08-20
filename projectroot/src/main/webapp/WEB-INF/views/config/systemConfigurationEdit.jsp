@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -50,6 +51,7 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-md-12">
+                    	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
@@ -61,25 +63,27 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
-                   									<form role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/config/create">
+                   									<form:form modelAttribute="config"
+														id="detailsForm" 
+														method="post" 
+														action="${contextPath}/config/create">
 				                                        <div class="form-group">
-				                                        	<input type="hidden" id="id" name="id" value="${config.id}"/>
 				                                            <label>Name</label>
-				                                            <input type="text" class="form-control" id="name" name="name" value="${config.name}" placeholder="Sample: ROOT_INIT, SYS_HOME"/>
+				                                            <form:input class="form-control" path="name" placeholder="Sample: ROOT_INIT, SYS_HOME"/>
 				                                            <p class="help-block">Enter the name of the configuration</p>
 
 				                                            <label>Value</label>
-				                                            <input type="text" class="form-control" id="value" name="value" value="${config.value}" placeholder="Sample: 1, C:/vcc/sys/"/>
+				                                            <form:input class="form-control" path="value" placeholder="Sample: 1, C:/vcc/sys/"/>
 				                                            <p class="help-block">Enter the value of the configuration</p>
 				                                        </div>
-				                                    </form>
+				                                    </form:form>
 				                                    <c:choose>
 		                                            	<c:when test="${config.id == 0}">
 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${config.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/config/delete/${config.id}">
+		                                            		<a href="<c:url value="/config/delete/${config.id}"/>">
 																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Configuration</button>
 															</a>
 		                                            	</c:when>
