@@ -4,7 +4,7 @@ $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 	
 	// Code to call as a workaround over gantt bug where chart doesn't
 	// render if placed in a tab.
-	if(id == "tab_timeline"){
+	if(id == "tab_timeline" && typeof gantt !== 'undefined'){
 		gantt.render();
 	}
     window.name = id;

@@ -7,7 +7,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Project List</title>
+	<title>List Projects</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -17,7 +17,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Project List
+	                List Projects
 	                <small>Complete list of all projects</small>
 	            </h1>
 	        </section>
@@ -59,8 +59,6 @@
 	                                								<a href="${urlDeleteProject}">
 																		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 	                                								</a>
-	                                								<c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
-																	<a href="${clearCache}">Clear Cache</a>
 																</center>
 															</td>
 															<td>

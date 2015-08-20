@@ -5,13 +5,22 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="staffWage" value="${staff.wage}"/>
+<c:set var="taskList" value="${staff.tasks}"/>
+
 <fmt:formatDate pattern="yyyy/MM/dd" value="${minDate}" var="minDateText"/>
 <fmt:formatDate pattern="yyyy/MM/dd" value="${maxDate}" var="maxDateText"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Staff ${action}</title>
+	<c:choose>
+    	<c:when test="${staff.id == 0}">
+    	<title>Create Staff</title>
+    	</c:when>
+    	<c:when test="${staff.id > 0}">
+		<title>Edit Staff</title>
+    	</c:when>
+    </c:choose>
 	
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
@@ -44,12 +53,13 @@
 	            	<c:choose>
 	            	<c:when test="${staff.id == 0}">
 	            		New Staff
+	            		<small>Create Staff</small>
 	            	</c:when>
 	            	<c:when test="${staff.id > 0}">
 	            		${staff.getFullName()}
+	                	<small>Edit Staff</small>
 	            	</c:when>
 	            	</c:choose>
-	                <small>${action} Staff</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -96,50 +106,56 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
                    									<form:form modelAttribute="staff" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
 				                                            <label>Prefix</label>
-				                                            <form:input type="text" class="form-control" path="prefix"/><br/>
+				                                            <form:input type="text" class="form-control" path="prefix" placeholder="Sample: Engr., Hon., Atty., Dr."/>
+				                                            <p class="help-block">Add the name prefix</p>
 				                                            
 				                                            <label>First</label>
-				                                            <form:input type="text" class="form-control" path="firstName"/><br/>
+				                                            <form:input type="text" class="form-control" path="firstName" placeholder="Sample: John, Mark, Jane"/>
+				                                            <p class="help-block">Enter the first/given name</p>
 				                                            
 				                                            <label>Middle</label>
-				                                            <form:input type="text" class="form-control" path="middleName"/><br/>
+				                                            <form:input type="text" class="form-control" path="middleName" placeholder="Sample: Doe, Cruz, Alvarez"/>
+				                                            <p class="help-block">Enter the middle name</p>
 				                                            
 				                                            <label>Last</label>
-				                                            <form:input type="text" class="form-control" path="lastName"/><br/>
+				                                            <form:input type="text" class="form-control" path="lastName" placeholder="Sample: Brown, Castillo, Aquino"/>
+				                                            <p class="help-block">Enter the last/family name</p>
 				                                            
 				                                            <label>Suffix</label>
-				                                            <form:input type="text" class="form-control" path="suffix"/><br/>
+				                                            <form:input type="text" class="form-control" path="suffix" placeholder="Sample: Jr., Sr., II, III"/>
+				                                            <p class="help-block">Add the name suffix</p>
 				                                            
 				                                            <label>Position</label>
-				                                            <form:input type="text" class="form-control" path="companyPosition"/><br/>
+				                                            <form:input type="text" class="form-control" path="companyPosition" placeholder="Sample: Skilled, Unskilled, Laborer, Mason"/>
+				                                            <p class="help-block">Indicate the company position</p>
 				                                            
 				                                            <label>Salary (Daily)</label>
-				                                            <form:input type="text" class="form-control" path="wage"/><br/>
+				                                            <form:input type="text" class="form-control" path="wage" placeholder="Sample: 350, 225, 250, 500"/>
+				                                            <p class="help-block">Enter the staff's daily wage</p>
 				                                            
 				                                            <label>E-Mail</label>
-				                                            <form:input type="text" class="form-control" path="email"/><br/>
+				                                            <form:input type="text" class="form-control" path="email" placeholder="Sample: cruz@gmail.com, rosa@yahoo.com"/>
+				                                            <p class="help-block">Add an e-mail address</p>
 				                                            
 				                                            <label>Contact Number</label>
-				                                            <form:input type="text" class="form-control" path="contactNumber"/><br/>
+				                                            <form:input type="text" class="form-control" path="contactNumber" placeholder="Sample: 09226110411, 09271231111"/>
+				                                            <p class="help-block">Add a contact number</p>
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>
 		                                            	<c:when test="${staff.id == 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
-		                                            		<button class="btn btn-default btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<form:form action="${contextPath}/staff/delete" method="post">
-																<button class="btn btn-default btn-flat btn-sm">Delete This Staff</button>
-		                                            		</form:form>
+		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<a href="<c:url value="/staff/delete"/>">
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Staff</button>
+		                                            		</a>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -149,6 +165,7 @@
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_timeline">
+                                	<c:if test="${!empty taskList}">
                                 	<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
@@ -162,20 +179,12 @@
                    							</div>
                    						</div>
               						</div>
+              						</c:if>
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    							<div class="box-header">
-                   								<table>
-                   								<tr>
-                   								<td><h3 class="box-title">Tasks</h3></td>
-                   								<td>
-                   								<a href="${contextPath}/task/assign/staff/${staff.id}">
-			                                		<button class="btn btn-default btn-flat btn-sm">Create Task</button>
-			                                	</a>
-                   								</td>
-                   								</tr>
-                   								</table>
+												<h3 class="box-title">Tasks</h3>
                								</div>
                								<div class="box-body">
 			                                    <table id="task-table" class="table table-bordered table-striped">
@@ -185,66 +194,64 @@
 				                                            <th>Status</th>
 				                                            <th>Title</th>
 				                                            <th>Content</th>
-				                                            <th>Project</th>
+				                                            <th>Project</th> 
 				                                            <th>Start</th>
 				                                            <th>Duration</th>
 				                                        </tr>
 			                                    	</thead>
 			                                        <tbody>
-				                                        <c:set var="taskList" value="${staff.tasks}"/>
-					                                	<c:if test="${!empty taskList}">
-			                                        		<c:forEach items="${taskList}" var="task">
-			                                        			<tr>
-			                                        				<td>
-			                                        					<div class="btn-group">
-								                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-								                                                Mark As&nbsp;
-								                                                <span class="caret"></span>
-								                                            </button>
-								                                            <ul class="dropdown-menu">
-								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
-								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
-								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
-								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
-								                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
-								                                            </ul>
-								                                        </div>
-								                                        <a href="${contextPath}/task/edit/${task.id}">
-						                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+		                                        		<c:forEach items="${taskList}" var="task">
+		                                        			<tr>
+		                                        				<td>
+		                                        					<div class="btn-group">
+							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                                Mark As&nbsp;
+							                                                <span class="caret"></span>
+							                                            </button>
+							                                            <ul class="dropdown-menu">
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
+							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
+							                                            </ul>
+							                                        </div>
+							                                        <a href="${contextPath}/task/edit/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            	</a>
+					                                            	<a href="${contextPath}/task/delete/${task.id}">
+					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+					                                            	</a>
+		                                        				</td>
+					                                            <td style="vertical-align: middle;">
+						                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
+																	<span class="label ${css}">${task.getStatusEnum()}</span>
+					                                            </td>
+					                                            <td>${task.title}</td>
+					                                            <td>${task.content}</td>
+					                                            <td>
+					                                            	<c:choose>
+				                                            		<c:when test="${!empty task.project}">
+				                                            			<a class="general-link" href="${contextPath}/project/edit/from/staff/${task.project.id}">
+						                                            	${task.project.name}
 						                                            	</a>
-						                                            	<a href="${contextPath}/task/delete/${task.id}">
-						                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
-						                                            	</a>
-			                                        				</td>
-						                                            <td style="vertical-align: middle;">
-							                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
-																		<span class="label ${css}">${task.getStatusEnum()}</span>
-						                                            </td>
-						                                            <td>${task.title}</td>
-						                                            <td>${task.content}</td>
-						                                            <td>
-						                                            	<c:choose>
-					                                            		<c:when test="${!empty task.project}">
-					                                            			<a class="general-link" href="${contextPath}/project/edit/from/staff/${task.project.id}">
-							                                            	${task.project.name}
-							                                            	</a>
-					                                            		</c:when>
-					                                            		<c:when test="${empty task.project}">
-					                                            			<h5>No project assigned.</h5>
-					                                            		</c:when>
-						                                            	</c:choose>					                                            
-						                                            </td>
-						                                            <td>${task.dateStart}</td>
-						                                            <td>${task.duration}</td>
-						                                        </tr>
-			                                        		</c:forEach>
-		                                        		</c:if>
+				                                            		</c:when>
+				                                            		<c:when test="${empty task.project}">
+				                                            			<h5>No project assigned.</h5>
+				                                            		</c:when>
+					                                            	</c:choose>					                                            
+					                                            </td>
+					                                            <td>${task.dateStart}</td>
+					                                            <td>${task.duration}</td>
+					                                        </tr>
+		                                        		</c:forEach>
 				                                    </tbody>
 				                                </table>
 			                                </div><!-- /.box-body -->
 			                                </div>
                    						</div>
               						</div>
+              						<c:if test="${!empty taskList}">
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -279,6 +286,7 @@
                    							</div>
                    						</div>
               						</div>
+              						</c:if>
                                 </div><!-- /.tab-pane -->
 
                             	
@@ -537,29 +545,99 @@
 	
 	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
 	
-   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
-   	<script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
-	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
 	
 	<!-- InputMask -->
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	
+	<c:if test="${staff.id != 0 && !empty taskList}">
+   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+   	<script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
+	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+
 	<script type="text/javascript">
 	    var ganttJSON = ${ganttJSON};
 	    var tasks = {'data': ganttJSON};
-	</script>
-	
-	<c:if test="${staff.id != 0 && !empty staff.tasks}">
-	<script type="text/javascript">
+
 		gantt.init("gantt-chart");
 	    gantt.parse(tasks);
 	    gantt.sort("start_date");
 	</script>
 	</c:if>
    	
-	<script>
+   	<c:if test="${staff.id != 0 && fromProject}">
+   	<script type="text/javascript">
+   	$(document).ready(function() {
+		var eventsJSON = ${calendarJSON};
+		var staffWage = ${staffWage};
+		
+		$("#attendance-table").dataTable();
+		
+		$('#attendanceStatus').on('change', function() {
+			// If selected value is ABSENT.
+			// Hide the salary field.
+			if(this.value == 2 || this.value == -1) {
+				$('#modalWage').hide();
+				$('#modalWageLabel').hide();
+				$('#modalWageBreak').hide();
+			} else {
+				$('#modalWage').show();
+				$('#modalWageLabel').show();
+				$('#modalWageBreak').show();
+			}
+		});
+			
+		$('#massStatusValue').on('change', function() {
+			// If selected value is ABSENT.
+			// Hide the salary field.
+			if(this.value == 2 || this.value == -1) {
+				$('#massWageValue').hide();
+				$('#massWageLabel').hide();
+				$('#massWageBreak').hide();
+			} else {
+				$('#massWageValue').show();
+				$('#massWageLabel').show();
+				$('#massWageBreak').show();
+			}
+		});
+		
+		$('#calendar').fullCalendar({
+			height: 450,
+			events: eventsJSON,
+			dayClick: function(date, jsEvent, view) {
+				$("#modalDate").val(date.format());
+				$("#modalWage").val(staffWage);
+				$("#myModal").modal('show');
+		    },
+		    eventClick: function(calEvent, jsEvent, view) {
+		    	$("#modalDate").val(calEvent.start.format());
+				$("#modalWage").val(staffWage);
+				$("#myModal").modal('show');
+				
+				var statusValue = calEvent.attendanceStatus;
+				$('#attendanceStatus').val(statusValue);
+				
+				if(statusValue == 2 || this.value == -1) {
+					$('#modalWage').hide();
+					$('#modalWageLabel').hide();
+					$('#modalWageBreak').hide();
+				} else {
+					$('#modalWage').val(calEvent.attendanceWage);
+					$('#modalWage').show();
+					$('#modalWageLabel').show();
+					$('#modalWageBreak').show();
+				}
+		    }
+	    });
+		var dateAsVal = '${maxDateStr}';
+		var minDate = moment(dateAsVal);
+		$('#calendar').fullCalendar('gotoDate', minDate);
+   	});
+	</script>
+	</c:if>
+	
+	<script type="text/javascript">
 		function submitAjax(id) {
 			var formObj = $('#'+id);
 			var serializedData = formObj.serialize();
@@ -573,79 +651,13 @@
 			});
 		}
 		
+		
 		$(document).ready(function() {
 			$('.date-picker').datepicker({
 			    format: 'yyyy/mm/dd'
 			})
 			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
-			
-// 			$("#status-table").dataTable();
-			$("#project-table").dataTable();
 			$("#task-table").dataTable();
-			$("#attendance-table").dataTable();
-			
-			var eventsJSON = ${calendarJSON};
-			var staffWage = ${staffWage};
-			
-			$('#attendanceStatus').on('change', function() {
-				// If selected value is ABSENT.
-				// Hide the salary field.
-				if(this.value == 2 || this.value == -1) {
-					$('#modalWage').hide();
-					$('#modalWageLabel').hide();
-					$('#modalWageBreak').hide();
-				} else {
-					$('#modalWage').show();
-					$('#modalWageLabel').show();
-					$('#modalWageBreak').show();
-				}
-			});
-			
-			$('#massStatusValue').on('change', function() {
-				// If selected value is ABSENT.
-				// Hide the salary field.
-				if(this.value == 2 || this.value == -1) {
-					$('#massWageValue').hide();
-					$('#massWageLabel').hide();
-					$('#massWageBreak').hide();
-				} else {
-					$('#massWageValue').show();
-					$('#massWageLabel').show();
-					$('#massWageBreak').show();
-				}
-			});
-			
-			$('#calendar').fullCalendar({
-				height: 450,
-				events: eventsJSON,
-				dayClick: function(date, jsEvent, view) {
-					$("#modalDate").val(date.format());
-					$("#modalWage").val(staffWage);
-					$("#myModal").modal('show');
-			    },
-			    eventClick: function(calEvent, jsEvent, view) {
-			    	$("#modalDate").val(calEvent.start.format());
-					$("#modalWage").val(staffWage);
-					$("#myModal").modal('show');
-					
-					var statusValue = calEvent.attendanceStatus;
-					$('#attendanceStatus').val(statusValue);
-					
-					if(statusValue == 2 || this.value == -1) {
-						$('#modalWage').hide();
-						$('#modalWageLabel').hide();
-						$('#modalWageBreak').hide();
-					} else {
-						$('#modalWage').val(calEvent.attendanceWage);
-						$('#modalWage').show();
-						$('#modalWageLabel').show();
-						$('#modalWageBreak').show();
-					}
-			    }
-		    });
-			var dateAsVal = '${maxDateStr}';
-			var minDate = moment(dateAsVal);
-			$('#calendar').fullCalendar('gotoDate', minDate);
 	    });
 	</script>
 </body>

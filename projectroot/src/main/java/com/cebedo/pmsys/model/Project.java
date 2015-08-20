@@ -40,7 +40,6 @@ public class Project implements Serializable {
 
     private long id;
     private String name;
-    private int type;
     private int status;
     private Set<FieldAssignment> assignedFields;
     private Set<Staff> assignedStaff;
@@ -80,15 +79,6 @@ public class Project implements Serializable {
 
     public void setName(String name) {
 	this.name = name;
-    }
-
-    @Column(name = "type", nullable = false, length = 2)
-    public int getType() {
-	return type;
-    }
-
-    public void setType(int type) {
-	this.type = type;
     }
 
     @Column(name = "status", nullable = false, length = 2)

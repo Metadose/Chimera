@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>System Configuration ${action}</title>
+	<title>List System Configurations</title>
 	
 </head>
 <body class="skin-blue">
@@ -15,7 +15,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                System Configuration ${action}
+	                List System Configurations
 	                <small>Complete list of all system configurations</small>
 	            </h1>
 	        </section>
@@ -27,15 +27,14 @@
 <!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                	<a href="${contextPath}/config/edit/0">
-                                		<button class="btn btn-default btn-flat btn-sm">Create System Configuration</button>
+                                	<a href="<c:url value="/config/edit/0"/>">
+                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Configuration</button>
                                 	</a>
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Name</th>
                                                 <th>Value</th>
                                             </tr>
@@ -46,15 +45,14 @@
 		                                            <tr>
 		                                            	<td>
 		                                            		<center>
-																<a href="${contextPath}/config/edit/${systemConfiguration.id}">
-																	<button class="btn btn-default btn-flat btn-sm">View</button>
+																<a href="<c:url value="/config/edit/${systemConfiguration.id}"/>">
+																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
-																<a href="${contextPath}/config/delete/${systemConfiguration.id}">
-																	<button class="btn btn-default btn-flat btn-sm">Delete</button>
+																<a href="<c:url value="/config/delete/${systemConfiguration.id}"/>">
+																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 																</a>
 															</center>
 														</td>
-														<td>${systemConfiguration.id}</td>
 		                                                <td>${systemConfiguration.name}</td>
 		                                                <td>${systemConfiguration.value}</td>
 		                                            </tr>
@@ -64,7 +62,6 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                            	<th>#</th>
                                                 <th>Name</th>
                                                 <th>Value</th>
                                             </tr>

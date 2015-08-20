@@ -8,6 +8,9 @@
 	<c:when test="${!empty authStaff}">
 		<c:set var="staffName" value="${authStaff.getFullName()}"/>
 		<c:set var="companyPosition" value="${authStaff.companyPosition}"/>
+		<c:if test="${empty companyPosition}">
+			<c:set var="companyPosition" value="(Position Not Set)"/>
+		</c:if>
 	</c:when>
 	<c:when test="${empty authStaff}"> 
 		<c:set var="staffName" value="${authUser.username}"/>

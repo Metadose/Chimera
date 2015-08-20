@@ -41,7 +41,7 @@
 					                                <div class="box-body table-responsive">
 					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
 					                                	<a href="${urlCreateStaff}">
-					                                		<button class="btn btn-default btn-flat btn-sm">Create Staff</button>
+					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 					                                	<br/><br/>
 					                                    <table id="example-1" class="table table-bordered table-striped">

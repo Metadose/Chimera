@@ -188,10 +188,19 @@ public class Staff implements Serializable {
     }
 
     @Transient
+    public boolean isNameSet() {
+	return !(getPrefix().isEmpty() && getFirstName().isEmpty() && getMiddleName().isEmpty()
+		&& getLastName().isEmpty() && getSuffix().isEmpty());
+    }
+
+    @Transient
     public String getFullName() {
-	String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " " + getLastName()
-		+ " " + getSuffix();
-	return name;
+	if (isNameSet()) {
+	    String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "
+		    + getLastName() + " " + getSuffix();
+	    return name;
+	}
+	return "(No Name)";
     }
 
     @Transient

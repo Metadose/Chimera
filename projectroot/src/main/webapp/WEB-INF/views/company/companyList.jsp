@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>List Company</title>
+	<title>List Companies</title>
 	
 </head>
 <body class="skin-blue">
@@ -16,7 +16,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                List Company
+	                List Companies
 	                <small>Complete list of all companies</small>
 	            </h1>
 	        </section>

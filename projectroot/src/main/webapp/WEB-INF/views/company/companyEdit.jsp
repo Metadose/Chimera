@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -76,7 +77,8 @@
 
 			                                                <label>Date Started</label>
 			                                                <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" placeholder="Sample: 2016/06/25" path="dateStarted"/>
+			                                                	<fmt:formatDate value="${company.dateStarted}" var="dateString" pattern="yyyy/MM/dd" />
+									                            <form:input type="text" class="form-control" placeholder="Sample: 2016/06/25" path="dateStarted" value="${dateString}"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
@@ -85,7 +87,8 @@
 
 			                                                <label>Date Expiration</label>
 			                                                <div class='input-group date date-picker'>
-			                                                	<form:input type="text" class="form-control" placeholder="Sample: 2016/12/25" path="dateExpiration"/>
+			                                                	<fmt:formatDate value="${company.dateExpiration}" var="dateString" pattern="yyyy/MM/dd" />
+			                                                	<form:input type="text" class="form-control" placeholder="Sample: 2016/12/25" path="dateExpiration" value="${dateString}"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
