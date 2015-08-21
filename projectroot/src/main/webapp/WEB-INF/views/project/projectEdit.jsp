@@ -250,13 +250,17 @@
                    				<c:when test="${project.id != 0}">
                    				<div class="tab-pane" id="tab_project_estimate">
 
-              						<div class="row">
+                   					<c:if test="${empty estimationOutputList}">
+                   						<c:set value="hide" var="estimateVisibility"/>
+                   					</c:if>
+
+              						<div class="row ${estimateVisibility}">
                    						<div class="col-md-12">
 		                                	<div class="box box-body box-default">
 <!-- 				                                		<div class="box-header"> -->
 <!-- 			              									<h3 class="box-title">Staff Members</h3> -->
 <!-- 			              								</div> -->
-				                                <div class="box-body table-responsive">
+				                                <div class="box-body">
 				                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
 				                                    	<thead>
 				                                            <tr>
@@ -341,15 +345,26 @@
 
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_timeline">
+									<c:choose>
+	                                	<c:when test="${!empty project.assignedTasks}">
+	                                		<c:set value="active" var="timelineVisibility"></c:set>
+	                                	</c:when>
+	                                	<c:when test="${empty project.assignedTasks}">
+	                                		<c:set value="hide" var="timelineVisibility"></c:set>
+	                                		<c:set value="active" var="tasksVisibility"></c:set>
+	                                		<c:set value="hide" var="tasksSummaryVisibility"></c:set>
+	                                	</c:when>
+	                                </c:choose>
                                 	
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-timeline">
-										<li class="active"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
-										<li><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
+										<li class="${timelineVisibility}"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
+										<li class="${tasksVisibility}"><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
 									</ul>
 									<div class="tab-content">
+
 									
-										<div class="tab-pane active" id="subtab_chart">
+										<div class="tab-pane ${timelineVisibility}" id="subtab_chart">
 											<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
@@ -384,76 +399,64 @@
 		               									</table>
 		               									<br/>
 		               									</c:if>
-						                                <c:choose>
-						                                	<c:when test="${!empty project.assignedTasks}">
-								                                <div id="gantt-chart" class="gantt-holder">
-								                                </div><!-- /.box-body -->
-						                                	</c:when>
-						                                	<c:when test="${empty project.assignedTasks}">
-						                                		<div id="gantt-chart" class="gantt-holder">
-													            	<p>No tasks in this project.</p>
-								                                </div><!-- /.box-body -->
-						                                	</c:when>
-						                                </c:choose>
+						                                <div id="gantt-chart" class="gantt-holder">
+						                                </div><!-- /.box-body -->
 						                                </div>
 						                            </div>
 					                            </div>
 				                            </div>
 										</div>
 										
-										<div class="tab-pane" id="subtab_tasks">
-											<div class="row">
-	                   						<div class="col-md-6">
-	                   							<div class="box box-body box-default">
-	                   								<div class="box-header">
-	                   									<h3 class="box-title">Summary</h3>
-	                   								</div>
-	                   								<div class="box-body">
-	                   								<b>TOTAL TASKS:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
-	                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
-	                   								
-													<table id="task-status-table" class="table table-bordered table-striped">
-													<thead>
-			                                    		<tr>
-				                                            <th>Task Status</th>
-				                                            <th>Count</th>
-				                                        </tr>
-			                                    	</thead>
-													<tbody>
-													<c:forEach items="${taskStatusMap}" var="statusEntry">
-													<c:set value="${statusEntry.key}" var="entryKey"/>
-													<c:set value="${statusEntry.value}" var="entryValue"/>
-														<tr>
-															<td>
-					                                            <span class="label ${entryKey.css()}">${entryKey}</span>
-															</td>
-															<td>
-																${entryValue}
-															</td>
-														</tr>
-													</c:forEach>
-													</tbody>
-													</table>
-	                   								</div>
-	                   							</div>
-	                   						</div>
-	                   						<div class="col-md-6">
-	                   							<div class="box box-body box-default">
-	                   								<div class="box-header">
-	                   									<h3 class="box-title">Graph</h3>
-	                   								</div>
-	                   								<div class="box-body">
-	                   								Pie chart sa division sa summary (awa sa left side)
-	                   								</div>
-	                   							</div>
-	                   						</div>
-	              						</div>
+										<div class="tab-pane ${tasksVisibility}" id="subtab_tasks">
+											<div class="row ${tasksSummaryVisibility}">
+		                   						<div class="col-md-6">
+		                   							<div class="box box-body box-default">
+		                   								<div class="box-header">
+		                   									<h3 class="box-title">Summary</h3>
+		                   								</div>
+		                   								<div class="box-body">
+		                   								<b>TOTAL TASKS:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
+		                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
+		                   								
+														<table id="task-status-table" class="table table-bordered table-striped">
+														<thead>
+				                                    		<tr>
+					                                            <th>Task Status</th>
+					                                            <th>Count</th>
+					                                        </tr>
+				                                    	</thead>
+														<tbody>
+														<c:forEach items="${taskStatusMap}" var="statusEntry">
+														<c:set value="${statusEntry.key}" var="entryKey"/>
+														<c:set value="${statusEntry.value}" var="entryValue"/>
+															<tr>
+																<td>
+						                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+																</td>
+																<td>
+																	${entryValue}
+																</td>
+															</tr>
+														</c:forEach>
+														</tbody>
+														</table>
+		                   								</div>
+		                   							</div>
+		                   						</div>
+		                   						<div class="col-md-6">
+		                   							<div class="box box-body box-default">
+		                   								<div class="box-header">
+		                   									<h3 class="box-title">Graph</h3>
+		                   								</div>
+		                   								<div class="box-body">
+		                   								Pie chart sa division sa summary (awa sa left side)
+		                   								</div>
+		                   							</div>
+		                   						</div>
+		              						</div>
 	              						<div class="row">
 	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
-	                   								<div class="box-header">
-	                   									<h3 class="box-title">Tasks</h3>
-	                   								</div>
 	                   								<div class="box-body">
 										                	<form:form modelAttribute="massUploadStaffBean"
 																action="${contextPath}/project/mass/upload-and-assign/task"
@@ -1743,14 +1746,24 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_staff">
+
+                                	<c:choose>
+	                                	<c:when test="${!empty project.assignedStaff}">
+	                                		<c:set value="active" var="membersVisibility"></c:set>
+	                                	</c:when>
+	                                	<c:when test="${empty project.assignedStaff}">
+	                                		<c:set value="hide" var="membersVisibility"></c:set>
+	                                		<c:set value="active" var="assignVisibility"></c:set>
+	                                	</c:when>
+	                                </c:choose>
                                 
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-staff">
-										<li class="active"><a href="#subtab_members" data-toggle="tab">Members</a></li>
-										<li><a href="#subtab_controls" data-toggle="tab">Assign</a></li>
+										<li class="${membersVisibility}"><a href="#subtab_members" data-toggle="tab">Members</a></li>
+										<li class="${assignVisibility}"><a href="#subtab_controls" data-toggle="tab">Assign</a></li>
 									</ul>
 									<div class="tab-content">
-										<div class="tab-pane active" id="subtab_members">
+										<div class="tab-pane ${membersVisibility}" id="subtab_members">
 											<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
@@ -1810,7 +1823,7 @@
 						                        </div>
 						                   	</div>
 										</div>
-										<div class="tab-pane" id="subtab_controls">
+										<div class="tab-pane ${assignVisibility}" id="subtab_controls">
 						                   	<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">

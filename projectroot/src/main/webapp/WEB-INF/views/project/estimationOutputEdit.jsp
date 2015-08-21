@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -7,7 +8,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
-	<title>Estimation View</title>
+	<title>View Estimation</title>
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
@@ -34,7 +35,11 @@
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
-	            <h1>${estimationoutput.name}<small>${estimationoutput.lastComputed}</small>
+	            <h1>${estimationoutput.name}
+	            <small>
+	            <fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${estimationoutput.lastComputed}" var="lastComputed"/>
+	            ${lastComputed}
+	            </small>
 	            </h1>
 	        </section>
 	        <section class="content">

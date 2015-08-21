@@ -16,6 +16,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 @Entity
@@ -79,7 +81,7 @@ public class Staff implements Serializable {
     }
 
     public void setPrefix(String prefix) {
-	this.prefix = prefix;
+	this.prefix = StringUtils.trim(prefix);
     }
 
     @Column(name = "name_first", length = 32)
@@ -88,7 +90,7 @@ public class Staff implements Serializable {
     }
 
     public void setFirstName(String firstName) {
-	this.firstName = firstName;
+	this.firstName = StringUtils.trim(firstName);
     }
 
     @Column(name = "name_middle", length = 16)
@@ -97,7 +99,7 @@ public class Staff implements Serializable {
     }
 
     public void setMiddleName(String middleName) {
-	this.middleName = middleName;
+	this.middleName = StringUtils.trim(middleName);
     }
 
     @Column(name = "name_last", length = 16)
@@ -106,7 +108,7 @@ public class Staff implements Serializable {
     }
 
     public void setLastName(String lastName) {
-	this.lastName = lastName;
+	this.lastName = StringUtils.trim(lastName);
     }
 
     @Column(name = "name_suffix", length = 8)
@@ -115,7 +117,7 @@ public class Staff implements Serializable {
     }
 
     public void setSuffix(String suffix) {
-	this.suffix = suffix;
+	this.suffix = StringUtils.trim(suffix);
     }
 
     @Column(name = "position", length = 32)
@@ -124,7 +126,7 @@ public class Staff implements Serializable {
     }
 
     public void setCompanyPosition(String companyPosition) {
-	this.companyPosition = companyPosition;
+	this.companyPosition = StringUtils.trim(companyPosition);
     }
 
     @ManyToMany(mappedBy = "staff")
@@ -142,7 +144,7 @@ public class Staff implements Serializable {
     }
 
     public void setEmail(String email) {
-	this.email = email;
+	this.email = StringUtils.trim(email);
     }
 
     @Column(name = "wage")
@@ -165,7 +167,7 @@ public class Staff implements Serializable {
     }
 
     public void setContactNumber(String contactNumber) {
-	this.contactNumber = contactNumber;
+	this.contactNumber = StringUtils.trim(contactNumber);
     }
 
     @ManyToOne
