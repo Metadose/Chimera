@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -45,8 +47,9 @@ public class SystemConfigurationController {
      * @return
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
-    public String listSystemConfigurations(Model model) {
+    public String listSystemConfigurations(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.systemConfigurationService.list());
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_SYS_CONFIG;
     }
 

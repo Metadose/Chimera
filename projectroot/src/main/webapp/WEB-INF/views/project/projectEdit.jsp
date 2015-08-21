@@ -1747,7 +1747,7 @@
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-staff">
 										<li class="active"><a href="#subtab_members" data-toggle="tab">Members</a></li>
-										<li><a href="#subtab_controls" data-toggle="tab">Assignment Constrols</a></li>
+										<li><a href="#subtab_controls" data-toggle="tab">Assign</a></li>
 									</ul>
 									<div class="tab-content">
 										<div class="tab-pane active" id="subtab_members">
@@ -1763,7 +1763,8 @@
 							                                    <a href="${urlUnassignStaffAll}">
 		              												<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
 							                                    </a>
-																<p class="help-block">Unassign all staff members in this project</p>
+																<br/>
+																<br/>
 				                                    		</c:if>
 
 						                                    <table id="assigned-staff-table" class="table table-bordered table-striped">

@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,7 +14,8 @@ public class DashboardController {
     public static final String JSP_DASHBOARD = REQUEST_MAPPING + "/dashboard";
 
     @RequestMapping(value = { "", ConstantsSystem.REQUEST_ROOT })
-    public String view() {
+    public String view(HttpSession session) {
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return JSP_DASHBOARD;
     }
 }

@@ -63,7 +63,7 @@
 	            </h1>
 	        </section>
 	        <section class="content">
-	        	<c:if test="${!empty project}">
+	        	<c:if test="${fromProject}">
 	        	<c:url var="urlBack" value="/project/edit/${project.id}" />
                    <a href="${urlBack}">
 					<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>

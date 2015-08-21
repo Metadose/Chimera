@@ -44,8 +44,9 @@ public class StaffController {
     }
 
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
-    public String listStaff(Model model) {
+    public String listStaff(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.staffService.listWithAllCollections());
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_STAFF;
     }
 
@@ -82,38 +83,6 @@ public class StaffController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return editPage(staff.getId(), status);
-    }
-
-    /**
-     * Create a staff from the origin.
-     * 
-     * @param staff
-     * @param projectID
-     * @return
-     */
-    @Deprecated
-    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE + "/" + ConstantsSystem.FROM + "/{"
-	    + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID + "}", method = RequestMethod.POST)
-    public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,
-	    @PathVariable(value = ConstantsSystem.ORIGIN) String origin,
-	    @PathVariable(value = ConstantsSystem.ORIGIN_ID) String originID, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	if (staff.getId() == 0) {
-	    this.staffService.createFromOrigin(staff, origin, originID);
-
-	    alertFactory.setMessage("Successfully <b>created</b> staff <b>" + staff.getFullName()
-		    + "</b>.");
-	} else {
-	    alertFactory.setMessage("Successfully <b>updated</b> staff <b>" + staff.getFullName()
-		    + "</b>.");
-
-	    this.staffService.update(staff);
-	}
-	status.setComplete();
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return ConstantsSystem.CONTROLLER_REDIRECT + origin + "/" + ConstantsSystem.REQUEST_EDIT + "/"
-		+ originID;
     }
 
     /**

@@ -275,8 +275,9 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
-    public String listProjects(Model model) {
+    public String listProjects(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.projectService.list());
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_PROJECT;
     }
 

@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -39,8 +41,9 @@ public class CompanyController {
     }
 
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
-    public String listCompanies(Model model) {
+    public String listCompanies(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.companyService.list());
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_COMPANY;
     }
 
