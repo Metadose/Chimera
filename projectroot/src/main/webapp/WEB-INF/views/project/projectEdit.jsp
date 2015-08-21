@@ -415,9 +415,6 @@
 		                   									<h3 class="box-title">Summary</h3>
 		                   								</div>
 		                   								<div class="box-body">
-		                   								<b>TOTAL TASKS:</b> ${timelineSummaryMap.get("Total Tasks")}<br/>
-		                   								<b>Breakdown</b> of Total Tasks by Task Status:<br/><br/>
-		                   								
 														<table id="task-status-table" class="table table-bordered table-striped">
 														<thead>
 				                                    		<tr>
