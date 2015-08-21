@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
+import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -23,9 +24,7 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @Controller
 @SessionAttributes(
 
-value = { StaffController.ATTR_STAFF },
-
-types = { Staff.class }
+value = { StaffController.ATTR_STAFF }
 
 )
 @RequestMapping(Staff.OBJECT_NAME)
@@ -50,6 +49,13 @@ public class StaffController {
 	return RegistryJSPPath.JSP_LIST_STAFF;
     }
 
+    private String editPage(long staffID, SessionStatus status) {
+	if (status != null) {
+	    status.setComplete();
+	}
+	return String.format(RegistryURL.REDIRECT_EDIT_STAFF, staffID);
+    }
+
     /**
      * Commit function that would create/update staff.
      * 
@@ -60,29 +66,22 @@ public class StaffController {
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_STAFF) Staff staff, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
-	// Add ui notifications.
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
+
+	String response = "";
 
 	// Create staff.
 	if (staff.getId() == 0) {
-	    this.staffService.create(staff);
-	    alertFactory.setMessage("Successfully <b>created</b> staff <b>" + staff.getFullName()
-		    + "</b>.");
-
-	    // Add redirs attrs.
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
+	    response = this.staffService.create(staff);
 	}
 	// Update staff.
-	this.staffService.update(staff);
-	alertFactory.setMessage("Successfully <b>updated</b> staff <b>" + staff.getFullName() + "</b>.");
+	else {
+	    response = this.staffService.update(staff);
+	}
 
 	// Add redirs attrs.
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_EDIT
-		+ "/" + staff.getId();
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return editPage(staff.getId(), status);
     }
 
     /**
@@ -92,6 +91,7 @@ public class StaffController {
      * @param projectID
      * @return
      */
+    @Deprecated
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE + "/" + ConstantsSystem.FROM + "/{"
 	    + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID + "}", method = RequestMethod.POST)
     public String createFromOrigin(@ModelAttribute(ATTR_STAFF) Staff staff,

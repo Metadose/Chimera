@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.constants;
 
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
@@ -31,5 +32,15 @@ public class RegistryJSPPath {
 
     public static final String JSP_EDIT_SYS_CONFIG = SystemConfiguration.OBJECT_NAME
 	    + "/systemConfigurationEdit";
+
+    public static final String JSP_LIST_PROJECT = Project.OBJECT_NAME + "/projectList";
+
+    public static final String JSP_EDIT_PROJECT = Project.OBJECT_NAME + "/projectEdit";
+
+    public static final String JSP_EDIT_PROJECT_FIELD = Project.OBJECT_NAME + "/assignedFieldEdit";
+
+    public static final String JSP_LIST_COMPANY = Company.OBJECT_NAME + "/companyList";
+
+    public static final String JSP_EDIT_COMPANY = Company.OBJECT_NAME + "/companyEdit";
 
 }

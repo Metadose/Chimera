@@ -35,9 +35,7 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @SessionAttributes(
 
 value = { TaskController.ATTR_TASK, TaskController.ATTR_STAFF_ASSIGNMENT,
-	TaskController.ATTR_TEAM_ASSIGNMENT },
-
-types = { Task.class, FormStaffAssignment.class, FormTeamAssignment.class }
+	TaskController.ATTR_TEAM_ASSIGNMENT }
 
 )
 @RequestMapping(Task.OBJECT_NAME)

@@ -24,7 +24,11 @@ import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
-@SessionAttributes(value = { SystemUserController.ATTR_SYSTEM_USER }, types = { SystemUser.class })
+@SessionAttributes(
+
+value = { SystemUserController.ATTR_SYSTEM_USER }
+
+)
 @RequestMapping(SystemUser.OBJECT_NAME)
 public class SystemUserController {
 
@@ -105,9 +109,12 @@ public class SystemUserController {
     /**
      * Return back to the list page.
      * 
+     * @param status
+     * 
      * @return
      */
-    private String listPage() {
+    private String listPage(SessionStatus status) {
+	status.setComplete();
 	return RegistryURL.REDIRECT_LIST_SYSTEM_USER;
     }
 
@@ -134,8 +141,7 @@ public class SystemUserController {
 	    RedirectAttributes redirectAttrs) {
 	String response = this.systemUserService.delete(id);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-	status.setComplete();
-	return listPage();
+	return listPage(status);
     }
 
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)

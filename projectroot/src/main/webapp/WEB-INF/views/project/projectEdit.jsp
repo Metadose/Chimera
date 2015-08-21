@@ -1757,7 +1757,7 @@
 <!-- 				                                		<div class="box-header"> -->
 <!-- 			              									<h3 class="box-title">Staff Members</h3> -->
 <!-- 			              								</div> -->
-						                                <div class="box-body table-responsive">
+						                                <div class="box-body">
 											                <c:if test="${!empty project.assignedStaff}">
 		              											<c:url value="/project/unassign/staff-member/all" var="urlUnassignStaffAll"/>
 							                                    <a href="${urlUnassignStaffAll}">
@@ -1829,8 +1829,7 @@
 																</div>
 															</form:form>
 															
-			                                    			<c:url var="urlCreateStaff" value="/staff/edit/0/from/project/${project.id}"/>
-			                                    			<a href="${urlCreateStaff}">
+			                                    			<a href="<c:url value="/project/edit/staff/0"/>">
 					                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 			                                    			</a>
 				                                    		
@@ -1844,8 +1843,6 @@
 															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
 							                                <br/>
 							                                <br/>
-
-				                                    		
 
 					                                    	<form:form modelAttribute="project" 
 							                                    method="post" 
@@ -1870,7 +1867,11 @@
 						                                    			<td align="center">
 							                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
 						                                    			</td>
-						                                    			<td>${staff.getFullName()}</td>
+						                                    			<td>
+					                                            			<a href="<c:url value="/project/edit/staff/${staff.id}"/>" class="general-link">
+						                                    				${staff.getFullName()}
+					                                            			</a>
+						                                    			</td>
 						                                    			<td>${staff.companyPosition}</td>
 					                                                	<td>${staff.getWageAsString()}</td>
 					                                                	<td>${staff.email}</td>

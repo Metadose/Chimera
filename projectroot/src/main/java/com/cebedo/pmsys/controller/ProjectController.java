@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.EstimateComputationBean;
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
@@ -84,6 +83,7 @@ value = {
 	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
 	ProjectController.ATTR_TASK,
+	ProjectController.ATTR_FROM_PROJECT,
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
@@ -91,21 +91,7 @@ value = {
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
-	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE },
-
-types = {
-	// Project.
-	Project.class, FormFieldAssignment.class,
-
-	// Task.
-	Task.class,
-
-	// Staff.
-	Staff.class, Attendance.class, FormMassAttendance.class,
-
-	// Others.
-	ProjectPayroll.class, Delivery.class, Material.class, PullOut.class,
-	EstimateComputationBean.class, FormMassUpload.class }
+	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -177,10 +163,6 @@ public class ProjectController {
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
 
     public static final String KEY_PROJECT_STRUCTURE_MANAGERS = "Managers";
-
-    public static final String JSP_LIST = Project.OBJECT_NAME + "/projectList";
-    public static final String JSP_EDIT = Project.OBJECT_NAME + "/projectEdit";
-    public static final String JSP_EDIT_FIELD = Project.OBJECT_NAME + "/assignedFieldEdit";
 
     // Staff constants backup.
     public static final String ATTR_PAYROLL_TOTAL_WAGE = "payrollTotalWage";
@@ -295,7 +277,7 @@ public class ProjectController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model) {
 	model.addAttribute(ATTR_LIST, this.projectService.list());
-	return JSP_LIST;
+	return RegistryJSPPath.JSP_LIST_PROJECT;
     }
 
     /**
@@ -331,7 +313,7 @@ public class ProjectController {
 	if (status != null) {
 	    status.setComplete();
 	}
-	return String.format(RegistryURL.REDIRECT_PROJECT_EDIT, projectID);
+	return String.format(RegistryURL.REDIRECT_EDIT_PROJECT, projectID);
     }
 
     /**
@@ -501,7 +483,7 @@ public class ProjectController {
 	session.setAttribute("old" + ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label,
 		value));
 
-	return JSP_EDIT_FIELD;
+	return RegistryJSPPath.JSP_EDIT_PROJECT_FIELD;
     }
 
     /**
@@ -552,7 +534,7 @@ public class ProjectController {
      */
     private String listPage(SessionStatus status) {
 	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_PROJECT + "/" + ConstantsSystem.REQUEST_LIST;
+	return RegistryURL.REDIRECT_LIST_PROJECT;
     }
 
     /**
@@ -750,6 +732,42 @@ public class ProjectController {
 
 	// Complete the transaction.
 	return editPage(proj.getId(), status);
+    }
+
+    /**
+     * Commit function that would create/update staff.
+     * 
+     * @param staff
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.CREATE_STAFF, method = RequestMethod.POST)
+    public String createStaff(@ModelAttribute(ATTR_STAFF) Staff staff, RedirectAttributes redirectAttrs) {
+
+	String response = "";
+
+	// Create staff.
+	if (staff.getId() == 0) {
+	    response = this.staffService.create(staff);
+	}
+	// Update staff.
+	else {
+	    response = this.staffService.update(staff);
+	}
+
+	// Add redirs attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return editStaffPage(staff.getId());
+    }
+
+    /**
+     * Return to edit staff page.
+     * 
+     * @param id
+     * @return
+     */
+    private String editStaffPage(long id) {
+	return String.format(RegistryURL.REDIRECT_EDIT_PROJECT_STAFF, id);
     }
 
     /**
@@ -994,7 +1012,7 @@ public class ProjectController {
 	if (startDate.after(endDate)) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
-	    return String.format(RegistryURL.REDIRECT_PROJECT_EDIT_STAFF, attendanceMass.getStaff()
+	    return String.format(RegistryURL.REDIRECT_EDIT_PROJECT_STAFF, attendanceMass.getStaff()
 		    .getId());
 	}
 
@@ -1055,9 +1073,9 @@ public class ProjectController {
 	// If ID is zero,
 	// Open a page with empty values, ready to create.
 	if (staffID == 0) {
-	    // TODO
-	    // model.addAttribute(ATTR_STAFF, new Staff(proj));
-	    return TaskController.JSP_EDIT;
+	    model.addAttribute(ATTR_FROM_PROJECT, true);
+	    model.addAttribute(ATTR_STAFF, new Staff());
+	    return RegistryJSPPath.JSP_EDIT_STAFF;
 	}
 
 	// Else, get the object from DB
@@ -1711,7 +1729,7 @@ public class ProjectController {
 	// If ID is zero, create new.
 	if (id == 0) {
 	    model.addAttribute(ATTR_PROJECT, new Project());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_PROJECT;
 	}
 
 	Project proj = this.projectService.getByIDWithAllCollections(id);
@@ -1735,7 +1753,7 @@ public class ProjectController {
 	// Program of Works.
 	setProgramOfWorksAttributes(proj, model);
 
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_PROJECT;
     }
 
     /**

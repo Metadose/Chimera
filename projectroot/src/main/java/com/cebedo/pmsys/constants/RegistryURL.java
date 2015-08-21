@@ -12,6 +12,8 @@ public class RegistryURL {
 
     public static final String CREATE_TASK = "/create/task";
 
+    public static final String CREATE_STAFF = "/create/staff";
+
     public static final String EDIT_STAFF = "/edit/staff/{staff}";
 
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";
@@ -26,7 +28,7 @@ public class RegistryURL {
 
     public static final String REDIRECT_LIST_COMPANY = "redirect:/company/list";
 
-    public static final String REDIRECT_PROJECT_EDIT_STAFF = "redirect:/project/edit/staff/%s";
+    public static final String REDIRECT_EDIT_PROJECT_STAFF = "redirect:/project/edit/staff/%s";
 
     public static final String EDIT_TASK = "/edit/task/{task}";
 
@@ -42,8 +44,12 @@ public class RegistryURL {
 
     public static final String DELETE_PROGRAM_OF_WORKS = "/delete/program-of-works";
 
-    public static final String REDIRECT_PROJECT_EDIT = "redirect:/project/edit/%s";
+    public static final String REDIRECT_EDIT_PROJECT = "redirect:/project/edit/%s";
+
+    public static final String REDIRECT_EDIT_STAFF = "redirect:/staff/edit/%s";
 
     public static final String REDIRECT_DASHBOARD = "redirect:/dashboard/";
+
+    public static final String REDIRECT_LIST_PROJECT = "redirect:/project/list";
 
 }

@@ -22,9 +22,7 @@ import com.cebedo.pmsys.service.SystemConfigurationService;
 @RequestMapping(SystemConfiguration.OBJECT_NAME)
 @SessionAttributes(
 
-value = { SystemConfigurationController.ATTR_SYSTEM_CONFIGURATION },
-
-types = { SystemConfiguration.class }
+value = { SystemConfigurationController.ATTR_SYSTEM_CONFIGURATION }
 
 )
 public class SystemConfigurationController {
@@ -97,20 +95,20 @@ public class SystemConfigurationController {
 	    + SystemConfiguration.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(SystemConfiguration.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
-
 	String response = this.systemConfigurationService.delete(id);
-
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-	status.setComplete();
-	return listPage();
+	return listPage(status);
     }
 
     /**
      * Redirect to list page.
      * 
+     * @param status
+     * 
      * @return
      */
-    private String listPage() {
+    private String listPage(SessionStatus status) {
+	status.setComplete();
 	return RegistryURL.REDIRECT_LIST_SYS_CONFIG;
     }
 

@@ -63,28 +63,26 @@
 	            </h1>
 	        </section>
 	        <section class="content">
+	        	<c:if test="${!empty project}">
+	        	<c:url var="urlBack" value="/project/edit/${project.id}" />
+                   <a href="${urlBack}">
+					<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
+				</a><br/><br/>
+	        	</c:if>
                 <div class="row">
                     <div class="col-md-12">
-
-                    	<c:if test="${fromProject}">
-                    	<c:url var="urlBack" value="/project/edit/${project.id}" />
-	                    <a href="${urlBack}">
-							<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
-						</a><br/><br/>
-                    	</c:if>
-
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
 
                             	<c:choose>
-                            	<c:when test="${fromProject}">
+                            	<c:when test="${fromProject && staff.id > 0}">
                                 <li class="active"><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
                                 <li><a href="#tab_1" data-toggle="tab">Details</a></li>
                             	</c:when>
 
-                            	<c:when test="${!fromProject}">
+                            	<c:when test="${!fromProject || (fromProject && staff.id == 0)}">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                             	</c:when>
                             	</c:choose>
@@ -95,19 +93,27 @@
                             </ul>
                             <div class="tab-content">
                             	<c:choose>
-                            	<c:when test="${fromProject}">
-                            	<div class="tab-pane" id="tab_1">
+                            	<c:when test="${!fromProject || (fromProject && staff.id == 0)}">
+                                <div class="tab-pane active" id="tab_1">
                             	</c:when>
 
-                            	<c:when test="${!fromProject}">
-                                <div class="tab-pane active" id="tab_1">
+                            	<c:when test="${fromProject}">
+                            	<div class="tab-pane" id="tab_1">
                             	</c:when>
                             	</c:choose>
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+                   									<c:choose>
+					                            	<c:when test="${!fromProject}">
 				                                    <c:set var="detailsFormURL" value="${contextPath}/staff/create"/>
+					                            	</c:when>
+
+					                            	<c:when test="${fromProject}">
+				                                    <c:set var="detailsFormURL" value="${contextPath}/project/create/staff"/>
+					                            	</c:when>
+					                            	</c:choose>
                    									<form:form modelAttribute="staff" id="detailsForm" method="post" action="${detailsFormURL}">
 				                                        <div class="form-group">
 				                                            <label>Prefix</label>
@@ -290,7 +296,7 @@
                                 </div><!-- /.tab-pane -->
 
                             	
-                            	<c:if test="${fromProject}">
+                            	<c:if test="${fromProject && staff.id > 0}">
                                 <div class="tab-pane active" id="tab_payroll">
                                 	<div class="row">
                    						<div class="col-md-12">
@@ -502,7 +508,7 @@
         </aside>
 	</div>
 	
-	<c:if test="${fromProject}">
+	<c:if test="${fromProject && staff.id > 0}">
 	<div id="myModal" class="modal fade">
 	    <div class="modal-dialog">
 	        <div class="modal-content">

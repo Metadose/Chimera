@@ -13,19 +13,22 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
 
 @Controller
-@SessionAttributes(value = { CompanyController.ATTR_COMPANY }, types = { Company.class })
+@SessionAttributes(
+
+value = { CompanyController.ATTR_COMPANY }
+
+)
 @RequestMapping(Company.OBJECT_NAME)
 public class CompanyController {
 
     public static final String ATTR_LIST = "companyList";
     public static final String ATTR_COMPANY = Company.OBJECT_NAME;
-    public static final String JSP_LIST = Company.OBJECT_NAME + "/companyList";
-    public static final String JSP_EDIT = Company.OBJECT_NAME + "/companyEdit";
 
     private CompanyService companyService;
 
@@ -38,7 +41,7 @@ public class CompanyController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listCompanies(Model model) {
 	model.addAttribute(ATTR_LIST, this.companyService.list());
-	return JSP_LIST;
+	return RegistryJSPPath.JSP_LIST_COMPANY;
     }
 
     /**
@@ -59,17 +62,19 @@ public class CompanyController {
 	    response = this.companyService.update(company);
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-	status.setComplete();
-	return editPage(company.getId());
+
+	return editPage(company.getId(), status);
     }
 
     /**
      * Return to the edit page.
      * 
      * @param id
+     * @param status
      * @return
      */
-    private String editPage(long id) {
+    private String editPage(long id, SessionStatus status) {
+	status.setComplete();
 	return String.format(RegistryURL.REDIRECT_EDIT_COMPANY, id);
     }
 
@@ -84,16 +89,18 @@ public class CompanyController {
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 	String response = this.companyService.delete(id);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-	status.setComplete();
-	return listPage();
+	return listPage(status);
     }
 
     /**
      * Return to the list page.
      * 
+     * @param status
+     * 
      * @return
      */
-    private String listPage() {
+    private String listPage(SessionStatus status) {
+	status.setComplete();
 	return RegistryURL.REDIRECT_LIST_COMPANY;
     }
 
@@ -108,10 +115,10 @@ public class CompanyController {
     public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id, Model model) {
 	if (id == 0) {
 	    model.addAttribute(ATTR_COMPANY, new Company());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_COMPANY;
 	}
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
 
 }
