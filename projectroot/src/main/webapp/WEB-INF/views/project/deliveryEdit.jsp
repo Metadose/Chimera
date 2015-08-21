@@ -75,9 +75,6 @@
                    									<h3 class="box-title">Details</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
                    									<form:form modelAttribute="delivery"
 														id="detailsForm"
 														method="post"
@@ -114,9 +111,6 @@
                    									<h3 class="box-title">Add Materials</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
                    									<form:form modelAttribute="material"
 														id="materialForm"
 														method="post"
@@ -185,9 +179,6 @@
                    									<h3 class="box-title">List of Materials</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
 									                <div class="pull-right">
 									                <h3>Delivered Materials Total <b><u>
 				                                	${delivery.getGrandTotalOfMaterialsAsString()}

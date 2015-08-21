@@ -58,9 +58,6 @@
                    									<h3 class="box-title">Edit Material</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
 									                <table class="table table-bordered table-striped">
 									                <tr>
 									                	<td><label>Label</label></td>

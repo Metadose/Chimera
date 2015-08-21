@@ -447,7 +447,10 @@ public class ProjectController {
     }
 
     /**
-     * Unassign a field from a project.
+     * Unassign a field from a project.<br>
+     * TODO Make this accessible also from ProjectEdit.jsp<br>
+     * You should be able to delete directly, not access the
+     * assignedFieldEdit.jsp first before you can delete.
      * 
      * @param fieldID
      * @param projectID

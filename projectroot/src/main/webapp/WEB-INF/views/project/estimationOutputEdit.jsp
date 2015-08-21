@@ -52,9 +52,6 @@
 						<%--<h3 class="box-title">Computation as of ${lastComputed}</h3> --%>
 						</div>
 						<div class="box-body table-responsive">
-						<div class="callout callout-info callout-cebedo">
-						<p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-						</div>
 
 						<table id="summary-table" class="table table-bordered table-striped">
 						<thead>

@@ -93,9 +93,6 @@
                    									</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
                    									<form:form modelAttribute="projectPayroll"
 														id="detailsForm"
 														method="post"
@@ -138,9 +135,6 @@
                    									<h3 class="box-title">Include to Payroll</h3>
                    								</div>
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>This feature can be used to manually add Staff members that are not part of this Project.</p>
-									                </div>
 			                                        <table>
 				                                    <form:form modelAttribute="payrollIncludeStaff"
 														id="detailsForm"
@@ -181,9 +175,6 @@
                    									Payroll Checklist</h3>
                    								</div>  
                    								<div class="box-body">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
 
 													<c:set value="" var="alreadyRendered"/>
 													
@@ -203,14 +194,6 @@
 															<p class="help-block">Check or uncheck all other staff members</p>
 															</c:if>
 
-															<c:choose>
-															<c:when test="${empty staffList}">
-															<div class="callout callout-warning">
-											                    <p>No staff assigned in project.</p>
-											                </div>
-															</c:when>
-															
-															<c:when test="${!empty staffList}">
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
@@ -240,8 +223,6 @@
 						                                		</c:forEach>
 															</tbody>
 															</table>
-															</c:when>
-															</c:choose>
 				                                        </div>
 				                                    </form:form>
 				                                    
@@ -262,16 +243,12 @@
 													
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">
-														<div class="callout callout-info">
-										                    <p>Not yet computed.</p>
-										                </div>
+										                <p>Not yet computed.</p>
 													</c:when>
 													
 													<c:when test="${!empty projectPayroll.lastComputed}">
 														<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
-														<div class="callout callout-info">
-										                    <p>Last Computed: ${lastComputed}</p>
-										                </div>
+										                <p>Last Computed: ${lastComputed}</p>
 													</c:when>
 													</c:choose>
 													
@@ -293,9 +270,6 @@
                    									<h3 class="box-title">Computation as of ${lastComputed}</h3>
                    								</div>
                    								<div class="box-body table-responsive">
-                   									<div class="callout callout-info callout-cebedo">
-									                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-									                </div>
                    									<table id="treegrid1"></table>
                    								</div>
                 							</div>
