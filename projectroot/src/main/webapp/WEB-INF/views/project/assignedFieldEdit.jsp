@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Field Edit</title>
+	<title>Edit Field</title>
 	
 	<style>
 	  ul {         
@@ -51,18 +51,21 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box-body box-default">
-                   								<div class="callout callout-info callout-cebedo">
-								                    <p>Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section Instructions regarding this section .</p>
-								                </div>
                    									<form:form modelAttribute="field"
 														id="detailsForm"
 														method="post"
 														action="${contextPath}/project/field/update">
 				                                        <div class="form-group">
 				                                            <label>Label</label>
-				                                            <form:input type="text" class="form-control" path="label"/><br/>
+				                                            <form:input type="text" class="form-control" path="label"
+				                                            	placeholder="Sample: SSS, Building Permit No., Sub-contractor"/>
+				                                            <p class="help-block">Edit the label of this information</p>
+
 				                                            <label>Value</label>
-				                                            <form:input type="text" class="form-control" path="value"/>
+				                                            <form:textarea type="text" class="form-control" path="value"
+				                                            	rows="3"
+				                                            	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction"/>
+				                                            <p class="help-block">Edit the information</p>
 				                                        </div>
 				                                    </form:form>
                                             		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>

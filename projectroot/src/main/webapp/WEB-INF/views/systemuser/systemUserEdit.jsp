@@ -95,7 +95,7 @@
 				                                            <label>Username</label>
 				                                            <c:choose>
 						                                    	<c:when test="${systemuser.id == 0}">
-						                                        <form:input type="text" placeholder="Sample: user_john, jane_account, etc." class="form-control" path="username"/>
+						                                        <form:input type="text" placeholder="Sample: user_john, jane_account" class="form-control" path="username"/>
 				                                            	<p class="help-block">Enter the username of this account</p>
 						                                    	</c:when>
 				                                            	<c:when test="${systemuser.id > 0}">

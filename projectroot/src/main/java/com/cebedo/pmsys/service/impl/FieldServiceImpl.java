@@ -4,6 +4,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -41,6 +42,14 @@ public class FieldServiceImpl implements FieldService {
     @Override
     @Transactional
     public String assignFieldToProject(FieldAssignment fieldAssignment, long fieldID, long projectID) {
+
+	// You cannot set an empty label.
+	String label = fieldAssignment.getLabel();
+	String value = fieldAssignment.getValue();
+	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
+		|| value.replaceAll(" ", "").isEmpty()) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_EMPTY_EXTRA_INFO);
+	}
 
 	Project proj = this.projectDAO.getByID(projectID);
 
@@ -127,6 +136,12 @@ public class FieldServiceImpl implements FieldService {
     @Transactional
     public String updateAssignedProjectField(long projectID, long fieldID, String oldLabel,
 	    String oldValue, String label, String value) {
+
+	// You cannot set an empty label.
+	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
+		|| value.replaceAll(" ", "").isEmpty()) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_EMPTY_EXTRA_INFO);
+	}
 
 	Project proj = this.projectDAO.getByID(projectID);
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,

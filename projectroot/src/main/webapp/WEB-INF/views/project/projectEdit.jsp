@@ -209,13 +209,13 @@
 																
 																<label>Label</label><br/>
 																<form:input type="text" path="label" id="label" class="form-control"
-																	placeholder="Sample: SSS, Building Permit No., Sub-contractor, etc."/>
+																	placeholder="Sample: SSS, Building Permit No., Sub-contractor"/>
 																	<p class="help-block">Add a label for this information</p>
 																
 																<label>Information</label><br/>
 																<form:textarea class="form-control"
 																	rows="3" id="value" path="value"
-																	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction, etc."></form:textarea>
+																	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction"></form:textarea>
 																	<p class="help-block">Enter the information to be added</p>
 															
 															</form:form>
@@ -1652,19 +1652,19 @@
 <!-- 										                </div> -->
 <!-- 					                                        <div class="form-group"> -->
 <!-- 						                                    <label>Cost per Unit (Cement 40kg)</label> -->
-<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement40kg"/> --%>
+<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300" class="form-control" path="costPerUnitCement40kg"/> --%>
 <!-- 						                                    <p class="help-block">Specify the cost per 40kg bag of Cement</p> -->
 						                                    
 <!-- 						                                    <label>Cost per Unit (Cement 50kg)</label> -->
-<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300, etc" class="form-control" path="costPerUnitCement50kg"/> --%>
+<%-- 				                                            <form:input type="text" placeholder="Sample: 200, 220, 250, 300" class="form-control" path="costPerUnitCement50kg"/> --%>
 <!-- 						                                    <p class="help-block">Specify the cost per 50kg bag of Cement</p> -->
 						                                    
 <!-- 						                                    <label>Cost per Unit (Sand)</label> -->
-<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitSand"/> --%>
+<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650" class="form-control" path="costPerUnitSand"/> --%>
 <!-- 						                                    <p class="help-block">Specify the cost per unit of Sand</p> -->
 						                                    
 <!-- 						                                    <label>Cost per Unit (Gravel)</label> -->
-<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650, etc" class="form-control" path="costPerUnitGravel"/> --%>
+<%-- 				                                            <form:input type="text" placeholder="Sample: 400, 500, 550, 650" class="form-control" path="costPerUnitGravel"/> --%>
 <!-- 						                                    <p class="help-block">Specify the cost per unit of Gravel</p> -->
 						                                    
 <!-- 					                                        </div> -->
