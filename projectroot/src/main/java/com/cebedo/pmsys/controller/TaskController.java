@@ -19,18 +19,22 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
-import com.cebedo.pmsys.pojo.FormTeamAssignment;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
+/**
+ * TODO All task-related functions should be under ProjectController.
+ */
+@Deprecated
 @Controller
 @SessionAttributes(
 
@@ -50,8 +54,6 @@ public class TaskController {
     public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_ASSIGN_PROJECT_ID = "assignProjectID";
     public static final String ATTR_ASSIGN_STAFF_ID = "assignStaffID";
-
-    public static final String JSP_EDIT = Project.OBJECT_NAME + "/taskEdit";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -213,7 +215,7 @@ public class TaskController {
 	// And ID.
 	model.addAttribute(ATTR_TASK, new Task());
 	model.addAttribute(ATTR_ASSIGN_STAFF_ID, id);
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_TASK;
     }
 
     /**
@@ -333,7 +335,7 @@ public class TaskController {
 	model.addAttribute(ConstantsSystem.ORIGIN, Project.OBJECT_NAME);
 	model.addAttribute(ConstantsSystem.ORIGIN_ID, proj.getId());
 
-	return TaskController.JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_TASK;
     }
 
     /**
@@ -362,7 +364,7 @@ public class TaskController {
 	// Open a page with empty values, ready to create.
 	if (taskID == 0) {
 	    model.addAttribute(ATTR_TASK, new Task());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_TASK;
 	}
 
 	// Else, get the object from DB
@@ -406,85 +408,6 @@ public class TaskController {
     }
 
     /**
-     * Unassign a staff from a task.
-     * 
-     * @param projectID
-     * @param staffID
-     * @param position
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/{"
-	    + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
-    public String unassignTaskStaff(HttpSession session, SessionStatus status,
-	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
-
-	// Get the object from the session.
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-
-	// Error handling if staff was not set properly.
-	if (task == null) {
-	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>unassign</b> a staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		    + ConstantsSystem.REQUEST_LIST;
-	}
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("TOODOO Successfully <b>unassigned " + task.getTitle() + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	this.taskService.unassignStaffTask(task.getId(), staffID);
-	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + task.getId();
-    }
-
-    /**
-     * Assign a staff to a task.
-     * 
-     * @param projectID
-     * @param staffID
-     * @param staffAssignment
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME, method = RequestMethod.POST)
-    public String assignTaskStaff(HttpSession session, SessionStatus status,
-	    @ModelAttribute(ATTR_STAFF_ASSIGNMENT) FormStaffAssignment staffAssignment,
-	    RedirectAttributes redirectAttrs) {
-
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-
-	// Error handling if staff was not set properly.
-	if (task == null) {
-	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>assign</b> a staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		    + ConstantsSystem.REQUEST_LIST;
-	}
-
-	// Fetch staff name, construct ui notifs.
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-
-	// FIXME
-	alertFactory.setMessage("TODOOOOO Successfully <b>assigned " + task.getTitle()
-		+ "</b> as <b></b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	// Do service, clear session.
-	// Then redirect.
-	this.taskService.assignStaffTask(task.getId(), staffAssignment.getStaffID());
-	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + task.getId();
-    }
-
-    /**
      * Open a page with appropriate values.<br>
      * May be a Create Page or Edit Page.
      * 
@@ -499,7 +422,7 @@ public class TaskController {
 	// Open a page with empty values, ready to create.
 	if (id == 0) {
 	    model.addAttribute(ATTR_TASK, new Task());
-	    return JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_TASK;
 	}
 
 	return endStateEditTask(model, id);
@@ -527,9 +450,8 @@ public class TaskController {
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 
 	model.addAttribute(ATTR_STAFF_ASSIGNMENT, new FormStaffAssignment());
-	model.addAttribute(ATTR_TEAM_ASSIGNMENT, new FormTeamAssignment());
 	model.addAttribute(ATTR_TASK, task);
-	return JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_TASK;
     }
 
     /**

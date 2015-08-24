@@ -1,44 +1,45 @@
 package com.cebedo.pmsys.pojo;
 
-
 public class FormStaffAssignment {
 
-	private long staffID;
-	private long taskID;
-	private String position;
+    private long staffID;
+    private long taskID;
 
-	public FormStaffAssignment() {
-		;
-	}
+    @Deprecated
+    private String position;
 
-	public FormStaffAssignment(long sampleID, String pos) {
-		setStaffID(sampleID);
-		setPosition(pos);
-	}
+    public FormStaffAssignment() {
+	;
+    }
 
-	public long getStaffID() {
-		return staffID;
-	}
+    public FormStaffAssignment(long sampleID, String pos) {
+	setStaffID(sampleID);
+	setPosition(pos);
+    }
 
-	public void setStaffID(long staffID) {
-		this.staffID = staffID;
-	}
+    public long getStaffID() {
+	return staffID;
+    }
 
-	public String getPosition() {
-		return position;
-	}
+    public void setStaffID(long staffID) {
+	this.staffID = staffID;
+    }
 
-	public void setPosition(String position) {
-		this.position = position;
-	}
+    public String getPosition() {
+	return position;
+    }
 
-	public long getTaskID() {
-		return taskID;
-	}
+    public void setPosition(String position) {
+	this.position = position;
+    }
 
-	public FormStaffAssignment setTaskID(long taskID) {
-		this.taskID = taskID;
-		return this;
-	}
+    public long getTaskID() {
+	return taskID;
+    }
+
+    public FormStaffAssignment setTaskID(long taskID) {
+	this.taskID = taskID;
+	return this;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.constants;
 
+
 public class RegistryURL {
 
     public static final String ADD_ATTENDACE = "/add/attendance";
@@ -30,6 +31,8 @@ public class RegistryURL {
 
     public static final String REDIRECT_EDIT_PROJECT_STAFF = "redirect:/project/edit/staff/%s";
 
+    public static final String REDIRECT_EDIT_PROJECT_TASK = "redirect:/project/edit/task/%s";
+
     public static final String EDIT_TASK = "/edit/task/{task}";
 
     public static final String EDIT_ATTENDANCE_RANGE = "/edit/attendance/range";
@@ -51,5 +54,9 @@ public class RegistryURL {
     public static final String REDIRECT_DASHBOARD = "redirect:/dashboard/";
 
     public static final String REDIRECT_LIST_PROJECT = "redirect:/project/list";
+
+    public static final String ASSIGN_TASK_STAFF = "/assign/task/staff";
+
+    public static final String UNASSIGN_TASK_STAFF = "/unassign/task/staff/{staff}";
 
 }

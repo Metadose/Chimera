@@ -91,7 +91,10 @@ value = {
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
-	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE }
+	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE,
+
+	// Task.
+	ProjectController.ATTR_TASK }
 
 )
 @RequestMapping(Project.OBJECT_NAME)
@@ -142,7 +145,6 @@ public class ProjectController {
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
     public static final String ATTR_STAFF_POSITION = "staffPosition";
-    public static final String ATTR_TEAM_ASSIGNMENT = "teamAssignment";
     public static final String ATTR_FILE = "file";
 
     public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
@@ -180,6 +182,9 @@ public class ProjectController {
     public static final String ATTR_ATTENDANCE_MASS = "massAttendance";
 
     public static final String ATTR_FROM_PROJECT = "fromProject";
+
+    // Task attributes.
+    public static final String ATTR_STAFF_ASSIGNMENT = "staffAssignment";
 
     private AuthHelper authHelper = new AuthHelper();
 
@@ -300,7 +305,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(project.getId(), status);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**
@@ -310,7 +315,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    private String editPage(long projectID, SessionStatus status) {
+    private String redirectEditPageProject(long projectID, SessionStatus status) {
 	if (status != null) {
 	    status.setComplete();
 	}
@@ -338,7 +343,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(project.getId(), status);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**
@@ -362,7 +367,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(project.getId(), status);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**
@@ -386,7 +391,7 @@ public class ProjectController {
 	    // Attach response.
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	    return editPage(project.getId(), status);
+	    return redirectEditPageProject(project.getId(), status);
 	}
 
 	// Get response.
@@ -396,7 +401,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(project.getId(), status);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**
@@ -426,7 +431,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Clear session and redirect.
-	return editPage(faBean.getProjectID(), status);
+	return redirectEditPageProject(faBean.getProjectID(), status);
     }
 
     /**
@@ -455,7 +460,7 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(faBean.getProjectID(), status);
+	return redirectEditPageProject(faBean.getProjectID(), status);
     }
 
     /**
@@ -563,7 +568,7 @@ public class ProjectController {
 
 	// Do service and clear session vars.
 	// Then return.
-	return editPage(projectID, status);
+	return redirectEditPageProject(projectID, status);
     }
 
     /**
@@ -599,7 +604,7 @@ public class ProjectController {
 
 	// Remove session variables.
 	// Evict project cache.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
@@ -614,7 +619,7 @@ public class ProjectController {
 
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return payrollEndState(projectPayroll);
+	return redirectEditPagePayroll(projectPayroll);
     }
 
     /**
@@ -636,7 +641,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editSubmodulePage(ConstantsRedis.OBJECT_PULL_OUT, pullout.getKey());
+	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_PULL_OUT, pullout.getKey());
     }
 
     /**
@@ -658,7 +663,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editSubmodulePage(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
+	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
     }
 
     /**
@@ -679,7 +684,7 @@ public class ProjectController {
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editSubmodulePage(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
+	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
     }
 
     /**
@@ -689,7 +694,7 @@ public class ProjectController {
      * @param key
      * @return
      */
-    private String editSubmodulePage(String submodule, String key) {
+    private String redirectEditPageSubmodule(String submodule, String key) {
 	String deliveryEdit = ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
 		+ ConstantsSystem.REQUEST_EDIT + "/" + submodule + "/" + key + "-end";
 	return deliveryEdit;
@@ -712,7 +717,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -732,7 +737,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -758,7 +763,7 @@ public class ProjectController {
 
 	// Add redirs attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-	return editStaffPage(staff.getId());
+	return redirectEditPageStaff(staff.getId());
     }
 
     /**
@@ -767,8 +772,18 @@ public class ProjectController {
      * @param id
      * @return
      */
-    private String editStaffPage(long id) {
+    private String redirectEditPageStaff(long id) {
 	return String.format(RegistryURL.REDIRECT_EDIT_PROJECT_STAFF, id);
+    }
+
+    /**
+     * Return to edit task page.
+     * 
+     * @param id
+     * @return
+     */
+    private String redirectEditPageTask(long id) {
+	return String.format(RegistryURL.REDIRECT_EDIT_PROJECT_TASK, id);
     }
 
     /**
@@ -793,7 +808,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -840,7 +855,7 @@ public class ProjectController {
 	// Set completed.
 	// Return.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -866,7 +881,7 @@ public class ProjectController {
 	// Set completed.
 	// Return.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -892,7 +907,7 @@ public class ProjectController {
 	// Set completed.
 	// Return.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -918,7 +933,7 @@ public class ProjectController {
 	// Set completed.
 	// Return.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -935,17 +950,15 @@ public class ProjectController {
     public String createTask(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-
+	String response = "";
 	if (task.getId() == 0) {
-	    this.taskService.create(task);
-	    alertFactory.setMessage("Successfully <b>created</b> task <b>" + task.getTitle() + "</b>.");
+	    response = this.taskService.create(task);
 	} else {
-	    this.taskService.update(task);
-	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
+	    response = this.taskService.update(task);
 	}
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return editPage(task.getProject().getId(), status);
+
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return redirectEditPageTask(task.getId());
     }
 
     /**
@@ -992,7 +1005,7 @@ public class ProjectController {
 	// TODO
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
-	return editPageStaffCalMaxDate(model, session, attendance.getDate());
+	return redirectEditPageStaffCalMaxDate(model, session, attendance.getDate());
     }
 
     /**
@@ -1024,7 +1037,7 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
 
-	return editPageStaffCalMaxDate(model, session, startDate);
+	return redirectEditPageStaffCalMaxDate(model, session, startDate);
     }
 
     /**
@@ -1034,7 +1047,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    private String editPageStaffCalMaxDate(Model model, HttpSession session, Date minDate) {
+    private String redirectEditPageStaffCalMaxDate(Model model, HttpSession session, Date minDate) {
 
 	// If the min date from session is lesser
 	// than min date passed, use from session.
@@ -1194,14 +1207,83 @@ public class ProjectController {
 	// Open a page with empty values, ready to create.
 	if (taskID == 0) {
 	    model.addAttribute(ATTR_TASK, new Task(proj));
-	    return TaskController.JSP_EDIT;
+	    return RegistryJSPPath.JSP_EDIT_TASK;
 	}
 
 	// Else, get the object from DB
 	// then populate the fields in JSP.
 	Task task = this.taskService.getByIDWithAllCollections(taskID);
+
+	return editPageTask(model, proj, task);
+    }
+
+    /**
+     * Unassign a staff from a task.
+     * 
+     * @param projectID
+     * @param staffID
+     * @param position
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.UNASSIGN_TASK_STAFF, method = RequestMethod.GET)
+    public String unassignTaskStaff(HttpSession session, @PathVariable(Staff.OBJECT_NAME) long staffID,
+	    RedirectAttributes redirectAttrs) {
+
+	// Get the object from the session.
+	Task task = (Task) session.getAttribute(ATTR_TASK);
+
+	// Do service and get response.
+	String response = this.taskService.unassignStaffTask(task.getId(), staffID);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return redirectEditPageTask(task.getId());
+    }
+
+    /**
+     * Assign a staff to a task.
+     * 
+     * @param projectID
+     * @param staffID
+     * @param staffAssignment
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.ASSIGN_TASK_STAFF, method = RequestMethod.POST)
+    public String assignTaskStaff(HttpSession session,
+	    @ModelAttribute(ATTR_STAFF_ASSIGNMENT) FormStaffAssignment staffAssignment,
+	    RedirectAttributes redirectAttrs) {
+
+	Task task = (Task) session.getAttribute(ATTR_TASK);
+
+	// Do service.
+	String response = this.taskService.assignStaffTask(task.getId(), staffAssignment.getStaffID());
+
+	// Set response.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Then redirect.
+	return redirectEditPageTask(task.getId());
+    }
+
+    /**
+     * Return to edit page.
+     * 
+     * @param model
+     * @param proj
+     * @param task
+     * @return
+     */
+    private String editPageTask(Model model, Project proj, Task task) {
+	// Total - assigned = staff to return.
+	// Attach to model.
+	Set<Staff> totalStaff = proj.getAssignedStaff();
+	Set<Staff> assignedStaff = task.getStaff();
+	totalStaff.removeAll(assignedStaff);
+	model.addAttribute(ATTR_STAFF_LIST, totalStaff);
+
+	// Add the task and beans.
+	model.addAttribute(ATTR_STAFF_ASSIGNMENT, new FormStaffAssignment());
 	model.addAttribute(ATTR_TASK, task);
-	return TaskController.JSP_EDIT;
+	return RegistryJSPPath.JSP_EDIT_TASK;
     }
 
     /**
@@ -1224,7 +1306,7 @@ public class ProjectController {
 
 	// Complete the transaction.
 	// Redirect.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -1249,7 +1331,7 @@ public class ProjectController {
 
 	// Complete the transaction.
 	// Redirect.
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -1272,7 +1354,7 @@ public class ProjectController {
 	// Complete the transaction.
 	// Redirect.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(proj.getId(), status);
+	return redirectEditPageProject(proj.getId(), status);
     }
 
     /**
@@ -1358,7 +1440,7 @@ public class ProjectController {
 	// Add to model.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editSubmodulePage(ConstantsRedis.OBJECT_PULL_OUT, pullOut.getKey());
+	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_PULL_OUT, pullOut.getKey());
     }
 
     /**
@@ -1384,7 +1466,7 @@ public class ProjectController {
 	// Set completed.
 	// Return to the project.
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
-	return editPage(project.getId(), status);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**
@@ -1433,18 +1515,18 @@ public class ProjectController {
 	// If payroll creation was rejected,
 	// return back to project.
 	if (projectPayroll.getUuid() == null) {
-	    return editPage(proj.getId());
+	    return redirectEditPageProject(proj.getId());
 	}
 
 	// List of possible approvers.
 	setFormSelectors(proj, model);
 
 	// Complete the transaction.
-	return payrollEndState(projectPayroll);
+	return redirectEditPagePayroll(projectPayroll);
     }
 
-    private String editPage(long id) {
-	return editPage(id, null);
+    private String redirectEditPageProject(long id) {
+	return redirectEditPageProject(id, null);
     }
 
     /**
@@ -1476,7 +1558,7 @@ public class ProjectController {
 	setFormSelectors(proj, model);
 
 	// Redirect to:
-	return payrollEndState(projectPayroll);
+	return redirectEditPagePayroll(projectPayroll);
     }
 
     /**
@@ -1513,7 +1595,7 @@ public class ProjectController {
 	// Get all managers in this project.
 	setFormSelectors(proj, model);
 
-	return payrollEndState(projectPayroll);
+	return redirectEditPagePayroll(projectPayroll);
     }
 
     /**
@@ -1524,7 +1606,7 @@ public class ProjectController {
      * @param projectPayroll
      * @return
      */
-    private String payrollEndState(ProjectPayroll projectPayroll) {
+    private String redirectEditPagePayroll(ProjectPayroll projectPayroll) {
 
 	// /edit/payroll/${payrollRow.getKey()}-end
 	return ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
@@ -1623,7 +1705,7 @@ public class ProjectController {
 	if (proj.getAssignedStaff().size() < 1) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_PAYROLL_NO_STAFF));
-	    return editPage(proj.getId(), status);
+	    return redirectEditPageProject(proj.getId(), status);
 	}
 
 	// Set the form selectors.
@@ -1711,7 +1793,7 @@ public class ProjectController {
 	this.projectService.clearProjectCache(id);
 	this.projectService.clearListCache();
 
-	return editPage(id, status);
+	return redirectEditPageProject(id, status);
     }
 
     /**
