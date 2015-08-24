@@ -117,3 +117,7 @@ if i change my window size, ignite ui does not re-render, it stays the same
 OFFICIAL TITLE FORMAT: ${object.name || "New Object"} | ${action} ${object}
 
 REMOVE FAILED and CANCELLED in Task Status and Project Status
+
+delete unnecessary .js files
+
+optimize by using minified js or google CDN
