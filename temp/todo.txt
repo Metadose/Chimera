@@ -1,26 +1,8 @@
  AU7QGR-T7QT7QVGKY
 
-- humana ang manual add of teams to payroll, unsaon ang manual add ug staff?
-- if pwede ang manual add, pwede sad guro ang manual exclude?
-
-Start implementing max lengths on input fields
-
 Fix css in payroll, smaller fonts
 
-Add end date in project -> timeline. 
-
-Re-render timeline if hiding the sidebar
-
 In project -> timeline, load only specific date range
-
-Hide/unhide task/reminder/delivery in project->calendar
-
-In payroll, display staff's wage per day.
-
-update maven dependencies
-
-************ REMOVE CLEAR CACHE LINK
-
 
 sa taskEdit.jsp ug teamEdit.jsp nag-dobli ang box-body
 
