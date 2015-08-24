@@ -74,7 +74,7 @@ public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheM
     private boolean dynamic = true;
 
     // 0 - never expire
-    private long defaultExpiration = 0;
+    private long defaultExpiration = 1; // TODO
     private Map<String, Long> expires = null;
 
     private Set<String> configuredCacheNames;

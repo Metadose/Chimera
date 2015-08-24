@@ -43,7 +43,7 @@
 	                		<small>Create Task</small>
 	            		</c:when>
 	            		<c:when test="${task.id > 0}">
-	            			${task.content}
+	            			${task.title}
 	            			<small>Edit Task</small>
 	            		</c:when>
 	            	</c:choose>

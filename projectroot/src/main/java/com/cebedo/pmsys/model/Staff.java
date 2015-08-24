@@ -227,4 +227,9 @@ public class Staff implements Serializable {
 	return ((Long) getId()).hashCode();
     }
 
+    @Override
+    public String toString() {
+	return getId() + ": " + getFullName();
+    }
+
 }
