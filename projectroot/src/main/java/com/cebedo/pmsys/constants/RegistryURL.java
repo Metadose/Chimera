@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.constants;
 
-
 public class RegistryURL {
 
     public static final String ADD_ATTENDACE = "/add/attendance";
@@ -58,5 +57,7 @@ public class RegistryURL {
     public static final String ASSIGN_TASK_STAFF = "/assign/task/staff";
 
     public static final String UNASSIGN_TASK_STAFF = "/unassign/task/staff/{staff}";
+
+    public static final String UNASSIGN_ALL_TASK_STAFF = "/unassign/task/staff/all";
 
 }

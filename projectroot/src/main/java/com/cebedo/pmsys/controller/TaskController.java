@@ -373,41 +373,6 @@ public class TaskController {
     }
 
     /**
-     * Unassign all staff from a task.
-     * 
-     * @param projectID
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "/"
-	    + ConstantsSystem.ALL, method = RequestMethod.GET)
-    public String unassignAllTaskStaff(HttpSession session, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-	Task task = (Task) session.getAttribute(ATTR_TASK);
-
-	// Error handling if staff was not set properly.
-	if (task == null) {
-	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>unassign all staff</b>. Please try again.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		    + ConstantsSystem.REQUEST_LIST;
-	}
-
-	long taskID = task.getId();
-	this.taskService.unassignAllStaffUnderTask(taskID);
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>unassigned all</b> managers.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + taskID;
-    }
-
-    /**
      * Open a page with appropriate values.<br>
      * May be a Create Page or Edit Page.
      * 

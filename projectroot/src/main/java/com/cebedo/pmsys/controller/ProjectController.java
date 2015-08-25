@@ -1201,11 +1201,10 @@ public class ProjectController {
     @RequestMapping(value = RegistryURL.EDIT_TASK, method = RequestMethod.GET)
     public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model, HttpSession session) {
 
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-
 	// If ID is zero,
 	// Open a page with empty values, ready to create.
 	if (taskID == 0) {
+	    Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	    model.addAttribute(ATTR_TASK, new Task(proj));
 	    return RegistryJSPPath.JSP_EDIT_TASK;
 	}
@@ -1214,7 +1213,7 @@ public class ProjectController {
 	// then populate the fields in JSP.
 	Task task = this.taskService.getByIDWithAllCollections(taskID);
 
-	return editPageTask(model, proj, task);
+	return editPageTask(model, task.getProject(), task);
     }
 
     /**
@@ -1262,6 +1261,25 @@ public class ProjectController {
 
 	// Then redirect.
 	return redirectEditPageTask(task.getId());
+    }
+
+    /**
+     * Unassign all staff from a task.
+     * 
+     * @param projectID
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.UNASSIGN_ALL_TASK_STAFF, method = RequestMethod.GET)
+    public String unassignAllTaskStaff(HttpSession session, RedirectAttributes redirectAttrs) {
+
+	// Get object from session.
+	Task task = (Task) session.getAttribute(ATTR_TASK);
+	long taskID = task.getId();
+
+	// Do service and get response.
+	String response = this.taskService.unassignAllStaffUnderTask(taskID);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return redirectEditPageTask(taskID);
     }
 
     /**

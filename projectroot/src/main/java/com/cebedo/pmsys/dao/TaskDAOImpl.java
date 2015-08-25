@@ -48,7 +48,9 @@ public class TaskDAOImpl implements TaskDAO {
 
 	Project proj = task.getProject();
 	Hibernate.initialize(proj);
-
+	for (Staff projStaff : proj.getAssignedStaff()) {
+	    Hibernate.initialize(projStaff);
+	}
 	return task;
     }
 
