@@ -110,7 +110,7 @@
 		                                            	</c:when>
 		                                            	<c:when test="${task.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="${contextPath}/task/delete/${task.id}">
+		                                            		<a href="<c:url value="/project/delete/task/${task.id}"/>">
 																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Task</button>
 															</a>
 		                                            	</c:when>
@@ -125,88 +125,84 @@
                                 	<div class="box">
 		                                <div class="box-body">
 
-		                                	<c:choose>
-			                                	<c:when test="${empty task.project.assignedStaff}">
+			                                	<c:if test="${empty task.project.assignedStaff && empty task.staff}">
 													<div class="callout callout-warning">
 														<h4>Warning!</h4>
 														<p>There are <b>no staff members</b> assigned to the <b>project</b>.</p>
 													</div>
-			                                	</c:when>
+			                                	</c:if>
 
-			                                	<c:when test="${!empty task.project.assignedStaff}">
-				                                	<c:if test="${!empty staffList || !empty task.staff}">
-				                                	<table>
-				                                    	<tr>
-				                                    		<c:if test="${!empty staffList}">
-		 		                                    		<form:form 
-		 		                                    		modelAttribute="staffAssignment"  
-		 		                                    		method="post" 
-		 		                                    		action="${contextPath}/project/assign/task/staff"> 
-		 		                                    			<td>
-		 		                                    			<form:select class="form-control" path="staffID"> 
-		                                     						<c:forEach items="${staffList}" var="staff"> 
-		                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
-		                                     						</c:forEach> 
-		 		                                    			</form:select> 
-		 		                                    			</td>
-		 		                                    			<td>
-		 		                                    				&nbsp;
-		 		                                    			</td>
-		 														<td>
-		 														<button class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
-		 		                                    			</td> 
-		 		                                    		</form:form> 
-				                                    		</c:if>
-				                                    		<td> 
-				                                    			&nbsp;
-				                                    		</td>
-				                                    		<c:if test="${!empty task.staff}">
-				                                    		<td>
-		               											<c:url var="urlTaskUnassignStaffAll" value="/project/unassign/task/staff/all"/>
-				                                    			<a href="${urlTaskUnassignStaffAll}">
-		                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-				                                    			</a>
-				                                    		</td>
-				                                    		</c:if>
-				                                    	</tr>
-				                                    </table>
-				                                    <br/>
-				                                    </c:if>
-				                                    <table id="staff-table" class="table table-bordered table-striped">
-				                                    	<thead>
+			                                	<c:if test="${!empty staffList || !empty task.staff}">
+			                                	<table>
+			                                    	<tr>
+			                                    		<c:if test="${!empty staffList}">
+	 		                                    		<form:form 
+	 		                                    		modelAttribute="staffAssignment"  
+	 		                                    		method="post" 
+	 		                                    		action="${contextPath}/project/assign/task/staff"> 
+	 		                                    			<td>
+	 		                                    			<form:select class="form-control" path="staffID"> 
+	                                     						<c:forEach items="${staffList}" var="staff"> 
+	                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select> 
+	 		                                    			</td>
+	 		                                    			<td>
+	 		                                    				&nbsp;
+	 		                                    			</td>
+	 														<td>
+	 														<button class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
+	 		                                    			</td> 
+	 		                                    		</form:form> 
+			                                    		</c:if>
+			                                    		<td> 
+			                                    			&nbsp;
+			                                    		</td>
+			                                    		<c:if test="${!empty task.staff}">
+			                                    		<td>
+	               											<c:url var="urlTaskUnassignStaffAll" value="/project/unassign/task/staff/all"/>
+			                                    			<a href="${urlTaskUnassignStaffAll}">
+	                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
+			                                    			</a>
+			                                    		</td>
+			                                    		</c:if>
+			                                    	</tr>
+			                                    </table>
+			                                    <br/>
+			                                    </c:if>
+			                                    <table id="staff-table" class="table table-bordered table-striped">
+			                                    	<thead>
+			                                            <tr>
+			                                            	<th>&nbsp;</th>
+			                                                <th>Full Name</th>
+			                                                <th>Position</th>
+			                                                <th>E-Mail</th>
+			                                                <th>Contact Number</th>
+			                                            </tr>
+	                                        		</thead>
+			                                        <tbody>
+				                                		<c:forEach items="${task.staff}" var="staffAssign">
 				                                            <tr>
-				                                            	<th>&nbsp;</th>
-				                                                <th>Full Name</th>
-				                                                <th>Position</th>
-				                                                <th>E-Mail</th>
-				                                                <th>Contact Number</th>
+				                                            	<td>
+				                                            		<center>
+				                                            			<c:url var="urlViewStaff" value="/staff/edit/${staffAssign.id}/from/task/${task.id}" />
+				                                            			<a href="${urlViewStaff}">
+								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+				                                            			</a>
+		                   												<c:url var="urlUnassignStaff" value="/project/unassign/task/staff/${staffAssign.id}"/>
+		                   												<a href="${urlUnassignStaff}">
+																			<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
+		                   												</a>
+																	</center>
+																</td>
+				                                                <td>${staffAssign.getFullName()}</td>
+				                                                <td>${staffAssign.companyPosition}</td>
+				                                                <td>${staffAssign.email}</td>
+				                                                <td>${staffAssign.contactNumber}</td>
 				                                            </tr>
-		                                        		</thead>
-				                                        <tbody>
-					                                		<c:forEach items="${task.staff}" var="staffAssign">
-					                                            <tr>
-					                                            	<td>
-					                                            		<center>
-					                                            			<c:url var="urlViewStaff" value="/staff/edit/${staffAssign.id}/from/task/${task.id}" />
-					                                            			<a href="${urlViewStaff}">
-									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-					                                            			</a>
-			                   												<c:url var="urlUnassignStaff" value="/project/unassign/task/staff/${staffAssign.id}"/>
-			                   												<a href="${urlUnassignStaff}">
-																				<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-			                   												</a>
-																		</center>
-																	</td>
-					                                                <td>${staffAssign.getFullName()}</td>
-					                                                <td>${staffAssign.companyPosition}</td>
-					                                                <td>${staffAssign.email}</td>
-					                                                <td>${staffAssign.contactNumber}</td>
-					                                            </tr>
-				                                            </c:forEach>
-					                                    </tbody>
-					                                </table>
-			                                	</c:when>
-		                                	</c:choose>
+			                                            </c:forEach>
+				                                    </tbody>
+				                                </table>
 		                                </div><!-- /.box-body -->
 		                            </div>
                                 </div><!-- /.tab-pane -->
