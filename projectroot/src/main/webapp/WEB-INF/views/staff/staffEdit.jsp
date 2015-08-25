@@ -203,9 +203,6 @@
 							                                        <a href="${contextPath}/task/edit/${task.id}">
 					                                            		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            	</a>
-					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-					                                            	</a>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
 						                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
