@@ -185,8 +185,7 @@
 				                                            <tr>
 				                                            	<td>
 				                                            		<center>
-				                                            			<c:url var="urlViewStaff" value="/staff/edit/${staffAssign.id}/from/task/${task.id}" />
-				                                            			<a href="${urlViewStaff}">
+				                                            			<a href="<c:url value="/project/edit/staff/${staffAssign.id}"/>">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
 		                   												<c:url var="urlUnassignStaff" value="/project/unassign/task/staff/${staffAssign.id}"/>

@@ -1,4 +1,3 @@
-
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -22,8 +21,6 @@
     	</c:when>
     </c:choose>
 	
-	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
 	
 	<style>
@@ -88,7 +85,7 @@
                             	</c:choose>
 
                                 <c:if test="${staff.id != 0}">
-                                <li><a href="#tab_timeline" data-toggle="tab">Timeline</a></li>
+                                <li><a href="#tab_timeline" data-toggle="tab">Tasks</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -171,27 +168,9 @@
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_timeline">
-                                	<c:if test="${!empty taskList}">
-                                	<div class="row">
-                   						<div class="col-md-12">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Timeline</h3>
-                   								</div>
-                   								<div class="box-body">
-				                                	<div id="gantt-chart" class="gantt-holder">
-					                                </div><!-- /.box-body -->
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
-              						</c:if>
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
-                   							<div class="box-header">
-												<h3 class="box-title">Tasks</h3>
-               								</div>
                								<div class="box-body">
 			                                    <table id="task-table" class="table table-bordered table-striped">
 			                                    	<thead>
@@ -200,7 +179,6 @@
 				                                            <th>Status</th>
 				                                            <th>Title</th>
 				                                            <th>Content</th>
-				                                            <th>Project</th> 
 				                                            <th>Start</th>
 				                                            <th>Duration</th>
 				                                        </tr>
@@ -210,7 +188,7 @@
 		                                        			<tr>
 		                                        				<td>
 		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+							                                            <button type="button" class="btn btn-cebedo-mark btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 							                                                Mark As&nbsp;
 							                                                <span class="caret"></span>
 							                                            </button>
@@ -223,10 +201,10 @@
 							                                            </ul>
 							                                        </div>
 							                                        <a href="${contextPath}/task/edit/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">View</button>
+					                                            		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            	</a>
 					                                            	<a href="${contextPath}/task/delete/${task.id}">
-					                                            		<button class="btn btn-default btn-flat btn-sm">Delete</button>
+					                                            		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 					                                            	</a>
 		                                        				</td>
 					                                            <td style="vertical-align: middle;">
@@ -235,18 +213,6 @@
 					                                            </td>
 					                                            <td>${task.title}</td>
 					                                            <td>${task.content}</td>
-					                                            <td>
-					                                            	<c:choose>
-				                                            		<c:when test="${!empty task.project}">
-				                                            			<a class="general-link" href="${contextPath}/project/edit/from/staff/${task.project.id}">
-						                                            	${task.project.name}
-						                                            	</a>
-				                                            		</c:when>
-				                                            		<c:when test="${empty task.project}">
-				                                            			<h5>No project assigned.</h5>
-				                                            		</c:when>
-					                                            	</c:choose>					                                            
-					                                            </td>
 					                                            <td>${task.dateStart}</td>
 					                                            <td>${task.duration}</td>
 					                                        </tr>
@@ -301,24 +267,8 @@
                                 	<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Attendance</h3>
-                   								</div>
                    								<div class="box-body">
-                   									<div id='calendar'></div>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
-                                	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Data Range</h3>
-                   								</div>
-                   								<div class="box-body">
-                   									Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.<br/><br/>
-				                                	<form:form
+                   									<form:form
 									                	modelAttribute="rangeDate"
 														id="rangeDateForm"
 														method="post"
@@ -328,7 +278,7 @@
 															<td>
 								                            <label>Start Date</label>
 								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="startDate"/>
+									                            <form:input type="text" class="form-control" path="startDate" value="${minDateText}"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
@@ -340,7 +290,7 @@
 															<td>
 								                            <label>End Date</label>
 								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" path="endDate"/>
+									                            <form:input type="text" class="form-control" path="endDate" value="${maxDateText}"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
@@ -350,14 +300,24 @@
 															&nbsp;
 															</td>
 															<td style="vertical-align: bottom; padding-bottom: 1%">
-									                        <button class="btn btn-default btn-flat btn-sm" id="rangeDateButton">Load Data</button>
+									                        <button class="btn btn-cebedo-load btn-flat btn-sm" id="rangeDateButton">Load Data</button>
 															</td>
 														</tr>
 														</table>
-								                    </form:form><br/><br/>
-								                    <div class="box-header">
-		                   								<h3 class="box-title" style="padding-left: 0px;">Mass Attendance Editor</h3>
-	                   								</div>
+														<p class="help-block">Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.</p>
+								                    </form:form>
+                   									<div id='calendar'></div>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+                                	<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Mass Attendance Editor</h3>
+                   								</div>
+                   								<div class="box-body">
 								                    <form:form
 									                	modelAttribute="massAttendance"
 														id="massAttendanceForm"
@@ -366,20 +326,21 @@
 								                        <div class="form-group">
 								                            <label>Start Date</label>
 								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" id="massStartDate" path="startDate"/>
+									                            <form:input type="text" class="form-control" id="massStartDate" path="startDate" placeholder="Sample: 2015/08/07, 2016/07/15, 2017/03/25"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
 											                </div>
-								                            <br/>
+								                            <p class="help-block">Enter the first date of the attendance</p>
+
 								                            <label>End Date</label>
 								                            <div class='input-group date date-picker'>
-									                            <form:input type="text" class="form-control" id="massEndDate" path="endDate"/>
+									                            <form:input type="text" class="form-control" id="massEndDate" path="endDate" placeholder="Sample: 2015/08/07, 2016/07/15, 2017/03/25"/>
 											                    <span class="input-group-addon">
 											                        <span class="glyphicon glyphicon-calendar"></span>
 											                    </span>
 											                </div>
-								                            <br/>
+								                            <p class="help-block">Enter the last date of the attendance</p>
 								                            
 								                            <label id="massStatusLabel">Status</label>
 								                            <form:select class="form-control" id="massStatusValue" path="statusID"> 
@@ -387,14 +348,19 @@
 								           							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
 								           						</c:forEach>
 								                 			</form:select>
-								                 			<br id="massStatusBreak"/>
-								                            <label id="massWageLabel">Salary</label>
-								                            <form:input type="text" class="form-control" id="massWageValue" path="wage"/>
-								                            <br id="massWageBreak"/>
+								                 			<p class="help-block">Choose the status for these entries</p>
+
+								                 			<div id="massWageDiv">
+								                            <label>Salary</label>
+								                            <form:input type="text" class="form-control" path="wage" placeholder="Sample: 300, 500, 550"/>
+								                            <p class="help-block">Provide the salary of the staff for these entries</p>
+								                 			</div>
+								                            
 								                            <label id="includeWeekendsLabel">Include Weekends</label>
 								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
+								                            <p class="help-block">Check to include weekends</p>
 								                        </div>
-								                        <button class="btn btn-default btn-flat btn-sm" id="detailsButton">Update</button>
+								                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
 								                    </form:form>
                    								</div>
                    							</div>
@@ -524,25 +490,29 @@
 						action="${contextPath}/project/add/attendance">
                         <div class="form-group">
                             <label>Date</label>
-                            <form:input type="text" class="form-control" id="modalDate" path="date"/>
-                            
-                            <br/>
+                            <form:input type="text" class="form-control" id="modalDate" path="date" placeholder="Sample: 2016/06/25"/>
+                            <p class="help-block">The date of the attendance</p>
+
                             <label>Status</label>
-<!--                             List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>(); -->
+<!--                             TODO List<Map<String, String>> statusMap = new ArrayList<Map<String, String>>(); -->
                             <form:select class="form-control" id="attendanceStatus" path="statusID"> 
            						<c:forEach items="${calendarStatusList}" var="thisStatus"> 
            							<form:option value="${thisStatus.get(\"id\")}" label="${thisStatus.get(\"label\")}"/> 
            						</c:forEach>
                  			</form:select>
-                 			<br id="modalWageBreak"/>
-                            <label id="modalWageLabel">Salary</label>
-                            <form:input type="text" class="form-control" id="modalWage" path="wage"/><br/>
+							<p class="help-block">Set the status of this attendace</p>
+
+							<div id="modalWageDiv">
+                            <label>Salary</label>
+                            <form:input type="text" class="form-control" id="modalWage" path="wage" placeholder="Sample: 250, 350, 500"/>
+                            <p class="help-block">Set the staff wage for this date</p>
+                        	</div>
                         </div>
                     </form:form>
 	            </div>
 	            <div class="modal-footer">
-	            	<button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal">Close</button>
-	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-default btn-flat btn-sm">Update</button>
+	            	<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
+	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-cebedo-update btn-flat btn-sm">Update</button>
 	            </div>
 	        </div>
 	    </div>
@@ -557,21 +527,6 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 	
-	<c:if test="${staff.id != 0 && !empty taskList}">
-   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
-   	<script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
-	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
-
-	<script type="text/javascript">
-	    var ganttJSON = ${ganttJSON};
-	    var tasks = {'data': ganttJSON};
-
-		gantt.init("gantt-chart");
-	    gantt.parse(tasks);
-	    gantt.sort("start_date");
-	</script>
-	</c:if>
-   	
    	<c:if test="${staff.id != 0 && fromProject}">
    	<script type="text/javascript">
    	$(document).ready(function() {
@@ -585,12 +540,10 @@
 			// Hide the salary field.
 			if(this.value == 2 || this.value == -1) {
 				$('#modalWage').hide();
-				$('#modalWageLabel').hide();
-				$('#modalWageBreak').hide();
+				$('#modalWageDiv').hide();
 			} else {
 				$('#modalWage').show();
-				$('#modalWageLabel').show();
-				$('#modalWageBreak').show();
+				$('#modalWageDiv').show();
 			}
 		});
 			
@@ -598,13 +551,9 @@
 			// If selected value is ABSENT.
 			// Hide the salary field.
 			if(this.value == 2 || this.value == -1) {
-				$('#massWageValue').hide();
-				$('#massWageLabel').hide();
-				$('#massWageBreak').hide();
+				$('#massWageDiv').hide();
 			} else {
-				$('#massWageValue').show();
-				$('#massWageLabel').show();
-				$('#massWageBreak').show();
+				$('#massWageDiv').show();
 			}
 		});
 		
@@ -626,13 +575,11 @@
 				
 				if(statusValue == 2 || this.value == -1) {
 					$('#modalWage').hide();
-					$('#modalWageLabel').hide();
-					$('#modalWageBreak').hide();
+					$('#modalWageDiv').hide();
 				} else {
 					$('#modalWage').val(calEvent.attendanceWage);
 					$('#modalWage').show();
-					$('#modalWageLabel').show();
-					$('#modalWageBreak').show();
+					$('#modalWageDiv').show();
 				}
 		    }
 	    });

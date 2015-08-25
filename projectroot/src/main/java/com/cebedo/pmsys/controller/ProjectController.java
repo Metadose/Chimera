@@ -80,18 +80,21 @@ import com.cebedo.pmsys.utils.DateUtils;
 
 value = {
 	// Project.
-	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
+	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
 	ProjectController.ATTR_TASK,
 	ProjectController.ATTR_FROM_PROJECT,
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
-	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
+	ConstantsRedis.OBJECT_PULL_OUT,
+	ConstantsRedis.OBJECT_ESTIMATE,
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
 	ProjectController.ATTR_CALENDAR_MIN_DATE, ProjectController.ATTR_CALENDAR_MAX_DATE,
+	ProjectController.ATTR_ATTENDANCE,
 
 	// Task.
 	ProjectController.ATTR_TASK }
@@ -971,7 +974,7 @@ public class ProjectController {
     @RequestMapping(value = RegistryURL.EDIT_ATTENDANCE_RANGE)
     public String editAttendanceRange(
 	    @ModelAttribute(ATTR_CALENDAR_RANGE_DATES) FormDateRange rangeDates, HttpSession session,
-	    Model model) {
+	    Model model, RedirectAttributes redirectAttrs) {
 	// Get prelim objects.
 	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
 	Project project = (Project) session.getAttribute(ATTR_PROJECT);
@@ -979,6 +982,13 @@ public class ProjectController {
 	// Get the start and end date from the bean.
 	Date min = rangeDates.getStartDate();
 	Date max = rangeDates.getEndDate();
+
+	// If start date is > end date, error.
+	if (min.after(max)) {
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
+	    return redirectEditPageStaff(staff.getId());
+	}
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.

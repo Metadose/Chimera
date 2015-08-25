@@ -526,12 +526,11 @@
 											                                        </a>
 
 											                                        <!-- Delete button -->
-											                                        <c:url value="/project/delete/task/${task.id}" var="urlDeleteTask"/>
-											                                        <a href="${urlDeleteTask}">
+											                                        <a href="<c:url value="/project/delete/task/${task.id}"/>">
 									                                            	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 											                                        </a>
 						                                        				</td>
-									                                            <td style="vertical-align: middle;">
+									                                            <td>
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																					<span class="label ${css}">${task.getStatusEnum()}</span>
 									                                            </td>
@@ -546,10 +545,10 @@
 									                                            		<c:when test="${!empty task.staff}">
 									                                            			<c:forEach items="${task.staff}" var="taskStaff">
 									                                            			<c:set var="taskStaffName" value="${taskStaff.getFullName()}"/>
-									                                            			<a class="general-link" href="${contextPath}/staff/edit/from/project/?${taskStaff.id}">
+									                                            			<a class="general-link" href="<c:url value="/project/edit/staff/${taskStaff.id}"/>">
 											                                            	${taskStaffName}
 											                                            	</a>
-											                                            	<br/><br/>
+											                                            	<br/>
 									                                            			</c:forEach>
 									                                            		</c:when>
 									                                            		<c:when test="${empty task.staff}">

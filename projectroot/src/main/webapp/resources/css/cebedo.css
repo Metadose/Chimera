@@ -65,6 +65,30 @@
   background-color: #e5e5e5;
 }
 
+/* Mark buttons */
+.btn.btn-cebedo-mark {
+  background-color: #F1F1F1;
+  border-color: #8AB4D8;
+  color: #0067C0;
+}
+.btn.btn-cebedo-mark:hover,
+.btn.btn-cebedo-mark:active,
+.btn.btn-cebedo-mark.hover {
+  background-color: #e5e5e5;
+}
+
+/* Load buttons */
+.btn.btn-cebedo-load {
+  background-color: #F1F1F1;
+  border-color: #8AB4D8;
+  color: #0067C0;
+}
+.btn.btn-cebedo-load:hover,
+.btn.btn-cebedo-load:active,
+.btn.btn-cebedo-load.hover {
+  background-color: #e5e5e5;
+}
+
 /* Delete buttons */
 .btn.btn-cebedo-delete {
   background-color: #F1F1F1;
@@ -114,6 +138,22 @@
   background-color: #f4f4f4!important;
 }
 .btn.btn-cebedo-edit.btn-flat {
+  border-bottom-color: #d9dadc;
+}
+
+/* Close buttons */
+.btn.btn-cebedo-close {
+  background-color: #fafafa;
+  color: #666;
+  border-color: #ddd;
+  border-bottom-color: #ddd;
+}
+.btn.btn-cebedo-close:hover,
+.btn.btn-cebedo-close:active,
+.btn.btn-cebedo-close.hover {
+  background-color: #f4f4f4!important;
+}
+.btn.btn-cebedo-close.btn-flat {
   border-bottom-color: #d9dadc;
 }
 
