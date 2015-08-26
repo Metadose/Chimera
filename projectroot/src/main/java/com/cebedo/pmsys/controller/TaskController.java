@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -110,98 +109,6 @@ public class TaskController {
     }
 
     /**
-     * Create or update a new task.
-     * 
-     * @param task
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
-    public String create(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-
-	// If the task is not here yet,
-	// Create it.
-	// Else, update.
-	if (task.getId() == 0) {
-	    this.taskService.create(task);
-	    status.setComplete();
-	    alertFactory.setMessage("Successfully <b>created</b> task <b>" + task.getTitle() + "</b>.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_TASK + "/" + ConstantsSystem.REQUEST_LIST;
-	} else {
-	    this.taskService.merge(task);
-	    status.setComplete();
-	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_TASK + "/" + ConstantsSystem.REQUEST_EDIT
-		    + "/" + task.getId();
-	}
-    }
-
-    /**
-     * Create or update a task from origin.
-     * 
-     * @param task
-     * @return
-     */
-    @Deprecated
-    @RequestMapping(value = ConstantsSystem.REQUEST_CREATE + "/" + ConstantsSystem.FROM + "/{"
-	    + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID + "}", method = RequestMethod.POST)
-    public String createFromOrigin(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
-	    @PathVariable(ConstantsSystem.ORIGIN) String origin,
-	    @PathVariable(ConstantsSystem.ORIGIN_ID) long originID, RedirectAttributes redirectAttrs) {
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-
-	if (task.getId() == 0) {
-	    this.taskService.create(task);
-	    status.setComplete();
-	    alertFactory.setMessage("Successfully <b>created</b> task <b>" + task.getTitle() + "</b>.");
-	} else {
-	    this.taskService.merge(task);
-	    status.setComplete();
-	    alertFactory.setMessage("Successfully <b>updated</b> task <b>" + task.getTitle() + "</b>.");
-	}
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	return ConstantsSystem.CONTROLLER_REDIRECT + origin + "/" + ConstantsSystem.REQUEST_EDIT + "/"
-		+ originID;
-    }
-
-    /**
-     * Assign a task to a project. TODO Figure out return ModelAndView vs return
-     * String. TODO Instead of passing the whole Model of Task and using
-     * "merge", pass only the ID, get the object, attach the project and
-     * "update".
-     * 
-     * @param task
-     * @param projectID
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ASSIGN_PROJECT,
-	    ConstantsSystem.REQUEST_ASSIGN_PROJECT + "/{" + Project.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.POST)
-    public ModelAndView assignProject(@ModelAttribute(ATTR_TASK) Task task,
-	    @PathVariable(Project.COLUMN_PRIMARY_KEY) int projectID, RedirectAttributes redirectAttrs) {
-
-	// Construct the project object from the ID.
-	// Attach the project to the task.
-	// Create the task.
-	Project proj = this.projectService.getByID(projectID);
-	task.setProject(proj);
-	this.taskService.merge(task);
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>assigned</b> task <b>" + task.getTitle() + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	// Redirect to project edit.
-	return new ModelAndView(ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + projectID);
-    }
-
-    /**
      * Redirect to assign a new task for a staff.
      * 
      * @param id
@@ -249,74 +156,6 @@ public class TaskController {
     }
 
     /**
-     * Delete a specific task.
-     * 
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Task.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.POST)
-    public String delete(@PathVariable(Task.COLUMN_PRIMARY_KEY) long id, RedirectAttributes redirectAttrs) {
-
-	String taskTitle = this.taskService.getTitleByID(id);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> task <b>" + taskTitle + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	this.taskService.delete(id);
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_TASK + "/" + ConstantsSystem.REQUEST_LIST;
-    }
-
-    /**
-     * Mark the task status based on param passed. The method is GET since the
-     * mark action is done via a href.
-     * 
-     * @param taskID
-     * @param status
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_MARK, method = RequestMethod.GET)
-    public ModelAndView mark(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	    @RequestParam(Task.COLUMN_STATUS) int status, RedirectAttributes redirectAttrs) {
-
-	this.taskService.mark(taskID, status);
-	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	// TODO Change the int value of "status" to a text.
-	alertFactory.setMessage("Successfully <b>marked</b> task <b>" + taskTitle + "</b> as <b>"
-		+ status + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	return new ModelAndView(ConstantsSystem.CONTROLLER_REDIRECT + Task.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_LIST);
-    }
-
-    /**
-     * Set the project task to the status specified. The method is GET since the
-     * mark action is done via a href.
-     * 
-     * @param projectID
-     * @param taskID
-     * @param status
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_MARK + "/" + Project.OBJECT_NAME, method = RequestMethod.GET)
-    public ModelAndView markProject(@RequestParam(Project.COLUMN_PRIMARY_KEY) long projectID,
-	    @RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	    @RequestParam(Task.COLUMN_STATUS) int status, RedirectAttributes redirectAttrs) {
-
-	this.taskService.mark(taskID, status);
-	String taskTitle = this.taskService.getTitleByID(taskID);
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	// TODO Change the int value of "status" to a text.
-	alertFactory.setMessage("Successfully <b>marked</b> task <b>" + taskTitle + "</b> as <b>"
-		+ status + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	return new ModelAndView(ConstantsSystem.CONTROLLER_REDIRECT + Project.OBJECT_NAME + "/"
-		+ ConstantsSystem.REQUEST_EDIT + "/" + projectID);
-    }
-
-    /**
      * User assigns a new task for a project.<br>
      * Called when user clicks a create button from the edit project page.
      * 
@@ -336,61 +175,6 @@ public class TaskController {
 	model.addAttribute(ConstantsSystem.ORIGIN_ID, proj.getId());
 
 	return RegistryJSPPath.JSP_EDIT_TASK;
-    }
-
-    /**
-     * Open a page with appropriate values from a project object.<br>
-     * May be a Create Page or Edit Page. TODO Add method-level security.
-     * 
-     * @param id
-     * @param model
-     * @return
-     */
-    @Deprecated
-    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Task.OBJECT_NAME + "}/"
-	    + ConstantsSystem.FROM + "/{" + ConstantsSystem.ORIGIN + "}/{" + ConstantsSystem.ORIGIN_ID
-	    + "}", method = RequestMethod.GET)
-    public String editTaskFromOrigin(@PathVariable(Task.OBJECT_NAME) long taskID,
-	    @PathVariable(ConstantsSystem.ORIGIN) String origin,
-	    @PathVariable(ConstantsSystem.ORIGIN_ID) long originID, Model model) {
-
-	// Set origin values.
-	model.addAttribute(ConstantsSystem.ORIGIN, origin);
-	model.addAttribute(ConstantsSystem.ORIGIN_ID, originID);
-
-	// TODO Merge this block if condition with function
-	// redirectAssignProject.
-	// If ID is zero,
-	// Open a page with empty values, ready to create.
-	if (taskID == 0) {
-	    model.addAttribute(ATTR_TASK, new Task());
-	    return RegistryJSPPath.JSP_EDIT_TASK;
-	}
-
-	// Else, get the object from DB
-	// then populate the fields in JSP.
-	return endStateEditTask(model, taskID);
-    }
-
-    /**
-     * Open a page with appropriate values.<br>
-     * May be a Create Page or Edit Page.
-     * 
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Task.COLUMN_PRIMARY_KEY + "}")
-    public String editTask(@PathVariable(Task.COLUMN_PRIMARY_KEY) int id, Model model) {
-
-	// If ID is zero,
-	// Open a page with empty values, ready to create.
-	if (id == 0) {
-	    model.addAttribute(ATTR_TASK, new Task());
-	    return RegistryJSPPath.JSP_EDIT_TASK;
-	}
-
-	return endStateEditTask(model, id);
     }
 
     /**

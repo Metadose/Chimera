@@ -42,9 +42,9 @@ public class RegistryURL {
 
     public static final String DELETE_TASK = "/delete/task/{task}";
 
-    public static final String DELETE_TASK_ALL = "/delete/task/all";
+    public static final String MARK_TASK = "/mark/task/";
 
-    public static final String DELETE_PROGRAM_OF_WORKS = "/delete/program-of-works";
+    public static final String DELETE_TASK_ALL = "/delete/task/all";
 
     public static final String REDIRECT_EDIT_PROJECT = "redirect:/project/edit/%s";
 

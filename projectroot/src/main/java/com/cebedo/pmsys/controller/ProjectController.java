@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -1338,28 +1339,26 @@ public class ProjectController {
     }
 
     /**
-     * Delete all tasks.
+     * Set the project task to the status specified. The method is GET since the
+     * mark action is done via a href.
      * 
+     * @param projectID
      * @param taskID
-     * @param session
-     * @param redirectAttrs
      * @param status
      * @return
      */
-    // TODO Just use deleteAllTask()
-    @Deprecated
-    @RequestMapping(value = RegistryURL.DELETE_PROGRAM_OF_WORKS, method = RequestMethod.GET)
-    public String deleteAllTasks(HttpSession session, RedirectAttributes redirectAttrs,
-	    SessionStatus status) {
+    @RequestMapping(value = RegistryURL.MARK_TASK, method = RequestMethod.GET)
+    public String markTask(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
+	    @RequestParam(Task.COLUMN_STATUS) int status, RedirectAttributes redirectAttrs,
+	    HttpSession session) {
 
-	// Do service and get response.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	String response = this.projectService.deleteProgramOfWorks(proj);
+	// Do service, get response.
+	String response = this.taskService.mark(taskID, status);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	// Complete the transaction.
-	// Redirect.
-	return redirectEditPageProject(proj.getId(), status);
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
+	return redirectEditPageProject(proj.getId());
     }
 
     /**

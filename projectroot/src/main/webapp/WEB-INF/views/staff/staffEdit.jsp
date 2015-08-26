@@ -177,11 +177,11 @@
 			                                    		<tr>
 				                                        	<th>&nbsp;</th>
 				                                            <th>Status</th>
-				                                            <th>Title</th>
-				                                            <th>Content</th>
 				                                            <th>Start Date</th>
 				                                            <th>End Date</th>
 				                                            <th>Duration</th>
+				                                            <th>Title</th>
+				                                            <th>Content</th>
 				                                        </tr>
 			                                    	</thead>
 			                                        <tbody>
@@ -196,12 +196,13 @@
 						                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																	<span class="label ${css}">${task.getStatusEnum()}</span>
 					                                            </td>
-					                                            <td>${task.title}</td>
-					                                            <td>${task.content}</td>
-					                                            <td>${task.dateStart}</td>
+					                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" var="taskStartDate"/>
+					                                            <td>${taskStartDate}</td>
 					                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.getEndDate()}" var="taskEndDate"/>
 					                                            <td>${taskEndDate}</td>
 					                                            <td>${task.duration}</td>
+					                                            <td>${task.title}</td>
+					                                            <td>${task.content}</td>
 					                                        </tr>
 		                                        		</c:forEach>
 				                                    </tbody>
@@ -427,7 +428,7 @@
 				                                        <tbody>
 		                                        		<c:forEach items="${attendanceList}" var="attendance">
 		                                        			<tr>
-					                                            <td>${attendance.getFormattedDateString("yyyy-MM-dd")}</td>
+					                                            <td>${attendance.getFormattedDateString("yyyy/MM/dd")}</td>
 					                                            <c:choose>
 					                                            	<c:when test="${attendance.getStatus().id() == 6}">
 						                                            <c:set value="border: 1px solid red" var="spanBorder"/>

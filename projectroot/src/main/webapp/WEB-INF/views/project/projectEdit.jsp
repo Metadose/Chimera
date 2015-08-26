@@ -289,7 +289,8 @@
 			                                                	<td>${estimationOutput.name}</td>
 			                                                	<td>${estimationOutput.remarks}</td>
 			                                                	<td>${estimationOutput.estimationAllowance.getLabel()}</td>
-			                                                	<td>${estimationOutput.lastComputed}</td>
+			                                                	<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${estimationOutput.lastComputed}" var="timeComputed"/>
+			                                                	<td>${timeComputed}</td>
 				                                            </tr>
 				                                            </c:forEach>
 					                                    </tbody>
@@ -478,7 +479,7 @@
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
 				               											<!-- Delete All button -->
-								                                        <c:url value="/project/delete/program-of-works" var="urlButton"/>
+								                                        <c:url value="/project/delete/task/all" var="urlButton"/>
 								                                        <a href="${urlButton}">
 				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks</button>
 								                                        </a>
@@ -491,8 +492,8 @@
 						                                            <tr>
 							                                        	<th>&nbsp;</th>
 							                                            <th>Status</th>
-							                                            <th>Start</th>
-							                                            <th>End</th>
+							                                            <th>Start Date</th>
+							                                            <th>End Date</th>
 							                                            <th>Duration</th>
 							                                            <th>Title</th>
 							                                            <th>Content</th>
@@ -511,11 +512,11 @@
 											                                                <span class="caret"></span>
 											                                            </button>
 											                                            <ul class="dropdown-menu">
-											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=0&${_csrf.parameterName}=${_csrf.token}">New</a></li>
-											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=1&${_csrf.parameterName}=${_csrf.token}">Ongoing</a></li>
-											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=2&${_csrf.parameterName}=${_csrf.token}">Completed</a></li>
-											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=3&${_csrf.parameterName}=${_csrf.token}">Failed</a></li>
-											                                                <li><a href="${contextPath}/task/mark/project/?project_id=${project.id}&task_id=${task.id}&status=4&${_csrf.parameterName}=${_csrf.token}">Cancelled</a></li>
+											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=0"/>">New</a></li>
+											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=1"/>">Ongoing</a></li>
+											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=2"/>">Completed</a></li>
+											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=3"/>">Failed</a></li>
+											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=4"/>">Cancelled</a></li>
 											                                            </ul>
 											                                        </div>
 											                                        
@@ -534,8 +535,9 @@
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																					<span class="label ${css}">${task.getStatusEnum()}</span>
 									                                            </td>
-									                                            <td>${task.dateStart}</td>
-									                                            <fmt:formatDate pattern="yyyy-MM-dd" value="${task.getEndDate()}" var="taskEndDate"/>
+									                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" var="taskStartDate"/>
+									                                            <td>${taskStartDate}</td>
+									                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.getEndDate()}" var="taskEndDate"/>
 									                                            <td>${taskEndDate}</td>
 									                                            <td>${task.duration}</td>
 									                                            <td>${task.title}</td>

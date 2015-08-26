@@ -91,19 +91,47 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Clear everything first to avoid redundant entries.
-	deleteProgramOfWorks(project);
-
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
-	this.taskService.createMassTasks(tasks);
+	List<Task> includeTasks = new ArrayList<Task>();
+	Set<Task> projTasks = project.getAssignedTasks();
+
+	// Check if this task is already committed.
+	for (Task task : tasks) {
+
+	    String title = task.getTitle();
+	    String content = task.getContent();
+	    Date start = task.getDateStart();
+	    double duration = task.getDuration();
+	    boolean include = true;
+
+	    // Check for existing.
+	    for (Task projTask : projTasks) {
+		String projTitle = projTask.getTitle();
+		String projContent = projTask.getContent();
+		Date projStart = projTask.getDateStart();
+		double projDuration = projTask.getDuration();
+
+		// If we found a match from the project tasks,
+		// break. Don't include to list to commit.
+		if (title.equals(projTitle) && content.equals(projContent) && start.equals(projStart)
+			&& duration == projDuration) {
+		    include = false;
+		    break;
+		}
+	    }
+
+	    if (include) {
+		includeTasks.add(task);
+	    }
+	}
+	this.taskService.createMassTasks(includeTasks);
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME);
 
-	// TODO
-	return "TODO";
+	return AlertBoxGenerator.SUCCESS.generateAssignEntries(Task.OBJECT_NAME);
     }
 
     /**
@@ -497,29 +525,6 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
-    }
-
-    // TODO Update naming scheme. We're only deleting tasks now.
-    @Deprecated
-    @Transactional
-    @Override
-    public String deleteProgramOfWorks(Project project) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Do service.
-	this.taskService.deleteAllTasksByProject(project.getId());
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME);
-
-	// TODO
-	return "TODO";
     }
 
 }
