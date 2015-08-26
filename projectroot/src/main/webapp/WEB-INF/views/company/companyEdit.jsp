@@ -105,7 +105,7 @@
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('companyForm')">Update</button>
 		                                            		<c:url value="/company/delete/${company.id}" var="urlDeleteCompany"/>
 		                                            		<a href="${urlDeleteCompany}">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Company</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

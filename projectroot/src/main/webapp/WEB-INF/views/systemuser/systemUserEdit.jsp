@@ -135,7 +135,7 @@
 
 		                                            	<c:when test="${systemuser.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Update</button>
-															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete This User</button>
+															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
 		                                            	</c:when>
 		                                            </c:choose>
 

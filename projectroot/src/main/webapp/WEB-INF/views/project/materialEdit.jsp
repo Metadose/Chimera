@@ -8,7 +8,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Material Edit</title>
+	<title>Edit Material</title>
    	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
 	<style>
 	  ul {         
@@ -54,15 +54,8 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Edit Material</h3>
-                   								</div>
                    								<div class="box-body">
 									                <table class="table table-bordered table-striped">
-									                <tr>
-									                	<td><label>Label</label></td>
-									                	<td><label>Data</label></td>
-									                </tr>
 									                <tr>
 									                	<td><label>Delivery</label></td>
 									                	<td>
@@ -156,6 +149,10 @@
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		<c:url var="urlDelete" value="/project/delete/material/${material.getKey()}-end"/>
+				                                    <a href="${urlDelete}">
+       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+				                                    </a>
                    								</div>
                    							</div>
                    						</div>

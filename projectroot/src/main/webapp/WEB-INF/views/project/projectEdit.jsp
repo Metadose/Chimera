@@ -160,7 +160,7 @@
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete This Project</button>
+															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
 		                                            	</c:when>
 		                                            </c:choose>
 			                                        </div>
@@ -481,7 +481,7 @@
 				               											<!-- Delete All button -->
 								                                        <c:url value="/project/delete/task/all" var="urlButton"/>
 								                                        <a href="${urlButton}">
-				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All Tasks</button>
+				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All</button>
 								                                        </a>
 						                                    		</td>
 						                                    		</c:if>
@@ -775,12 +775,7 @@
 																</td>
 																<td>${row.materialCategory.getLabel()}</td>
 
-																<td>
-																<c:url var="urlLink" value="/project/edit/material/${row.getKey()}-end"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.name}
-							                                    </a>
-																</td>
+																<td>${row.name}</td>
 
 																<td>${row.getUnitName()}</td>
 																

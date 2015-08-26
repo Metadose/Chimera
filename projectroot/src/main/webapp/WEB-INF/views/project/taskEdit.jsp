@@ -111,7 +111,7 @@
 		                                            	<c:when test="${task.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="<c:url value="/project/delete/task/${task.id}"/>">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Task</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>

@@ -71,9 +71,6 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Details</h3>
-                   								</div>
                    								<div class="box-body">
                    									<form:form modelAttribute="delivery"
 														id="detailsForm"
@@ -101,7 +98,7 @@
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
                                             		<c:url value="/project/delete/delivery/${delivery.getKey()}-end" var="urlDeleteDelivery"/>
 				                                    <a href="${urlDeleteDelivery}">
-       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Delivery</button>
+       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                    </a>
 			                                        </c:if>
 			                                        <c:if test="${!isUpdating}">

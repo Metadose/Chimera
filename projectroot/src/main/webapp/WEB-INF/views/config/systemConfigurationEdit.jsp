@@ -84,7 +84,7 @@
 		                                            	<c:when test="${config.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
 		                                            		<a href="<c:url value="/config/delete/${config.id}"/>">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Configuration</button>
+																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 															</a>
 		                                            	</c:when>
 		                                            </c:choose>
