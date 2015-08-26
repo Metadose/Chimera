@@ -1431,7 +1431,16 @@ public class ProjectController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL
 	    + "/{" + ConstantsRedis.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
     public String pulloutMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key, Model model,
-	    HttpSession session) {
+	    HttpSession session, RedirectAttributes redirectAttrs) {
+
+	// You cannot pull-out materials if no staff is assigned to this
+	// project.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	if (proj.getAssignedStaff().isEmpty()) {
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_NO_PROJECT_STAFF));
+	    return redirectEditPageProject(proj.getId());
+	}
 
 	// Construct the bean for the form.
 	Material material = this.materialService.get(key);
@@ -1441,7 +1450,6 @@ public class ProjectController {
 	// Get the list of staff in this project.
 	// This is for the selector.
 	// Who pulled-out the material?
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	Set<Staff> staffList = proj.getAssignedStaff();
 
 	// Add the staff list to model.

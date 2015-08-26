@@ -77,6 +77,11 @@ public class PullOutServiceImpl implements PullOutService {
 	else if (obj.getDatetime() == null) {
 	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_DATE);
 	}
+	// Error: Pull out date is before the delivery date.
+	else if (obj.getDatetime().before(obj.getDelivery().getDatetime())) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_DATE_BEFORE_DELIVERY);
+	}
 	// Error: Etc.
 	else if (available <= 0) {
 	    return AlertBoxGenerator.ERROR;

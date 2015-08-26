@@ -609,11 +609,6 @@
                                 	<div class="row">
 		                            <div class="col-md-12">
                							<div class="box box-body box-default">
-               								<div class="box-header">
-               									<h3 class="box-title">
-               									<span class="badge">Results</span>
-               									Payroll List</h3>
-               								</div>
                								<div class="box-body">
 										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
 		                                  		<a href="${urlCreateTeam}">
