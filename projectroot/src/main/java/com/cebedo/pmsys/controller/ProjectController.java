@@ -1467,6 +1467,10 @@ public class ProjectController {
 	// Add to model.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
+	if (pullOut.getUuid() == null) {
+	    return redirectEditPageProject(pullOut.getProject().getId());
+	}
+
 	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_PULL_OUT, pullOut.getKey());
     }
 

@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -149,6 +148,12 @@
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		<c:if test="${material.available > 0}">
+                                        			<c:url var="urlPullout" value="/project/pullout/material/${material.getKey()}-end"/>
+				                                    <a href="${urlPullout}">
+       													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
+				                                    </a>
+				                                    </c:if>
                                             		<c:url var="urlDelete" value="/project/delete/material/${material.getKey()}-end"/>
 				                                    <a href="${urlDelete}">
        													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>

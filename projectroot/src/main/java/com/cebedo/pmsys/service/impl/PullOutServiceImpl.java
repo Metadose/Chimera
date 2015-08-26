@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
@@ -45,6 +45,9 @@ public class PullOutServiceImpl implements PullOutService {
 	this.pullOutValueRepo = pullOutValueRepo;
     }
 
+    /**
+     * Create a pull-out.
+     */
     @Override
     @Transactional
     public String create(PullOut obj) {
@@ -64,9 +67,18 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Error: Pullout more than the available.
 	if (quantity > available) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
-	} else if (quantity <= 0 || obj.getDatetime() == null || available <= 0) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
+	}
+	// Error: Invalid quantity value.
+	else if (quantity <= 0) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_QUANTITY);
+	}
+	// Error: Invalid date time.
+	else if (obj.getDatetime() == null) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_DATE);
+	}
+	// Error: Etc.
+	else if (available <= 0) {
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -98,9 +110,13 @@ public class PullOutServiceImpl implements PullOutService {
 	this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), "TODO", material.getName());
+	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), material.getUnitSymbol(),
+		material.getName());
     }
 
+    /**
+     * Get a pull-out.
+     */
     @Override
     @Transactional
     public PullOut get(String key) {
@@ -136,8 +152,8 @@ public class PullOutServiceImpl implements PullOutService {
 	doDelete(key, obj);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(obj.getDatetime(), obj.getStaff()
-		.getFullName());
+	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(obj.getMaterial().getName(),
+		obj.getDatetime(), obj.getStaff().getFullName());
     }
 
     /**
@@ -185,6 +201,27 @@ public class PullOutServiceImpl implements PullOutService {
     @Override
     @Transactional
     public String update(PullOut newPullout) {
+
+	double quantity = newPullout.getQuantity();
+	double available = newPullout.getMaterial().getAvailable();
+
+	// Error: Pullout more than the available.
+	if (quantity > available) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
+	}
+	// Error: Invalid quantity value.
+	else if (quantity <= 0) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_QUANTITY);
+	}
+	// Error: Invalid date time.
+	else if (newPullout.getDatetime() == null) {
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_DATE);
+	}
+	// Error: Etc.
+	else if (available <= 0) {
+	    return AlertBoxGenerator.ERROR;
+	}
+
 	PullOut oldPullOut = this.pullOutValueRepo.get(newPullout.getKey());
 
 	// Security check.

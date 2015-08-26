@@ -16,6 +16,10 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PULLOUT_EXCEED = "You <b>cannot</b> pull-out <b>more than the available</b> material.";
 
+    public static final String ERROR_INVALID_QUANTITY = "Quantity must be <b>greater than zero</b>.";
+
+    public static final String ERROR_INVALID_DATE = "Please provide a <b>valid date and time</b>.";
+
     public static final String ERROR_PAYROLL_NO_STAFF = "You <b>cannot</b> create a payroll <b>without staff</b> assigned to this project. <b>Assign staff members first</b>.";
 
     public static final String ERROR_START_DATE_GT_END_DATE = "The <b>start date</b> must be <b>before the end date</b>.";

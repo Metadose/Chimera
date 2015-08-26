@@ -2,8 +2,8 @@ package com.cebedo.pmsys.ui;
 
 import java.util.Date;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.utils.DateUtils;
 
 public class AlertBoxGenerator {
@@ -40,9 +40,9 @@ public class AlertBoxGenerator {
     /**
      * Pull out.
      */
-    private static String TEMPLATE_SUCCESS_PULL_OUT_DELETE = "Successfully <b>deleted</b> the pull-out on <b>%s</b> by <b>%s</b>.";
+    private static String TEMPLATE_SUCCESS_PULL_OUT_DELETE = "Successfully <b>deleted</b> the %s pull-out on <b>%s</b> by <b>%s</b>.";
 
-    private static String TEMPLATE_FAILED_PULL_OUT_DELETE = "Failed to <b>delete</b> the pull-out on <b>%s</b> by <b>%s</b>.";
+    private static String TEMPLATE_FAILED_PULL_OUT_DELETE = "Failed to <b>delete</b> the %s pull-out on <b>%s</b> by <b>%s</b>.";
 
     /**
      * Create.
@@ -389,14 +389,14 @@ public class AlertBoxGenerator {
 	return generateHTML();
     }
 
-    public String generatePulloutDelete(Date datetime, String staffName) {
+    public String generatePulloutDelete(String materialName, Date datetime, String staffName) {
 	String result = "";
 	String dateStr = DateUtils.formatDate(datetime, "yyyy/MM/dd hh:mm a");
 	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
-	    result = String.format(TEMPLATE_FAILED_PULL_OUT_DELETE, dateStr, staffName);
+	    result = String.format(TEMPLATE_FAILED_PULL_OUT_DELETE, materialName, dateStr, staffName);
 
 	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
-	    result = String.format(TEMPLATE_SUCCESS_PULL_OUT_DELETE, dateStr, staffName);
+	    result = String.format(TEMPLATE_SUCCESS_PULL_OUT_DELETE, materialName, dateStr, staffName);
 	}
 	this.message = result;
 	return generateHTML();

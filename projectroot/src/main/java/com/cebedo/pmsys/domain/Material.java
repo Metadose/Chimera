@@ -103,6 +103,17 @@ public class Material implements IDomainObject {
 	return "";
     }
 
+    public String getUnitSymbol() {
+	if (this.unitLength != null) {
+	    return this.unitLength.symbol();
+	} else if (this.unitMass != null) {
+	    return this.unitMass.getSymbol();
+	} else if (this.unitVolume != null) {
+	    return this.unitVolume.getSymbol();
+	}
+	return "units";
+    }
+
     public Company getCompany() {
 	return company;
     }

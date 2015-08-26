@@ -662,7 +662,7 @@
 			                                                <td>${payrollEndDate}</td>
 			                                                
 			                                                <td>
-			                                                <c:url var="urlLink" value="/staff/edit/${payrollRow.creator.staff.id}/from/project/${project.id}"/>
+			                                                <c:url var="urlLink" value="/project/edit/staff/${payrollRow.creator.staff.id}"/>
 						                                    <a href="${urlLink}" class="general-link">
 			                                                ${payrollRow.creator.staff.getFullName()}
 						                                    </a>
@@ -775,7 +775,12 @@
 																</td>
 																<td>${row.materialCategory.getLabel()}</td>
 
-																<td>${row.name}</td>
+																<td>
+																	<c:url var="urlLink" value="/project/edit/material/${row.getKey()}-end"/>
+								                                    <a href="${urlLink}" class="general-link">
+																	${row.name}
+								                                    </a>
+							                                	</td>
 
 																<td>${row.getUnitName()}</td>
 																
@@ -920,7 +925,7 @@
 																<td>${row.material.getUnitName()}</td>
 																
 																<td>
-																<c:url var="urlLink" value="/staff/edit/${row.staff.id}/from/project/${project.id}"/>
+																<c:url var="urlLink" value="/project/edit/staff/${row.staff.id}"/>
 							                                    <a href="${urlLink}" class="general-link">
 																${row.staff.getFullName()}
 							                                    </a>
