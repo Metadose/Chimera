@@ -699,20 +699,32 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_inventory">
                                 
+                                	<c:choose>
+                                	<c:when test="${empty materialList}">
+                                		<c:set value="hide" var="materialsVisibility"/>
+                                		<c:set value="active" var="deliveriesVisibility"/>
+                                	</c:when>
+                                	<c:when test="${!empty materialList}">
+                                		<c:set value="active" var="materialsVisibility"/>
+                                	</c:when>
+                                	</c:choose>
+
+                                	<c:if test="${empty pullOutList}">
+                                		<c:set value="hide" var="pulloutsVisibility"/>
+                                	</c:if>
+
+                                	
                                 	<div class="nav-tabs-custom">
 		                            <ul class="nav nav-tabs" id="subtabs-inventory">
-		                                <li class="active"><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
-                                		<li><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
-		                                <li><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
+		                                <li class="${materialsVisibility}"><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
+                                		<li class="${deliveriesVisibility}"><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
+		                                <li class="${pulloutsVisibility}"><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
 		                            </ul>
 		                            <div class="tab-content">
-		                                <div class="tab-pane active" id="subtab_inventory">
+		                                <div class="tab-pane ${materialsVisibility}" id="subtab_inventory">
 	                                	<div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
-	               								<div class="box-header">
-	               									<h3 class="box-title">Materials</h3>
-	               								</div>
 	               								<div class="box-body box-default">
 									                <div class="pull-right">
 			                                  		<h3>Grand Total <b><u>
@@ -807,13 +819,10 @@
 		                                </div>
 		                                
 		                                
-		                                <div class="tab-pane" id="subtab_delivery">
+		                                <div class="tab-pane ${deliveriesVisibility}" id="subtab_delivery">
 		                                <div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
-	               								<div class="box-header">
-	               									<h3 class="box-title">Deliveries</h3>
-	               								</div>
 	               								<div class="box-body">
 											  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
 			                                  		<a href="${urlCreateDelivery}">
@@ -862,13 +871,10 @@
 		                                </div>
 		                                
 		                                
-		                                <div class="tab-pane" id="subtab_pullout">
+		                                <div class="tab-pane ${pulloutsVisibility}" id="subtab_pullout">
 		                                <div class="row">
 	               						<div class="col-md-12">
 	               							<div class="box box-body box-default">
-	               								<div class="box-header">
-	               									<h3 class="box-title">Pull-Outs</h3>
-	               								</div>
 	               								<div class="box-body">
 				                                    <table id="pull-out-table" class="table table-bordered table-striped">
 				                                    	<thead>

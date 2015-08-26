@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
@@ -10,10 +11,10 @@
 	<c:set value="${false}" var="isUpdating"/>
 	<c:choose>
    	<c:when test="${empty delivery.uuid}">
-    	<title>Delivery Create</title>
+    	<title>Create Delivery</title>
    	</c:when>
    	<c:when test="${!empty delivery.uuid}">
-		<title>Delivery Edit</title>
+		<title>Edit Delivery</title>
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>
@@ -40,7 +41,6 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	${delivery.project.name} <i class="fa fa-angle-double-right"></i> 
 	            	<c:choose>
 	            	<c:when test="${!isUpdating}">
 		            	New Delivery
@@ -86,7 +86,9 @@
 				                                            <p class="help-block">Enter the name of this delivery</p>
 				                                            
 				                                            <label>Date and Time</label>
-				                                            <form:input type="text" placeholder="Sample: 2015/06/25 07:40" class="form-control" id="date-picker" path="datetime"/>
+				                                            
+				                                            <fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${delivery.datetime}" var="deliveryDateTime"/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/25 07:40" class="form-control" id="date-picker" path="datetime" value="${deliveryDateTime}"/>
 				                                            <p class="help-block">Choose the date and time when the delivery was made</p>
 				                                            
 				                                            <label>Description</label>
@@ -97,6 +99,10 @@
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		<c:url value="/project/delete/delivery/${delivery.getKey()}-end" var="urlDeleteDelivery"/>
+				                                    <a href="${urlDeleteDelivery}">
+       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete This Delivery</button>
+				                                    </a>
 			                                        </c:if>
 			                                        <c:if test="${!isUpdating}">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
