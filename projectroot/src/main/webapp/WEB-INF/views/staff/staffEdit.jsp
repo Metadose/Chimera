@@ -179,7 +179,8 @@
 				                                            <th>Status</th>
 				                                            <th>Title</th>
 				                                            <th>Content</th>
-				                                            <th>Start</th>
+				                                            <th>Start Date</th>
+				                                            <th>End Date</th>
 				                                            <th>Duration</th>
 				                                        </tr>
 			                                    	</thead>
@@ -187,30 +188,19 @@
 		                                        		<c:forEach items="${taskList}" var="task">
 		                                        			<tr>
 		                                        				<td>
-		                                        					<div class="btn-group">
-							                                            <button type="button" class="btn btn-cebedo-mark btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
-							                                                Mark As&nbsp;
-							                                                <span class="caret"></span>
-							                                            </button>
-							                                            <ul class="dropdown-menu">
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=0">New</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=1">Ongoing</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=2">Completed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=3">Failed</a></li>
-							                                                <li><a href="${contextPath}/task/mark/staff/?staff_id=${staff.id}&task_id=${task.id}&status=4">Cancelled</a></li>
-							                                            </ul>
-							                                        </div>
-							                                        <a href="${contextPath}/task/edit/${task.id}">
+							                                        <a href="<c:url value="/project/edit/task/${task.id}"/>">
 					                                            		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            	</a>
 		                                        				</td>
-					                                            <td style="vertical-align: middle;">
+					                                            <td>
 						                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																	<span class="label ${css}">${task.getStatusEnum()}</span>
 					                                            </td>
 					                                            <td>${task.title}</td>
 					                                            <td>${task.content}</td>
 					                                            <td>${task.dateStart}</td>
+					                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.getEndDate()}" var="taskEndDate"/>
+					                                            <td>${taskEndDate}</td>
 					                                            <td>${task.duration}</td>
 					                                        </tr>
 		                                        		</c:forEach>
@@ -301,7 +291,7 @@
 															</td>
 														</tr>
 														</table>
-														<p class="help-block">Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b>.</p>
+														<p class="help-block">Displaying data from <b>${minDateText}</b> to <b>${maxDateText}</b></p>
 								                    </form:form>
                    									<div id='calendar'></div>
                    								</div>
