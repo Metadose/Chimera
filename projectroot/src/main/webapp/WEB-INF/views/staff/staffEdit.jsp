@@ -370,29 +370,29 @@
 		                                    	</thead>
 												<tbody>
 												<c:forEach items="${attendanceStatusMap}" var="attendanceStatusEntry">
-												<c:set value="${attendanceStatusEntry.key}" var="entryKey"/>
-												<c:set value="${attendanceStatusEntry.value}" var="entryValue"/>
+												<c:set value="${attendanceStatusEntry.key}" var="attendanceStatus"/>
+												<c:set value="${attendanceStatusEntry.value}" var="pairCountValue"/>
 													<tr>
 														<td>
 															<c:choose>
-				                                            	<c:when test="${entryKey.id() == 6}">
+				                                            	<c:when test="${attendanceStatus.id() == 6}">
 					                                            <c:set value="border: 1px solid red" var="spanBorder"/>
 				                                            	</c:when>
-				                                            	<c:when test="${entryKey.id() != 6}">
+				                                            	<c:when test="${attendanceStatus.id() != 6}">
 					                                            <c:set value="" var="spanBorder"/>
 				                                            	</c:when>
 				                                            </c:choose>
-				                                            <span style="${spanBorder}" class="label ${entryKey.css()}">${entryKey}</span>
+				                                            <span style="${spanBorder}" class="label ${attendanceStatus.css()}">${attendanceStatus}</span>
 														</td>
 														<td>
 															<fmt:formatNumber type="number" 
 															maxFractionDigits="0" 
-															value="${entryValue.get(\"statusCount\")}" />
+															value="${pairCountValue.getCount()}" />
 														</td>
 														<td>
 															<fmt:formatNumber type="currency" 
 					                                		currencySymbol="&#8369;"
-															value="${entryValue.get(\"equivalentWage\")}" />
+															value="${pairCountValue.getValue()}" />
 														</td>
 													</tr>
 												</c:forEach>

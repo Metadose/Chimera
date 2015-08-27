@@ -18,7 +18,7 @@ public class PayrollResultComputation implements Serializable {
     private Date startDate, endDate;
     private Map<Staff, Double> staffToWageMap = new HashMap<Staff, Double>();
     private double overallTotalOfStaff = 0;
-    private Map<Staff, Map<AttendanceStatus, Map<String, Double>>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, Map<String, Double>>>();
+    private Map<Staff, Map<AttendanceStatus, PairCountValue>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, PairCountValue>>();
     private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
     public void setStartDate(Date startDate) {
@@ -38,7 +38,7 @@ public class PayrollResultComputation implements Serializable {
     }
 
     public void setStaffPayrollBreakdownMap(
-	    Map<Staff, Map<AttendanceStatus, Map<String, Double>>> staffPayrollBreakdownMap) {
+	    Map<Staff, Map<AttendanceStatus, PairCountValue>> staffPayrollBreakdownMap) {
 	this.staffPayrollBreakdownMap = staffPayrollBreakdownMap;
     }
 
@@ -66,7 +66,7 @@ public class PayrollResultComputation implements Serializable {
 	return NumberFormatUtils.getCurrencyFormatter().format(overallTotalOfStaff);
     }
 
-    public Map<Staff, Map<AttendanceStatus, Map<String, Double>>> getStaffPayrollBreakdownMap() {
+    public Map<Staff, Map<AttendanceStatus, PairCountValue>> getStaffPayrollBreakdownMap() {
 	return staffPayrollBreakdownMap;
     }
 

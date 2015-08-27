@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -50,9 +51,6 @@ public class StaffServiceImpl implements StaffService {
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
-
-    public static final String STAFF_ATTENDANCE_STATUS_COUNT = "statusCount";
-    public static final String STAFF_ATTENDANCE_EQUIVALENT_WAGE = "equivalentWage";
 
     public static final int EXCEL_COLUMN_PREFIX = 1;
     public static final int EXCEL_COLUMN_FIRST = 2;
@@ -643,7 +641,7 @@ public class StaffServiceImpl implements StaffService {
      */
     @Transactional
     @Override
-    public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
+    public Map<AttendanceStatus, PairCountValue> getAttendanceStatusCountMap(
 	    Set<Attendance> attendanceList) {
 
 	// Log.
@@ -653,26 +651,24 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// And count number per status.
-	Map<AttendanceStatus, Map<String, Double>> attendanceStatusMap = new HashMap<AttendanceStatus, Map<String, Double>>();
-	Map<AttendanceStatus, Map<String, Double>> attendanceStatusSorted = new LinkedHashMap<AttendanceStatus, Map<String, Double>>();
+	Map<AttendanceStatus, PairCountValue> attendanceStatusMap = new HashMap<AttendanceStatus, PairCountValue>();
+	Map<AttendanceStatus, PairCountValue> attendanceStatusSorted = new LinkedHashMap<AttendanceStatus, PairCountValue>();
 
 	for (Attendance attendance : attendanceList) {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attendance)) {
 		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
-		return new HashMap<AttendanceStatus, Map<String, Double>>();
+		return new HashMap<AttendanceStatus, PairCountValue>();
 	    }
 
 	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Get and set status count.
-	    Double statCount = attendanceStatusMap.get(attnStat) == null ? 1 : attendanceStatusMap.get(
-		    attnStat).get(STAFF_ATTENDANCE_STATUS_COUNT) + 1;
-	    Map<String, Double> breakdown = new HashMap<String, Double>();
-	    breakdown.put(STAFF_ATTENDANCE_STATUS_COUNT, statCount);
+	    double statCount = attendanceStatusMap.get(attnStat) == null ? 1 : attendanceStatusMap.get(
+		    attnStat).getCount() + 1;
 	    double value = attnStat == AttendanceStatus.ABSENT ? 0 : statCount * attendance.getWage();
-	    breakdown.put(STAFF_ATTENDANCE_EQUIVALENT_WAGE, value);
+	    PairCountValue breakdown = new PairCountValue(statCount, value);
 	    attendanceStatusMap.put(attnStat, breakdown);
 	}
 
@@ -682,11 +678,9 @@ public class StaffServiceImpl implements StaffService {
 	    if (status == AttendanceStatus.DELETE) {
 		continue;
 	    }
-	    Map<String, Double> breakdown = attendanceStatusMap.get(status);
+	    PairCountValue breakdown = attendanceStatusMap.get(status);
 	    if (breakdown == null) {
-		breakdown = new HashMap<String, Double>();
-		breakdown.put(STAFF_ATTENDANCE_STATUS_COUNT, (double) 0);
-		breakdown.put(STAFF_ATTENDANCE_EQUIVALENT_WAGE, (double) 0);
+		breakdown = new PairCountValue((double) 0, (double) 0);
 		attendanceStatusSorted.put(status, breakdown);
 	    }
 	    attendanceStatusSorted.put(status, breakdown);

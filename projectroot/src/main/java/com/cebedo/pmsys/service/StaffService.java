@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -86,7 +87,7 @@ public interface StaffService {
 
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Staff staff);
 
-    public Map<AttendanceStatus, Map<String, Double>> getAttendanceStatusCountMap(
+    public Map<AttendanceStatus, PairCountValue> getAttendanceStatusCountMap(
 	    Set<Attendance> attendanceList);
 
     /**
