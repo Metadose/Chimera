@@ -1,10 +1,14 @@
 package com.cebedo.pmsys.enums;
 
-
 public enum PayrollStatus {
-    NEW(0, "New", "btn-info"), PENDING(1, "Pending", "btn-primary"), APPROVED(
-	    2, "Approved", "btn-warning"), RELEASED(3, "Released",
-	    "btn-success"), REJECTED(4, "Rejected", "btn-danger");
+
+    NEW(0, "New", "btn-info"),
+
+    PENDING(1, "Pending", "btn-primary"),
+
+    APPROVED(2, "Approved", "btn-warning"),
+
+    RELEASED(3, "Released", "btn-success");
 
     String label;
     int id;
@@ -30,14 +34,11 @@ public enum PayrollStatus {
 	} else if (idn == RELEASED.id()) {
 	    return RELEASED;
 
-	} else if (idn == REJECTED.id()) {
-	    return REJECTED;
-
 	} else if (idn == APPROVED.id()) {
 	    return APPROVED;
 
 	}
-	return REJECTED;
+	return NEW;
     }
 
     public String value() {

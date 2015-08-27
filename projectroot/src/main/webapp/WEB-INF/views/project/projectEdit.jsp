@@ -135,11 +135,9 @@
 				                                            
 				                                            <label>Status</label>
 				                                            <form:select class="form-control" id="project_status" path="status">
-						                                    	<form:option value="0" label="New"/>
-						                                    	<form:option value="1" label="Ongoing"/>
-						                                    	<form:option value="2" label="Completed"/>
-						                                    	<form:option value="3" label="Failed"/>
-						                                    	<form:option value="4" label="Cancelled"/>
+				                                            	<c:forEach var="projectStatus" items="${projectStatusList}">
+						                                    		<form:option value="${projectStatus.id()}" label="${projectStatus.label()}"/>
+				                                            	</c:forEach>
 				                                            </form:select>
 				                                            <p class="help-block">Choose the status of this project</p>
 				                                            
@@ -506,11 +504,9 @@
 											                                                <span class="caret"></span>
 											                                            </button>
 											                                            <ul class="dropdown-menu">
-											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=0"/>">New</a></li>
-											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=1"/>">Ongoing</a></li>
-											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=2"/>">Completed</a></li>
-											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=3"/>">Failed</a></li>
-											                                                <li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=4"/>">Cancelled</a></li>
+											                                            	<c:forEach items="${taskStatusList}" var="taskStatus">
+											                                                	<li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}"/>">${taskStatus.label()}</a></li>
+											                                            	</c:forEach>
 											                                            </ul>
 											                                        </div>
 											                                        

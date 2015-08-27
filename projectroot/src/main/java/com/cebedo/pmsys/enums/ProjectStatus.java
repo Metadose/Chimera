@@ -1,10 +1,12 @@
 package com.cebedo.pmsys.enums;
 
-
 public enum ProjectStatus {
-    NEW(0, "New", "btn-info"), ONGOING(1, "Ongoing", "btn-primary"), COMPLETED(
-	    2, "Completed", "btn-success"), FAILED(3, "Failed", "btn-danger"), CANCELLED(
-	    4, "Cancelled", "btn-warning");
+
+    NEW(0, "New", "btn-info"),
+
+    ONGOING(1, "Ongoing", "btn-primary"),
+
+    COMPLETED(2, "Completed", "btn-success");
 
     String label;
     int id;
@@ -30,14 +32,8 @@ public enum ProjectStatus {
 	} else if (idn == COMPLETED.id()) {
 	    return COMPLETED;
 
-	} else if (idn == FAILED.id()) {
-	    return FAILED;
-
-	} else if (idn == CANCELLED.id()) {
-	    return CANCELLED;
-
 	}
-	return CANCELLED;
+	return NEW;
     }
 
     public String value() {

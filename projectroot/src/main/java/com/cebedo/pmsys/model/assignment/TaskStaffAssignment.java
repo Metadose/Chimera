@@ -44,4 +44,28 @@ public class TaskStaffAssignment implements Serializable {
 	this.staffID = staffID;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	if (!(obj instanceof TaskStaffAssignment)) {
+	    return false;
+	}
+	long taskID = getTaskID();
+	long staffID = getStaffID();
+
+	TaskStaffAssignment comparedObj = (TaskStaffAssignment) obj;
+	long taskIDcompare = comparedObj.getTaskID();
+	long staffIDcompare = comparedObj.getStaffID();
+
+	boolean taskIDEqual = taskID == taskIDcompare;
+	boolean staffIDEqual = staffID == staffIDcompare;
+
+	return taskIDEqual && staffIDEqual;
+    }
+
+    @Override
+    public int hashCode() {
+	Long identifier = getTaskID() + getStaffID();
+	return identifier.hashCode();
+    }
+
 }

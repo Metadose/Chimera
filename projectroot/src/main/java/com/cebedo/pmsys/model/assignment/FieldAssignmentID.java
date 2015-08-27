@@ -65,4 +65,34 @@ public class FieldAssignmentID implements Serializable {
 	this.value = StringUtils.trim(value);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	if (!(obj instanceof FieldAssignmentID)) {
+	    return false;
+	}
+
+	long projectID = getProject().getId();
+	String label = getLabel();
+	String value = getValue();
+
+	FieldAssignmentID comparedObj = (FieldAssignmentID) obj;
+	long projectIDcompare = comparedObj.getProject().getId();
+	String labelCompare = comparedObj.getLabel();
+	String valueCompare = comparedObj.getValue();
+
+	boolean projectIDEqual = projectID == projectIDcompare;
+	boolean labelEqual = label.equals(labelCompare);
+	boolean valueEqual = value.equals(valueCompare);
+
+	return projectIDEqual && labelEqual && valueEqual;
+    }
+
+    @Override
+    public int hashCode() {
+	int projectID = ((Long) getProject().getId()).hashCode();
+	int label = getLabel().hashCode();
+	int value = getValue().hashCode();
+	return projectID + label + value;
+    }
+
 }

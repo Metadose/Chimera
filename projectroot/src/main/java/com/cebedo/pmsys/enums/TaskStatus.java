@@ -6,15 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public enum TaskStatus {
+
     NEW(0, "New", "btn-info"),
 
     ONGOING(1, "Ongoing", "btn-primary"),
 
-    COMPLETED(2, "Completed", "btn-success"),
-
-    FAILED(3, "Failed", "btn-danger"),
-
-    CANCELLED(4, "Cancelled", "btn-warning");
+    COMPLETED(2, "Completed", "btn-success");
 
     String label;
     int id;
@@ -51,14 +48,8 @@ public enum TaskStatus {
 	} else if (idn == COMPLETED.id()) {
 	    return COMPLETED;
 
-	} else if (idn == FAILED.id()) {
-	    return FAILED;
-
-	} else if (idn == CANCELLED.id()) {
-	    return CANCELLED;
-
 	}
-	return CANCELLED;
+	return NEW;
     }
 
     public String value() {

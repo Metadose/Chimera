@@ -44,7 +44,9 @@ import com.cebedo.pmsys.enums.CommonVolumeUnit;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MaterialCategory;
 import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
@@ -117,6 +119,8 @@ public class ProjectController {
     public static final String ATTR_ALL_STAFF = "allStaff";
     public static final String ATTR_PROJECT_PAYROLL = "projectPayroll";
     public static final String ATTR_MATERIAL_LIST = "materialList";
+    public static final String ATTR_PROJECT_STATUS_LIST = "projectStatusList";
+    public static final String ATTR_TASK_STATUS_LIST = "taskStatusList";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_CONCRETE_ESTIMATION_SUMMARIES = "concreteEstimationSummaries";
     public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
@@ -1212,6 +1216,9 @@ public class ProjectController {
     @RequestMapping(value = RegistryURL.EDIT_TASK, method = RequestMethod.GET)
     public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model, HttpSession session) {
 
+	// Task status selector.
+	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());
+
 	// If ID is zero,
 	// Open a page with empty values, ready to create.
 	if (taskID == 0) {
@@ -1935,6 +1942,10 @@ public class ProjectController {
      * @param id
      */
     private void setModelAttributes(Model model, long id) {
+
+	// List of project status.
+	model.addAttribute(ATTR_PROJECT_STATUS_LIST, ProjectStatus.class.getEnumConstants());
+
 	// Set common attributes.
 	// Model for forms.
 	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(id, 1));
@@ -1990,6 +2001,9 @@ public class ProjectController {
      * @param model
      */
     private void setProgramOfWorksAttributes(Project proj, Model model) {
+
+	// Task status selector.
+	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());
 
 	// Gant JSON to be used by the chart in timeline.
 	// Get calendar JSON.

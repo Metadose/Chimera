@@ -75,9 +75,9 @@
 				                                        <div class="form-group">
 				                                        	<label>Status</label>
 				                                            <form:select class="form-control" id="task_status" path="status">
-						                                    	<form:option value="0" label="New"/>
-						                                    	<form:option value="1" label="Ongoing"/>
-						                                    	<form:option value="2" label="Completed"/>
+					                                            <c:forEach items="${taskStatusList}" var="taskStatus">
+						                                    		<form:option value="${taskStatus.id()}" label="${taskStatus.label()}"/>
+				                                            	</c:forEach>
 				                                            </form:select>
 				                                            <p class="help-block">Choose the task status</p>
 
