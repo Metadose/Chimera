@@ -184,9 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
 		Staff.OBJECT_NAME);
-
-	// TODO
-	return "TODO";
+	return AlertBoxGenerator.SUCCESS.generateCreateEntries(Staff.OBJECT_NAME);
     }
 
     /**

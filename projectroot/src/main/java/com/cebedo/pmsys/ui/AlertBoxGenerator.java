@@ -54,6 +54,13 @@ public class AlertBoxGenerator {
 	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Set.
+     */
+    private static String TEMPLATE_SUCCESS_SET = "Successfully <b>set</b> the %s <b>%s</b>.";
+
+    private static String TEMPLATE_FAILED_SET = "Failed to <b>set</b> the %s <b>%s</b>.";
+
+    /**
      * Upload.
      */
     private static String TEMPLATE_SUCCESS_UPLOAD = "Successfully <b>uploaded</b> the "
@@ -132,6 +139,13 @@ public class AlertBoxGenerator {
 
     private static String TEMPLATE_FAILED_ASSIGN_ENTRIES = "Failed to <b>assign</b> "
 	    + DELIMITER_OBJECT_TYPE + " entries.";
+
+    /**
+     * Assign.
+     */
+    private static String TEMPLATE_SUCCESS_CREATE_ENTRIES = "Successfully <b>created</b> %s entries.";
+
+    private static String TEMPLATE_FAILED_CREATE_ENTRIES = "Failed to <b>create</b> %s entries.";
 
     /**
      * Unassign.
@@ -317,6 +331,18 @@ public class AlertBoxGenerator {
 	return generateHTML();
     }
 
+    public String generateCreateEntries(String object) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
+	    result = String.format(TEMPLATE_FAILED_CREATE_ENTRIES, object);
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
+	    result = String.format(TEMPLATE_SUCCESS_CREATE_ENTRIES, object);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
     public String generateInclude(String object, String objName) {
 	object = object.toLowerCase();
 	String result = "";
@@ -437,6 +463,18 @@ public class AlertBoxGenerator {
 	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_CREATE.replace(DELIMITER_OBJECT_TYPE, object).replace(
 		    DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateSet(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
+	    result = String.format(TEMPLATE_FAILED_SET, object, objName);
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
+	    result = String.format(TEMPLATE_SUCCESS_SET, object, objName);
 	}
 	this.message = result;
 	return generateHTML();

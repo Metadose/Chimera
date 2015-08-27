@@ -24,6 +24,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Service
@@ -40,12 +41,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    public void set(Attendance attendance) {
+    public String set(Attendance attendance) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
-	    return; // TODO Put notification.
+	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
@@ -61,7 +62,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// If status is delete.
 	if (status == AttendanceStatus.DELETE) {
 	    deleteAllInDate(attendance);
-	    return;
+	    return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE, "on "
+		    + attendance.getFormattedDateString());
 	}
 
 	// If status is absent.
@@ -76,6 +78,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Delete all previously declared attendance in this date.
 	deleteAllInDate(attendance);
 	this.attendanceValueRepo.set(attendance);
+
+	return AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE, "on "
+		+ attendance.getFormattedDateString());
     }
 
     /**
@@ -237,13 +242,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    public void multiSet(FormMassAttendance attendanceMass) {
+    public String multiSet(FormMassAttendance attendanceMass) {
 	Staff staff = attendanceMass.getStaff();
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return; // TODO Notify?
+	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
@@ -289,9 +294,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    }
 	    keyAttendanceMap.put(attendance.getKey(), attendance);
 	}
+
+	String response = "";
+	String startDateStr = DateUtils.formatDate(startDate);
+	String endDateStr = DateUtils.formatDate(endDate);
 	if (status != AttendanceStatus.DELETE) {
 	    this.attendanceValueRepo.multiSet(keyAttendanceMap);
+	    response = AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
+		    String.format("on %s to %s", startDateStr, endDateStr));
+	} else {
+	    response = AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
+		    String.format("on %s to %s", startDateStr, endDateStr));
 	}
+	return response;
     }
-
 }

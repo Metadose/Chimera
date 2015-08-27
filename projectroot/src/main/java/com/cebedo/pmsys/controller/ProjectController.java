@@ -1012,14 +1012,11 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addAttendance(@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
-	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
+	    HttpSession session, Model model) {
 
 	// Do service.
-	this.attendanceService.set(attendance);
-
-	// TODO
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
+	String response = this.attendanceService.set(attendance);
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageStaffCalMaxDate(model, session, attendance.getDate());
     }
 
@@ -1041,16 +1038,12 @@ public class ProjectController {
 	if (startDate.after(endDate)) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
-	    return String.format(RegistryURL.REDIRECT_EDIT_PROJECT_STAFF, attendanceMass.getStaff()
-		    .getId());
+	    return redirectEditPageStaff(attendanceMass.getStaff().getId());
 	}
 
 	// Do service.
-	this.attendanceService.multiSet(attendanceMass);
-
-	// TODO
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-		AlertBoxGenerator.SUCCESS.generateCreate("test", "TODO"));
+	String response = this.attendanceService.multiSet(attendanceMass);
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return redirectEditPageStaffCalMaxDate(model, session, startDate);
     }

@@ -15,6 +15,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimationOutputService;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class EstimationOutputServiceImpl implements EstimationOutputService {
@@ -39,7 +40,8 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
+		obj.getKey());
 
 	return obj;
     }
@@ -52,7 +54,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
-	    return "TODO";
+	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
@@ -60,7 +62,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 		obj.getKey());
 
 	this.estimationOutputValueRepo.delete(key);
-	return "TODO";
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE, obj.getName());
     }
 
     @Override

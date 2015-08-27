@@ -144,7 +144,8 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimationOutput.setUuid(UUID.randomUUID());
 	    this.estimationOutputValueRepo.set(estimationOutput);
 
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE, "TODO");
+	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
+		    estimateInput.getName());
 	}
 
 	// If file is null, return an error.

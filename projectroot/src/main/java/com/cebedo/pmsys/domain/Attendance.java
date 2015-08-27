@@ -87,6 +87,10 @@ public class Attendance implements IDomainObject {
 	return DateUtils.formatDate(this.date, pattern);
     }
 
+    public String getFormattedDateString() {
+	return DateUtils.formatDate(this.date);
+    }
+
     public void setDate(Date d) {
 	this.date = d;
     }

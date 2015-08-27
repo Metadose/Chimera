@@ -11,7 +11,7 @@ import com.cebedo.pmsys.pojo.FormMassAttendance;
 
 public interface AttendanceService {
 
-    public void set(Attendance attendance);
+    public String set(Attendance attendance);
 
     /**
      * Get attendances of a staff in a range of time.
@@ -40,6 +40,6 @@ public interface AttendanceService {
 
     public double getTotalWageFromAttendance(Collection<Attendance> attendances);
 
-    public void multiSet(FormMassAttendance attendanceMass);
+    public String multiSet(FormMassAttendance attendanceMass);
 
 }
