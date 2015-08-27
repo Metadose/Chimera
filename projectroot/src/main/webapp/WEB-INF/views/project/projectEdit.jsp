@@ -1925,11 +1925,6 @@
 			gantt.init("gantt-chart");
 		    gantt.parse(tasks);
 		    gantt.sort("start_date");
-		 	
-		    // TODO.
-		    // On load of the page: switch to the currently selected tab.
-		    var hash = window.name;
-		    $('#myTab').find("[href='#"+ hash +"']").tab('show');
 		});
 	</script>
    	</c:if>
@@ -1977,7 +1972,7 @@
 		    var estimationTable = $('#concrete-estimation-summary-table').DataTable();
 		    var concreteBreakdownTable = $("#concrete-table").DataTable();
 		 
-		 	// Hide/show data table columns.
+		 	// TODO Hide/show data table columns.
 		    $('a.toggle-vis').on( 'click', function (e) {
 		        e.preventDefault();
 		 
