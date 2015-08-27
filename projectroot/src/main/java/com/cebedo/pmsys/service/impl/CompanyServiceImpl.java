@@ -12,6 +12,7 @@ import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -21,6 +22,8 @@ public class CompanyServiceImpl implements CompanyService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
+
     private CompanyDAO companyDAO;
 
     public void setCompanyDAO(CompanyDAO companyDAO) {
@@ -40,12 +43,18 @@ public class CompanyServiceImpl implements CompanyService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(company);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// If start > end.
 	Date start = company.getDateStarted();
 	Date end = company.getDateExpiration();
 	if (start.after(end)) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE);
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
 
 	this.companyDAO.create(company);
@@ -91,12 +100,18 @@ public class CompanyServiceImpl implements CompanyService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(company);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// If start > end.
 	Date start = company.getDateStarted();
 	Date end = company.getDateExpiration();
 	if (start.after(end)) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE);
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
 
 	// Create post-service operations.

@@ -26,12 +26,6 @@ public class AuditLogServiceImpl implements AuditLogService {
 
     @Override
     @Transactional
-    public void create(AuditLog auditLog) {
-	this.auditLogDAO.create(auditLog);
-    }
-
-    @Override
-    @Transactional
     public AuditLog getByID(long id) {
 
 	AuditLog obj = this.auditLogDAO.getByID(id);

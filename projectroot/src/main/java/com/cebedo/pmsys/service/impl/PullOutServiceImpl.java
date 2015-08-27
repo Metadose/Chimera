@@ -67,20 +67,20 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Error: Pullout more than the available.
 	if (quantity > available) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_EXCEED);
 	}
 	// Error: Invalid quantity value.
 	else if (quantity <= 0) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_QUANTITY);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_QUANTITY);
 	}
 	// Error: Invalid date time.
 	else if (obj.getDatetime() == null) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_DATE);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_DATE_TIME);
 	}
 	// Error: Pull out date is before the delivery date.
 	else if (obj.getDatetime().before(obj.getDelivery().getDatetime())) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_DATE_BEFORE_DELIVERY);
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_DATE_BEFORE_DELIVERY);
 	}
 	// Error: Etc.
 	else if (available <= 0) {
@@ -212,15 +212,15 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Error: Pullout more than the available.
 	if (quantity > available) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PULLOUT_EXCEED);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_EXCEED);
 	}
 	// Error: Invalid quantity value.
 	else if (quantity <= 0) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_QUANTITY);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_QUANTITY);
 	}
 	// Error: Invalid date time.
 	else if (newPullout.getDatetime() == null) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_INVALID_DATE);
+	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_DATE_TIME);
 	}
 	// Error: Etc.
 	else if (available <= 0) {

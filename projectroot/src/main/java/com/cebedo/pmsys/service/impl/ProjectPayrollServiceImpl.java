@@ -219,7 +219,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Start date > end date.
 	if (projectPayroll.getStartDate().after(projectPayroll.getEndDate())) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE);
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
 
 	// Take a snapshot of the project structure
@@ -347,7 +347,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	long[] staffIDs = projectPayroll.getStaffIDs();
 	if (staffIDs.length == 0) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PAYROLL_NO_STAFF_CHECK);
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF_CHECK);
 	}
 
 	// Security check.

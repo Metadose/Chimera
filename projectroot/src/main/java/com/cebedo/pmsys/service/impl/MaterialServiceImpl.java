@@ -73,7 +73,7 @@ public class MaterialServiceImpl implements MaterialService {
 	unitCount = obj.getUnitVolume() == null ? unitCount : unitCount + 1;
 	if (unitCount > 1) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
 
 	// If we're creating.
@@ -246,7 +246,7 @@ public class MaterialServiceImpl implements MaterialService {
 	unitCount = material.getUnitVolume() == null ? unitCount : unitCount + 1;
 	if (unitCount > 1) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_ADD_MATERIAL_MORE_THAN_ONE_UNIT);
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
 
 	// Log.

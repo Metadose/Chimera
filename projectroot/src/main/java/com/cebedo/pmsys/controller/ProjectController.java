@@ -431,7 +431,7 @@ public class ProjectController {
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService.updateAssignedProjectField(faBean.getProjectID(),
+	String response = this.fieldService.updateField(faBean.getProjectID(),
 		faBean.getFieldID(), faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(),
 		newFaBean.getValue());
 
@@ -462,7 +462,7 @@ public class ProjectController {
 	// Do service.
 	// Clear session attrs then redirect.
 	// Get response.
-	String response = this.fieldService.unassignFieldFromProject(faBean.getFieldID(),
+	String response = this.fieldService.unassignField(faBean.getFieldID(),
 		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
 
 	// Attach response.
@@ -568,7 +568,7 @@ public class ProjectController {
 	long projectID = proj.getId();
 
 	// Get response.
-	String response = this.fieldService.unassignAllFieldsFromProject(projectID);
+	String response = this.fieldService.unassignAllFields(projectID);
 
 	// Attach response.
 	// Construct notification.
@@ -604,7 +604,7 @@ public class ProjectController {
 
 	// Do service.
 	// Get response.
-	String response = this.fieldService.assignFieldToProject(fieldAssignment, fieldID, proj.getId());
+	String response = this.fieldService.assignField(fieldAssignment, fieldID, proj.getId());
 
 	// Construct ui notifications.
 	// Attach response.
@@ -991,7 +991,7 @@ public class ProjectController {
 	// If start date is > end date, error.
 	if (min.after(max)) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE));
 	    return redirectEditPageStaff(staff.getId());
 	}
 
@@ -1029,17 +1029,9 @@ public class ProjectController {
     @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addMassAttendance(
 	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
-	    RedirectAttributes redirectAttrs, HttpSession session, Model model) {
+	    HttpSession session, Model model) {
 
 	Date startDate = attendanceMass.getStartDate();
-	Date endDate = attendanceMass.getEndDate();
-
-	// If start date is > end date, error.
-	if (startDate.after(endDate)) {
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_START_DATE_GT_END_DATE));
-	    return redirectEditPageStaff(attendanceMass.getStaff().getId());
-	}
 
 	// Do service.
 	String response = this.attendanceService.multiSet(attendanceMass);
@@ -1438,7 +1430,7 @@ public class ProjectController {
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj.getAssignedStaff().isEmpty()) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PULLOUT_NO_PROJECT_STAFF));
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_NO_PROJECT_STAFF));
 	    return redirectEditPageProject(proj.getId());
 	}
 
@@ -1743,7 +1735,7 @@ public class ProjectController {
 
 	if (proj.getAssignedStaff().size() < 1) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PAYROLL_NO_STAFF));
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF));
 	    return redirectEditPageProject(proj.getId(), status);
 	}
 

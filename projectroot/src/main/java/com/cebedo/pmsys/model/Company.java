@@ -34,6 +34,7 @@ public class Company implements Serializable {
     private Date dateStarted;
     private Date dateExpiration;
     // FIXME What the hell? "admins" but getting all employees?
+    @Deprecated
     private Set<Staff> admins;
     private Set<SystemUser> employees;
     private Set<Project> projects;
@@ -98,6 +99,7 @@ public class Company implements Serializable {
 	this.dateExpiration = dateExpiration;
     }
 
+    @Deprecated
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     public Set<Staff> getAdmins() {
 	return admins;

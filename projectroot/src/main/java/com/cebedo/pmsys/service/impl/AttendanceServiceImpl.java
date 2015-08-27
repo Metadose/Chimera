@@ -18,6 +18,7 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -32,6 +33,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private AttendanceValueRepo attendanceValueRepo;
 
@@ -47,6 +49,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	if (!this.authHelper.isActionAuthorized(attendance)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(attendance);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Log.
@@ -243,12 +251,19 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public String multiSet(FormMassAttendance attendanceMass) {
+
 	Staff staff = attendanceMass.getStaff();
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(attendanceMass);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Log.

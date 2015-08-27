@@ -41,6 +41,7 @@ import com.cebedo.pmsys.enums.TableProportionConcrete;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
@@ -82,6 +83,7 @@ public class EstimateServiceImpl implements EstimateService {
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private EstimationOutputValueRepo estimationOutputValueRepo;
 
@@ -100,56 +102,54 @@ public class EstimateServiceImpl implements EstimateService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(estimateInput);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
 		EstimateComputationInputBean.class.getName());
 
-	// Do the commit.
-	// If create.
-	if (estimateInput.getEstimationFile() != null) {
+	// New object.
+	EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
 
-	    // New object.
-	    EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
+	// Convert the excel file to objects.
+	List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
+		estimateInput.getEstimationFile(), estimateInput.getProject());
 
-	    // Convert the excel file to objects.
-	    List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
-		    estimateInput.getEstimationFile(), estimateInput.getProject());
+	// Process each object.
+	List<EstimateComputationOutputRowJSON> rowListForJSON = new ArrayList<EstimateComputationOutputRowJSON>();
+	for (EstimateComputationBean estimateComputationBean : estimateComputationBeans) {
 
-	    // Process each object.
-	    List<EstimateComputationOutputRowJSON> rowListForJSON = new ArrayList<EstimateComputationOutputRowJSON>();
-	    for (EstimateComputationBean estimateComputationBean : estimateComputationBeans) {
+	    // Set allowance.
+	    estimateComputationBean.setEstimationAllowance(estimateInput.getEstimationAllowance());
 
-		// Set allowance.
-		estimateComputationBean.setEstimationAllowance(estimateInput.getEstimationAllowance());
+	    // For each row, compute the total quantity.
+	    // For each type in the row, compute the cost.
+	    computeRowQuantityAndPerTypeCost(estimateComputationBean);
 
-		// For each row, compute the total quantity.
-		// For each type in the row, compute the cost.
-		computeRowQuantityAndPerTypeCost(estimateComputationBean);
+	    // For each row, compute the total cost.
+	    computeRowCost(estimateComputationBean);
 
-		// For each row, compute the total cost.
-		computeRowCost(estimateComputationBean);
+	    // Update the grand total of the estimation.
+	    updateGrandTotals(estimationOutput, estimateComputationBean);
 
-		// Update the grand total of the estimation.
-		updateGrandTotals(estimationOutput, estimateComputationBean);
-
-		// Add to list of beans to be converted to JSON later.
-		rowListForJSON.add(new EstimateComputationOutputRowJSON(estimateComputationBean));
-	    }
-
-	    // Set the list.
-	    String rowListJson = new Gson().toJson(rowListForJSON, ArrayList.class);
-	    estimationOutput.setResults(estimateInput, estimateComputationBeans, rowListJson);
-
-	    // Save the object.
-	    estimationOutput.setUuid(UUID.randomUUID());
-	    this.estimationOutputValueRepo.set(estimationOutput);
-
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
-		    estimateInput.getName());
+	    // Add to list of beans to be converted to JSON later.
+	    rowListForJSON.add(new EstimateComputationOutputRowJSON(estimateComputationBean));
 	}
 
-	// If file is null, return an error.
-	return AlertBoxGenerator.ERROR;
+	// Set the list.
+	String rowListJson = new Gson().toJson(rowListForJSON, ArrayList.class);
+	estimationOutput.setResults(estimateInput, estimateComputationBeans, rowListJson);
+
+	// Save the object.
+	estimationOutput.setUuid(UUID.randomUUID());
+	this.estimationOutputValueRepo.set(estimationOutput);
+
+	return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
+		estimateInput.getName());
     }
 
     /**

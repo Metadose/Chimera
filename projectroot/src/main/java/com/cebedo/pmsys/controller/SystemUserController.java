@@ -74,7 +74,7 @@ public class SystemUserController {
 	// If the passwords provided were not equal.
 	if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORDS_NOT_EQUAL));
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORDS_NOT_EQUAL));
 	    status.setComplete();
 	    return editPage(systemUser.getId());
 	}
@@ -87,7 +87,7 @@ public class SystemUserController {
 		@SuppressWarnings("unused")
 		SystemUser user = this.systemUserService.searchDatabase(systemUser.getUsername());
 		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-			.generateHTML(RegistryResponseMessage.ERROR_USERNAME_NOT_AVAILABLE));
+			.generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_NOT_AVAILABLE));
 		status.setComplete();
 		return editPage(systemUser.getId());
 

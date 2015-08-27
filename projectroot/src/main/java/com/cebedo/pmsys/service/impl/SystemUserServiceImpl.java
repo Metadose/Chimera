@@ -96,14 +96,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.matcher = this.patternUsername.matcher(systemUser.getUsername());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
 	}
 
 	// Check if the password is valid.
 	this.matcher = this.patternPassword.matcher(systemUser.getPassword());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
 	}
 
 	// Encrpyt password.
@@ -228,14 +228,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.matcher = this.patternUsername.matcher(user.getUsername());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
 	}
 
 	// Check if the password is valid.
 	this.matcher = this.patternPassword.matcher(user.getPassword());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
 	}
 
 	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
@@ -268,14 +268,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.matcher = this.patternUsername.matcher(user.getUsername());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_USERNAME_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
 	}
 
 	// Check if the password is valid.
 	this.matcher = this.patternPassword.matcher(user.getPassword());
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PASSWORD_INVALID_PATTERN);
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
 	}
 
 	if (!systemOverride) {

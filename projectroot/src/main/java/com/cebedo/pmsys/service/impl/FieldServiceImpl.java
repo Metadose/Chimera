@@ -41,15 +41,7 @@ public class FieldServiceImpl implements FieldService {
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
-    public String assignFieldToProject(FieldAssignment fieldAssignment, long fieldID, long projectID) {
-
-	// You cannot set an empty label.
-	String label = fieldAssignment.getLabel();
-	String value = fieldAssignment.getValue();
-	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
-		|| value.replaceAll(" ", "").isEmpty()) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_EMPTY_EXTRA_INFO);
-	}
+    public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID) {
 
 	Project proj = this.projectDAO.getByID(projectID);
 
@@ -58,6 +50,16 @@ public class FieldServiceImpl implements FieldService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// You cannot set an empty label.
+	String label = fieldAssignment.getLabel();
+	String value = fieldAssignment.getValue();
+	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
+		|| value.replaceAll(" ", "").isEmpty()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel());
@@ -81,7 +83,7 @@ public class FieldServiceImpl implements FieldService {
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
-    public String unassignFieldFromProject(long fieldID, long projectID, String label, String value) {
+    public String unassignField(long fieldID, long projectID, String label, String value) {
 	Project proj = this.projectDAO.getByID(projectID);
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, label, value);
 
@@ -109,7 +111,7 @@ public class FieldServiceImpl implements FieldService {
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
-    public String unassignAllFieldsFromProject(long projectID) {
+    public String unassignAllFields(long projectID) {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
@@ -134,24 +136,25 @@ public class FieldServiceImpl implements FieldService {
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
-    public String updateAssignedProjectField(long projectID, long fieldID, String oldLabel,
-	    String oldValue, String label, String value) {
-
-	// You cannot set an empty label.
-	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
-		|| value.replaceAll(" ", "").isEmpty()) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_EMPTY_EXTRA_INFO);
-	}
+    public String updateField(long projectID, long fieldID, String oldLabel, String oldValue,
+	    String label, String value) {
 
 	Project proj = this.projectDAO.getByID(projectID);
-	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
-		oldValue);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// You cannot set an empty label.
+	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
+		|| value.replaceAll(" ", "").isEmpty()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
+	}
+	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
+		oldValue);
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),

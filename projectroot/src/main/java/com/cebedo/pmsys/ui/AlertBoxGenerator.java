@@ -11,7 +11,7 @@ public class AlertBoxGenerator {
     public static AlertBoxGenerator SUCCESS = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_SUCCESS);
     public static AlertBoxGenerator FAILED = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_DANGER);
     public static String ERROR = new AlertBoxGenerator(ConstantsSystem.UI_STATUS_DANGER,
-	    RegistryResponseMessage.ERROR_GENERIC).generateHTML();
+	    RegistryResponseMessage.ERROR_COMMON_GENERIC).generateHTML();
 
     private final String CONFIG_ALERT_STATUS = "ALERT_STATUS";
     private final String CONFIG_ALERT_HEADER = "ALERT_HEADER";
