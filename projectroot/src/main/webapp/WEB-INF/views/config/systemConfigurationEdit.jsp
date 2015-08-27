@@ -7,10 +7,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
     	<c:when test="${config.id == 0}">
-    	<title>Create System Configuration</title>
+    	<title>Create New System Configuration</title>
     	</c:when>
     	<c:when test="${config.id > 0}">
-		<title>Edit System Configuration</title>
+		<title>${config.name} | Edit System Configuration</title>
     	</c:when>
     </c:choose>
 	

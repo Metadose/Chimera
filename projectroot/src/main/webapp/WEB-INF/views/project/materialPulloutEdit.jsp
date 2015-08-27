@@ -14,10 +14,10 @@
 	
 	<c:choose>
 	<c:when test="${isUpdating}">
-	<title>Edit Pull-Out</title>
+	<title>${pullout.material.name} | Edit Pull-Out</title>
 	</c:when>
 	<c:when test="${!isUpdating}">
-	<title>Create Pull-Out</title>
+	<title>Create New Pull-Out</title>
 	</c:when>
 	</c:choose>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">

@@ -4,16 +4,18 @@
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.startDate}" var="startDate"/>
+<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.endDate}" var="endDate"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
    	<c:when test="${!projectPayroll.saved}">
-    	<title>Create Payroll</title>
+    	<title>Create New Payroll</title>
    	</c:when>
    	<c:when test="${projectPayroll.saved}">
-		<title>Edit Payroll</title>
+		<title>${startDate} to ${endDate} | Edit Payroll</title>
    	</c:when>
    	</c:choose>
 
@@ -55,8 +57,6 @@
 		                <small>Create Payroll</small>
 	            	</c:when>
 	            	<c:when test="${projectPayroll.saved}">
-	            		<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.startDate}" var="startDate"/>
-	            		<fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.endDate}" var="endDate"/>
 		            	${startDate} to ${endDate}
 		                <small>Edit Payroll</small>
 	            	</c:when>

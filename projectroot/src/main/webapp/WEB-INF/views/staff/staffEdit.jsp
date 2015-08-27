@@ -14,10 +14,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
     	<c:when test="${staff.id == 0}">
-    	<title>Create Staff</title>
+    	<title>Create New Staff</title>
     	</c:when>
     	<c:when test="${staff.id > 0}">
-		<title>Edit Staff</title>
+		<title>${staff.getFullName()} | Edit Staff</title>
     	</c:when>
     </c:choose>
 	

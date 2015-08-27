@@ -11,10 +11,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
     	<c:when test="${project.id == 0}">
-    	<title>Create Project</title>
+    	<title>Create New Project</title>
     	</c:when>
     	<c:when test="${project.id > 0}">
-		<title>Edit Project</title>
+		<title>${project.name} | Edit Project</title>
     	</c:when>
     </c:choose>
 	

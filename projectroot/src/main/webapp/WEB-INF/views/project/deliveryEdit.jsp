@@ -11,10 +11,10 @@
 	<c:set value="${false}" var="isUpdating"/>
 	<c:choose>
    	<c:when test="${empty delivery.uuid}">
-    	<title>Create Delivery</title>
+    	<title>Create New Delivery</title>
    	</c:when>
    	<c:when test="${!empty delivery.uuid}">
-		<title>Edit Delivery</title>
+		<title>${delivery.name} | Edit Delivery</title>
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>

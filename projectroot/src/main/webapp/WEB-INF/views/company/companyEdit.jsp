@@ -8,10 +8,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
 		<c:when test="${company.id == 0}">
-		<title>Create Company</title>
+		<title>Create New Company</title>
 		</c:when>
 		<c:when test="${company.id > 0}">
-		<title>Edit Company</title>
+		<title>${company.name} | Edit Company</title>
 		</c:when>
 	</c:choose>
 	

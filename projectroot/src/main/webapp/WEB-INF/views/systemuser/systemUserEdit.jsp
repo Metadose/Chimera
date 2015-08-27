@@ -9,10 +9,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
     	<c:when test="${systemuser.id == 0}">
-    	<title>Create User</title>
+    	<title>Create New User</title>
     	</c:when>
     	<c:when test="${systemuser.id > 0}">
-		<title>Update User</title>
+		<title>${systemuser.username} | Edit User</title>
     	</c:when>
     </c:choose>
 	
@@ -69,7 +69,7 @@
                     	</c:when>
                     	<c:when test="${systemuser.id > 0}">
 	                	${systemuser.username}
-	                	<small>Update User</small>
+	                	<small>Edit User</small>
                     	</c:when>
                     </c:choose>
 	            </h1>

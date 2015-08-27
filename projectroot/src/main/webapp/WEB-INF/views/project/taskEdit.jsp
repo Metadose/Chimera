@@ -8,10 +8,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
 		<c:when test="${task.id == 0}">
-			<title>Create Task</title>
+			<title>Create New Task</title>
 		</c:when>
 		<c:when test="${task.id > 0}">
-			<title>Edit Task</title>
+			<title>${task.title} | Edit Task</title>
 		</c:when>
 	</c:choose>
 	
