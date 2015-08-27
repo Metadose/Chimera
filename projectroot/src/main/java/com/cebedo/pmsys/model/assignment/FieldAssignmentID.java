@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 
@@ -51,7 +53,7 @@ public class FieldAssignmentID implements Serializable {
     }
 
     public void setLabel(String label) {
-	this.label = label;
+	this.label = StringUtils.trim(label);
     }
 
     @Column(name = "value", nullable = false, length = 255)
@@ -60,7 +62,7 @@ public class FieldAssignmentID implements Serializable {
     }
 
     public void setValue(String value) {
-	this.value = value;
+	this.value = StringUtils.trim(value);
     }
 
 }

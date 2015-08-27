@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+
 @Entity
 @Table(name = Company.TABLE_NAME)
 public class Company implements Serializable {
@@ -64,7 +66,7 @@ public class Company implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     @Column(name = "description")
@@ -73,7 +75,7 @@ public class Company implements Serializable {
     }
 
     public void setDescription(String description) {
-	this.description = description;
+	this.description = StringUtils.trim(description);
     }
 
     @Column(name = "date_started", nullable = false)

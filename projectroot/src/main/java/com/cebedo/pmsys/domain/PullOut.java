@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -144,7 +146,7 @@ public class PullOut implements IDomainObject {
     }
 
     public void setRemarks(String remarks) {
-	this.remarks = remarks;
+	this.remarks = StringUtils.trim(remarks);
     }
 
     public static String constructPattern(Material material2) {

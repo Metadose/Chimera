@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.bean.EstimateComputationBean;
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
@@ -168,7 +170,7 @@ public class EstimationOutput implements IDomainObject {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public String getRemarks() {
@@ -176,7 +178,7 @@ public class EstimationOutput implements IDomainObject {
     }
 
     public void setRemarks(String remarks) {
-	this.remarks = remarks;
+	this.remarks = StringUtils.trim(remarks);
     }
 
     public void setResults(EstimateComputationInputBean estimateInput,

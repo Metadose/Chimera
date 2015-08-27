@@ -18,6 +18,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
@@ -78,7 +80,7 @@ public class Project implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     @Column(name = "status", nullable = false, length = 2)
@@ -143,7 +145,7 @@ public class Project implements Serializable {
     }
 
     public void setLocation(String location) {
-	this.location = location;
+	this.location = StringUtils.trim(location);
     }
 
     @Column(name = "notes")
@@ -152,7 +154,7 @@ public class Project implements Serializable {
     }
 
     public void setNotes(String notes) {
-	this.notes = notes;
+	this.notes = StringUtils.trim(notes);
     }
 
     @Override

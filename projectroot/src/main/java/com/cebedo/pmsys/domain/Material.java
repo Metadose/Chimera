@@ -3,6 +3,8 @@ package com.cebedo.pmsys.domain;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.CommonMassUnit;
@@ -143,7 +145,7 @@ public class Material implements IDomainObject {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public String getRemarks() {
@@ -151,7 +153,7 @@ public class Material implements IDomainObject {
     }
 
     public void setRemarks(String remarks) {
-	this.remarks = remarks;
+	this.remarks = StringUtils.trim(remarks);
     }
 
     public double getQuantity() {

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -62,8 +64,8 @@ public class Delivery implements IDomainObject {
     @Override
     public String getKey() {
 	// "company:%s:project:%s:delivery:uuid:%s"
-	return String.format(RegistryRedisKeys.KEY_DELIVERY,
-		this.company.getId(), this.project.getId(), this.uuid);
+	return String.format(RegistryRedisKeys.KEY_DELIVERY, this.company.getId(), this.project.getId(),
+		this.uuid);
     }
 
     public Company getCompany() {
@@ -103,7 +105,7 @@ public class Delivery implements IDomainObject {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public String getDescription() {
@@ -111,7 +113,7 @@ public class Delivery implements IDomainObject {
     }
 
     public void setDescription(String description) {
-	this.description = description;
+	this.description = StringUtils.trim(description);
     }
 
     public Set<Material> getMaterials() {
@@ -123,8 +125,7 @@ public class Delivery implements IDomainObject {
     }
 
     public String getGrandTotalOfMaterialsAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		grandTotalOfMaterials);
+	return NumberFormatUtils.getCurrencyFormatter().format(grandTotalOfMaterials);
     }
 
     public double getGrandTotalOfMaterials() {
@@ -151,14 +152,12 @@ public class Delivery implements IDomainObject {
      */
     public static String constructPattern(Project project) {
 	Company company = project.getCompany();
-	return String.format(RegistryRedisKeys.KEY_DELIVERY, company.getId(),
-		project.getId(), "*");
+	return String.format(RegistryRedisKeys.KEY_DELIVERY, company.getId(), project.getId(), "*");
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof Delivery ? ((Delivery) obj).getKey().equals(
-		getKey()) : false;
+	return obj instanceof Delivery ? ((Delivery) obj).getKey().equals(getKey()) : false;
     }
 
     @Override

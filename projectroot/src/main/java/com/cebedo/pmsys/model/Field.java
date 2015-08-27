@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 /**
@@ -62,7 +64,7 @@ public class Field implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     @OneToMany(mappedBy = FieldAssignment.PRIMARY_KEY + ".field", cascade = CascadeType.REMOVE)

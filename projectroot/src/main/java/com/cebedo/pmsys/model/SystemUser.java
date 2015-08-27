@@ -15,6 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
 public class SystemUser implements Serializable {
@@ -44,7 +46,7 @@ public class SystemUser implements Serializable {
     }
 
     public SystemUser(long userID) {
-	this.id = userID;
+	setId(userID);
     }
 
     @Id
@@ -64,7 +66,7 @@ public class SystemUser implements Serializable {
     }
 
     public void setUsername(String username) {
-	this.username = username;
+	this.username = StringUtils.trim(username);
     }
 
     @Column(name = "password", nullable = false)

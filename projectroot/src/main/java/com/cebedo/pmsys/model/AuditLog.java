@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -48,30 +50,28 @@ public class AuditLog implements Serializable {
     }
 
     public AuditLog(int action) {
-	this.setAction(action);
+	setAction(action);
 	setDetails();
     }
 
     public AuditLog(int action, AuthenticationToken auth) {
-	this.setAction(action);
-	Date dateExecuted = new Date(System.currentTimeMillis());
-	this.setDateExecuted(dateExecuted);
+	setAction(action);
+	setDateExecuted(new Date(System.currentTimeMillis()));
 	if (auth != null) {
-	    this.setIpAddress(auth.getIpAddress());
-	    this.setUser(auth.getUser());
+	    setIpAddress(auth.getIpAddress());
+	    setUser(auth.getUser());
 	}
     }
 
     public AuditLog(int action, SystemUser usr, String ipAddr, Company company2, String objName,
 	    long objID) {
-	this.setAction(action);
-	this.setUser(usr);
-	Date dateExecuted = new Date(System.currentTimeMillis());
-	this.setDateExecuted(dateExecuted);
-	this.setIpAddress(ipAddr);
-	this.setCompany(company2);
-	this.setObjectName(objName);
-	this.setObjectID(objID);
+	setAction(action);
+	setUser(usr);
+	setDateExecuted(new Date(System.currentTimeMillis()));
+	setIpAddress(ipAddr);
+	setCompany(company2);
+	setObjectName(objName);
+	setObjectID(objID);
     }
 
     private void setDetails() {
@@ -130,7 +130,7 @@ public class AuditLog implements Serializable {
     }
 
     public void setObjectName(String objectName) {
-	this.objectName = objectName;
+	this.objectName = StringUtils.trim(objectName);
     }
 
     @Column(name = "object_id", nullable = false)
@@ -158,7 +158,7 @@ public class AuditLog implements Serializable {
     }
 
     public void setIpAddress(String ipAddress) {
-	this.ipAddress = ipAddress;
+	this.ipAddress = StringUtils.trim(ipAddress);
     }
 
 }

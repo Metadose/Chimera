@@ -20,6 +20,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
@@ -84,7 +86,7 @@ public class Task implements Serializable {
     }
 
     public void setTitle(String title) {
-	this.title = title;
+	this.title = StringUtils.trim(title);
     }
 
     @Column(name = "content", nullable = false)
@@ -93,7 +95,7 @@ public class Task implements Serializable {
     }
 
     public void setContent(String content) {
-	this.content = content;
+	this.content = StringUtils.trim(content);
     }
 
     @Column(name = "date_start", nullable = false)

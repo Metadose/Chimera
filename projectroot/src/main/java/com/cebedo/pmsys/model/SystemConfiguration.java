@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.StringUtils;
+
 @Entity
 @Table(name = SystemConfiguration.TABLE_NAME)
 public class SystemConfiguration implements Serializable {
@@ -46,7 +48,7 @@ public class SystemConfiguration implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     @Column(name = "value")
@@ -55,7 +57,7 @@ public class SystemConfiguration implements Serializable {
     }
 
     public void setValue(String value) {
-	this.value = value;
+	this.value = StringUtils.trim(value);
     }
 
     @ManyToOne
