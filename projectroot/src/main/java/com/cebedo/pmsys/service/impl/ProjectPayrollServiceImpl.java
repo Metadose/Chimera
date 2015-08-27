@@ -344,6 +344,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String updatePayrollClearComputation(HttpSession session, ProjectPayroll projectPayroll,
 	    String toClear) {
 
+	long[] staffIDs = projectPayroll.getStaffIDs();
+	if (staffIDs.length == 0) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PAYROLL_NO_STAFF_CHECK);
+	}
+
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
@@ -362,7 +368,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Transform the selected ID's into actual objects.
 	// Store the actual objects in the payroll object.
-	long[] staffIDs = projectPayroll.getStaffIDs();
 	Set<Staff> assignedStaffList = new HashSet<Staff>();
 	for (long staffID : staffIDs) {
 	    Staff staff = this.staffDAO.getWithAllCollectionsByID(staffID);

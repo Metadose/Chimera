@@ -81,11 +81,11 @@ import com.cebedo.pmsys.utils.DateUtils;
 
 value = {
 	// Project.
-	Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
-	"old" + ProjectController.ATTR_FIELD,
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
 	ProjectController.ATTR_TASK,
 	ProjectController.ATTR_FROM_PROJECT,
+	ProjectController.ATTR_PROJECT_PAYROLL,
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
@@ -1622,8 +1622,6 @@ public class ProjectController {
 	String payrollJSON = this.projectPayrollService.computeAndGetResultJSON(proj, startDate,
 		endDate, projectPayroll);
 
-	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
-
 	// Construct response.
 	String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
 	String response = AlertBoxGenerator.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
@@ -1632,6 +1630,8 @@ public class ProjectController {
 
 	// List of possible approvers.
 	// Get all managers in this project.
+	model.addAttribute(ATTR_PAYROLL_JSON, payrollJSON);
+	model.addAttribute(ATTR_PROJECT_PAYROLL, projectPayroll);
 	setFormSelectors(proj, model);
 
 	return redirectEditPagePayroll(projectPayroll);

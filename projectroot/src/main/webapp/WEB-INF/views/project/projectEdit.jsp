@@ -120,9 +120,6 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Basic</h3>
-                   								</div>
                    								<div class="box-body">
 			                                        <div class="form-group" id="detailsDivEditor">
 			                                        
@@ -359,7 +356,7 @@
                                 	
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-timeline">
-										<li class="${timelineVisibility}"><a href="#subtab_chart" data-toggle="tab">Chart</a></li>
+										<li class="${timelineVisibility}"><a href="#subtab_chart" data-toggle="tab">Gantt Chart</a></li>
 										<li class="${tasksVisibility}"><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
 									</ul>
 									<div class="tab-content">
@@ -369,9 +366,6 @@
 											<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
-			              								<div class="box-header">
-			              									<h3 class="box-title">Timeline</h3>
-			              								</div>
 						                                <div class="box-body">
 										                <c:if test="${!empty project.assignedTasks}">
 						                                <table>

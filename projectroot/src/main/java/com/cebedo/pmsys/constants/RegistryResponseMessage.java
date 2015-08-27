@@ -4,6 +4,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_EMPTY_EXTRA_INFO = "You <b>cannot</b> set an <b>empty information</b>.";
 
+    public static final String ERROR_PAYROLL_NO_STAFF_CHECK = "Please <b>check</b> at least <b>one staff</b> in the <b>checklist</b>.";
+
     public static final String ERROR_PULLOUT_NO_PROJECT_STAFF = "You <b>cannot</b> pull-out materials if <b>no staff is assigned</b> to this project.";
 
     public static final String ERROR_USERNAME_INVALID_PATTERN = "A <b>Username</b> must contain the following:<br/>1.) Lowercase letters from <b>a-z</b>.<br/>2.) Numbers <b>0-9</b> or symbols <b>underscore</b> or <b>hyphen</b>.<br/>3.) Length at least <b>4 characters</b> and maximum length of 32.";

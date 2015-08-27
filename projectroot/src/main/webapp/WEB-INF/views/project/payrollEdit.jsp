@@ -10,10 +10,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:choose>
    	<c:when test="${!projectPayroll.saved}">
-    	<title>Payroll Create</title>
+    	<title>Create Payroll</title>
    	</c:when>
    	<c:when test="${projectPayroll.saved}">
-		<title>Payroll Edit</title>
+		<title>Edit Payroll</title>
    	</c:when>
    	</c:choose>
 
@@ -76,9 +76,7 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:if test="${!empty payrollJSON}">
-                                <li><a href="#tab_computation" data-toggle="tab">Computation
-                                <span class="badge bg-blue">Results</span>
-                                </a></li>
+                                <li><a href="#tab_computation" data-toggle="tab">Computation</a></li>
                                 </c:if>
                             </ul>
                             <div class="tab-content">
@@ -86,12 +84,6 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">
-                   									<span class="badge bg-green">Step 1</span>
-                   									Details
-                   									</h3>
-                   								</div>
                    								<div class="box-body">
                    									<form:form modelAttribute="projectPayroll"
 														id="detailsForm"
@@ -110,11 +102,11 @@
 				                                            
 				                                            <!-- Date pickers -->
 				                                            <label>Start Date</label>
-				                                            <form:input type="text" placeholder="Sample: 2015/06/01" class="form-control date-picker" path="startDate" value="${startDate}"/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/01, 2016/07/25, 2017/01/31" class="form-control date-picker" path="startDate" value="${startDate}"/>
 				                                            <p class="help-block">Choose the starting coverage date of this payroll</p>
 				                                            
 				                                            <label>End Date</label>
-				                                            <form:input type="text" placeholder="Sample: 2015/06/05" class="form-control date-picker" path="endDate" value="${endDate}"/>
+				                                            <form:input type="text" placeholder="Sample: 2015/06/01, 2016/07/25, 2017/01/31" class="form-control date-picker" path="endDate" value="${endDate}"/>
 				                                            <p class="help-block">Choose the end date of this payroll</p>
 				                                            
 				                                        </div>
@@ -129,7 +121,7 @@
 				                                    </form:form>
                    								</div>
                    							</div>
-                   							<c:if test="${projectPayroll.saved}">
+                   							<c:if test="${projectPayroll.saved && !empty manualStaffList}">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Include to Payroll</h3>
@@ -162,6 +154,7 @@
 				                                        	</tr>
 				                                    </form:form>
 			                                        </table>
+			                                        <p class="help-block">Include staff members who are not assigned to the project</p>
                    								</div>
                    							</div>
                    							</c:if>
@@ -170,9 +163,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">
-                   									<span class="badge bg-green">Step 2</span>
-                   									Payroll Checklist</h3>
+                   									<h3 class="box-title">Payroll Checklist</h3>
                    								</div>  
                    								<div class="box-body">
 
@@ -185,13 +176,10 @@
 				                                        <div class="form-group">
 															
 
-															<label>Staff</label>
-															
 															<c:if test="${!empty staffList}">
-															&nbsp;
 															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
-															<p class="help-block">Check or uncheck all other staff members</p>
+															<p class="help-block">Check or uncheck staff members</p>
 															</c:if>
 
 			                                            	<table class="table table-bordered table-striped">
@@ -237,18 +225,15 @@
                                             		<a href="${urlCompute}">
 														<button class="btn btn-cebedo-update btn-flat btn-sm">Compute Payroll</button>
 													</a>
-													<span class="badge bg-green">Step 3</span>
-													<br/>
-													<br/>
 													
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">
-										                <p>Not yet computed.</p>
+														<p class="help-block">Not yet computed</p>
 													</c:when>
 													
 													<c:when test="${!empty projectPayroll.lastComputed}">
 														<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
-										                <p>Last Computed: ${lastComputed}</p>
+														<p class="help-block">Last Computed: ${lastComputed}</p>
 													</c:when>
 													</c:choose>
 													
@@ -265,11 +250,15 @@
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
-                   									<h3 class="box-title">Computation as of ${lastComputed}</h3>
-                   								</div>
                    								<div class="box-body table-responsive">
+                   									<div class="pull-right">
+			                                  		<h3>Grand Total <b><u>
+                   									${projectPayroll.getTotalAsString()}
+													</u></b></h3>
+
+                   									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
+                   									<p class="help-block">Computation as of ${lastComputed}</p>
+													</div>
                    									<table id="treegrid1"></table>
                    								</div>
                 							</div>

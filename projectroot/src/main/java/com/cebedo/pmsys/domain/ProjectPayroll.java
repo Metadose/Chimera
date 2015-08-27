@@ -13,6 +13,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ProjectPayroll implements IDomainObject {
 
@@ -57,6 +58,11 @@ public class ProjectPayroll implements IDomainObject {
     private String payrollJSON;
     private Date lastComputed;
     private PayrollResultComputation payrollResultComputation;
+
+    public String getTotalAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		this.payrollResultComputation.getOverallTotalOfStaff());
+    }
 
     public PayrollResultComputation getPayrollComputationResult() {
 	return payrollResultComputation;
