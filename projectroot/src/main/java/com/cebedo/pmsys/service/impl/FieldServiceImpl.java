@@ -4,12 +4,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
@@ -23,6 +23,7 @@ public class FieldServiceImpl implements FieldService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private FieldDAO fieldDAO;
     private ProjectDAO projectDAO;
@@ -51,24 +52,18 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// You cannot set an empty label.
-	String label = fieldAssignment.getLabel();
-	String value = fieldAssignment.getValue();
-	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
-		|| value.replaceAll(" ", "").isEmpty()) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(fieldAssignment);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel());
 
-	Field field = this.fieldDAO.getByID(fieldID);
-
-	// Log and notify.
-
 	// Do service.
+	Field field = this.fieldDAO.getByID(fieldID);
 	fieldAssignment.setField(field);
 	fieldAssignment.setProject(proj);
 	this.fieldDAO.assignFieldToProject(fieldAssignment);
@@ -147,14 +142,14 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// You cannot set an empty label.
-	if (label.isEmpty() || label.replaceAll(" ", "").isEmpty() || value.isEmpty()
-		|| value.replaceAll(" ", "").isEmpty()) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
-	}
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
 		oldValue);
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(fieldAssignment);
+	if (invalid != null) {
+	    return invalid;
+	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),

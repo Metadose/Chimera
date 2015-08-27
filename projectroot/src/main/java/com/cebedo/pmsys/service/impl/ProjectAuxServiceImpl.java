@@ -26,19 +26,6 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 
     @Override
     @Transactional
-    public void set(ProjectAux obj) {
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
-	    return;
-	}
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
-	this.projectAuxValueRepo.set(obj);
-    }
-
-    @Override
-    @Transactional
     public ProjectAux get(String key) {
 	ProjectAux obj = this.projectAuxValueRepo.get(key);
 

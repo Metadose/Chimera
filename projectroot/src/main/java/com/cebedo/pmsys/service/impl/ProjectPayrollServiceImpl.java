@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
+import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
@@ -48,6 +51,13 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
     private ProjectAuxService projectAuxService;
+    private ProjectAuxValueRepo projectAuxValueRepo;
+
+    @Autowired
+    @Qualifier(value = "projectAuxValueRepo")
+    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+	this.projectAuxValueRepo = projectAuxValueRepo;
+    }
 
     public void setProjectAuxService(ProjectAuxService projectAuxService) {
 	this.projectAuxService = projectAuxService;
@@ -110,7 +120,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// The new grandtotal.
 	// Then save it.
 	projectAux.setGrandTotalPayroll(newGrandTotal);
-	this.projectAuxService.set(projectAux);
+	this.projectAuxValueRepo.set(projectAux);
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Return the result earlier.
@@ -166,7 +176,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Set the reverted value.
 	// Save it.
 	projAux.setGrandTotalPayroll(revertedTotal);
-	this.projectAuxService.set(projAux);
+	this.projectAuxValueRepo.set(projAux);
 
 	// Delete the payroll object.
 	this.projectPayrollValueRepo.delete(key);

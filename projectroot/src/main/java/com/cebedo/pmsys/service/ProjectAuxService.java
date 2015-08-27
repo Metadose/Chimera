@@ -6,8 +6,6 @@ import com.cebedo.pmsys.model.Project;
 
 public interface ProjectAuxService {
 
-    public void set(ProjectAux obj);
-
     public ProjectAux get(String key);
 
     public ProjectAux get(Delivery delivery);

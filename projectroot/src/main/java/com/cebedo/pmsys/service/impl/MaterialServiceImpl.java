@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
@@ -17,9 +18,11 @@ import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
+import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
@@ -30,11 +33,19 @@ public class MaterialServiceImpl implements MaterialService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private MaterialValueRepo materialValueRepo;
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxService projectAuxService;
     private PullOutValueRepo pullOutValueRepo;
+    private ProjectAuxValueRepo projectAuxValueRepo;
+
+    @Autowired
+    @Qualifier(value = "projectAuxValueRepo")
+    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+	this.projectAuxValueRepo = projectAuxValueRepo;
+    }
 
     public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
@@ -66,14 +77,10 @@ public class MaterialServiceImpl implements MaterialService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Can only choose one unit of measure for each material.
-	int unitCount = 0;
-	unitCount = obj.getUnitLength() == null ? unitCount : unitCount + 1;
-	unitCount = obj.getUnitMass() == null ? unitCount : unitCount + 1;
-	unitCount = obj.getUnitVolume() == null ? unitCount : unitCount + 1;
-	if (unitCount > 1) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(obj);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// If we're creating.
@@ -105,7 +112,7 @@ public class MaterialServiceImpl implements MaterialService {
 	    ProjectAux projectAux = this.projectAuxService.get(delivery);
 	    double projectTotalDelivery = projectAux.getGrandTotalDelivery() + totalCost;
 	    projectAux.setGrandTotalDelivery(projectTotalDelivery);
-	    this.projectAuxService.set(projectAux);
+	    this.projectAuxValueRepo.set(projectAux);
 
 	    // Log.
 	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_MATERIAL,
@@ -192,7 +199,7 @@ public class MaterialServiceImpl implements MaterialService {
 	delivery.setGrandTotalOfMaterials(deliveryTotal - materialTotal);
 	projectAux.setGrandTotalDelivery(grandTotal - materialTotal);
 	this.deliveryValueRepo.set(delivery);
-	this.projectAuxService.set(projectAux);
+	this.projectAuxValueRepo.set(projectAux);
 
 	// Do the delete.
 	this.materialValueRepo.delete(key);
@@ -239,14 +246,10 @@ public class MaterialServiceImpl implements MaterialService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Can only choose one unit of measure for each material.
-	int unitCount = 0;
-	unitCount = material.getUnitLength() == null ? unitCount : unitCount + 1;
-	unitCount = material.getUnitMass() == null ? unitCount : unitCount + 1;
-	unitCount = material.getUnitVolume() == null ? unitCount : unitCount + 1;
-	if (unitCount > 1) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(material);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Log.
