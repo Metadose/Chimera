@@ -39,4 +39,10 @@ public class RegistryResponseMessage {
     public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
 
     public static final String ERROR_COMPANY_EXPIRE_DATE_LT_NOW = "The <b>expiration date</b> must be <b>after the current date</b>.";
+
+    public static final String ERROR_CONFIG_EMPTY_NAME = "You <b>cannot</b> create a configuration with an <b>empty name</b>.";
+
+    public static final String ERROR_TASK_EMPTY_TITLE = "You <b>cannot</b> create a task with an <b>empty title</b>.";
+
+    public static final String ERROR_TASK_DURATION_LTE_ZERO = "Task <b>duration</b> must be <b>greater than zero</b>.";
 }

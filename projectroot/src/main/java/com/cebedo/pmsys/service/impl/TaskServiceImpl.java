@@ -20,6 +20,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -35,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private static final int EXCEL_COLUMN_DATE_START = 1;
     private static final int EXCEL_COLUMN_DURATION = 2;
@@ -59,21 +61,32 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void createMassTasks(List<Task> tasks) {
+    public String createMassTasks(List<Task> tasks) {
 
 	// Security check.
 	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
-	    Task sampleTask = tasks.get(0);
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, sampleTask.getId());
-	    return;
+	    long projectID = tasks.get(0).getProject().getId();
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, projectID);
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// TODO Optimize. Maybe throw exception to fail?
+	for (Task task : tasks) {
+	    // Service layer form validation.
+	    String invalid = this.validationHelper.validate(task);
+	    if (invalid != null) {
+		return invalid;
+	    }
 	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
 
+	// If reaches this point, do actual service.
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
 	}
+	return null;
     }
 
     @Override
@@ -83,6 +96,12 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return new ArrayList<Task>();
+	}
+
+	// Service layer form validation.
+	boolean valid = this.validationHelper.validate(multipartFile);
+	if (!valid) {
 	    return new ArrayList<Task>();
 	}
 
@@ -168,6 +187,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public String create(Task task) {
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(task);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Company authCompany = auth.getCompany();
 	task.setCompany(authCompany);
@@ -217,6 +243,12 @@ public class TaskServiceImpl implements TaskService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(task);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
 
@@ -249,54 +281,6 @@ public class TaskServiceImpl implements TaskService {
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateDelete(Task.OBJECT_NAME, task.getTitle());
-    }
-
-    /**
-     * List all tasks.
-     */
-    @Override
-    @Transactional
-    public List<Task> list() {
-	AuthenticationToken token = this.authHelper.getAuth();
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Task.OBJECT_NAME);
-
-	if (token.isSuperAdmin()) {
-
-	    // Return list.
-	    return this.taskDAO.list(null);
-	}
-
-	// Log warn.
-	Company company = token.getCompany();
-
-	// Return list.
-	return this.taskDAO.list(company.getId());
-    }
-
-    /**
-     * List all tasks with all collections.
-     */
-    @Override
-    @Transactional
-    public List<Task> listWithAllCollections() {
-	AuthenticationToken token = this.authHelper.getAuth();
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Task.OBJECT_NAME);
-
-	if (token.isSuperAdmin()) {
-
-	    // Return list.
-	    return this.taskDAO.listWithAllCollections(null);
-	}
-
-	// Log info non-super admin.
-	Company company = token.getCompany();
-
-	// Return list.
-	return this.taskDAO.listWithAllCollections(company.getId());
     }
 
     /**
@@ -452,126 +436,4 @@ public class TaskServiceImpl implements TaskService {
 	return AlertBoxGenerator.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
     }
 
-    /**
-     * Create a task with a linked project.
-     */
-    @Override
-    @Transactional
-    public String createWithProject(Task task, long projectID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Project proj = this.projectDAO.getByID(projectID);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Do service.
-	task.setProject(proj);
-	Company authCompany = auth.getCompany();
-	task.setCompany(authCompany);
-	this.taskDAO.create(task);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
-		Task.OBJECT_NAME, task.getId());
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
-    }
-
-    /**
-     * Update a task.
-     */
-    @Override
-    @Transactional
-    public String merge(Task task) {
-	Task oldTask = this.taskDAO.getByIDWithAllCollections(task.getId());
-
-	// Prepare object.
-	task.setCompany(oldTask.getCompany());
-	if (task.getProject() == null) {
-	    task.setProject(oldTask.getProject());
-	}
-	if (task.getStaff() == null) {
-	    task.setStaff(oldTask.getStaff());
-	}
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_MERGE, Task.OBJECT_NAME, task.getId());
-
-	// Do service.
-	this.taskDAO.merge(task);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
-    }
-
-    /**
-     * Get task title given an id.
-     */
-    @Override
-    @Transactional
-    public String getTitleByID(long taskID) {
-	return this.taskDAO.getTitleByID(taskID);
-    }
-
-    /**
-     * Unassign all tasks in a project.
-     */
-    @Override
-    @Transactional
-    public String unassignAllTasksByProject(long projectID) {
-	Project project = this.projectDAO.getByID(projectID);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME);
-
-	// Do service.
-	this.taskDAO.unassignAllTasksByProject(project);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Task.OBJECT_NAME);
-    }
-
-    /**
-     * Unassign a task in a project.
-     */
-    @Override
-    @Transactional
-    public String unassignTaskByProject(long taskID, long projectID) {
-
-	Project project = this.projectDAO.getByID(projectID);
-	Task task = this.taskDAO.getByID(taskID);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME, task.getId());
-
-	// Do service.
-	this.taskDAO.unassignTaskByProject(taskID, project);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Task.OBJECT_NAME, task.getTitle());
-    }
 }

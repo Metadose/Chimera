@@ -27,6 +27,7 @@ import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -47,6 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
@@ -125,7 +127,13 @@ public class ProjectServiceImpl implements ProjectService {
 		includeTasks.add(task);
 	    }
 	}
-	this.taskService.createMassTasks(includeTasks);
+
+	// Create mass.
+	// Returns null if ok.
+	String invalid = this.taskService.createMassTasks(includeTasks);
+	if (invalid != null) {
+	    return invalid;
+	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),

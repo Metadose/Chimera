@@ -9,6 +9,7 @@ import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
@@ -20,6 +21,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private SystemConfigurationDAO systemConfigurationDAO;
 
@@ -30,6 +32,21 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     @Override
     @Transactional
     public String create(SystemConfiguration systemConfiguration) {
+
+	// Security check.
+	// Only super admins can create a config.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper
+		    .unauthorized(SystemConfiguration.OBJECT_NAME, systemConfiguration.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(systemConfiguration);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Company authCompany = auth.getCompany();
 	systemConfiguration.setCompany(authCompany);
@@ -69,6 +86,13 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 		    .unauthorized(SystemConfiguration.OBJECT_NAME, systemConfiguration.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(systemConfiguration);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getId());
@@ -158,6 +182,13 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(config);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_MERGE, SystemConfiguration.OBJECT_NAME,
 		config.getId());

@@ -431,9 +431,8 @@ public class ProjectController {
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService.updateField(faBean.getProjectID(),
-		faBean.getFieldID(), faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(),
-		newFaBean.getValue());
+	String response = this.fieldService.updateField(faBean.getProjectID(), faBean.getFieldID(),
+		faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue());
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -462,8 +461,8 @@ public class ProjectController {
 	// Do service.
 	// Clear session attrs then redirect.
 	// Get response.
-	String response = this.fieldService.unassignField(faBean.getFieldID(),
-		faBean.getProjectID(), faBean.getLabel(), faBean.getValue());
+	String response = this.fieldService.unassignField(faBean.getFieldID(), faBean.getProjectID(),
+		faBean.getLabel(), faBean.getValue());
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -1581,7 +1580,7 @@ public class ProjectController {
 	}
 
 	// Update the payroll then clear the computation.
-	String response = this.projectPayrollService.updatePayrollClearComputation(session,
+	String response = this.projectPayrollService.updatePayroll(session,
 		projectPayroll, toClear);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
@@ -1611,8 +1610,8 @@ public class ProjectController {
 
 	// Get payroll maps.
 	// And assign to model.
-	String payrollJSON = this.projectPayrollService.computeAndGetResultJSON(proj, startDate,
-		endDate, projectPayroll);
+	String payrollJSON = this.projectPayrollService
+		.compute(proj, startDate, endDate, projectPayroll);
 
 	// Construct response.
 	String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);

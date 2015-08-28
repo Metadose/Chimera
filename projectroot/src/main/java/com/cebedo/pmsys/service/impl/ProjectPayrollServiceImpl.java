@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -26,6 +25,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
@@ -44,8 +44,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
-
-    public static final String PROPERTY_GRAND_TOTAL = "Grand Total";
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private ProjectPayrollValueRepo projectPayrollValueRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
@@ -78,14 +77,17 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Override
     @Transactional
-    public String computeAndGetResultJSON(Project proj, Date startDate, Date endDate,
-	    ProjectPayroll projectPayroll) {
+    public String compute(Project proj, Date startDate, Date endDate, ProjectPayroll projectPayroll) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Does not have form validation since this function is executed via
+	// compute button. A JSON response is expected.
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
@@ -212,7 +214,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL, PROPERTY_GRAND_TOTAL);
+		ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
@@ -226,10 +228,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Start date > end date.
-	if (projectPayroll.getStartDate().after(projectPayroll.getEndDate())) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(projectPayroll, AuditAction.ACTION_CREATE);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Take a snapshot of the project structure
@@ -351,20 +353,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Transactional
     @Override
-    public String updatePayrollClearComputation(HttpSession session, ProjectPayroll projectPayroll,
-	    String toClear) {
-
-	long[] staffIDs = projectPayroll.getStaffIDs();
-	if (staffIDs.length == 0) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF_CHECK);
-	}
+    public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll, String toClear) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(projectPayroll, AuditAction.ACTION_UPDATE);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey());
@@ -379,7 +381,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Transform the selected ID's into actual objects.
 	// Store the actual objects in the payroll object.
 	Set<Staff> assignedStaffList = new HashSet<Staff>();
-	for (long staffID : staffIDs) {
+	for (long staffID : projectPayroll.getStaffIDs()) {
 	    Staff staff = this.staffDAO.getWithAllCollectionsByID(staffID);
 	    assignedStaffList.add(staff);
 	}

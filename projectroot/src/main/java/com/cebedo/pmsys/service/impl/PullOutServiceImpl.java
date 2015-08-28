@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
@@ -28,6 +28,7 @@ public class PullOutServiceImpl implements PullOutService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private PullOutValueRepo pullOutValueRepo;
     private StaffDAO staffDAO;
@@ -58,33 +59,10 @@ public class PullOutServiceImpl implements PullOutService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	Material material = obj.getMaterial();
-
-	// You are not allowed to pull-out
-	// if quantity is greater than what is available.
-	double quantity = obj.getQuantity();
-	double available = material.getAvailable();
-
-	// Error: Pullout more than the available.
-	if (quantity > available) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_EXCEED);
-	}
-	// Error: Invalid quantity value.
-	else if (quantity <= 0) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_QUANTITY);
-	}
-	// Error: Invalid date time.
-	else if (obj.getDatetime() == null) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_DATE_TIME);
-	}
-	// Error: Pull out date is before the delivery date.
-	else if (obj.getDatetime().before(obj.getDelivery().getDatetime())) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_DATE_BEFORE_DELIVERY);
-	}
-	// Error: Etc.
-	else if (available <= 0) {
-	    return AlertBoxGenerator.ERROR;
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(obj);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// If we're creating.
@@ -101,6 +79,8 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Get the pulled-out quantity.
 	// Update the material's used and available.
+	Material material = obj.getMaterial();
+	double available = material.getAvailable();
 	double pulledOut = obj.getQuantity();
 	material.setUsed(material.getUsed() + pulledOut);
 	material.setAvailable(available - pulledOut);
@@ -207,33 +187,19 @@ public class PullOutServiceImpl implements PullOutService {
     @Transactional
     public String update(PullOut newPullout) {
 
-	double quantity = newPullout.getQuantity();
-	double available = newPullout.getMaterial().getAvailable();
-
-	// Error: Pullout more than the available.
-	if (quantity > available) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_EXCEED);
-	}
-	// Error: Invalid quantity value.
-	else if (quantity <= 0) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_QUANTITY);
-	}
-	// Error: Invalid date time.
-	else if (newPullout.getDatetime() == null) {
-	    return AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_DATE_TIME);
-	}
-	// Error: Etc.
-	else if (available <= 0) {
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	PullOut oldPullOut = this.pullOutValueRepo.get(newPullout.getKey());
-
 	// Security check.
+	PullOut oldPullOut = this.pullOutValueRepo.get(newPullout.getKey());
 	if (!this.authHelper.isActionAuthorized(oldPullOut)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, oldPullOut.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(newPullout);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PULL_OUT,
 		oldPullOut.getKey());

@@ -35,10 +35,6 @@ public interface TaskService {
      */
     public String delete(long id);
 
-    public List<Task> list();
-
-    public List<Task> listWithAllCollections();
-
     /**
      * Set the task to the status specified.
      * 
@@ -103,43 +99,7 @@ public interface TaskService {
      */
     public String deleteAllTasksByProject(long projectID);
 
-    /**
-     * Create a task with a linked project.
-     * 
-     * @param task
-     * @param projectID
-     * @return
-     */
-    public String createWithProject(Task task, long projectID);
-
-    /**
-     * Update a task.
-     * 
-     * @param task
-     * @return
-     */
-    public String merge(Task task);
-
-    public String getTitleByID(long taskID);
-
-    /**
-     * Unassign all tasks given a project.
-     * 
-     * @param projectID
-     * @return
-     */
-    public String unassignAllTasksByProject(long projectID);
-
-    /**
-     * Unassign a task given a project.
-     * 
-     * @param taskID
-     * @param projectID
-     * @return
-     */
-    public String unassignTaskByProject(long taskID, long projectID);
-
-    public void createMassTasks(List<Task> tasks);
+    public String createMassTasks(List<Task> tasks);
 
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project);
 
