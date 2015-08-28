@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.service.impl;
 
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,6 @@ public class FieldServiceImpl implements FieldService {
     /**
      * Assign a field to a project.
      */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
     public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID) {
@@ -75,7 +73,6 @@ public class FieldServiceImpl implements FieldService {
     /**
      * Unassign a field from a project.
      */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
     public String unassignField(long fieldID, long projectID, String label, String value) {
@@ -103,7 +100,6 @@ public class FieldServiceImpl implements FieldService {
     /**
      * Unassign all fields from a project.
      */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
     public String unassignAllFields(long projectID) {
@@ -128,7 +124,6 @@ public class FieldServiceImpl implements FieldService {
     /**
      * Update an assign project field.
      */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
     public String updateField(long projectID, long fieldID, String oldLabel, String oldValue,

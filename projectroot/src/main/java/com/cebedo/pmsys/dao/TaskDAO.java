@@ -41,6 +41,4 @@ public interface TaskDAO {
 
     public void unassignTaskByProject(long taskID, Project project);
 
-    public List<Task> listTaskFromCache(Long companyID);
-
 }

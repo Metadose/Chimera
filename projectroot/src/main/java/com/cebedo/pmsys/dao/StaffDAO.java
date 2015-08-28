@@ -22,8 +22,6 @@ public interface StaffDAO {
 
     public String getNameByID(long staffID);
 
-    public List<Staff> listStaffFromCache(Long companyID);
-
     public Staff getStaffByName(Staff staff);
 
 }

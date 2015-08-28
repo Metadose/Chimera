@@ -6,7 +6,6 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
@@ -119,16 +118,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 	String result = this.daoHelper.getProjectionByID(session, Project.class, Project.PROPERTY_ID,
 		projectID, Project.PROPERTY_NAME);
 	return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    @Cacheable(value = Project.OBJECT_NAME + ":search", key = "#companyID != null ? #companyID : 0", unless = "#result.isEmpty()")
-    public List<Project> listProjectFromCache(Long companyID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	List<Project> list = this.daoHelper.getSelectQueryFilterCompany(session,
-		Project.class.getName(), companyID).list();
-	return list;
     }
 
     @Override

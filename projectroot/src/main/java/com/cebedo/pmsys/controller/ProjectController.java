@@ -74,7 +74,6 @@ import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
-import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 
@@ -510,22 +509,6 @@ public class ProjectController {
     @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
-
-	// Reset search entries in cache.
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Project project = this.projectService.getByID(id);
-
-	// Get company and
-	// clear cache.
-	Long companyID = null;
-	if (auth.getCompany() == null) {
-	    if (project.getCompany() != null) {
-		companyID = project.getCompany().getId();
-	    }
-	} else {
-	    companyID = auth.getCompany().getId();
-	}
-	this.projectService.clearSearchCache(companyID);
 
 	// Do service.
 	// FIXME Cleanup also the SYS_HOME.
@@ -1663,8 +1646,8 @@ public class ProjectController {
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PULL_OUT + "/{"
 	    + ConstantsRedis.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
-    public String editPullOutExisting(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key, Model model,
-	    HttpSession session) {
+    public String editPullOutExisting(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key,
+	    Model model, HttpSession session) {
 
 	// Get the object.
 	PullOut pullOut = this.pullOutService.get(key);

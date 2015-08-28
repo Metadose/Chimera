@@ -42,11 +42,7 @@ public interface ProjectService {
 
     public Project getByIDWithAllCollections(long id);
 
-    public List<Project> listWithTasks();
-
     public void clearProjectCache(long projectID);
-
-    public void clearSearchCache(Long companyID);
 
     public String getGanttJSON(Project proj);
 

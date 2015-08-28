@@ -8,7 +8,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -183,7 +182,6 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Create a new task.
      */
-    @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#task.getProject().getId()", condition = "#task.getProject() != null")
     @Override
     @Transactional
     public String create(Task task) {

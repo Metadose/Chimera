@@ -8,7 +8,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
@@ -199,13 +198,4 @@ public class TaskDAOImpl implements TaskDAO {
 	session.update(task);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    @Cacheable(value = "searchTaskCache", key = "#root.methodName.concat('-').concat(#companyID != null ? #companyID : 0)", unless = "#result.isEmpty()")
-    public List<Task> listTaskFromCache(Long companyID) {
-	Session session = this.sessionFactory.getCurrentSession();
-	List<Task> taskList = this.daoHelper.getSelectQueryFilterCompany(session, Task.class.getName(),
-		companyID).list();
-	return taskList;
-    }
 }
