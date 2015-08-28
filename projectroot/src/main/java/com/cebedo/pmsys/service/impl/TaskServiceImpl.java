@@ -96,13 +96,13 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return new ArrayList<Task>();
+	    return null;
 	}
 
 	// Service layer form validation.
 	boolean valid = this.validationHelper.check(multipartFile);
 	if (!valid) {
-	    return new ArrayList<Task>();
+	    return null;
 	}
 
 	// Log.
@@ -177,7 +177,7 @@ public class TaskServiceImpl implements TaskService {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	return new ArrayList<Task>();
+	return null;
     }
 
     /**

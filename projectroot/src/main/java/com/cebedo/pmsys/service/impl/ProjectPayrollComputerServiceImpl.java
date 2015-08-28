@@ -166,11 +166,13 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     @Transactional
     @Override
     public String getPayrollJSONResult() {
-
-	// Staff
-	constructTreeGridStaff();
-
-	return new Gson().toJson(this.treeGrid, ArrayList.class);
+	try {
+	    constructTreeGridStaff();
+	    return new Gson().toJson(this.treeGrid, ArrayList.class);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return "";
     }
 
     /**

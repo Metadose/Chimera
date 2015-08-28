@@ -47,6 +47,6 @@ public interface ProjectPayrollService {
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll getPayrollJSON);
 
-    public List<ProjectPayroll> getAllPayrolls(Project proj);
+    public List<ProjectPayroll> list(Project proj);
 
 }

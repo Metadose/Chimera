@@ -1959,7 +1959,7 @@ public class ProjectController {
     private void setPayrollAttributes(Project proj, Model model) {
 	// Get all payrolls.
 	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectPayrollService.getAllPayrolls(proj);
+	List<ProjectPayroll> payrollList = this.projectPayrollService.list(proj);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
     }
 

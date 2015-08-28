@@ -102,6 +102,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
+	if (tasks == null) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
+	}
+
 	List<Task> includeTasks = new ArrayList<Task>();
 	Set<Task> projTasks = project.getAssignedTasks();
 
@@ -452,7 +457,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return ""; // Returning empty since expecting a JSON.
 	}
 
 	// Log.
@@ -527,7 +532,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return ""; // Empty, expecting JSON.
 	}
 
 	// Log.

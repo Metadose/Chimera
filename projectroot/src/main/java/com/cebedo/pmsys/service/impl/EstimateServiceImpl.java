@@ -26,6 +26,7 @@ import com.cebedo.pmsys.bean.EstimateResultMasonryCHBLaying;
 import com.cebedo.pmsys.bean.EstimateResultMasonryPlastering;
 import com.cebedo.pmsys.constants.ConstantsEstimation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.EstimateType;
@@ -118,6 +119,12 @@ public class EstimateServiceImpl implements EstimateService {
 	// Convert the excel file to objects.
 	List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
 		estimateInput.getEstimationFile(), estimateInput.getProject());
+
+	// Conversion failed.
+	if (estimateComputationBeans == null) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
+	}
 
 	// Process each object.
 	List<EstimateComputationOutputRowJSON> rowListForJSON = new ArrayList<EstimateComputationOutputRowJSON>();
@@ -296,6 +303,13 @@ public class EstimateServiceImpl implements EstimateService {
      */
     private List<EstimateComputationBean> convertExcelToEstimates(MultipartFile multipartFile,
 	    Project proj) {
+
+	// Service layer form validation.
+	boolean valid = this.validationHelper.check(multipartFile);
+	if (!valid) {
+	    return null;
+	}
+
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -521,7 +535,7 @@ public class EstimateServiceImpl implements EstimateService {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	return new ArrayList<EstimateComputationBean>();
+	return null;
     }
 
     /**

@@ -482,7 +482,7 @@ public class StaffServiceImpl implements StaffService {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attendance)) {
 		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
-		return AlertBoxGenerator.ERROR;
+		return ""; // Empty, returning JSON.
 	    }
 
 	    Date myDate = attendance.getDate();
@@ -526,7 +526,7 @@ public class StaffServiceImpl implements StaffService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return ""; // Returning empty, expecting JSON.
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME, staff.getId(),

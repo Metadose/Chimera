@@ -93,6 +93,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	String payrollJSON = getPayrollJSON(proj, startDate, endDate, projectPayroll);
+	if (payrollJSON.isEmpty()) {
+	    return ""; // This is meant to be empty, see references.
+	}
 
 	// Get the resulting state of the computation.
 	// And save it.
@@ -313,7 +316,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
      */
     @Transactional
     @Override
-    public List<ProjectPayroll> getAllPayrolls(Project proj) {
+    public List<ProjectPayroll> list(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
