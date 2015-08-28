@@ -82,16 +82,12 @@
 	            	<c:choose>
 	            		<c:when test="${project.id == 0}">
 	            			New Project
-			                <small>Create Project 
-			                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
-			                <a href="${clearCache}">Clear Cache</a> </small>
+			                <small>Create Project</small>
 	            		</c:when>
 
 	            		<c:when test="${project.id != 0}">
 	            			${project.name}
-			                <small>Edit Project 
-			                <c:url var="clearCache" value="/project/clear/cache/${project.id}"/>
-			                <a href="${clearCache}">Clear Cache</a> </small>
+			                <small>Edit Project</small>
 	            		</c:when>
 	            	</c:choose>
 	            </h1>

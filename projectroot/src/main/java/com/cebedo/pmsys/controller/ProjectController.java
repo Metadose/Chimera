@@ -1805,21 +1805,6 @@ public class ProjectController {
     }
 
     /**
-     * Open an existing/new project page. TODO Remove this function.
-     * 
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/clear/cache/{id}")
-    public String clearCache(@PathVariable("id") long id, SessionStatus status) {
-	this.projectService.clearProjectCache(id);
-	this.projectService.clearListCache();
-
-	return redirectEditPageProject(id, status);
-    }
-
-    /**
      * Open an existing/new project page.
      * 
      * @param id

@@ -7,7 +7,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			/WEB-INF/spring/cache.xml,
+			<!-- TODO /WEB-INF/spring/cache.xml, -->
 			/WEB-INF/spring/hdiv.xml,
 			/WEB-INF/spring/logging.xml,
 			/WEB-INF/spring/mailer.xml,

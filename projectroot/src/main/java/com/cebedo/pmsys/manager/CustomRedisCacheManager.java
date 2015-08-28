@@ -60,6 +60,7 @@ import org.springframework.util.CollectionUtils;
  * @author Christoph Strobl
  * @author Thomas Darimont
  */
+@Deprecated
 public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheManager {
 
     private final Log logger = LogFactory.getLog(CustomRedisCacheManager.class);

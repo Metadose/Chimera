@@ -42,15 +42,11 @@ public interface ProjectService {
 
     public Project getByIDWithAllCollections(long id);
 
-    public void clearProjectCache(long projectID);
-
     public String getGanttJSON(Project proj);
 
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
 
     public String getCalendarJSON(Project proj);
-
-    public void clearListCache();
 
     public String createStaffFromExcel(MultipartFile multipartFile, Project proj);
 

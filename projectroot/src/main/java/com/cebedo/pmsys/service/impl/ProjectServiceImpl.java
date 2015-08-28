@@ -12,14 +12,10 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -87,11 +83,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    @Caching(evict = {
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#project.getId()"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_CALENDAR_JSON, key = "#project.getId()"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_GANTT_JSON, key = "#project.getId()"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_TASK_STATUS_COUNT_MAP, key = "#project.getId()") })
     public String createTasksFromExcel(MultipartFile multipartFile, Project project) {
 
 	// Security check.
@@ -165,7 +156,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    @CacheEvict(value = RegistryCache.PROJECT_LIST_WITH_COLLECTIONS, allEntries = true)
     public String create(Project project) {
 
 	// Service layer form validation.
@@ -193,7 +183,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    @CacheEvict(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#proj.getId()")
     public String createStaffFromExcel(MultipartFile multipartFile, Project proj) {
 
 	// Security check.
@@ -256,9 +245,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    @Caching(evict = {
-	    @CacheEvict(value = RegistryCache.PROJECT_LIST_WITH_COLLECTIONS, allEntries = true),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#project.getId()") })
     public String update(Project project) {
 
 	// Security check.
@@ -327,12 +313,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    @Caching(evict = {
-	    @CacheEvict(value = RegistryCache.PROJECT_LIST_WITH_COLLECTIONS, allEntries = true),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_TASK_STATUS_COUNT_MAP, key = "#id"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_CALENDAR_JSON, key = "#id"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_GANTT_JSON, key = "#id"),
-	    @CacheEvict(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#id") })
     public String delete(long id) {
 
 	// Get auth and actual object.
@@ -368,7 +348,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    @Cacheable(value = RegistryCache.PROJECT_LIST_WITH_COLLECTIONS, unless = "#result.isEmpty()")
     public List<Project> listWithAllCollections() {
 	// Log.
 	AuthenticationToken token = this.authHelper.getAuth();
@@ -385,7 +364,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    @Cacheable(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#id")
     public Project getByIDWithAllCollections(long id) {
 
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
@@ -401,28 +379,11 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Project();
     }
 
-    @Deprecated
-    @CacheEvict(value = RegistryCache.PROJECT_GET_BY_ID_WITH_COLLECTIONS, key = "#projectID")
-    @Override
-    @Transactional
-    public void clearProjectCache(long projectID) {
-	;
-    }
-
-    @Deprecated
-    @CacheEvict(value = RegistryCache.PROJECT_LIST_WITH_COLLECTIONS)
-    @Override
-    @Transactional
-    public void clearListCache() {
-	;
-    }
-
     /**
      * Construct a JSON to be used by the Gantt dhtmlx.
      */
     @Override
     @Transactional
-    @Cacheable(value = RegistryCache.PROJECT_GET_GANTT_JSON, key = "#proj.getId()")
     public String getGanttJSON(Project proj) {
 
 	// Security check.
@@ -460,7 +421,6 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Transactional
     @Override
-    @Cacheable(value = RegistryCache.PROJECT_GET_TASK_STATUS_COUNT_MAP, key = "#proj.getId()")
     public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj) {
 
 	// Security check.
@@ -499,7 +459,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    @Cacheable(value = RegistryCache.PROJECT_GET_CALENDAR_JSON, key = "#proj.getId()")
     public String getCalendarJSON(Project proj) {
 
 	// Security check.

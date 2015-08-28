@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.constants;
 
+@Deprecated
 public class RegistryCache {
 
     // Project.
