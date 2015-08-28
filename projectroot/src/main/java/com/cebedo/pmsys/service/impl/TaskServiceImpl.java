@@ -100,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Service layer form validation.
-	boolean valid = this.validationHelper.validate(multipartFile);
+	boolean valid = this.validationHelper.check(multipartFile);
 	if (!valid) {
 	    return new ArrayList<Task>();
 	}

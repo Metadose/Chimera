@@ -31,10 +31,10 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
@@ -51,6 +51,7 @@ public class StaffServiceImpl implements StaffService {
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ExcelHelper excelHelper = new ExcelHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     public static final int EXCEL_COLUMN_PREFIX = 1;
     public static final int EXCEL_COLUMN_FIRST = 2;
@@ -85,12 +86,21 @@ public class StaffServiceImpl implements StaffService {
 	// Security check.
 	if (!this.authHelper.hasAccess(company)) {
 	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
-	    return new ArrayList<Staff>();
+	    return null;
 	}
+
+	// Service layer form validation.
+	boolean valid = this.validationHelper.check(multipartFile);
+	if (!valid) {
+	    return null;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Company.OBJECT_NAME, company.getId(),
 		MultipartFile.class.getName(), multipartFile.getOriginalFilename());
 
+	// TODO Make this return fail if Transaction was not done.
+	// Throw an exception.
 	try {
 
 	    // Create Workbook instance holding reference to .xls file
@@ -192,7 +202,7 @@ public class StaffServiceImpl implements StaffService {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	return new ArrayList<Staff>();
+	return null;
     }
 
     @Override
@@ -206,8 +216,15 @@ public class StaffServiceImpl implements StaffService {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(staff)) {
 		this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
-		return new ArrayList<Staff>();
+		return null;
 	    }
+
+	    // Service layer form validation.
+	    String invalid = this.validationHelper.validate(staff);
+	    if (invalid != null) {
+		continue;
+	    }
+
 	    company = company == null ? staff.getCompany() : company;
 
 	    // Search by name.
@@ -235,6 +252,13 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public String create(Staff staff) {
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(staff);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	AuthenticationToken auth = this.authHelper.getAuth();
 
 	// Do service.
@@ -282,6 +306,13 @@ public class StaffServiceImpl implements StaffService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(staff);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Staff.OBJECT_NAME, staff.getId());
 
@@ -428,74 +459,6 @@ public class StaffServiceImpl implements StaffService {
 
 	// Return as unwrapped.
 	return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
-    }
-
-    /**
-     * Create a staff from an origin.
-     */
-    @Override
-    @Transactional
-    public String createFromOrigin(Staff staff, String origin, String originID) {
-
-	AuthenticationToken auth = this.authHelper.getAuth();
-
-	// If coming from the system user page.
-	if (origin.equals(SystemUser.OBJECT_NAME)) {
-	    SystemUser user = this.systemUserDAO.getByID(Long.parseLong(originID));
-
-	    if (user == null) {
-
-		// Get the company from the executor.
-		// Do service.
-		// Return success.
-		staff.setCompany(auth.getCompany());
-		this.staffDAO.create(staff);
-
-		// Log.
-		this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
-
-		return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
-
-	    }
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(user)) {
-		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
-		return AlertBoxGenerator.ERROR;
-	    }
-
-	    // Get the company from the user.
-	    staff.setCompany(user.getCompany());
-
-	    // Do service.
-	    // Update the staff.
-	    this.staffDAO.create(staff);
-
-	    // If coming from the system user,
-	    // attach relationship with user.
-	    user.setStaff(staff);
-	    this.systemUserDAO.update(user);
-
-	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
-
-	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
-	}
-
-	// Create the staff first since to attach it's relationship
-	// with the company.
-	Company authCompany = auth.getCompany();
-	staff.setCompany(authCompany);
-
-	// Do service.
-	this.staffDAO.create(staff);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -794,33 +757,6 @@ public class StaffServiceImpl implements StaffService {
 	project.setAssignedStaff(new HashSet<Staff>());
 	this.projectDAO.merge(project);
 	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
-    }
-
-    @Transactional
-    @Override
-    public List<Staff> listUnassignedStaffInProject(Long companyID, Project project) {
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return new ArrayList<Staff>();
-	}
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, project.getId(),
-		Staff.OBJECT_NAME);
-
-	if (this.authHelper.isActionAuthorized(project)) {
-	    // Full list.
-	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
-	    List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(companyStaffList);
-
-	    // Minus list.
-	    List<StaffWrapper> assignedStaffList = StaffWrapper.wrapSet(project.getAssignedStaff());
-
-	    // Do minus.
-	    wrappedStaffList.removeAll(assignedStaffList);
-	    return StaffWrapper.unwrap(StaffWrapper.removeEmptyNames(wrappedStaffList));
-	}
-	return new ArrayList<Staff>();
     }
 
     @Transactional

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -93,6 +94,12 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(multipartFile);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
 	List<Task> includeTasks = new ArrayList<Task>();
@@ -130,7 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Create mass.
 	// Returns null if ok.
-	String invalid = this.taskService.createMassTasks(includeTasks);
+	invalid = this.taskService.createMassTasks(includeTasks);
 	if (invalid != null) {
 	    return invalid;
 	}
@@ -153,6 +160,12 @@ public class ProjectServiceImpl implements ProjectService {
 	    @CacheEvict(value = Project.OBJECT_NAME + ":list", allEntries = true),
 	    @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#project.getCompany() == null ? 0 : #project.getCompany().getId()") })
     public String create(Project project) {
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(project);
+	if (invalid != null) {
+	    return invalid;
+	}
 
 	// Do service.
 	// Set the project aux object.
@@ -181,12 +194,34 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(multipartFile);
+	if (invalid != null) {
+	    return invalid;
+	}
+
 	// Convert excel to staff objects.
 	// Commit all in staff list.
 	// Assign all staff to project.
 	List<Staff> staffList = this.staffService.convertExcelToStaffList(multipartFile,
 		proj.getCompany());
+
+	// Invalid file.
+	if (staffList == null) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
+	}
+
 	staffList = this.staffService.createOrGetStaffInList(staffList);
+
+	// There was a problem with the list of staff you provided. Please
+	// review the list and try again.
+	if (staffList == null) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC);
+	}
+
+	// If everything's ok.
 	assignAllStaffToProject(proj, staffList);
 
 	// Log.
@@ -227,6 +262,12 @@ public class ProjectServiceImpl implements ProjectService {
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	String invalid = this.validationHelper.validate(project);
+	if (invalid != null) {
+	    return invalid;
 	}
 
 	// Actual service.
@@ -377,15 +418,7 @@ public class ProjectServiceImpl implements ProjectService {
 	return this.projectDAO.listWithTasks(company.getId());
     }
 
-    @Override
-    @Transactional
-    @Cacheable(value = Project.OBJECT_NAME + ":getNameByID", key = "#projectID", unless = "#result.isEmpty()")
-    public String getNameByID(long projectID) {
-	String name = this.projectDAO.getNameByID(projectID);
-	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, projectID);
-	return name;
-    }
-
+    @Deprecated
     @CacheEvict(value = Project.OBJECT_NAME + ":getByIDWithAllCollections", key = "#projectID")
     @Override
     @Transactional
@@ -393,6 +426,7 @@ public class ProjectServiceImpl implements ProjectService {
 	;
     }
 
+    @Deprecated
     @CacheEvict(value = Project.OBJECT_NAME + ":listWithTasks")
     @Override
     @Transactional
@@ -400,6 +434,7 @@ public class ProjectServiceImpl implements ProjectService {
 	;
     }
 
+    @Deprecated
     @CacheEvict(value = Project.OBJECT_NAME + ":search", key = "#companyID == null ? 0 : #companyID")
     @Override
     @Transactional

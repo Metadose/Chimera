@@ -71,16 +71,6 @@ public interface StaffService {
 
     public List<Staff> listUnassignedInProject(Long companyID, Project project);
 
-    /**
-     * Create a staff from a specific origin.
-     * 
-     * @param staff
-     * @param origin
-     * @param originID
-     * @return
-     */
-    public String createFromOrigin(Staff staff, String origin, String originID);
-
     public String getCalendarJSON(Set<Attendance> attendanceList);
 
     public String getGanttJSON(Staff staff);
@@ -104,8 +94,6 @@ public interface StaffService {
     public String unassignStaffMember(Project project, long staffID);
 
     public String unassignAllStaffMembers(Project project);
-
-    public List<Staff> listUnassignedStaffInProject(Long companyID, Project proj);
 
     public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID, ProjectPayroll projectPayroll);
 

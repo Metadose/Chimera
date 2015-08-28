@@ -44,8 +44,6 @@ public interface ProjectService {
 
     public List<Project> listWithTasks();
 
-    public String getNameByID(long projectID);
-
     public void clearProjectCache(long projectID);
 
     public void clearSearchCache(Long companyID);

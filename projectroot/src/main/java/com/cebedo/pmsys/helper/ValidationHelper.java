@@ -14,6 +14,8 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
@@ -286,12 +288,59 @@ public class ValidationHelper {
      * @param multipartFile
      * @return
      */
-    public boolean validate(MultipartFile multipartFile) {
+    public boolean check(MultipartFile multipartFile) {
 	// TODO multipartFile.getOriginalFilename();
 	// Check allowed file extensions.
 	if (multipartFile == null || multipartFile.isEmpty()) {
 	    return false;
 	}
 	return true;
+    }
+
+    /**
+     * Multi-part file.
+     * 
+     * @param multipartFile
+     * @return
+     */
+    public String validate(MultipartFile multipartFile) {
+	// TODO multipartFile.getOriginalFilename();
+	// Check allowed file extensions.
+	if (multipartFile == null || multipartFile.isEmpty()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_EMPTY_FILE);
+	}
+	return null;
+    }
+
+    /**
+     * Project.
+     * 
+     * @param project
+     * @return
+     */
+    public String validate(Project project) {
+
+	// Please provide a valid name.
+	String name = project.getName();
+	if (name == null || name.isEmpty()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	}
+	return null;
+    }
+
+    /**
+     * Staff.
+     * 
+     * @param staff
+     * @return
+     */
+    public String validate(Staff staff) {
+	if (!staff.isNameSet()) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	}
+	return null;
     }
 }
