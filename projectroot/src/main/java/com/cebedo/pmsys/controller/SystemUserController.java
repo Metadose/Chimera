@@ -71,18 +71,11 @@ public class SystemUserController {
     public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
-	// If the passwords provided were not equal.
-	if (!systemUser.getPassword().equals(systemUser.getRetypePassword())) {
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORDS_NOT_EQUAL));
-	    status.setComplete();
-	    return editPage(systemUser.getId());
-	}
-
 	// If request is to create new user.
 	if (systemUser.getId() == 0) {
 
 	    // If there is already an existing user with that user name.
+	    // AlertBoxGenerator here is ok, special case.
 	    try {
 		@SuppressWarnings("unused")
 		SystemUser user = this.systemUserService.searchDatabase(systemUser.getUsername());

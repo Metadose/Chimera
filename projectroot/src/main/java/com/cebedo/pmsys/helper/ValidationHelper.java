@@ -241,18 +241,31 @@ public class ValidationHelper {
      */
     public String validate(SystemUser systemUser) {
 
-	// TODO If the username and password are the same.
-	// TODO If the password and re-type password are not the same.
+	String username = systemUser.getUsername();
+	String password = systemUser.getPassword();
+	String passwordRe = systemUser.getRetypePassword();
+
+	// If the username and password are the same.
+	if (username.equals(password)) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_PASSWORD_EQUAL);
+	}
+
+	// If the password and re-type password are not the same.
+	if (!password.equals(passwordRe)) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORDS_NOT_EQUAL);
+	}
 
 	// Check if the user name is valid.
-	this.matcher = this.patternUsername.matcher(systemUser.getUsername());
+	this.matcher = this.patternUsername.matcher(username);
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
 	}
 
 	// Check if the password is valid.
-	this.matcher = this.patternPassword.matcher(systemUser.getPassword());
+	this.matcher = this.patternPassword.matcher(password);
 	if (!this.matcher.matches()) {
 	    return AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);

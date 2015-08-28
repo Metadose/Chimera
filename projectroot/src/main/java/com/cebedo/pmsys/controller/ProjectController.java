@@ -988,6 +988,7 @@ public class ProjectController {
 	Date max = rangeDates.getEndDate();
 
 	// If start date is > end date, error.
+	// AlertBoxGenerator here is ok, no service function was called.
 	if (min.after(max)) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE));
@@ -1421,11 +1422,12 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL
 	    + "/{" + ConstantsRedis.OBJECT_MATERIAL + "}-end" }, method = RequestMethod.GET)
-    public String pulloutMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key, Model model,
+    public String editPullOutNew(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key, Model model,
 	    HttpSession session, RedirectAttributes redirectAttrs) {
 
-	// You cannot pull-out materials if no staff is assigned to this
-	// project.
+	// You cannot pull-out materials if no staff
+	// is assigned to this project.
+	// AlertBoxGenerator here is ok, no service call.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj.getAssignedStaff().isEmpty()) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
@@ -1580,8 +1582,7 @@ public class ProjectController {
 	}
 
 	// Update the payroll then clear the computation.
-	String response = this.projectPayrollService.updatePayroll(session,
-		projectPayroll, toClear);
+	String response = this.projectPayrollService.updatePayroll(session, projectPayroll, toClear);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
@@ -1613,10 +1614,18 @@ public class ProjectController {
 	String payrollJSON = this.projectPayrollService
 		.compute(proj, startDate, endDate, projectPayroll);
 
-	// Construct response.
-	String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
-		datePart);
+	// If computation failed.
+	// AlertBoxGenerator here is ok, expecting a JSON.
+	String response = "";
+	if (payrollJSON.isEmpty()) {
+	    response = AlertBoxGenerator.ERROR;
+	}
+	// If success, construct response.
+	else {
+	    String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
+	    response = AlertBoxGenerator.SUCCESS
+		    .generateCompute(ConstantsRedis.OBJECT_PAYROLL, datePart);
+	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// List of possible approvers.
@@ -1654,7 +1663,7 @@ public class ProjectController {
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/" + ConstantsRedis.OBJECT_PULL_OUT + "/{"
 	    + ConstantsRedis.OBJECT_PULL_OUT + "}-end", method = RequestMethod.GET)
-    public String editPullOut(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key, Model model,
+    public String editPullOutExisting(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key, Model model,
 	    HttpSession session) {
 
 	// Get the object.
@@ -1732,6 +1741,7 @@ public class ProjectController {
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
+	// AlertBoxGenerator here is ok, blocking no prerequisites.
 	if (proj.getAssignedStaff().size() < 1) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF));

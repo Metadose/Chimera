@@ -30,6 +30,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_AUTH_PASSWORDS_NOT_EQUAL = "The <b>passwords</b> you entered were <b>not the same</b>.";
 
+    public static final String ERROR_AUTH_USERNAME_PASSWORD_EQUAL = "<b>Username and password</b> must <b>not be the same</b>.";
+
     public static final String ERROR_AUTH_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";
 
     // Commons.

@@ -19,7 +19,6 @@ import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.StaffService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(
@@ -95,44 +94,8 @@ public class StaffController {
     @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Staff.OBJECT_NAME) long id, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
-
-	Staff staff = this.staffService.getByID(id);
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>" + staff.getFullName() + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	this.staffService.delete(id);
-	status.setComplete();
-	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
-    }
-
-    /**
-     * Delete coming from the staff edit page.
-     * 
-     * @param status
-     * @param session
-     * @param redirectAttrs
-     * @return
-     */
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE, method = RequestMethod.POST)
-    public String delete(SessionStatus status, HttpSession session, RedirectAttributes redirectAttrs) {
-
-	Staff staff = (Staff) session.getAttribute(ATTR_STAFF);
-	if (staff == null) {
-	    AlertBoxGenerator alertFactory = AlertBoxGenerator.FAILED;
-	    alertFactory
-		    .setMessage("Error occured when you tried to <b>delete</b> staff. Please try again.");
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-	    status.setComplete();
-	    return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
-	}
-
-	AlertBoxGenerator alertFactory = AlertBoxGenerator.SUCCESS;
-	alertFactory.setMessage("Successfully <b>deleted</b> staff <b>" + staff.getFullName() + "</b>.");
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, alertFactory.generateHTML());
-
-	this.staffService.delete(staff.getId());
+	String response = this.staffService.delete(id);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
 	return ConstantsSystem.CONTROLLER_REDIRECT + ATTR_STAFF + "/" + ConstantsSystem.REQUEST_LIST;
     }

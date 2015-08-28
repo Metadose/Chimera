@@ -82,7 +82,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return ""; // This is meant to be empty, see references.
 	}
 
 	// Does not have form validation since this function is executed via
