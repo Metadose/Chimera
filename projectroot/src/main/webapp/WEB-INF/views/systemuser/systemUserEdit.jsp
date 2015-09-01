@@ -52,7 +52,7 @@
         		<a href="${urlDeleteUser}">
 					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				</a>
-				<button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 		</div>

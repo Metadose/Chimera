@@ -48,9 +48,11 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Service layer form validation.
-	this.systemConfigurationValidator.validate(systemConfiguration, result);
-	if (result.hasErrors()) {
-	    return this.validationHelper.errorMessageHTML(result);
+	if (result != null) {
+	    this.systemConfigurationValidator.validate(systemConfiguration, result);
+	    if (result.hasErrors()) {
+		return this.validationHelper.errorMessageHTML(result);
+	    }
 	}
 
 	AuthenticationToken auth = this.authHelper.getAuth();
@@ -190,9 +192,11 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Service layer form validation.
-	this.systemConfigurationValidator.validate(config, result);
-	if (result.hasErrors()) {
-	    return this.validationHelper.errorMessageHTML(result);
+	if (result != null) {
+	    this.systemConfigurationValidator.validate(config, result);
+	    if (result.hasErrors()) {
+		return this.validationHelper.errorMessageHTML(result);
+	    }
 	}
 
 	// Log.

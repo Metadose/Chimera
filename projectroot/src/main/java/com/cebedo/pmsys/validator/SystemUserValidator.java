@@ -3,6 +3,7 @@ package com.cebedo.pmsys.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -10,6 +11,7 @@ import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.model.SystemUser;
 
+@Component
 public class SystemUserValidator implements Validator {
 
     private static final String PATTERN_USERNAME = "^[a-z0-9_-]{4,32}$";

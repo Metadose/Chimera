@@ -46,7 +46,7 @@ public class LoginLogoutController {
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
     public String loginError(Model model, BindingResult result) {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");
-	return getLoginPage(result);
+	return getLoginPage();
     }
 
     /**
@@ -55,7 +55,7 @@ public class LoginLogoutController {
      * @return the name of the JSP page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginPage(BindingResult result) {
+    public String getLoginPage() {
 	// If no value, get value.
 	if (appInit == null) {
 	    String valStr = this.configService.getValueByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
@@ -67,7 +67,7 @@ public class LoginLogoutController {
 		SystemConfiguration config = new SystemConfiguration();
 		config.setName(ConstantsSystem.CONFIG_ROOT_INIT);
 		config.setValue("1");
-		this.configService.create(config, result);
+		this.configService.create(config, null);
 	    }
 
 	    // If found, and already init,
@@ -84,7 +84,7 @@ public class LoginLogoutController {
 		SystemConfiguration config = this.configService.getByName(
 			ConstantsSystem.CONFIG_ROOT_INIT, true);
 		config.setValue("1");
-		this.configService.merge(config, result);
+		this.configService.merge(config, null);
 	    }
 	}
 

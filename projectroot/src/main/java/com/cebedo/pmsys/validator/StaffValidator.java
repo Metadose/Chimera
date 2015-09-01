@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.validator;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -7,6 +8,7 @@ import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.model.Staff;
 
+@Component
 public class StaffValidator implements Validator {
 
     @Override

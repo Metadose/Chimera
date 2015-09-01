@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.validator;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -8,6 +9,7 @@ import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
 
+@Component
 public class PullOutValidator implements Validator {
 
     @Override
