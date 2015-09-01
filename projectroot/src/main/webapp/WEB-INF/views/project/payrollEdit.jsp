@@ -342,22 +342,6 @@
 			$('#'+id).submit();
 		}
 		
-		function checkAll(checkboxClass) {
-			$('.'+checkboxClass).each(function() { //loop through each checkbox
-	             this.checked = true;  //select all checkboxes with class "checkbox1"
-	             $(this).parent().attr('class', 'icheckbox_minimal checked');
-	        });
-			return false;
-		}
-		
-		function uncheckAll(checkboxClass) {
-			$('.'+checkboxClass).each(function() { //loop through each checkbox
-	             this.checked = false;  //select all checkboxes with class "checkbox1"
-	             $(this).parent().attr('class', 'icheckbox_minimal');
-	        });
-			return false;
-		}
-		
 		$(document).ready(function() {
 			$('.date-picker').datepicker({
 			    format: 'yyyy/mm/dd'

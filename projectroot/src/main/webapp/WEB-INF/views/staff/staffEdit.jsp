@@ -510,9 +510,6 @@
 	</div>
 	</c:if>
 	
-	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
-	
-	
 	<!-- InputMask -->
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>

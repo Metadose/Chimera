@@ -1910,9 +1910,6 @@
         </aside>
 	</div>
 	
-	<script src="<c:url value="/resources/js/common.js" />"type="text/javascript"></script>
-<!-- 	<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" type="text/javascript"></script> -->
-
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
@@ -2023,21 +2020,6 @@
 			$(".is-data-table").dataTable();
 	    });
 		
-		function checkAll(checkboxClass) {
-			$('.'+checkboxClass).each(function() { //loop through each checkbox
-	             this.checked = true;  //select all checkboxes with class "checkbox1"
-	             $(this).parent().attr('class', 'icheckbox_minimal checked');
-	        });
-			return false;
-		}
-		
-		function uncheckAll(checkboxClass) {
-			$('.'+checkboxClass).each(function() { //loop through each checkbox
-	             this.checked = false;  //select all checkboxes with class "checkbox1"
-	             $(this).parent().attr('class', 'icheckbox_minimal');
-	        });
-			return false;
-		}
 	</script>
 </body>
 </html>

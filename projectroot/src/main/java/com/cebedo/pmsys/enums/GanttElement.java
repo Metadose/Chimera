@@ -3,19 +3,12 @@ package com.cebedo.pmsys.enums;
 import com.cebedo.pmsys.utils.HTMLUtils;
 
 public enum GanttElement {
+
     TASK_NEW("btn-info", "NEW TASK", "#fff", "#5bc0de", "#46b8da"),
 
     TASK_ONGOING("btn-primary", "ONGOING TASK", "#fff", "#337ab7", "#2e6da4"),
 
-    TASK_COMPLETED("btn-success", "COMPLETED TASK", "#fff", "#5cb85c", "#4cae4c"),
-
-    TASK_CANCELLED("btn-warning", "CANCELLED TASK", "#fff", "#f0ad4e", "#eea236"),
-
-    TASK_FAILED("btn-danger", "FAILED TASK", "#fff", "#d9534f", "#d43f3a"),
-
-    PROJECT("btn-default", "PROJECT", "#333", "#fff", "#ccc"),
-
-    STAFF("btn-default", "STAFF", "#333", "#A6A6A6", "#ccc");
+    TASK_COMPLETED("btn-success", "COMPLETED TASK", "#fff", "#5cb85c", "#4cae4c");
 
     String className;
     String label;
@@ -44,9 +37,6 @@ public enum GanttElement {
 	    return TASK_COMPLETED;
 	}
 
-	else if (className.equals(TASK_CANCELLED.className())) {
-	    return TASK_CANCELLED;
-	}
 	return TASK_NEW;
     }
 

@@ -38,8 +38,8 @@ public class JSONTimelineGantt {
 	setOpen(true);
 	setDuration(0);
 	setType("Project");
-	setColor(GanttElement.PROJECT.backgroundColor());
-	setTextColor(GanttElement.PROJECT.color());
+	setColor("#A6A6A6");
+	setTextColor("#333");
     }
 
     public JSONTimelineGantt(Task task, JSONTimelineGantt parent) {
@@ -77,8 +77,8 @@ public class JSONTimelineGantt {
 	setOpen(true);
 	setDuration(0);
 	setType("Staff");
-	setColor(GanttElement.STAFF.backgroundColor());
-	setTextColor(GanttElement.STAFF.color());
+	setColor("#A6A6A6");
+	setTextColor("#333");
     }
 
     public JSONTimelineGantt(Task task, String parent) {
@@ -117,8 +117,8 @@ public class JSONTimelineGantt {
 	setDuration(0);
 	setType("Project");
 	setParent(parent.getId());
-	setColor(GanttElement.PROJECT.backgroundColor());
-	setTextColor(GanttElement.PROJECT.color());
+	setColor("#A6A6A6");
+	setTextColor("#333");
     }
 
     public String getId() {
