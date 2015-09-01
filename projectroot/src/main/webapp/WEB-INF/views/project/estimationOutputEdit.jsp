@@ -56,7 +56,7 @@
 						<%--<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/> --%>
 						<%--<h3 class="box-title">Computation as of ${lastComputed}</h3> --%>
 						</div>
-						<div class="box-body table-responsive">
+						<div class="box-body">
 
 						<table id="summary-table" class="table table-bordered table-striped">
 						<thead>

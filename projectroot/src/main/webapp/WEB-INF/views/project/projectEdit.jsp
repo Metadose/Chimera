@@ -931,7 +931,7 @@
 <!--                                 		<div class="box-header"> -->
 <!--           									<h3 class="box-title">Estimates</h3> -->
 <!--           								</div> -->
-		                                <div class="box-body table-responsive">
+		                                <div class="box-body">
                                    			<c:url var="urlCreate" value="/project/edit/estimate/0-end"/>
                                    			<a href="${urlCreate}">
 	                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate Quantity</button>

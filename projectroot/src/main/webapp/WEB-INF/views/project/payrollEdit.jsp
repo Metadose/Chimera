@@ -250,7 +250,7 @@
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
-                   								<div class="box-body table-responsive">
+                   								<div class="box-body">
                    									<div class="pull-right">
 			                                  		<h3>Grand Total <b><u>
                    									${projectPayroll.getTotalAsString()}
