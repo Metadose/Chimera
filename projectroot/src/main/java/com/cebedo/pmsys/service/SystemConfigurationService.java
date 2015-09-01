@@ -2,15 +2,17 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
+
 import com.cebedo.pmsys.model.SystemConfiguration;
 
 public interface SystemConfigurationService {
 
-    public String create(SystemConfiguration systemConfiguration);
+    public String create(SystemConfiguration systemConfiguration, BindingResult result);
 
     public SystemConfiguration getByID(long id);
 
-    public String update(SystemConfiguration systemConfiguration);
+    public String update(SystemConfiguration systemConfiguration, BindingResult result);
 
     public String delete(long id);
 
@@ -20,6 +22,6 @@ public interface SystemConfigurationService {
 
     public SystemConfiguration getByName(String name, boolean override);
 
-    public String merge(SystemConfiguration config);
+    public String merge(SystemConfiguration config, BindingResult result);
 
 }

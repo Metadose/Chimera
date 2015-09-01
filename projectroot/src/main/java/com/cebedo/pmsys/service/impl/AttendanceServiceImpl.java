@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
@@ -27,6 +29,8 @@ import com.cebedo.pmsys.repository.AttendanceValueRepo;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.validator.AttendanceValidator;
+import com.cebedo.pmsys.validator.FormMassAttendanceValidator;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -41,9 +45,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 	this.attendanceValueRepo = r;
     }
 
+    @Autowired
+    AttendanceValidator attendanceValidator;
+
+    @Autowired
+    FormMassAttendanceValidator formMassAttendanceValidator;
+
     @Override
     @Transactional
-    public String set(Attendance attendance) {
+    public String set(Attendance attendance, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
@@ -52,9 +62,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(attendance);
-	if (invalid != null) {
-	    return invalid;
+	this.attendanceValidator.validate(attendance, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.
@@ -250,7 +260,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    public String multiSet(FormMassAttendance attendanceMass) {
+    public String multiSet(FormMassAttendance attendanceMass, BindingResult result) {
 
 	Staff staff = attendanceMass.getStaff();
 
@@ -261,9 +271,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(attendanceMass);
-	if (invalid != null) {
-	    return invalid;
+	this.formMassAttendanceValidator.validate(attendanceMass, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

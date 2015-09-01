@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
@@ -27,6 +28,7 @@ import com.cebedo.pmsys.repository.PullOutValueRepo;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.MaterialValidator;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -63,9 +65,12 @@ public class MaterialServiceImpl implements MaterialService {
 	this.materialValueRepo = materialValueRepo;
     }
 
+    @Autowired
+    MaterialValidator materialValidator;
+
     @Override
     @Transactional
-    public String create(Material obj) {
+    public String create(Material obj, BindingResult result) {
 
 	// If company is null.
 	if (obj.getCompany() == null) {
@@ -78,9 +83,9 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(obj);
-	if (invalid != null) {
-	    return invalid;
+	this.materialValidator.validate(obj, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If we're creating.
@@ -238,7 +243,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public String update(Material material) {
+    public String update(Material material, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
@@ -247,9 +252,9 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(material);
-	if (invalid != null) {
-	    return invalid;
+	this.materialValidator.validate(material, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

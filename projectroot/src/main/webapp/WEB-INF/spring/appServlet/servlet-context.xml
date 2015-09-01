@@ -275,7 +275,6 @@
     <beans:bean id="staffService" class="com.cebedo.pmsys.service.impl.StaffServiceImpl">
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="projectDAO" ref="projectDAO"></beans:property>
-        <beans:property name="systemUserDAO" ref="systemUserDAO"></beans:property>
     </beans:bean>
     
     <!-- Task -->

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
@@ -39,6 +40,8 @@ import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.validator.MultipartFileValidator;
+import com.cebedo.pmsys.validator.ProjectValidator;
 import com.google.gson.Gson;
 
 @Service
@@ -78,12 +81,18 @@ public class ProjectServiceImpl implements ProjectService {
 	this.companyDAO = companyDAO;
     }
 
+    @Autowired
+    MultipartFileValidator multipartFileValidator;
+
+    @Autowired
+    ProjectValidator projectValidator;
+
     /**
      * Create Tasks from an Excel file.
      */
     @Override
     @Transactional
-    public String createTasksFromExcel(MultipartFile multipartFile, Project project) {
+    public String createTasksFromExcel(MultipartFile multipartFile, Project project, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
@@ -92,9 +101,9 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(multipartFile);
-	if (invalid != null) {
-	    return invalid;
+	this.multipartFileValidator.validate(multipartFile, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Do service.
@@ -139,7 +148,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Create mass.
 	// Returns null if ok.
-	invalid = this.taskService.createMassTasks(includeTasks);
+	String invalid = this.taskService.createMassTasks(includeTasks, result);
 	if (invalid != null) {
 	    return invalid;
 	}
@@ -156,12 +165,12 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public String create(Project project) {
+    public String create(Project project, BindingResult result) {
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(project);
-	if (invalid != null) {
-	    return invalid;
+	this.projectValidator.validate(project, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Do service.
@@ -183,7 +192,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public String createStaffFromExcel(MultipartFile multipartFile, Project proj) {
+    public String createStaffFromExcel(MultipartFile multipartFile, Project proj, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -192,9 +201,10 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(multipartFile);
-	if (invalid != null) {
-	    return invalid;
+	// Service layer form validation.
+	this.multipartFileValidator.validate(multipartFile, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Convert excel to staff objects.
@@ -209,7 +219,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
-	staffList = this.staffService.createOrGetStaffInList(staffList);
+	staffList = this.staffService.createOrGetStaffInList(staffList, result);
 
 	// There was a problem with the list of staff you provided. Please
 	// review the list and try again.
@@ -245,7 +255,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public String update(Project project) {
+    public String update(Project project, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
@@ -254,9 +264,9 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(project);
-	if (invalid != null) {
-	    return invalid;
+	this.projectValidator.validate(project, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Actual service.

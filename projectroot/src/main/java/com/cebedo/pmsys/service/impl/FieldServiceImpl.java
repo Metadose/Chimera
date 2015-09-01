@@ -1,7 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -14,6 +16,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.FieldAssignmentValidator;
 
 // TODO Transfer all below functions to Project Service.
 @Deprecated
@@ -35,12 +38,16 @@ public class FieldServiceImpl implements FieldService {
 	this.fieldDAO = fieldDAO;
     }
 
+    @Autowired
+    FieldAssignmentValidator fieldAssignmentValidator;
+
     /**
      * Assign a field to a project.
      */
     @Override
     @Transactional
-    public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID) {
+    public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID,
+	    BindingResult result) {
 
 	Project proj = this.projectDAO.getByID(projectID);
 
@@ -51,9 +58,9 @@ public class FieldServiceImpl implements FieldService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(fieldAssignment);
-	if (invalid != null) {
-	    return invalid;
+	this.fieldAssignmentValidator.validate(fieldAssignment, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.
@@ -127,7 +134,7 @@ public class FieldServiceImpl implements FieldService {
     @Override
     @Transactional
     public String updateField(long projectID, long fieldID, String oldLabel, String oldValue,
-	    String label, String value) {
+	    String label, String value, BindingResult result) {
 
 	Project proj = this.projectDAO.getByID(projectID);
 
@@ -141,9 +148,9 @@ public class FieldServiceImpl implements FieldService {
 		oldValue);
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(fieldAssignment);
-	if (invalid != null) {
-	    return invalid;
+	this.fieldAssignmentValidator.validate(fieldAssignment, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

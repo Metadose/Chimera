@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,7 @@ public class SystemUserController {
 
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// If request is to create new user.
 	if (systemUser.getId() == 0) {
@@ -87,7 +88,7 @@ public class SystemUserController {
 	    }
 	    // If everything is ok, create.
 	    catch (Exception e) {
-		String response = this.systemUserService.create(systemUser);
+		String response = this.systemUserService.create(systemUser, result);
 		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 		status.setComplete();
 		return editPage(systemUser.getId());
@@ -96,7 +97,7 @@ public class SystemUserController {
 
 	// If request is to update user.
 	// Redirect back to the edit page.
-	String response = this.systemUserService.update(systemUser);
+	String response = this.systemUserService.update(systemUser, result);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
 	return editPage(systemUser.getId());

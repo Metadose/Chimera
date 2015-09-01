@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -387,13 +388,13 @@ public class ProjectController {
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_PROJECT) Project project,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result) {
 
 	// If request is to create a new project.
 	if (project.getId() == 0) {
 
 	    // Get response.
-	    String response = this.projectService.create(project);
+	    String response = this.projectService.create(project, result);
 
 	    // Attach response.
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -403,7 +404,7 @@ public class ProjectController {
 
 	// Get response.
 	// If request is to edit a project.
-	String response = this.projectService.update(project);
+	String response = this.projectService.update(project, result);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -423,15 +424,16 @@ public class ProjectController {
     @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_UPDATE, method = RequestMethod.POST)
     public String updateField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment newFaBean, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// Old values.
 	FormFieldAssignment faBean = (FormFieldAssignment) session.getAttribute("old" + ATTR_FIELD);
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService.updateField(faBean.getProjectID(), faBean.getFieldID(),
-		faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue());
+	String response = this.fieldService
+		.updateField(faBean.getProjectID(), faBean.getFieldID(), faBean.getLabel(),
+			faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue(), result);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -572,7 +574,7 @@ public class ProjectController {
     @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
     public String assignField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment faBean, RedirectAttributes redirectAttrs,
-	    SessionStatus status) {
+	    SessionStatus status, BindingResult result) {
 
 	// Get project from session.
 	// Construct commit object.
@@ -586,7 +588,7 @@ public class ProjectController {
 
 	// Do service.
 	// Get response.
-	String response = this.fieldService.assignField(fieldAssignment, fieldID, proj.getId());
+	String response = this.fieldService.assignField(fieldAssignment, fieldID, proj.getId(), result);
 
 	// Construct ui notifications.
 	// Attach response.
@@ -622,10 +624,10 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_PULL_OUT }, method = RequestMethod.POST)
     public String updatePullout(@ModelAttribute(ConstantsRedis.OBJECT_PULL_OUT) PullOut pullout,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// Do service and get response.
-	String response = this.pullOutService.update(pullout);
+	String response = this.pullOutService.update(pullout, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -644,10 +646,10 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String updateMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// Do service and get response.
-	String response = this.materialService.update(material);
+	String response = this.materialService.update(material, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -696,12 +698,14 @@ public class ProjectController {
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_TASK }, method = RequestMethod.POST)
     public String createMassTask(
 	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadTask,
-	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
+	    BindingResult result) {
 
 	Project proj = massUploadTask.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createTasksFromExcel(massUploadTask.getFile(), proj);
+	String response = this.projectService.createTasksFromExcel(massUploadTask.getFile(), proj,
+		result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -716,12 +720,14 @@ public class ProjectController {
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
     public String createMassStaff(
 	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadStaff,
-	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
+	    BindingResult result) {
 
 	Project proj = massUploadStaff.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createStaffFromExcel(massUploadStaff.getFile(), proj);
+	String response = this.projectService.createStaffFromExcel(massUploadStaff.getFile(), proj,
+		result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -738,17 +744,18 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = RegistryURL.CREATE_STAFF, method = RequestMethod.POST)
-    public String createStaff(@ModelAttribute(ATTR_STAFF) Staff staff, RedirectAttributes redirectAttrs) {
+    public String createStaff(@ModelAttribute(ATTR_STAFF) Staff staff, RedirectAttributes redirectAttrs,
+	    BindingResult result) {
 
 	String response = "";
 
 	// Create staff.
 	if (staff.getId() == 0) {
-	    response = this.staffService.create(staff);
+	    response = this.staffService.create(staff, result);
 	}
 	// Update staff.
 	else {
-	    response = this.staffService.update(staff);
+	    response = this.staffService.update(staff, result);
 	}
 
 	// Add redirs attrs.
@@ -787,12 +794,13 @@ public class ProjectController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
 	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimateComputationInputBean estimateInput,
-	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
+	    BindingResult result) {
 
 	// Do service and get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	estimateInput.setProject(proj);
-	String response = this.estimateService.estimate(estimateInput);
+	String response = this.estimateService.estimate(estimateInput, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -938,13 +946,13 @@ public class ProjectController {
      */
     @RequestMapping(value = RegistryURL.CREATE_TASK, method = RequestMethod.POST)
     public String createTask(@ModelAttribute(ATTR_TASK) Task task, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	String response = "";
 	if (task.getId() == 0) {
-	    response = this.taskService.create(task);
+	    response = this.taskService.create(task, result);
 	} else {
-	    response = this.taskService.update(task);
+	    response = this.taskService.update(task, result);
 	}
 
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -995,10 +1003,10 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addAttendance(@ModelAttribute(ATTR_ATTENDANCE) Attendance attendance,
-	    HttpSession session, Model model) {
+	    HttpSession session, Model model, BindingResult result) {
 
 	// Do service.
-	String response = this.attendanceService.set(attendance);
+	String response = this.attendanceService.set(attendance, result);
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageStaffCalMaxDate(model, session, attendance.getDate());
     }
@@ -1012,12 +1020,12 @@ public class ProjectController {
     @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addMassAttendance(
 	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
-	    HttpSession session, Model model) {
+	    HttpSession session, Model model, BindingResult result) {
 
 	Date startDate = attendanceMass.getStartDate();
 
 	// Do service.
-	String response = this.attendanceService.multiSet(attendanceMass);
+	String response = this.attendanceService.multiSet(attendanceMass, result);
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return redirectEditPageStaffCalMaxDate(model, session, startDate);
@@ -1442,11 +1450,11 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_DO_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String createPullOut(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// Do service
 	// and get response.
-	String response = this.pullOutService.create(pullOut);
+	String response = this.pullOutService.create(pullOut, result);
 
 	// Add to model.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -1494,11 +1502,11 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String addMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
-	    RedirectAttributes redirecAttrs, SessionStatus status) {
+	    RedirectAttributes redirecAttrs, SessionStatus status, BindingResult result) {
 
 	// Do service
 	// and get response.
-	String response = this.materialService.create(material);
+	String response = this.materialService.create(material, result);
 
 	// Attach to redirect attributes.
 	redirecAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);

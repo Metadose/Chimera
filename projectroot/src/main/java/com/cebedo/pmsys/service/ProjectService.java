@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TaskStatus;
@@ -14,9 +15,10 @@ public interface ProjectService {
      * Create a new project.
      * 
      * @param project
+     * @param result
      * @return
      */
-    public String create(Project project);
+    public String create(Project project, BindingResult result);
 
     public Project getByID(long projectID);
 
@@ -24,9 +26,10 @@ public interface ProjectService {
      * Update a project.
      * 
      * @param project
+     * @param result
      * @return
      */
-    public String update(Project project);
+    public String update(Project project, BindingResult result);
 
     /**
      * Delete a project.
@@ -48,8 +51,8 @@ public interface ProjectService {
 
     public String getCalendarJSON(Project proj);
 
-    public String createStaffFromExcel(MultipartFile multipartFile, Project proj);
+    public String createStaffFromExcel(MultipartFile multipartFile, Project proj, BindingResult result);
 
-    public String createTasksFromExcel(MultipartFile multipartFile, Project project);
+    public String createTasksFromExcel(MultipartFile multipartFile, Project project, BindingResult result);
 
 }

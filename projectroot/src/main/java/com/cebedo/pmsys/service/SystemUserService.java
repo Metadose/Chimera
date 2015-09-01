@@ -2,6 +2,8 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
+
 import com.cebedo.pmsys.model.SystemUser;
 
 public interface SystemUserService {
@@ -14,17 +16,19 @@ public interface SystemUserService {
      * Create a new system user.
      * 
      * @param user
+     * @param result
      * @return
      */
-    public String create(SystemUser user);
+    public String create(SystemUser user, BindingResult result);
 
     /**
      * Update a user.
      * 
      * @param user
+     * @param result
      * @return
      */
-    public String update(SystemUser user);
+    public String update(SystemUser user, BindingResult result);
 
     /**
      * Update a user.

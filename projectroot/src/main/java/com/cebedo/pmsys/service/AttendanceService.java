@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.validation.BindingResult;
+
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -11,7 +13,7 @@ import com.cebedo.pmsys.pojo.FormMassAttendance;
 
 public interface AttendanceService {
 
-    public String set(Attendance attendance);
+    public String set(Attendance attendance, BindingResult result);
 
     /**
      * Get attendances of a staff in a range of time.
@@ -40,6 +42,6 @@ public interface AttendanceService {
 
     public double getTotalWageFromAttendance(Collection<Attendance> attendances);
 
-    public String multiSet(FormMassAttendance attendanceMass);
+    public String multiSet(FormMassAttendance attendanceMass, BindingResult result);
 
 }

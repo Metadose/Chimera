@@ -1,16 +1,18 @@
 package com.cebedo.pmsys.service;
 
-import java.util.List;
+import org.springframework.validation.BindingResult;
 
-import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 public interface FieldService {
 
     /**
      * Assign a field to a project.
+     * 
+     * @param result
      */
-    public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID);
+    public String assignField(FieldAssignment fieldAssignment, long fieldID, long projectID,
+	    BindingResult result);
 
     /**
      * Unassign a field from a project.
@@ -24,7 +26,9 @@ public interface FieldService {
 
     /**
      * Update an assign project field.
+     * 
+     * @param result
      */
-    public String updateField(long projectID, long fieldID, String oldLabel,
-	    String oldValue, String label, String value);
+    public String updateField(long projectID, long fieldID, String oldLabel, String oldValue,
+	    String label, String value, BindingResult result);
 }

@@ -2,8 +2,10 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -15,6 +17,7 @@ import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.SystemConfigurationValidator;
 
 @Service
 public class SystemConfigurationServiceImpl implements SystemConfigurationService {
@@ -29,9 +32,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	this.systemConfigurationDAO = systemConfigurationDAO;
     }
 
+    @Autowired
+    SystemConfigurationValidator systemConfigurationValidator;
+
     @Override
     @Transactional
-    public String create(SystemConfiguration systemConfiguration) {
+    public String create(SystemConfiguration systemConfiguration, BindingResult result) {
 
 	// Security check.
 	// Only super admins can create a config.
@@ -42,9 +48,9 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(systemConfiguration);
-	if (invalid != null) {
-	    return invalid;
+	this.systemConfigurationValidator.validate(systemConfiguration, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	AuthenticationToken auth = this.authHelper.getAuth();
@@ -78,7 +84,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public String update(SystemConfiguration systemConfiguration) {
+    public String update(SystemConfiguration systemConfiguration, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
@@ -88,9 +94,9 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(systemConfiguration);
-	if (invalid != null) {
-	    return invalid;
+	this.systemConfigurationValidator.validate(systemConfiguration, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.
@@ -175,7 +181,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @Override
     @Transactional
-    public String merge(SystemConfiguration config) {
+    public String merge(SystemConfiguration config, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(config)) {
@@ -184,9 +190,9 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(config);
-	if (invalid != null) {
-	    return invalid;
+	this.systemConfigurationValidator.validate(config, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

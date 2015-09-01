@@ -10,8 +10,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.EstimateComputationBean;
@@ -48,6 +50,7 @@ import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.EstimateUtils;
+import com.cebedo.pmsys.validator.EstimateInputValidator;
 import com.google.gson.Gson;
 
 @Service
@@ -92,9 +95,12 @@ public class EstimateServiceImpl implements EstimateService {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
+    @Autowired
+    EstimateInputValidator estimateInputValidator;
+
     @Override
     @Transactional
-    public String estimate(EstimateComputationInputBean estimateInput) {
+    public String estimate(EstimateComputationInputBean estimateInput, BindingResult result) {
 
 	// Security check.
 	Project proj = estimateInput.getProject();
@@ -104,9 +110,9 @@ public class EstimateServiceImpl implements EstimateService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(estimateInput);
-	if (invalid != null) {
-	    return invalid;
+	this.estimateInputValidator.validate(estimateInput, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

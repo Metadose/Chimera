@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.PairCountValue;
@@ -21,9 +22,10 @@ public interface StaffService {
      * Create a new staff.
      * 
      * @param staff
+     * @param result
      * @return
      */
-    public String create(Staff staff);
+    public String create(Staff staff, BindingResult result);
 
     public Staff getByID(long id);
 
@@ -33,7 +35,7 @@ public interface StaffService {
      * @param staff
      * @return
      */
-    public String update(Staff staff);
+    public String update(Staff staff, BindingResult result);
 
     /**
      * Delete a staff.
@@ -107,6 +109,6 @@ public interface StaffService {
 
     public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company);
 
-    public List<Staff> createOrGetStaffInList(List<Staff> staffList);
+    public List<Staff> createOrGetStaffInList(List<Staff> staffList, BindingResult result);
 
 }

@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -22,6 +24,7 @@ import com.cebedo.pmsys.repository.MaterialValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
 import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.PullOutValidator;
 
 @Service
 public class PullOutServiceImpl implements PullOutService {
@@ -46,12 +49,15 @@ public class PullOutServiceImpl implements PullOutService {
 	this.pullOutValueRepo = pullOutValueRepo;
     }
 
+    @Autowired
+    PullOutValidator pullOutValidator;
+
     /**
      * Create a pull-out.
      */
     @Override
     @Transactional
-    public String create(PullOut obj) {
+    public String create(PullOut obj, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
@@ -60,9 +66,9 @@ public class PullOutServiceImpl implements PullOutService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(obj);
-	if (invalid != null) {
-	    return invalid;
+	this.pullOutValidator.validate(obj, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If we're creating.
@@ -185,7 +191,7 @@ public class PullOutServiceImpl implements PullOutService {
 
     @Override
     @Transactional
-    public String update(PullOut newPullout) {
+    public String update(PullOut newPullout, BindingResult result) {
 
 	// Security check.
 	PullOut oldPullOut = this.pullOutValueRepo.get(newPullout.getKey());
@@ -195,9 +201,9 @@ public class PullOutServiceImpl implements PullOutService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(newPullout);
-	if (invalid != null) {
-	    return invalid;
+	this.pullOutValidator.validate(newPullout, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.
@@ -217,7 +223,7 @@ public class PullOutServiceImpl implements PullOutService {
 	    newPullout.setMaterial(updatedMaterial);
 
 	    // Create new entry.
-	    create(newPullout);
+	    create(newPullout, result);
 
 	    // Return.
 	    return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_PULL_OUT, newPullout

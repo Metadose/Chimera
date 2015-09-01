@@ -14,15 +14,16 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
-import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -42,6 +43,7 @@ import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.cebedo.pmsys.validator.StaffValidator;
 import com.cebedo.pmsys.wrapper.StaffWrapper;
 import com.google.gson.Gson;
 
@@ -65,11 +67,6 @@ public class StaffServiceImpl implements StaffService {
 
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
-    private SystemUserDAO systemUserDAO;
-
-    public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
-	this.systemUserDAO = systemUserDAO;
-    }
 
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
@@ -78,6 +75,9 @@ public class StaffServiceImpl implements StaffService {
     public void setStaffDAO(StaffDAO staffDAO) {
 	this.staffDAO = staffDAO;
     }
+
+    @Autowired
+    StaffValidator staffValidator;
 
     @Override
     @Transactional
@@ -207,7 +207,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     @Transactional
-    public List<Staff> createOrGetStaffInList(List<Staff> staffList) {
+    public List<Staff> createOrGetStaffInList(List<Staff> staffList, BindingResult result) {
 
 	Company company = null;
 	List<Staff> refinedStaff = new ArrayList<Staff>();
@@ -220,8 +220,8 @@ public class StaffServiceImpl implements StaffService {
 	    }
 
 	    // Service layer form validation.
-	    String invalid = this.validationHelper.validate(staff);
-	    if (invalid != null) {
+	    this.staffValidator.validate(staff, result);
+	    if (result.hasErrors()) {
 		continue;
 	    }
 
@@ -235,7 +235,7 @@ public class StaffServiceImpl implements StaffService {
 		refinedStaff.add(staffByName);
 		continue;
 	    }
-	    create(staff);
+	    create(staff, result);
 	    refinedStaff.add(staff);
 	}
 
@@ -251,12 +251,12 @@ public class StaffServiceImpl implements StaffService {
      */
     @Override
     @Transactional
-    public String create(Staff staff) {
+    public String create(Staff staff, BindingResult result) {
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(staff);
-	if (invalid != null) {
-	    return invalid;
+	this.staffValidator.validate(staff, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	AuthenticationToken auth = this.authHelper.getAuth();
@@ -300,7 +300,7 @@ public class StaffServiceImpl implements StaffService {
      */
     @Override
     @Transactional
-    public String update(Staff staff) {
+    public String update(Staff staff, BindingResult result) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
@@ -308,9 +308,9 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(staff);
-	if (invalid != null) {
-	    return invalid;
+	this.staffValidator.validate(staff, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.

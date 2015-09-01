@@ -20,9 +20,6 @@ public class Attendance implements IDomainObject {
     private Date date;
     private AttendanceStatus status;
 
-    /**
-     * Specs.
-     */
     private double wage;
 
     /**

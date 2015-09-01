@@ -2,6 +2,7 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.model.Project;
@@ -13,9 +14,10 @@ public interface TaskService {
      * Create a task.
      * 
      * @param task
+     * @param result
      * @return
      */
-    public String create(Task task);
+    public String create(Task task, BindingResult result);
 
     public Task getByID(long id);
 
@@ -25,7 +27,7 @@ public interface TaskService {
      * @param task
      * @return
      */
-    public String update(Task task);
+    public String update(Task task, BindingResult result);
 
     /**
      * Delete a task.
@@ -99,7 +101,7 @@ public interface TaskService {
      */
     public String deleteAllTasksByProject(long projectID);
 
-    public String createMassTasks(List<Task> tasks);
+    public String createMassTasks(List<Task> tasks, BindingResult result);
 
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project);
 

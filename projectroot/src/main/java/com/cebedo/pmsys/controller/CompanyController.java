@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,14 +56,14 @@ public class CompanyController {
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_COMPANY) Company company,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result) {
 
 	String response = "";
 
 	if (company.getId() == 0) {
-	    response = this.companyService.create(company);
+	    response = this.companyService.create(company, result);
 	} else {
-	    response = this.companyService.update(company);
+	    response = this.companyService.update(company, result);
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 

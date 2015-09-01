@@ -2,8 +2,10 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.controller.LoginLogoutController;
@@ -21,6 +23,7 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.SystemUserValidator;
 
 @Service
 public class SystemUserServiceImpl implements SystemUserService {
@@ -47,6 +50,9 @@ public class SystemUserServiceImpl implements SystemUserService {
     public void setSystemUserDAO(SystemUserDAO systemUserDAO) {
 	this.systemUserDAO = systemUserDAO;
     }
+
+    @Autowired
+    SystemUserValidator systemUserValidator;
 
     /**
      * Initialize the root account, if non-existent.
@@ -82,12 +88,12 @@ public class SystemUserServiceImpl implements SystemUserService {
      */
     @Override
     @Transactional
-    public String create(SystemUser systemUser) {
+    public String create(SystemUser systemUser, BindingResult result) {
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(systemUser);
-	if (invalid != null) {
-	    return invalid;
+	this.systemUserValidator.validate(systemUser, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Encrpyt password.
@@ -206,7 +212,7 @@ public class SystemUserServiceImpl implements SystemUserService {
      */
     @Override
     @Transactional
-    public String update(SystemUser user) {
+    public String update(SystemUser user, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(user)) {
@@ -215,9 +221,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(user);
-	if (invalid != null) {
-	    return invalid;
+	this.systemUserValidator.validate(user, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
@@ -248,12 +254,6 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    if (!this.authHelper.isActionAuthorized(user)) {
 		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
 		return AlertBoxGenerator.ERROR;
-	    }
-
-	    // Service layer form validation.
-	    String invalid = this.validationHelper.validate(user);
-	    if (invalid != null) {
-		return invalid;
 	    }
 
 	    // Log.

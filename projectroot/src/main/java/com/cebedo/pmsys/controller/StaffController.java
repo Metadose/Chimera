@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,17 +66,17 @@ public class StaffController {
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_STAFF) Staff staff, SessionStatus status,
-	    RedirectAttributes redirectAttrs) {
+	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	String response = "";
 
 	// Create staff.
 	if (staff.getId() == 0) {
-	    response = this.staffService.create(staff);
+	    response = this.staffService.create(staff, result);
 	}
 	// Update staff.
 	else {
-	    response = this.staffService.update(staff);
+	    response = this.staffService.update(staff, result);
 	}
 
 	// Add redirs attrs.

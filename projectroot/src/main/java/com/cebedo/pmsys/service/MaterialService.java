@@ -2,13 +2,15 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
+
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.model.Project;
 
 public interface MaterialService {
 
-    public String create(Material obj);
+    public String create(Material obj, BindingResult result);
 
     public String delete(String key);
 
@@ -18,6 +20,6 @@ public interface MaterialService {
 
     public List<Material> list(Project proj);
 
-    public String update(Material material);
+    public String update(Material material, BindingResult result);
 
 }

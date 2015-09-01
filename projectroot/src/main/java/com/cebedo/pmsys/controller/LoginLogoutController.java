@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -43,9 +44,9 @@ public class LoginLogoutController {
     }
 
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
-    public String loginError(Model model) {
+    public String loginError(Model model, BindingResult result) {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");
-	return getLoginPage();
+	return getLoginPage(result);
     }
 
     /**
@@ -54,7 +55,7 @@ public class LoginLogoutController {
      * @return the name of the JSP page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginPage() {
+    public String getLoginPage(BindingResult result) {
 	// If no value, get value.
 	if (appInit == null) {
 	    String valStr = this.configService.getValueByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
@@ -66,7 +67,7 @@ public class LoginLogoutController {
 		SystemConfiguration config = new SystemConfiguration();
 		config.setName(ConstantsSystem.CONFIG_ROOT_INIT);
 		config.setValue("1");
-		this.configService.create(config);
+		this.configService.create(config, result);
 	    }
 
 	    // If found, and already init,
@@ -83,7 +84,7 @@ public class LoginLogoutController {
 		SystemConfiguration config = this.configService.getByName(
 			ConstantsSystem.CONFIG_ROOT_INIT, true);
 		config.setValue("1");
-		this.configService.merge(config);
+		this.configService.merge(config, result);
 	    }
 	}
 

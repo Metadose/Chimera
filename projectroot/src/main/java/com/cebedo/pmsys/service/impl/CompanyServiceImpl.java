@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -16,6 +18,7 @@ import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.CompanyValidator;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -30,12 +33,15 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyDAO = companyDAO;
     }
 
+    @Autowired
+    CompanyValidator companyValidator;
+
     /**
      * Create a new company.
      */
     @Override
     @Transactional
-    public String create(Company company) {
+    public String create(Company company, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
@@ -44,9 +50,9 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(company);
-	if (invalid != null) {
-	    return invalid;
+	this.companyValidator.validate(company, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If start > end.
@@ -92,7 +98,7 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Override
     @Transactional
-    public String update(Company company) {
+    public String update(Company company, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
@@ -101,9 +107,9 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(company);
-	if (invalid != null) {
-	    return invalid;
+	this.companyValidator.validate(company, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If start > end.

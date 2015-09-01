@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,13 +63,13 @@ public class SystemConfigurationController {
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(
 	    @ModelAttribute(ATTR_SYSTEM_CONFIGURATION) SystemConfiguration systemConfiguration,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result) {
 
 	String response = "";
 	if (systemConfiguration.getId() == 0) {
-	    response = this.systemConfigurationService.create(systemConfiguration);
+	    response = this.systemConfigurationService.create(systemConfiguration, result);
 	} else {
-	    response = this.systemConfigurationService.update(systemConfiguration);
+	    response = this.systemConfigurationService.update(systemConfiguration, result);
 	}
 
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);

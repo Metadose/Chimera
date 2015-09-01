@@ -8,8 +8,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -28,6 +30,7 @@ import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.TaskValidator;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -58,9 +61,12 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO = taskDAO;
     }
 
+    @Autowired
+    TaskValidator taskValidator;
+
     @Override
     @Transactional
-    public String createMassTasks(List<Task> tasks) {
+    public String createMassTasks(List<Task> tasks, BindingResult result) {
 
 	// Security check.
 	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
@@ -72,9 +78,9 @@ public class TaskServiceImpl implements TaskService {
 	// TODO Optimize. Maybe throw exception to fail?
 	for (Task task : tasks) {
 	    // Service layer form validation.
-	    String invalid = this.validationHelper.validate(task);
-	    if (invalid != null) {
-		return invalid;
+	    this.taskValidator.validate(task, result);
+	    if (result.hasErrors()) {
+		return this.validationHelper.errorMessageHTML(result);
 	    }
 	}
 
@@ -184,12 +190,12 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String create(Task task) {
+    public String create(Task task, BindingResult result) {
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(task);
-	if (invalid != null) {
-	    return invalid;
+	this.taskValidator.validate(task, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	AuthenticationToken auth = this.authHelper.getAuth();
@@ -233,7 +239,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String update(Task task) {
+    public String update(Task task, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
@@ -242,9 +248,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(task);
-	if (invalid != null) {
-	    return invalid;
+	this.taskValidator.validate(task, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// Log.
