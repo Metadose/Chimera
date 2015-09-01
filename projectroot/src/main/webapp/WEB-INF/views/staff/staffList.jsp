@@ -50,7 +50,8 @@
 					                                            	<th>&nbsp;</th>
 					                                                <th>Full Name</th>
 					                                                <th>User Account</th>
-					                                                <th>Position</th>
+					                                                <th>Company Position</th>
+					                                                <th>Salary (Daily)</th>
 					                                                <th>E-Mail</th>
 					                                                <th>Contact Number</th>
 					                                            </tr>
@@ -78,8 +79,9 @@
 																				</a>
 							                                                </td>
 							                                                <td>${staff.companyPosition}</td>
+							                                                <td style="text-align: right;">${staff.getWageAsString()}</td>
 							                                                <td>${staff.email}</td>
-							                                                <td>${staff.contactNumber}</td>
+							                                                <td><fmt:formatNumber type="number" pattern="000" value="${staff.contactNumber}" /></td>
 							                                            </tr>
 						                                            </c:forEach>
 					                                            </c:if>
@@ -87,9 +89,10 @@
 					                                        <tfoot>
 					                                            <tr>
 					                                            	<th>&nbsp;</th>
-					                                                <th>Photo</th>
 					                                                <th>Full Name</th>
-					                                                <th>Position</th>
+					                                                <th>User Account</th>
+					                                                <th>Company Position</th>
+					                                                <th>Salary (Daily)</th>
 					                                                <th>E-Mail</th>
 					                                                <th>Contact Number</th>
 					                                            </tr>

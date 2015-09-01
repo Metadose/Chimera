@@ -133,7 +133,7 @@
 				                                            <form:input type="text" class="form-control" path="suffix" placeholder="Sample: Jr., Sr., II, III"/>
 				                                            <p class="help-block">Add the name suffix</p>
 				                                            
-				                                            <label>Position</label>
+				                                            <label>Company Position</label>
 				                                            <form:input type="text" class="form-control" path="companyPosition" placeholder="Sample: Skilled, Unskilled, Laborer, Mason"/>
 				                                            <p class="help-block">Indicate the company position</p>
 				                                            
@@ -146,7 +146,10 @@
 				                                            <p class="help-block">Add an e-mail address</p>
 				                                            
 				                                            <label>Contact Number</label>
-				                                            <form:input type="text" class="form-control" path="contactNumber" placeholder="Sample: 09226110411, 09271231111"/>
+				                                            <fmt:formatNumber type="number" pattern="000" value="${staff.contactNumber}" var="contactNumber"/>
+				                                            <form:input type="text" class="form-control" path="contactNumber"
+				                                            	value="${contactNumber}"
+				                                            	placeholder="Sample: 09226110411, 09271231111"/>
 				                                            <p class="help-block">Add a contact number</p>
 				                                        </div>
 				                                    </form:form>

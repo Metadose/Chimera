@@ -1795,9 +1795,9 @@
 																			</td>
 						                                                	<td>${assignedStaffMember.getFullName()}</td>
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
-						                                                	<td>${assignedStaffMember.getWageAsString()}</td>
+						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
-						                                                	<td>${assignedStaffMember.contactNumber}</td>
+						                                                	<td><fmt:formatNumber type="number" pattern="000" value="${assignedStaffMember.contactNumber}" /></td>
 							                                            </tr>
 						                                            </c:forEach>
 					                                        		</c:if>
@@ -1852,7 +1852,7 @@
 				                                    			<thead>
 				                                    			<tr>
 				                                    			<th>Check/Uncheck</th>
-				                                    			<th>Full Name</th>
+				                                                <th>Full Name</th>
 				                                                <th>Company Position</th>
 				                                                <th>Salary (Daily)</th>
 				                                                <th>E-Mail</th>
@@ -1872,9 +1872,9 @@
 					                                            			</a>
 						                                    			</td>
 						                                    			<td>${staff.companyPosition}</td>
-					                                                	<td>${staff.getWageAsString()}</td>
+					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
 					                                                	<td>${staff.email}</td>
-					                                                	<td>${staff.contactNumber}</td>
+					                                                	<td><fmt:formatNumber type="number" pattern="000" value="${staff.contactNumber}" /></td>
 						                                    			</tr>
 						                                    		</c:forEach>
 				                                    			</tbody>

@@ -175,7 +175,8 @@
 			                                            <tr>
 			                                            	<th>&nbsp;</th>
 			                                                <th>Full Name</th>
-			                                                <th>Position</th>
+			                                                <th>Company Position</th>
+			                                                <th>Salary (Daily)</th>
 			                                                <th>E-Mail</th>
 			                                                <th>Contact Number</th>
 			                                            </tr>
@@ -196,8 +197,9 @@
 																</td>
 				                                                <td>${staffAssign.getFullName()}</td>
 				                                                <td>${staffAssign.companyPosition}</td>
+				                                                <td style="text-align: right;">${staffAssign.getWageAsString()}</td>
 				                                                <td>${staffAssign.email}</td>
-				                                                <td>${staffAssign.contactNumber}</td>
+				                                                <td><fmt:formatNumber type="number" pattern="000" value="${staffAssign.contactNumber}" /></td>
 				                                            </tr>
 			                                            </c:forEach>
 				                                    </tbody>
