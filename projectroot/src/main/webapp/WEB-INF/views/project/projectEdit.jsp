@@ -493,7 +493,7 @@
 								                                	<c:if test="${!empty taskList}">
 						                                        		<c:forEach items="${taskList}" var="task">
 						                                        			<tr>
-						                                        				<td>
+						                                        				<td style="text-align: center;">
 						                                        					<div class="btn-group">
 											                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 											                                                Mark As&nbsp;

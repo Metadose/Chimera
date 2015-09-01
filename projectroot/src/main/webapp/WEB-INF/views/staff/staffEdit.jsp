@@ -190,7 +190,7 @@
 			                                        <tbody>
 		                                        		<c:forEach items="${taskList}" var="task">
 		                                        			<tr>
-		                                        				<td>
+		                                        				<td style="text-align: center;">
 							                                        <a href="<c:url value="/project/edit/task/${task.id}"/>">
 					                                            		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            	</a>
