@@ -108,16 +108,21 @@
 									                </tr>
 									                <tr>
 									                	<td><label>Available</label></td>
-									                	<td align="right">${pullout.material.available}
+									                	<td align="right">
+															<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
 									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Used</label></td>
-									                	<td align="right">${pullout.material.used}</td>
+									                	<td align="right">
+									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.used}" />
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Total Quantity</label></td>
-									                	<td align="right">${pullout.material.quantity}</td>
+									                	<td align="right">
+									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
+									                	</td>
 									                </tr>
 									                </table>
 									                <br/>
@@ -132,17 +137,51 @@
 														    	Out of Stock
 														    </c:if>
 														    <c:if test="${pullout.material.available > 0}">
-														    	${pullout.material.available} out of ${pullout.material.quantity} (${pullout.material.getAvailableAsPercentageForDisplay()})
+														    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
+														    	out of 
+																<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
+														    	(${pullout.material.getAvailableAsPercentageForDisplay()})
 														    </c:if>
 													    </div>
 													</div>
 									                
 													<c:set value="${contextPath}/project/do-pullout/material" var="formURL" />
-													<c:if test="${isUpdating}">
-														<c:set value="${contextPath}/project/update/pullout" var="formURL" />
-													</c:if>
-													
-                   									<form:form modelAttribute="pullout"
+
+				                                    <c:choose>
+													<c:when test="${isUpdating}">
+													<form:form modelAttribute="pullout"
+														id="pulloutForm"
+														method="post"
+														action="${formURL}">
+				                                        <div class="form-group">
+				                                            <label>Quantity</label><br/>
+				                                            <fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.quantity}" />
+				                                            <p class="help-block">The number of units that was pulled-out</p>
+
+				                                            <label>Staff</label><br/>
+				                                            ${pullout.staff.getFullName()}
+	 		                                    			<p class="help-block">The staff who pulled-out the material</p>
+
+				                                            <label>Date and Time</label><br/>
+	 		                                    			<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${pullout.datetime}" var="pulloutDateTime"/>
+				                                            ${pulloutDateTime}
+				                                            <p class="help-block">Date and time of the pull-out</p>
+
+				                                            <label>Remarks</label><br/>
+				                                            ${pullout.remarks}
+				                                            <p class="help-block">Additional remarks</p>
+				                                        </div>
+				                                    </form:form>
+
+													<c:url value="/project/delete/pullout/${pullout.getKey()}-end" var="urlDelete"/>
+				                                    <a href="${urlDelete}">
+       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+				                                    </a>
+													</c:when>
+
+													<c:when test="${!isUpdating}">
+
+													<form:form modelAttribute="pullout"
 														id="pulloutForm"
 														method="post"
 														action="${formURL}">
@@ -167,15 +206,7 @@
 				                                            <p class="help-block">Add additional remarks</p>
 				                                        </div>
 				                                    </form:form>
-				                                    <c:choose>
-													<c:when test="${isUpdating}">
-													<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
-													<c:url value="/project/delete/pullout/${pullout.getKey()}-end" var="urlDelete"/>
-				                                    <a href="${urlDelete}">
-       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				                                    </a>
-													</c:when>
-													<c:when test="${!isUpdating}">
+
                                             		<button onclick="submitForm('pulloutForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
 													</c:when>
 													</c:choose>

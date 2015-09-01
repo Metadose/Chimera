@@ -780,13 +780,18 @@
 																    </div>
 																</div>
 															    <c:if test="${row.available > 0}">
-															      ${row.available} (${row.getAvailableAsPercentage()})
+															    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.available}" />
+															      	(${row.getAvailableAsPercentage()})
 															    </c:if>
 																</td>
 																
-																<td align="right">${row.used}</td>
+																<td align="right">
+																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.used}" />
+																</td>
 																
-																<td align="right">${row.quantity}</td>
+																<td align="right">
+																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.quantity}" />
+																</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
 				                                            </tr>
@@ -862,11 +867,11 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                                <th>Date and Time</th>
+				                                            	<th>Staff</th>
 				                                                <th>Delivery</th>
 																<th>Material Category</th>
 																<th>Specific Name</th>
 				                                                <th>Unit</th>
-				                                            	<th>Staff</th>
 				                                                <th>Quantity</th>
 				                                            </tr>
 		                                        		</thead>
@@ -887,6 +892,14 @@
 																</td>
 																<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${row.datetime}" var="rowDatetime"/>
 																<td>${rowDatetime}</td>
+
+																<td>
+																<c:url var="urlLink" value="/project/edit/staff/${row.staff.id}"/>
+							                                    <a href="${urlLink}" class="general-link">
+																${row.staff.getFullName()}
+							                                    </a>
+																</td>
+
 																<td>
 																<c:url var="urlLink" value="/project/edit/delivery/${row.delivery.getKey()}-end"/>
 							                                    <a href="${urlLink}" class="general-link">
@@ -905,14 +918,9 @@
 																
 																<td>${row.material.getUnitName()}</td>
 																
-																<td>
-																<c:url var="urlLink" value="/project/edit/staff/${row.staff.id}"/>
-							                                    <a href="${urlLink}" class="general-link">
-																${row.staff.getFullName()}
-							                                    </a>
+																<td align="right">
+																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.quantity}" />
 																</td>
-																
-																<td align="right">${row.quantity}</td>
 																
 				                                            </tr>
 			                                            	</c:forEach>
@@ -1797,7 +1805,7 @@
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
 						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
-						                                                	<td><fmt:formatNumber type="number" pattern="000" value="${assignedStaffMember.contactNumber}" /></td>
+						                                                	<td><fmt:formatNumber type="number" pattern="###" value="${assignedStaffMember.contactNumber}" /></td>
 							                                            </tr>
 						                                            </c:forEach>
 					                                        		</c:if>
@@ -1874,7 +1882,7 @@
 						                                    			<td>${staff.companyPosition}</td>
 					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
 					                                                	<td>${staff.email}</td>
-					                                                	<td><fmt:formatNumber type="number" pattern="000" value="${staff.contactNumber}" /></td>
+					                                                	<td><fmt:formatNumber type="number" pattern="###" value="${staff.contactNumber}" /></td>
 						                                    			</tr>
 						                                    		</c:forEach>
 				                                    			</tbody>

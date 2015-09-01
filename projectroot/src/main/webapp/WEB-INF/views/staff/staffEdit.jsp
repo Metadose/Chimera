@@ -146,7 +146,7 @@
 				                                            <p class="help-block">Add an e-mail address</p>
 				                                            
 				                                            <label>Contact Number</label>
-				                                            <fmt:formatNumber type="number" pattern="000" value="${staff.contactNumber}" var="contactNumber"/>
+				                                            <fmt:formatNumber type="number" pattern="###" value="${staff.contactNumber}" var="contactNumber"/>
 				                                            <form:input type="text" class="form-control" path="contactNumber"
 				                                            	value="${contactNumber}"
 				                                            	placeholder="Sample: 09226110411, 09271231111"/>

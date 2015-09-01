@@ -35,6 +35,8 @@ public class Delivery implements IDomainObject {
      */
     private double grandTotalOfMaterials;
     private Set<Material> materials;
+
+    @Deprecated
     private Set<Staff> staff;
 
     /**
@@ -136,10 +138,12 @@ public class Delivery implements IDomainObject {
 	this.grandTotalOfMaterials = grandTotalOfMaterials;
     }
 
+    @Deprecated
     public Set<Staff> getStaff() {
 	return staff;
     }
 
+    @Deprecated
     public void setStaff(Set<Staff> staff) {
 	this.staff = staff;
     }

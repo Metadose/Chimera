@@ -240,13 +240,17 @@
 																    </div>
 																</div>
 															    <c:if test="${row.available > 0}">
-															      ${row.available} (${row.getAvailableAsPercentage()})
+															    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.available}" /> (${row.getAvailableAsPercentage()})
 															    </c:if>
 																</td>
 																
-																<td align="right">${row.used}</td>
+																<td align="right">
+																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.used}" />
+																</td>
 																
-																<td align="right">${row.quantity}</td>
+																<td align="right">
+																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.quantity}" />
+																</td>
 																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
 																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
 				                                            </tr>

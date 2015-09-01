@@ -615,28 +615,6 @@ public class ProjectController {
     }
 
     /**
-     * Do Update a pull out.
-     * 
-     * @param delivery
-     * @param redirectAttrs
-     * @param status
-     * @return
-     */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_PULL_OUT }, method = RequestMethod.POST)
-    public String updatePullout(@ModelAttribute(ConstantsRedis.OBJECT_PULL_OUT) PullOut pullout,
-	    RedirectAttributes redirectAttrs, BindingResult result) {
-
-	// Do service and get response.
-	String response = this.pullOutService.update(pullout, result);
-
-	// Add to redirect attrs.
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-
-	// Complete the transaction.
-	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_PULL_OUT, pullout.getKey());
-    }
-
-    /**
      * Update a material object.
      * 
      * @param delivery

@@ -199,7 +199,7 @@
 				                                                <td>${staffAssign.companyPosition}</td>
 				                                                <td style="text-align: right;">${staffAssign.getWageAsString()}</td>
 				                                                <td>${staffAssign.email}</td>
-				                                                <td><fmt:formatNumber type="number" pattern="000" value="${staffAssign.contactNumber}" /></td>
+				                                                <td><fmt:formatNumber type="number" pattern="###" value="${staffAssign.contactNumber}" /></td>
 				                                            </tr>
 			                                            </c:forEach>
 				                                    </tbody>

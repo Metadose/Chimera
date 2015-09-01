@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -66,15 +66,21 @@
 									                </tr>
 									                <tr>
 									                	<td><label>Available</label></td>
-									                	<td align="right">${material.available}</td>
+									                	<td align="right">
+									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${material.available}" />
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Used / Pulled-Out</label></td>
-									                	<td align="right">${material.used}</td>
+									                	<td align="right">
+									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${material.used}" />
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Total Quantity</label></td>
-									                	<td align="right">${material.quantity}</td>
+									                	<td align="right">
+									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${material.quantity}" />
+									                	</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Cost (Per Unit)</label></td>
@@ -97,7 +103,10 @@
 														    	Out of Stock
 														    </c:if>
 														    <c:if test="${material.available > 0}">
-														    	${material.available} out of ${material.quantity} (${material.getAvailableAsPercentageForDisplay()})
+														    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${material.available}" />
+														    	out of 
+																<fmt:formatNumber type="number" pattern="###,##0.0###" value="${material.quantity}" />
+														    	(${material.getAvailableAsPercentageForDisplay()})
 														    </c:if>
 													    </div>
 													</div>
