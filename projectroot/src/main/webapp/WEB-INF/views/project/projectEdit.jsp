@@ -431,11 +431,8 @@
 		                   						</div>
 		                   						<div class="col-md-6">
 		                   							<div class="box box-body box-default">
-		                   								<div class="box-header">
-		                   									<h3 class="box-title">Graph</h3>
-		                   								</div>
 		                   								<div class="box-body">
-		                   								Pie chart sa division sa summary (awa sa left side)
+		                   									<div id="highcharts-tasks"></div>
 		                   								</div>
 		                   							</div>
 		                   						</div>
@@ -1910,6 +1907,8 @@
         </aside>
 	</div>
 	
+	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+	
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
@@ -2019,6 +2018,44 @@
 			$("#tasks-table").dataTable();
 			$(".is-data-table").dataTable();
 	    });
+
+	    $(function () {
+		    $('#highcharts-tasks').highcharts({
+		        chart: {
+		            plotBackgroundColor: null,
+		            plotBorderWidth: null,
+		            plotShadow: false,
+		            type: 'pie'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+				title: {
+		            text: ''
+		        },
+		        tooltip: {
+		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		        },
+		        plotOptions: {
+		            pie: {
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+		                    style: {
+		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            name: "Tasks",
+		            colorByPoint: true,
+		            data: ${dataSeriesTasks}
+		        }]
+		    });
+		});
 		
 		$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 			var id = $(e.target).attr("href").substr(1);

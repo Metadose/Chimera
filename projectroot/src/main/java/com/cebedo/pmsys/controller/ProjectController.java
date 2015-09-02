@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
@@ -38,6 +41,7 @@ import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.CommonMassUnit;
@@ -62,6 +66,7 @@ import com.cebedo.pmsys.pojo.FormMassAttendance;
 import com.cebedo.pmsys.pojo.FormMassUpload;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
+import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
@@ -77,6 +82,7 @@ import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
+import com.google.gson.Gson;
 
 @Controller
 @SessionAttributes(
@@ -164,6 +170,8 @@ public class ProjectController {
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
+    public static final String ATTR_DATA_SERIES_TASKS = "dataSeriesTasks";
+    public static final String ATTR_DATA_SERIES_ATTENDANCE = "dataSeriesAttendance";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
@@ -1104,13 +1112,15 @@ public class ProjectController {
 
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.
+	Map<TaskStatus, Integer> taskStatusMap = this.staffService.getTaskStatusCountMap(staff);
+	Map<AttendanceStatus, PairCountValue> attendanceStatMap = this.staffService
+		.getAttendanceStatusCountMap(attendanceList);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE_STR,
 		maxDateStr == null ? DateUtils.formatDate(max, "yyyy-MM-dd") : maxDateStr);
 	model.addAttribute(ATTR_CALENDAR_MIN_DATE, min);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE, max);
-	model.addAttribute(ATTR_TASK_STATUS_MAP, this.staffService.getTaskStatusCountMap(staff));
-	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP,
-		this.staffService.getAttendanceStatusCountMap(attendanceList));
+	model.addAttribute(ATTR_TASK_STATUS_MAP, taskStatusMap);
+	model.addAttribute(ATTR_ATTENDANCE_STATUS_MAP, attendanceStatMap);
 
 	// Add objects.
 	// Add form beans.
@@ -1124,8 +1134,29 @@ public class ProjectController {
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
 	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
-
 	model.addAttribute(ATTR_FROM_PROJECT, true);
+
+	// Construct Highcharts data series.
+	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	for (TaskStatus status : taskStatusMap.keySet()) {
+	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
+		    NumberUtils.toDouble(taskStatusMap.get(status).toString()),
+		    CSSClass.backgroundColorOf(status.css()));
+	    dataSeries.add(point);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_TASKS, new Gson().toJson(dataSeries, ArrayList.class));
+
+	// Construct Highcharts data series.
+	dataSeries = new ArrayList<HighchartsDataPoint>();
+	for (AttendanceStatus status : attendanceStatMap.keySet()) {
+	    if (status == AttendanceStatus.DELETE) {
+		continue;
+	    }
+	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), attendanceStatMap.get(
+		    status).getCount(), CSSClass.backgroundColorOf(status.css()));
+	    dataSeries.add(point);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_ATTENDANCE, new Gson().toJson(dataSeries, ArrayList.class));
     }
 
     /**
@@ -1960,9 +1991,19 @@ public class ProjectController {
 
 	// Timeline taks status and count map.
 	// Summary map found in timeline tab.
-	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP,
-		this.projectService.getTaskStatusCountMap(proj));
+	Map<TaskStatus, Integer> taskStatusMap = this.projectService.getTaskStatusCountMap(proj);
+	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP, taskStatusMap);
 	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, CalendarEventType.class.getEnumConstants());
 	model.addAttribute(ATTR_GANTT_TYPE_LIST, GanttElement.class.getEnumConstants());
+
+	// Construct Highcharts data series.
+	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	for (TaskStatus status : taskStatusMap.keySet()) {
+	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
+		    NumberUtils.toDouble(taskStatusMap.get(status).toString()),
+		    CSSClass.backgroundColorOf(status.css()));
+	    dataSeries.add(point);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_TASKS, new Gson().toJson(dataSeries, ArrayList.class));
     }
 }

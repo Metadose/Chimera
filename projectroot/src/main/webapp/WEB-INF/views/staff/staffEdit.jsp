@@ -248,6 +248,13 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   									<div id="highcharts-tasks"></div>
+                   								</div>
+                   							</div>
+                   						</div>
               						</div>
               						</c:if>
                                 </div><!-- /.tab-pane -->
@@ -347,8 +354,19 @@
 								                            <p class="help-block">Provide the salary of the staff for these entries</p>
 								                 			</div>
 								                            
-								                            <label id="includeWeekendsLabel">Include Weekends</label>
-								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
+								                            <table>
+								                            	<tr>
+								                            		<td>
+								                            		<label id="includeWeekendsLabel">Include Weekends</label>
+								                            		</td>
+								                            	</tr>
+								                            	<tr>
+								                            		<td>
+								                            		<form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
+								                            		</td>								                            	
+								                            	</tr>
+								                            </table>
+
 								                            <p class="help-block">Check to include weekends</p>
 								                        </div>
 								                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
@@ -360,9 +378,18 @@
                    							<div class="box box-body box-default">
                    								<div class="box-header">
                    									<h3 class="box-title">Summary</h3>
+													<div class="pull-right">												
+					                                	<h3>Grand Total <b><u>
+					                                	<fmt:formatNumber type="currency" 
+					                                		currencySymbol="&#8369;"
+															value="${payrollTotalWage}" />
+														</u></b></h3>
+				                                	</div>
                    								</div>
                    								<div class="box-body">
 <!--      Map<Status, Integer> attendanceStatusMap = new HashMap<Status, Integer>(); -->
+
+
 												<table id="status-table" class="table table-bordered table-striped">
 												<thead>
 		                                    		<tr>
@@ -401,14 +428,8 @@
 												</c:forEach>
 												</tbody>
 												</table>
-												<div class="pull-right">
-												
-			                                	<h3>Grand Total <b><u>
-			                                	<fmt:formatNumber type="currency" 
-			                                		currencySymbol="&#8369;"
-													value="${payrollTotalWage}" />
-												</u></b></h3>
-			                                	</div>
+
+               									<div id="highcharts-attendance"></div>
                    								</div>
                    							</div>
                    						</div>
@@ -514,6 +535,8 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
+
+    <script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
 	
    	<c:if test="${staff.id != 0 && fromProject}">
    	<script type="text/javascript">
@@ -558,6 +581,8 @@
 				$("#modalWage").val(staffWage);
 				$("#myModal").modal('show');
 				
+				// TODO Broken here: var statusValue = calEvent.attendanceStatus;
+				// Value is the enum like "OVERTIME", not id like 1, 2, 3.
 				var statusValue = calEvent.attendanceStatus;
 				$('#attendanceStatus').val(statusValue);
 				
@@ -600,6 +625,82 @@
 			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task-table").dataTable();
 	    });
+
+	    $(function () {
+		    $('#highcharts-tasks').highcharts({
+		        chart: {
+		            plotBackgroundColor: null,
+		            plotBorderWidth: null,
+		            plotShadow: false,
+		            type: 'pie'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+				title: {
+		            text: ''
+		        },
+		        tooltip: {
+		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		        },
+		        plotOptions: {
+		            pie: { 
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+		                    style: {
+		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            name: "Tasks",
+		            colorByPoint: true,
+		            data: ${dataSeriesTasks}
+		        }]
+		    });
+		});
+
+	    $(function () {
+		    $('#highcharts-attendance').highcharts({
+		        chart: {
+		            plotBackgroundColor: null,
+		            plotBorderWidth: null,
+		            plotShadow: false,
+		            type: 'pie'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+				title: {
+		            text: ''
+		        },
+		        tooltip: {
+		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		        },
+		        plotOptions: {
+		            pie: { 
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+		                    style: {
+		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            name: "Attendance",
+		            colorByPoint: true,
+		            data: ${dataSeriesAttendance}
+		        }]
+		    });
+		});
 	</script>
 </body>
 </html>

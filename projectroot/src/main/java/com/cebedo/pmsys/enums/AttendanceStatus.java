@@ -9,7 +9,7 @@ public enum AttendanceStatus {
 
     PRESENT(1, "Present", "btn-success"),
 
-    OVERTIME(6, "Overtime", "btn-success"),
+    OVERTIME(6, "Overtime", "btn-success-2"),
 
     LATE(3, "Late", "btn-warning"),
 

@@ -2,6 +2,16 @@ input[type=checkbox] {
 	height: 20px;
 }
 
+.btn-success-2 {
+  background-color: #5cb85c;
+  border-color: #008d4c;
+}
+.btn-success-2:hover,
+.btn-success-2:active,
+.btn-success-2.hover {
+  background-color: #5cb85c;
+}
+
 /* Data Tables */
 .table-cebedo-top-header {
 	text-align: center;

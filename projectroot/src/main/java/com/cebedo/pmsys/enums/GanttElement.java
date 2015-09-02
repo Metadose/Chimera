@@ -4,11 +4,11 @@ import com.cebedo.pmsys.utils.HTMLUtils;
 
 public enum GanttElement {
 
-    TASK_NEW("btn-info", "NEW TASK", "#fff", "#5bc0de", "#46b8da"),
+    TASK_NEW("btn-info", "NEW", "#fff", "#5bc0de", "#46b8da"),
 
-    TASK_ONGOING("btn-primary", "ONGOING TASK", "#fff", "#337ab7", "#2e6da4"),
+    TASK_ONGOING("btn-primary", "ONGOING", "#fff", "#337ab7", "#2e6da4"),
 
-    TASK_COMPLETED("btn-success", "COMPLETED TASK", "#fff", "#5cb85c", "#4cae4c");
+    TASK_COMPLETED("btn-success", "COMPLETED", "#fff", "#5cb85c", "#4cae4c");
 
     String className;
     String label;
