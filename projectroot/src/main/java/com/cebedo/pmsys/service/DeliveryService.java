@@ -13,6 +13,8 @@ public interface DeliveryService {
 
     public Delivery get(String uuid);
 
-    public List<Delivery> list(Project proj);
+    public List<Delivery> listDesc(Project proj);
+
+    public List<Delivery> listAsc(Project proj);
 
 }

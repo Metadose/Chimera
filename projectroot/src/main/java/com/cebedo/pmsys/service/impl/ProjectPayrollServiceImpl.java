@@ -316,7 +316,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
      */
     @Transactional
     @Override
-    public List<ProjectPayroll> list(Project proj) {
+    public List<ProjectPayroll> listDesc(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -342,8 +342,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
 	    @Override
 	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
-		Date aStart = aObj.getStartDate();
-		Date bStart = bObj.getStartDate();
+		Date aStart = aObj.getEndDate();
+		Date bStart = bObj.getEndDate();
 
 		// To sort in ascending,
 		// remove Not's.
@@ -437,6 +437,45 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
+    }
+
+    @Transactional
+    @Override
+    public List<ProjectPayroll> listAsc(Project proj) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<ProjectPayroll>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PAYROLL);
+
+	// Get the needed ID's for the key.
+	// Construct the key.
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
+	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
+
+	// Get all keys based on pattern.
+	// Multi-get all objects based on keys.
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo.multiGet(keys);
+
+	// Sort the list in ascending order.
+	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
+	    @Override
+	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
+		Date aStart = aObj.getEndDate();
+		Date bStart = bObj.getEndDate();
+
+		// To sort in ascending,
+		// remove Not's.
+		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+
+	return projectPayrolls;
     }
 
 }

@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -105,7 +108,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public List<Delivery> list(Project proj) {
+    public List<Delivery> listDesc(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -119,7 +122,22 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	String pattern = Delivery.constructPattern(proj);
 	Set<String> keys = this.deliveryValueRepo.keys(pattern);
-	return this.deliveryValueRepo.multiGet(keys);
+
+	List<Delivery> deliveries = this.deliveryValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(deliveries, new Comparator<Delivery>() {
+	    @Override
+	    public int compare(Delivery aObj, Delivery bObj) {
+		Date aStart = aObj.getDatetime();
+		Date bStart = bObj.getDatetime();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return deliveries;
     }
 
     @Override
@@ -169,6 +187,40 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_DELIVERY,
 		delivery.getName());
+    }
+
+    @Transactional
+    @Override
+    public List<Delivery> listAsc(Project proj) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<Delivery>();
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_DELIVERY);
+
+	String pattern = Delivery.constructPattern(proj);
+	Set<String> keys = this.deliveryValueRepo.keys(pattern);
+
+	List<Delivery> deliveries = this.deliveryValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(deliveries, new Comparator<Delivery>() {
+	    @Override
+	    public int compare(Delivery aObj, Delivery bObj) {
+		Date aStart = aObj.getDatetime();
+		Date bStart = bObj.getDatetime();
+
+		// To sort in ascending,
+		// remove Not's.
+		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+	return deliveries;
     }
 
 }

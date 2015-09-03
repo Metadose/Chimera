@@ -11,6 +11,8 @@ import java.util.List;
 
 public class DateUtils {
 
+    public static final String PATTERN_DATE_TIME = "yyyy/MM/dd hh:mm a";
+
     public static Date convertStringToDate(String dateString) throws ParseException {
 	DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	Date date = formatter.parse(dateString);

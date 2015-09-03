@@ -590,17 +590,19 @@
 		                            <div class="col-md-12">
                							<div class="box box-body box-default">
                								<div class="box-body">
+
+		                                  		<div class="pull-right">
+		                                  		<h3>Grand Total <b><u>
+			                                	${projectAux.getGrandTotalPayrollAsString()}
+												</u></b></h3>
+												</div>
+
 										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
 		                                  		<a href="${urlCreateTeam}">
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
 		                                  		</a>
 		                                  		<br/>
 		                                  		<br/>
-		                                  		<div class="pull-right">
-		                                  		<h3>Grand Total <b><u>
-			                                	${projectAux.getGrandTotalPayrollAsString()}
-												</u></b></h3>
-												</div>
 			                                    <table id="payroll-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                            <tr>
@@ -659,28 +661,30 @@
                							</div>
                						</div>
                						</div>
+               						<c:if test="${!empty payrollList}">
 		                            <div class="row">
-		                            <div class="col-md-6">
+               						<div class="col-md-6">
                							<div class="box box-body box-default">
-               								<div class="box-header">
-               									<h3 class="box-title">Graph</h3>
-               								</div>
                								<div class="box-body">
-               									Line graph here of [release date, total]
+               									<div id="highcharts-payroll"></div>
+               								</div>
+               							</div>
+               						</div>
+               						<div class="col-md-6">
+               							<div class="box box-body box-default">
+               								<div class="box-body">
+               									<div id="highcharts-payroll-cumulative"></div>
                								</div>
                							</div>
                						</div>
                						</div>
+               						</c:if>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_inventory">
                                 
                                 	<c:choose>
                                 	<c:when test="${empty materialList}">
                                 		<c:set value="hide" var="materialsVisibility"/>
-                                		<c:set value="active" var="deliveriesVisibility"/>
-                                	</c:when>
-                                	<c:when test="${!empty materialList}">
-                                		<c:set value="active" var="materialsVisibility"/>
                                 	</c:when>
                                 	</c:choose>
 
@@ -691,8 +695,8 @@
                                 	
                                 	<div class="nav-tabs-custom">
 		                            <ul class="nav nav-tabs" id="subtabs-inventory">
+                                		<li class="active"><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
 		                                <li class="${materialsVisibility}"><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
-                                		<li class="${deliveriesVisibility}"><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
 		                                <li class="${pulloutsVisibility}"><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
 		                            </ul>
 		                            <div class="tab-content">
@@ -701,11 +705,6 @@
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
 	               								<div class="box-body box-default">
-									                <div class="pull-right">
-			                                  		<h3>Grand Total <b><u>
-				                                	${projectAux.getGrandTotalDeliveryAsString()}
-													</u></b></h3>
-													</div>
 				                                    <table id="material-table" class="table table-bordered table-striped">
 				                                    	<thead>
 				                                            <tr>
@@ -799,11 +798,18 @@
 		                                </div>
 		                                
 		                                
-		                                <div class="tab-pane ${deliveriesVisibility}" id="subtab_delivery">
+		                                <div class="tab-pane active" id="subtab_delivery">
 		                                <div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
 	               								<div class="box-body">
+
+									                <div class="pull-right">
+			                                  		<h3>Grand Total <b><u>
+				                                	${projectAux.getGrandTotalDeliveryAsString()}
+													</u></b></h3>
+													</div>
+
 											  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
 			                                  		<a href="${urlCreateDelivery}">
 			                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
@@ -848,6 +854,26 @@
 	               							</div>
 	               						</div>
 	               						</div>
+
+	               						<c:if test="${!empty materialList}">
+	               						<div class="row">
+	               						<div class="col-md-6">
+	               							<div class="box box-body box-default">
+	               								<div class="box-body">
+	               									<div id="highcharts-inventory"></div>
+	               								</div>
+	               							</div>
+	               						</div>
+	               						<div class="col-md-6">
+	               							<div class="box box-body box-default">
+	               								<div class="box-body">
+	               									<div id="highcharts-inventory-cumulative"></div>
+	               								</div>
+	               							</div>
+	               						</div>
+	               						</div>
+	               						</c:if>
+
 		                                </div>
 		                                
 		                                
@@ -2016,6 +2042,210 @@
 			$("#tasks-table").dataTable();
 			$(".is-data-table").dataTable();
 	    });
+
+	    $(function () {
+		    $('#highcharts-inventory').highcharts({
+		        chart: {
+		            type: 'spline'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+	                type: 'datetime',
+	                dateTimeLabelFormats: {
+						millisecond: '%e. %b',
+						second: '%e. %b',
+						minute: '%e. %b',
+						hour: '%e. %b',
+						day: '%e. %b',
+						week: '%e. %b',
+						month: '%b \'%y',
+						year: '%Y'
+					},
+					title: {
+		                text: 'Date'
+		            }
+	            },
+		        yAxis: {
+		            title: {
+		                text: 'Material Expenses (PHP)'
+		            },
+		            min: 0
+		        },
+		        tooltip: {
+		            pointFormat: '<b>{point.y}</b>'
+		        },
+		        plotOptions: {
+		            spline: {
+		                marker: {
+		                    enabled: true,
+		                    radius: 8
+		                }
+		            }
+		        },
+		        series: [{
+		        	name: 'Materials Expenses',
+		            data: ${dataSeriesInventory}
+		        }]
+		    });
+		});
+
+	    $(function () {
+		    $('#highcharts-inventory-cumulative').highcharts({
+		        chart: {
+		            type: 'spline'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+	                type: 'datetime',
+	                dateTimeLabelFormats: {
+						millisecond: '%e. %b',
+						second: '%e. %b',
+						minute: '%e. %b',
+						hour: '%e. %b',
+						day: '%e. %b',
+						week: '%e. %b',
+						month: '%b \'%y',
+						year: '%Y'
+					},
+					title: {
+		                text: 'Date'
+		            }
+	            },
+		        yAxis: {
+		            title: {
+		                text: 'Material Expenses (PHP)'
+		            },
+		            min: 0
+		        },
+		        tooltip: {
+		            pointFormat: '<b>{point.y}</b>'
+		        },
+		        plotOptions: {
+		            spline: {
+		                marker: {
+		                    enabled: true,
+		                    radius: 8
+		                }
+		            }
+		        },
+		        series: [{
+		        	name: 'Materials Cumulative',
+		            data: ${dataSeriesInventoryCumulative}
+		        }]
+		    });
+		});
+
+		$(function () {
+		    $('#highcharts-payroll-cumulative').highcharts({
+		        chart: {
+		            type: 'spline'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+	                type: 'datetime',
+	                dateTimeLabelFormats: {
+						millisecond: '%e. %b',
+						second: '%e. %b',
+						minute: '%e. %b',
+						hour: '%e. %b',
+						day: '%e. %b',
+						week: '%e. %b',
+						month: '%b \'%y',
+						year: '%Y'
+					},
+					title: {
+		                text: 'Date'
+		            }
+	            },
+		        yAxis: {
+		            title: {
+		                text: 'Payroll Expenses (PHP)'
+		            },
+		            min: 0
+		        },
+		        tooltip: {
+		            pointFormat: '<b>{point.y}</b>'
+		        },
+		        plotOptions: {
+		            spline: {
+		                marker: {
+		                    enabled: true,
+		                    radius: 8
+		                }
+		            }
+		        },
+		        series: [{
+		        	name: 'Payroll Cumulative',
+		            data: ${dataSeriesPayrollCumulative}
+		        }]
+		    });
+		});
+
+	    $(function () {
+		    $('#highcharts-payroll').highcharts({
+		        chart: {
+		            type: 'spline'
+		        },
+		        credits: {
+		        	enabled: false
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+	                type: 'datetime',
+	                dateTimeLabelFormats: {
+						millisecond: '%e. %b',
+						second: '%e. %b',
+						minute: '%e. %b',
+						hour: '%e. %b',
+						day: '%e. %b',
+						week: '%e. %b',
+						month: '%b \'%y',
+						year: '%Y'
+					},
+					title: {
+		                text: 'Date'
+		            }
+	            },
+		        yAxis: {
+		            title: {
+		                text: 'Payroll Expenses (PHP)'
+		            },
+		            min: 0
+		        },
+		        tooltip: {
+		            pointFormat: '<b>{point.y}</b>'
+		        },
+		        plotOptions: {
+		            spline: {
+		                marker: {
+		                    enabled: true,
+		                    radius: 8
+		                }
+		            }
+		        },
+		        series: [{
+		        	name: 'Payroll Expenses',
+		            data: ${dataSeriesPayroll}
+		        }]
+		    });
+		});
 
 	    $(function () {
 		    $('#highcharts-tasks').highcharts({

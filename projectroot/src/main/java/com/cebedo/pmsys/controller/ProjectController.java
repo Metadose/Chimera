@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
 import com.cebedo.pmsys.bean.PairCountValue;
+import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
@@ -172,6 +173,10 @@ public class ProjectController {
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_DATA_SERIES_TASKS = "dataSeriesTasks";
     public static final String ATTR_DATA_SERIES_ATTENDANCE = "dataSeriesAttendance";
+    public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
+    public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
+    public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
+    public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
@@ -1944,8 +1949,37 @@ public class ProjectController {
     private void setPayrollAttributes(Project proj, Model model) {
 	// Get all payrolls.
 	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectPayrollService.list(proj);
+	List<ProjectPayroll> payrollList = this.projectPayrollService.listAsc(proj);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
+
+	// Graph data.
+	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> dataSeriesCumulative = new ArrayList<HighchartsDataPoint>();
+	double accumulation = 0;
+	for (ProjectPayroll payroll : payrollList) {
+
+	    // If it doesn't have a payroll JSON,
+	    // then it has not been computed.
+	    String payrollJSON = payroll.getPayrollJSON();
+	    if (payrollJSON != null && !payrollJSON.isEmpty()) {
+		String name = payroll.getStartEndDisplay();
+		PayrollResultComputation result = payroll.getPayrollComputationResult();
+		double yValue = result.getOverallTotalOfStaff();
+
+		HighchartsDataPoint point = new HighchartsDataPoint(name, result.getEndDate().getTime(),
+			yValue, CSSClass.backgroundColorOf(payroll.getStatus().css()));
+		dataSeries.add(point);
+
+		// Cumulative
+		accumulation += yValue;
+		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, result.getEndDate()
+			.getTime(), accumulation, CSSClass.backgroundColorOf(payroll.getStatus().css()));
+		dataSeriesCumulative.add(pointCumulative);
+	    }
+	}
+	model.addAttribute(ATTR_DATA_SERIES_PAYROLL, new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PAYROLL_CUMULATIVE,
+		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
     }
 
     /**
@@ -1959,8 +1993,31 @@ public class ProjectController {
 	// Get all pull-outs.
 	// Get inventory.
 	// Then add to model.
-	List<Delivery> deliveryList = this.deliveryService.list(proj);
+	List<Delivery> deliveryList = this.deliveryService.listAsc(proj);
 	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
+
+	// Graph.
+	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> dataSeriesCumulative = new ArrayList<HighchartsDataPoint>();
+	double accumulation = 0;
+	for (Delivery delivery : deliveryList) {
+	    double yValue = delivery.getGrandTotalOfMaterials();
+	    Date datetime = delivery.getDatetime();
+	    String name = String.format("%s<br/>%s",
+		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), delivery.getName());
+
+	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
+	    dataSeries.add(point);
+
+	    // Cumulative.
+	    accumulation += yValue;
+	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
+		    accumulation);
+	    dataSeriesCumulative.add(pointCumulative);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_INVENTORY, new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_INVENTORY_CUMULATIVE,
+		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
 
 	// Get all materials.
 	// Add to model.

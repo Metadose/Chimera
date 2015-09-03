@@ -15,8 +15,7 @@ public interface ProjectPayrollService {
 
     public ProjectPayroll get(String key);
 
-    public String compute(Project proj, Date startDate, Date endDate,
-	    ProjectPayroll projectPayroll);
+    public String compute(Project proj, Date startDate, Date endDate, ProjectPayroll projectPayroll);
 
     /**
      * Create or update a payroll.
@@ -36,8 +35,7 @@ public interface ProjectPayrollService {
      * @param toClear
      * @return
      */
-    public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll,
-	    String toClear);
+    public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll, String toClear);
 
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList);
 
@@ -47,6 +45,8 @@ public interface ProjectPayrollService {
     public String getPayrollJSON(Project proj, Date startDate, Date endDate,
 	    ProjectPayroll getPayrollJSON);
 
-    public List<ProjectPayroll> list(Project proj);
+    public List<ProjectPayroll> listDesc(Project proj);
+
+    public List<ProjectPayroll> listAsc(Project proj);
 
 }
