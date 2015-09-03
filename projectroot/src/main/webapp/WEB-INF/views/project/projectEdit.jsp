@@ -357,6 +357,43 @@
 
 									
 										<div class="tab-pane ${timelineVisibility}" id="subtab_chart">
+											<div class="row ${tasksSummaryVisibility}">
+		                   						<div class="col-md-6">
+		                   							<div class="box box-body box-default">
+		                   								<div class="box-body">
+														<table id="task-status-table" class="table table-bordered table-striped">
+														<thead>
+				                                    		<tr>
+					                                            <th>Task Status</th>
+					                                            <th>Count</th>
+					                                        </tr>
+				                                    	</thead>
+														<tbody>
+														<c:forEach items="${taskStatusMap}" var="statusEntry">
+														<c:set value="${statusEntry.key}" var="entryKey"/>
+														<c:set value="${statusEntry.value}" var="entryValue"/>
+															<tr>
+																<td>
+						                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+																</td>
+																<td>
+																	${entryValue}
+																</td>
+															</tr>
+														</c:forEach>
+														</tbody>
+														</table>
+		                   								</div>
+		                   							</div>
+		                   						</div>
+		                   						<div class="col-md-6">
+		                   							<div class="box box-body box-default">
+		                   								<div class="box-body">
+		                   									<div id="highcharts-tasks"></div>
+		                   								</div>
+		                   							</div>
+		                   						</div>
+		              						</div>
 											<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
@@ -397,46 +434,6 @@
 										</div>
 										
 										<div class="tab-pane ${tasksVisibility}" id="subtab_tasks">
-											<div class="row ${tasksSummaryVisibility}">
-		                   						<div class="col-md-6">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-header">
-		                   									<h3 class="box-title">Summary</h3>
-		                   								</div>
-		                   								<div class="box-body">
-														<table id="task-status-table" class="table table-bordered table-striped">
-														<thead>
-				                                    		<tr>
-					                                            <th>Task Status</th>
-					                                            <th>Count</th>
-					                                        </tr>
-				                                    	</thead>
-														<tbody>
-														<c:forEach items="${taskStatusMap}" var="statusEntry">
-														<c:set value="${statusEntry.key}" var="entryKey"/>
-														<c:set value="${statusEntry.value}" var="entryValue"/>
-															<tr>
-																<td>
-						                                            <span class="label ${entryKey.css()}">${entryKey}</span>
-																</td>
-																<td>
-																	${entryValue}
-																</td>
-															</tr>
-														</c:forEach>
-														</tbody>
-														</table>
-		                   								</div>
-		                   							</div>
-		                   						</div>
-		                   						<div class="col-md-6">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-body">
-		                   									<div id="highcharts-tasks"></div>
-		                   								</div>
-		                   							</div>
-		                   						</div>
-		              						</div>
 	              						<div class="row">
 	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
@@ -1908,6 +1905,7 @@
 	</div>
 	
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
@@ -2022,10 +2020,11 @@
 	    $(function () {
 		    $('#highcharts-tasks').highcharts({
 		        chart: {
-		            plotBackgroundColor: null,
-		            plotBorderWidth: null,
-		            plotShadow: false,
-		            type: 'pie'
+		            type: 'pie',
+		            options3d: {
+		                enabled: true,
+		                alpha: 45
+		            }
 		        },
 		        credits: {
 		        	enabled: false
@@ -2034,10 +2033,12 @@
 		            text: ''
 		        },
 		        tooltip: {
-		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
 		        },
 		        plotOptions: {
 		            pie: {
+		                innerSize: 100,
+		                depth: 45,
 		                allowPointSelect: true,
 		                cursor: 'pointer',
 		                dataLabels: {

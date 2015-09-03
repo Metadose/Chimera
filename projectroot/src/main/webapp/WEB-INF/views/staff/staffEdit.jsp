@@ -171,6 +171,46 @@
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_timeline">
+                                	<c:if test="${!empty taskList}">
+              						<div class="row">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   								<!--      Map<TaskStatus, Integer> taskStatusMap = getTaskStatusMap(staff); -->
+												<table id="task-status-table" class="table table-bordered table-striped">
+												<thead>
+		                                    		<tr>
+			                                            <th>Status</th>
+			                                            <th>Count</th>
+			                                        </tr>
+		                                    	</thead>
+												<tbody>
+												<c:forEach items="${taskStatusMap}" var="statusEntry">
+												<c:set value="${statusEntry.key}" var="entryKey"/>
+												<c:set value="${statusEntry.value}" var="entryValue"/>
+													<tr>
+														<td>
+				                                            <span class="label ${entryKey.css()}">${entryKey}</span>
+														</td>
+														<td>
+															${entryValue}
+														</td>
+													</tr>
+												</c:forEach>
+												</tbody>
+												</table>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   									<div id="highcharts-tasks"></div>
+                   								</div>
+                   							</div>
+                   						</div>
+              						</div>
+              						</c:if>
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
@@ -214,49 +254,6 @@
 			                                </div>
                    						</div>
               						</div>
-              						<c:if test="${!empty taskList}">
-              						<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Summary</h3>
-                   								</div>
-                   								<div class="box-body">
-                   								<!--      Map<TaskStatus, Integer> taskStatusMap = getTaskStatusMap(staff); -->
-												<table id="task-status-table" class="table table-bordered table-striped">
-												<thead>
-		                                    		<tr>
-			                                            <th>Status</th>
-			                                            <th>Count</th>
-			                                        </tr>
-		                                    	</thead>
-												<tbody>
-												<c:forEach items="${taskStatusMap}" var="statusEntry">
-												<c:set value="${statusEntry.key}" var="entryKey"/>
-												<c:set value="${statusEntry.value}" var="entryValue"/>
-													<tr>
-														<td>
-				                                            <span class="label ${entryKey.css()}">${entryKey}</span>
-														</td>
-														<td>
-															${entryValue}
-														</td>
-													</tr>
-												</c:forEach>
-												</tbody>
-												</table>
-                   								</div>
-                   							</div>
-                   						</div>
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-body">
-                   									<div id="highcharts-tasks"></div>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
-              						</c:if>
                                 </div><!-- /.tab-pane -->
 
                             	
@@ -374,10 +371,10 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${!empty attendanceList}">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">Summary</h3>
 													<div class="pull-right">												
 					                                	<h3>Grand Total <b><u>
 					                                	<fmt:formatNumber type="currency" 
@@ -433,6 +430,7 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</c:if>
               						</div>
               						<div class="row">
                    						<div class="col-md-12">
@@ -537,6 +535,7 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 
     <script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+    <script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
    	<c:if test="${staff.id != 0 && fromProject}">
    	<script type="text/javascript">
@@ -629,10 +628,11 @@
 	    $(function () {
 		    $('#highcharts-tasks').highcharts({
 		        chart: {
-		            plotBackgroundColor: null,
-		            plotBorderWidth: null,
-		            plotShadow: false,
-		            type: 'pie'
+		            type: 'pie',
+		            options3d: {
+		                enabled: true,
+		                alpha: 45
+		            }
 		        },
 		        credits: {
 		        	enabled: false
@@ -641,10 +641,12 @@
 		            text: ''
 		        },
 		        tooltip: {
-		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
 		        },
 		        plotOptions: {
-		            pie: { 
+		            pie: {
+		                innerSize: 100,
+		                depth: 45,
 		                allowPointSelect: true,
 		                cursor: 'pointer',
 		                dataLabels: {
@@ -667,10 +669,11 @@
 	    $(function () {
 		    $('#highcharts-attendance').highcharts({
 		        chart: {
-		            plotBackgroundColor: null,
-		            plotBorderWidth: null,
-		            plotShadow: false,
-		            type: 'pie'
+		            type: 'pie',
+		            options3d: {
+		                enabled: true,
+		                alpha: 45
+		            }
 		        },
 		        credits: {
 		        	enabled: false
@@ -679,10 +682,12 @@
 		            text: ''
 		        },
 		        tooltip: {
-		            pointFormat: '{series.name}<br/><b>{point.y} ({point.percentage:.2f}%)</b>'
+		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
 		        },
 		        plotOptions: {
-		            pie: { 
+		            pie: {
+		                innerSize: 100,
+		                depth: 45,
 		                allowPointSelect: true,
 		                cursor: 'pointer',
 		                dataLabels: {
