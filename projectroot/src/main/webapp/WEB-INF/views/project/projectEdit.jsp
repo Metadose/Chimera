@@ -249,17 +249,24 @@
 
                    				<div class="tab-pane ${dashboardVisibility}" id="tab_dashboard">
               						<div class="row">
-                   						<div class="col-md-6">
+                   						<div class="col-md-4">
 		                                	<div class="box box-body box-default">
 				                                <div class="box-body">
 				                                	<div id="highcharts-dashboard" style="height: 300px"></div>
 				                                </div><!-- /.box-body -->
 				                             </div>
 				                        </div>
-                   						<div class="col-md-6">
+                   						<div class="col-md-4">
 		                                	<div class="box box-body box-default">
 				                                <div class="box-body">
 				                                	<div id="highcharts-project" style="height: 300px"></div>
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+                   						<div class="col-md-4">
+		                                	<div class="box box-body box-default">
+				                                <div class="box-body">
+				                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
 				                                </div><!-- /.box-body -->
 				                             </div>
 				                        </div>
@@ -2114,6 +2121,47 @@
 	        series: [{
 	        	name: 'Project Cumulative',
 	            data: ${dataSeriesProject}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-dashboard-project-pie').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Tasks",
+	            colorByPoint: true,
+	            data: ${dataSeriesDashboardPie}
 	        }]
 	    });
 	});

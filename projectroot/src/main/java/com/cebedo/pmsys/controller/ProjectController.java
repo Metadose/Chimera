@@ -175,6 +175,7 @@ public class ProjectController {
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
+    public static final String ATTR_DATA_SERIES_DASHBOARD_PIE = "dataSeriesDashboardPie";
     public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
     public static final String ATTR_DATA_SERIES_TASKS = "dataSeriesTasks";
     public static final String ATTR_DATA_SERIES_ATTENDANCE = "dataSeriesAttendance";
@@ -1862,16 +1863,17 @@ public class ProjectController {
 	// Payroll.
 	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
-	setPayrollAttributes(proj, model, payrollSeries, payrollCumulative);
+	double payrollAccumulated = setPayrollAttributes(proj, model, payrollSeries, payrollCumulative);
 
 	// Inventory.
 	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
-	setInventoryAttributes(proj, model, inventorySeries, inventoryCumulative);
+	double materialsAccumulated = setInventoryAttributes(proj, model, inventorySeries,
+		inventoryCumulative);
 
 	// Dashboard.
 	setDashboardAttributes(model, inventoryCumulative, payrollCumulative, inventorySeries,
-		payrollSeries);
+		payrollSeries, payrollAccumulated, materialsAccumulated);
 
 	// Auxillary.
 	setAuxAttributes(proj, model);
@@ -1890,10 +1892,13 @@ public class ProjectController {
      * @param payrollCumulative
      * @param payrollSeries
      * @param inventorySeries
+     * @param materialsAccumulated
+     * @param payrollAccumulated
      */
     private void setDashboardAttributes(Model model, List<HighchartsDataPoint> inventoryCumulative,
 	    List<HighchartsDataPoint> payrollCumulative, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries) {
+	    List<HighchartsDataPoint> payrollSeries, double payrollAccumulated,
+	    double materialsAccumulated) {
 
 	// Dashboard.
 	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
@@ -1925,6 +1930,13 @@ public class ProjectController {
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PROJECT,
 		new Gson().toJson(projectCumulative, ArrayList.class));
+
+	// Dashboard pie.
+	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
+	projectPie.add(new HighchartsDataPoint("Materials", materialsAccumulated));
+	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
+	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_PIE,
+		new Gson().toJson(projectPie, ArrayList.class));
     }
 
     /**
@@ -2006,7 +2018,7 @@ public class ProjectController {
      * @param projectCumulative
      * @param projectAccumulation
      */
-    private void setPayrollAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+    private double setPayrollAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
 	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all payrolls.
 	// Add to model.
@@ -2039,6 +2051,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_DATA_SERIES_PAYROLL, new Gson().toJson(dataSeries, ArrayList.class));
 	model.addAttribute(ATTR_DATA_SERIES_PAYROLL_CUMULATIVE,
 		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
+	return accumulation;
     }
 
     /**
@@ -2049,8 +2062,8 @@ public class ProjectController {
      * @param projectAccumulation
      * @param projectCumulative
      */
-    private void setInventoryAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
-	    List<HighchartsDataPoint> dataSeriesCumulative) {
+    private double setInventoryAttributes(Project proj, Model model,
+	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all deliveries.
 	// Get all pull-outs.
 	// Get inventory.
@@ -2088,6 +2101,8 @@ public class ProjectController {
 	// Add to model.
 	List<PullOut> pullOutList = this.pullOutService.list(proj);
 	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
+
+	return accumulation;
     }
 
     /**

@@ -16,12 +16,12 @@ public class HighchartsDataPoint {
      * 
      * @param n
      * @param y
-     * @param col
+     * @param color
      */
-    public HighchartsDataPoint(String n, double y, String col) {
+    public HighchartsDataPoint(String n, double y, String color) {
 	setName(n);
 	setY(y);
-	setColor(col);
+	setColor(color);
     }
 
     public HighchartsDataPoint() {
@@ -47,6 +47,11 @@ public class HighchartsDataPoint {
 	setName(name2);
 	setX(time);
 	setY(yValue);
+    }
+
+    public HighchartsDataPoint(String n, double y) {
+	setName(n);
+	setY(y);
     }
 
     public String getName() {
