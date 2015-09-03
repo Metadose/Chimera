@@ -83,11 +83,14 @@
 	            		<c:when test="${project.id == 0}">
 	            			New Project
 			                <small>Create Project</small>
+			                <c:set value="active" var="detailsVisibility"/>
+			                <c:set value="hide" var="dashboardVisibility"/>
 	            		</c:when>
 
 	            		<c:when test="${project.id != 0}">
 	            			${project.name}
 			                <small>Edit Project</small>
+			                <c:set value="active" var="dashboardVisibility"/>
 	            		</c:when>
 	            	</c:choose>
 	            </h1>
@@ -99,9 +102,10 @@
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
-                                <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
+                                		<li class="${dashboardVisibility}"><a href="#tab_dashboard" data-toggle="tab">Dashboard</a></li>
+                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Details</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
@@ -109,10 +113,13 @@
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
+                                	<c:when test="${project.id == 0}">
+                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                	</c:when>
                                 </c:choose>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="tab_1">
+                                <div class="tab-pane ${detailsVisibility}" id="tab_1">
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -239,6 +246,26 @@
                                 </div><!-- /.tab-pane -->
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
+
+                   				<div class="tab-pane ${dashboardVisibility}" id="tab_dashboard">
+              						<div class="row">
+                   						<div class="col-md-6">
+		                                	<div class="box box-body box-default">
+				                                <div class="box-body">
+				                                	<div id="highcharts-dashboard" style="height: 300px"></div>
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+                   						<div class="col-md-6">
+		                                	<div class="box box-body box-default">
+				                                <div class="box-body">
+				                                	<div id="highcharts-project" style="height: 300px"></div>
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+				                   	</div> <!-- End of Row -->
+                                </div><!-- /.tab-pane -->
+
                    				<div class="tab-pane" id="tab_project_estimate">
 
                    					<c:if test="${empty estimationOutputList}">
@@ -586,6 +613,24 @@
           						</div>
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
+                                	<c:if test="${!empty payrollList}">
+		                            <div class="row">
+               						<div class="col-md-6">
+               							<div class="box box-body box-default">
+               								<div class="box-body">
+               									<div id="highcharts-payroll" style="height: 300px"></div>
+               								</div>
+               							</div>
+               						</div>
+               						<div class="col-md-6">
+               							<div class="box box-body box-default">
+               								<div class="box-body">
+               									<div id="highcharts-payroll-cumulative" style="height: 300px"></div>
+               								</div>
+               							</div>
+               						</div>
+               						</div>
+               						</c:if>
                                 	<div class="row">
 		                            <div class="col-md-12">
                							<div class="box box-body box-default">
@@ -661,24 +706,7 @@
                							</div>
                						</div>
                						</div>
-               						<c:if test="${!empty payrollList}">
-		                            <div class="row">
-               						<div class="col-md-6">
-               							<div class="box box-body box-default">
-               								<div class="box-body">
-               									<div id="highcharts-payroll"></div>
-               								</div>
-               							</div>
-               						</div>
-               						<div class="col-md-6">
-               							<div class="box box-body box-default">
-               								<div class="box-body">
-               									<div id="highcharts-payroll-cumulative"></div>
-               								</div>
-               							</div>
-               						</div>
-               						</div>
-               						</c:if>
+               						
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_inventory">
                                 
@@ -799,6 +827,26 @@
 		                                
 		                                
 		                                <div class="tab-pane active" id="subtab_delivery">
+
+	               						<c:if test="${!empty materialList}">
+	               						<div class="row">
+	               						<div class="col-md-6">
+	               							<div class="box box-body box-default">
+	               								<div class="box-body">
+	               									<div id="highcharts-inventory" style="height: 300px"></div>
+	               								</div>
+	               							</div>
+	               						</div>
+	               						<div class="col-md-6">
+	               							<div class="box box-body box-default">
+	               								<div class="box-body">
+	               									<div id="highcharts-inventory-cumulative" style="height: 300px"></div>
+	               								</div>
+	               							</div>
+	               						</div>
+	               						</div>
+	               						</c:if>
+
 		                                <div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
@@ -855,24 +903,6 @@
 	               						</div>
 	               						</div>
 
-	               						<c:if test="${!empty materialList}">
-	               						<div class="row">
-	               						<div class="col-md-6">
-	               							<div class="box box-body box-default">
-	               								<div class="box-body">
-	               									<div id="highcharts-inventory"></div>
-	               								</div>
-	               							</div>
-	               						</div>
-	               						<div class="col-md-6">
-	               							<div class="box box-body box-default">
-	               								<div class="box-body">
-	               									<div id="highcharts-inventory-cumulative"></div>
-	               								</div>
-	               							</div>
-	               						</div>
-	               						</div>
-	               						</c:if>
 
 		                                </div>
 		                                
@@ -1982,6 +2012,353 @@
 		    }
 	    });
 	});
+
+	$(function () {
+	    $('#highcharts-inventory').highcharts({
+	        chart: {
+	            type: 'spline'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Material Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Materials Expenses',
+	            data: ${dataSeriesInventory}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-project').highcharts({
+	        chart: {
+	            type: 'area'
+	        },	        
+	    	xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                enabled: false
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Project Expenses (PHP)'
+	            }
+	        },
+	        tooltip: {
+	        	shared: true,
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            area: {
+	                stacking: 'normal',
+	                lineColor: '#666666',
+	                lineWidth: 1,
+	                marker: {
+	                    lineWidth: 1,
+	                    lineColor: '#666666'
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Project Cumulative',
+	            data: ${dataSeriesProject}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-dashboard').highcharts({
+	        chart: {
+	            type: 'spline'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Project Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: ${dataSeriesDashboard}
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-inventory-cumulative').highcharts({
+	        chart: {
+	            type: 'spline'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Material Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Materials Cumulative',
+	            data: ${dataSeriesInventoryCumulative}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-payroll-cumulative').highcharts({
+	        chart: {
+	            type: 'spline'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Payroll Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Payroll Cumulative',
+	            data: ${dataSeriesPayrollCumulative}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-payroll').highcharts({
+	        chart: {
+	            type: 'spline'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Payroll Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Payroll Expenses',
+	            data: ${dataSeriesPayroll}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-tasks').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Tasks",
+	            colorByPoint: true,
+	            data: ${dataSeriesTasks}
+	        }]
+	    });
+	});
    	</script>
 	</c:if>
 	
@@ -2041,252 +2418,7 @@
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();
 			$(".is-data-table").dataTable();
-	    });
-
-	    $(function () {
-		    $('#highcharts-inventory').highcharts({
-		        chart: {
-		            type: 'spline'
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-		        title: {
-		            text: ''
-		        },
-		        xAxis: {
-	                type: 'datetime',
-	                dateTimeLabelFormats: {
-						millisecond: '%e. %b',
-						second: '%e. %b',
-						minute: '%e. %b',
-						hour: '%e. %b',
-						day: '%e. %b',
-						week: '%e. %b',
-						month: '%b \'%y',
-						year: '%Y'
-					},
-					title: {
-		                text: 'Date'
-		            }
-	            },
-		        yAxis: {
-		            title: {
-		                text: 'Material Expenses (PHP)'
-		            },
-		            min: 0
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y}</b>'
-		        },
-		        plotOptions: {
-		            spline: {
-		                marker: {
-		                    enabled: true,
-		                    radius: 8
-		                }
-		            }
-		        },
-		        series: [{
-		        	name: 'Materials Expenses',
-		            data: ${dataSeriesInventory}
-		        }]
-		    });
-		});
-
-	    $(function () {
-		    $('#highcharts-inventory-cumulative').highcharts({
-		        chart: {
-		            type: 'spline'
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-		        title: {
-		            text: ''
-		        },
-		        xAxis: {
-	                type: 'datetime',
-	                dateTimeLabelFormats: {
-						millisecond: '%e. %b',
-						second: '%e. %b',
-						minute: '%e. %b',
-						hour: '%e. %b',
-						day: '%e. %b',
-						week: '%e. %b',
-						month: '%b \'%y',
-						year: '%Y'
-					},
-					title: {
-		                text: 'Date'
-		            }
-	            },
-		        yAxis: {
-		            title: {
-		                text: 'Material Expenses (PHP)'
-		            },
-		            min: 0
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y}</b>'
-		        },
-		        plotOptions: {
-		            spline: {
-		                marker: {
-		                    enabled: true,
-		                    radius: 8
-		                }
-		            }
-		        },
-		        series: [{
-		        	name: 'Materials Cumulative',
-		            data: ${dataSeriesInventoryCumulative}
-		        }]
-		    });
-		});
-
-		$(function () {
-		    $('#highcharts-payroll-cumulative').highcharts({
-		        chart: {
-		            type: 'spline'
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-		        title: {
-		            text: ''
-		        },
-		        xAxis: {
-	                type: 'datetime',
-	                dateTimeLabelFormats: {
-						millisecond: '%e. %b',
-						second: '%e. %b',
-						minute: '%e. %b',
-						hour: '%e. %b',
-						day: '%e. %b',
-						week: '%e. %b',
-						month: '%b \'%y',
-						year: '%Y'
-					},
-					title: {
-		                text: 'Date'
-		            }
-	            },
-		        yAxis: {
-		            title: {
-		                text: 'Payroll Expenses (PHP)'
-		            },
-		            min: 0
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y}</b>'
-		        },
-		        plotOptions: {
-		            spline: {
-		                marker: {
-		                    enabled: true,
-		                    radius: 8
-		                }
-		            }
-		        },
-		        series: [{
-		        	name: 'Payroll Cumulative',
-		            data: ${dataSeriesPayrollCumulative}
-		        }]
-		    });
-		});
-
-	    $(function () {
-		    $('#highcharts-payroll').highcharts({
-		        chart: {
-		            type: 'spline'
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-		        title: {
-		            text: ''
-		        },
-		        xAxis: {
-	                type: 'datetime',
-	                dateTimeLabelFormats: {
-						millisecond: '%e. %b',
-						second: '%e. %b',
-						minute: '%e. %b',
-						hour: '%e. %b',
-						day: '%e. %b',
-						week: '%e. %b',
-						month: '%b \'%y',
-						year: '%Y'
-					},
-					title: {
-		                text: 'Date'
-		            }
-	            },
-		        yAxis: {
-		            title: {
-		                text: 'Payroll Expenses (PHP)'
-		            },
-		            min: 0
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y}</b>'
-		        },
-		        plotOptions: {
-		            spline: {
-		                marker: {
-		                    enabled: true,
-		                    radius: 8
-		                }
-		            }
-		        },
-		        series: [{
-		        	name: 'Payroll Expenses',
-		            data: ${dataSeriesPayroll}
-		        }]
-		    });
-		});
-
-	    $(function () {
-		    $('#highcharts-tasks').highcharts({
-		        chart: {
-		            type: 'pie',
-		            options3d: {
-		                enabled: true,
-		                alpha: 45
-		            }
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-				title: {
-		            text: ''
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
-		        },
-		        plotOptions: {
-		            pie: {
-		                innerSize: 100,
-		                depth: 45,
-		                allowPointSelect: true,
-		                cursor: 'pointer',
-		                dataLabels: {
-		                    enabled: true,
-		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
-		                    style: {
-		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-		                    }
-		                }
-		            }
-		        },
-		        series: [{
-		            name: "Tasks",
-		            colorByPoint: true,
-		            data: ${dataSeriesTasks}
-		        }]
-		    });
-		});
+	    });	    
 		
 		$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 			var id = $(e.target).attr("href").substr(1);

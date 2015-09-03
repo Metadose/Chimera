@@ -2,6 +2,8 @@ package com.cebedo.pmsys.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -68,6 +70,7 @@ import com.cebedo.pmsys.pojo.FormMassUpload;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
+import com.cebedo.pmsys.pojo.HighchartsDataSeries;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateService;
@@ -171,6 +174,8 @@ public class ProjectController {
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
+    public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
+    public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
     public static final String ATTR_DATA_SERIES_TASKS = "dataSeriesTasks";
     public static final String ATTR_DATA_SERIES_ATTENDANCE = "dataSeriesAttendance";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
@@ -1855,10 +1860,18 @@ public class ProjectController {
 	setStaffAttributes(proj, model);
 
 	// Payroll.
-	setPayrollAttributes(proj, model);
+	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
+	setPayrollAttributes(proj, model, payrollSeries, payrollCumulative);
 
 	// Inventory.
-	setInventoryAttributes(proj, model);
+	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
+	setInventoryAttributes(proj, model, inventorySeries, inventoryCumulative);
+
+	// Dashboard.
+	setDashboardAttributes(model, inventoryCumulative, payrollCumulative, inventorySeries,
+		payrollSeries);
 
 	// Auxillary.
 	setAuxAttributes(proj, model);
@@ -1867,6 +1880,51 @@ public class ProjectController {
 	setProgramOfWorksAttributes(proj, model);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    /**
+     * Set dashboard attributes.
+     * 
+     * @param model
+     * @param inventoryCumulative
+     * @param payrollCumulative
+     * @param payrollSeries
+     * @param inventorySeries
+     */
+    private void setDashboardAttributes(Model model, List<HighchartsDataPoint> inventoryCumulative,
+	    List<HighchartsDataPoint> payrollCumulative, List<HighchartsDataPoint> inventorySeries,
+	    List<HighchartsDataPoint> payrollSeries) {
+
+	// Dashboard.
+	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
+	dashboardSeries.add(new HighchartsDataSeries("Materials Cumulative", inventoryCumulative));
+	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
+	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
+		new Gson().toJson(dashboardSeries, ArrayList.class));
+
+	// Accumulation of expenses in this project.
+	List<HighchartsDataPoint> projectCumulative = new ArrayList<HighchartsDataPoint>();
+	projectCumulative.addAll(inventorySeries);
+	projectCumulative.addAll(payrollSeries);
+
+	// To sort in ascending,
+	Collections.sort(projectCumulative, new Comparator<HighchartsDataPoint>() {
+	    @Override
+	    public int compare(HighchartsDataPoint aObj, HighchartsDataPoint bObj) {
+		long aStart = aObj.getX();
+		long bStart = bObj.getX();
+		return aStart < bStart ? -1 : aStart > bStart ? 1 : 0;
+	    }
+	});
+
+	// Update the values to create progress of expenditures.
+	double cumulative = 0;
+	for (HighchartsDataPoint point : projectCumulative) {
+	    cumulative += point.getY();
+	    point.setY(cumulative);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_PROJECT,
+		new Gson().toJson(projectCumulative, ArrayList.class));
     }
 
     /**
@@ -1945,16 +2003,17 @@ public class ProjectController {
      * 
      * @param proj
      * @param model
+     * @param projectCumulative
+     * @param projectAccumulation
      */
-    private void setPayrollAttributes(Project proj, Model model) {
+    private void setPayrollAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all payrolls.
 	// Add to model.
 	List<ProjectPayroll> payrollList = this.projectPayrollService.listAsc(proj);
 	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
 
 	// Graph data.
-	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
-	List<HighchartsDataPoint> dataSeriesCumulative = new ArrayList<HighchartsDataPoint>();
 	double accumulation = 0;
 	for (ProjectPayroll payroll : payrollList) {
 
@@ -1962,7 +2021,7 @@ public class ProjectController {
 	    // then it has not been computed.
 	    String payrollJSON = payroll.getPayrollJSON();
 	    if (payrollJSON != null && !payrollJSON.isEmpty()) {
-		String name = payroll.getStartEndDisplay();
+		String name = "(Payroll) " + payroll.getStartEndDisplay();
 		PayrollResultComputation result = payroll.getPayrollComputationResult();
 		double yValue = result.getOverallTotalOfStaff();
 
@@ -1970,7 +2029,7 @@ public class ProjectController {
 			yValue, CSSClass.backgroundColorOf(payroll.getStatus().css()));
 		dataSeries.add(point);
 
-		// Cumulative
+		// Cumulative.
 		accumulation += yValue;
 		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, result.getEndDate()
 			.getTime(), accumulation, CSSClass.backgroundColorOf(payroll.getStatus().css()));
@@ -1987,8 +2046,11 @@ public class ProjectController {
      * 
      * @param proj
      * @param model
+     * @param projectAccumulation
+     * @param projectCumulative
      */
-    private void setInventoryAttributes(Project proj, Model model) {
+    private void setInventoryAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all deliveries.
 	// Get all pull-outs.
 	// Get inventory.
@@ -1997,13 +2059,11 @@ public class ProjectController {
 	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
 
 	// Graph.
-	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
-	List<HighchartsDataPoint> dataSeriesCumulative = new ArrayList<HighchartsDataPoint>();
 	double accumulation = 0;
 	for (Delivery delivery : deliveryList) {
 	    double yValue = delivery.getGrandTotalOfMaterials();
 	    Date datetime = delivery.getDatetime();
-	    String name = String.format("%s<br/>%s",
+	    String name = String.format("(Materials) %s<br/>%s",
 		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), delivery.getName());
 
 	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);

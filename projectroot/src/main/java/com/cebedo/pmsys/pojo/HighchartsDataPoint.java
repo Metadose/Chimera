@@ -7,9 +7,9 @@ public class HighchartsDataPoint {
     private double y;
     private String color;
 
-    // Pie.
-    private boolean sliced;
-    private boolean selected;
+    public String toString() {
+	return String.format("%s (%s, %s)", getName(), getX(), getY());
+    }
 
     /**
      * Typically used in Pie/Donut charts.
@@ -63,22 +63,6 @@ public class HighchartsDataPoint {
 
     public void setY(double y) {
 	this.y = y;
-    }
-
-    public boolean isSliced() {
-	return sliced;
-    }
-
-    public void setSliced(boolean sliced) {
-	this.sliced = sliced;
-    }
-
-    public boolean isSelected() {
-	return selected;
-    }
-
-    public void setSelected(boolean selected) {
-	this.selected = selected;
     }
 
     public String getColor() {
