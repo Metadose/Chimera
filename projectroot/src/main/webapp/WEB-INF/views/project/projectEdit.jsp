@@ -105,7 +105,7 @@
                                 <c:choose>
                                 	<c:when test="${project.id != 0}">
                                 		<li class="${dashboardVisibility}"><a href="#tab_dashboard" data-toggle="tab">Dashboard</a></li>
-                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Contract</a></li>
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
@@ -114,7 +114,7 @@
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
                                 	<c:when test="${project.id == 0}">
-                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Details</a></li>
+                                		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Contract</a></li>
                                 	</c:when>
                                 </c:choose>
                             </ul>
@@ -143,6 +143,40 @@
 				                                            	</c:forEach>
 				                                            </form:select>
 				                                            <p class="help-block">Choose the status of this project</p>
+
+				                                            <label>Physical Target</label>
+				                                            <form:input type="text" placeholder="Sample: 10000, 20000, 3500" class="form-control" path="physicalTarget"/>
+				                                            <p class="help-block">Enter the physical size of the project in square meters</p>
+
+				                                            <label>Start Date</label>
+					                                        <div class="input-group">
+					                                            <div class="input-group-addon">
+					                                                <i class="fa fa-calendar"></i>
+					                                            </div>
+					                                            <fmt:formatDate value="${project.dateStart}" var="dateString" pattern="yyyy/MM/dd" />
+					                                            <form:input type="text" class="form-control date-picker" path="dateStart" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+					                                        </div>
+				                                            <p class="help-block">Enter the project start date</p>
+
+				                                            <label>Target Completion Date</label>
+					                                        <div class="input-group">
+					                                            <div class="input-group-addon">
+					                                                <i class="fa fa-calendar"></i>
+					                                            </div>
+					                                            <fmt:formatDate value="${project.targetCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
+					                                            <form:input type="text" class="form-control date-picker" path="targetCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+					                                        </div>
+				                                            <p class="help-block">Enter the project target completion date</p>
+
+				                                            <label>Actual Completion Date</label>
+					                                        <div class="input-group">
+					                                            <div class="input-group-addon">
+					                                                <i class="fa fa-calendar"></i>
+					                                            </div>
+					                                            <fmt:formatDate value="${project.actualCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
+					                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+					                                        </div>
+				                                            <p class="help-block">Enter the project actual completion date</p>
 				                                            
 				                                            <label>Location</label>
 				                                            <form:input type="text" placeholder="Sample: 123 Brown Avenue, New York City" class="form-control" path="location"/>
@@ -2455,6 +2489,9 @@
 		
 		// Data tables.
 		$(document).ready(function() {
+			$('.date-picker').datepicker({
+			    format: 'yyyy/mm/dd'
+			})
 			$("#chb-cost-quantity-table").dataTable();
 			$("#chb-quantity-table").dataTable();
 			$("#form-estimate-cost").dataTable();

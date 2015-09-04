@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +52,12 @@ public class Project implements Serializable {
     private String notes;
     private Set<Task> assignedTasks;
     private Company company;
+
+    // Formal fields.
+    private double physicalTarget;
+    private Date dateStart;
+    private Date targetCompletionDate;
+    private Date actualCompletionDate;
 
     /**
      * Bean-backed forms.
@@ -170,6 +179,45 @@ public class Project implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @Column(name = "physical_target")
+    public double getPhysicalTarget() {
+	return physicalTarget;
+    }
+
+    public void setPhysicalTarget(double physicalTarget) {
+	this.physicalTarget = physicalTarget;
+    }
+
+    @Column(name = "date_start")
+    @Temporal(TemporalType.DATE)
+    public Date getDateStart() {
+	return dateStart;
+    }
+
+    public void setDateStart(Date dateStart) {
+	this.dateStart = dateStart;
+    }
+
+    @Column(name = "date_completion_target")
+    @Temporal(TemporalType.DATE)
+    public Date getTargetCompletionDate() {
+	return targetCompletionDate;
+    }
+
+    public void setTargetCompletionDate(Date targetCompletionDate) {
+	this.targetCompletionDate = targetCompletionDate;
+    }
+
+    @Column(name = "date_completion_actual")
+    @Temporal(TemporalType.DATE)
+    public Date getActualCompletionDate() {
+	return actualCompletionDate;
+    }
+
+    public void setActualCompletionDate(Date actualCompletionDate) {
+	this.actualCompletionDate = actualCompletionDate;
     }
 
 }

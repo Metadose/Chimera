@@ -6,7 +6,11 @@ public enum ProjectStatus {
 
     ONGOING(1, "Ongoing", "btn-primary"),
 
-    COMPLETED(2, "Completed", "btn-success");
+    COMPLETED(2, "Completed (On-Time)", "btn-success"),
+
+    DELAYED(3, "Ongoing (Delayed)", "btn-warning"),
+
+    COMPLETED2(3, "Ongoing (Delayed)", "btn-danger");
 
     String label;
     int id;
