@@ -20,6 +20,12 @@ public class ProjectAux implements IDomainObject {
     private double grandTotalDelivery;
     private double grandTotalPayroll;
 
+    // Estimate costs.
+    private double grandTotalCostsDirect;
+    private double grandTotalCostsIndirect;
+    private double grandTotalActualCostsDirect;
+    private double grandTotalActualCostsIndirect;
+
     /**
      * Extension map.
      */
@@ -73,12 +79,52 @@ public class ProjectAux implements IDomainObject {
 	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, company.getId(), project.getId());
     }
 
-    public double getGrandTotalProject() {
+    public double getPlannedTotalProject() {
+	return grandTotalCostsDirect + grandTotalCostsIndirect;
+    }
+
+    /**
+     * TODO ESTIMATE-ACTUAL: for post-project analysis<br>
+     * si OTHER EXPENSES, "current expenses". si actual di mabutang diri
+     * 
+     * @return
+     */
+    public double getCurrentTotalProject() {
 	return grandTotalDelivery + grandTotalPayroll;
     }
 
-    public String getGrandTotalProjectAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalProject());
+    public double getRemainingBudget() {
+	return getPlannedTotalProject() - getCurrentTotalProject();
+    }
+
+    public String getRemainingBudgetAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getRemainingBudget());
+    }
+
+    public double getRemainingBudgetAsPercent() {
+	return (getRemainingBudget() / getPlannedTotalProject()) * 100;
+    }
+
+    public String getRemainingBudgetAsPercentAsString() {
+	return NumberFormatUtils.getQuantityFormatter().format(getRemainingBudgetAsPercent());
+    }
+
+    public double getCurrentTotalProjectAsPercent() {
+	double currentTotal = getCurrentTotalProject();
+	double plannedTotal = getPlannedTotalProject();
+	return (currentTotal / plannedTotal) * 100;
+    }
+
+    public String getCurrentTotalProjectAsPercentAsString() {
+	return NumberFormatUtils.getQuantityFormatter().format(getCurrentTotalProjectAsPercent());
+    }
+
+    public String getPlannedTotalProjectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getPlannedTotalProject());
+    }
+
+    public String getCurrentTotalProjectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getCurrentTotalProject());
     }
 
     public double getGrandTotalDelivery() {
@@ -113,6 +159,51 @@ public class ProjectAux implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    public String getGrandTotalCostsAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(
+		getGrandTotalCostsDirect() + getGrandTotalCostsIndirect());
+    }
+
+    public String getGrandTotalCostsDirectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalCostsDirect());
+    }
+
+    public double getGrandTotalCostsDirect() {
+	return grandTotalCostsDirect;
+    }
+
+    public void setGrandTotalCostsDirect(double grandTotalCostsDirect) {
+	this.grandTotalCostsDirect = grandTotalCostsDirect;
+    }
+
+    public double getGrandTotalCostsIndirect() {
+	return grandTotalCostsIndirect;
+    }
+
+    public String getGrandTotalCostsIndirectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalCostsIndirect());
+    }
+
+    public void setGrandTotalCostsIndirect(double grandTotalCostsIndirect) {
+	this.grandTotalCostsIndirect = grandTotalCostsIndirect;
+    }
+
+    public double getGrandTotalActualCostsDirect() {
+	return grandTotalActualCostsDirect;
+    }
+
+    public void setGrandTotalActualCostsDirect(double grandTotalActualCostsDirect) {
+	this.grandTotalActualCostsDirect = grandTotalActualCostsDirect;
+    }
+
+    public double getGrandTotalActualCostsIndirect() {
+	return grandTotalActualCostsIndirect;
+    }
+
+    public void setGrandTotalActualCostsIndirect(double grandTotalActualCostsIndirect) {
+	this.grandTotalActualCostsIndirect = grandTotalActualCostsIndirect;
     }
 
 }

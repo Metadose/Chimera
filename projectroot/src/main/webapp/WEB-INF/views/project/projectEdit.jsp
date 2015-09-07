@@ -231,7 +231,7 @@
 								                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
 								                                        </div>
 							                                            <p class="help-block">Enter the project actual completion date</p>
-						                                            	<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update Actual Completion</button>
+						                                            	<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
 							                                    	</form:form>
 						                                        </div>
 						                                        <br/>
@@ -303,8 +303,8 @@
 							              <div class="info-box">
 							                <span class="info-box-icon bg-light-blue"><i class="ion ion-cash"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">Total Project Expenses</span>
-							                  <span class="info-box-number">${projectAux.getGrandTotalProjectAsString()}</span>
+							                  <span class="info-box-text">Current Total Expenses</span>
+							                  <span class="info-box-number">${projectAux.getCurrentTotalProjectAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
@@ -332,10 +332,10 @@
 							            </div><!-- /.col -->
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-pricetag"></i></span>
+							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-cart"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Other Expenses</span>
-							                  <span class="info-box-number">${projectAux.getGrandTotalPayrollAsString()}</span>
+							                  <span class="info-box-number">ESTIMATE-ACTUAL: for post-project analysis<br/>si OTHER EXPENSES, "current expenses". si actual di mabutang diri</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
@@ -346,13 +346,13 @@
                    						<div class="col-md-6">
 		                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
 				                        </div>
-				                        
+
                    						<div class="col-md-6">
 													<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
 													<div class="info-box ${css}">
 														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
 														<div class="info-box-content">
-															<span class="info-box-text">${project.getStatusEnum()} (${project.getCSSofDelay().label()})</span>
+															<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} (${projectAux.getCurrentTotalProjectAsPercentAsString()}%) spent</span>
 															<span class="info-box-number">
 																<c:choose>
 																	<c:when test="${project.getCalDaysRemaining() >= 0}">
@@ -362,14 +362,13 @@
 																		<c:set value="delayed" var="daysCaption"/>
 																	</c:when>
 																</c:choose>
-																${project.getCalDaysRemainingAsString()} (${project.getCalDaysRemainingAsPercentAsString()}%) calendar days ${daysCaption}
+																${projectAux.getRemainingBudgetAsString()} (${projectAux.getRemainingBudgetAsPercentAsString()}%) remaining
 															</span>
 															<div class="progress">
-															<div class="progress-bar" style="width: ${project.getCalDaysProgressAsPercent()}%"></div>
+															<div class="progress-bar" style="width: ${projectAux.getRemainingBudgetAsPercent()}%"></div>
 															</div>
 															<span class="progress-description">
-															out of ${project.getCalDaysTotalAsString()} project days															
-															from <fmt:formatDate value="${project.dateStart}" pattern="yyyy/MM/dd" /> to <fmt:formatDate value="${project.targetCompletionDate}" pattern="yyyy/MM/dd" />
+															out of project cost ${projectAux.getPlannedTotalProjectAsString()}
 															</span>
 														</div><!-- /.info-box-content -->
 													</div>
@@ -420,103 +419,248 @@
 				                   	</div> <!-- End of Row -->
                                 </div><!-- /.tab-pane -->
 
-                   				<div class="tab-pane" id="tab_project_estimate">
+                                <div class="tab-pane" id="tab_project_estimate">
+	                                <div class="nav-tabs-custom">
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#tab_estimated_cost" data-toggle="tab">Estimated Costs</a></li>
+											<li><a href="#tab_calculator" data-toggle="tab">Estimator</a></li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane active" id="tab_estimated_cost">
+												<!-- ${directCostList}
+												${indirectCostList} -->
+												<div class="row">
+			                   						<div class="col-md-6"> <!-- Direct costs -->
+					                                	<div class="box box-body box-default">
+							                                <div class="box-body">
+							                                	<div class="box box-body box-default">
+							                                		<h3>Total Project Cost <b><u>${projectAux.getGrandTotalCostsAsString()}</u></b></h3>
+						                                  			TODO Pie of direct and indirect
+																</div>
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+							                        <div class="col-md-6">
+														<div class="box">
+															<div class="box-body">
+																<form:form modelAttribute="cost"
+																	action="${contextPath}/project/create/cost"
+																	method="post"
+																	enctype="multipart/form-data">
+							                                        <div class="form-group">
+							                                        
+																	<label>Name</label>
+																	<form:input placeholder="Sample: Sitework, Concrete Works, Metal Works" class="form-control" path="name"/>
+																	<p class="help-block">Enter the name of this cost</p>
+					
+							                                        <label>Estimated Cost</label>
+																	<form:input class="form-control" path="cost"/>
+																	<p class="help-block">Enter the estimated cost</p>
+					
+							                                        <label>Actual Cost</label>
+																	<form:input class="form-control" path="actualCost"/>
+																	<p class="help-block">Enter the actual cost</p>
+																	
+					                                                <label>Cost Type</label>
+					                                                <form:select class="form-control" path="costType"> 
+				                                   						<c:forEach items="${estimateCostList}" var="cost"> 
+				                                   							<form:option value="${cost}" label="${cost.getLabel()}"/> 
+				                                   						</c:forEach> 
+					                                    			</form:select>
+					                                    			<p class="help-block">Type of estimate cost</p>
+					                                    			
+					                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Add</button>
+							                                        </div>
+						                                        </form:form>																	
+															</div><!-- /.box-body -->
+														</div><!-- /.box -->
+													</div>
+							                   	</div> <!-- End of Row -->
+												<div class="row">
+			                   						<div class="col-md-6"> <!-- Direct costs -->
+					                                	<div class="box box-body box-default">
+							                                <div class="box-body">
+							                                	<div class="pull-right">
+						                                  		<h3>Direct Costs <b><u>
+							                                	${projectAux.getGrandTotalCostsDirectAsString()}
+																</u></b></h3>
+																</div>
+							                                    <table class="table table-bordered table-striped is-data-table">	
+							                                    	<thead>
+							                                            <tr>
+							                                            	<th>&nbsp;</th>
+							                                                <th>Name</th>
+							                                                <th>Estimated Cost</th>
+							                                                <th>Actual Cost</th>
+							                                            </tr>
+					                                        		</thead>
+							                                        <tbody>
+								                                		<c:forEach items="${directCostList}" var="directCost">
+							                                            <tr>
+							                                            	<td>
+							                                            		<center>
+							                                            			<a href="<c:url value="/project/TODO-end"/>">
+											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+							                                            			</a>
+												                                    <a href="<c:url value="/project/delete/TODO-end"/>">
+					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+												                                    </a>
+																				</center>
+																			</td>
+						                                                	<td>${directCost.name}</td>
+						                                                	<td>${directCost.cost}</td>
+						                                                	<td>${directCost.actualCost}</td>
+							                                            </tr>
+							                                            </c:forEach>
+								                                    </tbody>
+								                                </table>
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+			                   						<div class="col-md-6"> <!-- Indirect costs -->
+					                                	<div class="box box-body box-default">
+							                                <div class="box-body">
+							                                	<div class="pull-right">
+						                                  		<h3>Indirect Costs <b><u>
+							                                	${projectAux.getGrandTotalCostsIndirectAsString()}
+																</u></b></h3>
+																</div>
+							                                    <table class="table table-bordered table-striped is-data-table">	
+							                                    	<thead>
+							                                            <tr>
+							                                            	<th>&nbsp;</th>
+							                                                <th>Name</th>
+							                                                <th>Estimated Cost</th>
+							                                                <th>Actual Cost</th>
+							                                            </tr>
+					                                        		</thead>
+							                                        <tbody>
+								                                		<c:forEach items="${indirectCostList}" var="indirectCost">
+							                                            <tr>
+							                                            	<td>
+							                                            		<center>
+							                                            			<a href="<c:url value="/project/TODO-end"/>">
+											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+							                                            			</a>
+												                                    <a href="<c:url value="/project/delete/TODO-end"/>">
+					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+												                                    </a>
+																				</center>
+																			</td>
+						                                                	<td>${indirectCost.name}</td>
+						                                                	<td>${indirectCost.cost}</td>
+						                                                	<td>${indirectCost.actualCost}</td>
+							                                            </tr>
+							                                            </c:forEach>
+								                                    </tbody>
+								                                </table>
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+							                   	</div> <!-- End of Row -->
+											</div>
+											<div class="tab-pane" id="tab_calculator">
 
-                   					<c:if test="${empty estimationOutputList}">
-                   						<c:set value="hide" var="estimateVisibility"/>
-                   					</c:if>
+			                   					<c:if test="${empty estimationOutputList}">
+			                   						<c:set value="hide" var="estimateVisibility"/>
+			                   					</c:if>
 
-              						<div class="row ${estimateVisibility}">
-                   						<div class="col-md-12">
-		                                	<div class="box box-body box-default">
-<!-- 				                                		<div class="box-header"> -->
-<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
-<!-- 			              								</div> -->
-				                                <div class="box-body">
-				                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
-				                                    	<thead>
-				                                            <tr>
-				                                            	<th>&nbsp;</th>
-				                                                <th>Name</th>
-				                                                <th>Remarks</th>
-				                                                <th>Allowance</th>
-				                                                <th>Time Computed</th>
-				                                            </tr>
-		                                        		</thead>
-				                                        <tbody>
-					                                		<c:forEach items="${estimationOutputList}" var="estimationOutput">
-				                                            <tr>
-				                                            	<td>
-				                                            		<center>
-				                                            			<c:url var="urlView" value="/project/view/estimation/${estimationOutput.getKey()}-end"/>
-				                                            			<a href="${urlView}">
-								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
-				                                            			</a>
-									                                    <c:url value="/project/delete/estimation/${estimationOutput.getKey()}-end" var="urlDelete"/>
-									                                    <a href="${urlDelete}">
-		                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Delete</button>
-									                                    </a>
-																	</center>
-																</td>
-			                                                	<td>${estimationOutput.name}</td>
-			                                                	<td>${estimationOutput.remarks}</td>
-			                                                	<td>${estimationOutput.estimationAllowance.getLabel()}</td>
-			                                                	<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${estimationOutput.lastComputed}" var="timeComputed"/>
-			                                                	<td>${timeComputed}</td>
-				                                            </tr>
-				                                            </c:forEach>
-					                                    </tbody>
-					                                </table>
-				                                </div><!-- /.box-body -->
-				                             </div>
-				                        </div>
-				                   	</div> <!-- End of Row -->
+			              						<div class="row ${estimateVisibility}">
+			                   						<div class="col-md-12">
+					                                	<div class="box box-body box-default">
+			<!-- 				                                		<div class="box-header"> -->
+			<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
+			<!-- 			              								</div> -->
+							                                <div class="box-body">
+							                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
+							                                    	<thead>
+							                                            <tr>
+							                                            	<th>&nbsp;</th>
+							                                                <th>Name</th>
+							                                                <th>Remarks</th>
+							                                                <th>Allowance</th>
+							                                                <th>Time Computed</th>
+							                                            </tr>
+					                                        		</thead>
+							                                        <tbody>
+								                                		<c:forEach items="${estimationOutputList}" var="estimationOutput">
+							                                            <tr>
+							                                            	<td>
+							                                            		<center>
+							                                            			<c:url var="urlView" value="/project/view/estimation/${estimationOutput.getKey()}-end"/>
+							                                            			<a href="${urlView}">
+											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+							                                            			</a>
+												                                    <c:url value="/project/delete/estimation/${estimationOutput.getKey()}-end" var="urlDelete"/>
+												                                    <a href="${urlDelete}">
+					                   													<button class="btn btn-cebedo-unassign btn-flat btn-sm">Delete</button>
+												                                    </a>
+																				</center>
+																			</td>
+						                                                	<td>${estimationOutput.name}</td>
+						                                                	<td>${estimationOutput.remarks}</td>
+						                                                	<td>${estimationOutput.estimationAllowance.getLabel()}</td>
+						                                                	<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${estimationOutput.lastComputed}" var="timeComputed"/>
+						                                                	<td>${timeComputed}</td>
+							                                            </tr>
+							                                            </c:forEach>
+								                                    </tbody>
+								                                </table>
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+							                   	</div> <!-- End of Row -->
 
-				                   	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box box-body box-default">
-                   								<div class="box-header">
-                   									<h3 class="box-title">Estimation Input</h3>
-                   								</div>
-                   								<div class="box-body">
-                   								<form:form modelAttribute="estimationInput"
-													action="${contextPath}/project/create/estimate"
-													method="post"
-													enctype="multipart/form-data">
-<!--	 allowanceList -->
-<!--     private TableEstimationAllowance estimationAllowance; -->
-<!--     private MultipartFile estimationFile; -->
-			                                        <div class="form-group">
-			                                        
-													<label>Name</label>
-													<form:input placeholder="Sample: Project estimate, Estimation" class="form-control" path="name"/>
-													<p class="help-block">Enter the name of this estimate</p>
-	
-			                                        <label>Excel File</label>
-													<form:input type="file" class="form-control" path="estimationFile"/>
-													<p class="help-block">Choose the Excel file which contains the inputs</p>
-													
-	                                                <label>Estimation Allowance</label>
-	                                                <form:select class="form-control" path="estimationAllowance"> 
-                                   						<c:forEach items="${allowanceList}" var="allowance"> 
-                                   							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
-                                   						</c:forEach> 
-	                                    			</form:select>
-	                                    			<p class="help-block">Alot allowance for wastage</p>
-	                                    			
-													<label>Remarks</label>
-													<form:input placeholder="Sample: This is the official estimate" class="form-control" path="remarks"/>
-													<p class="help-block">Add additional information</p>
-	                                    			
-	                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
-			                                        </div>
-		                                        </form:form>
-                   								</div>
-                   							</div>
-                   						</div>
-              						</div>
+							                   	<div class="row">
+			                   						<div class="col-md-6">
+			                   							<div class="box box-body box-default">
+			                   								<div class="box-header">
+			                   									<h3 class="box-title">Estimation Input</h3>
+			                   								</div>
+			                   								<div class="box-body">
+			                   								<form:form modelAttribute="estimationInput"
+																action="${contextPath}/project/create/estimate"
+																method="post"
+																enctype="multipart/form-data">
+			<!--	 allowanceList -->
+			<!--     private TableEstimationAllowance estimationAllowance; -->
+			<!--     private MultipartFile estimationFile; -->
+						                                        <div class="form-group">
+						                                        
+																<label>Name</label>
+																<form:input placeholder="Sample: Project estimate, Estimation" class="form-control" path="name"/>
+																<p class="help-block">Enter the name of this estimate</p>
+				
+						                                        <label>Excel File</label>
+																<form:input type="file" class="form-control" path="estimationFile"/>
+																<p class="help-block">Choose the Excel file which contains the inputs</p>
+																
+				                                                <label>Estimation Allowance</label>
+				                                                <form:select class="form-control" path="estimationAllowance"> 
+			                                   						<c:forEach items="${allowanceList}" var="allowance"> 
+			                                   							<form:option value="${allowance}" label="${allowance.getLabel()}"/> 
+			                                   						</c:forEach> 
+				                                    			</form:select>
+				                                    			<p class="help-block">Alot allowance for wastage</p>
+				                                    			
+																<label>Remarks</label>
+																<form:input placeholder="Sample: This is the official estimate" class="form-control" path="remarks"/>
+																<p class="help-block">Add additional information</p>
+				                                    			
+				                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Estimate</button>
+						                                        </div>
+					                                        </form:form>
+			                   								</div>
+			                   							</div>
+			                   						</div>
+			              						</div>
+			                                </div><!-- /.tab-pane -->
+										</div>
+									</div>
+								</div>
 
-                                </div><!-- /.tab-pane -->
+                   				
+
                                 <div class="tab-pane" id="tab_timeline">
 									<c:choose>
 	                                	<c:when test="${!empty project.assignedTasks}">

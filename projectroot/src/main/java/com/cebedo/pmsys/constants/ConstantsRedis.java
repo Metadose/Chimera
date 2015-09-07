@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.constants;
 
-
 public abstract class ConstantsRedis {
 
     // Redis objects.
@@ -15,5 +14,5 @@ public abstract class ConstantsRedis {
     public static final String OBJECT_PULL_OUT = "pullout";
     public static final String OBJECT_MASONRY_CHB_ESTIMATION_SUMMARY = "masonrychbestimationsummary";
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
-
+    public static final String OBJECT_ESTIMATE_COST = "cost";
 }

@@ -16,7 +16,7 @@
 									<div class="box-header">
 	<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 									</div><!-- /.box-header -->
-									<div class="box-body table-responsive">
+									<div class="box-body">
 										
 									</div><!-- /.box-body -->
 								</div><!-- /.box -->

@@ -33,6 +33,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
+import com.cebedo.pmsys.repository.EstimateCostValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -56,6 +57,13 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
     private TaskService taskService;
+    private EstimateCostValueRepo estimateCostValueRepo;
+
+    @Autowired(required = true)
+    @Qualifier(value = "estimateCostValueRepo")
+    public void setEstimateCostValueRepo(EstimateCostValueRepo estimateCostValueRepo) {
+	this.estimateCostValueRepo = estimateCostValueRepo;
+    }
 
     @Autowired
     @Qualifier(value = "taskService")

@@ -38,6 +38,7 @@ import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -49,6 +50,7 @@ import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.CommonMassUnit;
 import com.cebedo.pmsys.enums.CommonVolumeUnit;
+import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.enums.GanttElement;
 import com.cebedo.pmsys.enums.MaterialCategory;
 import com.cebedo.pmsys.enums.PayrollStatus;
@@ -73,6 +75,7 @@ import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.pojo.HighchartsDataSeries;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
+import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
 import com.cebedo.pmsys.service.FieldService;
@@ -93,7 +96,8 @@ import com.google.gson.Gson;
 
 value = {
 	// Project.
-	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
+	"old" + ProjectController.ATTR_FIELD,
 	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
 	ProjectController.ATTR_TASK,
 	ProjectController.ATTR_FROM_PROJECT,
@@ -103,6 +107,7 @@ value = {
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
 	ConstantsRedis.OBJECT_PULL_OUT,
 	ConstantsRedis.OBJECT_ESTIMATE,
+	ConstantsRedis.OBJECT_ESTIMATE_COST,
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
@@ -140,6 +145,9 @@ public class ProjectController {
     public static final String ATTR_ESTIMATE = ConstantsRedis.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
+    public static final String ATTR_ESTIMATE_COST_LIST = "estimateCostList";
+    public static final String ATTR_ESTIMATE_DIRECT_COST_LIST = "directCostList";
+    public static final String ATTR_ESTIMATE_INDIRECT_COST_LIST = "indirectCostList";
     public static final String ATTR_ESTIMATE_OUTPUT_JSON = "estimateJSON";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
@@ -227,6 +235,13 @@ public class ProjectController {
     private EstimationOutputService estimationOutputService;
     private TaskService taskService;
     private AttendanceService attendanceService;
+    private EstimateCostService estimateCostService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "estimateCostService")
+    public void setEstimateCostService(EstimateCostService estimateCostService) {
+	this.estimateCostService = estimateCostService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "attendanceService")
@@ -674,6 +689,28 @@ public class ProjectController {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
+    }
+
+    /**
+     * Create a cost object.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.CREATE_ESTIMATE_COST }, method = RequestMethod.POST)
+    public String createEstimateCost(
+	    @ModelAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST) EstimateCost cost,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.estimateCostService.set(cost);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return redirectEditPageProject(cost.getProject().getId(), status);
     }
 
     /**
@@ -1852,6 +1889,8 @@ public class ProjectController {
 	}
 
 	Project proj = this.projectService.getByIDWithAllCollections(id);
+	ProjectAux projectAux = this.projectAuxService.get(proj);
+	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
 	model.addAttribute(ATTR_PROJECT, proj);
 
 	// Estimate.
@@ -1874,9 +1913,6 @@ public class ProjectController {
 	// Dashboard.
 	setDashboardAttributes(model, inventoryCumulative, payrollCumulative, inventorySeries,
 		payrollSeries, payrollAccumulated, materialsAccumulated);
-
-	// Auxillary.
-	setAuxAttributes(proj, model);
 
 	// Program of Works.
 	setProgramOfWorksAttributes(proj, model);
@@ -1964,6 +2000,27 @@ public class ProjectController {
      * @param model
      */
     private void setEstimateAttributes(Project proj, Model model) {
+
+	// Selectors and forms.
+	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.class.getEnumConstants());
+	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, new EstimateCost(proj));
+
+	// Prepare the estimate costs.
+	List<EstimateCost> allCosts = this.estimateCostService.list(proj);
+	List<EstimateCost> costsDirect = new ArrayList<EstimateCost>();
+	List<EstimateCost> costsIndirect = new ArrayList<EstimateCost>();
+	for (EstimateCost cost : allCosts) {
+	    EstimateCostType costType = cost.getCostType();
+	    if (costType == EstimateCostType.DIRECT) {
+		costsDirect.add(cost);
+	    } else if (costType == EstimateCostType.INDIRECT) {
+		costsIndirect.add(cost);
+	    }
+	}
+	model.addAttribute(ATTR_ESTIMATE_DIRECT_COST_LIST, costsDirect);
+	model.addAttribute(ATTR_ESTIMATE_INDIRECT_COST_LIST, costsIndirect);
+
+	// Estimation output list, calculator.
 	List<EstimationOutput> estimates = this.estimationOutputService.list(proj);
 	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
     }
@@ -1993,18 +2050,6 @@ public class ProjectController {
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new FormStaffAssignment());
 	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new FormMassUpload(proj));
-    }
-
-    /**
-     * Set auxillary objects.
-     * 
-     * @param proj
-     * @param model
-     */
-    private void setAuxAttributes(Project proj, Model model) {
-	// Add the auxillary object.
-	ProjectAux projectAux = this.projectAuxService.get(proj);
-	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
     }
 
     /**
