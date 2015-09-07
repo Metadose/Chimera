@@ -1,3 +1,7 @@
+.ion {
+	padding-top: 20%;
+}
+
 input[type=checkbox] {
 	height: 20px;
 }

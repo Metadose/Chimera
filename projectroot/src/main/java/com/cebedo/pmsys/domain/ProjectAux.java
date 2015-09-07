@@ -48,8 +48,8 @@ public class ProjectAux implements IDomainObject {
      */
     @Override
     public String getKey() {
-	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX,
-		this.company.getId(), this.project.getId());
+	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, this.company.getId(),
+		this.project.getId());
     }
 
     public Company getCompany() {
@@ -70,8 +70,15 @@ public class ProjectAux implements IDomainObject {
 
     public static String constructKey(Project project) {
 	Company company = project.getCompany();
-	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, company.getId(),
-		project.getId());
+	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, company.getId(), project.getId());
+    }
+
+    public double getGrandTotalProject() {
+	return grandTotalDelivery + grandTotalPayroll;
+    }
+
+    public String getGrandTotalProjectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalProject());
     }
 
     public double getGrandTotalDelivery() {
@@ -79,8 +86,7 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getGrandTotalDeliveryAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		this.grandTotalDelivery);
+	return NumberFormatUtils.getCurrencyFormatter().format(this.grandTotalDelivery);
     }
 
     public void setGrandTotalDelivery(double grandTotalDelivery) {
@@ -92,8 +98,7 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getGrandTotalPayrollAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		this.grandTotalPayroll);
+	return NumberFormatUtils.getCurrencyFormatter().format(this.grandTotalPayroll);
     }
 
     public void setGrandTotalPayroll(double grandTotalPayroll) {
@@ -102,8 +107,7 @@ public class ProjectAux implements IDomainObject {
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof ProjectAux ? ((ProjectAux) obj).getKey().equals(
-		getKey()) : false;
+	return obj instanceof ProjectAux ? ((ProjectAux) obj).getKey().equals(getKey()) : false;
     }
 
     @Override

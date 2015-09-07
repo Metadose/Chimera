@@ -301,19 +301,19 @@
                    					<div class="row">
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+							                <span class="info-box-icon bg-light-blue"><i class="ion ion-cash"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">CPU Traffic</span>
-							                  <span class="info-box-number">90<small>%</small></span>
+							                  <span class="info-box-text">Total Project Expenses</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalProjectAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+							                <span class="info-box-icon bg-light-blue"><i class="ion ion-hammer"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">Likes</span>
-							                  <span class="info-box-number">41,410</span>
+							                  <span class="info-box-text">Inventory / Deliveries</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalDeliveryAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
@@ -323,36 +323,53 @@
 
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-people"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">Sales</span>
-							                  <span class="info-box-number">760</span>
+							                  <span class="info-box-text">Payroll</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalPayrollAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-pricetag"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">New Members</span>
-							                  <span class="info-box-number">2,000</span>
+							                  <span class="info-box-text">Other Expenses</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalPayrollAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
 							          </div>
 
               						<div class="row">
+
                    						<div class="col-md-6">
-													<div class="info-box bg-green">
-														<span class="info-box-icon"><i class="ion ion-ios-heart-outline" style="padding-top: 20%;"></i></span>
+		                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
+				                        </div>
+				                        
+                   						<div class="col-md-6">
+													<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
+													<div class="info-box ${css}">
+														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
 														<div class="info-box-content">
-															<span class="info-box-text">${project.name}</span>
-															<span class="info-box-number">${project.getPhysicalTargetAsString()} square meters</span>
+															<span class="info-box-text">${project.getStatusEnum()} (${project.getCSSofDelay().label()})</span>
+															<span class="info-box-number">
+																<c:choose>
+																	<c:when test="${project.getCalDaysRemaining() >= 0}">
+																		<c:set value="remaining" var="daysCaption"/>
+																	</c:when>
+																	<c:when test="${project.getCalDaysRemaining() < 0}">
+																		<c:set value="delayed" var="daysCaption"/>
+																	</c:when>
+																</c:choose>
+																${project.getCalDaysRemainingAsString()} (${project.getCalDaysRemainingAsPercentAsString()}%) calendar days ${daysCaption}
+															</span>
 															<div class="progress">
-															<div class="progress-bar" style="width: 20%"></div>
+															<div class="progress-bar" style="width: ${project.getCalDaysProgressAsPercent()}%"></div>
 															</div>
 															<span class="progress-description">
-															20% Increase in 30 Days
+															out of ${project.getCalDaysTotalAsString()} project days															
+															from <fmt:formatDate value="${project.dateStart}" pattern="yyyy/MM/dd" /> to <fmt:formatDate value="${project.targetCompletionDate}" pattern="yyyy/MM/dd" />
 															</span>
 														</div><!-- /.info-box-content -->
 													</div>
@@ -383,33 +400,20 @@
 														</div><!-- /.info-box-content -->
 													</div>
 				                        </div>
-                   						<div class="col-md-6">
-		                                	<div class="box box-body box-default">
-				                                <div class="box-body">
-				                                	
-				                                </div><!-- /.box-body -->
-				                             </div>
-				                        </div>
 				                   	</div> <!-- End of Row -->
+
               						<div class="row">
-                   						<div class="col-md-4">
+                   						<div class="col-md-6">
 		                                	<div class="box box-body box-default">
 				                                <div class="box-body">
 				                                	<div id="highcharts-dashboard" style="height: 300px"></div>
 				                                </div><!-- /.box-body -->
 				                             </div>
 				                        </div>
-                   						<div class="col-md-4">
+                   						<div class="col-md-6">
 		                                	<div class="box box-body box-default">
 				                                <div class="box-body">
 				                                	<div id="highcharts-project" style="height: 300px"></div>
-				                                </div><!-- /.box-body -->
-				                             </div>
-				                        </div>
-                   						<div class="col-md-4">
-		                                	<div class="box box-body box-default">
-				                                <div class="box-body">
-				                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
 				                                </div><!-- /.box-body -->
 				                             </div>
 				                        </div>
