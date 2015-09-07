@@ -18,7 +18,11 @@ public enum CSSClass {
 
     DEFAULT("btn-default", "Default", "#333", "#fff", "#ccc"),
 
-    DEFAULT_HOVER("btn-default:hover", "Default Hover", "#333", "#e6e6e6", "#adadad");
+    DEFAULT_HOVER("btn-default:hover", "Default Hover", "#333", "#e6e6e6", "#adadad"),
+
+    ON_TIME("bg-green", "On-time", "#fff", "#5cb85c", "#4cae4c"),
+
+    DELAYED("bg-red", "Delayed", "#fff", "#d9534f", "#d43f3a"), ;
 
     String className;
     String label;

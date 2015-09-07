@@ -21,6 +21,7 @@
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	
 	<style type="text/css">
 		ul {         
@@ -158,26 +159,16 @@
 					                                        </div>
 				                                            <p class="help-block">Enter the project start date</p>
 
-				                                            <label>Target Completion Date</label>
-					                                        <div class="input-group">
-					                                            <div class="input-group-addon">
-					                                                <i class="fa fa-calendar"></i>
-					                                            </div>
-					                                            <fmt:formatDate value="${project.targetCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
-					                                            <form:input type="text" class="form-control date-picker" path="targetCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
-					                                        </div>
-				                                            <p class="help-block">Enter the project target completion date</p>
+					                                            <label>Target Completion Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <fmt:formatDate value="${project.targetCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <form:input type="text" class="form-control date-picker" path="targetCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+						                                        </div>
+					                                            <p class="help-block">Enter the project target completion date</p>
 
-				                                            <label>Actual Completion Date</label>
-					                                        <div class="input-group">
-					                                            <div class="input-group-addon">
-					                                                <i class="fa fa-calendar"></i>
-					                                            </div>
-					                                            <fmt:formatDate value="${project.actualCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
-					                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
-					                                        </div>
-				                                            <p class="help-block">Enter the project actual completion date</p>
-				                                            
 				                                            <label>Location</label>
 				                                            <form:input type="text" placeholder="Sample: 123 Brown Avenue, New York City" class="form-control" path="location"/>
 				                                            <p class="help-block">Enter the project location</p>
@@ -220,6 +211,31 @@
                    								
                    								<div class="box-body">
                    									<div class="form-group">
+
+						                                    <c:if test="${project.status == 2}"> <!-- If completed -->
+	                   											<div class="form-group">
+					                                        
+						                                        	<!-- Update form Input -->
+			                  										<form:form
+			                  											modelAttribute="project"
+			                  											method="post"
+			                  											action="${contextPath}/project/create">
+							                                            <label>Actual Completion Date</label>
+																				<c:url var="clearActualCompletion" value="/project/clear/actual-completion-date"/>
+								                                            	(<a class="general-link" href="${clearActualCompletion}">Clear</a>)
+								                                        <div class="input-group">
+								                                            <div class="input-group-addon">
+								                                                <i class="fa fa-calendar"></i>
+								                                            </div>
+								                                            <fmt:formatDate value="${project.actualCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
+								                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+								                                        </div>
+							                                            <p class="help-block">Enter the project actual completion date</p>
+						                                            	<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update Actual Completion</button>
+							                                    	</form:form>
+						                                        </div>
+						                                        <br/>
+						                                    </c:if>
                												
                    											<c:if test="${!empty projectFields}">
    															<div class="form-group" id="fieldsDivViewer">
@@ -282,6 +298,99 @@
                    				<c:when test="${project.id != 0}">
 
                    				<div class="tab-pane ${dashboardVisibility}" id="tab_dashboard">
+                   					<div class="row">
+							            <div class="col-md-3 col-sm-6 col-xs-12">
+							              <div class="info-box">
+							                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">CPU Traffic</span>
+							                  <span class="info-box-number">90<small>%</small></span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+							            <div class="col-md-3 col-sm-6 col-xs-12">
+							              <div class="info-box">
+							                <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">Likes</span>
+							                  <span class="info-box-number">41,410</span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+
+							            <!-- fix for small devices only -->
+							            <div class="clearfix visible-sm-block"></div>
+
+							            <div class="col-md-3 col-sm-6 col-xs-12">
+							              <div class="info-box">
+							                <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">Sales</span>
+							                  <span class="info-box-number">760</span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+							            <div class="col-md-3 col-sm-6 col-xs-12">
+							              <div class="info-box">
+							                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">New Members</span>
+							                  <span class="info-box-number">2,000</span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+							          </div>
+
+              						<div class="row">
+                   						<div class="col-md-6">
+													<div class="info-box bg-green">
+														<span class="info-box-icon"><i class="ion ion-ios-heart-outline" style="padding-top: 20%;"></i></span>
+														<div class="info-box-content">
+															<span class="info-box-text">${project.name}</span>
+															<span class="info-box-number">${project.getPhysicalTargetAsString()} square meters</span>
+															<div class="progress">
+															<div class="progress-bar" style="width: 20%"></div>
+															</div>
+															<span class="progress-description">
+															20% Increase in 30 Days
+															</span>
+														</div><!-- /.info-box-content -->
+													</div>
+
+													<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
+													<div class="info-box ${css}">
+														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
+														<div class="info-box-content">
+															<span class="info-box-text">${project.getStatusEnum()} (${project.getCSSofDelay().label()})</span>
+															<span class="info-box-number">
+																<c:choose>
+																	<c:when test="${project.getCalDaysRemaining() >= 0}">
+																		<c:set value="remaining" var="daysCaption"/>
+																	</c:when>
+																	<c:when test="${project.getCalDaysRemaining() < 0}">
+																		<c:set value="delayed" var="daysCaption"/>
+																	</c:when>
+																</c:choose>
+																${project.getCalDaysRemainingAsString()} (${project.getCalDaysRemainingAsPercentAsString()}%) calendar days ${daysCaption}
+															</span>
+															<div class="progress">
+															<div class="progress-bar" style="width: ${project.getCalDaysProgressAsPercent()}%"></div>
+															</div>
+															<span class="progress-description">
+															out of ${project.getCalDaysTotalAsString()} project days															
+															from <fmt:formatDate value="${project.dateStart}" pattern="yyyy/MM/dd" /> to <fmt:formatDate value="${project.targetCompletionDate}" pattern="yyyy/MM/dd" />
+															</span>
+														</div><!-- /.info-box-content -->
+													</div>
+				                        </div>
+                   						<div class="col-md-6">
+		                                	<div class="box box-body box-default">
+				                                <div class="box-body">
+				                                	
+				                                </div><!-- /.box-body -->
+				                             </div>
+				                        </div>
+				                   	</div> <!-- End of Row -->
               						<div class="row">
                    						<div class="col-md-4">
 		                                	<div class="box box-body box-default">

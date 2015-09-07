@@ -10,6 +10,8 @@ public class RegistryURL {
 
     public static final String MASS_UPLOAD_AND_ASSIGN_TASK = "/mass/upload-and-assign/task";
 
+    public static final String CLEAR_ACTUAL_COMPLETION_DATE = "/clear/actual-completion-date";
+
     public static final String CREATE_TASK = "/create/task";
 
     public static final String CREATE_STAFF = "/create/staff";

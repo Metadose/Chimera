@@ -23,6 +23,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC = "There was a problem with the <b>list of staff</b> you provided. Please <b>review</b> the list and <b>try again</b>.";
 
+    public static final String ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE = "The <b>start date</b> must be <b>before the completion date</b>.";
+
     // Auth.
     public static final String ERROR_AUTH_USERNAME_INVALID_PATTERN = "A <b>username</b> must contain the following:<br/>1.) Lowercase letters from <b>a-z</b>.<br/>2.) Numbers <b>0-9</b> or symbols <b>underscore</b> or <b>hyphen</b>.<br/>3.) Length at least <b>4 characters</b> and maximum length of 32.";
 

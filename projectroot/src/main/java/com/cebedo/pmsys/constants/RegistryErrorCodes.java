@@ -22,6 +22,8 @@ public class RegistryErrorCodes {
 
     public static final String PROJECT_EXTRA_INFO = "invalid.project.extrainfo";
 
+    public static final String PROJECT_DATES = "invalid.project.dates";
+
     public static final String MATERIAL_UNIT = "invalid.material.unit";
 
     public static final String PULLOUT_EXCEED = "invalid.pullout.exceed";

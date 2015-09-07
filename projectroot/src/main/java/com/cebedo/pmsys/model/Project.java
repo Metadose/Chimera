@@ -22,10 +22,14 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
+import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
@@ -104,6 +108,16 @@ public class Project implements Serializable {
     @Transient
     public ProjectStatus getStatusEnum() {
 	return ProjectStatus.of(getStatus());
+    }
+
+    @Transient
+    public CSSClass getCSSofDelay() {
+	// Delay.
+	if (getCalDaysRemaining() < 0) {
+	    return CSSClass.DELAYED;
+	}
+	// On time.
+	return CSSClass.ON_TIME;
     }
 
     @OrderBy(Project.COLUMN_PRIMARY_KEY)
@@ -186,6 +200,11 @@ public class Project implements Serializable {
 	return physicalTarget;
     }
 
+    @Transient
+    public String getPhysicalTargetAsString() {
+	return NumberFormatUtils.getQuantityFormatter().format(getPhysicalTarget());
+    }
+
     public void setPhysicalTarget(double physicalTarget) {
 	this.physicalTarget = physicalTarget;
     }
@@ -204,6 +223,55 @@ public class Project implements Serializable {
     @Temporal(TemporalType.DATE)
     public Date getTargetCompletionDate() {
 	return targetCompletionDate;
+    }
+
+    @Transient
+    public int getCalDaysRemaining() {
+	Date now = null;
+	if (getStatusEnum() == ProjectStatus.COMPLETED) {
+	    now = getActualCompletionDate();
+	} else {
+	    now = new Date(System.currentTimeMillis());
+	}
+	Date target = getTargetCompletionDate();
+	return Days.daysBetween(new DateTime(now), new DateTime(target)).getDays();
+    }
+
+    @Transient
+    public double getCalDaysRemainingAsPercent() {
+	double daysRemain = getCalDaysRemaining();
+	double daysTotal = getCalDaysTotal();
+	double remainPercent = (daysRemain / daysTotal) * 100;
+	return remainPercent;
+    }
+
+    @Transient
+    public String getCalDaysRemainingAsPercentAsString() {
+	double remainPercent = getCalDaysRemainingAsPercent();
+	return NumberFormatUtils.getQuantityFormatter().format(remainPercent);
+    }
+
+    @Transient
+    public double getCalDaysProgressAsPercent() {
+	double remainPercent = getCalDaysRemainingAsPercent();
+	return remainPercent < 0 ? 0 : remainPercent;
+    }
+
+    @Transient
+    public int getCalDaysTotal() {
+	Date startDate = getDateStart();
+	Date target = getTargetCompletionDate();
+	return Days.daysBetween(new DateTime(startDate), new DateTime(target)).getDays();
+    }
+
+    @Transient
+    public String getCalDaysTotalAsString() {
+	return NumberFormatUtils.getQuantityFormatter().format(getCalDaysTotal());
+    }
+
+    @Transient
+    public String getCalDaysRemainingAsString() {
+	return NumberFormatUtils.getQuantityFormatter().format(getCalDaysRemaining());
     }
 
     public void setTargetCompletionDate(Date targetCompletionDate) {

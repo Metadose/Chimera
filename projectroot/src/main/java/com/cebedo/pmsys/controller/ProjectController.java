@@ -1885,6 +1885,24 @@ public class ProjectController {
     }
 
     /**
+     * Clear the actual completion date.
+     * 
+     * @param session
+     * @param status
+     * @param redirectAttrs
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.CLEAR_ACTUAL_COMPLETION_DATE, method = RequestMethod.GET)
+    public String clearActualCompletionDate(HttpSession session, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	String response = this.projectService.clearActualCompletionDate(proj);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return redirectEditPageProject(proj.getId(), status);
+    }
+
+    /**
      * Set dashboard attributes.
      * 
      * @param model

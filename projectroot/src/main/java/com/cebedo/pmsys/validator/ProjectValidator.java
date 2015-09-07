@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.validator;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -25,6 +27,16 @@ public class ProjectValidator implements Validator {
 	if (StringUtils.isBlank(name)) {
 	    errors.reject(RegistryErrorCodes.COMMON_NAME,
 		    RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	}
+
+	Date start = project.getDateStart();
+	Date endTarget = project.getTargetCompletionDate();
+	Date endActual = project.getActualCompletionDate();
+
+	// Start date must be before the completion date.
+	if (start.after(endTarget) || start.after(endActual)) {
+	    errors.reject(RegistryErrorCodes.PROJECT_DATES,
+		    RegistryResponseMessage.ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE);
 	}
     }
 

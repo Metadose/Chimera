@@ -264,15 +264,18 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Service layer form validation.
-	this.projectValidator.validate(project, result);
-	if (result.hasErrors()) {
-	    return this.validationHelper.errorMessageHTML(result);
+	if (result != null) {
+	    this.projectValidator.validate(project, result);
+	    if (result.hasErrors()) {
+		return this.validationHelper.errorMessageHTML(result);
+	    }
 	}
 
 	// Actual service.
 	Company company = this.companyDAO.getCompanyByObjID(Project.TABLE_NAME,
 		Project.COLUMN_PRIMARY_KEY, project.getId());
 	project.setCompany(company);
+
 	this.projectDAO.update(project);
 
 	// Log.
@@ -513,6 +516,13 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
+    }
+
+    @Override
+    @Transactional
+    public String clearActualCompletionDate(Project project) {
+	project.setActualCompletionDate(null);
+	return update(project, null);
     }
 
 }

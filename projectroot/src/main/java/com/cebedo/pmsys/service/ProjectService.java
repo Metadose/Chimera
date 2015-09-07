@@ -55,4 +55,6 @@ public interface ProjectService {
 
     public String createTasksFromExcel(MultipartFile multipartFile, Project project, BindingResult result);
 
+    public String clearActualCompletionDate(Project proj);
+
 }
