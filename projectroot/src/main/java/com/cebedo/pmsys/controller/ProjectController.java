@@ -182,17 +182,18 @@ public class ProjectController {
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
-    public static final String ATTR_DATA_SERIES_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
-    public static final String ATTR_DATA_SERIES_COSTS_ACTUAL = "dataSeriesCostsActual";
     public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
-    public static final String ATTR_DATA_SERIES_DASHBOARD_PIE = "dataSeriesDashboardPie";
     public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
-    public static final String ATTR_DATA_SERIES_TASKS = "dataSeriesTasks";
-    public static final String ATTR_DATA_SERIES_ATTENDANCE = "dataSeriesAttendance";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
     public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
     public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
     public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
+
+    public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
+    public static final String ATTR_DATA_SERIES_PIE_TASKS = "dataSeriesTasks";
+    public static final String ATTR_DATA_SERIES_PIE_COSTS_ACTUAL = "dataSeriesCostsActual";
+    public static final String ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
+    public static final String ATTR_DATA_SERIES_PIE_DASHBOARD = "dataSeriesDashboardPie";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
@@ -1188,25 +1189,33 @@ public class ProjectController {
 
 	// Construct Highcharts data series.
 	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	int taskCount = 0;
 	for (TaskStatus status : taskStatusMap.keySet()) {
+	    Integer count = taskStatusMap.get(status);
+	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(taskStatusMap.get(status).toString()),
-		    CSSClass.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()), CSSClass.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
-	model.addAttribute(ATTR_DATA_SERIES_TASKS, new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,
+		taskCount == 0 ? "[]" : new Gson().toJson(dataSeries, ArrayList.class));
 
 	// Construct Highcharts data series.
 	dataSeries = new ArrayList<HighchartsDataPoint>();
+	int counter = 0;
 	for (AttendanceStatus status : attendanceStatMap.keySet()) {
 	    if (status == AttendanceStatus.DELETE) {
 		continue;
 	    }
-	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), attendanceStatMap.get(
-		    status).getCount(), CSSClass.backgroundColorOf(status.css()));
+
+	    double count = attendanceStatMap.get(status).getCount();
+	    counter += count;
+	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), count,
+		    CSSClass.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
-	model.addAttribute(ATTR_DATA_SERIES_ATTENDANCE, new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_ATTENDANCE,
+		counter == 0 ? "[]" : new Gson().toJson(dataSeries, ArrayList.class));
     }
 
     /**
@@ -2035,8 +2044,10 @@ public class ProjectController {
 	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
 	projectPie.add(new HighchartsDataPoint("Materials", materialsAccumulated));
 	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_PIE,
-		new Gson().toJson(projectPie, ArrayList.class));
+	model.addAttribute(
+		ATTR_DATA_SERIES_PIE_DASHBOARD,
+		(materialsAccumulated == 0 && payrollAccumulated == 0) ? "[]" : new Gson().toJson(
+			projectPie, ArrayList.class));
     }
 
     /**
@@ -2050,15 +2061,21 @@ public class ProjectController {
 
 	// Estimated.
 	List<HighchartsDataPoint> pie = new ArrayList<HighchartsDataPoint>();
-	pie.add(new HighchartsDataPoint("Direct", projectAux.getGrandTotalCostsDirect()));
-	pie.add(new HighchartsDataPoint("Indirect", projectAux.getGrandTotalCostsIndirect()));
-	model.addAttribute(ATTR_DATA_SERIES_COSTS_ESTIMATED, new Gson().toJson(pie, ArrayList.class));
+	double direct = projectAux.getGrandTotalCostsDirect();
+	double indirect = projectAux.getGrandTotalCostsIndirect();
+	pie.add(new HighchartsDataPoint("Direct", direct));
+	pie.add(new HighchartsDataPoint("Indirect", indirect));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED, (direct == 0 && indirect == 0) ? "[]"
+		: new Gson().toJson(pie, ArrayList.class));
 
 	// Actual.
 	pie = new ArrayList<HighchartsDataPoint>();
-	pie.add(new HighchartsDataPoint("Direct", projectAux.getGrandTotalActualCostsDirect()));
-	pie.add(new HighchartsDataPoint("Indirect", projectAux.getGrandTotalActualCostsIndirect()));
-	model.addAttribute(ATTR_DATA_SERIES_COSTS_ACTUAL, new Gson().toJson(pie, ArrayList.class));
+	direct = projectAux.getGrandTotalActualCostsDirect();
+	indirect = projectAux.getGrandTotalActualCostsIndirect();
+	pie.add(new HighchartsDataPoint("Direct", direct));
+	pie.add(new HighchartsDataPoint("Indirect", indirect));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ACTUAL, (direct == 0 && indirect == 0) ? "[]"
+		: new Gson().toJson(pie, ArrayList.class));
 
 	// Selectors and forms.
 	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.class.getEnumConstants());
@@ -2252,12 +2269,15 @@ public class ProjectController {
 
 	// Construct Highcharts data series.
 	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
+	int taskCount = 0;
 	for (TaskStatus status : taskStatusMap.keySet()) {
+	    Integer count = taskStatusMap.get(status);
+	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(taskStatusMap.get(status).toString()),
-		    CSSClass.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()), CSSClass.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
-	model.addAttribute(ATTR_DATA_SERIES_TASKS, new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,
+		taskCount == 0 ? "[]" : new Gson().toJson(dataSeries, ArrayList.class));
     }
 }

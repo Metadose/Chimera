@@ -620,12 +620,7 @@
 							                   	</div> <!-- End of Row -->
 											</div>
 											<div class="tab-pane" id="tab_calculator">
-
-			                   					<c:if test="${empty estimationOutputList}">
-			                   						<c:set value="hide" var="estimateVisibility"/>
-			                   					</c:if>
-
-			              						<div class="row ${estimateVisibility}">
+			              						<div class="row">
 			                   						<div class="col-md-12">
 					                                	<div class="box box-body box-default">
 			<!-- 				                                		<div class="box-header"> -->
@@ -722,27 +717,16 @@
                    				
 
                                 <div class="tab-pane" id="tab_timeline">
-									<c:choose>
-	                                	<c:when test="${!empty project.assignedTasks}">
-	                                		<c:set value="active" var="timelineVisibility"></c:set>
-	                                	</c:when>
-	                                	<c:when test="${empty project.assignedTasks}">
-	                                		<c:set value="hide" var="timelineVisibility"></c:set>
-	                                		<c:set value="active" var="tasksVisibility"></c:set>
-	                                		<c:set value="hide" var="tasksSummaryVisibility"></c:set>
-	                                	</c:when>
-	                                </c:choose>
-                                	
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-timeline">
-										<li class="${timelineVisibility}"><a href="#subtab_chart" data-toggle="tab">Gantt Chart</a></li>
-										<li class="${tasksVisibility}"><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
+										<li class="active"><a href="#subtab_chart" data-toggle="tab">Gantt Chart</a></li>
+										<li><a href="#subtab_tasks" data-toggle="tab">Tasks</a></li>
 									</ul>
 									<div class="tab-content">
 
 									
-										<div class="tab-pane ${timelineVisibility}" id="subtab_chart">
-											<div class="row ${tasksSummaryVisibility}">
+										<div class="tab-pane active" id="subtab_chart">
+											<div class="row">
 		                   						<div class="col-md-6">
 		                   							<div class="box box-body box-default">
 		                   								<div class="box-body">
@@ -781,44 +765,39 @@
 		              						</div>
 											<div class="row">
 		                   						<div class="col-md-12">
-				                                	<div class="box box-body box-default">
-						                                <div class="box-body">
-										                <c:if test="${!empty project.assignedTasks}">
-						                                <table>
-		               										<tr>
-		           											<td>Legend:
-		           											</td>
-		           											<td>&nbsp;</td>
-		           											<td>
-															<c:forEach items="${ganttElemTypeList}" var="ganttElem">
-																<c:set value="" var="border"></c:set>
-																<c:if test="${ganttElem.className().contains(\"btn-default\")}">
-																	<c:set value="border: 1px solid #999999;" var="border"></c:set>
-																</c:if>
-																<span class="label ${ganttElem.className()}"
-																style="
-																color: ${ganttElem.color()};
-																background-color: ${ganttElem.backgroundColor()};
-																${border};
-																">
-																${ganttElem.label()}
-																</span>
-																&nbsp;
-															</c:forEach>
-		           											</td>
-		               										</tr>
-		               									</table>
-		               									<br/>
-		               									</c:if>
-						                                <div id="gantt-chart" class="gantt-holder">
-						                                </div><!-- /.box-body -->
-						                                </div>
-						                            </div>
+											                <c:if test="${!empty project.assignedTasks}">
+							                                <table>
+			               										<tr>
+			           											<td>Legend:
+			           											</td>
+			           											<td>&nbsp;</td>
+			           											<td>
+																<c:forEach items="${ganttElemTypeList}" var="ganttElem">
+																	<c:set value="" var="border"></c:set>
+																	<c:if test="${ganttElem.className().contains(\"btn-default\")}">
+																		<c:set value="border: 1px solid #999999;" var="border"></c:set>
+																	</c:if>
+																	<span class="label ${ganttElem.className()}"
+																	style="
+																	color: ${ganttElem.color()};
+																	background-color: ${ganttElem.backgroundColor()};
+																	${border};
+																	">
+																	${ganttElem.label()}
+																	</span>
+																	&nbsp;
+																</c:forEach>
+			           											</td>
+			               										</tr>
+			               									</table>
+			               									<br/>
+			               									</c:if>
+						                                	<div id="gantt-chart" class="gantt-holder"></div>
 					                            </div>
 				                            </div>
 										</div>
 										
-										<div class="tab-pane ${tasksVisibility}" id="subtab_tasks">
+										<div class="tab-pane" id="subtab_tasks">
 	              						<div class="row">
 	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
@@ -971,7 +950,6 @@
           						</div>
            						</div>
                                 <div class="tab-pane" id="tab_payroll">
-                                	<c:if test="${!empty payrollList}">
 		                            <div class="row">
                						<div class="col-md-6">
                							<div class="box box-body box-default">
@@ -988,7 +966,6 @@
                							</div>
                						</div>
                						</div>
-               						</c:if>
                                 	<div class="row">
 		                            <div class="col-md-12">
                							<div class="box box-body box-default">
@@ -1068,25 +1045,14 @@
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_inventory">
                                 
-                                	<c:choose>
-                                	<c:when test="${empty materialList}">
-                                		<c:set value="hide" var="materialsVisibility"/>
-                                	</c:when>
-                                	</c:choose>
-
-                                	<c:if test="${empty pullOutList}">
-                                		<c:set value="hide" var="pulloutsVisibility"/>
-                                	</c:if>
-
-                                	
                                 	<div class="nav-tabs-custom">
 		                            <ul class="nav nav-tabs" id="subtabs-inventory">
                                 		<li class="active"><a href="#subtab_delivery" data-toggle="tab">Deliveries</a></li>
-		                                <li class="${materialsVisibility}"><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
-		                                <li class="${pulloutsVisibility}"><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
+		                                <li><a href="#subtab_inventory" data-toggle="tab">Materials</a></li>
+		                                <li><a href="#subtab_pullout" data-toggle="tab">Pull-Outs</a></li>
 		                            </ul>
 		                            <div class="tab-content">
-		                                <div class="tab-pane ${materialsVisibility}" id="subtab_inventory">
+		                                <div class="tab-pane" id="subtab_inventory">
 	                                	<div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
@@ -1186,7 +1152,6 @@
 		                                
 		                                <div class="tab-pane active" id="subtab_delivery">
 
-	               						<c:if test="${!empty materialList}">
 	               						<div class="row">
 	               						<div class="col-md-6">
 	               							<div class="box box-body box-default">
@@ -1203,7 +1168,6 @@
 	               							</div>
 	               						</div>
 	               						</div>
-	               						</c:if>
 
 		                                <div class="row">
 			                            <div class="col-md-12">
@@ -2147,24 +2111,13 @@
 		                            </div>
                                 </div><!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_staff">
-
-                                	<c:choose>
-	                                	<c:when test="${!empty project.assignedStaff}">
-	                                		<c:set value="active" var="membersVisibility"></c:set>
-	                                	</c:when>
-	                                	<c:when test="${empty project.assignedStaff}">
-	                                		<c:set value="hide" var="membersVisibility"></c:set>
-	                                		<c:set value="active" var="assignVisibility"></c:set>
-	                                	</c:when>
-	                                </c:choose>
-                                
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-staff">
-										<li class="${membersVisibility}"><a href="#subtab_members" data-toggle="tab">Members</a></li>
-										<li class="${assignVisibility}"><a href="#subtab_controls" data-toggle="tab">Assign</a></li>
+										<li class="active"><a href="#subtab_members" data-toggle="tab">Members</a></li>
+										<li><a href="#subtab_controls" data-toggle="tab">Assign</a></li>
 									</ul>
 									<div class="tab-content">
-										<div class="tab-pane ${membersVisibility}" id="subtab_members">
+										<div class="tab-pane active" id="subtab_members">
 											<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
@@ -2224,7 +2177,7 @@
 						                        </div>
 						                   	</div>
 										</div>
-										<div class="tab-pane ${assignVisibility}" id="subtab_controls">
+										<div class="tab-pane" id="subtab_controls">
 						                   	<div class="row">
 		                   						<div class="col-md-12">
 				                                	<div class="box box-body box-default">
@@ -2319,6 +2272,8 @@
 	</div>
 	
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">

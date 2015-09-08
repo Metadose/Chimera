@@ -171,7 +171,7 @@
                                 </div><!-- /.tab-pane -->
                                 <c:if test="${staff.id != 0}">
                                 <div class="tab-pane" id="tab_timeline">
-                                	<c:if test="${!empty taskList}">
+                                	
               						<div class="row">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -210,7 +210,7 @@
                    							</div>
                    						</div>
               						</div>
-              						</c:if>
+              						
               						<div class="row">
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
@@ -371,7 +371,7 @@
                    								</div>
                    							</div>
                    						</div>
-                   						<c:if test="${!empty attendanceList}">
+                   						
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
@@ -430,7 +430,7 @@
                    								</div>
                    							</div>
                    						</div>
-                   						</c:if>
+                   						
               						</div>
               						<div class="row">
                    						<div class="col-md-12">
@@ -535,7 +535,9 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 
     <script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
-    <script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
    	<c:if test="${staff.id != 0 && fromProject}">
    	<script type="text/javascript">
