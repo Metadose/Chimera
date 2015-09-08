@@ -2,7 +2,10 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Map;
 
+import javax.persistence.Transient;
+
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
+import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -83,14 +86,16 @@ public class ProjectAux implements IDomainObject {
 	return grandTotalCostsDirect + grandTotalCostsIndirect;
     }
 
-    /**
-     * TODO ESTIMATE-ACTUAL: for post-project analysis<br>
-     * si OTHER EXPENSES, "current expenses". si actual di mabutang diri
-     * 
-     * @return
-     */
     public double getCurrentTotalProject() {
 	return grandTotalDelivery + grandTotalPayroll;
+    }
+
+    @Transient
+    public CSSClass getCSSofOverspent() {
+	if (getRemainingBudget() < 0) {
+	    return CSSClass.OVERSPENT;
+	}
+	return CSSClass.SPENT;
     }
 
     public double getRemainingBudget() {
@@ -98,7 +103,12 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getRemainingBudgetAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(getRemainingBudget());
+	double budget = getRemainingBudget();
+	String budgetStr = NumberFormatUtils.getCurrencyFormatter().format(budget);
+	if (budget < 0) {
+	    return budgetStr.replace("&#8369;", "&#8369;-");
+	}
+	return budgetStr;
     }
 
     public double getRemainingBudgetAsPercent() {

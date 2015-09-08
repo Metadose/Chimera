@@ -22,7 +22,11 @@ public enum CSSClass {
 
     ON_TIME("bg-green", "On-time", "#fff", "#5cb85c", "#4cae4c"),
 
-    DELAYED("bg-red", "Delayed", "#fff", "#d9534f", "#d43f3a"), ;
+    DELAYED("bg-red", "Delayed", "#fff", "#d9534f", "#d43f3a"),
+
+    SPENT("bg-green", "Spent", "#fff", "#5cb85c", "#4cae4c"),
+
+    OVERSPENT("bg-red", "Overspent", "#fff", "#d9534f", "#d43f3a");
 
     String className;
     String label;

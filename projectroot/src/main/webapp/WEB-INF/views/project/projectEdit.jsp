@@ -335,7 +335,7 @@
 							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-cart"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Other Expenses</span>
-							                  <span class="info-box-number">ESTIMATE-ACTUAL: for post-project analysis<br/>si OTHER EXPENSES, "current expenses". si actual di mabutang diri</span>
+							                  <span class="info-box-number">si actual di mabutang diri</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
@@ -348,21 +348,21 @@
 				                        </div>
 
                    						<div class="col-md-6">
-													<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
+													<c:set value="${projectAux.getCSSofOverspent().className()}" var="css"></c:set>
 													<div class="info-box ${css}">
 														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
 														<div class="info-box-content">
 															<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} (${projectAux.getCurrentTotalProjectAsPercentAsString()}%) spent</span>
 															<span class="info-box-number">
 																<c:choose>
-																	<c:when test="${project.getCalDaysRemaining() >= 0}">
-																		<c:set value="remaining" var="daysCaption"/>
+																	<c:when test="${projectAux.getRemainingBudget() >= 0}">
+																		<c:set value="remaining" var="moneyCaption"/>
 																	</c:when>
-																	<c:when test="${project.getCalDaysRemaining() < 0}">
-																		<c:set value="delayed" var="daysCaption"/>
+																	<c:when test="${projectAux.getRemainingBudget() < 0}">
+																		<c:set value="overspent" var="moneyCaption"/>
 																	</c:when>
 																</c:choose>
-																${projectAux.getRemainingBudgetAsString()} (${projectAux.getRemainingBudgetAsPercentAsString()}%) remaining
+																${projectAux.getRemainingBudgetAsString()} (${projectAux.getRemainingBudgetAsPercentAsString()}%) ${moneyCaption}
 															</span>
 															<div class="progress">
 															<div class="progress-bar" style="width: ${projectAux.getRemainingBudgetAsPercent()}%"></div>
