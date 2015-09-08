@@ -521,7 +521,7 @@
 																<h3 class="box-title">Estimated Costs</h3>
 															</div>
 							                                <div class="box-body">
-					                                			<div id="highcharts-costs-estimated-pie"></div>
+					                                			<div id="highcharts-costs-estimated-pie" style="height: 300px"></div>
 					                                		</div>
 							                             </div>
 							                        </div>
@@ -531,7 +531,7 @@
 																<h3 class="box-title">Actual Costs</h3>
 															</div>
 															<div class="box-body">
-					                                			<div id="highcharts-costs-actual-pie"></div>
+					                                			<div id="highcharts-costs-actual-pie" style="height: 300px"></div>
 					                                		</div>
 					                                	</div>
 							                        </div>
@@ -774,7 +774,7 @@
 		                   						<div class="col-md-6">
 		                   							<div class="box box-body box-default">
 		                   								<div class="box-body">
-		                   									<div id="highcharts-tasks"></div>
+		                   									<div id="highcharts-tasks" style="height: 300px"></div>
 		                   								</div>
 		                   							</div>
 		                   						</div>
