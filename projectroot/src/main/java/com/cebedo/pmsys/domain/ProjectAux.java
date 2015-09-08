@@ -8,6 +8,7 @@ import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.HTMLUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class ProjectAux implements IDomainObject {
@@ -84,6 +85,80 @@ public class ProjectAux implements IDomainObject {
 
     public double getPlannedTotalProject() {
 	return grandTotalCostsDirect + grandTotalCostsIndirect;
+    }
+
+    public double getDiffEstimatedActualTotal() {
+	return getPlannedTotalProject() - getActualTotalProject();
+    }
+
+    public String getDiffEstimatedActualTotalAsString() {
+	double diff = getDiffEstimatedActualTotal();
+	String diffStr = NumberFormatUtils.getCurrencyFormatter().format(diff);
+	if (diff < 0) {
+	    return diffStr.replace("&#8369;", "&#8369;-").replace("(", "").replace(")", "");
+	}
+	return diffStr;
+    }
+
+    public String getDiffEstimatedActualTotalAsHTML() {
+	String label = getDiffEstimatedActualTotalAsString();
+	double diff = getDiffEstimatedActualTotal();
+	if (diff < 0) {
+	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	}
+	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+    }
+
+    public double getDiffEstimatedActualDirect() {
+	return getGrandTotalCostsDirect() - getGrandTotalActualCostsDirect();
+    }
+
+    public String getDiffEstimatedActualDirectAsString() {
+	double diff = getDiffEstimatedActualDirect();
+	String diffStr = NumberFormatUtils.getCurrencyFormatter().format(diff);
+	if (diff < 0) {
+	    return diffStr.replace("&#8369;", "&#8369;-").replace("(", "").replace(")", "");
+	}
+	return diffStr;
+    }
+
+    public String getDiffEstimatedActualDirectAsHTML() {
+	String label = getDiffEstimatedActualDirectAsString();
+	double diff = getDiffEstimatedActualDirect();
+	if (diff < 0) {
+	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	}
+	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+    }
+
+    public double getDiffEstimatedActualIndirect() {
+	return getGrandTotalCostsIndirect() - getGrandTotalActualCostsIndirect();
+    }
+
+    public String getDiffEstimatedActualIndirectAsString() {
+	double diff = getDiffEstimatedActualIndirect();
+	String diffStr = NumberFormatUtils.getCurrencyFormatter().format(diff);
+	if (diff < 0) {
+	    return diffStr.replace("&#8369;", "&#8369;-").replace("(", "").replace(")", "");
+	}
+	return diffStr;
+    }
+
+    public String getDiffEstimatedActualIndirectAsHTML() {
+	String label = getDiffEstimatedActualIndirectAsString();
+	double diff = getDiffEstimatedActualIndirect();
+	if (diff < 0) {
+	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	}
+	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+    }
+
+    public double getActualTotalProject() {
+	return grandTotalActualCostsDirect + grandTotalActualCostsIndirect;
+    }
+
+    public String getActualTotalProjectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getActualTotalProject());
     }
 
     public double getCurrentTotalProject() {
@@ -171,11 +246,6 @@ public class ProjectAux implements IDomainObject {
 	return getKey().hashCode();
     }
 
-    public String getGrandTotalCostsAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		getGrandTotalCostsDirect() + getGrandTotalCostsIndirect());
-    }
-
     public String getGrandTotalCostsDirectAsString() {
 	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalCostsDirect());
     }
@@ -204,12 +274,20 @@ public class ProjectAux implements IDomainObject {
 	return grandTotalActualCostsDirect;
     }
 
+    public String getGrandTotalActualCostsDirectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalActualCostsDirect());
+    }
+
     public void setGrandTotalActualCostsDirect(double grandTotalActualCostsDirect) {
 	this.grandTotalActualCostsDirect = grandTotalActualCostsDirect;
     }
 
     public double getGrandTotalActualCostsIndirect() {
 	return grandTotalActualCostsIndirect;
+    }
+
+    public String getGrandTotalActualCostsIndirectAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalActualCostsIndirect());
     }
 
     public void setGrandTotalActualCostsIndirect(double grandTotalActualCostsIndirect) {

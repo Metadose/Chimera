@@ -107,11 +107,11 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li class="${dashboardVisibility}"><a href="#tab_dashboard" data-toggle="tab">Dashboard</a></li>
                                 		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Contract</a></li>
-                                		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
-		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
-										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
+                                		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
+										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
+		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
                                 	<c:when test="${project.id == 0}">
@@ -430,17 +430,53 @@
 												<!-- ${directCostList}
 												${indirectCostList} -->
 												<div class="row">
-			                   						<div class="col-md-6"> <!-- Direct costs -->
+			                   						<div class="col-md-5">
 					                                	<div class="box box-body box-default">
 							                                <div class="box-body">
-							                                	<div class="box box-body box-default">
-							                                		<h3>Total Project Cost <b><u>${projectAux.getGrandTotalCostsAsString()}</u></b></h3>
+							                                	<table class="table table-bordered table-striped">
+																<thead>
+						                                    		<tr>
+							                                            <th>Type</th>
+							                                            <th>Estimated</th>
+							                                            <th>Actual</th>
+							                                            <th>Difference</th>
+							                                        </tr>
+						                                    	</thead>
+																<tbody>
+																	<tr>
+																		<td>Direct</td>
+																		<td class="cebedo-text-align-right">${projectAux.getGrandTotalCostsDirectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getGrandTotalActualCostsDirectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getDiffEstimatedActualDirectAsHTML()}</td>
+																	</tr>
+																	<tr>
+																		<td>Indirect</td>
+																		<td class="cebedo-text-align-right">${projectAux.getGrandTotalCostsIndirectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getGrandTotalActualCostsIndirectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getDiffEstimatedActualIndirectAsHTML()}</td>
+																	</tr>
+																	<tr>
+																		<td>Total</td>
+																		<td class="cebedo-text-align-right">${projectAux.getPlannedTotalProjectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getActualTotalProjectAsString()}</td>
+																		<td class="cebedo-text-align-right">${projectAux.getDiffEstimatedActualTotalAsHTML()}</td>
+																	</tr>
+																</tbody>
+																</table>
+																<br/>
 						                                  			TODO Pie of direct and indirect
-																</div>
 							                                </div><!-- /.box-body -->
 							                             </div>
 							                        </div>
-							                        <div class="col-md-6">
+			                   						<div class="col-md-5">
+					                                	<div class="box box-body box-default">
+					                                		<div class="box-body">
+																<br/>
+						                                  			TODO Pie of direct and indirect
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+							                        <div class="col-md-2">
 														<div class="box">
 															<div class="box-body">
 																<form:form modelAttribute="cost"
@@ -479,19 +515,18 @@
 												<div class="row">
 			                   						<div class="col-md-6"> <!-- Direct costs -->
 					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+															<h3 class="box-title">Direct Costs</h3>
+															</div>
 							                                <div class="box-body">
-							                                	<div class="pull-right">
-						                                  		<h3>Direct Costs <b><u>
-							                                	${projectAux.getGrandTotalCostsDirectAsString()}
-																</u></b></h3>
-																</div>
 							                                    <table class="table table-bordered table-striped is-data-table">	
 							                                    	<thead>
 							                                            <tr>
 							                                            	<th>&nbsp;</th>
 							                                                <th>Name</th>
-							                                                <th>Estimated Cost</th>
-							                                                <th>Actual Cost</th>
+							                                                <th>Estimated</th>
+							                                                <th>Actual</th>
+							                                                <th>Difference</th>
 							                                            </tr>
 					                                        		</thead>
 							                                        <tbody>
@@ -507,9 +542,10 @@
 												                                    </a>
 																				</center>
 																			</td>
-						                                                	<td>${directCost.name}</td>
-						                                                	<td>${directCost.cost}</td>
-						                                                	<td>${directCost.actualCost}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.name}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.getCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.getActualCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.getDiffEstimatedActualAsHTML()}</td>
 							                                            </tr>
 							                                            </c:forEach>
 								                                    </tbody>
@@ -519,19 +555,18 @@
 							                        </div>
 			                   						<div class="col-md-6"> <!-- Indirect costs -->
 					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+															<h3 class="box-title">Indirect Costs</h3>
+															</div>
 							                                <div class="box-body">
-							                                	<div class="pull-right">
-						                                  		<h3>Indirect Costs <b><u>
-							                                	${projectAux.getGrandTotalCostsIndirectAsString()}
-																</u></b></h3>
-																</div>
 							                                    <table class="table table-bordered table-striped is-data-table">	
 							                                    	<thead>
 							                                            <tr>
 							                                            	<th>&nbsp;</th>
 							                                                <th>Name</th>
-							                                                <th>Estimated Cost</th>
-							                                                <th>Actual Cost</th>
+							                                                <th>Estimated</th>
+							                                                <th>Actual</th>
+							                                                <th>Difference</th>
 							                                            </tr>
 					                                        		</thead>
 							                                        <tbody>
@@ -547,9 +582,10 @@
 												                                    </a>
 																				</center>
 																			</td>
-						                                                	<td>${indirectCost.name}</td>
-						                                                	<td>${indirectCost.cost}</td>
-						                                                	<td>${indirectCost.actualCost}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.name}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.getCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.getActualCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.getDiffEstimatedActualAsHTML()}</td>
 							                                            </tr>
 							                                            </c:forEach>
 								                                    </tbody>

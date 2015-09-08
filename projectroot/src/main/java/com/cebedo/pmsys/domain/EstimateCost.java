@@ -4,9 +4,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
+import com.cebedo.pmsys.enums.CSSClass;
 import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.utils.HTMLUtils;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class EstimateCost implements IDomainObject {
 
@@ -86,6 +89,10 @@ public class EstimateCost implements IDomainObject {
 	return cost;
     }
 
+    public String getCostAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getCost());
+    }
+
     public void setCost(double cost) {
 	this.cost = cost;
     }
@@ -100,6 +107,32 @@ public class EstimateCost implements IDomainObject {
 
     public double getActualCost() {
 	return actualCost;
+    }
+
+    public double getDiffEstimatedActual() {
+	return getCost() - getActualCost();
+    }
+
+    public String getDiffEstimatedActualAsString() {
+	double diff = getDiffEstimatedActual();
+	String diffStr = NumberFormatUtils.getCurrencyFormatter().format(diff);
+	if (diff < 0) {
+	    return diffStr.replace("&#8369;", "&#8369;-").replace("(", "").replace(")", "");
+	}
+	return diffStr;
+    }
+
+    public String getDiffEstimatedActualAsHTML() {
+	String label = getDiffEstimatedActualAsString();
+	double diff = getDiffEstimatedActual();
+	if (diff < 0) {
+	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	}
+	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+    }
+
+    public String getActualCostAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getActualCost());
     }
 
     public void setActualCost(double actualCost) {

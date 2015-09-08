@@ -24,4 +24,5 @@ public class RegistryRedisKeys {
     public static final String KEY_MATERIAL = "company.fk:%s:project.fk:%s:delivery.fk:%s:material:%s";
     public static final String KEY_PULL_OUT = "company.fk:%s:project.fk:%s:delivery.fk:%s:material.fk:%s:pullout:%s";
     public static final String KEY_ESTIMATED_COST = "company.fk:%s:project.fk:%s:cost:%s";
+    public static final String KEY_EXPENSE = "company.fk:%s:project.fk:%s:expense:%s";
 }
