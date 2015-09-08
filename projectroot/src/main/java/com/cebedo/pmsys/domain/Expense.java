@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -86,7 +88,7 @@ public class Expense implements IDomainObject {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public double getCost() {

@@ -1427,6 +1427,25 @@ public class ProjectController {
     }
 
     /**
+     * Open an edit page for a cost.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EDIT_ESTIMATE_COST }, method = RequestMethod.GET)
+    public String editEstimateCost(@PathVariable(ConstantsRedis.OBJECT_ESTIMATE_COST) String key,
+	    Model model, HttpSession session) {
+
+	// Construct the bean for the form.
+	EstimateCost cost = this.estimateCostService.get(key);
+	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, cost);
+	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.values());
+	return RegistryJSPPath.JSP_EDIT_COST;
+    }
+
+    /**
      * Open an edit page for a material.
      * 
      * @param key

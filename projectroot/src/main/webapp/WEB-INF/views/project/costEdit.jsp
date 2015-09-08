@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>${field.label} | Edit Field</title>
+	<title>${cost.name} | Edit Cost</title>
 	
 	<style>
 	  ul {         
@@ -30,8 +30,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	<c:out value="${field.label}"></c:out>
-	                <small>Edit Field</small>
+	            	<c:out value="${cost.name}"></c:out>
+	                <small>Edit Cost</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -51,28 +51,53 @@
                                 	<div class="row">
                    						<div class="col-md-6">
                    							<div class="box-body box-default">
-                   									<form:form modelAttribute="field"
-														id="detailsForm"
+                   									<form:form modelAttribute="cost"
+														action="${contextPath}/project/create/cost"
 														method="post"
-														action="${contextPath}/project/field/update">
+														id="detailsForm"
+														enctype="multipart/form-data">
 				                                        <div class="form-group">
-				                                            <label>Label</label>
-				                                            <form:input type="text" class="form-control" path="label"
-				                                            	placeholder="Sample: SSS, Building Permit No., Sub-contractor"/>
-				                                            <p class="help-block">Edit the label of this information</p>
+				                                        
+														<label>Name</label>
+														<form:input placeholder="Sample: Sitework, Concrete Works, Metal Works" class="form-control" path="name"/>
+														<p class="help-block">Enter the name of this cost</p>
+														
+														<table style="width: 100%;">
+															<tr>
+																<td style="vertical-align: top;">
+							                                        <label>Estimated Cost</label>
+																	<form:input class="form-control" path="cost"/>
+																	<p class="help-block">Enter the estimated cost</p>		
+																</td>
 
-				                                            <label>Value</label>
-				                                            <form:textarea type="text" class="form-control" path="value"
-				                                            	rows="3"
-				                                            	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction"/>
-				                                            <p class="help-block">Edit the information</p>
+																<td>&nbsp;</td>
+
+																<td style="vertical-align: top;">
+							                                        <label>Actual Cost</label>
+																	<form:input class="form-control" path="actualCost"/>
+																	<p class="help-block">Enter the actual cost</p>	
+																</td>
+
+																<td>&nbsp;</td>
+
+																<td style="vertical-align: top;">
+					                                                <label>Cost Type</label>
+					                                                <form:select class="form-control" path="costType"> 
+				                                   						<c:forEach items="${estimateCostList}" var="cost"> 
+				                                   							<form:option value="${cost}" label="${cost.getLabel()}"/> 
+				                                   						</c:forEach> 
+					                                    			</form:select>
+					                                    			<p class="help-block">Type of estimate cost</p>																				
+																</td>
+															</tr>
+														</table>
 				                                        </div>
-				                                    </form:form>
-                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-                                            		<c:url var="urlDeleteField" value="/project/field/delete" />
-                                            		<a href="${urlDeleteField}">
-														<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-													</a>
+			                                        </form:form>
+
+			                                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+				                                    <a href="<c:url value="/project/delete/cost/${cost.getKey()}-end"/>">
+       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+				                                    </a>
                    							</div>
                    						</div>
               						</div>

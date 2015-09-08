@@ -124,10 +124,14 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
+	// If we're updating, revert old values first.
+	boolean isCreate = true;
+	if (obj.getUuid() != null) {
+	    revertOldValues(obj);
+	    isCreate = false;
+	}
 	// If we're creating.
-	boolean isCreate = false;
-	if (obj.getUuid() == null) {
-	    isCreate = true;
+	else {
 	    obj.setUuid(UUID.randomUUID());
 	}
 
@@ -162,6 +166,32 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	}
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());
+    }
+
+    /**
+     * Revert old values.
+     * 
+     * @param obj
+     */
+    private void revertOldValues(EstimateCost obj) {
+	// Revert old values.
+	EstimateCost oldCost = this.estimateCostValueRepo.get(obj.getKey());
+	double oldActualCost = oldCost.getActualCost();
+	double oldEstimatedCost = oldCost.getCost();
+
+	// Direct cost.
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(oldCost.getProject()));
+	EstimateCostType costType = oldCost.getCostType();
+	if (costType == EstimateCostType.DIRECT) {
+	    aux.setGrandTotalCostsDirect(aux.getGrandTotalCostsDirect() - oldEstimatedCost);
+	    aux.setGrandTotalActualCostsDirect(aux.getGrandTotalActualCostsDirect() - oldActualCost);
+	}
+	// If cost is indirect.
+	else if (costType == EstimateCostType.INDIRECT) {
+	    aux.setGrandTotalCostsIndirect(aux.getGrandTotalCostsIndirect() - oldEstimatedCost);
+	    aux.setGrandTotalActualCostsIndirect(aux.getGrandTotalActualCostsIndirect() - oldActualCost);
+	}
+	this.projectAuxValueRepo.set(aux);
     }
 
 }

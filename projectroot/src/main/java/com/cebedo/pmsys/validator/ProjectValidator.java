@@ -9,6 +9,7 @@ import org.springframework.validation.Validator;
 
 import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.model.Project;
 
 @Component
@@ -34,7 +35,8 @@ public class ProjectValidator implements Validator {
 	Date endActual = project.getActualCompletionDate();
 
 	// Start date must be before the completion date.
-	if (start.after(endTarget) || start.after(endActual)) {
+	if (start.after(endTarget)
+		|| (project.getStatus() == ProjectStatus.COMPLETED.id() && start.after(endActual))) {
 	    errors.reject(RegistryErrorCodes.PROJECT_DATES,
 		    RegistryResponseMessage.ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE);
 	}
