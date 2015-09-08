@@ -182,6 +182,8 @@ public class ProjectController {
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
+    public static final String ATTR_DATA_SERIES_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
+    public static final String ATTR_DATA_SERIES_COSTS_ACTUAL = "dataSeriesCostsActual";
     public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
     public static final String ATTR_DATA_SERIES_DASHBOARD_PIE = "dataSeriesDashboardPie";
     public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
@@ -1894,7 +1896,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_PROJECT, proj);
 
 	// Estimate.
-	setEstimateAttributes(proj, model);
+	setEstimateAttributes(proj, projectAux, model);
 
 	// Staff.
 	setStaffAttributes(proj, model);
@@ -1997,9 +1999,22 @@ public class ProjectController {
      * Set attributes used in Estimate.
      * 
      * @param proj
+     * @param projectAux
      * @param model
      */
-    private void setEstimateAttributes(Project proj, Model model) {
+    private void setEstimateAttributes(Project proj, ProjectAux projectAux, Model model) {
+
+	// Estimated.
+	List<HighchartsDataPoint> pie = new ArrayList<HighchartsDataPoint>();
+	pie.add(new HighchartsDataPoint("Direct", projectAux.getGrandTotalCostsDirect()));
+	pie.add(new HighchartsDataPoint("Indirect", projectAux.getGrandTotalCostsIndirect()));
+	model.addAttribute(ATTR_DATA_SERIES_COSTS_ESTIMATED, new Gson().toJson(pie, ArrayList.class));
+
+	// Actual.
+	pie = new ArrayList<HighchartsDataPoint>();
+	pie.add(new HighchartsDataPoint("Direct", projectAux.getGrandTotalActualCostsDirect()));
+	pie.add(new HighchartsDataPoint("Indirect", projectAux.getGrandTotalActualCostsIndirect()));
+	model.addAttribute(ATTR_DATA_SERIES_COSTS_ACTUAL, new Gson().toJson(pie, ArrayList.class));
 
 	// Selectors and forms.
 	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.class.getEnumConstants());

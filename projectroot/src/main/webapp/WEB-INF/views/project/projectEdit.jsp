@@ -430,7 +430,7 @@
 												<!-- ${directCostList}
 												${indirectCostList} -->
 												<div class="row">
-			                   						<div class="col-md-5">
+			                   						<div class="col-md-4">
 					                                	<div class="box box-body box-default">
 							                                <div class="box-body">
 							                                	<table class="table table-bordered table-striped">
@@ -464,21 +464,7 @@
 																</tbody>
 																</table>
 																<br/>
-						                                  			TODO Pie of direct and indirect
-							                                </div><!-- /.box-body -->
-							                             </div>
-							                        </div>
-			                   						<div class="col-md-5">
-					                                	<div class="box box-body box-default">
-					                                		<div class="box-body">
-																<br/>
-						                                  			TODO Pie of direct and indirect
-							                                </div><!-- /.box-body -->
-							                             </div>
-							                        </div>
-							                        <div class="col-md-2">
-														<div class="box">
-															<div class="box-body">
+						                                  		
 																<form:form modelAttribute="cost"
 																	action="${contextPath}/project/create/cost"
 																	method="post"
@@ -488,29 +474,67 @@
 																	<label>Name</label>
 																	<form:input placeholder="Sample: Sitework, Concrete Works, Metal Works" class="form-control" path="name"/>
 																	<p class="help-block">Enter the name of this cost</p>
-					
-							                                        <label>Estimated Cost</label>
-																	<form:input class="form-control" path="cost"/>
-																	<p class="help-block">Enter the estimated cost</p>
-					
-							                                        <label>Actual Cost</label>
-																	<form:input class="form-control" path="actualCost"/>
-																	<p class="help-block">Enter the actual cost</p>
 																	
-					                                                <label>Cost Type</label>
-					                                                <form:select class="form-control" path="costType"> 
-				                                   						<c:forEach items="${estimateCostList}" var="cost"> 
-				                                   							<form:option value="${cost}" label="${cost.getLabel()}"/> 
-				                                   						</c:forEach> 
-					                                    			</form:select>
-					                                    			<p class="help-block">Type of estimate cost</p>
+																	<table style="width: 100%;">
+																		<tr>
+																			<td style="vertical-align: top;">
+										                                        <label>Estimated Cost</label>
+																				<form:input class="form-control" path="cost"/>
+																				<p class="help-block">Enter the estimated cost</p>		
+																			</td>
+
+																			<td>&nbsp;</td>
+
+																			<td style="vertical-align: top;">
+										                                        <label>Actual Cost</label>
+																				<form:input class="form-control" path="actualCost"/>
+																				<p class="help-block">Enter the actual cost</p>	
+																			</td>
+
+																			<td>&nbsp;</td>
+
+																			<td style="vertical-align: top;">
+								                                                <label>Cost Type</label>
+								                                                <form:select class="form-control" path="costType"> 
+							                                   						<c:forEach items="${estimateCostList}" var="cost"> 
+							                                   							<form:option value="${cost}" label="${cost.getLabel()}"/> 
+							                                   						</c:forEach> 
+								                                    			</form:select>
+								                                    			<p class="help-block">Type of estimate cost</p>																				
+																			</td>
+																		</tr>
+																	</table>
+
+					
+																	
 					                                    			
 					                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Add</button>
 							                                        </div>
-						                                        </form:form>																	
-															</div><!-- /.box-body -->
-														</div><!-- /.box -->
-													</div>
+						                                        </form:form>
+
+							                                </div><!-- /.box-body -->
+							                             </div>
+							                        </div>
+			                   						<div class="col-md-4">
+					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+																<h3 class="box-title">Estimated Costs</h3>
+															</div>
+							                                <div class="box-body">
+					                                			<div id="highcharts-costs-estimated-pie"></div>
+					                                		</div>
+							                             </div>
+							                        </div>
+			                   						<div class="col-md-4">
+					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+																<h3 class="box-title">Actual Costs</h3>
+															</div>
+															<div class="box-body">
+					                                			<div id="highcharts-costs-actual-pie"></div>
+					                                		</div>
+					                                	</div>
+							                        </div>
 							                   	</div> <!-- End of Row -->
 												<div class="row">
 			                   						<div class="col-md-6"> <!-- Direct costs -->
@@ -2448,6 +2472,88 @@
 	        series: [{
 	        	name: 'Project Cumulative',
 	            data: ${dataSeriesProject}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-costs-actual-pie').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Tasks",
+	            colorByPoint: true,
+	            data: ${dataSeriesCostsActual}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-costs-estimated-pie').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Tasks",
+	            colorByPoint: true,
+	            data: ${dataSeriesCostsEstimated}
 	        }]
 	    });
 	});
