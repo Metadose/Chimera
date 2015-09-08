@@ -83,9 +83,17 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     @Transactional
     @Override
-    public EstimateCost get(String uuid) {
-	// TODO Auto-generated method stub
-	return null;
+    public EstimateCost get(String key) {
+	EstimateCost obj = this.estimateCostValueRepo.get(key);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
+	    return new EstimateCost();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATE_COST,
+		obj.getKey());
+	return obj;
     }
 
     @Transactional

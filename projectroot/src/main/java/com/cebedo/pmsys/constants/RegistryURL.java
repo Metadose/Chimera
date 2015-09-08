@@ -18,6 +18,8 @@ public class RegistryURL {
 
     public static final String CREATE_ESTIMATE_COST = "/create/cost";
 
+    public static final String DELETE_ESTIMATE_COST = "/delete/cost/{cost}-end";
+
     public static final String EDIT_STAFF = "/edit/staff/{staff}";
 
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";

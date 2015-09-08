@@ -561,7 +561,7 @@
 							                                            			<a href="<c:url value="/project/TODO-end"/>">
 											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
-												                                    <a href="<c:url value="/project/delete/TODO-end"/>">
+												                                    <a href="<c:url value="/project/delete/cost/${directCost.getKey()}-end"/>">
 					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 												                                    </a>
 																				</center>
@@ -601,7 +601,7 @@
 							                                            			<a href="<c:url value="/project/TODO-end"/>">
 											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
-												                                    <a href="<c:url value="/project/delete/TODO-end"/>">
+												                                    <a href="<c:url value="/project/delete/cost/${indirectCost.getKey()}-end"/>">
 					                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 												                                    </a>
 																				</center>

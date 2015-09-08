@@ -1526,6 +1526,31 @@ public class ProjectController {
     }
 
     /**
+     * Delete a cost.
+     * 
+     * @param material
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.DELETE_ESTIMATE_COST }, method = RequestMethod.GET)
+    public String deleteEstimateCost(@PathVariable(ConstantsRedis.OBJECT_ESTIMATE_COST) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.estimateCostService.delete(key);
+
+	// Attach to redirect attributes.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Return to the project.
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	return redirectEditPageProject(project.getId(), status);
+    }
+
+    /**
      * Delete a material.
      * 
      * @param material
