@@ -4,6 +4,7 @@
 <link href="<c:url value="/resources/lib/font-awesome-4.3.0/css/font-awesome.css" />"rel="stylesheet" type="text/css" />
 
 <link href="<c:url value="/resources/css/datepicker/datepicker3.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/AdminLTE.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/cebedo.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />

@@ -10,6 +10,7 @@ import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class Expense implements IDomainObject {
 
@@ -26,7 +27,19 @@ public class Expense implements IDomainObject {
     private Staff staff;
     private Date date;
 
+    // Bean-backed form.
+    private long staffID;
+
     private Map<String, Object> extMap;
+
+    public Expense() {
+	;
+    }
+
+    public Expense(Project proj) {
+	setProject(proj);
+	setCompany(proj.getCompany());
+    }
 
     @Override
     public Map<String, Object> getExtMap() {
@@ -95,6 +108,10 @@ public class Expense implements IDomainObject {
 	return cost;
     }
 
+    public String getCostAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getCost());
+    }
+
     public void setCost(double cost) {
 	this.cost = cost;
     }
@@ -113,6 +130,14 @@ public class Expense implements IDomainObject {
 
     public void setDate(Date date) {
 	this.date = date;
+    }
+
+    public long getStaffID() {
+	return staffID;
+    }
+
+    public void setStaffID(long staffID) {
+	this.staffID = staffID;
     }
 
 }

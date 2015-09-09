@@ -16,6 +16,8 @@ public class RegistryURL {
 
     public static final String CREATE_STAFF = "/create/staff";
 
+    public static final String CREATE_EXPENSE = "/create/expense";
+
     public static final String CREATE_ESTIMATE_COST = "/create/cost";
 
     public static final String EDIT_ESTIMATE_COST = "/edit/cost/{cost}-end";

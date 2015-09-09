@@ -39,7 +39,7 @@ $(window).on('load', function() {
 </script>
 
 <header class="header">
-    <a href="index.html" class="logo">
+    <a href="<c:url value="/dashboard/"/>" class="logo">
         <!-- Add the class icon to your logo image or logo icon to add the margining -->
         ART PROJECTS
     </a>

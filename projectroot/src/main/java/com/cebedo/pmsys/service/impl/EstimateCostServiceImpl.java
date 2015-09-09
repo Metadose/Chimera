@@ -156,14 +156,14 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	this.estimateCostValueRepo.set(obj);
 	this.projectAuxValueRepo.set(aux);
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_ESTIMATE_COST,
-		obj.getKey());
-
 	if (isCreate) {
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_ESTIMATE_COST,
+		    obj.getKey());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		    obj.getName());
 	}
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_ESTIMATE_COST,
+		obj.getKey());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());
     }

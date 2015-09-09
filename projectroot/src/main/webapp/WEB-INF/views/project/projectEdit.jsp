@@ -18,10 +18,11 @@
     	</c:when>
     </c:choose>
 	
+	<!-- <link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> -->
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	
 	<style type="text/css">
 		ul {         
@@ -111,6 +112,7 @@
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
+										<li><a href="#tab_other_expenses" data-toggle="tab">Other Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
@@ -128,7 +130,7 @@
 			                                        <div class="form-group" id="detailsDivEditor">
 			                                        
 			                                        	<!-- Update form Input -->
-                  										<form:form id="detailsForm"
+                  										<form:form id="projectForm"
                   											modelAttribute="project"
                   											method="post"
                   											action="${contextPath}/project/create">
@@ -179,10 +181,10 @@
 				                                    	</form:form>
 			                                    	<c:choose>
 		                                            	<c:when test="${project.id == 0}">
-		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
+		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('projectForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
-		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('projectForm')">Update</button>
 															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
 		                                            	</c:when>
 		                                            </c:choose>
@@ -432,6 +434,26 @@
 												<div class="row">
 			                   						<div class="col-md-4">
 					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+																<h3 class="box-title">Estimated Costs</h3>
+															</div>
+							                                <div class="box-body">
+					                                			<div id="highcharts-costs-estimated-pie" style="height: 300px"></div>
+					                                		</div>
+							                             </div>
+							                        </div>
+			                   						<div class="col-md-4">
+					                                	<div class="box box-body box-default">
+					                                		<div class="box-header">
+																<h3 class="box-title">Actual Costs</h3>
+															</div>
+															<div class="box-body">
+					                                			<div id="highcharts-costs-actual-pie" style="height: 300px"></div>
+					                                		</div>
+					                                	</div>
+							                        </div>
+			                   						<div class="col-md-4">
+					                                	<div class="box box-body box-default">
 							                                <div class="box-body">
 							                                	<table class="table table-bordered table-striped">
 																<thead>
@@ -504,36 +526,13 @@
 																			</td>
 																		</tr>
 																	</table>
-
-					
-																	
 					                                    			
-					                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Add</button>
+					                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Create</button>
 							                                        </div>
 						                                        </form:form>
 
 							                                </div><!-- /.box-body -->
 							                             </div>
-							                        </div>
-			                   						<div class="col-md-4">
-					                                	<div class="box box-body box-default">
-					                                		<div class="box-header">
-																<h3 class="box-title">Estimated Costs</h3>
-															</div>
-							                                <div class="box-body">
-					                                			<div id="highcharts-costs-estimated-pie" style="height: 300px"></div>
-					                                		</div>
-							                             </div>
-							                        </div>
-			                   						<div class="col-md-4">
-					                                	<div class="box box-body box-default">
-					                                		<div class="box-header">
-																<h3 class="box-title">Actual Costs</h3>
-															</div>
-															<div class="box-body">
-					                                			<div id="highcharts-costs-actual-pie" style="height: 300px"></div>
-					                                		</div>
-					                                	</div>
 							                        </div>
 							                   	</div> <!-- End of Row -->
 												<div class="row">
@@ -620,8 +619,8 @@
 							                   	</div> <!-- End of Row -->
 											</div>
 											<div class="tab-pane" id="tab_calculator">
-			              						<div class="row">
-			                   						<div class="col-md-12">
+							                   	<div class="row">
+			                   						<div class="col-md-9">
 					                                	<div class="box box-body box-default">
 			<!-- 				                                		<div class="box-header"> -->
 			<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
@@ -664,10 +663,7 @@
 							                                </div><!-- /.box-body -->
 							                             </div>
 							                        </div>
-							                   	</div> <!-- End of Row -->
-
-							                   	<div class="row">
-			                   						<div class="col-md-6">
+			                   						<div class="col-md-3">
 			                   							<div class="box box-body box-default">
 			                   								<div class="box-header">
 			                   									<h3 class="box-title">Estimation Input</h3>
@@ -714,7 +710,96 @@
 									</div>
 								</div>
 
-                   				
+								<div class="tab-pane" id="tab_other_expenses">
+                                	<div class="row">
+										<div class="col-md-9">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+			                                		<table class="table table-bordered table-striped is-data-table">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Name</th>
+				                                                <th>Cost</th>
+				                                                <th>Staff</th>
+				                                                <th>Date</th>
+				                                            </tr>
+			                                    		</thead>
+				                                        <tbody>
+						                                	<c:forEach items="${expenseList}" var="expense">
+					                                            <tr>
+					                                            	<td>
+					                                            		<center>
+					                                            			<c:url var="urlViewStaff" value="/project/edit/staff/${assignedStaffMember.id}"/>
+					                                            			<a href="${urlViewStaff}">
+									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+					                                            			</a>
+										                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
+										                                    <a href="${urlUnassignStaff}">
+			                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+										                                    </a>
+																		</center>
+																	</td>
+				                                                	<td>${expense.name}</td>
+				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
+				                                                	<td>${expense.staff.getFullName()}</td>
+				                                                	<fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
+				                                                	<td>${dateString}</td>
+					                                            </tr>
+				                                            </c:forEach>
+					                                    </tbody>
+					                                </table>
+				                            	</div>
+				                            </div>
+				                        </div>
+                   						<div class="col-md-3">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   									<div class="form-group">
+	                   									<form:form 
+	                   										modelAttribute="expense"
+															id="expenseForm"
+															method="post"
+															action="${contextPath}/project/create/expense">
+					                                        <div class="form-group">
+
+					                                            <label>Name</label>
+					                                            <form:input type="text" class="form-control" path="name"
+					                                            	placeholder="Sample: Signage, Legal papers, Consultants"/>
+					                                            <p class="help-block">Enter the name of this expense</p>
+
+					                                            <label>Cost</label>
+					                                            <form:input type="text" class="form-control" path="cost"
+					                                            	placeholder="Sample: 350, 600, 700, 800, 950"/>
+					                                            <p class="help-block">Enter the cost of the expense</p>
+
+					                                            <label>Staff</label>
+					                                            <form:select class="form-control" path="staffID"> 
+		                                     						<c:forEach items="${project.assignedStaff}" var="staff"> 
+		                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
+		                                     						</c:forEach> 
+		 		                                    			</form:select> 
+		 		                                    			<p class="help-block">Choose the staff who conducted the expenditure</p>
+
+					                                            <label>Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <form:input type="text" class="form-control date-picker" path="date" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+						                                        </div>
+					                                            <p class="help-block">Enter the date when the expense happened</p>
+
+					                                        </div>
+					                                    </form:form>
+	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('expenseForm')">Create</button>
+													</div>	
+												</div>	
+                   							</div>
+                   						</div>
+              						</div>
+                                </div><!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="nav-tabs-custom">
@@ -727,6 +812,13 @@
 									
 										<div class="tab-pane active" id="subtab_chart">
 											<div class="row">
+		                   						<div class="col-md-6">
+		                   							<div class="box box-body box-default">
+		                   								<div class="box-body">
+		                   									<div id="highcharts-tasks" style="height: 300px"></div>
+		                   								</div>
+		                   							</div>
+		                   						</div>
 		                   						<div class="col-md-6">
 		                   							<div class="box box-body box-default">
 		                   								<div class="box-body">
@@ -752,13 +844,6 @@
 														</c:forEach>
 														</tbody>
 														</table>
-		                   								</div>
-		                   							</div>
-		                   						</div>
-		                   						<div class="col-md-6">
-		                   							<div class="box box-body box-default">
-		                   								<div class="box-body">
-		                   									<div id="highcharts-tasks" style="height: 300px"></div>
 		                   								</div>
 		                   							</div>
 		                   						</div>
@@ -1387,7 +1472,7 @@
 					<p class="help-block">Click to show/hide</p>
 					
 													                <form:form modelAttribute="project"
-																	id="detailsForm"
+																	id=""
 																	method="post"
 																	action="${contextPath}/project/create/concreteestimationsummary">
 													                <table id="concrete-estimation-summary-table" class="table table-bordered table-striped">
@@ -1922,7 +2007,7 @@
 			               						
 			               						<div class="tab-pane" id="subtab_cost-estimate-controls">
 <%-- 			               						<form modelAttribute="costEstimationBean" --%>
-<%-- 														id="detailsForm" --%>
+<%-- 														id="" --%>
 <%-- 														method="post" --%>
 <%-- 														action="${contextPath}/project/create/costestimation"> --%>
 <!-- 			                                	<div class="row"> -->

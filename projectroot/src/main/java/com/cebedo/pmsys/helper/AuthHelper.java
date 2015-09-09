@@ -7,6 +7,7 @@ import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.EstimationOutput;
+import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -212,6 +213,16 @@ public class AuthHelper {
     }
 
     public boolean isActionAuthorized(EstimateCost obj) {
+	AuthenticationToken auth = getAuth();
+	if (auth.isSuperAdmin()) {
+	    return true;
+	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean isActionAuthorized(Expense obj) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
 	    return true;

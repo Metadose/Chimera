@@ -40,6 +40,7 @@ import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.EstimationOutput;
+import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
@@ -78,6 +79,7 @@ import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
+import com.cebedo.pmsys.service.ExpenseService;
 import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
@@ -105,9 +107,9 @@ value = {
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
-	ConstantsRedis.OBJECT_PULL_OUT,
-	ConstantsRedis.OBJECT_ESTIMATE,
+	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
 	ConstantsRedis.OBJECT_ESTIMATE_COST,
+	ConstantsRedis.OBJECT_EXPENSE,
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
@@ -160,6 +162,7 @@ public class ProjectController {
     public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
     public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
 
+    public static final String ATTR_EXPENSE_LIST = "expenseList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
@@ -239,6 +242,13 @@ public class ProjectController {
     private TaskService taskService;
     private AttendanceService attendanceService;
     private EstimateCostService estimateCostService;
+    private ExpenseService expenseService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "expenseService")
+    public void setExpenseService(ExpenseService expenseService) {
+	this.expenseService = expenseService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "estimateCostService")
@@ -717,6 +727,27 @@ public class ProjectController {
     }
 
     /**
+     * Create an expense object.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.CREATE_EXPENSE }, method = RequestMethod.POST)
+    public String createExpense(@ModelAttribute(ConstantsRedis.OBJECT_EXPENSE) Expense expense,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.expenseService.set(expense);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return redirectEditPageProject(expense.getProject().getId(), status);
+    }
+
+    /**
      * Return to the edit page of the submodule.
      * 
      * @param submodule
@@ -1028,7 +1059,7 @@ public class ProjectController {
 	String maxDateStr = DateUtils.formatDate(max, "yyyy-MM-dd");
 
 	// Add attributes to model.
-	setStaffAttributes(model, project, staff, min, max, maxDateStr);
+	setAttributesStaffEdit(model, project, staff, min, max, maxDateStr);
 
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
@@ -1093,7 +1124,7 @@ public class ProjectController {
 	String maxDateStr = (String) session.getAttribute(ATTR_CALENDAR_MAX_DATE_STR);
 
 	// Set model attributes.
-	setStaffAttributes(model, project, staff, minDate, maxDate, maxDateStr);
+	setAttributesStaffEdit(model, project, staff, minDate, maxDate, maxDateStr);
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
 
@@ -1130,7 +1161,7 @@ public class ProjectController {
 	Date max = datePair.get(ATTR_CALENDAR_MAX_DATE);
 
 	// Set model attributes.
-	setStaffAttributes(model, proj, staff, min, max, null);
+	setAttributesStaffEdit(model, proj, staff, min, max, null);
 
 	return RegistryJSPPath.JSP_EDIT_STAFF;
     }
@@ -1145,7 +1176,7 @@ public class ProjectController {
      * @param max
      * @param maxDateStr
      */
-    private void setStaffAttributes(Model model, Project project, Staff staff, Date min, Date max,
+    private void setAttributesStaffEdit(Model model, Project project, Staff staff, Date min, Date max,
 	    String maxDateStr) {
 
 	// Given min and max, get range of attendances.
@@ -1935,7 +1966,7 @@ public class ProjectController {
     public String editProject(@PathVariable(Project.COLUMN_PRIMARY_KEY) long id, Model model) {
 
 	// Set model attributes that are common in both create and update.
-	setModelAttributes(model, id);
+	setAttributesModel(model, id);
 
 	// If ID is zero, create new.
 	if (id == 0) {
@@ -1949,30 +1980,45 @@ public class ProjectController {
 	model.addAttribute(ATTR_PROJECT, proj);
 
 	// Estimate.
-	setEstimateAttributes(proj, projectAux, model);
+	setAttributesEstimate(proj, projectAux, model);
 
 	// Staff.
-	setStaffAttributes(proj, model);
+	setAttributesStaff(proj, model);
 
 	// Payroll.
 	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
-	double payrollAccumulated = setPayrollAttributes(proj, model, payrollSeries, payrollCumulative);
+	double payrollAccumulated = setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
 
 	// Inventory.
 	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
-	double materialsAccumulated = setInventoryAttributes(proj, model, inventorySeries,
+	double materialsAccumulated = setAttributesInventory(proj, model, inventorySeries,
 		inventoryCumulative);
 
+	// Other Expenses.
+	setAttributesOtherExpenses(proj, model);
+
 	// Dashboard.
-	setDashboardAttributes(model, inventoryCumulative, payrollCumulative, inventorySeries,
+	setAttributesDashboard(model, inventoryCumulative, payrollCumulative, inventorySeries,
 		payrollSeries, payrollAccumulated, materialsAccumulated);
 
 	// Program of Works.
-	setProgramOfWorksAttributes(proj, model);
+	setAttributesProgramOfWorks(proj, model);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    /**
+     * Set attributes of Other Expenses tab.
+     * 
+     * @param proj
+     * @param model
+     */
+    private void setAttributesOtherExpenses(Project proj, Model model) {
+	List<Expense> expenses = this.expenseService.list(proj);
+	model.addAttribute(ATTR_EXPENSE_LIST, expenses);
+	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, new Expense(proj));
     }
 
     /**
@@ -2004,7 +2050,7 @@ public class ProjectController {
      * @param materialsAccumulated
      * @param payrollAccumulated
      */
-    private void setDashboardAttributes(Model model, List<HighchartsDataPoint> inventoryCumulative,
+    private void setAttributesDashboard(Model model, List<HighchartsDataPoint> inventoryCumulative,
 	    List<HighchartsDataPoint> payrollCumulative, List<HighchartsDataPoint> inventorySeries,
 	    List<HighchartsDataPoint> payrollSeries, double payrollAccumulated,
 	    double materialsAccumulated) {
@@ -2057,7 +2103,7 @@ public class ProjectController {
      * @param projectAux
      * @param model
      */
-    private void setEstimateAttributes(Project proj, ProjectAux projectAux, Model model) {
+    private void setAttributesEstimate(Project proj, ProjectAux projectAux, Model model) {
 
 	// Estimated.
 	List<HighchartsDataPoint> pie = new ArrayList<HighchartsDataPoint>();
@@ -2107,14 +2153,11 @@ public class ProjectController {
      * @param proj
      * @param model
      */
-    private void setStaffAttributes(Project proj, Model model) {
+    private void setAttributesStaff(Project proj, Model model) {
 
 	// Get list of fields.
 	// Get list of staff members for manager assignments.
 	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj.getCompany().getId();
-
-	// Used in the manager selector.
-	List<Staff> staffList = this.staffService.list();
 
 	// Used in the "assign staff constrols".
 	// Get the list of staff not yet assigned in this project.
@@ -2123,7 +2166,6 @@ public class ProjectController {
 
 	// Get lists for selectors.
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
-	model.addAttribute(ATTR_STAFF_LIST, staffList);
 	model.addAttribute(ATTR_STAFF_POSITION, new FormStaffAssignment());
 	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new FormMassUpload(proj));
     }
@@ -2134,7 +2176,7 @@ public class ProjectController {
      * @param model
      * @param id
      */
-    private void setModelAttributes(Model model, long id) {
+    private void setAttributesModel(Model model, long id) {
 
 	// List of project status.
 	model.addAttribute(ATTR_PROJECT_STATUS_LIST, ProjectStatus.class.getEnumConstants());
@@ -2157,7 +2199,7 @@ public class ProjectController {
      * @param projectCumulative
      * @param projectAccumulation
      */
-    private double setPayrollAttributes(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+    private double setAttributesPayroll(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
 	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all payrolls.
 	// Add to model.
@@ -2201,7 +2243,7 @@ public class ProjectController {
      * @param projectAccumulation
      * @param projectCumulative
      */
-    private double setInventoryAttributes(Project proj, Model model,
+    private double setAttributesInventory(Project proj, Model model,
 	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all deliveries.
 	// Get all pull-outs.
@@ -2250,7 +2292,7 @@ public class ProjectController {
      * @param proj
      * @param model
      */
-    private void setProgramOfWorksAttributes(Project proj, Model model) {
+    private void setAttributesProgramOfWorks(Project proj, Model model) {
 
 	// Task status selector.
 	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());

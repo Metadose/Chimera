@@ -79,13 +79,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Return success.
 	this.deliveryValueRepo.set(obj);
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
-
 	if (isCreate) {
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_DELIVERY,
+		    obj.getKey());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
 		    obj.getName());
 	}
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
     }
 

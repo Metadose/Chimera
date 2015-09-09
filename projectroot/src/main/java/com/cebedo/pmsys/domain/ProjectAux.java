@@ -23,6 +23,7 @@ public class ProjectAux implements IDomainObject {
      */
     private double grandTotalDelivery;
     private double grandTotalPayroll;
+    private double grandTotalOtherExpenses;
 
     // Estimate costs.
     private double grandTotalCostsDirect;
@@ -292,6 +293,14 @@ public class ProjectAux implements IDomainObject {
 
     public void setGrandTotalActualCostsIndirect(double grandTotalActualCostsIndirect) {
 	this.grandTotalActualCostsIndirect = grandTotalActualCostsIndirect;
+    }
+
+    public double getGrandTotalOtherExpenses() {
+	return grandTotalOtherExpenses;
+    }
+
+    public void setGrandTotalOtherExpenses(double grandTotalOtherExpenses) {
+	this.grandTotalOtherExpenses = grandTotalOtherExpenses;
     }
 
 }

@@ -54,13 +54,13 @@ $(document).ready(function() {
     <section class="sidebar">
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
+<!--             <li class="active"> -->
+<%--             	<c:url var="urlDashboard" value="/dashboard/"/> --%>
+<%--                 <a href="${urlDashboard}"> --%>
+<!--                     <i class="fa fa-dashboard"></i> <span>Dashboard</span> -->
+<!--                 </a> -->
+<!--             </li> -->
             <li class="active">
-            	<c:url var="urlDashboard" value="/dashboard/"/>
-                <a href="${urlDashboard}">
-                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                </a>
-            </li>
-            <li>
             	<c:url var="urlProjectList" value="/project/list/"/>
                 <a href="${urlProjectList}">
                     <i class="fa fa-building"></i> <span>Projects</span>
