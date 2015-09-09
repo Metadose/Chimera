@@ -1476,13 +1476,30 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.EDIT_ESTIMATE_COST }, method = RequestMethod.GET)
     public String editEstimateCost(@PathVariable(ConstantsRedis.OBJECT_ESTIMATE_COST) String key,
-	    Model model, HttpSession session) {
+	    Model model) {
 
 	// Construct the bean for the form.
 	EstimateCost cost = this.estimateCostService.get(key);
 	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, cost);
 	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.values());
 	return RegistryJSPPath.JSP_EDIT_COST;
+    }
+
+    /**
+     * Open an edit page for expense.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EDIT_EXPENSE }, method = RequestMethod.GET)
+    public String editExpense(@PathVariable(ConstantsRedis.OBJECT_EXPENSE) String key, Model model) {
+
+	// Construct the bean for the form.
+	Expense expense = this.expenseService.get(key);
+	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, expense);
+	return RegistryJSPPath.JSP_EDIT_EXPENSE;
     }
 
     /**
@@ -1582,6 +1599,31 @@ public class ProjectController {
 	}
 
 	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_PULL_OUT, pullOut.getKey());
+    }
+
+    /**
+     * Delete an expense.
+     * 
+     * @param material
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.DELETE_EXPENSE }, method = RequestMethod.GET)
+    public String deleteExpense(@PathVariable(ConstantsRedis.OBJECT_EXPENSE) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.expenseService.delete(key);
+
+	// Attach to redirect attributes.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Return to the project.
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	return redirectEditPageProject(project.getId(), status);
     }
 
     /**

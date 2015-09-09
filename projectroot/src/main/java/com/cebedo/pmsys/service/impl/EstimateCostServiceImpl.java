@@ -47,7 +47,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Transactional
     @Override
     public String delete(String key) {
-	EstimateCost obj = get(key);
+	EstimateCost obj = this.estimateCostValueRepo.get(key);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {

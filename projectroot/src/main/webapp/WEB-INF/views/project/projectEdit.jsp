@@ -101,6 +101,12 @@
                 <div class="row">
                     <div class="col-md-12">
                     	${uiParamAlert}
+						<c:if test="${empty project.assignedStaff}">
+							<div class="callout callout-warning">
+								<h4>Warning!</h4>
+								<p>There are <b>no staff members</b> assigned to the <b>project</b>.</p>
+							</div>
+	                	</c:if>
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
@@ -715,6 +721,14 @@
 										<div class="col-md-9">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+
+			                                  		<div class="pull-right">
+			                                  		<h3>Grand Total <b><u>
+				                                	${projectAux.getGrandTotalOtherExpensesAsString()}
+													</u></b></h3>
+													</div>
+													
+
 			                                		<table class="table table-bordered table-striped is-data-table">
 				                                    	<thead>
 				                                            <tr>
@@ -730,12 +744,10 @@
 					                                            <tr>
 					                                            	<td>
 					                                            		<center>
-					                                            			<c:url var="urlViewStaff" value="/project/edit/staff/${assignedStaffMember.id}"/>
-					                                            			<a href="${urlViewStaff}">
+					                                            			<a href="<c:url value="/project/edit/expense/${expense.getKey()}-end"/>">
 									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            			</a>
-										                                    <c:url value="/project/unassign/staff-member/${assignedStaffMember.id}" var="urlUnassignStaff"/>
-										                                    <a href="${urlUnassignStaff}">
+										                                    <a href="<c:url value="/project/delete/expense/${expense.getKey()}-end"/>">
 			                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 										                                    </a>
 																		</center>
@@ -793,7 +805,14 @@
 
 					                                        </div>
 					                                    </form:form>
+					                                    <c:if test="${!empty project.assignedStaff}">
 	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('expenseForm')">Create</button>
+	                                            		</c:if>	                                            		
+														<c:if test="${empty project.assignedStaff}">
+															<div class="callout callout-warning">
+																<p>Please assign <b>staff members</b> first.</p>
+															</div>
+									                	</c:if>
 													</div>	
 												</div>	
                    							</div>

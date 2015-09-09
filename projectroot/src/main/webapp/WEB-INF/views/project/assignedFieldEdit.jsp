@@ -49,33 +49,37 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
                                 	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box-body box-default">
-                   									<form:form modelAttribute="field"
-														id="detailsForm"
-														method="post"
-														action="${contextPath}/project/field/update">
-				                                        <div class="form-group">
-				                                            <label>Label</label>
-				                                            <form:input type="text" class="form-control" path="label"
-				                                            	placeholder="Sample: SSS, Building Permit No., Sub-contractor"/>
-				                                            <p class="help-block">Edit the label of this information</p>
+										<div class="col-md-6">
+											<div class="box box-default">
+												<div class="box-body">
+													<div class="form-group">
+														<form:form modelAttribute="field"
+															id="detailsForm"
+															method="post"
+															action="${contextPath}/project/field/update">
+					                                        <div class="form-group">
+					                                            <label>Label</label>
+					                                            <form:input type="text" class="form-control" path="label"
+					                                            	placeholder="Sample: SSS, Building Permit No., Sub-contractor"/>
+					                                            <p class="help-block">Edit the label of this information</p>
 
-				                                            <label>Value</label>
-				                                            <form:textarea type="text" class="form-control" path="value"
-				                                            	rows="3"
-				                                            	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction"/>
-				                                            <p class="help-block">Edit the information</p>
-				                                        </div>
-				                                    </form:form>
-                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-                                            		<c:url var="urlDeleteField" value="/project/field/delete" />
-                                            		<a href="${urlDeleteField}">
-														<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-													</a>
-                   							</div>
-                   						</div>
-              						</div>
+					                                            <label>Value</label>
+					                                            <form:textarea type="text" class="form-control" path="value"
+					                                            	rows="3"
+					                                            	placeholder="Sample: 000-123-456, AEE-123, OneForce Construction"/>
+					                                            <p class="help-block">Edit the information</p>
+					                                        </div>
+					                                    </form:form>
+                                            			<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+	                                            		<c:url var="urlDeleteField" value="/project/field/delete" />
+	                                            		<a href="${urlDeleteField}">
+															<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
+														</a>
+													</div>	
+												</div>
+											</div>
+										</div>
+									</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->

@@ -24,6 +24,10 @@ public class RegistryURL {
 
     public static final String DELETE_ESTIMATE_COST = "/delete/cost/{cost}-end";
 
+    public static final String DELETE_EXPENSE = "/delete/expense/{expense}-end";
+
+    public static final String EDIT_EXPENSE = "/edit/expense/{expense}-end";
+
     public static final String EDIT_STAFF = "/edit/staff/{staff}";
 
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";

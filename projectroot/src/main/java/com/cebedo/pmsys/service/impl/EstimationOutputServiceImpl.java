@@ -49,7 +49,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
     @Override
     @Transactional
     public String delete(String key) {
-	EstimationOutput obj = get(key);
+	EstimationOutput obj = this.estimationOutputValueRepo.get(key);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {

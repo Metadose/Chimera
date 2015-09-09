@@ -55,15 +55,50 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     @Override
     public String delete(String key) {
-	// TODO Auto-generated method stub
-	return null;
+	Expense obj = this.expenseValueRepo.get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+
+	// Revert old values in the auxiliary.
+	revertOldValues(obj);
+
+	this.expenseValueRepo.delete(key);
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
+    }
+
+    /**
+     * Revert old values in the auxiliary.
+     * 
+     * @param obj
+     */
+    private void revertOldValues(Expense obj) {
+	// Project auxiliary on grand totals of costs.
+	Expense oldExpense = this.expenseValueRepo.get(obj.getKey());
+	double oldCost = oldExpense.getCost();
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(oldExpense.getProject()));
+	aux.setGrandTotalOtherExpenses(aux.getGrandTotalOtherExpenses() - oldCost);
+	this.projectAuxValueRepo.set(aux);
     }
 
     @Transactional
     @Override
-    public Expense get(String uuid) {
-	// TODO Auto-generated method stub
-	return null;
+    public Expense get(String key) {
+	Expense obj = this.expenseValueRepo.get(key);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	    return new Expense();
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	return obj;
     }
 
     @Transactional
@@ -95,7 +130,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	// If we're updating, revert old values first.
 	boolean isCreate = true;
 	if (obj.getUuid() != null) {
-	    // TODO revertOldValues(obj);
+	    revertOldValues(obj);
 	    isCreate = false;
 	}
 	// If we're creating.
@@ -107,6 +142,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	double cost = obj.getCost();
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(obj.getProject()));
 	aux.setGrandTotalOtherExpenses(aux.getGrandTotalOtherExpenses() + cost);
+	this.projectAuxValueRepo.set(aux);
 
 	// Set the staff.
 	long staffID = obj.getStaffID();
@@ -116,7 +152,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 	// Do the action.
 	// Return success.
 	this.expenseValueRepo.set(obj);
-	this.projectAuxValueRepo.set(aux);
 
 	if (isCreate) {
 	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_EXPENSE,

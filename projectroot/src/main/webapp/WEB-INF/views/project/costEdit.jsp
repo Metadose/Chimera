@@ -47,11 +47,12 @@
                                 <li class="active"><a href="#tab_1" data-toggle="tab">Details</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="tab_1">
-                                	<div class="row">
-                   						<div class="col-md-6">
-                   							<div class="box-body box-default">
-                   									<form:form modelAttribute="cost"
+                            	<div class="tab-pane active" id="tab_1">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="box box-default">
+												<div class="box-body">
+													<form:form modelAttribute="cost"
 														action="${contextPath}/project/create/cost"
 														method="post"
 														id="detailsForm"
@@ -98,10 +99,11 @@
 				                                    <a href="<c:url value="/project/delete/cost/${cost.getKey()}-end"/>">
        													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
 				                                    </a>
-                   							</div>
-                   						</div>
-              						</div>
-                                </div><!-- /.tab-pane -->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->

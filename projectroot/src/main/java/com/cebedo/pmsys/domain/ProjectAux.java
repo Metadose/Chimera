@@ -299,6 +299,10 @@ public class ProjectAux implements IDomainObject {
 	return grandTotalOtherExpenses;
     }
 
+    public String getGrandTotalOtherExpensesAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalOtherExpenses());
+    }
+
     public void setGrandTotalOtherExpenses(double grandTotalOtherExpenses) {
 	this.grandTotalOtherExpenses = grandTotalOtherExpenses;
     }
