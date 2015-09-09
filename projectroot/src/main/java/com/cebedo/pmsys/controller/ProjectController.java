@@ -190,6 +190,8 @@ public class ProjectController {
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
     public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
     public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
+    public static final String ATTR_DATA_SERIES_OTHER_EXPENSES = "dataSeriesOtherExpenses";
+    public static final String ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE = "dataSeriesOtherExpensesCumulative";
     public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
 
     public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
@@ -2039,11 +2041,15 @@ public class ProjectController {
 		inventoryCumulative);
 
 	// Other Expenses.
-	setAttributesOtherExpenses(proj, model);
+	List<HighchartsDataPoint> otherExpensesSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> otherExpensesCumulative = new ArrayList<HighchartsDataPoint>();
+	double otherExpensesAccumulated = setAttributesOtherExpenses(proj, model, otherExpensesSeries,
+		otherExpensesCumulative);
 
 	// Dashboard.
-	setAttributesDashboard(model, inventoryCumulative, payrollCumulative, inventorySeries,
-		payrollSeries, payrollAccumulated, materialsAccumulated);
+	setAttributesDashboard(model, inventoryCumulative, payrollCumulative, otherExpensesCumulative,
+		inventorySeries, payrollSeries, otherExpensesSeries, payrollAccumulated,
+		materialsAccumulated, otherExpensesAccumulated);
 
 	// Program of Works.
 	setAttributesProgramOfWorks(proj, model);
@@ -2056,11 +2062,40 @@ public class ProjectController {
      * 
      * @param proj
      * @param model
+     * @param dataSeries
+     * @param otherExpensesCumulative
+     * @return
      */
-    private void setAttributesOtherExpenses(Project proj, Model model) {
-	List<Expense> expenses = this.expenseService.list(proj);
+    private double setAttributesOtherExpenses(Project proj, Model model,
+	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> otherExpensesCumulative) {
+	double total = 0;
+	List<Expense> expenses = this.expenseService.listAsc(proj);
+	for (Expense expense : expenses) {
+
+	    // Y-axis.
+	    double yValue = expense.getCost();
+	    total += yValue;
+
+	    // Tool tip.
+	    Date datetime = expense.getDate();
+	    String name = String.format("(Other Expenses) %s<br/>%s",
+		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), expense.getName());
+
+	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
+	    dataSeries.add(point);
+
+	    // Cumulative.
+	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
+		    total);
+	    otherExpensesCumulative.add(pointCumulative);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_OTHER_EXPENSES,
+		new Gson().toJson(dataSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE,
+		new Gson().toJson(otherExpensesCumulative, ArrayList.class));
 	model.addAttribute(ATTR_EXPENSE_LIST, expenses);
 	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, new Expense(proj));
+	return total;
     }
 
     /**
@@ -2089,18 +2124,24 @@ public class ProjectController {
      * @param payrollCumulative
      * @param payrollSeries
      * @param inventorySeries
+     * @param otherExpensesSeries
      * @param materialsAccumulated
      * @param payrollAccumulated
+     * @param otherExpensesAccumulated
      */
     private void setAttributesDashboard(Model model, List<HighchartsDataPoint> inventoryCumulative,
-	    List<HighchartsDataPoint> payrollCumulative, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, double payrollAccumulated,
-	    double materialsAccumulated) {
+	    List<HighchartsDataPoint> payrollCumulative,
+	    List<HighchartsDataPoint> otherExpensesCumulative,
+	    List<HighchartsDataPoint> inventorySeries, List<HighchartsDataPoint> payrollSeries,
+	    List<HighchartsDataPoint> otherExpensesSeries, double payrollAccumulated,
+	    double materialsAccumulated, double otherExpensesAccumulated) {
 
 	// Dashboard.
 	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Materials Cumulative", inventoryCumulative));
+	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
 	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
+	dashboardSeries.add(new HighchartsDataSeries("Other Expenses Cumulative",
+		otherExpensesCumulative));
 	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
 		new Gson().toJson(dashboardSeries, ArrayList.class));
 
@@ -2108,6 +2149,7 @@ public class ProjectController {
 	List<HighchartsDataPoint> projectCumulative = new ArrayList<HighchartsDataPoint>();
 	projectCumulative.addAll(inventorySeries);
 	projectCumulative.addAll(payrollSeries);
+	projectCumulative.addAll(otherExpensesSeries);
 
 	// To sort in ascending,
 	Collections.sort(projectCumulative, new Comparator<HighchartsDataPoint>() {
@@ -2130,12 +2172,13 @@ public class ProjectController {
 
 	// Dashboard pie.
 	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
-	projectPie.add(new HighchartsDataPoint("Materials", materialsAccumulated));
+	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
 	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
+	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
 	model.addAttribute(
 		ATTR_DATA_SERIES_PIE_DASHBOARD,
-		(materialsAccumulated == 0 && payrollAccumulated == 0) ? "[]" : new Gson().toJson(
-			projectPie, ArrayList.class));
+		(materialsAccumulated == 0 && payrollAccumulated == 0 && otherExpensesAccumulated == 0) ? "[]"
+			: new Gson().toJson(projectPie, ArrayList.class));
     }
 
     /**
@@ -2299,7 +2342,7 @@ public class ProjectController {
 	for (Delivery delivery : deliveryList) {
 	    double yValue = delivery.getGrandTotalOfMaterials();
 	    Date datetime = delivery.getDatetime();
-	    String name = String.format("(Materials) %s<br/>%s",
+	    String name = String.format("(Inventory) %s<br/>%s",
 		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), delivery.getName());
 
 	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);

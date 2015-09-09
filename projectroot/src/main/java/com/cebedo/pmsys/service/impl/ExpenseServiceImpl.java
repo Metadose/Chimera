@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -103,7 +106,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Transactional
     @Override
-    public List<Expense> list(Project proj) {
+    public List<Expense> listAsc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
@@ -116,6 +119,17 @@ public class ExpenseServiceImpl implements ExpenseService {
 	String pattern = Expense.constructPattern(proj);
 	Set<String> keys = this.expenseValueRepo.keys(pattern);
 	List<Expense> expenses = this.expenseValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<Expense>() {
+	    @Override
+	    public int compare(Expense aObj, Expense bObj) {
+		Date aStart = aObj.getDate();
+		Date bStart = bObj.getDate();
+		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+
 	return expenses;
     }
 

@@ -163,7 +163,7 @@ public class ProjectAux implements IDomainObject {
     }
 
     public double getCurrentTotalProject() {
-	return grandTotalDelivery + grandTotalPayroll;
+	return grandTotalDelivery + grandTotalPayroll + grandTotalOtherExpenses;
     }
 
     @Transient
@@ -182,7 +182,7 @@ public class ProjectAux implements IDomainObject {
 	double budget = getRemainingBudget();
 	String budgetStr = NumberFormatUtils.getCurrencyFormatter().format(budget);
 	if (budget < 0) {
-	    return budgetStr.replace("&#8369;", "&#8369;-");
+	    return budgetStr.replace("&#8369;", "&#8369;-").replace("(", "").replace(")", "");
 	}
 	return budgetStr;
     }
@@ -192,7 +192,8 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getRemainingBudgetAsPercentAsString() {
-	return NumberFormatUtils.getQuantityFormatter().format(getRemainingBudgetAsPercent());
+	return getPlannedTotalProject() == 0 ? "" : "("
+		+ NumberFormatUtils.getQuantityFormatter().format(getRemainingBudgetAsPercent()) + "%)";
     }
 
     public double getCurrentTotalProjectAsPercent() {
@@ -202,7 +203,9 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getCurrentTotalProjectAsPercentAsString() {
-	return NumberFormatUtils.getQuantityFormatter().format(getCurrentTotalProjectAsPercent());
+	return getPlannedTotalProject() == 0 ? "" : "("
+		+ NumberFormatUtils.getQuantityFormatter().format(getCurrentTotalProjectAsPercent())
+		+ "%)";
     }
 
     public String getPlannedTotalProjectAsString() {

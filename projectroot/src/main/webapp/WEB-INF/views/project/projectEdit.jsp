@@ -320,7 +320,7 @@
 							              <div class="info-box">
 							                <span class="info-box-icon bg-light-blue"><i class="ion ion-hammer"></i></span>
 							                <div class="info-box-content">
-							                  <span class="info-box-text">Inventory / Deliveries</span>
+							                  <span class="info-box-text">Inventory</span>
 							                  <span class="info-box-number">${projectAux.getGrandTotalDeliveryAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
@@ -343,7 +343,7 @@
 							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-cart"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Other Expenses</span>
-							                  <span class="info-box-number">si actual di mabutang diri</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalOtherExpensesAsString()}</span>
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
@@ -360,7 +360,7 @@
 													<div class="info-box ${css}">
 														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
 														<div class="info-box-content">
-															<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} (${projectAux.getCurrentTotalProjectAsPercentAsString()}%) spent</span>
+															<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} ${projectAux.getCurrentTotalProjectAsPercentAsString()} spent</span>
 															<span class="info-box-number">
 																<c:choose>
 																	<c:when test="${projectAux.getRemainingBudget() >= 0}">
@@ -370,7 +370,7 @@
 																		<c:set value="overspent" var="moneyCaption"/>
 																	</c:when>
 																</c:choose>
-																${projectAux.getRemainingBudgetAsString()} (${projectAux.getRemainingBudgetAsPercentAsString()}%) ${moneyCaption}
+																${projectAux.getRemainingBudgetAsString()} ${projectAux.getRemainingBudgetAsPercentAsString()} ${moneyCaption}
 															</span>
 															<div class="progress">
 															<div class="progress-bar" style="width: ${projectAux.getRemainingBudgetAsPercent()}%"></div>
@@ -718,6 +718,22 @@
 
 								<div class="tab-pane" id="tab_other_expenses">
                                 	<div class="row">
+										<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+               										<div id="highcharts-other-expenses" style="height: 300px"></div>													
+				                            	</div>
+				                            </div>
+				                        </div>
+										<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+               										<div id="highcharts-other-expenses-cumulative" style="height: 300px"></div>													
+				                            	</div>
+				                            </div>
+				                        </div>
+              						</div>
+                                	<div class="row">
 										<div class="col-md-9">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
@@ -727,7 +743,6 @@
 				                                	${projectAux.getGrandTotalOtherExpensesAsString()}
 													</u></b></h3>
 													</div>
-													
 
 			                                		<table class="table table-bordered table-striped is-data-table">
 				                                    	<thead>
@@ -2433,7 +2448,8 @@
 	$(function () {
 	    $('#highcharts-inventory').highcharts({
 	        chart: {
-	            type: 'spline'
+	            type: 'column',
+            	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false
@@ -2459,7 +2475,7 @@
 	        },
 	        yAxis: {
 	            title: {
-	                text: 'Material Expenses (PHP)'
+	                text: 'Inventory Expenses (PHP)'
 	            },
 	            min: 0
 	        },
@@ -2475,7 +2491,7 @@
 	            }
 	        },
 	        series: [{
-	        	name: 'Materials Expenses',
+	        	name: 'Inventory Expenses',
 	            data: ${dataSeriesInventory}
 	        }]
 	    });
@@ -2484,7 +2500,8 @@
 	$(function () {
 	    $('#highcharts-project').highcharts({
 	        chart: {
-	            type: 'area'
+	            type: 'area',
+            	zoomType: 'x'
 	        },	        
 	    	xAxis: {
 	            type: 'datetime',
@@ -2661,7 +2678,8 @@
 	$(function () {
 	    $('#highcharts-dashboard').highcharts({
 	        chart: {
-	            type: 'spline'
+	            type: 'column',
+            	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false
@@ -2707,9 +2725,10 @@
 	});
 
 	$(function () {
-	    $('#highcharts-inventory-cumulative').highcharts({
+	    $('#highcharts-other-expenses-cumulative').highcharts({
 	        chart: {
-	            type: 'spline'
+	            type: 'area',
+            	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false
@@ -2735,7 +2754,7 @@
 	        },
 	        yAxis: {
 	            title: {
-	                text: 'Material Expenses (PHP)'
+	                text: 'Other Expenses (PHP)'
 	            },
 	            min: 0
 	        },
@@ -2751,7 +2770,59 @@
 	            }
 	        },
 	        series: [{
-	        	name: 'Materials Cumulative',
+	        	name: 'Other Expenses Cumulative',
+	            data: ${dataSeriesOtherExpensesCumulative}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-inventory-cumulative').highcharts({
+	        chart: {
+	            type: 'area',
+            	zoomType: 'x'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Inventory Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Inventory Cumulative',
 	            data: ${dataSeriesInventoryCumulative}
 	        }]
 	    });
@@ -2760,7 +2831,8 @@
 	$(function () {
 	    $('#highcharts-payroll-cumulative').highcharts({
 	        chart: {
-	            type: 'spline'
+	            type: 'area',
+            	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false
@@ -2809,9 +2881,62 @@
 	});
 
 	$(function () {
+	    $('#highcharts-other-expenses').highcharts({
+	        chart: {
+	            type: 'column',
+            	zoomType: 'x'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Other Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Other Expenses',
+	            data: ${dataSeriesOtherExpenses}
+	        }]
+	    });
+	});
+
+	$(function () {
 	    $('#highcharts-payroll').highcharts({
 	        chart: {
-	            type: 'spline'
+	            type: 'column',
+            	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false

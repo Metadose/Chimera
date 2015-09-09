@@ -11,7 +11,7 @@ public interface ExpenseService {
 
     public Expense get(String uuid);
 
-    public List<Expense> list(Project proj);
+    public List<Expense> listAsc(Project proj);
 
     public String set(Expense cost);
 
