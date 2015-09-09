@@ -13,7 +13,7 @@
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<c:import url="/resources/sidebar.jsp" />
+		<!--  -->
 		<aside class="right-side">
 			<section class="content-header">
 	            <h1>

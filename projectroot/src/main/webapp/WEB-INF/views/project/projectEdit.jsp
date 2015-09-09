@@ -76,7 +76,7 @@
 	</div>
 
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<c:import url="/resources/sidebar.jsp" />
+		<!--  -->
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">

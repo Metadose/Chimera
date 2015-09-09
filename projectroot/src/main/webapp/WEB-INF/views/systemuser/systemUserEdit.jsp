@@ -33,7 +33,7 @@
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
 	<div class="wrapper row-offcanvas row-offcanvas-left">
-		<c:import url="/resources/sidebar.jsp" />
+		<!--  -->
 
 	<!-- Modal -->
 	<div id="deleteModal" class="modal fade" role="dialog">

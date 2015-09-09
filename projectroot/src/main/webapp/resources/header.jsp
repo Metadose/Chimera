@@ -46,14 +46,44 @@ $(window).on('load', function() {
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
-        <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
+<!--         <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button"> -->
+<!--             <span class="sr-only">Toggle navigation</span> -->
+<!--             <span class="icon-bar"></span> -->
+<!--             <span class="icon-bar"></span> -->
+<!--             <span class="icon-bar"></span> -->
+<!--         </a> -->
         <div class="navbar-right">
             <ul class="nav navbar-nav">
+    <!--             <li class="active"> -->
+    <%--                <c:url var="urlDashboard" value="/dashboard/"/> --%>
+    <%--                 <a href="${urlDashboard}"> --%>
+    <!--                     <i class="fa fa-dashboard"></i> <span>Dashboard</span> -->
+    <!--                 </a> -->
+    <!--             </li> -->
+                <li class="active">
+                    <c:url var="urlProjectList" value="/project/list/"/>
+                    <a href="${urlProjectList}">
+                        <i class="fa fa-building"></i> <span>Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <c:url var="urlSystemUserList" value="/systemuser/list/"/>
+                    <a href="${urlSystemUserList}">
+                        <i class="fa fa-male"></i> <span>User Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <c:url var="urlStaffList" value="/staff/list/"/>
+                    <a href="${urlStaffList}">
+                        <i class="fa fa-user"></i> <span>Company Staff</span>
+                    </a>
+                </li>
+                <c:if test="${authUser.superAdmin == true}">
+                    <c:url var="urlCompanyList" value="/company/list/"/>
+                    <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
+                    <c:url var="urlConfigList" value="/config/list"/>
+                    <li><a href="${urlConfigList}"><i class="fa fa-angle-double-right"></i> System Configuration</a></li>
+                </c:if>
 			    
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
