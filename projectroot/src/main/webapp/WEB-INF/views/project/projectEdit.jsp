@@ -101,7 +101,7 @@
                 <div class="row">
                     <div class="col-md-12">
                     	${uiParamAlert}
-						<c:if test="${empty project.assignedStaff}">
+						<c:if test="${empty project.assignedStaff && project.id > 0}">
 							<div class="callout callout-warning">
 								<h4>Warning!</h4>
 								<p>There are <b>no staff members</b> assigned to the <b>project</b>.</p>
