@@ -89,7 +89,7 @@
 				                                            <form:input type="text" class="form-control" path="content" placeholder="Sample: Initial clearing of the lot and misc preparations"/>
 				                                            <p class="help-block">Provide more task details</p>
 				                                            
-				                                            <label>Start Date</label>
+				                                            <label>Planned Start Date</label>
 					                                        <div class="input-group">
 					                                            <div class="input-group-addon">
 					                                                <i class="fa fa-calendar"></i>
@@ -102,6 +102,16 @@
 					                                        <label>Planned Duration (Man Days)</label>
 				                                            <form:input type="text" class="form-control" path="duration" placeholder="Sample: 30, 40, 50"/>
 				                                            <p class="help-block">Planned required man-days to complete the task</p>
+
+				                                            <label>Actual Start Date</label>
+					                                        <div class="input-group">
+					                                            <div class="input-group-addon">
+					                                                <i class="fa fa-calendar"></i>
+					                                            </div>
+					                                            <fmt:formatDate value="${task.actualDateStart}" var="dateString" pattern="yyyy/MM/dd" />
+					                                            <form:input type="text" class="form-control date-picker" path="actualDateStart" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+					                                        </div>
+				                                            <p class="help-block">Enter the actual start date</p>
 
 					                                        <label>Actual Duration (Man Days)</label>
 				                                            <form:input type="text" class="form-control" path="actualDuration" placeholder="Sample: 30, 40, 50"/>

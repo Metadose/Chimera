@@ -957,10 +957,10 @@
 						                                            <tr>
 							                                        	<th>&nbsp;</th>
 							                                            <th>Status</th>
-							                                            <th>Start Date</th>
-							                                            <th>End Date</th>
-							                                            <th>Planned Duration</th>
-							                                            <th>Actual Duration</th>
+							                                            <th>Planned Start & Duration</th>
+							                                            <th>Planned End</th>
+							                                            <th>Actual Start & Duration</th>
+							                                            <th>Actual End</th>
 							                                            <th>Title</th>
 							                                            <th>Staff</th>
 							                                        </tr>
@@ -999,11 +999,11 @@
 																					<span class="label ${css}">${task.getStatusEnum()}</span>
 									                                            </td>
 									                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.dateStart}" var="taskStartDate"/>
-									                                            <td>${taskStartDate}</td>
+									                                            <td>${taskStartDate} (${task.duration})</td>
 									                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.getEndDate()}" var="taskEndDate"/>
 									                                            <td>${taskEndDate}</td>
-									                                            <td>${task.duration}</td>
-									                                            <td>${task.actualDuration}</td>
+									                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.actualDateStart}"/> (${task.actualDuration})</td>
+									                                            <td><fmt:formatDate pattern="yyyy/MM/dd" value="${task.getActualEndDate()}"/></td>
 									                                            <td>${task.title}</td>
 									                                            <td>
 									                                            	<c:choose>

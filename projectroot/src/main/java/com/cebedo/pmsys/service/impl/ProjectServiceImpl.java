@@ -431,10 +431,11 @@ public class ProjectServiceImpl implements ProjectService {
 	    ganttBeanList.add(jSONTimelineGantt);
 
 	    // If task has an actual duration, add it also in the Gantt.
+	    Date actualDate = task.getActualDateStart();
 	    double actualDuration = task.getActualDuration();
-	    if (actualDuration > 0) {
+	    if (actualDate != null && actualDuration > 0) {
 		JSONTimelineGantt actualGantt = new JSONTimelineGantt(task, jSONTimelineGantt,
-			actualDuration);
+			actualDate, actualDuration);
 		ganttBeanList.add(actualGantt);
 	    }
 	}

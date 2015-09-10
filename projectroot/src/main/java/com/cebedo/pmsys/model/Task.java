@@ -46,6 +46,7 @@ public class Task implements Serializable {
     private String title;
     private String content;
     private Date dateStart;
+    private Date actualDateStart;
     private double duration;
     private double actualDuration;
     private Project project;
@@ -108,6 +109,14 @@ public class Task implements Serializable {
     @Transient
     public Date getEndDate() {
 	return DateUtils.addDays(dateStart, ((Double) Math.ceil(duration)).intValue());
+    }
+
+    @Transient
+    public Date getActualEndDate() {
+	if (actualDateStart == null || actualDuration == 0) {
+	    return null;
+	}
+	return DateUtils.addDays(actualDateStart, ((Double) Math.ceil(actualDuration)).intValue());
     }
 
     public void setDateStart(Date dateStart) {
@@ -196,6 +205,15 @@ public class Task implements Serializable {
 
     public void setActualDuration(double actualDuration) {
 	this.actualDuration = actualDuration;
+    }
+
+    @Column(name = "actual_date_start")
+    public Date getActualDateStart() {
+	return actualDateStart;
+    }
+
+    public void setActualDateStart(Date actualDateStart) {
+	this.actualDateStart = actualDateStart;
     }
 
 }

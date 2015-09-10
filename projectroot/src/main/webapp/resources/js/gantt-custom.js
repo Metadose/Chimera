@@ -9,22 +9,6 @@ gantt.templates.tooltip_text = function(start, end, task){
 	template += "<br/><b>Start Date:</b> "+ startStr;
 	template += "<br/><b>End Date:</b> "+ endStr;
 	
-	if(task.type == "Task") {
-		// Assigned teams.
-		if(task.assignedTeams === undefined) {
-			template += "<br/><b>Assigned Teams:</b> None";
-		} else {
-			template += "<br/><b>Assigned Teams:</b> "+task.assignedTeams;
-		}
-		
-		// Assigned staff members.
-		if(task.assignedStaff === undefined) {
-			template += "<br/><b>Assigned Staff:</b> None";
-		} else {
-			template += "<br/><b>Assigned Staff:</b> "+task.assignedStaff;
-		}
-	}
-	
 	// If undefined, then don't display.
 	if(task.content !== undefined) {
 		template += "<br/><br/>" + task.content;

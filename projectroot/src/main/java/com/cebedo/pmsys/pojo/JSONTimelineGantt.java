@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.pojo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -71,12 +72,12 @@ public class JSONTimelineGantt {
 	setTextColor(ganttElem.color());
     }
 
-    public JSONTimelineGantt(Task task, JSONTimelineGantt parent, double actualDuration) {
+    public JSONTimelineGantt(Task task, JSONTimelineGantt parent, Date actualDate, double actualDuration) {
 	setId(Task.OBJECT_NAME + "-actual-" + task.getId());
 	setStatus(task.getStatus());
 	setText("(Actual) " + task.getTitle());
 	setContent(task.getContent());
-	setStart_date(DateUtils.formatDate(task.getDateStart(), "dd-MM-yyyy"));
+	setStart_date(DateUtils.formatDate(actualDate, "dd-MM-yyyy"));
 	setOpen(true);
 	setDuration(actualDuration);
 	setParent(parent.getId());
