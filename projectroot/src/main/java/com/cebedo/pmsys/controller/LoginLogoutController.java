@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -43,8 +42,14 @@ public class LoginLogoutController {
 	this.configService = ps;
     }
 
+    @RequestMapping(value = "/login/inactive", method = RequestMethod.GET)
+    public String loginInactive(Model model) {
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Logged out due to inactivity");
+	return getLoginPage();
+    }
+
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
-    public String loginError(Model model, BindingResult result) {
+    public String loginError(Model model) {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");
 	return getLoginPage();
     }

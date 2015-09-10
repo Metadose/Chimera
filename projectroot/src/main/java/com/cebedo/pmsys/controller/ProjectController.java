@@ -562,7 +562,6 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service.
-	// FIXME Cleanup also the SYS_HOME.
 	// Get response.
 	String response = this.projectService.delete(id);
 

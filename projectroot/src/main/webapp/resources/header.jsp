@@ -66,19 +66,21 @@ $(window).on('load', function() {
                         <i class="fa fa-building"></i> <span>Projects</span>
                     </a>
                 </li>
+                <c:if test="${authUser.superAdmin || authUser.companyAdmin}">
                 <li>
                     <c:url var="urlSystemUserList" value="/systemuser/list/"/>
                     <a href="${urlSystemUserList}">
                         <i class="fa fa-male"></i> <span>User Accounts</span>
                     </a>
                 </li>
+                </c:if>
                 <li>
                     <c:url var="urlStaffList" value="/staff/list/"/>
                     <a href="${urlStaffList}">
                         <i class="fa fa-user"></i> <span>Company Staff</span>
                     </a>
                 </li>
-                <c:if test="${authUser.superAdmin == true}">
+                <c:if test="${authUser.superAdmin}">
                     <c:url var="urlCompanyList" value="/company/list/"/>
                     <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
                     <c:url var="urlConfigList" value="/config/list"/>

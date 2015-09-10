@@ -4,6 +4,9 @@ import com.cebedo.pmsys.model.Project;
 
 public abstract class ConstantsSystem {
 
+    /**
+     * TODO Put this is system.properties
+     */
     public static final String CONFIG_SYS_HOME = "SYS_HOME";
     public static final String CONFIG_ROOT_INIT = "ROOT_INIT";
 

@@ -49,6 +49,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
 
+    public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b>.";
+
     public static final String ERROR_COMMON_EMPTY_FILE = "You <b>cannot</b> upload an <b>empty file</b>.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted or invalid</b>.";

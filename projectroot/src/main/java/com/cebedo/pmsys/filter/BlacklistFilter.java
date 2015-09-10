@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,13 +22,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class BlacklistFilter extends OncePerRequestFilter {
 
-    protected static Logger logger = Logger.getLogger("filter");
+    /**
+     * TODO Implement logging on black-listed accounts who tried to login.
+     */
+    // protected static Logger logger = Logger.getLogger("filter");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 	    FilterChain filterChain) throws ServletException, IOException {
 
-	logger.debug("Running blacklist filter");
+	// logger.debug("Running blacklist filter");
 
 	// Retrieve user details
 	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -38,7 +40,7 @@ public class BlacklistFilter extends OncePerRequestFilter {
 	// to filter
 	if (authentication != null) {
 
-	    // TODO This whole this is a todo.
+	    // TODO This whole block, this is a todo.
 	    // If the username is equal to mike, deny access
 	    // if (authentication.getName().equals("mike") == true) {
 	    // logger.error("Username and password match. Access denied!");
@@ -49,7 +51,7 @@ public class BlacklistFilter extends OncePerRequestFilter {
 	}
 
 	// User details are not empty
-	logger.debug("Continue with remaining filters");
+	// logger.debug("Continue with remaining filters");
 	filterChain.doFilter(request, response);
     }
 

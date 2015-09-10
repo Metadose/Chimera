@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,11 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String create(SystemUser systemUser, BindingResult result) {
+
+	// Only company admins are allowed to create users.
+	if (!this.authHelper.isCompanyAdmin()) {
+	    return AlertBoxGenerator.ERROR;
+	}
 
 	// Service layer form validation.
 	this.systemUserValidator.validate(systemUser, result);
@@ -240,7 +246,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     }
 
     /**
-     * Update a user.
+     * Update a user. Only used during authentication.
      */
     @Override
     @Transactional
@@ -248,23 +254,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// If this is not a system call,
 	// go through the validation.
-	if (!systemOverride) {
+	if (systemOverride) {
+	    // Do service.
+	    this.systemUserDAO.update(user);
 
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(user)) {
-		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
-		return AlertBoxGenerator.ERROR;
-	    }
-
-	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	    // Return success.
+	    return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
 	}
-
-	// Do service.
-	this.systemUserDAO.update(user);
-
-	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	return AlertBoxGenerator.ERROR;
     }
 
     /**
@@ -273,6 +270,11 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String delete(long id) {
+	// Only company admins are allowed to delete users.
+	if (!this.authHelper.isCompanyAdmin()) {
+	    return AlertBoxGenerator.ERROR;
+	}
+
 	SystemUser obj = this.systemUserDAO.getByID(id);
 
 	// Security check.
@@ -297,6 +299,11 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public List<SystemUser> list() {
+	// Only company admins are allowed to list users.
+	if (!this.authHelper.isCompanyAdmin()) {
+	    return new ArrayList<SystemUser>();
+	}
+
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.

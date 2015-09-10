@@ -132,6 +132,14 @@ public class AuthHelper {
 	return false;
     }
 
+    public boolean isCompanyAdmin() {
+	AuthenticationToken auth = getAuth();
+	if (auth.isCompanyAdmin() || auth.isSuperAdmin()) {
+	    return true;
+	}
+	return false;
+    }
+
     public boolean isActionAuthorized(Attendance attendance) {
 	AuthenticationToken auth = getAuth();
 	if (auth.isSuperAdmin()) {
