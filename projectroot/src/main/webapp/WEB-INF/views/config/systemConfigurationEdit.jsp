@@ -69,11 +69,11 @@
 														action="${contextPath}/config/create">
 				                                        <div class="form-group">
 				                                            <label>Name</label>
-				                                            <form:input class="form-control" path="name" placeholder="Sample: ROOT_INIT, SYS_HOME"/>
+				                                            <form:input class="form-control" path="name" placeholder="Sample: ROOT_INIT, SYS_HOME" />
 				                                            <p class="help-block">Enter the name of the configuration</p>
 
 				                                            <label>Value</label>
-				                                            <form:input class="form-control" path="value" placeholder="Sample: 1, C:/vcc/sys/"/>
+				                                            <form:input class="form-control" path="value" placeholder="Sample: 1, C:/vcc/sys/" />
 				                                            <p class="help-block">Enter the value of the configuration</p>
 				                                        </div>
 				                                    </form:form>
