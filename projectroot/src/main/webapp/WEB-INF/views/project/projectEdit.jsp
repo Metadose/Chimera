@@ -959,9 +959,9 @@
 							                                            <th>Status</th>
 							                                            <th>Start Date</th>
 							                                            <th>End Date</th>
-							                                            <th>Duration</th>
+							                                            <th>Planned Duration</th>
+							                                            <th>Actual Duration</th>
 							                                            <th>Title</th>
-							                                            <th>Content</th>
 							                                            <th>Staff</th>
 							                                        </tr>
 				                                        		</thead>
@@ -1003,8 +1003,8 @@
 									                                            <fmt:formatDate pattern="yyyy/MM/dd" value="${task.getEndDate()}" var="taskEndDate"/>
 									                                            <td>${taskEndDate}</td>
 									                                            <td>${task.duration}</td>
+									                                            <td>${task.actualDuration}</td>
 									                                            <td>${task.title}</td>
-									                                            <td>${task.content}</td>
 									                                            <td>
 									                                            	<c:choose>
 									                                            		<c:when test="${!empty task.staff}">

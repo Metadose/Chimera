@@ -264,6 +264,16 @@ input[type=checkbox] {
 	text-align: right;
 }
 
+.cebedo-payroll-cell {
+	text-align: right;
+	font-size: smaller;
+}
+
+.cebedo-payroll-staff-name {
+  white-space: nowrap;
+  font-size: smaller;
+}
+
 .cebedo-no-wrap {
   white-space: nowrap;
 }

@@ -47,6 +47,7 @@ public class Task implements Serializable {
     private String content;
     private Date dateStart;
     private double duration;
+    private double actualDuration;
     private Project project;
     private Set<Staff> staff;
     private int status;
@@ -186,6 +187,15 @@ public class Task implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @Column(name = "actual_duration", nullable = false)
+    public double getActualDuration() {
+	return actualDuration;
+    }
+
+    public void setActualDuration(double actualDuration) {
+	this.actualDuration = actualDuration;
     }
 
 }

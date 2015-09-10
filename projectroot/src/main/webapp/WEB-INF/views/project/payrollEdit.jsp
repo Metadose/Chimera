@@ -27,20 +27,23 @@
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
 	<style>
-	  ul {         
-	      padding:0 0 0 0;
-	      margin:0 0 0 0;
-	  }
-	  ul li {     
-	      list-style:none;
-	      margin-bottom:25px;           
-	  }
-	  ul li img {
-	      cursor: pointer;
-	  }
-	.ui-widget-header {
-		width: 100%;
-	}
+		ul {         
+			padding:0 0 0 0;
+			margin:0 0 0 0;
+		}
+		ul li {     
+			list-style:none;
+			margin-bottom:25px;           
+		}
+		ul li img {
+			cursor: pointer;
+		}
+		.ui-widget-header {
+			width: 100%;
+		}
+		span.ui-iggrid-headertext {
+			font-size: smaller;
+		}
 	</style>
 </head>
 <body class="skin-blue">
@@ -295,33 +298,33 @@
             ],
             columns: [
                	{ headerText: "primaryKey", key: "uuid", dataType: "string", hidden: true },
-               	{ headerText: "Name", key: "name", columnCssClass: "cebedo-no-wrap", dataType: "string" },
-               	{ headerText: "Total", key: "value", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               	{ headerText: "Salary (Daily)", key: "wage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+               	{ headerText: "Name", key: "name", columnCssClass: "cebedo-payroll-staff-name", dataType: "string" },
+               	{ headerText: "Total", key: "value", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               	{ headerText: "Salary (Daily)", key: "wage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" },
 
                	{ headerText: "Present", group: [
-               			{ headerText: "Count", key: "breakdownPresentCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownPresentWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownPresentCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownPresentWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]},
                	{ headerText: "Overtime", group: [
-               			{ headerText: "Count", key: "breakdownOvertimeCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownOvertimeWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownOvertimeCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownOvertimeWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]},
                	{ headerText: "Late", group: [
-               			{ headerText: "Count", key: "breakdownLateCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownLateWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownLateCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLateWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]},
                	{ headerText: "Half-day", group: [
-               			{ headerText: "Count", key: "breakdownHalfdayCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownHalfdayWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownHalfdayCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownHalfdayWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]},
                	{ headerText: "Leave", group: [
-               			{ headerText: "Count", key: "breakdownLeaveCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownLeaveWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownLeaveCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownLeaveWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]},
                	{ headerText: "Absent", group: [
-               			{ headerText: "Count", key: "breakdownAbsentCount", columnCssClass: "cebedo-text-align-right", dataType: "number" },
-               			{ headerText: "Subtotal", key: "breakdownAbsentWage", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+               			{ headerText: "Count", key: "breakdownAbsentCount", columnCssClass: "cebedo-payroll-cell", dataType: "number" },
+               			{ headerText: "Subtotal", key: "breakdownAbsentWage", formatter: formatCurrency, columnCssClass: "cebedo-payroll-cell", dataType: "number" }
                		]}
 
             ]

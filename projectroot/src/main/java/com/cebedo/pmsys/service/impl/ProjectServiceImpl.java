@@ -429,6 +429,14 @@ public class ProjectServiceImpl implements ProjectService {
 	for (Task task : proj.getAssignedTasks()) {
 	    JSONTimelineGantt jSONTimelineGantt = new JSONTimelineGantt(task, myGanttBean);
 	    ganttBeanList.add(jSONTimelineGantt);
+
+	    // If task has an actual duration, add it also in the Gantt.
+	    double actualDuration = task.getActualDuration();
+	    if (actualDuration > 0) {
+		JSONTimelineGantt actualGantt = new JSONTimelineGantt(task, jSONTimelineGantt,
+			actualDuration);
+		ganttBeanList.add(actualGantt);
+	    }
 	}
 
 	return new Gson().toJson(ganttBeanList, ArrayList.class);

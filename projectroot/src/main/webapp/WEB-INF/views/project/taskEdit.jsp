@@ -99,9 +99,13 @@
 					                                        </div>
 				                                            <p class="help-block">Enter the task start date</p>
 
-					                                        <label>Duration (Man Days)</label>
+					                                        <label>Planned Duration (Man Days)</label>
 				                                            <form:input type="text" class="form-control" path="duration" placeholder="Sample: 30, 40, 50"/>
-				                                            <p class="help-block">Required man-days to complete the task</p>
+				                                            <p class="help-block">Planned required man-days to complete the task</p>
+
+					                                        <label>Actual Duration (Man Days)</label>
+				                                            <form:input type="text" class="form-control" path="actualDuration" placeholder="Sample: 30, 40, 50"/>
+				                                            <p class="help-block">Actual man-days to complete the task</p>
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>

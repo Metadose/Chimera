@@ -42,12 +42,6 @@ public class LoginLogoutController {
 	this.configService = ps;
     }
 
-    @RequestMapping(value = "/login/inactive", method = RequestMethod.GET)
-    public String loginInactive(Model model) {
-	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Logged out due to inactivity");
-	return getLoginPage();
-    }
-
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
     public String loginError(Model model) {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");

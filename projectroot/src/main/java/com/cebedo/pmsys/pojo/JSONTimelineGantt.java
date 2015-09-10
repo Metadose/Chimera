@@ -45,7 +45,7 @@ public class JSONTimelineGantt {
     public JSONTimelineGantt(Task task, JSONTimelineGantt parent) {
 	setId(Task.OBJECT_NAME + "-" + task.getId());
 	setStatus(task.getStatus());
-	setText(task.getTitle());
+	setText("(Planned) " + task.getTitle());
 	setContent(task.getContent());
 	setStart_date(DateUtils.formatDate(task.getDateStart(), "dd-MM-yyyy"));
 	setOpen(true);
@@ -69,6 +69,35 @@ public class JSONTimelineGantt {
 	GanttElement ganttElem = GanttElement.of(taskStatus.css());
 	setColor(ganttElem.backgroundColor());
 	setTextColor(ganttElem.color());
+    }
+
+    public JSONTimelineGantt(Task task, JSONTimelineGantt parent, double actualDuration) {
+	setId(Task.OBJECT_NAME + "-actual-" + task.getId());
+	setStatus(task.getStatus());
+	setText("(Actual) " + task.getTitle());
+	setContent(task.getContent());
+	setStart_date(DateUtils.formatDate(task.getDateStart(), "dd-MM-yyyy"));
+	setOpen(true);
+	setDuration(actualDuration);
+	setParent(parent.getId());
+	setType("Task");
+
+	// Assigned staff.
+	if (task.getStaff() != null && !task.getStaff().isEmpty()) {
+	    List<String> staffMembers = new ArrayList<String>();
+	    for (Staff staff : task.getStaff()) {
+		String name = staff.getFullName().isEmpty() ? (staff.getUser().getUsername() + " (Unnamed Staff)")
+			: staff.getFullName();
+		staffMembers.add(name);
+	    }
+	    setAssignedStaff(StringUtils.join(staffMembers, ", "));
+	}
+
+	// Set color based on task status.
+	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
+	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	setColor("rgba(0, 0, 0, 0.84)");
+	setTextColor(ganttElem.backgroundColor());
     }
 
     public JSONTimelineGantt(Staff staff) {

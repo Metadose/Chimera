@@ -1216,7 +1216,6 @@ public class ProjectController {
 
 	// Add front-end JSONs.
 	model.addAttribute(ATTR_CALENDAR_JSON, this.staffService.getCalendarJSON(attendanceList));
-	model.addAttribute(ATTR_GANTT_JSON, this.staffService.getGanttJSON(staff));
 	model.addAttribute(ATTR_FROM_PROJECT, true);
 
 	// Construct Highcharts data series.
