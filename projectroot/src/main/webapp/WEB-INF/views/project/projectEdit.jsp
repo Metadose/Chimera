@@ -2405,6 +2405,7 @@
 			if((id == "tab_timeline" || id == "subtab_chart") && typeof gantt !== 'undefined'){
 				gantt.render();
 			}
+			$(window).resize();
 		    // TODO Some href links, if equal to #, scrolls to top.
 		    return false;
 		});

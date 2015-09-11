@@ -358,7 +358,7 @@
 								                            <form:input type="text" class="form-control" path="wage" placeholder="Sample: 300, 500, 550"/>
 								                            <p class="help-block">Provide the salary of the staff for these entries</p>
 								                 			</div>
-								                 			
+
 								                            <label id="includeWeekendsLabel">Include Weekends</label>
 								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends" style="margin-left: -48%;"/>
 								                            <p class="help-block">Check to include weekends</p>
@@ -704,6 +704,13 @@
 		            data: ${dataSeriesAttendance}
 		        }]
 		    });
+		});
+
+		$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+			var id = $(e.target).attr("href").substr(1);
+			$(window).resize();
+		    // TODO Some href links, if equal to #, scrolls to top.
+		    return false;
 		});
 	</script>
 </body>
