@@ -358,20 +358,9 @@
 								                            <form:input type="text" class="form-control" path="wage" placeholder="Sample: 300, 500, 550"/>
 								                            <p class="help-block">Provide the salary of the staff for these entries</p>
 								                 			</div>
-								                            
-								                            <table>
-								                            	<tr>
-								                            		<td>
-								                            		<label id="includeWeekendsLabel">Include Weekends</label>
-								                            		</td>
-								                            	</tr>
-								                            	<tr>
-								                            		<td>
-								                            		<form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends"/>
-								                            		</td>								                            	
-								                            	</tr>
-								                            </table>
-
+								                 			
+								                            <label id="includeWeekendsLabel">Include Weekends</label>
+								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends" style="margin-left: -48%;"/>
 								                            <p class="help-block">Check to include weekends</p>
 								                        </div>
 								                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
