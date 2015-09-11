@@ -173,10 +173,19 @@
 				                                        </div>
 				                                    </form:form>
 
-													<c:url value="/project/delete/pullout/${pullout.getKey()}-end" var="urlDelete"/>
-				                                    <a href="${urlDelete}">
-       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				                                    </a>
+
+				                                    <div class="btn-group">
+				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+				                                    <ul class="dropdown-menu">
+				                                    	<li>
+	            											<c:url value="/project/delete/pullout/${pullout.getKey()}-end" var="urlDelete"/>
+	            		                                    <a href="${urlDelete}" class="cebedo-dropdown-hover">
+				                                        		Confirm Delete
+				                                        	</a>
+				                                    	</li>
+				                                    </ul>
+				                                    </div>
+
 													</c:when>
 
 													<c:when test="${!isUpdating}">

@@ -163,10 +163,18 @@
        													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 				                                    </a>
 				                                    </c:if>
-                                            		<c:url var="urlDelete" value="/project/delete/material/${material.getKey()}-end"/>
-				                                    <a href="${urlDelete}">
-       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				                                    </a>
+
+				                                    <div class="btn-group">
+				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+				                                    <ul class="dropdown-menu">
+				                                    	<li>
+		                                            		<c:url var="urlDelete" value="/project/delete/material/${material.getKey()}-end"/>
+						                                    <a href="${urlDelete}" class="cebedo-dropdown-hover">
+				                                        		Confirm Delete
+				                                        	</a>
+				                                    	</li>
+				                                    </ul>
+				                                    </div>
                    								</div>
                    							</div>
                    						</div>

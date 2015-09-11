@@ -96,10 +96,18 @@
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
-                                            		<c:url value="/project/delete/delivery/${delivery.getKey()}-end" var="urlDeleteDelivery"/>
-				                                    <a href="${urlDeleteDelivery}">
-       													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				                                    </a>
+                                            		
+				                                    <div class="btn-group">
+				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+				                                    <ul class="dropdown-menu">
+				                                    	<li>
+		                                            		<c:url value="/project/delete/delivery/${delivery.getKey()}-end" var="urlDeleteDelivery"/>
+						                                    <a href="${urlDeleteDelivery}" class="cebedo-dropdown-hover">
+				                                        		Confirm Delete
+				                                        	</a>
+				                                    	</li>
+				                                    </ul>
+				                                    </div>
 			                                        </c:if>
 			                                        <c:if test="${!isUpdating}">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
@@ -179,7 +187,7 @@
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-                   									<h3 class="box-title">List of Materials</h3>
+                   									<h3 class="box-title">Materials</h3>
                    								</div>
                    								<div class="box-body">
 									                <div class="pull-right">
@@ -216,10 +224,18 @@
 		                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 									                                    </a>
 									                                    </c:if>
-									                                    <c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
-									                                    <a href="${urlDelete}">
-		                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-									                                    </a>
+									                                    
+                            		                                    <div class="btn-group">
+                            		                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+                            		                                    <ul class="dropdown-menu">
+                            		                                    	<li>
+                            		                                    		<c:url var="urlDelete" value="/project/delete/material/${row.getKey()}-end"/>
+                            		                                    		<a href="${urlDelete}" class="cebedo-dropdown-hover">
+                            		                                        		Confirm Delete
+                            		                                        	</a>
+                            		                                    	</li>
+                            		                                    </ul>
+                            		                                    </div>
 																	</center>
 																</td>
 																<td>${row.materialCategory.getLabel()}</td>

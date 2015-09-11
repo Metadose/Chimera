@@ -49,6 +49,18 @@
 	                <a href="${urlBack}">
 						<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 					</a>
+
+                    <div class="btn-group">
+                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+                    <ul class="dropdown-menu">
+                    	<li>
+                    		<c:url value="/project/delete/estimation/${estimationoutput.getKey()}-end" var="urlDelete"/>
+                    		<a href="${urlDelete}" class="cebedo-dropdown-hover">
+                        		Confirm Delete
+                        	</a>
+                    	</li>
+                    </ul>
+                    </div>
 					<br/>
 					<br/>
 					<div class="box box-body box-default">

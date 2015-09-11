@@ -117,6 +117,19 @@
 	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">
 	                                            		Update
 	                                            		</button>
+
+	                                            		<div class="btn-group">
+	                                            		<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+	                                            		<ul class="dropdown-menu">
+	                                            			<li>
+	                                            				<c:url value="/project/delete/payroll/${projectPayroll.getKey()}-end" var="urlDeletePayroll"/>
+	                                            				<a href="${urlDeletePayroll}" class="cebedo-dropdown-hover">
+	                                            		    		Confirm Delete
+	                                            		    	</a>
+	                                            			</li>
+	                                            		</ul>
+	                                            		</div>
+	                                            		
 				                                        </c:if>
 				                                        <c:if test="${!projectPayroll.saved}">
 	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>

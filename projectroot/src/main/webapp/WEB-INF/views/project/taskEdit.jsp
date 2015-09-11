@@ -124,9 +124,17 @@
 		                                            	</c:when>
 		                                            	<c:when test="${task.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="<c:url value="/project/delete/task/${task.id}"/>">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-															</a>
+		                                            		
+															<div class="btn-group">
+															<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+															<ul class="dropdown-menu">
+																<li>
+																	<a href="<c:url value="/project/delete/task/${task.id}"/>" class="cebedo-dropdown-hover">
+															    		Confirm Delete
+															    	</a>
+																</li>
+															</ul>
+															</div>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -174,10 +182,18 @@
 			                                    		</td>
 			                                    		<c:if test="${!empty task.staff}">
 			                                    		<td>
-	               											<c:url var="urlTaskUnassignStaffAll" value="/project/unassign/task/staff/all"/>
-			                                    			<a href="${urlTaskUnassignStaffAll}">
-	                											<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Unassign All</button>
-			                                    			</a>
+
+			                                    			<div class="btn-group">
+			                                    			<button type="button" class="btn btn-cebedo-unassign-all btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign All</button>
+			                                    			<ul class="dropdown-menu">
+			                                    				<li>
+			               											<c:url var="urlTaskUnassignStaffAll" value="/project/unassign/task/staff/all"/>
+					                                    			<a href="${urlTaskUnassignStaffAll}" class="cebedo-dropdown-hover">
+			                                    			    		Confirm Unassign All
+			                                    			    	</a>
+			                                    				</li>
+			                                    			</ul>
+			                                    			</div>
 			                                    		</td>
 			                                    		</c:if>
 			                                    	</tr>
@@ -203,10 +219,18 @@
 				                                            			<a href="<c:url value="/project/edit/staff/${staffAssign.id}"/>">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-		                   												<c:url var="urlUnassignStaff" value="/project/unassign/task/staff/${staffAssign.id}"/>
-		                   												<a href="${urlUnassignStaff}">
-																			<button class="btn btn-cebedo-unassign btn-flat btn-sm">Unassign</button>
-		                   												</a>
+
+		                   												<div class="btn-group">
+		                   												<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign</button>
+		                   												<ul class="dropdown-menu">
+		                   													<li>
+		                   														<c:url var="urlUnassignStaff" value="/project/unassign/task/staff/${staffAssign.id}"/>
+		                   														<a href="${urlUnassignStaff}" class="cebedo-dropdown-hover">
+		                   												    		Confirm Unassign
+		                   												    	</a>
+		                   													</li>
+		                   												</ul>
+		                   												</div>
 																	</center>
 																</td>
 				                                                <td>${staffAssign.getFullName()}</td>
