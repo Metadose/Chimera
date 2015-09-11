@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Material;
 
@@ -27,8 +26,7 @@ public class MaterialValidator implements Validator {
 	unitCount = targetObj.getUnitMass() == null ? unitCount : unitCount + 1;
 	unitCount = targetObj.getUnitVolume() == null ? unitCount : unitCount + 1;
 	if (unitCount > 1) {
-	    errors.reject(RegistryErrorCodes.MATERIAL_UNIT,
-		    RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
+	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
     }
 

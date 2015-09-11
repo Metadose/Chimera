@@ -6,7 +6,6 @@ import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.EstimateComputationInputBean;
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 
 @Component
@@ -23,8 +22,7 @@ public class EstimateInputValidator implements Validator {
 	MultipartFile file = targetObj.getEstimationFile();
 	// If file is null, or file is empty.
 	if (file == null || file.isEmpty()) {
-	    errors.reject(RegistryErrorCodes.ESTIMATE_FILE,
-		    RegistryResponseMessage.ERROR_PROJECT_ESTIMATION_EMPTY_FILE);
+	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_ESTIMATION_EMPTY_FILE);
 	}
 	// TODO Handle case when other file types are uploaded.
 	// Filter only Excel files.

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
@@ -41,18 +40,15 @@ public class CompanyValidator implements Validator {
 
 	// Invalid name.
 	if (StringUtils.isBlank(targetObj.getName())) {
-	    errors.reject(RegistryErrorCodes.COMPANY_EXPIRATION,
-		    RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
 	}
 	// Expiration is before now.
 	if (expire.before(now)) {
-	    errors.reject(RegistryErrorCodes.COMPANY_EXPIRATION,
-		    RegistryResponseMessage.ERROR_COMPANY_EXPIRE_DATE_LT_NOW);
+	    errors.reject("", RegistryResponseMessage.ERROR_COMPANY_EXPIRE_DATE_LT_NOW);
 	}
 	// Expiration is before start.
 	if (expire.before(start)) {
-	    errors.reject(RegistryErrorCodes.COMMON_DATES,
-		    RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
+	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
     }
 

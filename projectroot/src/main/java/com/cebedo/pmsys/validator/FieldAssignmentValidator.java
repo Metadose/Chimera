@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
@@ -25,8 +24,7 @@ public class FieldAssignmentValidator implements Validator {
 	String value = targetObj.getValue();
 
 	if (StringUtils.isBlank(label) || StringUtils.isBlank(value)) {
-	    errors.reject(RegistryErrorCodes.PROJECT_EXTRA_INFO,
-		    RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
+	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
 	}
     }
 

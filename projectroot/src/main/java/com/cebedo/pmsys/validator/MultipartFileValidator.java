@@ -5,7 +5,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 
 @Component
@@ -22,8 +21,7 @@ public class MultipartFileValidator implements Validator {
 	// TODO multipartFile.getOriginalFilename();
 	// Check allowed file extensions.
 	if (multipartFile == null || multipartFile.isEmpty()) {
-	    errors.reject(RegistryErrorCodes.COMMON_FILE,
-		    RegistryResponseMessage.ERROR_COMMON_EMPTY_FILE);
+	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_EMPTY_FILE);
 	}
     }
 
