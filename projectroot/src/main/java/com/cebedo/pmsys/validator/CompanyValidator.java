@@ -40,7 +40,7 @@ public class CompanyValidator implements Validator {
 
 	// Invalid name.
 	if (StringUtils.isBlank(targetObj.getName())) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	    this.validationHelper.rejectInvalid(errors, "name");
 	}
 	// Expiration is before now.
 	if (expire.before(now)) {

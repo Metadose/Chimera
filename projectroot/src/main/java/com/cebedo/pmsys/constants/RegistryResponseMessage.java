@@ -19,8 +19,6 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PROJECT_PAYROLL_NO_STAFF = "You <b>cannot</b> create a payroll <b>without staff</b> assigned to this project. <b>Assign staff members first</b>.";
 
-    public static final String ERROR_PROJECT_STAFF_ATTENDANCE_NEGATIVE_WAGE = "<b>Wage</b> must be <b>a positive number</b>.";
-
     public static final String ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC = "There was a problem with the <b>list of staff</b> you provided. Please <b>review</b> the list and <b>try again</b>.";
 
     public static final String ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE = "The <b>start date</b> must be <b>before the completion date</b>.";
@@ -41,21 +39,23 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_INVALID_DATE_TIME = "Please provide a <b>valid date and time</b>.";
 
-    public static final String ERROR_COMMON_INVALID_DATE = "Please provide a <b>valid date</b>.";
+    public static final String ERROR_COMMON_INVALID_PROPERTY = "Please provide a <b>valid %s</b>.";
 
-    public static final String ERROR_COMMON_INVALID_NAME = "Please provide a <b>valid name</b>.";
+    public static final String ERROR_COMMON_INVALID_DATE = "Please provide a <b>valid date</b>.";
 
     public static final String ERROR_COMMON_START_DATE_GT_END_DATE = "The <b>start date</b> must be <b>before the end date</b>.";
 
     public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
 
-    public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b>.";
+    public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b> and <b>all information is valid</b>.";
 
     public static final String ERROR_COMMON_EMPTY_FILE = "You <b>cannot</b> upload an <b>empty file</b>.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted or invalid</b>.";
 
     public static final String ERROR_COMMON_MAX_LENGTH = "Maximum length of <b>%s</b> is <b>%s</b> characters.";
+
+    public static final String ERROR_COMMON_ZERO_OR_POSITIVE = "<b>%s</b> must be <b>zero or a positive number</b>.";
 
     // Company.
     public static final String ERROR_COMPANY_EXPIRE_DATE_LT_NOW = "The <b>expiration date</b> must be <b>after the current date</b>.";

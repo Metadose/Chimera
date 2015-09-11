@@ -1,7 +1,10 @@
 package com.cebedo.pmsys.helper;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
@@ -13,6 +16,10 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 public class ValidationHelper {
+
+    private static final String PATTERN_EMAIL = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+    private final Pattern patternEmail = Pattern.compile(PATTERN_EMAIL);
+    private Matcher matcher;
 
     /**
      * Project payroll. This cannot be translated to a Validator since we have
@@ -94,9 +101,24 @@ public class ValidationHelper {
 	return true;
     }
 
-    public void rejectZeroOrPositive(Errors errors, String string) {
-	// errors.reject("",
-	// String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH,
-	// propertyName, len));
+    public boolean checkEmail(String email) {
+	this.matcher = this.patternEmail.matcher(email);
+	if (!this.matcher.matches()) {
+	    return false;
+	}
+	return true;
+    }
+
+    public void rejectZeroOrPositive(Errors errors, String propertyName) {
+	errors.reject(
+		"",
+		String.format(RegistryResponseMessage.ERROR_COMMON_ZERO_OR_POSITIVE,
+			StringUtils.capitalize(propertyName)));
+    }
+
+    public void rejectInvalid(Errors errors, String propertyName) {
+	// Please provide a valid %s.
+	errors.reject("",
+		String.format(RegistryResponseMessage.ERROR_COMMON_INVALID_PROPERTY, propertyName));
     }
 }

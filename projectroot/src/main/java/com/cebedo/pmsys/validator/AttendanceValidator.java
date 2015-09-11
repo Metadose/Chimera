@@ -4,11 +4,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.helper.ValidationHelper;
 
 @Component
 public class AttendanceValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -19,9 +21,8 @@ public class AttendanceValidator implements Validator {
     public void validate(Object target, Errors errors) {
 	Attendance targetObj = (Attendance) target;
 	double wage = targetObj.getWage(); // < Zero
-	if (wage < 0) {
-	    errors.reject("invalid.attendance.wage",
-		    RegistryResponseMessage.ERROR_PROJECT_STAFF_ATTENDANCE_NEGATIVE_WAGE);
+	if (this.validationHelper.zeroOrPositive(wage)) {
+	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
 	}
     }
 

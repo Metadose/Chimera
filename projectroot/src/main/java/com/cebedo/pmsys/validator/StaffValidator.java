@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Staff;
 
@@ -64,10 +63,15 @@ public class StaffValidator implements Validator {
 	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
 	}
 
-	// E-Mail = 32, TODO pattern
+	// E-Mail = 32
 	String email = staff.getEmail();
 	if (!this.validationHelper.checkLength(email, 32)) {
 	    this.validationHelper.rejectLength(errors, "email", 32);
+	}
+
+	// E-Mail pattern
+	if (!this.validationHelper.checkEmail(email)) {
+	    this.validationHelper.rejectInvalid(errors, "e-mail address");
 	}
 
 	// Contact Number = 32
@@ -77,7 +81,7 @@ public class StaffValidator implements Validator {
 	}
 
 	if (!staff.isNameSet()) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	    this.validationHelper.rejectInvalid(errors, "name");
 	}
     }
 

@@ -9,10 +9,13 @@ import org.springframework.validation.Validator;
 
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.enums.ProjectStatus;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 
 @Component
 public class ProjectValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -25,7 +28,7 @@ public class ProjectValidator implements Validator {
 	// Please provide a valid name.
 	String name = project.getName();
 	if (StringUtils.isBlank(name)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_NAME);
+	    this.validationHelper.rejectInvalid(errors, "name");
 	}
 
 	Date start = project.getDateStart();
