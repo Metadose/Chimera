@@ -805,9 +805,17 @@
 					                                            			<a href="<c:url value="/project/edit/expense/${expense.getKey()}-end"/>">
 									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            			</a>
-										                                    <a href="<c:url value="/project/delete/expense/${expense.getKey()}-end"/>">
-			                   													<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-										                                    </a>
+
+										                                    <div class="btn-group">
+										                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+										                                    <ul class="dropdown-menu">
+										                                    	<li>
+										                                    		<a href="<c:url value="/project/delete/expense/${expense.getKey()}-end"/>" class="cebedo-dropdown-hover">
+										                                        		Confirm Delete
+										                                        	</a>
+										                                    	</li>
+										                                    </ul>
+										                                    </div>
 																		</center>
 																	</td>
 				                                                	<td>${expense.name}</td>
@@ -986,11 +994,17 @@
 						                                    		<c:if test="${!empty project.assignedTasks}">
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
-				               											<!-- Delete All button -->
-								                                        <c:url value="/project/delete/task/all" var="urlButton"/>
-								                                        <a href="${urlButton}">
-				                										<button class="btn btn-cebedo-unassign-all btn-flat btn-sm">Delete All</button>
-								                                        </a>
+				               											<!-- Delete All button --><div class="btn-group">
+								                                        <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete All</button>
+								                                        <ul class="dropdown-menu">
+								                                        	<li>								                                        		
+								                                        		<c:url value="/project/delete/task/all" var="urlButton"/>
+								                                        		<a href="${urlButton}" class="cebedo-dropdown-hover">
+								                                            		Confirm Delete All
+								                                            	</a>
+								                                        	</li>
+								                                        </ul>
+								                                        </div>
 						                                    		</td>
 						                                    		</c:if>
 						                                    	</tr>
@@ -1033,9 +1047,16 @@
 											                                        </a>
 
 											                                        <!-- Delete button -->
-											                                        <a href="<c:url value="/project/delete/task/${task.id}"/>">
-									                                            	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-											                                        </a>
+											                                        <div class="btn-group">
+											                                        <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+											                                        <ul class="dropdown-menu">
+											                                        	<li>
+											                                        		<a href="<c:url value="/project/delete/task/${task.id}"/>" class="cebedo-dropdown-hover">
+											                                            		Confirm Delete
+											                                            	</a>
+											                                        	</li>
+											                                        </ul>
+											                                        </div>
 						                                        				</td>
 									                                            <td>
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
