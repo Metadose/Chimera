@@ -18,7 +18,13 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 public class ValidationHelper {
 
     private static final String PATTERN_EMAIL = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+    private static final String PATTERN_USERNAME = "^[a-z0-9_-]{4,32}$";
+    private static final String PATTERN_PASSWORD = "^(?=.*\\d).{8,16}$";
+
     private final Pattern patternEmail = Pattern.compile(PATTERN_EMAIL);
+    private final Pattern patternUsername = Pattern.compile(PATTERN_USERNAME);
+    private final Pattern patternPassword = Pattern.compile(PATTERN_PASSWORD);
+
     private Matcher matcher;
 
     /**
@@ -57,7 +63,7 @@ public class ValidationHelper {
      * @param multipartFile
      * @return
      */
-    public boolean checkFile(MultipartFile multipartFile) {
+    public boolean fileIsNullOrEmpty(MultipartFile multipartFile) {
 	// TODO multipartFile.getOriginalFilename();
 	// Check allowed file extensions.
 	if (multipartFile == null || multipartFile.isEmpty()) {
@@ -84,16 +90,16 @@ public class ValidationHelper {
 	return errorsStr;
     }
 
-    public boolean checkLength(String property, int max) {
+    public boolean stringLengthIsLessThanMax(String property, int max) {
 	if (property.length() > max) {
 	    return false;
 	}
 	return true;
     }
 
-    public void rejectLength(Errors errors, String propertyName, int len) {
+    public void rejectGreaterThanMaxLength(Errors errors, String propertyName, int maxLen) {
 	errors.reject("",
-		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, len));
+		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, maxLen));
     }
 
     public boolean numberIsZeroOrPositive(double number) {
@@ -103,7 +109,7 @@ public class ValidationHelper {
 	return true;
     }
 
-    public boolean checkEmail(String email) {
+    public boolean stringEmailIsValid(String email) {
 	this.matcher = this.patternEmail.matcher(email);
 	if (!this.matcher.matches()) {
 	    return false;
@@ -111,14 +117,14 @@ public class ValidationHelper {
 	return true;
     }
 
-    public void rejectZeroOrPositive(Errors errors, String propertyName) {
+    public void rejectNegativeNumber(Errors errors, String propertyName) {
 	errors.reject(
 		"",
 		String.format(RegistryResponseMessage.ERROR_COMMON_ZERO_OR_POSITIVE,
 			StringUtils.capitalize(propertyName)));
     }
 
-    public void rejectInvalid(Errors errors, String propertyName) {
+    public void rejectInvalidProperty(Errors errors, String propertyName) {
 	// Please provide a valid %s.
 	errors.reject("",
 		String.format(RegistryResponseMessage.ERROR_COMMON_INVALID_PROPERTY, propertyName));
@@ -131,15 +137,53 @@ public class ValidationHelper {
 	return false;
     }
 
-    public boolean checkBlank(String str) {
+    public boolean stringIsBlank(String str) {
 	if (org.apache.commons.lang.StringUtils.isBlank(str)) {
 	    return true;
 	}
 	return false;
     }
 
-    public void rejectDateRange(Errors errors, String string, String string2) {
+    public void rejectInvalidDateRange(Errors errors, String string, String string2) {
 	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
 		string, string2));
+    }
+
+    public void rejectEqualStrings(Errors errors, String string, String string2) {
+	errors.reject(
+		"",
+		String.format(RegistryResponseMessage.ERROR_COMMON_NOT_EQUAL_STRINGS,
+			StringUtils.capitalize(string), string2));
+    }
+
+    public void rejectNotEqualStrings(Errors errors, String string, String string2) {
+	errors.reject(
+		"",
+		String.format(RegistryResponseMessage.ERROR_COMMON_EQUAL_STRINGS,
+			StringUtils.capitalize(string), string2));
+    }
+
+    public boolean stringUsernameIsValid(String username) {
+	this.matcher = this.patternUsername.matcher(username);
+	if (!this.matcher.matches()) {
+	    return false;
+	}
+	return true;
+    }
+
+    public boolean stringPasswordIsValid(String password) {
+	this.matcher = this.patternPassword.matcher(password);
+	if (!this.matcher.matches()) {
+	    return false;
+	}
+	return true;
+    }
+
+    public void rejectUsername(Errors errors) {
+	errors.reject("", RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
+    }
+
+    public void rejectPassword(Errors errors) {
+	errors.reject("", RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
     }
 }

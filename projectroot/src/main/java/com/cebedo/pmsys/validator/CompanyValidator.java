@@ -29,24 +29,24 @@ public class CompanyValidator implements Validator {
 	String name = targetObj.getName();
 	String description = targetObj.getDescription();
 
-	if (!this.validationHelper.checkLength(name, 64)) {
-	    this.validationHelper.rejectLength(errors, "name", 64);
+	if (!this.validationHelper.stringLengthIsLessThanMax(name, 64)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "name", 64);
 	}
-	if (!this.validationHelper.checkLength(description, 255)) {
-	    this.validationHelper.rejectLength(errors, "description", 255);
+	if (!this.validationHelper.stringLengthIsLessThanMax(description, 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "description", 255);
 	}
 
 	// Invalid name.
-	if (this.validationHelper.checkBlank(name)) {
-	    this.validationHelper.rejectInvalid(errors, "name");
+	if (this.validationHelper.stringIsBlank(name)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
 	}
 	// Expiration is before now.
 	if (expire.before(now)) {
-	    this.validationHelper.rejectDateRange(errors, "current date", "expiration date");
+	    this.validationHelper.rejectInvalidDateRange(errors, "current date", "expiration date");
 	}
 	// Expiration is before start.
 	if (expire.before(start)) {
-	    this.validationHelper.rejectDateRange(errors, "start date", "expiration date");
+	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "expiration date");
 	}
     }
 

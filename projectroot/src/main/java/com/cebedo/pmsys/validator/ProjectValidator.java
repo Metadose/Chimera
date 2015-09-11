@@ -28,7 +28,7 @@ public class ProjectValidator implements Validator {
 	// Please provide a valid name.
 	String name = project.getName();
 	if (StringUtils.isBlank(name)) {
-	    this.validationHelper.rejectInvalid(errors, "name");
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
 	}
 
 	Date start = project.getDateStart();

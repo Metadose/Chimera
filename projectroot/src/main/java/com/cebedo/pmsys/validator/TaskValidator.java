@@ -25,7 +25,7 @@ public class TaskValidator implements Validator {
 	// You cannot create a task with an empty title.
 	String title = task.getTitle();
 	if (StringUtils.isBlank(title)) {
-	    this.validationHelper.rejectInvalid(errors, "title");
+	    this.validationHelper.rejectInvalidProperty(errors, "title");
 	}
 
 	// Task duration must be greater than zero.

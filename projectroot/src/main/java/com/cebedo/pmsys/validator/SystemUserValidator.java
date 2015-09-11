@@ -1,24 +1,16 @@
 package com.cebedo.pmsys.validator;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.SystemUser;
 
 @Component
 public class SystemUserValidator implements Validator {
 
-    private static final String PATTERN_USERNAME = "^[a-z0-9_-]{4,32}$";
-    private static final String PATTERN_PASSWORD = "^(?=.*\\d).{8,16}$";
-
-    private final Pattern patternUsername = Pattern.compile(PATTERN_USERNAME);
-    private final Pattern patternPassword = Pattern.compile(PATTERN_PASSWORD);
-    private Matcher matcher;
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -34,26 +26,37 @@ public class SystemUserValidator implements Validator {
 	String password = systemUser.getPassword();
 	String passwordRe = systemUser.getRetypePassword();
 
+	// Required fields.
+	if (this.validationHelper.stringIsBlank(username)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "username");
+	}
+
+	if (this.validationHelper.stringIsBlank(password)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "password");
+	}
+
+	if (this.validationHelper.stringIsBlank(passwordRe)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "re-type password");
+	}
+
 	// If the username and password are the same.
 	if (username.equals(password)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_AUTH_USERNAME_PASSWORD_EQUAL);
+	    this.validationHelper.rejectEqualStrings(errors, "username", "password");
 	}
 
 	// If the password and re-type password are not the same.
 	if (!password.equals(passwordRe)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_AUTH_PASSWORDS_NOT_EQUAL);
+	    this.validationHelper.rejectNotEqualStrings(errors, "password", "re-type password");
 	}
 
 	// Check if the user name is valid.
-	this.matcher = this.patternUsername.matcher(username);
-	if (!this.matcher.matches()) {
-	    errors.reject("", RegistryResponseMessage.ERROR_AUTH_USERNAME_INVALID_PATTERN);
+	if (!this.validationHelper.stringUsernameIsValid(username)) {
+	    this.validationHelper.rejectUsername(errors);
 	}
 
 	// Check if the password is valid.
-	this.matcher = this.patternPassword.matcher(password);
-	if (!this.matcher.matches()) {
-	    errors.reject("", RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
+	if (!this.validationHelper.stringPasswordIsValid(password)) {
+	    this.validationHelper.rejectPassword(errors);
 	}
     }
 }

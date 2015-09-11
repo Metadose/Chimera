@@ -90,7 +90,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Service layer form validation.
-	boolean valid = this.validationHelper.checkFile(multipartFile);
+	boolean valid = this.validationHelper.fileIsNullOrEmpty(multipartFile);
 	if (!valid) {
 	    return null;
 	}

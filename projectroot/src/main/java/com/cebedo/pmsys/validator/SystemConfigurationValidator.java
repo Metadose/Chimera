@@ -24,15 +24,15 @@ public class SystemConfigurationValidator implements Validator {
 	String name = systemConfiguration.getName();
 	String value = systemConfiguration.getValue();
 
-	if (!this.validationHelper.checkLength(name, 32)) {
-	    this.validationHelper.rejectLength(errors, "name", 32);
+	if (!this.validationHelper.stringLengthIsLessThanMax(name, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "name", 32);
 	}
-	if (!this.validationHelper.checkLength(value, 255)) {
-	    this.validationHelper.rejectLength(errors, "value", 255);
+	if (!this.validationHelper.stringLengthIsLessThanMax(value, 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "value", 255);
 	}
 	// You cannot create a configuration with an empty name.
-	if (this.validationHelper.checkBlank(name)) {
-	    this.validationHelper.rejectInvalid(errors, "name");
+	if (this.validationHelper.stringIsBlank(name)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
 	}
     }
 

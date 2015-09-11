@@ -23,65 +23,65 @@ public class StaffValidator implements Validator {
 
 	// Prefix = 8
 	String pfx = staff.getPrefix();
-	if (!this.validationHelper.checkLength(pfx, 8)) {
-	    this.validationHelper.rejectLength(errors, "prefix", 8);
+	if (!this.validationHelper.stringLengthIsLessThanMax(pfx, 8)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "prefix", 8);
 	}
 
 	// First = 32
 	String first = staff.getFirstName();
-	if (!this.validationHelper.checkLength(first, 32)) {
-	    this.validationHelper.rejectLength(errors, "first name", 32);
+	if (!this.validationHelper.stringLengthIsLessThanMax(first, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "first name", 32);
 	}
 
 	// Middle = 16
 	String middle = staff.getMiddleName();
-	if (!this.validationHelper.checkLength(middle, 16)) {
-	    this.validationHelper.rejectLength(errors, "middle name", 16);
+	if (!this.validationHelper.stringLengthIsLessThanMax(middle, 16)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "middle name", 16);
 	}
 
 	// Last = 16
 	String last = staff.getLastName();
-	if (!this.validationHelper.checkLength(last, 16)) {
-	    this.validationHelper.rejectLength(errors, "last name", 16);
+	if (!this.validationHelper.stringLengthIsLessThanMax(last, 16)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "last name", 16);
 	}
 
 	// Suffix = 8
 	String sfx = staff.getSuffix();
-	if (!this.validationHelper.checkLength(sfx, 8)) {
-	    this.validationHelper.rejectLength(errors, "suffix", 8);
+	if (!this.validationHelper.stringLengthIsLessThanMax(sfx, 8)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "suffix", 8);
 	}
 
 	// Company Position = 32
 	String position = staff.getCompanyPosition();
-	if (!this.validationHelper.checkLength(position, 32)) {
-	    this.validationHelper.rejectLength(errors, "company position", 32);
+	if (!this.validationHelper.stringLengthIsLessThanMax(position, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "company position", 32);
 	}
 
 	// Salary (Daily) = not <0
 	double wage = staff.getWage();
 	if (!this.validationHelper.numberIsZeroOrPositive(wage)) {
-	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
+	    this.validationHelper.rejectNegativeNumber(errors, "wage");
 	}
 
 	// E-Mail = 32
 	String email = staff.getEmail();
-	if (!this.validationHelper.checkLength(email, 32)) {
-	    this.validationHelper.rejectLength(errors, "email", 32);
+	if (!this.validationHelper.stringLengthIsLessThanMax(email, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "email", 32);
 	}
 
 	// E-Mail pattern
-	if (!this.validationHelper.checkEmail(email)) {
-	    this.validationHelper.rejectInvalid(errors, "e-mail address");
+	if (!this.validationHelper.stringEmailIsValid(email)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "e-mail address");
 	}
 
 	// Contact Number = 32
 	String nmber = staff.getContactNumber();
-	if (!this.validationHelper.checkLength(nmber, 32)) {
-	    this.validationHelper.rejectLength(errors, "contact number", 32);
+	if (!this.validationHelper.stringLengthIsLessThanMax(nmber, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "contact number", 32);
 	}
 
 	if (!staff.isNameSet()) {
-	    this.validationHelper.rejectInvalid(errors, "name");
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
 	}
     }
 

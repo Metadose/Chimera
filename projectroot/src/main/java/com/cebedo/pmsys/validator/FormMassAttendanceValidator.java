@@ -28,10 +28,10 @@ public class FormMassAttendanceValidator implements Validator {
 
 	// If start date is > end date, error.
 	if (endDate.before(startDate)) {
-	    this.validationHelper.rejectDateRange(errors, "start date", "end date");
+	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "end date");
 	}
 	if (this.validationHelper.numberIsZeroOrPositive(wage)) {
-	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
+	    this.validationHelper.rejectNegativeNumber(errors, "wage");
 	}
     }
 

@@ -22,7 +22,7 @@ public class AttendanceValidator implements Validator {
 	Attendance targetObj = (Attendance) target;
 	double wage = targetObj.getWage(); // < Zero
 	if (this.validationHelper.numberIsZeroOrPositive(wage)) {
-	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
+	    this.validationHelper.rejectNegativeNumber(errors, "wage");
 	}
     }
 

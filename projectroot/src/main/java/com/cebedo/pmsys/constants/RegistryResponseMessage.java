@@ -28,13 +28,13 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_AUTH_PASSWORD_INVALID_PATTERN = "Password must be between <b>8 and 16 digits long</b> and includes <b>at least one numeric digit</b>.";
 
-    public static final String ERROR_AUTH_PASSWORDS_NOT_EQUAL = "The <b>passwords</b> you entered were <b>not the same</b>.";
-
-    public static final String ERROR_AUTH_USERNAME_PASSWORD_EQUAL = "<b>Username and password</b> must <b>not be the same</b>.";
-
     public static final String ERROR_AUTH_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";
 
     // Commons.
+    public static final String ERROR_COMMON_NOT_EQUAL_STRINGS = "<b>%s and %s</b> must <b>not be the same</b>.";
+
+    public static final String ERROR_COMMON_EQUAL_STRINGS = "<b>%s and %s</b> must be <b>the same</b>.";
+
     public static final String ERROR_COMMON_INVALID_QUANTITY = "Quantity must be <b>greater than zero</b>.";
 
     public static final String ERROR_COMMON_INVALID_DATE_TIME = "Please provide a <b>valid date and time</b>.";
