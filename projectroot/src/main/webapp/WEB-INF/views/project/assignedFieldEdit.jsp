@@ -71,10 +71,18 @@
 					                                        </div>
 					                                    </form:form>
                                             			<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-	                                            		<c:url var="urlDeleteField" value="/project/field/delete" />
-	                                            		<a href="${urlDeleteField}">
-															<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-														</a>
+
+														<div class="btn-group">
+														<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+														<ul class="dropdown-menu">
+															<li>
+																<c:url var="urlDeleteField" value="/project/field/delete" />
+	                                            				<a href="${urlDeleteField}" class="cebedo-dropdown-hover">
+														    		Confirm Delete
+														    	</a>
+															</li>
+														</ul>
+														</div>
 													</div>	
 												</div>
 											</div>
