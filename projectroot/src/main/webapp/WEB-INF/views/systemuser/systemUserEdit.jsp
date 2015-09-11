@@ -35,29 +35,6 @@
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<!--  -->
 
-	<!-- Modal -->
-	<div id="deleteModal" class="modal fade" role="dialog">
-		<!-- Modal content-->
-		<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Confirmation</h4>
-			</div>
-			<div class="modal-body">
-				<p>Do you really want to delete this user?</p>
-			</div>
-			<div class="modal-footer">
-				<c:url value="/systemuser/delete/${systemuser.id}" var="urlDeleteUser"/>
-        		<a href="${urlDeleteUser}">
-					<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				</a>
-				<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-		</div>
-	</div>
-
 		<aside class="right-side">
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
@@ -135,7 +112,18 @@
 
 		                                            	<c:when test="${systemuser.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Update</button>
-															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
+															                                        
+											                <div class="btn-group">
+											                <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+											                <ul class="dropdown-menu">
+											                    <li>
+											                        <c:url value="/systemuser/delete/${systemuser.id}" var="urlDeleteUser"/>
+											        				<a href="${urlDeleteUser}" class="cebedo-dropdown-hover">
+											                            Confirm Delete
+											                        </a>
+											                    </li>
+											                </ul>
+											                </div>
 		                                            	</c:when>
 		                                            </c:choose>
 

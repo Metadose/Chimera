@@ -55,10 +55,6 @@
 	                                								<a href="${urlEditProject}">
 																		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 	                                								</a>
-																	<c:url var="urlDeleteProject" value="/project/delete/${project.id}"/>
-	                                								<a href="${urlDeleteProject}">
-																		<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-	                                								</a>
 																</center>
 															</td>
 															<td>

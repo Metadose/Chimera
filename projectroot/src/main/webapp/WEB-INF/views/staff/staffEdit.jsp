@@ -159,9 +159,17 @@
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-		                                            		<a href="<c:url value="/staff/delete/${staff.id}"/>">
-																<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-		                                            		</a>
+
+															<div class="btn-group">
+															<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+															<ul class="dropdown-menu">
+																<li>
+															    	<a href="<c:url value="/staff/delete/${staff.id}"/>" class="cebedo-dropdown-hover">
+															    		Confirm Delete
+															    	</a>
+																</li>
+															</ul>
+															</div>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>

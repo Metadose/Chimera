@@ -66,10 +66,19 @@
 																					<a href="${urlEditStaff}">
 																						<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																					</a>
-																					<c:url var="urlDeleteStaff" value="/staff/delete/${staff.id}"/>
-																					<a href="${urlDeleteStaff}">
-																						<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-																					</a>
+
+																					<div class="btn-group">
+																					<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+																					<ul class="dropdown-menu">
+																						<li>
+																					    	<c:url var="urlDeleteStaff" value="/staff/delete/${staff.id}"/>
+																							<a href="${urlDeleteStaff}" class="cebedo-dropdown-hover">
+																					    		Confirm Delete
+																					    	</a>
+																						</li>
+																					</ul>
+																					</div>
+
 																				</center>
 																			</td>
 							                                                <td>${staff.getFullName()}</td>

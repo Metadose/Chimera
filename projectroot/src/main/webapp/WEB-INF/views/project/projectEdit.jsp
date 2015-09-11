@@ -57,18 +57,28 @@
 		<!-- Modal content-->
 		<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
+			<div class="modal-header bg-red">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Confirmation</h4>
+				<h4 class="modal-title">Warning!</h4>
 			</div>
 			<div class="modal-body">
-				<p>Do you really want to delete this project?</p>
+				<p><b>All data</b> stored in this project will <b>NOT be recoverable</b>.<br/>
+					Please <b>backup</b> all your data first before deleting.</p>
 			</div>
 			<div class="modal-footer">
-	            <c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
-				<a href="${urlProjectDelete}">
-				<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-				</a>
+
+				<div class="btn-group">
+				<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+				<ul class="dropdown-menu">
+					<li>
+				    	<c:url var="urlProjectDelete" value="/project/delete/${project.id}"/>
+						<a href="${urlProjectDelete}" class="cebedo-dropdown-hover">
+				    		Confirm Delete
+				    	</a>
+					</li>
+				</ul>
+				</div>
+
 				<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
 			</div>
 		</div>

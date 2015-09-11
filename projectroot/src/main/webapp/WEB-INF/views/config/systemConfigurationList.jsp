@@ -49,9 +49,16 @@
 																<a href="<c:url value="/config/edit/${systemConfiguration.id}"/>">
 																	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																</a>
-																<a href="<c:url value="/config/delete/${systemConfiguration.id}"/>">
-																	<button class="btn btn-cebedo-delete btn-flat btn-sm">Delete</button>
-																</a>
+                                                                <div class="btn-group">
+                                                                <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li>
+                                                                        <a href="<c:url value="/config/delete/${systemConfiguration.id}"/>" class="cebedo-dropdown-hover">
+                                                                            Confirm Delete
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                                </div>
 															</center>
 														</td>
 		                                                <td>${systemConfiguration.name}</td>
