@@ -7,10 +7,13 @@ import org.springframework.validation.Validator;
 
 import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.SystemConfiguration;
 
 @Component
 public class SystemConfigurationValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -20,8 +23,18 @@ public class SystemConfigurationValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 	SystemConfiguration systemConfiguration = (SystemConfiguration) target;
+
+	String name = systemConfiguration.getName();
+	String value = systemConfiguration.getValue();
+
+	if (!this.validationHelper.checkLength(name, 32)) {
+	    this.validationHelper.rejectLength(errors, "name", 32);
+	}
+	if (!this.validationHelper.checkLength(value, 255)) {
+	    this.validationHelper.rejectLength(errors, "value", 255);
+	}
 	// You cannot create a configuration with an empty name.
-	if (StringUtils.isBlank(systemConfiguration.getName())) {
+	if (StringUtils.isBlank(name)) {
 	    errors.reject(RegistryErrorCodes.CONFIG_NAME,
 		    RegistryResponseMessage.ERROR_CONFIG_EMPTY_NAME);
 	}

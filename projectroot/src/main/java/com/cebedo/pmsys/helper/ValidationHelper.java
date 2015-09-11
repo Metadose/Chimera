@@ -3,9 +3,11 @@ package com.cebedo.pmsys.helper;
 import java.util.List;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -72,5 +74,17 @@ public class ValidationHelper {
 	    errorsStr += alertBox.generateHTML(error.getDefaultMessage());
 	}
 	return errorsStr;
+    }
+
+    public boolean checkLength(String property, int max) {
+	if (property.length() > max) {
+	    return false;
+	}
+	return true;
+    }
+
+    public void rejectLength(Errors errors, String propertyName, int len) {
+	errors.reject(RegistryErrorCodes.CONFIG_NAME,
+		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, len));
     }
 }

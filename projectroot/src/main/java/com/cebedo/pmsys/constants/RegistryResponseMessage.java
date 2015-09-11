@@ -55,11 +55,15 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted or invalid</b>.";
 
+    public static final String ERROR_COMMON_MAX_LENGTH = "Maximum length of <b>%s</b> is <b>%s</b> characters.";
+
     // Company.
     public static final String ERROR_COMPANY_EXPIRE_DATE_LT_NOW = "The <b>expiration date</b> must be <b>after the current date</b>.";
 
+    // Configuration.
     public static final String ERROR_CONFIG_EMPTY_NAME = "You <b>cannot</b> create a configuration with an <b>empty name</b>.";
 
+    // Task.
     public static final String ERROR_TASK_EMPTY_TITLE = "You <b>cannot</b> create a task with an <b>empty title</b>.";
 
     public static final String ERROR_TASK_DURATION_LTE_ZERO = "Task <b>duration</b> must be <b>greater than zero</b>.";

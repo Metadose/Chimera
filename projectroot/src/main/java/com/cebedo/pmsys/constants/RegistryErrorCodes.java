@@ -36,6 +36,8 @@ public class RegistryErrorCodes {
 
     public static final String CONFIG_NAME = "invalid.config.name";
 
+    public static final String CONFIG_VALUE = "invalid.config.value";
+
     public static final String AUTH_USER_PASS_EQUAL = "invalid.auth.user.pass.equal";
 
     public static final String AUTH_PASSWORDS = "invalid.auth.passwords";
