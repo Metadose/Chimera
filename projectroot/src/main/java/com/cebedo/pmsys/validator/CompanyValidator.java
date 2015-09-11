@@ -2,12 +2,10 @@ package com.cebedo.pmsys.validator;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 
@@ -23,11 +21,11 @@ public class CompanyValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+
 	Company targetObj = (Company) target;
 	Date now = new Date(System.currentTimeMillis());
 	Date expire = targetObj.getDateExpiration();
 	Date start = targetObj.getDateStarted();
-
 	String name = targetObj.getName();
 	String description = targetObj.getDescription();
 
@@ -39,16 +37,16 @@ public class CompanyValidator implements Validator {
 	}
 
 	// Invalid name.
-	if (StringUtils.isBlank(targetObj.getName())) {
+	if (this.validationHelper.checkBlank(name)) {
 	    this.validationHelper.rejectInvalid(errors, "name");
 	}
 	// Expiration is before now.
 	if (expire.before(now)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMPANY_EXPIRE_DATE_LT_NOW);
+	    this.validationHelper.rejectDateRange(errors, "current date", "expiration date");
 	}
 	// Expiration is before start.
 	if (expire.before(start)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
+	    this.validationHelper.rejectDateRange(errors, "start date", "expiration date");
 	}
     }
 

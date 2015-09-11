@@ -6,10 +6,13 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Task;
 
 @Component
 public class TaskValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -22,11 +25,11 @@ public class TaskValidator implements Validator {
 	// You cannot create a task with an empty title.
 	String title = task.getTitle();
 	if (StringUtils.isBlank(title)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_TASK_EMPTY_TITLE);
+	    this.validationHelper.rejectInvalid(errors, "title");
 	}
 
 	// Task duration must be greater than zero.
-	if (task.getDuration() <= 0) {
+	if (!this.validationHelper.numberIsPositive(task.getDuration())) {
 	    errors.reject("", RegistryResponseMessage.ERROR_TASK_DURATION_LTE_ZERO);
 	}
     }

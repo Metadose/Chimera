@@ -59,7 +59,7 @@ public class StaffValidator implements Validator {
 
 	// Salary (Daily) = not <0
 	double wage = staff.getWage();
-	if (!this.validationHelper.zeroOrPositive(wage)) {
+	if (!this.validationHelper.numberIsZeroOrPositive(wage)) {
 	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
 	}
 

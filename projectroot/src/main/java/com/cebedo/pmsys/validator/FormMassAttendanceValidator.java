@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.pojo.FormMassAttendance;
 
@@ -28,10 +27,10 @@ public class FormMassAttendanceValidator implements Validator {
 	double wage = targetObj.getWage(); // < Zero
 
 	// If start date is > end date, error.
-	if (startDate.after(endDate)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
+	if (endDate.before(startDate)) {
+	    this.validationHelper.rejectDateRange(errors, "start date", "end date");
 	}
-	if (this.validationHelper.zeroOrPositive(wage)) {
+	if (this.validationHelper.numberIsZeroOrPositive(wage)) {
 	    this.validationHelper.rejectZeroOrPositive(errors, "wage");
 	}
     }

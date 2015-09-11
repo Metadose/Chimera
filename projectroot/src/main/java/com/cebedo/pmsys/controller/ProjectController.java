@@ -1051,7 +1051,9 @@ public class ProjectController {
 	// AlertBoxGenerator here is ok, no service function was called.
 	if (min.after(max)) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE));
+		    .generateHTML(String.format(
+			    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE, "start date",
+			    "end date")));
 	    return redirectEditPageStaff(staff.getId());
 	}
 

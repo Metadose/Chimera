@@ -32,9 +32,11 @@ public class ValidationHelper {
     public String validate(ProjectPayroll projectPayroll, AuditAction action) {
 
 	// Start date > end date.
-	if (projectPayroll.getStartDate().after(projectPayroll.getEndDate())) {
+	if (projectPayroll.getEndDate().before(projectPayroll.getStartDate())) {
 	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
+		    .generateHTML(String.format(
+			    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE, "start date",
+			    "end date"));
 	}
 
 	// No staff is checked.
@@ -55,7 +57,7 @@ public class ValidationHelper {
      * @param multipartFile
      * @return
      */
-    public boolean check(MultipartFile multipartFile) {
+    public boolean checkFile(MultipartFile multipartFile) {
 	// TODO multipartFile.getOriginalFilename();
 	// Check allowed file extensions.
 	if (multipartFile == null || multipartFile.isEmpty()) {
@@ -94,7 +96,7 @@ public class ValidationHelper {
 		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, len));
     }
 
-    public boolean zeroOrPositive(double number) {
+    public boolean numberIsZeroOrPositive(double number) {
 	if (number < 0) {
 	    return false;
 	}
@@ -120,5 +122,24 @@ public class ValidationHelper {
 	// Please provide a valid %s.
 	errors.reject("",
 		String.format(RegistryResponseMessage.ERROR_COMMON_INVALID_PROPERTY, propertyName));
+    }
+
+    public boolean numberIsPositive(double nmber) {
+	if (nmber > 0) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean checkBlank(String str) {
+	if (org.apache.commons.lang.StringUtils.isBlank(str)) {
+	    return true;
+	}
+	return false;
+    }
+
+    public void rejectDateRange(Errors errors, String string, String string2) {
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
+		string, string2));
     }
 }

@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -53,14 +51,6 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyValidator.validate(company, result);
 	if (result.hasErrors()) {
 	    return this.validationHelper.errorMessageHTML(result);
-	}
-
-	// If start > end.
-	Date start = company.getDateStarted();
-	Date end = company.getDateExpiration();
-	if (start.after(end)) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
 
 	this.companyDAO.create(company);
@@ -110,14 +100,6 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyValidator.validate(company, result);
 	if (result.hasErrors()) {
 	    return this.validationHelper.errorMessageHTML(result);
-	}
-
-	// If start > end.
-	Date start = company.getDateStarted();
-	Date end = company.getDateExpiration();
-	if (start.after(end)) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_START_DATE_GT_END_DATE);
 	}
 
 	// Create post-service operations.

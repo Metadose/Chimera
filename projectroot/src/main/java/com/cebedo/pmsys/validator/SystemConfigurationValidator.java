@@ -1,11 +1,9 @@
 package com.cebedo.pmsys.validator;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.SystemConfiguration;
 
@@ -33,8 +31,8 @@ public class SystemConfigurationValidator implements Validator {
 	    this.validationHelper.rejectLength(errors, "value", 255);
 	}
 	// You cannot create a configuration with an empty name.
-	if (StringUtils.isBlank(name)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_CONFIG_EMPTY_NAME);
+	if (this.validationHelper.checkBlank(name)) {
+	    this.validationHelper.rejectInvalid(errors, "name");
 	}
     }
 
