@@ -7,7 +7,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.constants.RegistryErrorCodes;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -84,7 +83,20 @@ public class ValidationHelper {
     }
 
     public void rejectLength(Errors errors, String propertyName, int len) {
-	errors.reject(RegistryErrorCodes.CONFIG_NAME,
+	errors.reject("",
 		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, len));
+    }
+
+    public boolean zeroOrPositive(double number) {
+	if (number < 0) {
+	    return false;
+	}
+	return true;
+    }
+
+    public void rejectZeroOrPositive(Errors errors, String string) {
+	// errors.reject("",
+	// String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH,
+	// propertyName, len));
     }
 }
