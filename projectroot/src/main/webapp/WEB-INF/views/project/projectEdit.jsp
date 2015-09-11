@@ -1594,7 +1594,7 @@
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
 						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
-						                                                	<td><fmt:formatNumber type="number" pattern="###" value="${assignedStaffMember.contactNumber}" /></td>
+						                                                	<td>${assignedStaffMember.getContactNumberAsString()}</td>
 							                                            </tr>
 						                                            </c:forEach>
 					                                        		</c:if>
@@ -1671,7 +1671,7 @@
 						                                    			<td>${staff.companyPosition}</td>
 					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
 					                                                	<td>${staff.email}</td>
-					                                                	<td><fmt:formatNumber type="number" pattern="###" value="${staff.contactNumber}" /></td>
+					                                                	<td>${staff.getContactNumberAsString()}</td>
 						                                    			</tr>
 						                                    		</c:forEach>
 				                                    			</tbody>

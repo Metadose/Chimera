@@ -8,8 +8,7 @@ import java.util.Locale;
 public class NumberFormatUtils {
 
     public static String commaSeparate(double number) {
-	return NumberFormat.getNumberInstance(Locale.US).format(number)
-		.replaceAll(",", ", ");
+	return NumberFormat.getNumberInstance(Locale.US).format(number).replaceAll(",", ", ");
     }
 
     public static String getFormattedCeilingQuantity(double dblVal) {

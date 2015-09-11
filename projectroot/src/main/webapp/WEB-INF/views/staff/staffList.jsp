@@ -90,7 +90,7 @@
 							                                                <td>${staff.companyPosition}</td>
 							                                                <td style="text-align: right;">${staff.getWageAsString()}</td>
 							                                                <td>${staff.email}</td>
-							                                                <td><fmt:formatNumber type="number" pattern="###" value="${staff.contactNumber}" /></td>
+							                                                <td>${staff.getContactNumberAsString()}</td>
 							                                            </tr>
 						                                            </c:forEach>
 					                                            </c:if>
