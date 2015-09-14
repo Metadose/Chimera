@@ -49,7 +49,7 @@ public class Project implements Serializable {
 
     private long id;
     private String name;
-    private int status;
+    private int status = ProjectStatus.NEW.id();
     private Set<FieldAssignment> assignedFields;
     private Set<Staff> assignedStaff;
     private String location;

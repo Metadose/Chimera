@@ -51,7 +51,7 @@ public class Task implements Serializable {
     private double actualDuration;
     private Project project;
     private Set<Staff> staff;
-    private int status;
+    private int status = TaskStatus.NEW.id();
     private Company company;
 
     public Task() {

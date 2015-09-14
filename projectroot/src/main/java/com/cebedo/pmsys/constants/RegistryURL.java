@@ -64,6 +64,8 @@ public class RegistryURL {
 
     public static final String MARK_TASK = "/mark/task/";
 
+    public static final String MARK = "/mark/";
+
     public static final String DELETE_TASK_ALL = "/delete/task/all";
 
     public static final String REDIRECT_EDIT_PROJECT = "redirect:/project/edit/%s";

@@ -60,4 +60,6 @@ public interface ProjectService {
 
     public String clearActualCompletionDate(Project proj);
 
+    public String mark(long projectID, int status);
+
 }

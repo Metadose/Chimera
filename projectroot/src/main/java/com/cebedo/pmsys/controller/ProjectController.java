@@ -1524,14 +1524,34 @@ public class ProjectController {
      * mark action is done via a href.
      * 
      * @param projectID
+     * @param projectID
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.MARK, method = RequestMethod.GET)
+    public String markProject(@RequestParam(Project.OBJECT_NAME) long projectID,
+	    @RequestParam("status") int status, RedirectAttributes redirectAttrs) {
+
+	// Do service, get response.
+	String response = this.projectService.mark(projectID, status);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return redirectEditPageProject(projectID);
+    }
+
+    /**
+     * Set the project task to the status specified. The method is GET since the
+     * mark action is done via a href.
+     * 
+     * @param projectID
      * @param taskID
      * @param status
      * @return
      */
     @RequestMapping(value = RegistryURL.MARK_TASK, method = RequestMethod.GET)
     public String markTask(@RequestParam(Task.COLUMN_PRIMARY_KEY) long taskID,
-	    @RequestParam(Task.COLUMN_STATUS) int status, RedirectAttributes redirectAttrs,
-	    HttpSession session) {
+	    @RequestParam(Task.COLUMN_STATUS) int status,
+	    @RequestParam(value = "editPage", required = false) boolean editPage,
+	    RedirectAttributes redirectAttrs, HttpSession session) {
 
 	// Do service, get response.
 	String response = this.taskService.mark(taskID, status);
@@ -1539,6 +1559,9 @@ public class ProjectController {
 
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
+	if (editPage) {
+	    return redirectEditPageTask(taskID);
+	}
 	return redirectEditPageProject(proj.getId());
     }
 

@@ -72,14 +72,25 @@
                    							<div class="box box-body box-default">
                    								<div class="box-body">
                    									<form:form modelAttribute="task" role="form" name="detailsForm" id="detailsForm" method="post" action="${contextPath}/project/create/task">
-				                                        <div class="form-group">
-				                                        	<label>Status</label>
-				                                            <form:select class="form-control" id="task_status" path="status">
-					                                            <c:forEach items="${taskStatusList}" var="taskStatus">
-						                                    		<form:option value="${taskStatus.id()}" label="${taskStatus.label()}"/>
-				                                            	</c:forEach>
-				                                            </form:select>
-				                                            <p class="help-block">Choose the task status</p>
+				                                        <div class="form-group">				                                        	
+
+				                                        	<c:if test="${task.id > 0}">
+																<c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
+																<span class="label ${css}">${task.getStatusEnum()}</span>
+					                                        	<label>&nbsp;</label>
+					                                            <div class="btn-group">
+						                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+						                                                Mark As&nbsp;
+						                                                <span class="caret"></span>
+						                                            </button>
+						                                            <ul class="dropdown-menu">
+						                                            	<c:forEach items="${taskStatusList}" var="taskStatus">
+						                                                	<li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}&editPage=true"/>">${taskStatus.label()}</a></li>
+						                                            	</c:forEach>
+						                                            </ul>
+						                                        </div>
+					                                            <p class="help-block">Choose the task status</p>
+				                                        	</c:if>
 
 				                                            <label>Title</label>
 				                                            <form:input type="text" class="form-control" path="title" placeholder="Sample: Site works, concrete works, setup of scaffolding"/>
@@ -103,19 +114,21 @@
 				                                            <form:input type="text" class="form-control" path="duration" placeholder="Sample: 30, 40, 50"/>
 				                                            <p class="help-block">Planned required man-days to complete the task</p>
 
-				                                            <label>Actual Start Date</label>
-					                                        <div class="input-group">
-					                                            <div class="input-group-addon">
-					                                                <i class="fa fa-calendar"></i>
-					                                            </div>
-					                                            <fmt:formatDate value="${task.actualDateStart}" var="dateString" pattern="yyyy/MM/dd" />
-					                                            <form:input type="text" class="form-control date-picker" path="actualDateStart" placeholder="Sample: 2016/06/25" value="${dateString}"/>
-					                                        </div>
-				                                            <p class="help-block">Enter the actual start date</p>
+				                                            <c:if test="${task.status == 2}">
+					                                            <label>Actual Start Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <fmt:formatDate value="${task.actualDateStart}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <form:input type="text" class="form-control date-picker" path="actualDateStart" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+						                                        </div>
+					                                            <p class="help-block">Enter the actual start date</p>
 
-					                                        <label>Actual Duration (Man Days)</label>
-				                                            <form:input type="text" class="form-control" path="actualDuration" placeholder="Sample: 30, 40, 50"/>
-				                                            <p class="help-block">Actual man-days to complete the task</p>
+						                                        <label>Actual Duration (Man Days)</label>
+					                                            <form:input type="text" class="form-control" path="actualDuration" placeholder="Sample: 30, 40, 50"/>
+					                                            <p class="help-block">Actual man-days to complete the task</p>
+				                                            </c:if>
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>

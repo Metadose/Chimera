@@ -150,18 +150,31 @@
                   											modelAttribute="project"
                   											method="post"
                   											action="${contextPath}/project/create">
-				                                            
+
+                  											<c:if test="${project.id > 0}">
+
+																<c:set value="${project.getStatusEnum().css()}" var="css"></c:set>
+																<span class="label ${css}">${project.getStatusEnum()}</span>
+
+					                                        	<label>&nbsp;</label>
+					                                            <div class="btn-group">
+						                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Mark As&nbsp;<span class="caret"></span></button>
+						                                            <ul class="dropdown-menu">
+						                                            	<c:forEach var="projectStatus" items="${projectStatusList}">
+								                                    		<li>
+								                                    			<a href="<c:url value="/project/mark/?project=${project.id}&status=${projectStatus.id()}"/>">
+								                                    				${projectStatus.label()}
+								                                    			</a>
+								                                    		</li>
+						                                            	</c:forEach>
+						                                            </ul>
+						                                        </div>
+					                                            <p class="help-block">Choose the status of this project</p>
+				                                        	</c:if>
+
 				                                            <label>Name</label>
 				                                            <form:input type="text" placeholder="Sample: Mr. Brown Building" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the name of the project</p>
-				                                            
-				                                            <label>Status</label>
-				                                            <form:select class="form-control" id="project_status" path="status">
-				                                            	<c:forEach var="projectStatus" items="${projectStatusList}">
-						                                    		<form:option value="${projectStatus.id()}" label="${projectStatus.label()}"/>
-				                                            	</c:forEach>
-				                                            </form:select>
-				                                            <p class="help-block">Choose the status of this project</p>
 
 				                                            <label>Physical Target</label>
 				                                            <form:input type="text" placeholder="Sample: 10000, 20000, 3500" class="form-control" path="physicalTarget"/>
@@ -186,6 +199,21 @@
 						                                            <form:input type="text" class="form-control date-picker" path="targetCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
 						                                        </div>
 					                                            <p class="help-block">Enter the project target completion date</p>
+
+					                                        <c:if test="${project.status == 2}"> <!-- If completed -->
+					                                        	<!-- Update form Input -->
+					                                            <label>Actual Completion Date</label>
+																		<c:url var="clearActualCompletion" value="/project/clear/actual-completion-date"/>
+						                                            	(<a class="general-link" href="${clearActualCompletion}">Clear</a>)
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <fmt:formatDate value="${project.actualCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+						                                        </div>
+					                                            <p class="help-block">Enter the project actual completion date</p>
+						                                    </c:if>
 
 				                                            <label>Location</label>
 				                                            <form:input type="text" placeholder="Sample: 123 Brown Avenue, New York City" class="form-control" path="location"/>
@@ -228,32 +256,7 @@
                    								</c:choose>
                    								
                    								<div class="box-body">
-                   									<div class="form-group">
-
-						                                    <c:if test="${project.status == 2}"> <!-- If completed -->
-	                   											<div class="form-group">
-					                                        
-						                                        	<!-- Update form Input -->
-			                  										<form:form
-			                  											modelAttribute="project"
-			                  											method="post"
-			                  											action="${contextPath}/project/create">
-							                                            <label>Actual Completion Date</label>
-																				<c:url var="clearActualCompletion" value="/project/clear/actual-completion-date"/>
-								                                            	(<a class="general-link" href="${clearActualCompletion}">Clear</a>)
-								                                        <div class="input-group">
-								                                            <div class="input-group-addon">
-								                                                <i class="fa fa-calendar"></i>
-								                                            </div>
-								                                            <fmt:formatDate value="${project.actualCompletionDate}" var="dateString" pattern="yyyy/MM/dd" />
-								                                            <form:input type="text" class="form-control date-picker" path="actualCompletionDate" placeholder="Sample: 2016/06/25" value="${dateString}"/>
-								                                        </div>
-							                                            <p class="help-block">Enter the project actual completion date</p>
-						                                            	<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
-							                                    	</form:form>
-						                                        </div>
-						                                        <br/>
-						                                    </c:if>
+                   									<div class="form-group">						                                    
                												
                    											<c:if test="${!empty projectFields}">
    															<div class="form-group" id="fieldsDivViewer">

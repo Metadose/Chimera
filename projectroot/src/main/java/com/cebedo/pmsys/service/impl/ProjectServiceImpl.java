@@ -587,4 +587,26 @@ public class ProjectServiceImpl implements ProjectService {
 	return update(project, null);
     }
 
+    @Override
+    @Transactional
+    public String mark(long projID, int status) {
+	// Get the task.
+	Project project = this.projectDAO.getByID(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
+
+	// Do service.
+	project.setStatus(status);
+	this.projectDAO.update(project);
+
+	// Return success.
+	return AlertBoxGenerator.SUCCESS.generateMarkAs(Project.OBJECT_NAME, project.getName());
+    }
+
 }
