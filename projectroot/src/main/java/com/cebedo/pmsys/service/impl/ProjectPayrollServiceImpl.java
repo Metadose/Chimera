@@ -85,6 +85,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Override
     public HSSFWorkbook exportXLSAll(Project proj) {
 
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
 	List<ProjectPayroll> payrolls = listDesc(proj);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	for (ProjectPayroll payroll : payrolls) {

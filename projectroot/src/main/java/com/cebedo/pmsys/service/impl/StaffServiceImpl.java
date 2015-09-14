@@ -248,7 +248,7 @@ public class StaffServiceImpl implements StaffService {
 	    // If the staff already exists.
 	    // Use staff in DB instead of the one from Excel.
 	    Staff staffByName = this.staffDAO.getStaffByName(staff);
-	    if (staffByName != null) {
+	    if (staffByName != null && this.authHelper.isActionAuthorized(staffByName)) {
 		refinedStaff.add(staffByName);
 		continue;
 	    }

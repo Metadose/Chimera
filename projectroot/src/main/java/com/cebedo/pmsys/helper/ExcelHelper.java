@@ -19,6 +19,9 @@ public class ExcelHelper {
 	// Get the value of the cell.
 	FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 	CellValue cellValue = evaluator.evaluate(cell);
+	if (cellValue == null) {
+	    return null;
+	}
 
 	// Handle each case.
 	switch (cellValue.getCellType()) {

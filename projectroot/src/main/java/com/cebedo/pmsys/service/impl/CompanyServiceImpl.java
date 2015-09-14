@@ -2,8 +2,10 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -14,6 +16,7 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.CompanyValidator;
@@ -26,6 +29,13 @@ public class CompanyServiceImpl implements CompanyService {
     private ValidationHelper validationHelper = new ValidationHelper();
 
     private CompanyDAO companyDAO;
+    private ProjectAuxValueRepo projectAuxValueRepo;
+
+    @Autowired
+    @Qualifier(value = "projectAuxValueRepo")
+    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+	this.projectAuxValueRepo = projectAuxValueRepo;
+    }
 
     public void setCompanyDAO(CompanyDAO companyDAO) {
 	this.companyDAO = companyDAO;
@@ -128,6 +138,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Proceed to post-service operations.
 	this.messageHelper.send(AuditAction.ACTION_DELETE, Company.OBJECT_NAME, company.getId());
+
+	// Delete also linked redis objects.
+	// company:4:*
+	// company.fk:4:*
+	Set<String> keysSet = this.projectAuxValueRepo.keys(String.format("company:%s:*", id));
+	Set<String> keysSet2 = this.projectAuxValueRepo.keys(String.format("company.fk:%s:*", id));
+	keysSet.addAll(keysSet2);
+	this.projectAuxValueRepo.delete(keysSet);
 
 	// Do actual service.
 	// Generate response.

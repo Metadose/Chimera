@@ -1547,6 +1547,10 @@
 						                                <div class="box-body">
 											                <c:if test="${!empty project.assignedStaff}">
 
+						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
+					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+					                                        	</a>						                                  		
+
 							                                    <div class="btn-group">
 							                                    <button type="button" class="btn btn-cebedo-unassign-all btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign All</button>
 							                                    <ul class="dropdown-menu">

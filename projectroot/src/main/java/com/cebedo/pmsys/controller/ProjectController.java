@@ -963,6 +963,37 @@ public class ProjectController {
      * @param status
      * @return
      */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_ASSIGNED_STAFF }, method = RequestMethod.GET)
+    public void exportXLSAssignedStaff(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.projectService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	HSSFSheet sheet = workbook.getSheetAt(0);
+	if (sheet != null) {
+	    response.setContentType("application/vnd.ms-excel");
+	    response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		    + " Assigned Staff.xls");
+	    try {
+		workbook.write(response.getOutputStream());
+		workbook.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+    }
+
+    /**
+     * Export a payroll to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @RequestMapping(value = { RegistryURL.EXPORT_XLS_PAYROLL_ALL }, method = RequestMethod.GET)
     public void exportXLSAllPayroll(HttpServletResponse response, HttpSession session) {
 
