@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -24,6 +27,7 @@ import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
+import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -67,6 +71,13 @@ public class StaffServiceImpl implements StaffService {
 
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
+    private TaskDAO taskDAO;
+
+    @Autowired
+    @Qualifier(value = "taskDAO")
+    public void setTaskDAO(TaskDAO taskDAO) {
+	this.taskDAO = taskDAO;
+    }
 
     public void setProjectDAO(ProjectDAO projectDAO) {
 	this.projectDAO = projectDAO;
@@ -183,8 +194,14 @@ public class StaffServiceImpl implements StaffService {
 		    case EXCEL_COLUMN_CONTACT_NUMBER:
 			Object contactNumber = (Object) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
-			staff.setContactNumber(contactNumber instanceof Double ? String
-				.valueOf(contactNumber) : (String) contactNumber);
+			String cNumber = "";
+			if (contactNumber instanceof Double) {
+			    NumberFormat formatter = new DecimalFormat("###");
+			    cNumber = formatter.format(contactNumber);
+			} else {
+			    cNumber = (String) contactNumber;
+			}
+			staff.setContactNumber(cNumber);
 			continue;
 
 		    case EXCEL_COLUMN_EMAIL:
@@ -339,6 +356,17 @@ public class StaffServiceImpl implements StaffService {
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_DELETE, Staff.OBJECT_NAME, stf.getId());
 
+	// Delete all tasks assigned to this staff.
+	this.taskDAO.unassignAllTasksByStaff(id);
+
+	// Unassign this staff from all projects.
+	List<Project> projects = this.projectDAO.listWithAllCollections(stf.getCompany() == null ? null
+		: stf.getCompany().getId());
+	for (Project project : projects) {
+	    unassignStaffMember(project, id);
+	}
+
+	// Delete the object.
 	this.staffDAO.delete(id);
 
 	// Return success.

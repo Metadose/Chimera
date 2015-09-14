@@ -101,10 +101,11 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public void unassignStaffTask(long taskID, long staffID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Query query = session.createQuery("DELETE FROM " + TaskStaffAssignment.OBJECT_NAME + " WHERE "
+	String queryStr = "DELETE FROM " + TaskStaffAssignment.OBJECT_NAME + " WHERE "
 		+ TaskStaffAssignment.PROPERTY_TASK_ID + "=:" + TaskStaffAssignment.PROPERTY_TASK_ID
 		+ " AND " + TaskStaffAssignment.PROPERTY_STAFF_ID + "=:"
-		+ TaskStaffAssignment.PROPERTY_STAFF_ID);
+		+ TaskStaffAssignment.PROPERTY_STAFF_ID;
+	Query query = session.createQuery(queryStr);
 	query.setParameter(TaskStaffAssignment.PROPERTY_TASK_ID, taskID);
 	query.setParameter(TaskStaffAssignment.PROPERTY_STAFF_ID, staffID);
 	query.executeUpdate();
@@ -196,6 +197,16 @@ public class TaskDAOImpl implements TaskDAO {
 	// Null the project and update.
 	task.setProject(null);
 	session.update(task);
+    }
+
+    @Override
+    public void unassignAllTasksByStaff(long staffID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String queryStr = "DELETE FROM " + TaskStaffAssignment.OBJECT_NAME + " WHERE "
+		+ TaskStaffAssignment.PROPERTY_STAFF_ID + "=:" + TaskStaffAssignment.PROPERTY_STAFF_ID;
+	Query query = session.createQuery(queryStr);
+	query.setParameter(TaskStaffAssignment.PROPERTY_STAFF_ID, staffID);
+	query.executeUpdate();
     }
 
 }

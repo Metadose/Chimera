@@ -168,7 +168,7 @@ public class Staff implements Serializable {
 
     @Transient
     public String getContactNumberAsString() {
-	return getContactNumber() == null ? "" : (getContactNumber() + " ");
+	return getContactNumber() == null ? "" : getContactNumber();
     }
 
     public void setContactNumber(String contactNumber) {

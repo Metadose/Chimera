@@ -41,4 +41,6 @@ public interface TaskDAO {
 
     public void unassignTaskByProject(long taskID, Project project);
 
+    public void unassignAllTasksByStaff(long id);
+
 }
