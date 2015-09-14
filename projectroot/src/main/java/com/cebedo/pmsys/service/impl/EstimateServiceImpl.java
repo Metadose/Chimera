@@ -311,7 +311,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    Project proj) {
 
 	// Service layer form validation.
-	boolean valid = this.validationHelper.fileIsNullOrEmpty(multipartFile);
+	boolean valid = this.validationHelper.fileIsNotNullOrEmpty(multipartFile);
 	if (!valid) {
 	    return null;
 	}

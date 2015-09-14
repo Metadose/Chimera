@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.model.Project;
 
 @Controller
 @RequestMapping(DashboardController.REQUEST_MAPPING)
@@ -28,6 +29,10 @@ public class DashboardController {
 	String errorMsg = (String) model.asMap().get(ConstantsSystem.UI_PARAM_ALERT);
 	if (errorMsg != null && !errorMsg.isEmpty()) {
 	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, errorMsg);
+	    Project proj = (Project) session.getAttribute(Project.OBJECT_NAME);
+	    if (proj != null) {
+		return String.format(RegistryURL.REDIRECT_EDIT_PROJECT, proj.getId());
+	    }
 	}
 
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);

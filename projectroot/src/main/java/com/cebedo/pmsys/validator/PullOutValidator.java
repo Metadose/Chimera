@@ -1,15 +1,19 @@
 package com.cebedo.pmsys.validator;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.helper.ValidationHelper;
 
 @Component
 public class PullOutValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -27,26 +31,26 @@ public class PullOutValidator implements Validator {
 	// if quantity is greater than what is available.
 	double quantity = obj.getQuantity();
 	double available = material.getAvailable();
+	Date deliveryDate = obj.getDelivery().getDatetime();
+	Date pullOutDate = obj.getDatetime();
+	String remarks = obj.getRemarks();
 
 	// Error: Pullout more than the available.
 	if (quantity > available) {
-	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_PULLOUT_EXCEED);
+	    this.validationHelper.rejectInvalidNumbers(errors, "available materials",
+		    "materials to pull-out");
 	}
 	// Error: Invalid quantity value.
 	if (quantity <= 0) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_QUANTITY);
-	}
-	// Error: Invalid date time.
-	if (obj.getDatetime() == null) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_INVALID_DATE_TIME);
+	    this.validationHelper.rejectInvalidProperty(errors, "quantity");
 	}
 	// Error: Pull out date is before the delivery date.
-	if (obj.getDatetime().before(obj.getDelivery().getDatetime())) {
-	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_PULLOUT_DATE_BEFORE_DELIVERY);
+	if (pullOutDate.before(deliveryDate)) {
+	    this.validationHelper.rejectInvalidDateRange(errors, "delivery date", "pull-out date");
 	}
-	// Error: Etc.
-	if (available <= 0) {
-	    errors.reject("", RegistryResponseMessage.ERROR_COMMON_GENERIC);
+	// Remarks length = 255
+	if (this.validationHelper.stringLengthIsGreaterThanMax(remarks, 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "remarks", 255);
 	}
     }
 

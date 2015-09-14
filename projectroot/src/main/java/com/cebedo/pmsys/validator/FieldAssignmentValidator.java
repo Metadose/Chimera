@@ -1,15 +1,16 @@
 package com.cebedo.pmsys.validator;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 @Component
 public class FieldAssignmentValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -23,9 +24,21 @@ public class FieldAssignmentValidator implements Validator {
 	String label = targetObj.getLabel();
 	String value = targetObj.getValue();
 
-	if (StringUtils.isBlank(label) || StringUtils.isBlank(value)) {
-	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_EMPTY_EXTRA_INFO);
+	// Label is not blank.
+	if (this.validationHelper.stringIsBlank(label)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "label");
+	}
+	// Value is not blank.
+	if (this.validationHelper.stringIsBlank(value)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "information");
+	}
+	// Label len = 32
+	if (this.validationHelper.stringLengthIsGreaterThanMax(label, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "label", 32);
+	}
+	// Value len = 255
+	if (this.validationHelper.stringLengthIsGreaterThanMax(value, 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "information", 255);
 	}
     }
-
 }

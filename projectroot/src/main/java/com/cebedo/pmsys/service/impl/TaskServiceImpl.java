@@ -105,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Service layer form validation.
-	boolean valid = this.validationHelper.fileIsNullOrEmpty(multipartFile);
+	boolean valid = this.validationHelper.fileIsNotNullOrEmpty(multipartFile);
 	if (!valid) {
 	    return null;
 	}

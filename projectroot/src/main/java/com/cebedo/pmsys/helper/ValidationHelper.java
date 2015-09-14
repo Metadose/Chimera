@@ -17,6 +17,9 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 public class ValidationHelper {
 
+    private static final String CONTENT_TYPE_EXCEL_XLS = "application/vnd.ms-excel";
+    private static final String CONTENT_TYPE_EXCEL_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
     private static final String PATTERN_EMAIL = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
     private static final String PATTERN_USERNAME = "^[a-z0-9_-]{4,32}$";
     private static final String PATTERN_PASSWORD = "^(?=.*\\d).{8,16}$";
@@ -67,6 +70,21 @@ public class ValidationHelper {
 	// TODO multipartFile.getOriginalFilename();
 	// Check allowed file extensions.
 	if (multipartFile == null || multipartFile.isEmpty()) {
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * Multi-part file.
+     * 
+     * @param multipartFile
+     * @return
+     */
+    public boolean fileIsNotNullOrEmpty(MultipartFile multipartFile) {
+	// TODO multipartFile.getOriginalFilename();
+	// Check allowed file extensions.
+	if (multipartFile == null || multipartFile.isEmpty()) {
 	    return false;
 	}
 	return true;
@@ -97,6 +115,13 @@ public class ValidationHelper {
 	return true;
     }
 
+    public boolean stringLengthIsGreaterThanMax(String property, int max) {
+	if (property.length() > max) {
+	    return true;
+	}
+	return false;
+    }
+
     public void rejectGreaterThanMaxLength(Errors errors, String propertyName, int maxLen) {
 	errors.reject("",
 		String.format(RegistryResponseMessage.ERROR_COMMON_MAX_LENGTH, propertyName, maxLen));
@@ -115,6 +140,13 @@ public class ValidationHelper {
 	    return false;
 	}
 	return true;
+    }
+
+    public void rejectZeroOrNegativeNumber(Errors errors, String propertyName) {
+	errors.reject(
+		"",
+		String.format(RegistryResponseMessage.ERROR_COMMON_POSITIVE,
+			StringUtils.capitalize(propertyName)));
     }
 
     public void rejectNegativeNumber(Errors errors, String propertyName) {
@@ -185,5 +217,46 @@ public class ValidationHelper {
 
     public void rejectPassword(Errors errors) {
 	errors.reject("", RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
+    }
+
+    public boolean numberIsNegative(double nmber) {
+	if (nmber < 0) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean fileIsNotExcelXLS(MultipartFile file) {
+	String fileType = file.getContentType();
+	if (!fileType.equals(CONTENT_TYPE_EXCEL_XLS)) {
+	    return true;
+	}
+	return false;
+    }
+
+    public boolean fileIsExcelXLSX(MultipartFile file) {
+	String fileType = file.getContentType();
+	if (fileType.equals(CONTENT_TYPE_EXCEL_XLSX)) {
+	    return true;
+	}
+	return false;
+    }
+
+    public void rejectXLSXFile(Errors errors) {
+	errors.reject("", RegistryResponseMessage.ERROR_COMMON_CONVERT_XLSX);
+    }
+
+    public void rejectInvalidNumbers(Errors errors, String string, String string2) {
+	errors.reject(
+		"",
+		String.format(RegistryResponseMessage.ERROR_COMMON_X_GT_Y_VALUE,
+			StringUtils.capitalize(string), string2));
+    }
+
+    public boolean numberIsZeroOrNegative(double number) {
+	if (number > 0) {
+	    return false;
+	}
+	return true;
     }
 }

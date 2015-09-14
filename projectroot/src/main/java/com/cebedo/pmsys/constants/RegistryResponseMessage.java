@@ -3,10 +3,6 @@ package com.cebedo.pmsys.constants;
 public class RegistryResponseMessage {
 
     // Project.
-    public static final String ERROR_PROJECT_EMPTY_EXTRA_INFO = "You <b>cannot</b> set an <b>empty information</b>.";
-
-    public static final String ERROR_PROJECT_ESTIMATION_EMPTY_FILE = "You <b>cannot</b> upload an <b>empty file</b>.";
-
     public static final String ERROR_PROJECT_PAYROLL_NO_STAFF_CHECK = "Please <b>check</b> at least <b>one staff</b> in the <b>checklist</b>.";
 
     public static final String ERROR_PROJECT_PULLOUT_NO_PROJECT_STAFF = "You <b>cannot</b> pull-out materials if <b>no staff is assigned</b> to this project.";
@@ -31,6 +27,8 @@ public class RegistryResponseMessage {
     public static final String ERROR_AUTH_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";
 
     // Commons.
+    public static final String ERROR_COMMON_CONVERT_XLSX = "Please <b>convert</b> the <b>Excel *.xlsx</b> file to <b>Excel *.xls</b>.";
+
     public static final String ERROR_COMMON_NOT_EQUAL_STRINGS = "<b>%s and %s</b> must <b>not be the same</b>.";
 
     public static final String ERROR_COMMON_EQUAL_STRINGS = "<b>%s and %s</b> must be <b>the same</b>.";
@@ -45,11 +43,11 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_X_DATE_BEFORE_Y_DATE = "The <b>%s</b> must be <b>before the %s</b>.";
 
+    public static final String ERROR_COMMON_X_GT_Y_VALUE = "<b>%s</b> must be greater than or equal to <b>%s</b>.";
+
     public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
 
     public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b> and <b>all information is valid</b>.";
-
-    public static final String ERROR_COMMON_EMPTY_FILE = "You <b>cannot</b> upload an <b>empty file</b>.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted or invalid</b>.";
 
@@ -57,12 +55,11 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_ZERO_OR_POSITIVE = "<b>%s</b> must be <b>zero or a positive number</b>.";
 
+    public static final String ERROR_COMMON_POSITIVE = "<b>%s</b> must be <b>a positive number</b>.";
+
     // Company.
     public static final String ERROR_COMPANY_EXPIRE_DATE_LT_NOW = "The <b>expiration date</b> must be <b>after the current date</b>.";
 
     // Configuration.
     public static final String ERROR_CONFIG_EMPTY_NAME = "You <b>cannot</b> create a configuration with an <b>empty name</b>.";
-
-    // Task.
-    public static final String ERROR_TASK_DURATION_LTE_ZERO = "Task <b>duration</b> must be <b>greater than zero</b>.";
 }

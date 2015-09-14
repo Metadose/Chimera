@@ -2,12 +2,10 @@ package com.cebedo.pmsys.validator;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
@@ -25,21 +23,38 @@ public class ProjectValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 	Project project = (Project) target;
-	// Please provide a valid name.
-	String name = project.getName();
-	if (StringUtils.isBlank(name)) {
-	    this.validationHelper.rejectInvalidProperty(errors, "name");
-	}
-
 	Date start = project.getDateStart();
 	Date endTarget = project.getTargetCompletionDate();
 	Date endActual = project.getActualCompletionDate();
+	double phyTarget = project.getPhysicalTarget();
+	String name = project.getName();
 
-	// Start date must be before the completion date.
-	if (start.after(endTarget)
-		|| (project.getStatus() == ProjectStatus.COMPLETED.id() && start.after(endActual))) {
-	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE);
+	// Name must not be blank.
+	if (this.validationHelper.stringIsBlank(name)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
+	}
+	// Name max length = 32
+	if (this.validationHelper.stringLengthIsGreaterThanMax(name, 32)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "name", 32);
+	}
+	// Physical target must be zero or positive.
+	if (this.validationHelper.numberIsNegative(phyTarget)) {
+	    this.validationHelper.rejectNegativeNumber(errors, "physical target");
+	}
+	// Location max length = 108
+	if (this.validationHelper.stringLengthIsGreaterThanMax(project.getLocation(), 108)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "location", 108);
+	}
+	// Notes max length = 255
+	if (this.validationHelper.stringLengthIsGreaterThanMax(project.getNotes(), 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "notes", 255);
+	}
+
+	if (endTarget.before(start)) {
+	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "target completion date");
+	}
+	if (project.getStatus() == ProjectStatus.COMPLETED.id() && endActual.before(start)) {
+	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "actual completion date");
 	}
     }
-
 }

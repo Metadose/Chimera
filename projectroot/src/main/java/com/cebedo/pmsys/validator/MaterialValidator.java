@@ -6,9 +6,12 @@ import org.springframework.validation.Validator;
 
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Material;
+import com.cebedo.pmsys.helper.ValidationHelper;
 
 @Component
 public class MaterialValidator implements Validator {
+
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -18,8 +21,29 @@ public class MaterialValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 	Material targetObj = (Material) target;
+	String name = targetObj.getName();
 
-	// TODO Check the material object for more validations.
+	// Name must not be blank.
+	if (this.validationHelper.stringIsBlank(name)) {
+	    this.validationHelper.rejectInvalidProperty(errors, "name");
+	}
+	// Name length = 64
+	if (this.validationHelper.stringLengthIsGreaterThanMax(name, 64)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "name", 64);
+	}
+	// Quantity not negative.
+	if (this.validationHelper.numberIsNegative(targetObj.getQuantity())) {
+	    this.validationHelper.rejectNegativeNumber(errors, "quantity");
+	}
+	// Cost not negative.
+	if (this.validationHelper.numberIsNegative(targetObj.getCostPerUnitMaterial())) {
+	    this.validationHelper.rejectNegativeNumber(errors, "cost");
+	}
+	// Remarks length = 255
+	if (this.validationHelper.stringLengthIsGreaterThanMax(targetObj.getRemarks(), 255)) {
+	    this.validationHelper.rejectGreaterThanMaxLength(errors, "remarks", 255);
+	}
+
 	// Can only choose one unit of measure for each material.
 	int unitCount = 0;
 	unitCount = targetObj.getUnitLength() == null ? unitCount : unitCount + 1;
@@ -29,5 +53,4 @@ public class MaterialValidator implements Validator {
 	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
     }
-
 }
