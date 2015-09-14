@@ -83,6 +83,18 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Transactional
     @Override
+    public HSSFWorkbook exportXLSAll(Project proj) {
+
+	List<ProjectPayroll> payrolls = listDesc(proj);
+	HSSFWorkbook wb = new HSSFWorkbook();
+	for (ProjectPayroll payroll : payrolls) {
+	    constructPayrollSheet(wb, payroll, payroll.getPayrollComputationResult());
+	}
+	return wb;
+    }
+
+    @Transactional
+    @Override
     public HSSFWorkbook exportXLS(String payrollKey) {
 
 	ProjectPayroll obj = this.projectPayrollValueRepo.get(payrollKey);
@@ -93,8 +105,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
-
 	HSSFWorkbook wb = new HSSFWorkbook();
+	constructPayrollSheet(wb, obj, computeResult);
+	return wb;
+    }
+
+    /**
+     * Construct a sheet. 1 sheet = 1 payroll entry/object
+     * 
+     * @param wb
+     * @param obj
+     * @param computeResult
+     */
+    private void constructPayrollSheet(HSSFWorkbook wb, ProjectPayroll obj,
+	    PayrollResultComputation computeResult) {
 	HSSFSheet sheet = wb.createSheet("Payroll " + obj.getStartEndDisplay("yyyy-MM-dd"));
 
 	// For headers.
@@ -163,8 +187,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	    rowIndex++;
 	}
-
-	return wb;
     }
 
     @Override

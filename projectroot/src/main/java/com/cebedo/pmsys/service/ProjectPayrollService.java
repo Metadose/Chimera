@@ -13,6 +13,8 @@ import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
 
+    public HSSFWorkbook exportXLSAll(Project proj);
+
     public HSSFWorkbook exportXLS(String payrollKey);
 
     public String delete(String key);

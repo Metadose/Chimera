@@ -1164,6 +1164,11 @@
 		                                  		<a href="${urlCreateTeam}">
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
 		                                  		</a>
+		                                  		<c:if test="${!empty payrollList}">
+		                                  		<a href="<c:url value="/project/export-xls/payroll/all"/>">
+	                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+	                                        	</a>
+		                                  		</c:if>
 		                                  		<br/>
 		                                  		<br/>
 			                                    <table id="payroll-table" class="table table-bordered table-striped">
