@@ -32,6 +32,8 @@ public class RegistryURL {
 
     public static final String EXPORT_XLS_ASSIGNED_STAFF = "/export-xls/staff-members";
 
+    public static final String EXPORT_XLS_PROGRAM_OF_WORKS = "/export-xls/program-of-works";
+
     public static final String EDIT_EXPENSE = "/edit/expense/{expense}-end";
 
     public static final String EDIT_STAFF = "/edit/staff/{staff}";

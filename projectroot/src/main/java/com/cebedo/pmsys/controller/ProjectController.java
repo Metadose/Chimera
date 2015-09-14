@@ -956,7 +956,38 @@ public class ProjectController {
     }
 
     /**
-     * Export a payroll to XLS.
+     * Export program of works to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_PROGRAM_OF_WORKS }, method = RequestMethod.GET)
+    public void exportXLSProgramOfWorks(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.taskService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	HSSFSheet sheet = workbook.getSheetAt(0);
+	if (sheet != null) {
+	    response.setContentType("application/vnd.ms-excel");
+	    response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		    + " Program of Works.xls");
+	    try {
+		workbook.write(response.getOutputStream());
+		workbook.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+    }
+
+    /**
+     * Export all staff to XLS.
      * 
      * @param key
      * @param redirectAttrs
@@ -969,7 +1000,7 @@ public class ProjectController {
 	// Do service
 	// and get response.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
-	HSSFWorkbook workbook = this.projectService.exportXLS(proj.getId());
+	HSSFWorkbook workbook = this.staffService.exportXLS(proj.getId());
 
 	// Write the output to a file
 	HSSFSheet sheet = workbook.getSheetAt(0);

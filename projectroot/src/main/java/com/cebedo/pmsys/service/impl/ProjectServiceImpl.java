@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -89,56 +86,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     ProjectValidator projectValidator;
-
-    @Override
-    @Transactional
-    public HSSFWorkbook exportXLS(long projID) {
-
-	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
-	    return new HSSFWorkbook();
-	}
-	HSSFWorkbook wb = new HSSFWorkbook();
-	HSSFSheet sheet = wb.createSheet(proj.getName() + " Assigned Staff");
-
-	// For headers.
-	int rowIndex = 0;
-	HSSFRow row = sheet.createRow(rowIndex);
-	rowIndex++;
-
-	// Create a cell and put a value in it.
-	row.createCell(0).setCellValue("Prefix");
-	row.createCell(1).setCellValue("First Name");
-	row.createCell(2).setCellValue("Middle Name");
-	row.createCell(3).setCellValue("Last Name");
-	row.createCell(4).setCellValue("Suffix");
-	row.createCell(5).setCellValue("Position");
-	row.createCell(6).setCellValue("Wage (Daily)");
-	row.createCell(7).setCellValue("Contact #");
-	row.createCell(8).setCellValue("E-mail");
-
-	// Setup the table.
-	// Staff list data.
-	for (Staff staff : proj.getAssignedStaff()) {
-	    HSSFRow staffRow = sheet.createRow(rowIndex);
-
-	    staffRow.createCell(0).setCellValue(staff.getPrefix());
-	    staffRow.createCell(1).setCellValue(staff.getFirstName());
-	    staffRow.createCell(2).setCellValue(staff.getMiddleName());
-	    staffRow.createCell(3).setCellValue(staff.getLastName());
-	    staffRow.createCell(4).setCellValue(staff.getSuffix());
-	    staffRow.createCell(5).setCellValue(staff.getCompanyPosition());
-	    staffRow.createCell(6).setCellValue(staff.getWage());
-	    staffRow.createCell(7).setCellValue(staff.getContactNumber());
-	    staffRow.createCell(8).setCellValue(staff.getEmail());
-
-	    rowIndex++;
-	}
-	return wb;
-    }
 
     /**
      * Create Tasks from an Excel file.
@@ -602,6 +549,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
 
 	// Do service.
+	project.setActualCompletionDate(null);
 	project.setStatus(status);
 	this.projectDAO.update(project);
 

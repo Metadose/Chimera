@@ -3,7 +3,6 @@ package com.cebedo.pmsys.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,8 +10,6 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
-
-    public HSSFWorkbook exportXLS(long projID);
 
     /**
      * Create a new project.

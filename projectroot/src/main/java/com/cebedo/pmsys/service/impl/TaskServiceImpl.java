@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,6 +19,7 @@ import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -30,6 +32,7 @@ import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.TaskValidator;
 
 @Service
@@ -42,8 +45,10 @@ public class TaskServiceImpl implements TaskService {
 
     private static final int EXCEL_COLUMN_DATE_START = 1;
     private static final int EXCEL_COLUMN_DURATION = 2;
-    private static final int EXCEL_COLUMN_TITLE = 3;
-    private static final int EXCEL_COLUMN_CONTENT = 4;
+    private static final int EXCEL_COLUMN_ACTUAL_DATE_START = 3;
+    private static final int EXCEL_COLUMN_ACTUAL_DURATION = 4;
+    private static final int EXCEL_COLUMN_TITLE = 5;
+    private static final int EXCEL_COLUMN_CONTENT = 6;
 
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
@@ -63,6 +68,53 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskValidator taskValidator;
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLS(long projID) {
+
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet(proj.getName() + " Program of Works");
+
+	// For headers.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row.createCell(0).setCellValue("Planned Start Date");
+	row.createCell(1).setCellValue("Planned Duration");
+	row.createCell(2).setCellValue("Actual Start Date");
+	row.createCell(3).setCellValue("Actual Duration");
+	row.createCell(4).setCellValue("Title");
+	row.createCell(5).setCellValue("Content");
+
+	// Setup the table.
+	// Staff list data.
+	for (Task task : proj.getAssignedTasks()) {
+	    HSSFRow taskRow = sheet.createRow(rowIndex);
+
+	    taskRow.createCell(0).setCellValue(DateUtils.formatDate(task.getDateStart()));
+	    taskRow.createCell(1).setCellValue(task.getDuration());
+	    taskRow.createCell(2).setCellValue(DateUtils.formatDate(task.getActualDateStart()));
+	    double actualDuration = task.getActualDuration();
+	    if (actualDuration > 0) {
+		taskRow.createCell(3).setCellValue(actualDuration);
+	    }
+	    taskRow.createCell(4).setCellValue(task.getTitle());
+	    taskRow.createCell(5).setCellValue(task.getContent());
+
+	    rowIndex++;
+	}
+	return wb;
+    }
 
     @Override
     @Transactional
@@ -161,6 +213,16 @@ public class TaskServiceImpl implements TaskService {
 			task.setDuration(duration);
 			continue;
 
+		    case EXCEL_COLUMN_ACTUAL_DATE_START:
+			task.setActualDateStart(cell.getDateCellValue());
+			continue;
+
+		    case EXCEL_COLUMN_ACTUAL_DURATION:
+			duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			task.setActualDuration(duration);
+			continue;
+
 		    case EXCEL_COLUMN_TITLE:
 			String title = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
@@ -175,7 +237,9 @@ public class TaskServiceImpl implements TaskService {
 
 		    }
 		}
-
+		if (task.getActualDateStart() != null && task.getActualDuration() > 0) {
+		    task.setStatus(TaskStatus.COMPLETED.id());
+		}
 		taskList.add(task);
 	    }
 	    return taskList;
@@ -306,6 +370,8 @@ public class TaskServiceImpl implements TaskService {
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
 
 	// Do service.
+	task.setActualDateStart(null);
+	task.setActualDuration(0);
 	task.setStatus(status);
 	this.taskDAO.update(task);
 

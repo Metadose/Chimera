@@ -997,7 +997,14 @@
 						                                    		<c:if test="${!empty project.assignedTasks}">
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
-				               											<!-- Delete All button --><div class="btn-group">
+							                                    		<a href="<c:url value="/project/export-xls/program-of-works"/>">
+							                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+							                                        	</a>
+						                                    		</td>
+						                                    		<td>&nbsp;</td>
+						                                    		<td>
+				               											<!-- Delete All button -->
+				               											<div class="btn-group">
 								                                        <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete All</button>
 								                                        <ul class="dropdown-menu">
 								                                        	<li>								                                        		
@@ -1552,7 +1559,7 @@
 
 						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
 					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
-					                                        	</a>						                                  		
+					                                        	</a>
 
 							                                    <div class="btn-group">
 							                                    <button type="button" class="btn btn-cebedo-unassign-all btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign All</button>
@@ -1717,7 +1724,7 @@
 	
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
