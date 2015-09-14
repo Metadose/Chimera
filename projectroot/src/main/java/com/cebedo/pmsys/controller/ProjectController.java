@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -11,9 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -949,6 +953,37 @@ public class ProjectController {
 	// Return.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
+    }
+
+    /**
+     * Export a payroll to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_PAYROLL }, method = RequestMethod.GET)
+    public void exportXLSPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String key,
+	    HttpServletResponse response) {
+
+	// Do service
+	// and get response.
+	HSSFWorkbook workbook = this.projectPayrollService.exportXLS(key);
+
+	// Write the output to a file
+	HSSFSheet sheet = workbook.getSheetAt(0);
+	if (sheet != null) {
+	    response.setContentType("application/vnd.ms-excel");
+	    response.setHeader("Content-Disposition", "attachment; filename=" + sheet.getSheetName()
+		    + ".xls");
+	    try {
+		workbook.write(response.getOutputStream());
+		workbook.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
     }
 
     /**

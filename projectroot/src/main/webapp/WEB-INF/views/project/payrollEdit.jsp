@@ -267,6 +267,10 @@
                    						<div class="col-md-12">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+													<a href="<c:url value="/project/export-xls/payroll/${projectPayroll.getKey()}-end"/>">
+		                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export XLS</button>
+		                                        	</a>
+
                    									<div class="pull-right">
 			                                  		<h3>Grand Total <b><u>
                    									${projectPayroll.getTotalAsString()}
@@ -275,6 +279,7 @@
                    									<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/>
                    									<p class="help-block">Computation as of ${lastComputed}</p>
 													</div>
+
                    									<table id="treegrid1"></table>
                    								</div>
                 							</div>

@@ -136,6 +136,12 @@ public class ProjectPayroll implements IDomainObject {
 	return start + " to " + end;
     }
 
+    public String getStartEndDisplay(String format) {
+	String start = DateUtils.formatDate(startDate, format);
+	String end = DateUtils.formatDate(endDate, format);
+	return start + " to " + end;
+    }
+
     public Date getStartDate() {
 	return startDate;
     }

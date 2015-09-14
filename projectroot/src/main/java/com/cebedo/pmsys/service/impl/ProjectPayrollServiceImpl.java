@@ -6,21 +6,27 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -73,6 +79,92 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     public void setProjectPayrollValueRepo(ProjectPayrollValueRepo projectPayrollValueRepo) {
 	this.projectPayrollValueRepo = projectPayrollValueRepo;
+    }
+
+    @Transactional
+    @Override
+    public HSSFWorkbook exportXLS(String payrollKey) {
+
+	ProjectPayroll obj = this.projectPayrollValueRepo.get(payrollKey);
+	PayrollResultComputation computeResult = obj.getPayrollComputationResult();
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj) || computeResult == null || !obj.isSaved()) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
+	    return new HSSFWorkbook();
+	}
+
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet("Payroll " + obj.getStartEndDisplay("yyyy-MM-dd"));
+
+	// For headers.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	rowIndex++;
+	rowIndex++;
+	Date startDate = computeResult.getStartDate();
+	Date endDate = computeResult.getEndDate();
+	double overallTotal = computeResult.getOverallTotalOfStaff();
+	row.createCell(0).setCellValue("Start Date");
+	row.createCell(1).setCellValue(DateUtils.formatDate(startDate));
+	row.createCell(2).setCellValue("End Date");
+	row.createCell(3).setCellValue(DateUtils.formatDate(endDate));
+	row.createCell(4).setCellValue("Grand Total");
+	row.createCell(5).setCellValue(overallTotal);
+
+	// Create a row and put some cells in it. Rows are 0 based.
+	row = sheet.createRow(rowIndex);
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Total");
+	row.createCell(2).setCellValue("Salary (Daily)");
+	row.createCell(3).setCellValue("Present (Count)");
+	row.createCell(4).setCellValue("Present (Subtotal)");
+	row.createCell(5).setCellValue("Overtime (Count)");
+	row.createCell(6).setCellValue("Overtime (Subtotal)");
+	row.createCell(7).setCellValue("Late (Count)");
+	row.createCell(8).setCellValue("Late (Subtotal)");
+	row.createCell(9).setCellValue("Half-day (Count)");
+	row.createCell(10).setCellValue("Half-day (Subtotal)");
+	row.createCell(11).setCellValue("Leave (Count)");
+	row.createCell(12).setCellValue("Leave (Subtotal)");
+	row.createCell(13).setCellValue("Absent (Count)");
+	row.createCell(14).setCellValue("Absent (Subtotal)");
+
+	// Setup the table.
+	// Staff list data.
+	Map<Staff, Map<AttendanceStatus, PairCountValue>> breakdownMap = computeResult
+		.getStaffPayrollBreakdownMap();
+	Map<Staff, Double> wageMap = computeResult.getStaffToWageMap();
+
+	for (Staff staff : breakdownMap.keySet()) {
+	    HSSFRow staffRow = sheet.createRow(rowIndex);
+
+	    staffRow.createCell(0).setCellValue(staff.getFormalName());
+	    staffRow.createCell(1).setCellValue(wageMap.get(staff));
+	    staffRow.createCell(2).setCellValue(staff.getWage());
+
+	    Map<AttendanceStatus, PairCountValue> countValMap = breakdownMap.get(staff);
+
+	    staffRow.createCell(3).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getCount());
+	    staffRow.createCell(4).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getValue());
+	    staffRow.createCell(5).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getCount());
+	    staffRow.createCell(6).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getValue());
+	    staffRow.createCell(7).setCellValue(countValMap.get(AttendanceStatus.LATE).getCount());
+	    staffRow.createCell(8).setCellValue(countValMap.get(AttendanceStatus.LATE).getValue());
+	    staffRow.createCell(9).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getCount());
+	    staffRow.createCell(10).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getValue());
+	    staffRow.createCell(11).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getCount());
+	    staffRow.createCell(12).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getValue());
+	    staffRow.createCell(13).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getCount());
+	    staffRow.createCell(14).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getValue());
+
+	    rowIndex++;
+	}
+
+	return wb;
     }
 
     @Override

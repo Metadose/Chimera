@@ -26,6 +26,8 @@ public class RegistryURL {
 
     public static final String DELETE_EXPENSE = "/delete/expense/{expense}-end";
 
+    public static final String EXPORT_XLS_PAYROLL = "/export-xls/payroll/{payroll}-end";
+
     public static final String EDIT_EXPENSE = "/edit/expense/{expense}-end";
 
     public static final String EDIT_STAFF = "/edit/staff/{staff}";

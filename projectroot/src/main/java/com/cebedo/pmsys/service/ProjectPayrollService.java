@@ -5,11 +5,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
+
+    public HSSFWorkbook exportXLS(String payrollKey);
 
     public String delete(String key);
 

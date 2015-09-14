@@ -59,6 +59,18 @@ input[type=checkbox] {
   background-color: #3B8686;
 }
 
+/* Export buttons */
+.btn.btn-cebedo-export {
+  background-color: #E3F2CD;
+  border-color: #79BD9A;
+  color: #0B486B;
+}
+.btn.btn-cebedo-export:hover,
+.btn.btn-cebedo-export:active,
+.btn.btn-cebedo-export.hover {
+  background-color: #cbe7a3;
+}
+
 /* Create buttons */
 .btn.btn-cebedo-create {
   background-color: #E3F2CD;
