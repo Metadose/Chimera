@@ -482,6 +482,7 @@
 			                   						<div class="col-md-4">
 					                                	<div class="box box-body box-default">
 							                                <div class="box-body">
+
 							                                	<table class="table table-bordered table-striped">
 																<thead>
 						                                    		<tr>
@@ -527,11 +528,12 @@
 																</div>
 															</form:form>
 						                                  		
+							                                    <div class="form-group">
 																<form:form modelAttribute="cost"
 																	action="${contextPath}/project/create/cost"
 																	method="post"
+																	id="costForm"
 																	enctype="multipart/form-data">
-							                                        <div class="form-group">
 							                                        
 																	<label>Name</label>
 																	<form:input placeholder="Sample: Sitework, Concrete Works, Metal Works" class="form-control" path="name"/>
@@ -567,9 +569,14 @@
 																		</tr>
 																	</table>
 					                                    			
-					                                    			<button class="btn btn-cebedo-create btn-flat btn-sm">Create</button>
-							                                        </div>
 						                                        </form:form>
+					                                    		<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('costForm')">Create</button>					                                    			
+																<c:if test="${!empty directCostList || !empty indirectCostList}">
+				                   									<a href="<c:url value="/project/export-xls/costs"/>">
+						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
+						                                        	</a>
+					                                        	</c:if>
+							                                    </div>
 
 							                                </div><!-- /.box-body -->
 							                             </div>
@@ -581,6 +588,7 @@
 					                                		<div class="box-header">
 															<h3 class="box-title">Direct Costs</h3>
 															</div>
+				                                        	
 							                                <div class="box-body">
 							                                    <table class="table table-bordered table-striped is-data-table">	
 							                                    	<thead>
@@ -1227,7 +1235,7 @@
 							                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 			                                            			</a>
 
-			                                            			<a href="<c:url value="/project/export-xls/payroll/${projectPayroll.getKey()}-end"/>">
+			                                            			<a href="<c:url value="/project/export-xls/payroll/${payrollRow.getKey()}-end"/>">
 						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
 						                                        	</a>
 

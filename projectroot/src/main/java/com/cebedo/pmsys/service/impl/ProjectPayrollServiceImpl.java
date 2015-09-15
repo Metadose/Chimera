@@ -90,8 +90,14 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	List<ProjectPayroll> payrolls = listDesc(proj);
+
 	HSSFWorkbook wb = new HSSFWorkbook();
+
+	// Summary sheet.
+	constructPayrollSummary(wb, proj);
+
+	// Other sheets.
+	List<ProjectPayroll> payrolls = listDesc(proj);
 	for (ProjectPayroll payroll : payrolls) {
 	    PayrollResultComputation computeResult = payroll.getPayrollComputationResult();
 	    if (computeResult == null) {
@@ -119,6 +125,53 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return wb;
     }
 
+    private void constructPayrollSummary(HSSFWorkbook wb, Project proj) {
+
+	HSSFSheet sheet = wb.createSheet("Summary");
+	ProjectAux aux = this.projectAuxService.get(proj);
+
+	// For headers.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	row.createCell(1).setCellValue(aux.getGrandTotalPayroll());
+	rowIndex++;
+	rowIndex++;
+
+	// Create a row and put some cells in it. Rows are 0 based.
+	row = sheet.createRow(rowIndex);
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row.createCell(0).setCellValue("Start Date");
+	row.createCell(2).setCellValue("End Date");
+	row.createCell(1).setCellValue("Creator");
+	row.createCell(1).setCellValue("Status");
+	row.createCell(3).setCellValue("Payroll Total");
+	row.createCell(4).setCellValue("Last Computed");
+
+	// Setup the table.
+	List<ProjectPayroll> payrolls = listDesc(proj);
+
+	for (ProjectPayroll payroll : payrolls) {
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result == null) {
+		continue;
+	    }
+	    HSSFRow payrollRow = sheet.createRow(rowIndex);
+
+	    payrollRow.createCell(0).setCellValue(DateUtils.formatDate(payroll.getStartDate()));
+	    payrollRow.createCell(2).setCellValue(DateUtils.formatDate(payroll.getEndDate()));
+	    payrollRow.createCell(1).setCellValue(payroll.getCreator().getStaff().getFullName());
+	    payrollRow.createCell(1).setCellValue(payroll.getStatus().label());
+	    payrollRow.createCell(3).setCellValue(result.getOverallTotalOfStaff());
+	    payrollRow.createCell(4).setCellValue(
+		    DateUtils.formatDate(payroll.getLastComputed(), DateUtils.PATTERN_DATE_TIME));
+
+	    rowIndex++;
+	}
+    }
+
     /**
      * Construct a sheet. 1 sheet = 1 payroll entry/object
      * 
@@ -128,7 +181,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
      */
     private void constructPayrollSheet(HSSFWorkbook wb, ProjectPayroll obj,
 	    PayrollResultComputation computeResult) {
-	HSSFSheet sheet = wb.createSheet("Payroll " + obj.getStartEndDisplay("yyyy-MM-dd"));
+	HSSFSheet sheet = wb.createSheet(obj.getStartEndDisplay("yyyy-MM-dd"));
 
 	// For headers.
 	int rowIndex = 0;

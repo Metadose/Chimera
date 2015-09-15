@@ -1048,7 +1048,7 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = { RegistryURL.EXPORT_XLS_PAYROLL_ALL }, method = RequestMethod.GET)
-    public void exportXLSAllPayroll(HttpServletResponse response, HttpSession session) {
+    public void exportXLSPayrollAll(HttpServletResponse response, HttpSession session) {
 
 	// Do service
 	// and get response.
@@ -1063,6 +1063,38 @@ public class ProjectController {
 	response.setContentType("application/vnd.ms-excel");
 	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
 		+ " Payrolls.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Export estimated costs to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_ESTIMATED_COSTS }, method = RequestMethod.GET)
+    public void exportXLSEstimatedCosts(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.estimateCostService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Estimated Costs.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1158,7 +1190,7 @@ public class ProjectController {
 	}
 	HSSFSheet sheet = workbook.getSheetAt(0);
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + sheet.getSheetName()
+	response.setHeader("Content-Disposition", "attachment; filename=Payroll " + sheet.getSheetName()
 		+ ".xls");
 	try {
 	    workbook.write(response.getOutputStream());

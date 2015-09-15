@@ -166,9 +166,17 @@ public class ExpenseServiceImpl implements ExpenseService {
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet(proj.getName() + " Other Expenses");
 
-	// For headers.
+	// For grand total.
 	int rowIndex = 0;
 	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+	row.createCell(1).setCellValue(aux.getGrandTotalOtherExpenses());
+	rowIndex++;
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
 	rowIndex++;
 
 	// Create a cell and put a value in it.

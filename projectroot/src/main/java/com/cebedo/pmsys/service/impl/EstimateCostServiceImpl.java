@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
@@ -49,9 +51,16 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     private EstimateCostValueRepo estimateCostValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectDAO projectDAO;
 
     @Autowired
     EstimateCostValidator estimateCostValidator;
+
+    @Autowired
+    @Qualifier(value = "projectDAO")
+    public void setProjectDAO(ProjectDAO projectDAO) {
+	this.projectDAO = projectDAO;
+    }
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
@@ -63,6 +72,117 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Qualifier(value = "estimateCostValueRepo")
     public void setEstimateCostValueRepo(EstimateCostValueRepo estimateCostValueRepo) {
 	this.estimateCostValueRepo = estimateCostValueRepo;
+    }
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLS(long projID) {
+
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet(proj.getName() + " Estimated Costs");
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+
+	// For headers.
+	int rowIndex = 0;
+	double estDirect = aux.getGrandTotalCostsDirect();
+	double actDirect = aux.getGrandTotalActualCostsDirect();
+	double estIndirect = aux.getGrandTotalCostsIndirect();
+	double actIndirect = aux.getGrandTotalActualCostsIndirect();
+
+	// Direct.
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Estimated Direct");
+	row.createCell(1).setCellValue(estDirect);
+	row.createCell(2).setCellValue("Actual Direct");
+	row.createCell(3).setCellValue(actDirect);
+	row.createCell(4).setCellValue("Difference");
+	row.createCell(5).setCellValue(estDirect - actDirect);
+	rowIndex++;
+
+	// Indirect.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Estimated Indirect");
+	row.createCell(1).setCellValue(estIndirect);
+	row.createCell(2).setCellValue("Actual Indirect");
+	row.createCell(3).setCellValue(actIndirect);
+	row.createCell(4).setCellValue("Difference");
+	row.createCell(5).setCellValue(estIndirect - actIndirect);
+	rowIndex++;
+
+	// Grand total.
+	double estTotal = estDirect + estIndirect;
+	double actTotal = actDirect + actIndirect;
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Estimated Total");
+	row.createCell(1).setCellValue(estTotal);
+	row.createCell(2).setCellValue("Actual Total");
+	row.createCell(3).setCellValue(actTotal);
+	row.createCell(4).setCellValue("Difference");
+	row.createCell(5).setCellValue(estTotal - actTotal);
+	rowIndex++;
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Cost Type");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Estimated");
+	row.createCell(3).setCellValue("Actual");
+	row.createCell(4).setCellValue("Difference");
+	rowIndex++;
+
+	// Setup the table.
+	// Staff list data.
+	List<EstimateCost> costs = list(proj);
+	List<EstimateCost> indirectCosts = new ArrayList<EstimateCost>();
+
+	// Direct costs.
+	for (EstimateCost cost : costs) {
+
+	    EstimateCostType costType = cost.getCostType();
+	    if (costType == EstimateCostType.INDIRECT) {
+		indirectCosts.add(cost);
+		continue;
+	    }
+
+	    HSSFRow costRow = sheet.createRow(rowIndex);
+	    double estCost = cost.getCost();
+	    double actCost = cost.getActualCost();
+
+	    costRow.createCell(0).setCellValue(costType.getLabel());
+	    costRow.createCell(1).setCellValue(cost.getName());
+	    costRow.createCell(2).setCellValue(estCost);
+	    costRow.createCell(3).setCellValue(actCost);
+	    costRow.createCell(4).setCellValue(estCost - actCost);
+
+	    rowIndex++;
+	}
+
+	// Indirect costs.
+	rowIndex++;
+	for (EstimateCost cost : indirectCosts) {
+
+	    HSSFRow costRow = sheet.createRow(rowIndex);
+	    double estCost = cost.getCost();
+	    double actCost = cost.getActualCost();
+	    EstimateCostType costType = cost.getCostType();
+
+	    costRow.createCell(0).setCellValue(costType.getLabel());
+	    costRow.createCell(1).setCellValue(cost.getName());
+	    costRow.createCell(2).setCellValue(estCost);
+	    costRow.createCell(3).setCellValue(actCost);
+	    costRow.createCell(4).setCellValue(estCost - actCost);
+
+	    rowIndex++;
+	}
+	return wb;
     }
 
     @Override
