@@ -36,7 +36,7 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
 
-    private static final int MAX_LOGIN_ATTEMPT = 5;
+    private static final int MAX_LOGIN_ATTEMPT = 10;
 
     private SystemUserService systemUserService;
     private ServletContext servletContext;
@@ -60,7 +60,6 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	}
 	// If user does not exist.
 	catch (Exception e) {
-	    // TODO Below line fails.
 	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_NOT_EXIST);
 	    throw new BadCredentialsException(AuditAction.LOGIN_USER_NOT_EXIST.label());
 	}
@@ -69,10 +68,13 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	Staff staff = user.getStaff();
 	Object credentials = auth.getCredentials();
 
+	// If not a super admin.
 	if (!user.isSuperAdmin()) {
 
 	    // If the current date is already after the company's expiration.
-	    if (new Date(System.currentTimeMillis()).after(company.getDateExpiration())) {
+	    Date currentDatetime = new Date(System.currentTimeMillis());
+	    Date companyExpire = company.getDateExpiration();
+	    if (currentDatetime.after(companyExpire)) {
 		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_COMPANY_EXPIRED);
 		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_EXPIRED.label());
 	    }
@@ -84,22 +86,23 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	    }
 	}
 
-	// Compare passwords.
-	// Make sure to encode the password first before comparing.
-	// Add 1 to the user login attempts.
-	if (this.authHelper.isPasswordValid((String) credentials, user) == false) {
+	// If password is invalid.
+	if (!this.authHelper.isPasswordValid((String) credentials, user)) {
+	    // Make sure to encode the password first before comparing.
+	    // Add 1 to the user login attempts.
 	    user.setLoginAttempts(user.getLoginAttempts() + 1);
 	    this.systemUserService.update(user, true);
 	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_INVALID_PASSWORD);
 	    throw new BadCredentialsException(AuditAction.LOGIN_INVALID_PASSWORD.label());
 	}
 
-	// Here's the main logic of this custom authentication manager.
+	// Clear the login attempts.
 	if (user.getLoginAttempts() > 0) {
 	    user.setLoginAttempts(0);
 	    this.systemUserService.update(user, true);
 	}
 
+	// Proceed to login.
 	AuthenticationToken token = new AuthenticationToken(auth.getName(), credentials,
 		getAuthorities(user), staff, company, user.isSuperAdmin(), user.isCompanyAdmin(), user);
 	token.setIpAddress(ipAddress);

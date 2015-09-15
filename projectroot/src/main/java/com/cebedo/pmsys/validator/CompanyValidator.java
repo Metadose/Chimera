@@ -40,10 +40,11 @@ public class CompanyValidator implements Validator {
 	if (this.validationHelper.stringIsBlank(name)) {
 	    this.validationHelper.rejectInvalidProperty(errors, "name");
 	}
-	// Expiration is before now.
-	if (expire.before(now)) {
-	    this.validationHelper.rejectInvalidDateRange(errors, "current date", "expiration date");
-	}
+	// TODO Expiration is before now.
+	// if (expire.before(now)) {
+	// this.validationHelper.rejectInvalidDateRange(errors, "current date",
+	// "expiration date");
+	// }
 	// Expiration is before start.
 	if (expire.before(start)) {
 	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "expiration date");

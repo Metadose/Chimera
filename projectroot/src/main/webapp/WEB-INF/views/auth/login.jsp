@@ -7,7 +7,7 @@
 <html class="bg-black">
 <head>
 	<meta charset="UTF-8">
-	<title>PMSys | Log In</title>
+	<title>Company Name | Log In</title>
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 	<link href="${contextPath}/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath}/resources/lib/font-awesome-4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" />

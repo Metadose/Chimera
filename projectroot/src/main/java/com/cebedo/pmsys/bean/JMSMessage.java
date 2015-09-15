@@ -32,16 +32,15 @@ public class JMSMessage implements Serializable {
 	;
     }
 
-    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
-	    long objectID2) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
 	setObjectID(objectID2);
     }
 
-    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
-	    long objectID2, String assocName) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2,
+	    String assocName) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
@@ -63,8 +62,8 @@ public class JMSMessage implements Serializable {
 	setObjectKey(objectKey2);
     }
 
-    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
-	    long objectID2, String assocName, String key) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2,
+	    String assocName, String key) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
@@ -99,8 +98,8 @@ public class JMSMessage implements Serializable {
 
     public JMSMessage(String ipAddress, SystemUser user, AuditAction action) {
 	setIpAddress(ipAddress);
-	setObjectID(user.getId());
-	setObjectName(user.getUsername());
+	setObjectID(user == null ? -1 : user.getId());
+	setObjectName(user == null ? "" : user.getUsername());
 	setAuditAction(action);
     }
 
