@@ -103,7 +103,7 @@ public class StaffServiceImpl implements StaffService {
 	    return new HSSFWorkbook();
 	}
 	HSSFWorkbook wb = new HSSFWorkbook();
-	HSSFSheet sheet = wb.createSheet(proj.getName() + " Assigned Staff");
+	HSSFSheet sheet = wb.createSheet("Assigned Staff");
 
 	// For headers.
 	int rowIndex = 0;

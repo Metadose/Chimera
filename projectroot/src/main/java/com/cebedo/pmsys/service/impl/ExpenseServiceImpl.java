@@ -164,7 +164,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    return new HSSFWorkbook();
 	}
 	HSSFWorkbook wb = new HSSFWorkbook();
-	HSSFSheet sheet = wb.createSheet(proj.getName() + " Other Expenses");
+	HSSFSheet sheet = wb.createSheet("Other Expenses");
 
 	// For grand total.
 	int rowIndex = 0;

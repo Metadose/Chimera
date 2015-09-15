@@ -86,7 +86,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    return new HSSFWorkbook();
 	}
 	HSSFWorkbook wb = new HSSFWorkbook();
-	HSSFSheet sheet = wb.createSheet(proj.getName() + " Estimated Costs");
+	HSSFSheet sheet = wb.createSheet("Estimated Costs");
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
 
 	// For headers.

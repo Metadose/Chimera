@@ -81,7 +81,7 @@ public class TaskServiceImpl implements TaskService {
 	    return new HSSFWorkbook();
 	}
 	HSSFWorkbook wb = new HSSFWorkbook();
-	HSSFSheet sheet = wb.createSheet(proj.getName() + " Program of Works");
+	HSSFSheet sheet = wb.createSheet("Program of Works");
 
 	// For headers.
 	int rowIndex = 0;
