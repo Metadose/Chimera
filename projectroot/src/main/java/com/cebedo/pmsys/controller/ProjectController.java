@@ -992,17 +992,18 @@ public class ProjectController {
 	HSSFWorkbook workbook = this.taskService.exportXLS(proj.getId());
 
 	// Write the output to a file
-	HSSFSheet sheet = workbook.getSheetAt(0);
-	if (sheet != null) {
-	    response.setContentType("application/vnd.ms-excel");
-	    response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		    + " Program of Works.xls");
-	    try {
-		workbook.write(response.getOutputStream());
-		workbook.close();
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Program of Works.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 
@@ -1023,17 +1024,18 @@ public class ProjectController {
 	HSSFWorkbook workbook = this.staffService.exportXLS(proj.getId());
 
 	// Write the output to a file
-	HSSFSheet sheet = workbook.getSheetAt(0);
-	if (sheet != null) {
-	    response.setContentType("application/vnd.ms-excel");
-	    response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		    + " Assigned Staff.xls");
-	    try {
-		workbook.write(response.getOutputStream());
-		workbook.close();
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Assigned Staff.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 
@@ -1054,17 +1056,18 @@ public class ProjectController {
 	HSSFWorkbook workbook = this.projectPayrollService.exportXLSAll(proj);
 
 	// Write the output to a file
-	HSSFSheet sheet = workbook.getSheetAt(0);
-	if (sheet != null) {
-	    response.setContentType("application/vnd.ms-excel");
-	    response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		    + " Payrolls.xls");
-	    try {
-		workbook.write(response.getOutputStream());
-		workbook.close();
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Payrolls.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 
@@ -1085,17 +1088,19 @@ public class ProjectController {
 	HSSFWorkbook workbook = this.projectPayrollService.exportXLS(key);
 
 	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
 	HSSFSheet sheet = workbook.getSheetAt(0);
-	if (sheet != null) {
-	    response.setContentType("application/vnd.ms-excel");
-	    response.setHeader("Content-Disposition", "attachment; filename=" + sheet.getSheetName()
-		    + ".xls");
-	    try {
-		workbook.write(response.getOutputStream());
-		workbook.close();
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + sheet.getSheetName()
+		+ ".xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 

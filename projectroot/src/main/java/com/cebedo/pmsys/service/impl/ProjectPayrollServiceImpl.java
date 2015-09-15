@@ -93,7 +93,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	List<ProjectPayroll> payrolls = listDesc(proj);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	for (ProjectPayroll payroll : payrolls) {
-	    constructPayrollSheet(wb, payroll, payroll.getPayrollComputationResult());
+	    PayrollResultComputation computeResult = payroll.getPayrollComputationResult();
+	    if (computeResult == null) {
+		continue;
+	    }
+	    constructPayrollSheet(wb, payroll, computeResult);
 	}
 	return wb;
     }
