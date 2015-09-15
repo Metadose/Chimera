@@ -20,6 +20,6 @@ public interface EstimateCostService {
 
     public List<EstimateCost> list(Project proj);
 
-    public String set(EstimateCost cost);
+    public String set(EstimateCost cost, BindingResult result);
 
 }

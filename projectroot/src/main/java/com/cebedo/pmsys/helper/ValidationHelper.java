@@ -38,7 +38,7 @@ public class ValidationHelper {
      * @param action
      * @return
      */
-    public String validate(ProjectPayroll projectPayroll, AuditAction action) {
+    public String customValidate(ProjectPayroll projectPayroll, AuditAction action) {
 
 	// Start date > end date.
 	if (projectPayroll.getEndDate().before(projectPayroll.getStartDate())) {

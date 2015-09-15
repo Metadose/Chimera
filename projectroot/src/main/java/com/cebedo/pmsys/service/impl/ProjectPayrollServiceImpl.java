@@ -351,7 +351,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(projectPayroll, AuditAction.ACTION_CREATE);
+	String invalid = this.validationHelper.customValidate(projectPayroll, AuditAction.ACTION_CREATE);
 	if (invalid != null) {
 	    return invalid;
 	}
@@ -484,7 +484,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Service layer form validation.
-	String invalid = this.validationHelper.validate(projectPayroll, AuditAction.ACTION_UPDATE);
+	String invalid = this.validationHelper.customValidate(projectPayroll, AuditAction.ACTION_UPDATE);
 	if (invalid != null) {
 	    return invalid;
 	}

@@ -2,6 +2,8 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
+
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.model.Project;
 
@@ -13,6 +15,6 @@ public interface ExpenseService {
 
     public List<Expense> listAsc(Project proj);
 
-    public String set(Expense cost);
+    public String set(Expense cost, BindingResult result);
 
 }

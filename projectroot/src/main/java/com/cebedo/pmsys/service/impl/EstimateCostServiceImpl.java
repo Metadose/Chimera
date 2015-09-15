@@ -32,6 +32,7 @@ import com.cebedo.pmsys.repository.EstimateCostValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.EstimateCostValidator;
 
 @Service
 public class EstimateCostServiceImpl implements EstimateCostService {
@@ -48,6 +49,9 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     private EstimateCostValueRepo estimateCostValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
+
+    @Autowired
+    EstimateCostValidator estimateCostValidator;
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
@@ -72,21 +76,20 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// TODO Optimize. Maybe throw exception to fail?
-	// for (EstimateCost cost : costs) {
-	// // Service layer form validation.
-	// this.taskValidator.validate(task, result);
-	// if (result.hasErrors()) {
-	// return this.validationHelper.errorMessageHTML(result);
-	// }
-	// }
+	for (EstimateCost cost : costs) {
+	    // Service layer form validation.
+	    this.estimateCostValidator.validate(cost, result);
+	    if (result.hasErrors()) {
+		return this.validationHelper.errorMessageHTML(result);
+	    }
+	}
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
 
 	// If reaches this point, do actual service.
 	for (EstimateCost cost : costs) {
-	    set(cost);
+	    set(cost, result);
 	}
 	return null;
     }
@@ -256,10 +259,15 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     @Transactional
     @Override
-    public String set(EstimateCost obj) {
+    public String set(EstimateCost obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	this.estimateCostValidator.validate(obj, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If we're updating, revert old values first.

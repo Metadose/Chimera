@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
@@ -19,6 +21,7 @@ import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.DeliveryValueRepo;
 import com.cebedo.pmsys.repository.MaterialValueRepo;
@@ -26,12 +29,14 @@ import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.repository.PullOutValueRepo;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.DeliveryValidator;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private DeliveryValueRepo deliveryValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
@@ -54,9 +59,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.deliveryValueRepo = deliveryValueRepo;
     }
 
+    @Autowired
+    DeliveryValidator deliveryValidator;
+
     @Override
     @Transactional
-    public String set(Delivery obj) {
+    public String set(Delivery obj, BindingResult result) {
 
 	// If company is null.
 	if (obj.getCompany() == null) {
@@ -66,6 +74,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 	else if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	this.deliveryValidator.validate(obj, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If we're creating.

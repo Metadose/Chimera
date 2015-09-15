@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -20,18 +21,21 @@ import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.repository.ExpenseValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ExpenseService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.validator.ExpenseValidator;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
 
     private ExpenseValueRepo expenseValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
@@ -54,6 +58,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     public void setExpenseValueRepo(ExpenseValueRepo expenseValueRepo) {
 	this.expenseValueRepo = expenseValueRepo;
     }
+
+    @Autowired
+    ExpenseValidator expenseValidator;
 
     @Transactional
     @Override
@@ -135,10 +142,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Transactional
     @Override
-    public String set(Expense obj) {
+    public String set(Expense obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
+	}
+
+	this.expenseValidator.validate(obj, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
 	}
 
 	// If we're updating, revert old values first.

@@ -698,14 +698,17 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_DELIVERY }, method = RequestMethod.POST)
     public String createDelivery(@ModelAttribute(ConstantsRedis.OBJECT_DELIVERY) Delivery delivery,
-	    RedirectAttributes redirectAttrs) {
+	    BindingResult result, RedirectAttributes redirectAttrs) {
 
 	// Do service and get response.
-	String response = this.deliveryService.set(delivery);
+	String response = this.deliveryService.set(delivery, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
+	if (delivery.getUuid() == null) {
+	    return redirectEditPageProject(delivery.getProject().getId());
+	}
 	return redirectEditPageSubmodule(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
     }
 
@@ -720,10 +723,10 @@ public class ProjectController {
     @RequestMapping(value = { RegistryURL.CREATE_ESTIMATE_COST }, method = RequestMethod.POST)
     public String createEstimateCost(
 	    @ModelAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST) EstimateCost cost,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    BindingResult result, RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
-	String response = this.estimateCostService.set(cost);
+	String response = this.estimateCostService.set(cost, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -741,10 +744,10 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.CREATE_EXPENSE }, method = RequestMethod.POST)
     public String createExpense(@ModelAttribute(ConstantsRedis.OBJECT_EXPENSE) Expense expense,
-	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	    BindingResult result, RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
-	String response = this.expenseService.set(expense);
+	String response = this.expenseService.set(expense, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
