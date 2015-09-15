@@ -9,15 +9,9 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT = "You <b>cannot</b> choose <b>more than one unit of measure</b> for a material.";
 
-    public static final String ERROR_PROJECT_PULLOUT_EXCEED = "You <b>cannot</b> pull-out <b>more than the available</b> material.";
-
-    public static final String ERROR_PROJECT_PULLOUT_DATE_BEFORE_DELIVERY = "<b>Pull-out date</b> must be <b>after the delivery date</b>.";
-
     public static final String ERROR_PROJECT_PAYROLL_NO_STAFF = "You <b>cannot</b> create a payroll <b>without staff</b> assigned to this project. <b>Assign staff members first</b>.";
 
     public static final String ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC = "There was a problem with the <b>list of staff</b> you provided. Please <b>review</b> the list and <b>try again</b>.";
-
-    public static final String ERROR_PROJECT_START_DATE_GT_COMPLETION_DATE = "The <b>start date</b> must be <b>before the completion date</b>.";
 
     // Auth.
     public static final String ERROR_AUTH_USERNAME_INVALID_PATTERN = "A <b>username</b> must contain the following:<br/>1.) Lowercase letters from <b>a-z</b>.<br/>2.) Numbers <b>0-9</b> or symbols <b>underscore</b> or <b>hyphen</b>.<br/>3.) Length at least <b>4 characters</b> and maximum length of 32.";
@@ -33,13 +27,7 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_EQUAL_STRINGS = "<b>%s and %s</b> must be <b>the same</b>.";
 
-    public static final String ERROR_COMMON_INVALID_QUANTITY = "Quantity must be <b>greater than zero</b>.";
-
-    public static final String ERROR_COMMON_INVALID_DATE_TIME = "Please provide a <b>valid date and time</b>.";
-
     public static final String ERROR_COMMON_INVALID_PROPERTY = "Please provide a <b>valid %s</b>.";
-
-    public static final String ERROR_COMMON_INVALID_DATE = "Please provide a <b>valid date</b>.";
 
     public static final String ERROR_COMMON_X_DATE_BEFORE_Y_DATE = "The <b>%s</b> must be <b>before the %s</b>.";
 
@@ -57,9 +45,4 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_POSITIVE = "<b>%s</b> must be <b>a positive number</b>.";
 
-    // Company.
-    public static final String ERROR_COMPANY_EXPIRE_DATE_LT_NOW = "The <b>expiration date</b> must be <b>after the current date</b>.";
-
-    // Configuration.
-    public static final String ERROR_CONFIG_EMPTY_NAME = "You <b>cannot</b> create a configuration with an <b>empty name</b>.";
 }
