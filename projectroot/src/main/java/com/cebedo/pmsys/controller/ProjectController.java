@@ -104,7 +104,7 @@ value = {
 	// Project.
 	Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
 	"old" + ProjectController.ATTR_FIELD,
-	ProjectController.ATTR_MASS_UPLOAD_STAFF_BEAN,
+	ProjectController.ATTR_MASS_UPLOAD_BEAN,
 	ProjectController.ATTR_TASK,
 	ProjectController.ATTR_FROM_PROJECT,
 	ProjectController.ATTR_PROJECT_PAYROLL,
@@ -147,7 +147,7 @@ public class ProjectController {
     public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
     public static final String ATTR_SHAPE_LIST = "shapeList";
 
-    public static final String ATTR_MASS_UPLOAD_STAFF_BEAN = "massUploadStaffBean";
+    public static final String ATTR_MASS_UPLOAD_BEAN = "massUploadBean";
     public static final String ATTR_ESTIMATE = ConstantsRedis.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
@@ -769,16 +769,34 @@ public class ProjectController {
      * Create many tasks by uploading an Excel file.
      */
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_TASK }, method = RequestMethod.POST)
-    public String createMassTask(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadTask,
+    public String uploadExcelTasks(@ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUploadTask,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
 	    BindingResult result) {
 
 	Project proj = massUploadTask.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createTasksFromExcel(massUploadTask.getFile(), proj,
-		result);
+	String response = this.projectService.uploadExcelTasks(massUploadTask.getFile(), proj, result);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	return redirectEditPageProject(proj.getId(), status);
+    }
+
+    /**
+     * Create many estimate costs by uploading an Excel file.
+     */
+    @RequestMapping(value = { RegistryURL.MASS_UPLOAD_COST }, method = RequestMethod.POST)
+    public String uploadExcelCosts(@ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUpload,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
+	    BindingResult result) {
+
+	Project proj = massUpload.getProject();
+
+	// Do service and get response.
+	String response = this.projectService.uploadExcelCosts(massUpload.getFile(), proj, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -791,16 +809,15 @@ public class ProjectController {
      * Create many staff members by uploading an Excel file.
      */
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
-    public String createMassStaff(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN) FormMassUpload massUploadStaff,
+    public String uploadExcelStaff(
+	    @ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUploadStaff,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
 	    BindingResult result) {
 
 	Project proj = massUploadStaff.getProject();
 
 	// Do service and get response.
-	String response = this.projectService.createStaffFromExcel(massUploadStaff.getFile(), proj,
-		result);
+	String response = this.projectService.uploadExcelStaff(massUploadStaff.getFile(), proj, result);
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -2403,7 +2420,7 @@ public class ProjectController {
 	// Get lists for selectors.
 	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
 	model.addAttribute(ATTR_STAFF_POSITION, new FormStaffAssignment());
-	model.addAttribute(ATTR_MASS_UPLOAD_STAFF_BEAN, new FormMassUpload(proj));
+	model.addAttribute(ATTR_MASS_UPLOAD_BEAN, new FormMassUpload(proj));
     }
 
     /**

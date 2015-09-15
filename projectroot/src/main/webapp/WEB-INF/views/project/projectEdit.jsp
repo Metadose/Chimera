@@ -513,6 +513,19 @@
 																</tbody>
 																</table>
 																<br/>
+
+
+				                                    		<form:form modelAttribute="massUploadBean"
+																action="${contextPath}/project/mass/upload/cost"
+																method="post"
+																enctype="multipart/form-data">
+															
+																<div class="form-group">
+																<label>Excel File</label>
+																<form:input type="file" class="form-control" path="file"/><br/>
+																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload</button>
+																</div>
+															</form:form>
 						                                  		
 																<form:form modelAttribute="cost"
 																	action="${contextPath}/project/create/cost"
@@ -975,7 +988,7 @@
 	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
 	                   								<div class="box-body">
-										                	<form:form modelAttribute="massUploadStaffBean"
+										                	<form:form modelAttribute="massUploadBean"
 																action="${contextPath}/project/mass/upload-and-assign/task"
 																method="post"
 																enctype="multipart/form-data">
@@ -1636,7 +1649,7 @@
 <!-- 			              									<h3 class="box-title">Staff Assignment Controls</h3> -->
 <!-- 			              								</div> -->
 						                                <div class="box-body">
-				                                    		<form:form modelAttribute="massUploadStaffBean"
+				                                    		<form:form modelAttribute="massUploadBean"
 																action="${contextPath}/project/mass/upload-and-assign/staff"
 																method="post"
 																enctype="multipart/form-data">

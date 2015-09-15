@@ -1,14 +1,21 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -16,8 +23,11 @@ import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
+import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.repository.EstimateCostValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.EstimateCostService;
@@ -28,6 +38,13 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
+    private ExcelHelper excelHelper = new ExcelHelper();
+    private ValidationHelper validationHelper = new ValidationHelper();
+
+    private static final int EXCEL_COLUMN_NAME = 1;
+    private static final int EXCEL_COLUMN_COST_ESTIMATED = 2;
+    private static final int EXCEL_COLUMN_COST_ACTUAL = 3;
+    private static final int EXCEL_COLUMN_COST_TYPE = 4;
 
     private EstimateCostValueRepo estimateCostValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
@@ -42,6 +59,127 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Qualifier(value = "estimateCostValueRepo")
     public void setEstimateCostValueRepo(EstimateCostValueRepo estimateCostValueRepo) {
 	this.estimateCostValueRepo = estimateCostValueRepo;
+    }
+
+    @Override
+    @Transactional
+    public String createMassCosts(List<EstimateCost> costs, BindingResult result) {
+
+	// Security check.
+	if (costs.size() > 0 && !this.authHelper.isActionAuthorized(costs.get(0))) {
+	    long projectID = costs.get(0).getProject().getId();
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, projectID);
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// TODO Optimize. Maybe throw exception to fail?
+	// for (EstimateCost cost : costs) {
+	// // Service layer form validation.
+	// this.taskValidator.validate(task, result);
+	// if (result.hasErrors()) {
+	// return this.validationHelper.errorMessageHTML(result);
+	// }
+	// }
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
+
+	// If reaches this point, do actual service.
+	for (EstimateCost cost : costs) {
+	    set(cost);
+	}
+	return null;
+    }
+
+    @Override
+    @Transactional
+    public List<EstimateCost> convertExcelToCostList(MultipartFile multipartFile, Project project) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return null;
+	}
+
+	// Service layer form validation.
+	boolean valid = this.validationHelper.fileIsNotNullOrEmpty(multipartFile);
+	if (!valid) {
+	    return null;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
+		MultipartFile.class.getName());
+
+	try {
+
+	    // Create Workbook instance holding reference to .xls file
+	    // Get first/desired sheet from the workbook.
+	    HSSFWorkbook workbook = new HSSFWorkbook(multipartFile.getInputStream());
+	    HSSFSheet sheet = workbook.getSheetAt(0);
+
+	    // Iterate through each rows one by one.
+	    Iterator<Row> rowIterator = sheet.iterator();
+
+	    // Construct estimate containers.
+	    List<EstimateCost> costList = new ArrayList<EstimateCost>();
+	    while (rowIterator.hasNext()) {
+
+		Row row = rowIterator.next();
+		int rowCountDisplay = row.getRowNum() + 1;
+
+		// Skip first line.
+		if (rowCountDisplay <= 1) {
+		    continue;
+		}
+
+		// For each row, iterate through all the columns
+		Iterator<Cell> cellIterator = row.cellIterator();
+
+		// Every row, is a Staff object.
+		EstimateCost cost = new EstimateCost(project);
+
+		while (cellIterator.hasNext()) {
+
+		    // Cell in this row and column.
+		    Cell cell = cellIterator.next();
+		    int colCountDisplay = cell.getColumnIndex() + 1;
+
+		    switch (colCountDisplay) {
+
+		    case EXCEL_COLUMN_NAME:
+			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			cost.setName(name);
+			continue;
+
+		    case EXCEL_COLUMN_COST_ESTIMATED:
+			Double costVal = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			cost.setCost(costVal);
+			continue;
+
+		    case EXCEL_COLUMN_COST_ACTUAL:
+			costVal = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			cost.setActualCost(costVal);
+			continue;
+
+		    case EXCEL_COLUMN_COST_TYPE:
+			String costType = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			cost.setCostType(EstimateCostType.of(costType));
+			continue;
+
+		    }
+		}
+		costList.add(cost);
+	    }
+	    return costList;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return null;
     }
 
     @Transactional

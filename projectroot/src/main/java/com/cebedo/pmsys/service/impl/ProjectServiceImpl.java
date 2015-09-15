@@ -17,12 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
+import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -34,6 +37,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
@@ -56,6 +60,13 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffService staffService;
     private TaskService taskService;
+    private EstimateCostService estimateCostService;
+
+    @Autowired
+    @Qualifier(value = "estimateCostService")
+    public void setEstimateCostService(EstimateCostService estimateCostService) {
+	this.estimateCostService = estimateCostService;
+    }
 
     @Autowired
     @Qualifier(value = "taskService")
@@ -87,12 +98,83 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     ProjectValidator projectValidator;
 
+    @Override
+    @Transactional
+    public String uploadExcelCosts(MultipartFile multipartFile, Project project, BindingResult result) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Service layer form validation.
+	this.multipartFileValidator.validate(multipartFile, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
+	}
+
+	// Do service.
+	List<EstimateCost> costs = this.estimateCostService.convertExcelToCostList(multipartFile,
+		project);
+	if (costs == null) {
+	    return AlertBoxGenerator.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
+	}
+
+	List<EstimateCost> includeCosts = new ArrayList<EstimateCost>();
+	List<EstimateCost> projectCosts = this.estimateCostService.list(project);
+
+	// Check if this task is already committed.
+	for (EstimateCost cost : costs) {
+
+	    String name = cost.getName();
+	    double estimatedCost = cost.getCost();
+	    double actualCost = cost.getActualCost();
+	    EstimateCostType costType = cost.getCostType();
+	    boolean include = true;
+
+	    // Check for existing.
+	    for (EstimateCost projCost : projectCosts) {
+		String projName = projCost.getName();
+		double projEstimatedCost = projCost.getCost();
+		double projActualCost = projCost.getActualCost();
+		EstimateCostType projCostType = projCost.getCostType();
+
+		// If we found a match from the project tasks,
+		// break. Don't include to list to commit.
+		if (name.equals(projName) && estimatedCost == projEstimatedCost
+			&& actualCost == projActualCost && costType == projCostType) {
+		    include = false;
+		    break;
+		}
+	    }
+
+	    if (include) {
+		includeCosts.add(cost);
+	    }
+	}
+
+	// Create mass.
+	// Returns null if ok.
+	String invalid = this.estimateCostService.createMassCosts(includeCosts, result);
+	if (invalid != null) {
+	    return invalid;
+	}
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+		ConstantsRedis.OBJECT_ESTIMATE_COST);
+
+	return AlertBoxGenerator.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_ESTIMATE_COST);
+    }
+
     /**
      * Create Tasks from an Excel file.
      */
     @Override
     @Transactional
-    public String createTasksFromExcel(MultipartFile multipartFile, Project project, BindingResult result) {
+    public String uploadExcelTasks(MultipartFile multipartFile, Project project, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
@@ -192,7 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional
-    public String createStaffFromExcel(MultipartFile multipartFile, Project proj, BindingResult result) {
+    public String uploadExcelStaff(MultipartFile multipartFile, Project proj, BindingResult result) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {

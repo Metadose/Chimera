@@ -11,6 +11,8 @@ import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
 
+    public String uploadExcelCosts(MultipartFile multipartFile, Project project, BindingResult result);
+
     /**
      * Create a new project.
      * 
@@ -51,9 +53,9 @@ public interface ProjectService {
 
     public String getCalendarJSON(Project proj);
 
-    public String createStaffFromExcel(MultipartFile multipartFile, Project proj, BindingResult result);
+    public String uploadExcelStaff(MultipartFile multipartFile, Project proj, BindingResult result);
 
-    public String createTasksFromExcel(MultipartFile multipartFile, Project project, BindingResult result);
+    public String uploadExcelTasks(MultipartFile multipartFile, Project project, BindingResult result);
 
     public String clearActualCompletionDate(Project proj);
 

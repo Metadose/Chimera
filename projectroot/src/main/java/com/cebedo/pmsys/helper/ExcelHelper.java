@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -30,7 +31,7 @@ public class ExcelHelper {
 	    return cellValue.getNumberValue();
 
 	case Cell.CELL_TYPE_STRING:
-	    return cellValue.getStringValue();
+	    return StringUtils.trim(cellValue.getStringValue());
 
 	case Cell.CELL_TYPE_BOOLEAN:
 	    return cellValue.getBooleanValue();
