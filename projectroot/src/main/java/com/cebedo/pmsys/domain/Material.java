@@ -176,6 +176,7 @@ public class Material implements IDomainObject {
 	this.costPerUnitMaterial = costPerUnitMaterial;
     }
 
+    @Deprecated
     public double getCostPerUnitLabor() {
 	return costPerUnitLabor;
     }
@@ -184,6 +185,7 @@ public class Material implements IDomainObject {
 	this.costPerUnitLabor = costPerUnitLabor;
     }
 
+    @Deprecated
     public double getCostPerUnitEquipment() {
 	return costPerUnitEquipment;
     }
@@ -192,6 +194,7 @@ public class Material implements IDomainObject {
 	this.costPerUnitEquipment = costPerUnitEquipment;
     }
 
+    @Deprecated
     public double getCostPerUnitTotal() {
 	return costPerUnitTotal;
     }
@@ -228,6 +231,7 @@ public class Material implements IDomainObject {
 	this.totalCostPerUnitEquipment = totalCostPerUnitEquipment;
     }
 
+    @Deprecated
     public double getTotalCost() {
 	return totalCost;
     }

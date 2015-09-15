@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -152,7 +155,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public List<Material> list(Delivery delivery) {
+    public List<Material> listDesc(Delivery delivery) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
@@ -165,7 +168,18 @@ public class MaterialServiceImpl implements MaterialService {
 
 	String pattern = Material.constructPattern(delivery);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
-	return this.materialValueRepo.multiGet(keys);
+	List<Material> materials = this.materialValueRepo.multiGet(keys);
+	Collections.sort(materials, new Comparator<Material>() {
+	    @Override
+	    public int compare(Material aObj, Material bObj) {
+		Date aStart = aObj.getDelivery().getDatetime();
+		Date bStart = bObj.getDelivery().getDatetime();
+
+		// To sort in descending.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return materials;
     }
 
     /**
@@ -224,7 +238,7 @@ public class MaterialServiceImpl implements MaterialService {
      */
     @Transactional
     @Override
-    public List<Material> list(Project proj) {
+    public List<Material> listDesc(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -238,7 +252,18 @@ public class MaterialServiceImpl implements MaterialService {
 
 	String pattern = Material.constructPattern(proj);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
-	return this.materialValueRepo.multiGet(keys);
+	List<Material> materials = this.materialValueRepo.multiGet(keys);
+	Collections.sort(materials, new Comparator<Material>() {
+	    @Override
+	    public int compare(Material aObj, Material bObj) {
+		Date aStart = aObj.getDelivery().getDatetime();
+		Date bStart = bObj.getDelivery().getDatetime();
+
+		// To sort in descending.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return materials;
     }
 
     @Override

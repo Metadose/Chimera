@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -174,7 +177,7 @@ public class PullOutServiceImpl implements PullOutService {
 
     @Override
     @Transactional
-    public List<PullOut> list(Project proj) {
+    public List<PullOut> listDesc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
@@ -186,7 +189,18 @@ public class PullOutServiceImpl implements PullOutService {
 
 	String pattern = PullOut.constructPattern(proj);
 	Set<String> keys = this.pullOutValueRepo.keys(pattern);
-	return this.pullOutValueRepo.multiGet(keys);
+	List<PullOut> pullOuts = this.pullOutValueRepo.multiGet(keys);
+	Collections.sort(pullOuts, new Comparator<PullOut>() {
+	    @Override
+	    public int compare(PullOut aObj, PullOut bObj) {
+		Date aStart = aObj.getDatetime();
+		Date bStart = bObj.getDatetime();
+
+		// To sort in descending.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return pullOuts;
     }
 
 }

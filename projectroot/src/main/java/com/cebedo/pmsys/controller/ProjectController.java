@@ -1072,6 +1072,70 @@ public class ProjectController {
     }
 
     /**
+     * Export deliveries to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_INVENTORY }, method = RequestMethod.GET)
+    public void exportXLSInventory(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.deliveryService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Inventory.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Export other expenses to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_OTHER_EXPENSES }, method = RequestMethod.GET)
+    public void exportXLSOtherExpenses(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.expenseService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
+		+ " Other Expenses.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
      * Export a payroll to XLS.
      * 
      * @param key
@@ -2073,7 +2137,7 @@ public class ProjectController {
 
 	// Get the list of materials this delivery has.
 	// Then add to model.
-	List<Material> materialList = this.materialService.list(delivery);
+	List<Material> materialList = this.materialService.listDesc(delivery);
 	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
 	model.addAttribute(ATTR_MATERIAL, new Material(delivery));
 
@@ -2536,12 +2600,12 @@ public class ProjectController {
 
 	// Get all materials.
 	// Add to model.
-	List<Material> materialList = this.materialService.list(proj);
+	List<Material> materialList = this.materialService.listDesc(proj);
 	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
 
 	// Get all pull-outs.
 	// Add to model.
-	List<PullOut> pullOutList = this.pullOutService.list(proj);
+	List<PullOut> pullOutList = this.pullOutService.listDesc(proj);
 	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
 
 	return accumulation;

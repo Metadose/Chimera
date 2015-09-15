@@ -15,6 +15,6 @@ public interface PullOutService {
 
     public PullOut get(String key);
 
-    public List<PullOut> list(Project proj);
+    public List<PullOut> listDesc(Project proj);
 
 }

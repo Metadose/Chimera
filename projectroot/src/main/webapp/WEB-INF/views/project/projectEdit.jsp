@@ -797,6 +797,14 @@
                    							<div class="box box-body box-default">
                    								<div class="box-body">
 
+                   									<c:if test="${!empty expenseList}">
+	                   									<a href="<c:url value="/project/export-xls/expenses"/>">
+			                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
+			                                        	</a>
+			                                        	<br/>
+			                                        	<br/>
+		                                        	</c:if>
+
 			                                  		<div class="pull-right">
 			                                  		<h3>Grand Total <b><u>
 				                                	${projectAux.getGrandTotalOtherExpensesAsString()}
@@ -807,10 +815,10 @@
 				                                    	<thead>
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
-				                                                <th>Name</th>
-				                                                <th>Cost</th>
-				                                                <th>Staff</th>
 				                                                <th>Date</th>
+				                                                <th>Name</th>
+				                                                <th>Staff</th>
+				                                                <th>Cost</th>
 				                                            </tr>
 			                                    		</thead>
 				                                        <tbody>
@@ -834,11 +842,11 @@
 										                                    </div>
 																		</center>
 																	</td>
-				                                                	<td>${expense.name}</td>
-				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
-				                                                	<td>${expense.staff.getFullName()}</td>
 				                                                	<fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
 				                                                	<td>${dateString}</td>
+				                                                	<td>${expense.name}</td>
+				                                                	<td>${expense.staff.getFullName()}</td>
+				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
 					                                            </tr>
 				                                            </c:forEach>
 					                                    </tbody>
@@ -1011,7 +1019,7 @@
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
 							                                    		<a href="<c:url value="/project/export-xls/program-of-works"/>">
-							                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+							                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 							                                        	</a>
 						                                    		</td>
 						                                    		<td>&nbsp;</td>
@@ -1189,7 +1197,7 @@
 		                                  		</a>
 		                                  		<c:if test="${!empty payrollList}">
 		                                  		<a href="<c:url value="/project/export-xls/payroll/all"/>">
-	                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+	                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 	                                        	</a>
 		                                  		</c:if>
 		                                  		<br/>
@@ -1220,7 +1228,7 @@
 			                                            			</a>
 
 			                                            			<a href="<c:url value="/project/export-xls/payroll/${projectPayroll.getKey()}-end"/>">
-						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export XLS</button>
+						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
 						                                        	</a>
 
 								                                    <div class="btn-group">
@@ -1403,7 +1411,7 @@
 		                                <div class="row">
 			                            <div class="col-md-12">
 	               							<div class="box box-body box-default">
-	               								<div class="box-body">
+	               								<div class="box-body">	               									
 
 									                <div class="pull-right">
 			                                  		<h3>Grand Total <b><u>
@@ -1415,6 +1423,11 @@
 			                                  		<a href="${urlCreateDelivery}">
 			                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
 			                                  		</a>
+			                                  		<c:if test="${!empty deliveryList}">
+	                   									<a href="<c:url value="/project/export-xls/inventory"/>">
+			                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
+			                                        	</a>
+		                                        	</c:if>
 			                                  		<br/>
 			                                  		<br/>
 				                                    <table id="delivery-table" class="table table-bordered table-striped">
@@ -1571,7 +1584,7 @@
 											                <c:if test="${!empty project.assignedStaff}">
 
 						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
-					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All to XLS</button>
+					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 					                                        	</a>
 
 							                                    <div class="btn-group">

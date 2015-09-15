@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -28,6 +32,7 @@ import com.cebedo.pmsys.repository.ExpenseValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.ExpenseService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.ExpenseValidator;
 
 @Service
@@ -40,6 +45,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     private ExpenseValueRepo expenseValueRepo;
     private ProjectAuxValueRepo projectAuxValueRepo;
     private StaffDAO staffDAO;
+    private ProjectDAO projectDAO;
+
+    @Autowired
+    @Qualifier(value = "projectDAO")
+    public void setProjectDAO(ProjectDAO projectDAO) {
+	this.projectDAO = projectDAO;
+    }
 
     @Autowired
     @Qualifier(value = "staffDAO")
@@ -138,6 +150,47 @@ public class ExpenseServiceImpl implements ExpenseService {
 	});
 
 	return expenses;
+    }
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLS(long projID) {
+
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet(proj.getName() + " Other Expenses");
+
+	// For headers.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row.createCell(0).setCellValue("Date");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Staff");
+	row.createCell(3).setCellValue("Cost");
+
+	// Setup the table.
+	// Staff list data.
+	List<Expense> expenses = listAsc(proj);
+	for (Expense expense : expenses) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+
+	    expenseRow.createCell(0).setCellValue(DateUtils.formatDate(expense.getDate()));
+	    expenseRow.createCell(1).setCellValue(expense.getName());
+	    expenseRow.createCell(2).setCellValue(expense.getStaff().getFullName());
+	    expenseRow.createCell(3).setCellValue(expense.getCost());
+
+	    rowIndex++;
+	}
+	return wb;
     }
 
     @Transactional
