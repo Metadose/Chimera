@@ -102,6 +102,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, "Inventory", projID);
+
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Deliveries.

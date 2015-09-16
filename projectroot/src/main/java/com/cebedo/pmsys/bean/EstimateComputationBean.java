@@ -34,7 +34,7 @@ public class EstimateComputationBean implements Serializable {
      */
     private String name;
     private String remarks;
-    private EstimateComputationShape estimateComputationShape;
+    private EstimateComputationShape estimateComputationShape = new EstimateComputationShape();
 
     /**
      * Inputs.

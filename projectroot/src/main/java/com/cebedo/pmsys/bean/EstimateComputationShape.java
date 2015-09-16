@@ -6,13 +6,13 @@ public class EstimateComputationShape implements Serializable {
 
     private static final long serialVersionUID = -8565430166993517307L;
 
-    private double area;
-    private double volume;
-    private double originalArea;
-    private double originalVolume;
-    private double footingLength;
-    private double footingWidth;
-    private double footingHeight;
+    private double area = 0;
+    private double volume = 0;
+    private double originalArea = 0;
+    private double originalVolume = 0;
+    private double footingLength = 0;
+    private double footingWidth = 0;
+    private double footingHeight = 0;
 
     public double getArea() {
 	return area;

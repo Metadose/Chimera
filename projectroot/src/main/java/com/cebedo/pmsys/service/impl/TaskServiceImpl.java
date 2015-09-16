@@ -80,6 +80,7 @@ public class TaskServiceImpl implements TaskService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, Task.OBJECT_NAME, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Program of Works");
 

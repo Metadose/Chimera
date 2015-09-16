@@ -54,6 +54,8 @@ public enum AuditAction {
 
     ACTION_RENAME(124, "Rename"),
 
+    ACTION_EXPORT(125, "Export"),
+
     // Login.
 
     LOGIN_USER_NOT_EXIST(800, "User does not exist"),

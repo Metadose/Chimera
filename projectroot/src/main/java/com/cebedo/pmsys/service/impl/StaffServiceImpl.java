@@ -102,6 +102,7 @@ public class StaffServiceImpl implements StaffService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, Staff.OBJECT_NAME, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Assigned Staff");
 

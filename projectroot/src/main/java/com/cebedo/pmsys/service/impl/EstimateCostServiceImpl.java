@@ -85,6 +85,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE_COST, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Estimated Costs");
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));

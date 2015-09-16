@@ -114,6 +114,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE, key);
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Summary sheet.
@@ -519,6 +520,7 @@ public class EstimateServiceImpl implements EstimateService {
 	// New object.
 	EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
 
+	// Validation is in this function convertExcelToEstimates(...)
 	// Convert the excel file to objects.
 	List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
 		estimateInput.getEstimationFile(), estimateInput.getProject());
@@ -693,9 +695,16 @@ public class EstimateServiceImpl implements EstimateService {
      * @return
      */
     private boolean getEstimateBooleanFromExcel(HSSFWorkbook workbook, Cell cell) {
-	String concrete = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-		: this.excelHelper.getValueAsExpected(workbook, cell));
-	return StringUtils.deleteWhitespace(concrete).equals("Yes") ? true : false;
+	try {
+	    String concrete = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
+		    : this.excelHelper.getValueAsExpected(workbook, cell));
+	    if (concrete == null || concrete.isEmpty()) {
+		return false;
+	    }
+	    return StringUtils.deleteWhitespace(concrete).equalsIgnoreCase("Yes") ? true : false;
+	} catch (Exception e) {
+	    return false;
+	}
     }
 
     /**
@@ -787,6 +796,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_DETAILS_AREA:
 			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (area < 0) {
+			    return null;
+			}
 			estimateComputationShape.setArea(area);
 			estimateComputationShape.setOriginalArea(area);
 			estimateComputationBean.setShape(estimateComputationShape);
@@ -795,6 +807,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_DETAILS_VOLUME:
 			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (volume < 0) {
+			    return null;
+			}
 			estimateComputationShape.setVolume(volume);
 			estimateComputationShape.setOriginalVolume(volume);
 			estimateComputationBean.setShape(estimateComputationShape);
@@ -835,6 +850,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_FOUNDATION_AREA:
 			double foundationArea = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (foundationArea < 0) {
+			    return null;
+			}
 			estimateComputationBean.setAreaBelowGround(foundationArea);
 			continue;
 
@@ -849,6 +867,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_FOOTING_LENGTH:
 			double footingLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (footingLength < 0) {
+			    return null;
+			}
 			estimateComputationShape.setFootingLength(footingLength);
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
@@ -856,6 +877,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH:
 			double footingWidth = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (footingWidth < 0) {
+			    return null;
+			}
 			estimateComputationShape.setFootingWidth(footingWidth);
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
@@ -863,6 +887,9 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT:
 			double footingHeight = (Double) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (footingHeight < 0) {
+			    return null;
+			}
 			estimateComputationShape.setFootingHeight(footingHeight);
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
@@ -884,51 +911,74 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_COST_CHB:
 			costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costCHB < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitCHB(costCHB);
 			continue;
 
 		    case EXCEL_COST_CEMENT_40KG:
 			costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costCement40kg < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitCement40kg(costCement40kg);
 			continue;
 
 		    case EXCEL_COST_CEMENT_50KG:
 			costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costCement50kg < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitCement50kg(costCement50kg);
 			continue;
 
 		    case EXCEL_COST_SAND:
 			costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costSand < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitSand(costSand);
 			continue;
 
 		    case EXCEL_COST_GRAVEL:
 			costGravel = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costGravel < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitGravel(costGravel);
 			continue;
 
 		    case EXCEL_COST_STEEL_BAR:
 			costSteelBars = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costSteelBars < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitSteelBars(costSteelBars);
 			continue;
 
 		    case EXCEL_COST_TIE_WIRE_KILOS:
 			costTieWireKilos = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costTieWireKilos < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitTieWireKilos(costTieWireKilos);
 			continue;
 
 		    case EXCEL_COST_TIE_WIRE_ROLLS:
 			costTieWireRoll = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
 				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (costTieWireRoll < 0) {
+			    return null;
+			}
 			estimateComputationBean.setCostPerUnitTieWireRolls(costTieWireRoll);
 			continue;
-
 		    }
 		}
 		firstRow = false;
@@ -948,8 +998,6 @@ public class EstimateServiceImpl implements EstimateService {
      * 3) Cost: Each Estimation type.
      */
     private void computeRowQuantityAndPerTypeCost(EstimateComputationBean estimateComputationBean) {
-
-	// TODO What if area is negative?
 
 	// Shape to compute.
 	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();

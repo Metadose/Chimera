@@ -90,7 +90,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, proj.getId());
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Summary sheet.
@@ -120,6 +120,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
+	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, payrollKey);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	constructPayrollSheet(wb, obj, computeResult);
 	return wb;
