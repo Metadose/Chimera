@@ -59,40 +59,36 @@ input[type=checkbox] {
   background-color: #3B8686;
 }
 
-/* Export buttons */
-.btn.btn-cebedo-export {
-  background-color: #E3F2CD;
-  border-color: #79BD9A;
-  color: #0B486B;
-}
-.btn.btn-cebedo-export:hover,
-.btn.btn-cebedo-export:active,
-.btn.btn-cebedo-export.hover {
-  background-color: #cbe7a3;
-}
-
 /* Create buttons */
-.btn.btn-cebedo-create {
-  background-color: #E3F2CD;
-  border-color: #79BD9A;
-  color: #0B486B;
+.btn.btn-cebedo-create,
+.btn.btn-cebedo-update,
+.btn.btn-cebedo-view,
+.btn.btn-cebedo-export,
+.btn.btn-cebedo-assign,
+.btn.btn-cebedo-pullout {
+	background-color: #FF814C;
+	border-color: #FF601D;
+	color: #fff;
 }
 .btn.btn-cebedo-create:hover,
 .btn.btn-cebedo-create:active,
-.btn.btn-cebedo-create.hover {
-  background-color: #cbe7a3;
-}
-
-/* View buttons */
-.btn.btn-cebedo-view {
-  background-color: #F1F1F1;
-  border-color: #8AB4D8;
-  color: #0067C0;
-}
+.btn.btn-cebedo-create.hover,
+.btn.btn-cebedo-update:hover,
+.btn.btn-cebedo-update:active,
+.btn.btn-cebedo-update.hover,
 .btn.btn-cebedo-view:hover,
 .btn.btn-cebedo-view:active,
-.btn.btn-cebedo-view.hover {
-  background-color: #e5e5e5;
+.btn.btn-cebedo-view.hover,
+.btn.btn-cebedo-export:hover,
+.btn.btn-cebedo-export:active,
+.btn.btn-cebedo-export.hover,
+.btn.btn-cebedo-assign:hover,
+.btn.btn-cebedo-assign:active,
+.btn.btn-cebedo-assign.hover,
+.btn.btn-cebedo-pullout:hover,
+.btn.btn-cebedo-pullout:active,
+.btn.btn-cebedo-pullout.hover {
+  background-color: #f17945;
 }
 
 /* Mark buttons */
@@ -128,18 +124,6 @@ input[type=checkbox] {
 .btn.btn-cebedo-delete:hover,
 .btn.btn-cebedo-delete:active,
 .btn.btn-cebedo-delete.hover {
-  background-color: #e5e5e5;
-}
-
-/* Pullout buttons */
-.btn.btn-cebedo-pullout {
-  background-color: #F1F1F1;
-  border-color: #ff8000;
-  color: #AB4316;
-}
-.btn.btn-cebedo-pullout:hover,
-.btn.btn-cebedo-pullout:active,
-.btn.btn-cebedo-pullout.hover {
   background-color: #e5e5e5;
 }
 
@@ -203,18 +187,6 @@ input[type=checkbox] {
   border-bottom-color: #d9dadc;
 }
 
-/* Update buttons */
-.btn.btn-cebedo-update {
-  background-color: #E3F2CD;
-  border-color: #79BD9A;
-  color: #0B486B;
-}
-.btn.btn-cebedo-update:hover,
-.btn.btn-cebedo-update:active,
-.btn.btn-cebedo-update.hover {
-  background-color: #cbe7a3;
-}
-
 /* Compute buttons */
 .btn.btn-cebedo-compute {
   background-color: #E3F2CD;
@@ -224,18 +196,6 @@ input[type=checkbox] {
 .btn.btn-cebedo-compute:hover,
 .btn.btn-cebedo-compute:active,
 .btn.btn-cebedo-compute.hover {
-  background-color: #cbe7a3;
-}
-
-/* Assign buttons */
-.btn.btn-cebedo-assign {
-  background-color: #E3F2CD;
-  border-color: #79BD9A;
-  color: #0B486B;
-}
-.btn.btn-cebedo-assign:hover,
-.btn.btn-cebedo-assign:active,
-.btn.btn-cebedo-assign.hover {
   background-color: #cbe7a3;
 }
 
@@ -289,9 +249,23 @@ input[type=checkbox] {
 .cebedo-no-wrap {
   white-space: nowrap;
 }
-
+.cebedo-dropdown-orange-hover:hover {
+	color: white;
+	background-image: none !important;
+	background-color: #F06023 !important;
+}
 .cebedo-dropdown-hover:hover {
 	color: white;
 	background-image: none !important;
 	background-color: #f56954 !important;
+}
+.cebedo-bg-orange {
+  background-color: #F06023 !important;
+}
+.form-control {
+	border: 1px solid rgba(240, 96, 35, 0.22);
+}
+.form-control:focus {
+    border-color: #F06023 !important;
+    box-shadow: none;
 }

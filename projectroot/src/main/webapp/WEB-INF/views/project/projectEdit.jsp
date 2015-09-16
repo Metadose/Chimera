@@ -162,7 +162,7 @@
 						                                            <ul class="dropdown-menu">
 						                                            	<c:forEach var="projectStatus" items="${projectStatusList}">
 								                                    		<li>
-								                                    			<a href="<c:url value="/project/mark/?project=${project.id}&status=${projectStatus.id()}"/>">
+								                                    			<a href="<c:url value="/project/mark/?project=${project.id}&status=${projectStatus.id()}"/>" class="cebedo-dropdown-orange-hover">
 								                                    				${projectStatus.label()}
 								                                    			</a>
 								                                    		</li>
@@ -1078,7 +1078,7 @@
 											                                            </button>
 											                                            <ul class="dropdown-menu">
 											                                            	<c:forEach items="${taskStatusList}" var="taskStatus">
-											                                                	<li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}"/>">${taskStatus.label()}</a></li>
+											                                                	<li><a class="cebedo-dropdown-orange-hover" href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}"/>">${taskStatus.label()}</a></li>
 											                                            	</c:forEach>
 											                                            </ul>
 											                                        </div>

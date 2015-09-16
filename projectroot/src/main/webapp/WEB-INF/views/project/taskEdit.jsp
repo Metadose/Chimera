@@ -85,7 +85,7 @@
 						                                            </button>
 						                                            <ul class="dropdown-menu">
 						                                            	<c:forEach items="${taskStatusList}" var="taskStatus">
-						                                                	<li><a href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}&editPage=true"/>">${taskStatus.label()}</a></li>
+						                                                	<li><a class="cebedo-dropdown-orange-hover" href="<c:url value="/project/mark/task/?task_id=${task.id}&status=${taskStatus.id()}&editPage=true"/>">${taskStatus.label()}</a></li>
 						                                            	</c:forEach>
 						                                            </ul>
 						                                        </div>

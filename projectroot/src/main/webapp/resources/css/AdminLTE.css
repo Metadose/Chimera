@@ -1449,7 +1449,7 @@ body > .header .logo .icon {
 .box {
   position: relative;
   background: #ffffff;
-  border-top: 2px solid #c1c1c1;
+  border-top: 2px solid #FF814C;
   margin-bottom: 20px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1512,6 +1512,7 @@ body > .header .logo .icon {
   font-weight: 400;
   float: left;
   cursor: default;
+  color: #F06023;
 }
 .box .box-header a {
   color: #444;
@@ -2236,7 +2237,7 @@ Component: timeline
   border-bottom-color: #f4f4f4;
 }
 .nav-tabs-custom > .nav-tabs > li {
-  border-top: 3px solid transparent;
+  border-top: 2px solid transparent;
   margin-bottom: -2px;
   margin-right: 5px;
 }
@@ -2256,7 +2257,7 @@ Component: timeline
   border-color: transparent;
 }
 .nav-tabs-custom > .nav-tabs > li.active {
-  border-top-color: #353535;
+  border-top-color: #FF814C;
 }
 .nav-tabs-custom > .nav-tabs > li.active > a,
 .nav-tabs-custom > .nav-tabs > li.active:hover > a {
@@ -2493,7 +2494,7 @@ Component: timeline
   border-top-right-radius: 4px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  background: #3d9970;
+  background: #F06023;
   box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.2);
   padding: 20px 10px;
   text-align: center;
@@ -2631,10 +2632,10 @@ Component: timeline
 */
 /* skin-blue navbar */
 .skin-blue .navbar {
-  background-color: #3D3A36;
+  background-color: #38332D;
 }
 .skin-blue .navbar .nav a {
-  color: rgba(255, 255, 255, 0.8);
+  color: #f6f6f6;
 }
 .skin-blue .navbar .nav > li > a:hover,
 .skin-blue .navbar .nav > li > a:active,
@@ -2656,14 +2657,14 @@ Component: timeline
 }
 /* skin-blue logo */
 .skin-blue .logo {
-  background-color: #3D3A36;
-  color: #f9f9f9;
+  background-color: #F06023;
+  color: #f6f6f6;
 }
 .skin-blue .logo > a {
   color: #f9f9f9;
 }
 .skin-blue .logo:hover {
-  background: #3D3A36;
+  background: #F06023;
 }
 /* skin-blue content header */
 .skin-blue .right-side > .content-header {
