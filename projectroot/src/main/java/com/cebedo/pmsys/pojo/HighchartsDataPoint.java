@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.pojo;
 
+import org.apache.commons.lang.StringUtils;
+
 public class HighchartsDataPoint {
 
     private String name;
@@ -59,7 +61,7 @@ public class HighchartsDataPoint {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public double getY() {
@@ -75,7 +77,7 @@ public class HighchartsDataPoint {
     }
 
     public void setColor(String color) {
-	this.color = color;
+	this.color = StringUtils.trim(color);
     }
 
     public long getX() {

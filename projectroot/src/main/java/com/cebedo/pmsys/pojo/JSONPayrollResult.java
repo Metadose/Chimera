@@ -3,6 +3,8 @@ package com.cebedo.pmsys.pojo;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 public class JSONPayrollResult implements Serializable {
 
     private static final long serialVersionUID = 3657789273539338468L;
@@ -160,7 +162,7 @@ public class JSONPayrollResult implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public double getValue() {

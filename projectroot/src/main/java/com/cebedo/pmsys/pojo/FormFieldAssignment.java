@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.pojo;
 
+import org.apache.commons.lang.StringUtils;
+
 public class FormFieldAssignment {
 
     private long projectID;
@@ -44,7 +46,7 @@ public class FormFieldAssignment {
     }
 
     public void setLabel(String label) {
-	this.label = label;
+	this.label = StringUtils.trim(label);
     }
 
     public String getValue() {
@@ -52,7 +54,7 @@ public class FormFieldAssignment {
     }
 
     public void setValue(String value) {
-	this.value = value;
+	this.value = StringUtils.trim(value);
     }
 
 }

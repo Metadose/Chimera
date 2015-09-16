@@ -2,6 +2,7 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
@@ -54,7 +55,7 @@ public class EstimateComputationInputBean implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public String getRemarks() {
@@ -62,7 +63,7 @@ public class EstimateComputationInputBean implements Serializable {
     }
 
     public void setRemarks(String remarks) {
-	this.remarks = remarks;
+	this.remarks = StringUtils.trim(remarks);
     }
 
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.EstimateType;
@@ -158,7 +159,7 @@ public class EstimateComputationBean implements Serializable {
     }
 
     public void setName(String name) {
-	this.name = name;
+	this.name = StringUtils.trim(name);
     }
 
     public String getRemarks() {
@@ -166,7 +167,7 @@ public class EstimateComputationBean implements Serializable {
     }
 
     public void setRemarks(String remarks) {
-	this.remarks = remarks;
+	this.remarks = StringUtils.trim(remarks);
     }
 
     public EstimateComputationShape getShape() {
