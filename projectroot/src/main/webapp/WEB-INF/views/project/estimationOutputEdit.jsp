@@ -50,6 +50,10 @@
 						<button class="btn btn-cebedo-back btn-flat btn-sm">Back to Project</button>
 					</a>
 
+					<a href="<c:url value="/project/export-xls/estimationoutput/${estimationoutput.getKey()}-end"/>">
+                		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
+                	</a>
+
                     <div class="btn-group">
                     <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
                     <ul class="dropdown-menu">

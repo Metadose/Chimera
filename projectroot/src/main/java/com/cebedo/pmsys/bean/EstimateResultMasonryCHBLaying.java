@@ -38,6 +38,10 @@ public class EstimateResultMasonryCHBLaying implements Serializable {
 	return bags;
     }
 
+    public double getCement50kg() {
+	return Math.ceil(EstimateUtils.convert40kgTo50kg(getCement40kg()));
+    }
+
     public void setBags(double bags) {
 	this.bags = bags;
     }

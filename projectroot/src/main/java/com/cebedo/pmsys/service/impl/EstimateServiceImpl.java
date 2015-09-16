@@ -6,10 +6,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,6 +102,398 @@ public class EstimateServiceImpl implements EstimateService {
 
     @Autowired
     EstimateInputValidator estimateInputValidator;
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLS(String key) {
+
+	EstimationOutput output = this.estimationOutputValueRepo.get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(output)) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
+	    return new HSSFWorkbook();
+	}
+	HSSFWorkbook wb = new HSSFWorkbook();
+
+	// Summary sheet.
+	constructSheetSummary(wb, output);
+
+	// Inputs.
+	constructSheetInputs(wb, output);
+
+	// Concrete.
+	constructSheetConcrete(wb, output);
+
+	// CHB Laying.
+	constructSheetCHBLaying(wb, output);
+
+	// Plastering.
+	constructSheetCHBPlastering(wb, output);
+
+	// CHB (Footing).
+	constructSheetCHBFooting(wb, output);
+
+	// Metal Reinforcement (CHB).
+	constructSheetMRCHB(wb, output);
+
+	return wb;
+    }
+
+    private void constructSheetMRCHB(HSSFWorkbook wb, EstimationOutput output) {
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("Metal Reinforcement (CHB)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(1);
+	HSSFCell cellCost = row.createCell(4);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Steel Bar (Pieces)");
+	row.createCell(2).setCellValue("Tie Wire (Kilos)");
+	row.createCell(3).setCellValue("Tie Wire (Rolls)");
+	row.createCell(4).setCellValue("Steel Bar (PHP/Piece)");
+	row.createCell(5).setCellValue("Tie Wire (PHP/Kilo)");
+	row.createCell(6).setCellValue("Tie Wire (PHP/Roll)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMRCHB estimate = computedRow.getResultMRCHB();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(estimate.getSteelBarsQuantity());
+	    row.createCell(2).setCellValue(estimate.getTieWireKilos());
+	    row.createCell(3).setCellValue(estimate.getTieWireRolls());
+	    row.createCell(4).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(5).setCellValue(estimate.getCostTieWireKilos());
+	    row.createCell(6).setCellValue(estimate.getCostTieWireRolls());
+	    rowIndex++;
+	}
+    }
+
+    private void constructSheetCHBFooting(HSSFWorkbook wb, EstimationOutput output) {
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("CHB (Footing)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(1);
+	HSSFCell cellCost = row.createCell(5);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Cement (40kg)");
+	row.createCell(2).setCellValue("Cement (50kg)");
+	row.createCell(3).setCellValue("Sand (cu.m.)");
+	row.createCell(4).setCellValue("Gravel (cu.m.)");
+	row.createCell(5).setCellValue("Cement (PHP/40kg)");
+	row.createCell(6).setCellValue("Cement (PHP/50kg)");
+	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(8).setCellValue("Gravel (PHP/cu.m.)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMasonryCHBFooting estimate = computedRow.getResultCHBFootingEstimate();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(estimate.getCement40kg());
+	    row.createCell(2).setCellValue(estimate.getCement50kg());
+	    row.createCell(3).setCellValue(estimate.getSand());
+	    row.createCell(4).setCellValue(estimate.getGravel());
+	    row.createCell(5).setCellValue(estimate.getCostCement40kg());
+	    row.createCell(6).setCellValue(estimate.getCostCement50kg());
+	    row.createCell(7).setCellValue(estimate.getCostSand());
+	    row.createCell(8).setCellValue(estimate.getCostGravel());
+	    rowIndex++;
+	}
+    }
+
+    private void constructSheetInputs(HSSFWorkbook wb, EstimationOutput output) {
+
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("Input");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Remarks");
+	row.createCell(2).setCellValue("Area (sq.m.)");
+	row.createCell(3).setCellValue("Volume (cu.m.)");
+	row.createCell(4).setCellValue("Area Below Ground (sq.m.)");
+	row.createCell(5).setCellValue("Footing Length (m)");
+	row.createCell(6).setCellValue("Footing Width (m)");
+	row.createCell(7).setCellValue("Footing Height (m)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateComputationShape shape = computedRow.getShape();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(computedRow.getRemarks());
+	    row.createCell(2).setCellValue(shape.getArea());
+	    row.createCell(3).setCellValue(shape.getVolume());
+	    row.createCell(4).setCellValue(computedRow.getAreaBelowGround());
+	    row.createCell(5).setCellValue(shape.getFootingLength());
+	    row.createCell(6).setCellValue(shape.getFootingWidth());
+	    row.createCell(7).setCellValue(shape.getFootingHeight());
+	    rowIndex++;
+	}
+    }
+
+    /**
+     * Construct the CHB sheet.
+     * 
+     * @param wb
+     * @param output
+     */
+    private void constructSheetCHBPlastering(HSSFWorkbook wb, EstimationOutput output) {
+
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("CHB (Plastering)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(1);
+	HSSFCell cellCost = row.createCell(4);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Cement (40kg)");
+	row.createCell(2).setCellValue("Cement (50kg)");
+	row.createCell(3).setCellValue("Sand (cu.m.)");
+	row.createCell(4).setCellValue("Cement (PHP/40kg)");
+	row.createCell(5).setCellValue("Cement (PHP/50kg)");
+	row.createCell(6).setCellValue("Sand (PHP/cu.m.)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMasonryPlastering estimate = computedRow.getResultPlasteringEstimate();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(estimate.getCement40kg());
+	    row.createCell(2).setCellValue(estimate.getCement50kg());
+	    row.createCell(3).setCellValue(estimate.getSand());
+	    row.createCell(4).setCellValue(estimate.getCostCement40kg());
+	    row.createCell(5).setCellValue(estimate.getCostCement50kg());
+	    row.createCell(6).setCellValue(estimate.getCostSand());
+	    rowIndex++;
+	}
+    }
+
+    /**
+     * Construct the CHB sheet.
+     * 
+     * @param wb
+     * @param output
+     */
+    private void constructSheetCHBLaying(HSSFWorkbook wb, EstimationOutput output) {
+
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("CHB (Setting-Laying)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(1);
+	HSSFCell cellCost = row.createCell(5);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("CHB (Pieces)");
+	row.createCell(2).setCellValue("Cement (40kg)");
+	row.createCell(3).setCellValue("Cement (50kg)");
+	row.createCell(4).setCellValue("Sand (cu.m.)");
+	row.createCell(5).setCellValue("CHB (PHP/Piece)");
+	row.createCell(6).setCellValue("Cement (PHP/40kg)");
+	row.createCell(7).setCellValue("Cement (PHP/50kg)");
+	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMasonryCHB estimate = computedRow.getResultCHBEstimate();
+	    EstimateResultMasonryCHBLaying chbLaying = computedRow.getResultCHBLayingEstimate();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(estimate.getTotalCHB());
+	    row.createCell(2).setCellValue(chbLaying.getCement40kg());
+	    row.createCell(3).setCellValue(chbLaying.getCement50kg());
+	    row.createCell(4).setCellValue(chbLaying.getSand());
+	    row.createCell(5).setCellValue(estimate.getCostCHB());
+	    row.createCell(6).setCellValue(chbLaying.getCostCement40kg());
+	    row.createCell(7).setCellValue(chbLaying.getCostCement50kg());
+	    row.createCell(8).setCellValue(chbLaying.getCostSand());
+	    rowIndex++;
+	}
+    }
+
+    /**
+     * Construct the concrete sheet.
+     * 
+     * @param wb
+     * @param output
+     */
+    private void constructSheetConcrete(HSSFWorkbook wb, EstimationOutput output) {
+
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("Concrete");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(1);
+	HSSFCell cellCost = row.createCell(5);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue("Cement (40kg)");
+	row.createCell(2).setCellValue("Cement (50kg)");
+	row.createCell(3).setCellValue("Sand (cu.m.)");
+	row.createCell(4).setCellValue("Gravel (cu.m.)");
+	row.createCell(5).setCellValue("Cement (PHP/40kg)");
+	row.createCell(6).setCellValue("Cement (PHP/50kg)");
+	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(8).setCellValue("Gravel (PHP/cu.m.)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultConcrete concreteEstimate = computedRow.getResultConcreteEstimate();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getName());
+	    row.createCell(1).setCellValue(concreteEstimate.getCement40kg());
+	    row.createCell(2).setCellValue(concreteEstimate.getCement50kg());
+	    row.createCell(3).setCellValue(concreteEstimate.getSand());
+	    row.createCell(4).setCellValue(concreteEstimate.getGravel());
+	    row.createCell(5).setCellValue(concreteEstimate.getCostCement40kg());
+	    row.createCell(6).setCellValue(concreteEstimate.getCostCement50kg());
+	    row.createCell(7).setCellValue(concreteEstimate.getCostSand());
+	    row.createCell(8).setCellValue(concreteEstimate.getCostGravel());
+	    rowIndex++;
+	}
+    }
+
+    /**
+     * Construct the summary sheet.
+     * 
+     * @param wb
+     * @param output
+     */
+    private void constructSheetSummary(HSSFWorkbook wb, EstimationOutput output) {
+	// For headers.
+	HSSFSheet sheet = wb.createSheet(output.getName());
+	int rowIndex = 0;
+
+	// Grand total.
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	row.createCell(1).setCellValue(output.getCostGrandTotal());
+	rowIndex++;
+	rowIndex++;
+
+	// Headers.
+	// Create a cell and put a value in it.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Material");
+	row.createCell(1).setCellValue("Quantity");
+	row.createCell(2).setCellValue("Cost (PHP/unit)");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Concrete Hollow Blocks (CHB)");
+	row.createCell(1).setCellValue(output.getQuantityCHB());
+	row.createCell(2).setCellValue(output.getCostCHB());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Cement (40kg)");
+	row.createCell(1).setCellValue(output.getQuantityCement40kg());
+	row.createCell(2).setCellValue(output.getCostCement40kg());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Cement (50kg)");
+	row.createCell(1).setCellValue(output.getQuantityCement50kg());
+	row.createCell(2).setCellValue(output.getCostCement50kg());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Sand");
+	row.createCell(1).setCellValue(output.getQuantitySand());
+	row.createCell(2).setCellValue(output.getCostSand());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Gravel");
+	row.createCell(1).setCellValue(output.getQuantityGravel());
+	row.createCell(2).setCellValue(output.getCostGravel());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Steel Bars");
+	row.createCell(1).setCellValue(output.getQuantitySteelBars());
+	row.createCell(2).setCellValue(output.getCostSteelBars());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Tie Wire (Kilo)");
+	row.createCell(1).setCellValue(output.getQuantityTieWireKilos());
+	row.createCell(2).setCellValue(output.getCostTieWireKilos());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Tie Wire (Roll)");
+	row.createCell(1).setCellValue(output.getQuantityTieWireRolls());
+	row.createCell(2).setCellValue(output.getCostTieWireRolls());
+    }
 
     @Override
     @Transactional

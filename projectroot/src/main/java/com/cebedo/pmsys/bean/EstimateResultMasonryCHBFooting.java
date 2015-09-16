@@ -41,6 +41,10 @@ public class EstimateResultMasonryCHBFooting implements Serializable {
 	return cement;
     }
 
+    public double getCement50kg() {
+	return Math.ceil(EstimateUtils.convert40kgTo50kg(getCement40kg()));
+    }
+
     public void setCement40kg(double cement) {
 	this.cement = cement;
     }
