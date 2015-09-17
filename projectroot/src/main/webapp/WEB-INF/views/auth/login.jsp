@@ -35,25 +35,22 @@
                     <div class="form-group">
                         <input type="password" name="j_password" id="j_password" class="form-control" placeholder="Password"/>
                     </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="remember_me"/> Remember me
-                    </div>
                 </div>
                 <div class="footer">
                 
                 	<c:if test="${!empty uiParamAlert}">
                 	<center>
-                	<font color="red">${uiParamAlert}</font>
-                	</center><br/>
+                	   <font color="red">${uiParamAlert}</font>
+                	</center>
                 	</c:if>
-                	
+                	<br/>
                     <button type="submit" class="btn cebedo-bg-orange btn-block" style="color: #fff">Log me in</button>
 
-                    <p><a href="#">I forgot my password</a></p>
+                    <!-- <p><a href="#">I forgot my password</a></p> -->
+                    <p>&nbsp;</p>
 
-                    <a href="register.html" class="text-center">Register a new membership</a>
+                    <!-- <a href="register.html" class="text-center">Register a new membership</a> -->
                 </div>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </fieldset>
             </form>
 <!--             <div class="margin text-center"> -->

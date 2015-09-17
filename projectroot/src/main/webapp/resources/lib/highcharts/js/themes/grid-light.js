@@ -5,7 +5,8 @@
 
 // Load the fonts
 Highcharts.createElement('link', {
-	href: '//fonts.googleapis.com/css?family=Dosis:400,600',
+	/*href: '//fonts.googleapis.com/css?family=Dosis:400,600',*/
+	href: '/pmsys/resources/css/fonts.css',
 	rel: 'stylesheet',
 	type: 'text/css'
 }, null, document.getElementsByTagName('head')[0]);
@@ -16,7 +17,7 @@ Highcharts.theme = {
 	chart: {
 		backgroundColor: null,
 		style: {
-			fontFamily: "Dosis, sans-serif"
+			fontFamily: "Source Sans Pro, serif"
 		}
 	},
 	title: {

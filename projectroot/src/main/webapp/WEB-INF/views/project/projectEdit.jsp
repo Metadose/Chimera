@@ -1761,7 +1761,7 @@
 	</div>
 	
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/highcharts/js/themes/sand-signika.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
