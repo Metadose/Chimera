@@ -186,7 +186,7 @@ img {
   background-color: #222222 !important;
 }
 .bg-red {
-  background-color: #f56954 !important;
+  background-color: #F45B5B !important
 }
 .bg-yellow {
   background-color: #f39c12 !important;
@@ -719,7 +719,7 @@ body > .header .logo .icon {
 .info-box {
   display: block;
   min-height: 90px;
-  background: #fff;
+  background: #E2D9BC;
   width: 100%;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
@@ -1075,9 +1075,9 @@ body > .header .logo .icon {
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
   z-index: 5;
   color: #f9f9f9;
-  color: rgba(255, 255, 255, 0.8);
+  /* color: rgba(255, 255, 255, 0.8); */
   font-size: 17px;
-  text-shadow: 2px 2px 3px #333333;
+  /* text-shadow: 2px 2px 3px #333333; */
   margin-top: 10px;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header > p > small {
@@ -1098,7 +1098,7 @@ body > .header .logo .icon {
   clear: both;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-body > div > a {
-  color: #0073b7;
+  color: #F06023;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-footer {
   background-color: #f9f9f9;
@@ -2157,25 +2157,44 @@ Component: timeline
     Component: alert
 ------------------------
 */
+/*
+ * Component: alert
+ * ----------------
+ */
 .alert {
-  padding-left: 30px;
-  margin-left: 15px;
-  position: relative;
+  border-radius: 3px;
 }
-.alert > .fa,
-.alert > .glyphicon {
-  position: absolute;
-  left: -15px;
-  top: -15px;
-  width: 35px;
-  height: 35px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  line-height: 35px;
-  text-align: center;
-  background: inherit;
-  border: inherit;
+.alert h4 {
+  font-weight: 600;
+}
+.alert .icon {
+  margin-right: 10px;
+}
+.alert .close {
+  color: #000;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.alert .close:hover {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.alert a {
+  color: #fff;
+  text-decoration: underline;
+}
+.alert-success {
+  border-color: #008d4c;
+}
+.alert-danger,
+.alert-error {
+  border-color: #d73925;
+}
+.alert-warning {
+  border-color: #e08e0b;
+}
+.alert-info {
+  border-color: #00acd6;
 }
 /*
     Component: Navs
@@ -2635,7 +2654,7 @@ Component: timeline
   background-color: #38332D;
 }
 .skin-blue .navbar .nav a {
-  color: #f6f6f6;
+  color: #E2D9BC;
 }
 .skin-blue .navbar .nav > li > a:hover,
 .skin-blue .navbar .nav > li > a:active,

@@ -5,16 +5,17 @@
 
 // Load the fonts
 Highcharts.createElement('link', {
-	href: '//fonts.googleapis.com/css?family=Signika:400,700',
+	href: '/pmsys/resources/css/fonts.css',
+	/*href: '//fonts.googleapis.com/css?family=Signika:400,700',*/
 	rel: 'stylesheet',
 	type: 'text/css'
 }, null, document.getElementsByTagName('head')[0]);
 
 // Add the background image to the container
-Highcharts.wrap(Highcharts.Chart.prototype, 'getContainer', function (proceed) {
+/*Highcharts.wrap(Highcharts.Chart.prototype, 'getContainer', function (proceed) {
 	proceed.call(this);
 	this.container.style.background = 'url(http://www.highcharts.com/samples/graphics/sand.png)';
-});
+});*/
 
 
 Highcharts.theme = {
@@ -23,7 +24,7 @@ Highcharts.theme = {
 	chart: {
 		backgroundColor: null,
 		style: {
-			fontFamily: "Signika, serif"
+			fontFamily: "Source Sans Pro, serif"
 		}
 	},
 	title: {
@@ -62,14 +63,8 @@ Highcharts.theme = {
 		}
 	},
 	plotOptions: {
-		series: {
-			shadow: true
-		},
 		candlestick: {
 			lineColor: '#404048'
-		},
-		map: {
-			shadow: false
 		}
 	},
 

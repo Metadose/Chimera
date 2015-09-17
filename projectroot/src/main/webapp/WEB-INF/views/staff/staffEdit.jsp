@@ -84,7 +84,7 @@
                             	</c:when>
                             	</c:choose>
 
-                                <c:if test="${staff.id != 0}">
+                                <c:if test="${staff.id != 0 && !empty taskList}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Tasks</a></li>
                                 </c:if>
                             </ul>
@@ -176,7 +176,7 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <c:if test="${staff.id != 0}">
+                                <c:if test="${staff.id != 0 && !empty taskList}">
                                 <div class="tab-pane" id="tab_timeline">
                                 	
               						<div class="row">
@@ -484,7 +484,7 @@
 	<div id="myModal" class="modal fade">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
-	            <div class="modal-header">
+	            <div class="modal-header cebedo-bg-orange">
 	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	                <h4 class="modal-title">Attendance</h4>
 	            </div>
@@ -517,8 +517,8 @@
                     </form:form>
 	            </div>
 	            <div class="modal-footer">
-	            	<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
 	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-cebedo-update btn-flat btn-sm">Update</button>
+	            	<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
 	            </div>
 	        </div>
 	    </div>
@@ -531,6 +531,7 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 
     <script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+    <script src="<c:url value="/resources/lib/highcharts/js/themes/sand-signika.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
@@ -597,6 +598,95 @@
 		var minDate = moment(dateAsVal);
 		$('#calendar').fullCalendar('gotoDate', minDate);
    	});
+
+    $(function () {
+	    $('#highcharts-tasks').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Tasks",
+	            colorByPoint: true,
+	            data: ${dataSeriesTasks}
+	        }]
+	    });
+	});
+
+    $(function () {
+	    $('#highcharts-attendance').highcharts({
+	        chart: {
+	            type: 'pie',
+	            options3d: {
+	                enabled: true,
+	                alpha: 45
+	            }
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+			title: {
+	            text: ''
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                innerSize: 100,
+	                depth: 45,
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: "Attendance",
+	            colorByPoint: true,
+	            data: ${dataSeriesAttendance}
+	        }]
+	    });
+	});
+
+	$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+		var id = $(e.target).attr("href").substr(1);
+		$(window).resize();
+	    // TODO Some href links, if equal to #, scrolls to top.
+	    return false;
+	});
 	</script>
 	</c:if>
 	
@@ -622,95 +712,6 @@
 			$("#modalDate").inputmask("yyyy/mm/dd", {"placeholder": "yyyy/mm/dd"});
 			$("#task-table").dataTable();
 	    });
-
-	    $(function () {
-		    $('#highcharts-tasks').highcharts({
-		        chart: {
-		            type: 'pie',
-		            options3d: {
-		                enabled: true,
-		                alpha: 45
-		            }
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-				title: {
-		            text: ''
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
-		        },
-		        plotOptions: {
-		            pie: {
-		                innerSize: 100,
-		                depth: 45,
-		                allowPointSelect: true,
-		                cursor: 'pointer',
-		                dataLabels: {
-		                    enabled: true,
-		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
-		                    style: {
-		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-		                    }
-		                }
-		            }
-		        },
-		        series: [{
-		            name: "Tasks",
-		            colorByPoint: true,
-		            data: ${dataSeriesTasks}
-		        }]
-		    });
-		});
-
-	    $(function () {
-		    $('#highcharts-attendance').highcharts({
-		        chart: {
-		            type: 'pie',
-		            options3d: {
-		                enabled: true,
-		                alpha: 45
-		            }
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-				title: {
-		            text: ''
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
-		        },
-		        plotOptions: {
-		            pie: {
-		                innerSize: 100,
-		                depth: 45,
-		                allowPointSelect: true,
-		                cursor: 'pointer',
-		                dataLabels: {
-		                    enabled: true,
-		                    format: '<b>{point.name}</b><br/>{point.y} ({point.percentage:.2f}) %',
-		                    style: {
-		                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-		                    }
-		                }
-		            }
-		        },
-		        series: [{
-		            name: "Attendance",
-		            colorByPoint: true,
-		            data: ${dataSeriesAttendance}
-		        }]
-		    });
-		});
-
-		$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
-			var id = $(e.target).attr("href").substr(1);
-			$(window).resize();
-		    // TODO Some href links, if equal to #, scrolls to top.
-		    return false;
-		});
 	</script>
 </body>
 </html>

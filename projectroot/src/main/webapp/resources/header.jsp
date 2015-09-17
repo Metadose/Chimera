@@ -95,7 +95,7 @@ $(window).on('load', function() {
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
-                        <li class="user-header bg-light-blue">
+                        <li class="user-header cebedo-bg-orange">
                             <p>
 		            	 		${staffName}<br/>
                                 <small>${companyPosition}</small>

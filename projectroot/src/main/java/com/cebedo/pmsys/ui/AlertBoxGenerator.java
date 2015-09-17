@@ -186,12 +186,9 @@ public class AlertBoxGenerator {
     /**
      * Template.
      */
-    private final String TEMPLATE = "<div class=\"alert alert-"
-	    + CONFIG_ALERT_STATUS
-	    + " alert-dismissable\"><i class=\"fa fa-"
-	    + CONFIG_ALERT_ICON
-	    + "\"></i><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button><h4>"
-	    + CONFIG_ALERT_HEADER + "</h4>" + CONFIG_ALERT_MESSAGE + "</div>";
+    private final String TEMPLATE = String
+	    .format("<div class=\"alert alert-%s alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button><h4><i class=\"fa fa-%s\"></i>&nbsp;%s</h4>%s</div>",
+		    CONFIG_ALERT_STATUS, CONFIG_ALERT_ICON, CONFIG_ALERT_HEADER, CONFIG_ALERT_MESSAGE);
 
     private String status;
     private String icon;

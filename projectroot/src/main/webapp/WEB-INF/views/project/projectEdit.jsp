@@ -330,7 +330,7 @@
                    					<div class="row">
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-light-blue"><i class="ion ion-cash"></i></span>
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Current Total Expenses</span>
 							                  <span class="info-box-number">${projectAux.getCurrentTotalProjectAsString()}</span>
@@ -339,7 +339,7 @@
 							            </div><!-- /.col -->
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-light-blue"><i class="ion ion-hammer"></i></span>
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-hammer"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Inventory</span>
 							                  <span class="info-box-number">${projectAux.getGrandTotalDeliveryAsString()}</span>
@@ -352,7 +352,7 @@
 
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-people"></i></span>
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-people"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Payroll</span>
 							                  <span class="info-box-number">${projectAux.getGrandTotalPayrollAsString()}</span>
@@ -361,7 +361,7 @@
 							            </div><!-- /.col -->
 							            <div class="col-md-3 col-sm-6 col-xs-12">
 							              <div class="info-box">
-							                <span class="info-box-icon bg-light-blue"><i class="ion ion-ios-cart"></i></span>
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-cart"></i></span>
 							                <div class="info-box-content">
 							                  <span class="info-box-text">Other Expenses</span>
 							                  <span class="info-box-number">${projectAux.getGrandTotalOtherExpensesAsString()}</span>
@@ -1761,6 +1761,7 @@
 	</div>
 	
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/highcharts/js/themes/sand-signika.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
