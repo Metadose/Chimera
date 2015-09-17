@@ -255,8 +255,8 @@ public class EstimateServiceImpl implements EstimateService {
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue(computedRow.getName());
 	    row.createCell(1).setCellValue(computedRow.getRemarks());
-	    row.createCell(2).setCellValue(shape.getArea());
-	    row.createCell(3).setCellValue(shape.getVolume());
+	    row.createCell(2).setCellValue(shape.getOriginalArea());
+	    row.createCell(3).setCellValue(shape.getOriginalVolume());
 	    row.createCell(4).setCellValue(computedRow.getAreaBelowGround());
 	    row.createCell(5).setCellValue(shape.getFootingLength());
 	    row.createCell(6).setCellValue(shape.getFootingWidth());
@@ -455,43 +455,43 @@ public class EstimateServiceImpl implements EstimateService {
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Cement (40kg)");
+	row.createCell(0).setCellValue("Cement (if buying 40kg)");
 	row.createCell(1).setCellValue(output.getQuantityCement40kg());
 	row.createCell(2).setCellValue(output.getCostCement40kg());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Cement (50kg)");
+	row.createCell(0).setCellValue("Cement (if buying 50kg)");
 	row.createCell(1).setCellValue(output.getQuantityCement50kg());
 	row.createCell(2).setCellValue(output.getCostCement50kg());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Sand");
+	row.createCell(0).setCellValue("Sand (cu.m.)");
 	row.createCell(1).setCellValue(output.getQuantitySand());
 	row.createCell(2).setCellValue(output.getCostSand());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Gravel");
+	row.createCell(0).setCellValue("Gravel (cu.m.)");
 	row.createCell(1).setCellValue(output.getQuantityGravel());
 	row.createCell(2).setCellValue(output.getCostGravel());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Steel Bars");
+	row.createCell(0).setCellValue("Steel Bars (6-meter length)");
 	row.createCell(1).setCellValue(output.getQuantitySteelBars());
 	row.createCell(2).setCellValue(output.getCostSteelBars());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Tie Wire (Kilo)");
+	row.createCell(0).setCellValue("Tie Wire (if buying per Kilo)");
 	row.createCell(1).setCellValue(output.getQuantityTieWireKilos());
 	row.createCell(2).setCellValue(output.getCostTieWireKilos());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Tie Wire (Roll)");
+	row.createCell(0).setCellValue("Tie Wire (if buying per Roll)");
 	row.createCell(1).setCellValue(output.getQuantityTieWireRolls());
 	row.createCell(2).setCellValue(output.getCostTieWireRolls());
     }

@@ -8,7 +8,55 @@ public enum MaterialCategory {
 
     GRAVEL("Sand"),
 
-    CHB("Concrete Hollow Blocks (CHB)");
+    CHB("Concrete Hollow Blocks (CHB)"),
+
+    TIE_WIRE("Tie Wire"),
+
+    METAL_BAR("Metal Bar"),
+
+    EQUIPMENT("Equipment"),
+
+    LUMBER("Lumber"),
+
+    PLYWOOD("Plywood"),
+
+    NYLON_STRING("Nylon String"),
+
+    NAIL("Nail"),
+
+    SCREW("Screw"),
+
+    DOOR("Door"),
+
+    WINDOW("Window"),
+
+    ROOFING("Roofing"),
+
+    WATER_LINES("Water Lines"),
+
+    TILES("Tile"),
+
+    SEALANT("Sealant"),
+
+    ADHESIVE("Adhesive"),
+
+    SCREEN("Screen"),
+
+    SEPTIC_TANK("Septic Tank"),
+
+    PLUMBING_FIXTURES("Plumbing Fixtures"),
+
+    SANITARY_PIPELINES("Sanitary Pipelines"),
+
+    ELECTRICAL_WIRES("Electrical Wires"),
+
+    ELECTRICAL_FIXTURES("Electrical Fixtures"),
+
+    AMENITIES("Amenities"),
+
+    SIGNAGE("Signage"),
+
+    OTHERS("Others");
 
     private String label;
 

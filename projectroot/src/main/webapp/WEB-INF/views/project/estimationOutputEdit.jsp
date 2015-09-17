@@ -89,37 +89,37 @@
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCHB}))</script></td>
 							</tr>
 							<tr>
-								<td>Cement (40kg)</td>
+								<td>Cement (if buying 40kg)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement40kg}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement40kg}))</script></td>
 							</tr>
 							<tr>
-								<td>Cement (50kg)</td>
+								<td>Cement (if buying 50kg)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement50kg}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement50kg}))</script></td>
 							</tr>
 							<tr>
-								<td>Sand</td>
+								<td>Sand (cu.m.)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantitySand}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costSand}))</script></td>
 							</tr>
 							<tr>
-								<td>Gravel</td>
+								<td>Gravel (cu.m.)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityGravel}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costGravel}))</script></td>
 							</tr>
 							<tr>
-								<td>Steel Bars</td>
+								<td>Steel Bars (6-meter length)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantitySteelBars}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costSteelBars}))</script></td>
 							</tr>
 							<tr>
-								<td>Tie Wire (Kilo)</td>
+								<td>Tie Wire (if buying per Kilo)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityTieWireKilos}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costTieWireKilos}))</script></td>
 							</tr>
 							<tr>
-								<td>Tie Wire (Roll)</td>
+								<td>Tie Wire (if buying per Roll)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityTieWireRolls}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costTieWireRolls}))</script></td>
 							</tr>
