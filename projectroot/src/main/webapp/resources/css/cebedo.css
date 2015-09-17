@@ -82,7 +82,7 @@ input[type=checkbox] {
 .btn.btn-cebedo-close,
 .btn.btn-cebedo-back {
   	background-color: #E2D9BC;
-	color: #807B6A;
+	color: #805E35!important;
 	border-color: #D4C593;
 }
 .btn.btn-cebedo-close:hover,

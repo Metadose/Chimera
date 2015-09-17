@@ -122,7 +122,7 @@ $(window).on('load', function() {
                         <li class="user-footer">
                             <div class="pull-right">
 				            	<c:url var="urlLogout" value="/auth/logout"/> 
-                                <a href="${urlLogout}" class="btn btn-default btn-flat">Logout</a>
+                                <a href="${urlLogout}" class="btn btn-cebedo-close btn-flat">Logout</a>
                             </div>
                         </li>
                     </ul>
