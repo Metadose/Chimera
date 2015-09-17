@@ -2,6 +2,8 @@ package com.cebedo.pmsys.enums;
 
 public enum CommonLengthUnit {
 
+    METER(5, "Meter", "m", 1),
+
     MILLIMETER(0, "Millimeter", "mm", 0.001),
 
     CENTIMETER(1, "Centimeter", "cm", 0.01),
@@ -11,8 +13,6 @@ public enum CommonLengthUnit {
     FOOT(3, "Foot", "ft", 0.3048),
 
     YARD(4, "Yard", "yd", 0.9144),
-
-    METER(5, "Meter", "m", 1),
 
     KILOMETER(6, "Kilometer", "km", 1000),
 

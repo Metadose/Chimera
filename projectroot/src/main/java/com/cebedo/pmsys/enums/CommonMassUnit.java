@@ -6,7 +6,15 @@ public enum CommonMassUnit {
 
     CEMENT_BAG_40KG(2, "Cement Bag (40kg)", "40kg Bag(s)", 40),
 
-    CEMENT_BAG_50KG(3, "Cement Bag (50kg)", "50kg Bag(s)", 50);
+    CEMENT_BAG_50KG(3, "Cement Bag (50kg)", "50kg Bag(s)", 50),
+
+    METRIC_TON(4, "Metric Ton", "Mg", 0.001),
+
+    GRAM(5, "Gram", "g", 1000),
+
+    MILLIGRAM(6, "Milligram", "mg", 0.000001),
+
+    POUND(7, "Pound", "lbs", 2.20462);
 
     int id;
     String label;
