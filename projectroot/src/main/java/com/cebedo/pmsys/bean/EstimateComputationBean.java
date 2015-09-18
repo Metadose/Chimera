@@ -32,6 +32,7 @@ public class EstimateComputationBean implements Serializable {
     /**
      * Specs.
      */
+    private double quantity = 1;
     private String name;
     private String remarks;
     private EstimateComputationShape estimateComputationShape = new EstimateComputationShape();
@@ -496,6 +497,14 @@ public class EstimateComputationBean implements Serializable {
 
     public void setAreaBelowGround(double areaBelowGround) {
 	this.areaBelowGround = areaBelowGround;
+    }
+
+    public double getQuantity() {
+	return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+	this.quantity = quantity;
     }
 
 }

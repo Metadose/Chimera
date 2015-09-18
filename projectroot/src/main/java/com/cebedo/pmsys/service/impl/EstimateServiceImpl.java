@@ -64,32 +64,33 @@ import com.google.gson.Gson;
 public class EstimateServiceImpl implements EstimateService {
 
     // Details.
-    private static final int EXCEL_DETAILS_NAME = 1;
-    private static final int EXCEL_DETAILS_AREA = 2;
-    private static final int EXCEL_DETAILS_VOLUME = 3;
+    private static final int EXCEL_DETAILS_QUANTITY = 1;
+    private static final int EXCEL_DETAILS_NAME = 2;
+    private static final int EXCEL_DETAILS_AREA = 3;
+    private static final int EXCEL_DETAILS_VOLUME = 4;
 
     // Estimate and Remarks.
-    private static final int EXCEL_ESTIMATE_MASONRY_CONCRETE = 4;
-    private static final int EXCEL_ESTIMATE_MASONRY_CHB = 5;
-    private static final int EXCEL_ESTIMATE_MASONRY_CHB_LAYING = 6;
-    private static final int EXCEL_ESTIMATE_MASONRY_PLASTERING = 7;
-    private static final int EXCEL_ESTIMATE_MASONRY_FOUNDATION_AREA = 8;
-    private static final int EXCEL_ESTIMATE_MASONRY_CHB_FOOTING = 9;
-    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_LENGTH = 10;
-    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH = 11;
-    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT = 12;
-    private static final int EXCEL_ESTIMATE_MR_CHB = 13;
-    private static final int EXCEL_DETAILS_REMARKS = 14;
+    private static final int EXCEL_ESTIMATE_MASONRY_CONCRETE = 5;
+    private static final int EXCEL_ESTIMATE_MASONRY_CHB = 6;
+    private static final int EXCEL_ESTIMATE_MASONRY_CHB_LAYING = 7;
+    private static final int EXCEL_ESTIMATE_MASONRY_PLASTERING = 8;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOUNDATION_AREA = 9;
+    private static final int EXCEL_ESTIMATE_MASONRY_CHB_FOOTING = 10;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_LENGTH = 11;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH = 12;
+    private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT = 13;
+    private static final int EXCEL_ESTIMATE_MR_CHB = 14;
+    private static final int EXCEL_DETAILS_REMARKS = 15;
 
     // Cost
-    private static final int EXCEL_COST_CHB = 15;
-    private static final int EXCEL_COST_CEMENT_40KG = 16;
-    private static final int EXCEL_COST_CEMENT_50KG = 17;
-    private static final int EXCEL_COST_SAND = 18;
-    private static final int EXCEL_COST_GRAVEL = 19;
-    private static final int EXCEL_COST_STEEL_BAR = 20;
-    private static final int EXCEL_COST_TIE_WIRE_KILOS = 21;
-    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 22;
+    private static final int EXCEL_COST_CHB = 16;
+    private static final int EXCEL_COST_CEMENT_40KG = 17;
+    private static final int EXCEL_COST_CEMENT_50KG = 18;
+    private static final int EXCEL_COST_SAND = 19;
+    private static final int EXCEL_COST_GRAVEL = 20;
+    private static final int EXCEL_COST_STEEL_BAR = 21;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 22;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 23;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -150,40 +151,42 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(2);
-	HSSFCell cellCost = row.createCell(5);
+	HSSFCell cellQuantity = row.createCell(3);
+	HSSFCell cellCost = row.createCell(6);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 4));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 7));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 3, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 8));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Steel Bar Length (Meters)");
-	row.createCell(2).setCellValue("Steel Bar (Pieces)");
-	row.createCell(3).setCellValue("Tie Wire (Kilos)");
-	row.createCell(4).setCellValue("Tie Wire (Rolls)");
-	row.createCell(5).setCellValue("Steel Bar (PHP/Piece)");
-	row.createCell(6).setCellValue("Tie Wire (PHP/Kilo)");
-	row.createCell(7).setCellValue("Tie Wire (PHP/Roll)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Steel Bar Length (Meters)");
+	row.createCell(3).setCellValue("Steel Bar (Pieces)");
+	row.createCell(4).setCellValue("Tie Wire (Kilos)");
+	row.createCell(5).setCellValue("Tie Wire (Rolls)");
+	row.createCell(6).setCellValue("Steel Bar (PHP/Piece)");
+	row.createCell(7).setCellValue("Tie Wire (PHP/Kilo)");
+	row.createCell(8).setCellValue("Tie Wire (PHP/Roll)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateResultMRCHB estimate = computedRow.getResultMRCHB();
 
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(estimate.getSteelBarLength());
-	    row.createCell(2).setCellValue(estimate.getSteelBarsQuantity());
-	    row.createCell(3).setCellValue(estimate.getTieWireKilos());
-	    row.createCell(4).setCellValue(estimate.getTieWireRolls());
-	    row.createCell(5).setCellValue(estimate.getCostSteelBars());
-	    row.createCell(6).setCellValue(estimate.getCostTieWireKilos());
-	    row.createCell(7).setCellValue(estimate.getCostTieWireRolls());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getSteelBarLength());
+	    row.createCell(3).setCellValue(estimate.getSteelBarsQuantity());
+	    row.createCell(4).setCellValue(estimate.getTieWireKilos());
+	    row.createCell(5).setCellValue(estimate.getTieWireRolls());
+	    row.createCell(6).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(7).setCellValue(estimate.getCostTieWireKilos());
+	    row.createCell(8).setCellValue(estimate.getCostTieWireRolls());
 	    rowIndex++;
 	}
     }
@@ -195,42 +198,44 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(1);
-	HSSFCell cellCost = row.createCell(5);
+	HSSFCell cellQuantity = row.createCell(2);
+	HSSFCell cellCost = row.createCell(6);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 9));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Cement (40kg)");
-	row.createCell(2).setCellValue("Cement (50kg)");
-	row.createCell(3).setCellValue("Sand (cu.m.)");
-	row.createCell(4).setCellValue("Gravel (cu.m.)");
-	row.createCell(5).setCellValue("Cement (PHP/40kg)");
-	row.createCell(6).setCellValue("Cement (PHP/50kg)");
-	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
-	row.createCell(8).setCellValue("Gravel (PHP/cu.m.)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Cement (40kg)");
+	row.createCell(3).setCellValue("Cement (50kg)");
+	row.createCell(4).setCellValue("Sand (cu.m.)");
+	row.createCell(5).setCellValue("Gravel (cu.m.)");
+	row.createCell(6).setCellValue("Cement (PHP/40kg)");
+	row.createCell(7).setCellValue("Cement (PHP/50kg)");
+	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(9).setCellValue("Gravel (PHP/cu.m.)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateResultMasonryCHBFooting estimate = computedRow.getResultCHBFootingEstimate();
 
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(estimate.getCement40kg());
-	    row.createCell(2).setCellValue(estimate.getCement50kg());
-	    row.createCell(3).setCellValue(estimate.getSand());
-	    row.createCell(4).setCellValue(estimate.getGravel());
-	    row.createCell(5).setCellValue(estimate.getCostCement40kg());
-	    row.createCell(6).setCellValue(estimate.getCostCement50kg());
-	    row.createCell(7).setCellValue(estimate.getCostSand());
-	    row.createCell(8).setCellValue(estimate.getCostGravel());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getCement40kg());
+	    row.createCell(3).setCellValue(estimate.getCement50kg());
+	    row.createCell(4).setCellValue(estimate.getSand());
+	    row.createCell(5).setCellValue(estimate.getGravel());
+	    row.createCell(6).setCellValue(estimate.getCostCement40kg());
+	    row.createCell(7).setCellValue(estimate.getCostCement50kg());
+	    row.createCell(8).setCellValue(estimate.getCostSand());
+	    row.createCell(9).setCellValue(estimate.getCostGravel());
 	    rowIndex++;
 	}
     }
@@ -243,28 +248,30 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Remarks");
-	row.createCell(2).setCellValue("Area (sq.m.)");
-	row.createCell(3).setCellValue("Volume (cu.m.)");
-	row.createCell(4).setCellValue("Area Below Ground (sq.m.)");
-	row.createCell(5).setCellValue("Footing Length (m)");
-	row.createCell(6).setCellValue("Footing Width (m)");
-	row.createCell(7).setCellValue("Footing Height (m)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Remarks");
+	row.createCell(3).setCellValue("Area (sq.m.)");
+	row.createCell(4).setCellValue("Volume (cu.m.)");
+	row.createCell(5).setCellValue("Area Below Ground (sq.m.)");
+	row.createCell(6).setCellValue("Footing Length (m)");
+	row.createCell(7).setCellValue("Footing Width (m)");
+	row.createCell(8).setCellValue("Footing Height (m)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateComputationShape shape = computedRow.getShape();
 
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(computedRow.getRemarks());
-	    row.createCell(2).setCellValue(shape.getOriginalArea());
-	    row.createCell(3).setCellValue(shape.getOriginalVolume());
-	    row.createCell(4).setCellValue(computedRow.getAreaBelowGround());
-	    row.createCell(5).setCellValue(shape.getFootingLength());
-	    row.createCell(6).setCellValue(shape.getFootingWidth());
-	    row.createCell(7).setCellValue(shape.getFootingHeight());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(computedRow.getRemarks());
+	    row.createCell(3).setCellValue(shape.getOriginalArea());
+	    row.createCell(4).setCellValue(shape.getOriginalVolume());
+	    row.createCell(5).setCellValue(computedRow.getAreaBelowGround());
+	    row.createCell(6).setCellValue(shape.getFootingLength());
+	    row.createCell(7).setCellValue(shape.getFootingWidth());
+	    row.createCell(8).setCellValue(shape.getFootingHeight());
 	    rowIndex++;
 	}
     }
@@ -283,38 +290,40 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(1);
-	HSSFCell cellCost = row.createCell(4);
+	HSSFCell cellQuantity = row.createCell(2);
+	HSSFCell cellCost = row.createCell(5);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 4));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 7));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Cement (40kg)");
-	row.createCell(2).setCellValue("Cement (50kg)");
-	row.createCell(3).setCellValue("Sand (cu.m.)");
-	row.createCell(4).setCellValue("Cement (PHP/40kg)");
-	row.createCell(5).setCellValue("Cement (PHP/50kg)");
-	row.createCell(6).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Cement (40kg)");
+	row.createCell(3).setCellValue("Cement (50kg)");
+	row.createCell(4).setCellValue("Sand (cu.m.)");
+	row.createCell(5).setCellValue("Cement (PHP/40kg)");
+	row.createCell(6).setCellValue("Cement (PHP/50kg)");
+	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateResultMasonryPlastering estimate = computedRow.getResultPlasteringEstimate();
 
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(estimate.getCement40kg());
-	    row.createCell(2).setCellValue(estimate.getCement50kg());
-	    row.createCell(3).setCellValue(estimate.getSand());
-	    row.createCell(4).setCellValue(estimate.getCostCement40kg());
-	    row.createCell(5).setCellValue(estimate.getCostCement50kg());
-	    row.createCell(6).setCellValue(estimate.getCostSand());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getCement40kg());
+	    row.createCell(3).setCellValue(estimate.getCement50kg());
+	    row.createCell(4).setCellValue(estimate.getSand());
+	    row.createCell(5).setCellValue(estimate.getCostCement40kg());
+	    row.createCell(6).setCellValue(estimate.getCostCement50kg());
+	    row.createCell(7).setCellValue(estimate.getCostSand());
 	    rowIndex++;
 	}
     }
@@ -333,42 +342,44 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(1);
-	HSSFCell cellCost = row.createCell(5);
+	HSSFCell cellQuantity = row.createCell(2);
+	HSSFCell cellCost = row.createCell(6);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 9));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("CHB (Pieces)");
-	row.createCell(2).setCellValue("Cement (40kg)");
-	row.createCell(3).setCellValue("Cement (50kg)");
-	row.createCell(4).setCellValue("Sand (cu.m.)");
-	row.createCell(5).setCellValue("CHB (PHP/Piece)");
-	row.createCell(6).setCellValue("Cement (PHP/40kg)");
-	row.createCell(7).setCellValue("Cement (PHP/50kg)");
-	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("CHB (Pieces)");
+	row.createCell(3).setCellValue("Cement (40kg)");
+	row.createCell(4).setCellValue("Cement (50kg)");
+	row.createCell(5).setCellValue("Sand (cu.m.)");
+	row.createCell(6).setCellValue("CHB (PHP/Piece)");
+	row.createCell(7).setCellValue("Cement (PHP/40kg)");
+	row.createCell(8).setCellValue("Cement (PHP/50kg)");
+	row.createCell(9).setCellValue("Sand (PHP/cu.m.)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateResultMasonryCHB estimate = computedRow.getResultCHBEstimate();
 	    EstimateResultMasonryCHBLaying chbLaying = computedRow.getResultCHBLayingEstimate();
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(estimate.getTotalCHB());
-	    row.createCell(2).setCellValue(chbLaying.getCement40kg());
-	    row.createCell(3).setCellValue(chbLaying.getCement50kg());
-	    row.createCell(4).setCellValue(chbLaying.getSand());
-	    row.createCell(5).setCellValue(estimate.getCostCHB());
-	    row.createCell(6).setCellValue(chbLaying.getCostCement40kg());
-	    row.createCell(7).setCellValue(chbLaying.getCostCement50kg());
-	    row.createCell(8).setCellValue(chbLaying.getCostSand());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getTotalCHB());
+	    row.createCell(3).setCellValue(chbLaying.getCement40kg());
+	    row.createCell(4).setCellValue(chbLaying.getCement50kg());
+	    row.createCell(5).setCellValue(chbLaying.getSand());
+	    row.createCell(6).setCellValue(estimate.getCostCHB());
+	    row.createCell(7).setCellValue(chbLaying.getCostCement40kg());
+	    row.createCell(8).setCellValue(chbLaying.getCostCement50kg());
+	    row.createCell(9).setCellValue(chbLaying.getCostSand());
 	    rowIndex++;
 	}
     }
@@ -387,41 +398,43 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(1);
-	HSSFCell cellCost = row.createCell(5);
+	HSSFCell cellQuantity = row.createCell(2);
+	HSSFCell cellCost = row.createCell(6);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 4));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 8));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 9));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Cement (40kg)");
-	row.createCell(2).setCellValue("Cement (50kg)");
-	row.createCell(3).setCellValue("Sand (cu.m.)");
-	row.createCell(4).setCellValue("Gravel (cu.m.)");
-	row.createCell(5).setCellValue("Cement (PHP/40kg)");
-	row.createCell(6).setCellValue("Cement (PHP/50kg)");
-	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
-	row.createCell(8).setCellValue("Gravel (PHP/cu.m.)");
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Cement (40kg)");
+	row.createCell(3).setCellValue("Cement (50kg)");
+	row.createCell(4).setCellValue("Sand (cu.m.)");
+	row.createCell(5).setCellValue("Gravel (cu.m.)");
+	row.createCell(6).setCellValue("Cement (PHP/40kg)");
+	row.createCell(7).setCellValue("Cement (PHP/50kg)");
+	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(9).setCellValue("Gravel (PHP/cu.m.)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
 	    EstimateResultConcrete concreteEstimate = computedRow.getResultConcreteEstimate();
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(concreteEstimate.getCement40kg());
-	    row.createCell(2).setCellValue(concreteEstimate.getCement50kg());
-	    row.createCell(3).setCellValue(concreteEstimate.getSand());
-	    row.createCell(4).setCellValue(concreteEstimate.getGravel());
-	    row.createCell(5).setCellValue(concreteEstimate.getCostCement40kg());
-	    row.createCell(6).setCellValue(concreteEstimate.getCostCement50kg());
-	    row.createCell(7).setCellValue(concreteEstimate.getCostSand());
-	    row.createCell(8).setCellValue(concreteEstimate.getCostGravel());
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(concreteEstimate.getCement40kg());
+	    row.createCell(3).setCellValue(concreteEstimate.getCement50kg());
+	    row.createCell(4).setCellValue(concreteEstimate.getSand());
+	    row.createCell(5).setCellValue(concreteEstimate.getGravel());
+	    row.createCell(6).setCellValue(concreteEstimate.getCostCement40kg());
+	    row.createCell(7).setCellValue(concreteEstimate.getCostCement50kg());
+	    row.createCell(8).setCellValue(concreteEstimate.getCostSand());
+	    row.createCell(9).setCellValue(concreteEstimate.getCostGravel());
 	    rowIndex++;
 	}
     }
@@ -800,6 +813,16 @@ public class EstimateServiceImpl implements EstimateService {
 
 		    switch (colCountDisplay) {
 
+		    case EXCEL_DETAILS_QUANTITY:
+			// If quantity is null (blank), set to 1.
+			double qty = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 1
+				: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (qty < 0) {
+			    return null;
+			}
+			estimateComputationBean.setQuantity(qty);
+			continue;
+
 		    case EXCEL_DETAILS_NAME:
 			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
 				: this.excelHelper.getValueAsExpected(workbook, cell));
@@ -1104,18 +1127,19 @@ public class EstimateServiceImpl implements EstimateService {
 	Map<Double, Double> lengthToQuantityMap = estimationOutput.getSteelBarLenToQty();
 
 	// Number of steel bars to buy, given the length of steel bar.
-	double steelBars = Math.ceil(totalMRLength / lengthToUse);
+	double quantity = estimateComputationBean.getQuantity();
+	double estSteelBars = Math.ceil(totalMRLength / lengthToUse) * quantity;
 
 	// If first time to be declared.
 	if (lengthToQuantityMap == null) {
 	    Map<Double, Double> lenToQty = new HashMap<Double, Double>();
-	    lenToQty.put(lengthToUse, steelBars);
+	    lenToQty.put(lengthToUse, estSteelBars);
 	    estimationOutput.setSteelBarLenToQty(lenToQty);
 	} else {
 	    // If this length has not been registered yet,
 	    // register with given quantity.
-	    Double newQuantity = lengthToQuantityMap.get(lengthToUse) == null ? steelBars
-		    : lengthToQuantityMap.get(lengthToUse) + steelBars;
+	    Double newQuantity = lengthToQuantityMap.get(lengthToUse) == null ? estSteelBars
+		    : lengthToQuantityMap.get(lengthToUse) + estSteelBars;
 	    lengthToQuantityMap.put(lengthToUse, newQuantity);
 	    estimationOutput.setSteelBarLenToQty(lengthToQuantityMap);
 	}
@@ -1124,20 +1148,21 @@ public class EstimateServiceImpl implements EstimateService {
 	double kgPerSqMeter = tieWireTable.getKgPerSqMeter();
 
 	// Number of tie wire kilos to buy.
-	double tieWireKilos = Math.ceil(area * kgPerSqMeter);
+	double estTieWireKilos = Math.ceil(area * kgPerSqMeter) * quantity;
 
 	// Number of tie wire rolls to buy.
-	double tieWireRolls = Math.ceil(tieWireKilos / ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
+	double estTieWireRolls = Math.ceil(estTieWireKilos
+		/ ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
 
 	// Create the result bean.
-	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(estimateComputationBean, steelBars,
-		tieWireKilos, tieWireRolls, lengthToUse);
+	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(estimateComputationBean, estSteelBars,
+		estTieWireKilos, estTieWireRolls, lengthToUse);
 
 	// Set the result to the estimation object.
 	estimateComputationBean.setResultMRCHB(resultMRCHB);
-	estimateComputationBean.setQuantitySteelBars(steelBars);
-	estimateComputationBean.setQuantityTieWireKilos(tieWireKilos);
-	estimateComputationBean.setQuantityTieWireRolls(tieWireRolls);
+	estimateComputationBean.setQuantitySteelBars(estSteelBars);
+	estimateComputationBean.setQuantityTieWireKilos(estTieWireKilos);
+	estimateComputationBean.setQuantityTieWireRolls(estTieWireRolls);
     }
 
     /**
@@ -1165,24 +1190,26 @@ public class EstimateServiceImpl implements EstimateService {
 	double footingVolume = height * width * length;
 
 	// Estimations.
-	double cement40kg = Math.ceil(footingVolume * footingMixture.getPartCement40kg());
-	double cement50kg = Math.ceil(EstimateUtils.convert40kgTo50kg(cement40kg));
-	double sand = Math.ceil(footingVolume * footingMixture.getPartSand());
-	double gravel = Math.ceil(footingVolume * footingMixture.getPartGravel());
+	double quantity = estimateComputationBean.getQuantity();
+	double estCement40kg = Math.ceil(footingVolume * footingMixture.getPartCement40kg()) * quantity;
+	double estCement50kg = Math.ceil(EstimateUtils.convert40kgTo50kg(estCement40kg));
+	double estSand = Math.ceil(footingVolume * footingMixture.getPartSand()) * quantity;
+	double estGravel = Math.ceil(footingVolume * footingMixture.getPartGravel()) * quantity;
 
 	// Put the results.
 	// Set the result map of the CHB footing estimate.
 	EstimateResultMasonryCHBFooting footingResults = new EstimateResultMasonryCHBFooting(
-		estimateComputationBean, cement40kg, gravel, sand);
+		estimateComputationBean, estCement40kg, estGravel, estSand);
 	estimateComputationBean.setResultCHBFootingEstimate(footingResults);
 
 	// Update the quantity.
 	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ cement40kg);
+		+ estCement40kg);
 	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ cement50kg);
-	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sand);
-	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel() + gravel);
+		+ estCement50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
+	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel()
+		+ estGravel);
     }
 
     /**
@@ -1260,19 +1287,20 @@ public class EstimateServiceImpl implements EstimateService {
 		.getPlasterMixture();
 
 	// Solve for the needed materials.
-	double bags40kg = Math.ceil(volume * plasterMixture.getPartCement40kg());
-	double bags50kg = Math.ceil(volume * plasterMixture.getPartCement50kg());
-	double sand = Math.ceil(volume * plasterMixture.getPartSand());
+	double quantity = estimateComputationBean.getQuantity();
+	double estBags40kg = Math.ceil(volume * plasterMixture.getPartCement40kg()) * quantity;
+	double estBags50kg = Math.ceil(volume * plasterMixture.getPartCement50kg()) * quantity;
+	double estSand = Math.ceil(volume * plasterMixture.getPartSand()) * quantity;
 
 	// Set the results.
 	EstimateResultMasonryPlastering plasteringResults = new EstimateResultMasonryPlastering(
-		estimateComputationBean, bags40kg, bags50kg, sand);
+		estimateComputationBean, estBags40kg, estBags50kg, estSand);
 	estimateComputationBean.setResultPlasteringEstimate(plasteringResults);
 	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ bags40kg);
+		+ estBags40kg);
 	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ bags50kg);
-	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sand);
+		+ estBags50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
     }
 
     /**
@@ -1297,21 +1325,22 @@ public class EstimateServiceImpl implements EstimateService {
 	double sand = chbLayingMix.getPartSand(); // Cubic meters.
 
 	// Compute.
-	double bags40kgNeeded = Math.ceil(area * bags40kg);
-	double bags50kgNeeded = Math.ceil(EstimateUtils.convert40kgTo50kg(bags40kgNeeded));
-	double sandNeeded = Math.ceil(area * sand);
+	double quantity = estimateComputationBean.getQuantity();
+	double estBags40kg = Math.ceil(area * bags40kg) * quantity;
+	double estBags50kg = Math.ceil(EstimateUtils.convert40kgTo50kg(estBags40kg));
+	double estSand = Math.ceil(area * sand) * quantity;
 
 	// Set the results.
 	EstimateResultMasonryCHBLaying layingResults = new EstimateResultMasonryCHBLaying(
-		estimateComputationBean, bags40kgNeeded, sandNeeded);
+		estimateComputationBean, estBags40kg, estSand);
 	estimateComputationBean.setResultCHBLayingEstimate(layingResults);
 
 	// Update the quantity.
 	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ bags40kgNeeded);
+		+ estBags40kg);
 	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ bags50kgNeeded);
-	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + sandNeeded);
+		+ estBags50kg);
+	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
     }
 
     /**
@@ -1363,10 +1392,11 @@ public class EstimateServiceImpl implements EstimateService {
 	double gravel = tableProportionConcrete.getPartGravel();
 
 	// Compute.
-	double estCement40kg = Math.ceil(volume * cement40kg);
-	double estCement50kg = Math.ceil(volume * cement50kg);
-	double estSand = Math.ceil(volume * sand);
-	double estGravel = Math.ceil(volume * gravel);
+	double quantity = estimateComputationBean.getQuantity();
+	double estCement40kg = Math.ceil(volume * cement40kg) * quantity;
+	double estCement50kg = Math.ceil(volume * cement50kg) * quantity;
+	double estSand = Math.ceil(volume * sand) * quantity;
+	double estGravel = Math.ceil(volume * gravel) * quantity;
 
 	// Set the results.
 	EstimateResultConcrete concreteResults = new EstimateResultConcrete(estimateComputationBean,
@@ -1399,7 +1429,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double area = estimateComputationShape.getArea();
 
 	// Get total CHBs.
-	double totalCHB = area * TableDimensionCHB.STANDARD_CHB_PER_SQ_M;
+	double quantity = estimateComputationBean.getQuantity();
+	double totalCHB = area * TableDimensionCHB.STANDARD_CHB_PER_SQ_M * quantity;
 
 	// Results of the estimate.
 	EstimateResultMasonryCHB estimateResultMasonryCHB = new EstimateResultMasonryCHB(

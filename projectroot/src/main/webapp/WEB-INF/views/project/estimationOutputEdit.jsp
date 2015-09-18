@@ -198,6 +198,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
@@ -277,6 +278,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
@@ -356,6 +358,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
@@ -434,6 +437,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
@@ -511,6 +515,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string" },
@@ -587,6 +592,7 @@ $(document).ready(function() {
 
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
 			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0.00", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
@@ -660,31 +666,37 @@ $(document).ready(function() {
 	$('#treegrid-concrete_summaries_footer_row_min').hide();
 	$('#treegrid-concrete_summaries_footer_row_max').hide();
 	$('#treegrid-concrete_summaries_footer_row_avg').hide();
+	$('#treegrid-concrete_summaries_footer_row_text_container_sum_quantity').hide()
 	
 	$('#treegrid-chb-footing_summaries_footer_row_count').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_min').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_max').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_avg').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_text_container_sum_quantity').hide()
 	
 	$('#treegrid-chb-setting_summaries_footer_row_count').hide();
 	$('#treegrid-chb-setting_summaries_footer_row_min').hide();
 	$('#treegrid-chb-setting_summaries_footer_row_max').hide();
 	$('#treegrid-chb-setting_summaries_footer_row_avg').hide();
+	$('#treegrid-chb-setting_summaries_footer_row_text_container_sum_quantity').hide()
 	
 	$('#treegrid-chb-plastering_summaries_footer_row_count').hide();
 	$('#treegrid-chb-plastering_summaries_footer_row_min').hide();
 	$('#treegrid-chb-plastering_summaries_footer_row_max').hide();
 	$('#treegrid-chb-plastering_summaries_footer_row_avg').hide();
+	$('#treegrid-chb-plastering_summaries_footer_row_text_container_sum_quantity').hide()
 
 	$('#treegrid-chb-footing_summaries_footer_row_count').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_min').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_max').hide();
 	$('#treegrid-chb-footing_summaries_footer_row_avg').hide();
+	$('#treegrid-chb-footing_summaries_footer_row_text_container_sum_quantity').hide()
 
 	$('#treegrid-mr-chb_summaries_footer_row_count').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_min').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_max').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_avg').hide();
+	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_quantity').hide()
 
 	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_mrCHBSteelBarLength').hide();
 });

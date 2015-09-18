@@ -9,6 +9,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     // Details.
     private String uuid;
+    private double quantity;
     private String name;
     private String remarks;
     private double area;
@@ -89,6 +90,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
 	// Details.
 	this.uuid = UUID.randomUUID().toString();
+	this.quantity = estimateComputationBean.getQuantity();
 	this.name = estimateComputationBean.getName();
 	this.remarks = estimateComputationBean.getRemarks();
 	this.area = estimateComputationShape.getOriginalArea();
@@ -524,6 +526,14 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setMrCHBSteelBarLength(double mrCHBSteelBarLength) {
 	this.mrCHBSteelBarLength = mrCHBSteelBarLength;
+    }
+
+    public double getQuantity() {
+	return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+	this.quantity = quantity;
     }
 
 }
