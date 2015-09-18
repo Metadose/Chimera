@@ -288,7 +288,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	double wage = attendanceMass.getWage();
 
 	// Get the dates.
-	boolean includeWeekends = attendanceMass.isIncludeWeekends();
+	boolean includeSaturdays = attendanceMass.isIncludeSaturdays();
+	boolean includeSundays = attendanceMass.isIncludeSundays();
 	Date startDate = attendanceMass.getStartDate();
 	Date endDate = attendanceMass.getEndDate();
 	List<Date> dates = DateUtils.getDatesBetweenDates(startDate, endDate);
@@ -302,11 +303,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	    // Check if date is a weekend.
 	    int dayOfWeek = DateUtils.getDayOfWeek(date);
-	    boolean isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+	    boolean isSaturday = dayOfWeek == Calendar.SATURDAY;
+	    boolean isSunday = dayOfWeek == Calendar.SUNDAY;
 
 	    // If status is delete.
 	    if (status == AttendanceStatus.DELETE) {
-		if (!includeWeekends && isWeekend) {
+		if ((!includeSaturdays && isSaturday) || (!includeSundays && isSunday)) {
 		    continue;
 		}
 		deleteAllInDate(attendance);
@@ -314,7 +316,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    }
 
 	    deleteAllInDate(attendance);
-	    if (!includeWeekends && isWeekend) {
+	    if ((!includeSaturdays && isSaturday) || (!includeSundays && isSunday)) {
 		continue;
 	    }
 	    keyAttendanceMap.put(attendance.getKey(), attendance);

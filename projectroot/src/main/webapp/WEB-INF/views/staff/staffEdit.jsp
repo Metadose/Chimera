@@ -358,9 +358,13 @@
 								                            <p class="help-block">Provide the salary of the staff for these entries</p>
 								                 			</div>
 
-								                            <label id="includeWeekendsLabel">Include Weekends</label>
-								                            <form:checkbox class="form-control" id="includeWeekendsCheckbox" path="includeWeekends" style="margin-left: -48%;"/>
-								                            <p class="help-block">Check to include weekends</p>
+								                            <label>Include Saturdays</label>
+								                            <form:checkbox class="form-control" path="includeSaturdays" style="margin-left: -48%;"/>
+								                            <p class="help-block">Check to include Saturdays</p>
+
+								                            <label>Include Sundays</label>
+								                            <form:checkbox class="form-control" path="includeSundays" style="margin-left: -48%;"/>
+								                            <p class="help-block">Check to include Sundays</p>
 								                        </div>
 								                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
 								                    </form:form>

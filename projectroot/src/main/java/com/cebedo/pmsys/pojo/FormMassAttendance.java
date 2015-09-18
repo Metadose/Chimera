@@ -13,7 +13,8 @@ public class FormMassAttendance {
     private Date endDate;
     private int statusID;
     private double wage;
-    private boolean includeWeekends;
+    private boolean includeSaturdays;
+    private boolean includeSundays;
 
     public FormMassAttendance() {
 	;
@@ -25,12 +26,12 @@ public class FormMassAttendance {
 	setWage(stf.getWage());
     }
 
-    public boolean isIncludeWeekends() {
-	return includeWeekends;
+    public boolean isIncludeSaturdays() {
+	return includeSaturdays;
     }
 
-    public void setIncludeWeekends(boolean includeWeekends) {
-	this.includeWeekends = includeWeekends;
+    public void setIncludeSaturdays(boolean include) {
+	this.includeSaturdays = include;
     }
 
     public Staff getStaff() {
@@ -79,6 +80,14 @@ public class FormMassAttendance {
 
     public void setProject(Project project) {
 	this.project = project;
+    }
+
+    public boolean isIncludeSundays() {
+	return includeSundays;
+    }
+
+    public void setIncludeSundays(boolean includeSundays) {
+	this.includeSundays = includeSundays;
     }
 
 }
