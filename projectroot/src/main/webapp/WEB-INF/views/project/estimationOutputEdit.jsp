@@ -109,10 +109,19 @@
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costGravel}))</script></td>
 							</tr>
 							<tr>
-								<td>Steel Bars (6-meter length)</td>
+								<td>Steel Bars Total</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantitySteelBars}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costSteelBars}))</script></td>
 							</tr>
+
+							<c:forEach items="${estimationoutput.steelBarLenToQty}" var="entry">
+							<tr>
+								<td>- Steel Bars (${entry.key}-meter length)</td>
+								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${entry.value}))</script></td>
+								<td class="cebedo-text-align-right">&nbsp;</td>
+							</tr>
+							</c:forEach>
+
 							<tr>
 								<td>Tie Wire (if buying per Kilo)</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityTieWireKilos}))</script></td>
@@ -190,6 +199,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
@@ -268,6 +278,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
@@ -346,6 +357,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
@@ -423,6 +435,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area (sq.m.)", 				   key: "area", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
@@ -499,6 +512,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string" },
 			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number" },
@@ -574,6 +588,7 @@ $(document).ready(function() {
 			/* Details */
 			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
 			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrCHBSteelBarLength", format: "0.00", columnCssClass: "cebedo-text-align-right", dataType: "number" },
 			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
 			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
 			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
@@ -670,6 +685,8 @@ $(document).ready(function() {
 	$('#treegrid-mr-chb_summaries_footer_row_min').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_max').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_avg').hide();
+
+	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_mrCHBSteelBarLength').hide();
 });
 </script>
 </html>

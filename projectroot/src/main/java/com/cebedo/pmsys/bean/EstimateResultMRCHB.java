@@ -14,12 +14,15 @@ public class EstimateResultMRCHB implements Serializable {
     private double costTieWireKilos;
     private double costTieWireRolls;
 
+    private double steelBarLength;
+
     public EstimateResultMRCHB() {
 	;
     }
 
     public EstimateResultMRCHB(EstimateComputationBean estimateComputationBean, double steelBars,
-	    double tieWireKilos2, double tieWireRolls2) {
+	    double tieWireKilos2, double tieWireRolls2, Double lengthToUse) {
+	setSteelBarLength(lengthToUse);
 	setSteelBarsQuantity(steelBars);
 	setTieWireKilos(tieWireKilos2);
 	setTieWireRolls(tieWireRolls2);
@@ -79,6 +82,14 @@ public class EstimateResultMRCHB implements Serializable {
 
     public void setCostSteelBars(double costSteelBars) {
 	this.costSteelBars = costSteelBars;
+    }
+
+    public double getSteelBarLength() {
+	return steelBarLength;
+    }
+
+    public void setSteelBarLength(double steelBarLength) {
+	this.steelBarLength = steelBarLength;
     }
 
 }

@@ -57,13 +57,61 @@ public enum TableMRPDRSteelBars {
     private double weight;
     private CommonMassUnit weightUnit;
 
-    TableMRPDRSteelBars(double d, double l, CommonLengthUnit dU, CommonLengthUnit lU, double w,
-	    CommonMassUnit wU) {
-	this.diameter = d;
-	this.length = l;
-	this.diameterUnit = dU;
-	this.lengthUnit = lU;
-	this.weight = w;
-	this.weightUnit = wU;
+    TableMRPDRSteelBars(double diam, double length, CommonLengthUnit diamUnit, CommonLengthUnit lenUnit,
+	    double weight, CommonMassUnit weightUnit) {
+	this.diameter = diam;
+	this.diameterUnit = diamUnit;
+	this.length = length;
+	this.lengthUnit = lenUnit;
+	this.weight = weight;
+	this.weightUnit = weightUnit;
+    }
+
+    public double getDiameter() {
+	return diameter;
+    }
+
+    public void setDiameter(double diameter) {
+	this.diameter = diameter;
+    }
+
+    public double getLength() {
+	return length;
+    }
+
+    public void setLength(double length) {
+	this.length = length;
+    }
+
+    public CommonLengthUnit getDiameterUnit() {
+	return diameterUnit;
+    }
+
+    public void setDiameterUnit(CommonLengthUnit diameterUnit) {
+	this.diameterUnit = diameterUnit;
+    }
+
+    public CommonLengthUnit getLengthUnit() {
+	return lengthUnit;
+    }
+
+    public void setLengthUnit(CommonLengthUnit lengthUnit) {
+	this.lengthUnit = lengthUnit;
+    }
+
+    public double getWeight() {
+	return weight;
+    }
+
+    public void setWeight(double weight) {
+	this.weight = weight;
+    }
+
+    public CommonMassUnit getWeightUnit() {
+	return weightUnit;
+    }
+
+    public void setWeightUnit(CommonMassUnit weightUnit) {
+	this.weightUnit = weightUnit;
     }
 }

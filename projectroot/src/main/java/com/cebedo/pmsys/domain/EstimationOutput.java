@@ -39,6 +39,7 @@ public class EstimationOutput implements IDomainObject {
     private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
+    private Map<Double, Double> steelBarLenToQty;
 
     // Quantity of the whole row.
     private double quantityCement40kg = 0;
@@ -328,6 +329,14 @@ public class EstimationOutput implements IDomainObject {
 
     public void setCostTieWireRolls(double costTieWireRolls) {
 	this.costTieWireRolls = costTieWireRolls;
+    }
+
+    public Map<Double, Double> getSteelBarLenToQty() {
+	return steelBarLenToQty;
+    }
+
+    public void setSteelBarLenToQty(Map<Double, Double> steelBarLenToQty) {
+	this.steelBarLenToQty = steelBarLenToQty;
     }
 
 }

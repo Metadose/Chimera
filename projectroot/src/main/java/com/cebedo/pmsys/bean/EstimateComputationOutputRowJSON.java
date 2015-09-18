@@ -71,6 +71,8 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private double mrCHBCostTieWireKg;
     private double mrCHBCostTieWireRoll;
 
+    private double mrCHBSteelBarLength;
+
     public EstimateComputationOutputRowJSON() {
 	;
     }
@@ -150,6 +152,8 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.mrCHBCostSteelBar = mrCHB.getCostSteelBars();
 	this.mrCHBCostTieWireKg = mrCHB.getCostTieWireKilos();
 	this.mrCHBCostTieWireRoll = mrCHB.getCostTieWireRolls();
+
+	this.mrCHBSteelBarLength = mrCHB.getSteelBarLength();
     }
 
     // Setters and Getters.
@@ -512,6 +516,14 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setFootingWidth(double footingWidth) {
 	this.footingWidth = footingWidth;
+    }
+
+    public double getMrCHBSteelBarLength() {
+	return mrCHBSteelBarLength;
+    }
+
+    public void setMrCHBSteelBarLength(double mrCHBSteelBarLength) {
+	this.mrCHBSteelBarLength = mrCHBSteelBarLength;
     }
 
 }

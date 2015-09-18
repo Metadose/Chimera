@@ -1,8 +1,10 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -148,25 +150,26 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
-	HSSFCell cellQuantity = row.createCell(1);
-	HSSFCell cellCost = row.createCell(4);
+	HSSFCell cellQuantity = row.createCell(2);
+	HSSFCell cellCost = row.createCell(5);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
-	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 2, 4));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 5, 7));
 	rowIndex++;
 
 	// Headers.
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Name");
-	row.createCell(1).setCellValue("Steel Bar (Pieces)");
-	row.createCell(2).setCellValue("Tie Wire (Kilos)");
-	row.createCell(3).setCellValue("Tie Wire (Rolls)");
-	row.createCell(4).setCellValue("Steel Bar (PHP/Piece)");
-	row.createCell(5).setCellValue("Tie Wire (PHP/Kilo)");
-	row.createCell(6).setCellValue("Tie Wire (PHP/Roll)");
+	row.createCell(1).setCellValue("Steel Bar Length (Meters)");
+	row.createCell(2).setCellValue("Steel Bar (Pieces)");
+	row.createCell(3).setCellValue("Tie Wire (Kilos)");
+	row.createCell(4).setCellValue("Tie Wire (Rolls)");
+	row.createCell(5).setCellValue("Steel Bar (PHP/Piece)");
+	row.createCell(6).setCellValue("Tie Wire (PHP/Kilo)");
+	row.createCell(7).setCellValue("Tie Wire (PHP/Roll)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -174,12 +177,13 @@ public class EstimateServiceImpl implements EstimateService {
 
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue(computedRow.getName());
-	    row.createCell(1).setCellValue(estimate.getSteelBarsQuantity());
-	    row.createCell(2).setCellValue(estimate.getTieWireKilos());
-	    row.createCell(3).setCellValue(estimate.getTieWireRolls());
-	    row.createCell(4).setCellValue(estimate.getCostSteelBars());
-	    row.createCell(5).setCellValue(estimate.getCostTieWireKilos());
-	    row.createCell(6).setCellValue(estimate.getCostTieWireRolls());
+	    row.createCell(1).setCellValue(estimate.getSteelBarLength());
+	    row.createCell(2).setCellValue(estimate.getSteelBarsQuantity());
+	    row.createCell(3).setCellValue(estimate.getTieWireKilos());
+	    row.createCell(4).setCellValue(estimate.getTieWireRolls());
+	    row.createCell(5).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(6).setCellValue(estimate.getCostTieWireKilos());
+	    row.createCell(7).setCellValue(estimate.getCostTieWireRolls());
 	    rowIndex++;
 	}
     }
@@ -479,10 +483,19 @@ public class EstimateServiceImpl implements EstimateService {
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Steel Bars (6-meter length)");
+	row.createCell(0).setCellValue("Steel Bars Total");
 	row.createCell(1).setCellValue(output.getQuantitySteelBars());
 	row.createCell(2).setCellValue(output.getCostSteelBars());
 	rowIndex++;
+
+	Map<Double, Double> steelBarLenToQty = output.getSteelBarLenToQty();
+	for (double len : steelBarLenToQty.keySet()) {
+	    double qty = steelBarLenToQty.get(len);
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(String.format("- Steel Bars (%s-meter length)", len));
+	    row.createCell(1).setCellValue(qty);
+	    rowIndex++;
+	}
 
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Tie Wire (if buying per Kilo)");
@@ -540,7 +553,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	    // For each row, compute the total quantity.
 	    // For each type in the row, compute the cost.
-	    computeRowQuantityAndPerTypeCost(estimateComputationBean);
+	    computeRowQuantityAndPerTypeCost(estimationOutput, estimateComputationBean);
 
 	    // For each row, compute the total cost.
 	    computeRowCost(estimateComputationBean);
@@ -996,8 +1009,11 @@ public class EstimateServiceImpl implements EstimateService {
      * 1) Quantity: Each Estimation type.<br>
      * 2) Quantity: The whole row.<br>
      * 3) Cost: Each Estimation type.
+     * 
+     * @param estimationOutput
      */
-    private void computeRowQuantityAndPerTypeCost(EstimateComputationBean estimateComputationBean) {
+    private void computeRowQuantityAndPerTypeCost(EstimationOutput estimationOutput,
+	    EstimateComputationBean estimateComputationBean) {
 
 	// Shape to compute.
 	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();
@@ -1039,7 +1055,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// If we're estimating metal reinforcement for CHB.
 	if (estimateComputationBean.willComputeMRCHB()) {
-	    estimateMRCHB(estimateComputationBean);
+	    estimateMRCHB(estimationOutput, estimateComputationBean);
 	}
 
     }
@@ -1047,9 +1063,12 @@ public class EstimateServiceImpl implements EstimateService {
     /**
      * Estimate steel bars and tie wires for CHB metal reinforcement.
      * 
+     * @param estimationOutput
+     * 
      * @param estimateComputationBean
      */
-    private void estimateMRCHB(EstimateComputationBean estimateComputationBean) {
+    private void estimateMRCHB(EstimationOutput estimationOutput,
+	    EstimateComputationBean estimateComputationBean) {
 	EstimateComputationShape shape = estimateComputationBean.getShape();
 	TableMRCHBVertical mrVertical = estimateComputationBean.getMrCHBVertical();
 	TableMRCHBHorizontal mrHorizontal = estimateComputationBean.getMrCHBHorizontal();
@@ -1060,8 +1079,46 @@ public class EstimateServiceImpl implements EstimateService {
 	double totalMRLength = verticalMR + horizontalMR;
 
 	// Number of steel bars to buy.
-	double steelBars = Math.ceil(totalMRLength
-		/ ConstantsEstimation.STEEL_BAR_COMMERCIAL_LENGTH_METER);
+	Double lengthToUse = null;
+	Double leastFraction = null;
+
+	for (double steelBarLength : ConstantsEstimation.STEEL_BAR_LENGTHS) {
+	    double rawComputedSteelBars = totalMRLength / steelBarLength;
+	    long intPart = (long) rawComputedSteelBars;
+	    double fractionPart = rawComputedSteelBars - intPart;
+
+	    // If not yet initialized, initialize now.
+	    if (leastFraction == null) {
+		leastFraction = fractionPart;
+		lengthToUse = steelBarLength;
+	    }
+	    // Else, compare.
+	    // If new part is lower than least,
+	    // assign it as new least.
+	    else if (fractionPart < leastFraction) {
+		leastFraction = fractionPart;
+		lengthToUse = steelBarLength;
+	    }
+	}
+
+	Map<Double, Double> lengthToQuantityMap = estimationOutput.getSteelBarLenToQty();
+
+	// Number of steel bars to buy, given the length of steel bar.
+	double steelBars = Math.ceil(totalMRLength / lengthToUse);
+
+	// If first time to be declared.
+	if (lengthToQuantityMap == null) {
+	    Map<Double, Double> lenToQty = new HashMap<Double, Double>();
+	    lenToQty.put(lengthToUse, steelBars);
+	    estimationOutput.setSteelBarLenToQty(lenToQty);
+	} else {
+	    // If this length has not been registered yet,
+	    // register with given quantity.
+	    Double newQuantity = lengthToQuantityMap.get(lengthToUse) == null ? steelBars
+		    : lengthToQuantityMap.get(lengthToUse) + steelBars;
+	    lengthToQuantityMap.put(lengthToUse, newQuantity);
+	    estimationOutput.setSteelBarLenToQty(lengthToQuantityMap);
+	}
 
 	TableMRCHBTieWire tieWireTable = estimateComputationBean.getMrCHBTieWire();
 	double kgPerSqMeter = tieWireTable.getKgPerSqMeter();
@@ -1074,7 +1131,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Create the result bean.
 	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(estimateComputationBean, steelBars,
-		tieWireKilos, tieWireRolls);
+		tieWireKilos, tieWireRolls, lengthToUse);
 
 	// Set the result to the estimation object.
 	estimateComputationBean.setResultMRCHB(resultMRCHB);
