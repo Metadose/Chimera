@@ -7,8 +7,6 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_PROJECT_PULLOUT_NO_PROJECT_STAFF = "You <b>cannot</b> pull-out materials if <b>no staff is assigned</b> to this project.";
 
-    public static final String ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT = "You <b>cannot</b> choose <b>more than one unit of measure</b> for a material.";
-
     public static final String ERROR_PROJECT_PAYROLL_NO_STAFF = "You <b>cannot</b> create a payroll <b>without staff</b> assigned to this project. <b>Assign staff members first</b>.";
 
     public static final String ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC = "There was a problem with the <b>list of staff</b> you provided. Please <b>review</b> the list and <b>try again</b>.";

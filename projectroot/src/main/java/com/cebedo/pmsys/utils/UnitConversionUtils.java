@@ -19,7 +19,7 @@ public class UnitConversionUtils {
 	if (lengthUnit == CommonLengthUnit.METER) {
 	    return value;
 	}
-	double meterConvert = lengthUnit.conversionToMeter();
+	double meterConvert = lengthUnit.getConversionToMeter();
 	double convertedValue = meterConvert * value.doubleValue();
 	value = new BigDecimal(convertedValue);
 	return value;

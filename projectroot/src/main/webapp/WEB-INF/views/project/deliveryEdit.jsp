@@ -140,25 +140,27 @@
 				                                            <label>Specific Name</label>
 				                                            <form:input type="text" placeholder="Sample: Ordinary Portland Cement" class="form-control" path="name"/>
 				                                            <p class="help-block">Enter the specific name of the material</p>
-				                                            
-				                                            <label>Unit of Measure (Choose One)</label>
-				                                            <form:select class="form-control" path="unitLength"> 
+
+				                                            <label>Unit of Measure</label>
+				                                            <form:select class="form-control" path="unitOfMeasure"> 
 				                                            	<form:option value="" label=""/> 
+				                                            	<form:option value="" label="----- Length Units"/> 
 	                                     						<c:forEach items="${unitListLength}" var="unit"> 
-	                                     							<form:option value="${unit}" label="${unit.label()}"/> 
+	                                     							<form:option value="${unit}" label="${unit.getLabel()}"/> 
 	                                     						</c:forEach> 
-	 		                                    			</form:select>
-				                                            <form:select class="form-control" path="unitMass"> 
-				                                            	<form:option value="" label=""/> 
+	                                     						<form:option value="" label=""/> 
+				                                            	<form:option value="" label="----- Mass Units"/> 
 	                                     						<c:forEach items="${unitListMass}" var="unit"> 
 	                                     							<form:option value="${unit}" label="${unit.getLabel()}"/> 
 	                                     						</c:forEach> 
-	 		                                    			</form:select>
-				                                            <form:select class="form-control" path="unitVolume"> 
-				                                            	<form:option value="" label=""/> 
+	                                     						<form:option value="" label=""/> 
+				                                            	<form:option value="" label="----- Volume Units"/> 
 	                                     						<c:forEach items="${unitListVolume}" var="unit"> 
 	                                     							<form:option value="${unit}" label="${unit.getLabel()}"/> 
 	                                     						</c:forEach> 
+	                                     						<form:option value="" label=""/> 
+	                                     						<form:option value="" label="----- Others"/> 
+				                                            	<form:option value="Pieces" label="Pieces"/>
 	 		                                    			</form:select>
 				                                            <p class="help-block">Choose the unit of measure</p>
 				                                            

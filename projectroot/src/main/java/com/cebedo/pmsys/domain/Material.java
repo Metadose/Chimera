@@ -40,11 +40,10 @@ public class Material implements IDomainObject {
 
     /**
      * Bean-backed form.
+     * 
      */
     private MaterialCategory materialCategory;
-    private CommonLengthUnit unitLength;
-    private CommonMassUnit unitMass;
-    private CommonVolumeUnit unitVolume;
+    private String unitOfMeasure;
 
     /**
      * Cost per unit.
@@ -95,25 +94,56 @@ public class Material implements IDomainObject {
     }
 
     public String getUnitName() {
-	if (this.unitLength != null) {
-	    return this.unitLength.label();
-	} else if (this.unitMass != null) {
-	    return this.unitMass.getLabel();
-	} else if (this.unitVolume != null) {
-	    return this.unitVolume.getLabel();
+	String unitStr = getUnitOfMeasure();
+	// If Length.
+	try {
+	    CommonLengthUnit unitOfMeasure = CommonLengthUnit.valueOf(unitStr);
+	    return unitOfMeasure.getLabel();
+	} catch (IllegalArgumentException e) {
+
+	    // If Mass.
+	    try {
+		CommonMassUnit unitOfMeasure = CommonMassUnit.valueOf(unitStr);
+		return unitOfMeasure.getLabel();
+	    } catch (IllegalArgumentException e2) {
+
+		// If Volume.
+		try {
+		    CommonVolumeUnit unitOfMeasure = CommonVolumeUnit.valueOf(unitStr);
+		    return unitOfMeasure.getLabel();
+		}
+		// Others.
+		catch (IllegalArgumentException e3) {
+		    return unitStr;
+		}
+	    }
 	}
-	return "";
     }
 
     public String getUnitSymbol() {
-	if (this.unitLength != null) {
-	    return this.unitLength.symbol();
-	} else if (this.unitMass != null) {
-	    return this.unitMass.getSymbol();
-	} else if (this.unitVolume != null) {
-	    return this.unitVolume.getSymbol();
+	String unitStr = getUnitOfMeasure();
+	// If Length.
+	try {
+	    CommonLengthUnit unitOfMeasure = CommonLengthUnit.valueOf(unitStr);
+	    return unitOfMeasure.getSymbol();
+	} catch (IllegalArgumentException e) {
+
+	    // If Mass.
+	    try {
+		CommonMassUnit unitOfMeasure = CommonMassUnit.valueOf(unitStr);
+		return unitOfMeasure.getSymbol();
+	    } catch (IllegalArgumentException e2) {
+		// If Volume.
+		try {
+		    CommonVolumeUnit unitOfMeasure = CommonVolumeUnit.valueOf(unitStr);
+		    return unitOfMeasure.getSymbol();
+		}
+		// Others.
+		catch (IllegalArgumentException e3) {
+		    return org.springframework.util.StringUtils.uncapitalize(unitStr);
+		}
+	    }
 	}
-	return "units";
     }
 
     public Company getCompany() {
@@ -329,28 +359,12 @@ public class Material implements IDomainObject {
 	this.materialCategory = materialCategory;
     }
 
-    public CommonLengthUnit getUnitLength() {
-	return unitLength;
+    public String getUnitOfMeasure() {
+	return unitOfMeasure;
     }
 
-    public void setUnitLength(CommonLengthUnit unitLength) {
-	this.unitLength = unitLength;
-    }
-
-    public CommonMassUnit getUnitMass() {
-	return unitMass;
-    }
-
-    public void setUnitMass(CommonMassUnit unitMass) {
-	this.unitMass = unitMass;
-    }
-
-    public CommonVolumeUnit getUnitVolume() {
-	return unitVolume;
-    }
-
-    public void setUnitVolume(CommonVolumeUnit unitVolume) {
-	this.unitVolume = unitVolume;
+    public void setUnitOfMeasure(String unitOfMeasure) {
+	this.unitOfMeasure = unitOfMeasure;
     }
 
 }

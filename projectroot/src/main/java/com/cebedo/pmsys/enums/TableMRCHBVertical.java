@@ -29,7 +29,7 @@ public enum TableMRCHBVertical {
     }
 
     public String label() {
-	return this.spacing + " " + this.unit.symbol();
+	return this.spacing + " " + this.unit.getSymbol();
     }
 
     public double getPerSqMeter() {

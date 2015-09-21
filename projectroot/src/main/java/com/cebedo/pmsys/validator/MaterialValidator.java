@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.helper.ValidationHelper;
 
@@ -42,15 +41,6 @@ public class MaterialValidator implements Validator {
 	// Remarks length = 255
 	if (this.validationHelper.stringLengthIsGreaterThanMax(targetObj.getRemarks(), 255)) {
 	    this.validationHelper.rejectGreaterThanMaxLength(errors, "remarks", 255);
-	}
-
-	// Can only choose one unit of measure for each material.
-	int unitCount = 0;
-	unitCount = targetObj.getUnitLength() == null ? unitCount : unitCount + 1;
-	unitCount = targetObj.getUnitMass() == null ? unitCount : unitCount + 1;
-	unitCount = targetObj.getUnitVolume() == null ? unitCount : unitCount + 1;
-	if (unitCount > 1) {
-	    errors.reject("", RegistryResponseMessage.ERROR_PROJECT_MATERIAL_MORE_THAN_ONE_UNIT);
 	}
     }
 }

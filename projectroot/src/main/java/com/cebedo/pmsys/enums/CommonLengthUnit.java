@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum CommonLengthUnit {
+public enum CommonLengthUnit implements IUnitOfMeasure {
 
     METER(5, "Meter", "m", 1),
 
@@ -34,43 +34,59 @@ public enum CommonLengthUnit {
 
     public static CommonLengthUnit of(int id) {
 
-	if (id == MILLIMETER.id()) {
+	if (id == MILLIMETER.getId()) {
 	    return MILLIMETER;
-	} else if (id == CENTIMETER.id()) {
+	} else if (id == CENTIMETER.getId()) {
 	    return CENTIMETER;
-	} else if (id == INCH.id()) {
+	} else if (id == INCH.getId()) {
 	    return INCH;
-	} else if (id == FOOT.id()) {
+	} else if (id == FOOT.getId()) {
 	    return FOOT;
-	} else if (id == YARD.id()) {
+	} else if (id == YARD.getId()) {
 	    return YARD;
-	} else if (id == METER.id()) {
+	} else if (id == METER.getId()) {
 	    return METER;
-	} else if (id == KILOMETER.id()) {
+	} else if (id == KILOMETER.getId()) {
 	    return KILOMETER;
-	} else if (id == MILE.id()) {
+	} else if (id == MILE.getId()) {
 	    return MILE;
-	} else if (id == NAUTICAL_MILE.id()) {
+	} else if (id == NAUTICAL_MILE.getId()) {
 	    return NAUTICAL_MILE;
 	}
 
 	return METER;
     }
 
-    public int id() {
-	return this.id;
+    public int getId() {
+	return id;
     }
 
-    public String label() {
-	return this.label;
+    public void setId(int id) {
+	this.id = id;
     }
 
-    public String symbol() {
-	return this.symbol;
+    public String getLabel() {
+	return label;
     }
 
-    public double conversionToMeter() {
-	return this.conversionToMeter;
+    public void setLabel(String label) {
+	this.label = label;
+    }
+
+    public String getSymbol() {
+	return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+	this.symbol = symbol;
+    }
+
+    public double getConversionToMeter() {
+	return conversionToMeter;
+    }
+
+    public void setConversionToMeter(double conversionToMeter) {
+	this.conversionToMeter = conversionToMeter;
     }
 
 }
