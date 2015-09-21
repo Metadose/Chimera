@@ -84,7 +84,7 @@
                             	</c:when>
                             	</c:choose>
 
-                                <c:if test="${staff.id != 0 && !empty taskList}">
+                                <c:if test="${staff.id > 0 && !empty taskList}">
                                 <li><a href="#tab_timeline" data-toggle="tab">Tasks</a></li>
                                 </c:if>
                             </ul>
@@ -176,7 +176,7 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-                                <c:if test="${staff.id != 0 && !empty taskList}">
+                                <c:if test="${staff.id > 0 && !empty taskList}">
                                 <div class="tab-pane" id="tab_timeline">
                                 	
               						<div class="row">
@@ -262,8 +262,8 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-
-                            	
+								</c:if>
+								
                             	<c:if test="${fromProject && staff.id > 0}">
                                 <div class="tab-pane active" id="tab_payroll">
                                 	<div class="row">
@@ -475,7 +475,7 @@
                    					</div>
                                 </div><!-- /.tab-pane -->
                                 </c:if>
-                                </c:if>
+                                
                             </div><!-- /.tab-content -->
                         </div><!-- nav-tabs-custom -->
                     </div><!-- /.col -->

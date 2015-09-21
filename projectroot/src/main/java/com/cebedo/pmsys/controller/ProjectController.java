@@ -102,18 +102,14 @@ import com.google.gson.Gson;
 
 value = {
 	// Project.
-	Project.OBJECT_NAME, ProjectController.ATTR_FIELD,
-	"old" + ProjectController.ATTR_FIELD,
-	ProjectController.ATTR_MASS_UPLOAD_BEAN,
-	ProjectController.ATTR_TASK,
-	ProjectController.ATTR_FROM_PROJECT,
-	ProjectController.ATTR_PROJECT_PAYROLL,
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
+	ProjectController.ATTR_MASS_UPLOAD_BEAN, ProjectController.ATTR_TASK,
+	ProjectController.ATTR_FROM_PROJECT, ProjectController.ATTR_PROJECT_PAYROLL,
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
 	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
-	ConstantsRedis.OBJECT_ESTIMATE_COST,
-	ConstantsRedis.OBJECT_EXPENSE,
+	ConstantsRedis.OBJECT_ESTIMATE_COST, ConstantsRedis.OBJECT_EXPENSE,
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
@@ -340,7 +336,8 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
+	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.projectService.list());
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
@@ -391,8 +388,8 @@ public class ProjectController {
      * @param position
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member"
-	    + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Staff.OBJECT_NAME + "-member" + "/{"
+	    + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
     public String unassignStaffMember(HttpSession session, SessionStatus status,
 	    @PathVariable(Staff.OBJECT_NAME) long staffID, RedirectAttributes redirectAttrs) {
 
@@ -440,8 +437,8 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
-    public String create(@ModelAttribute(ATTR_PROJECT) Project project,
-	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result) {
+    public String create(@ModelAttribute(ATTR_PROJECT) Project project, RedirectAttributes redirectAttrs,
+	    SessionStatus status, BindingResult result) {
 
 	// If request is to create a new project.
 	if (project.getId() == 0) {
@@ -474,7 +471,8 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_UPDATE, method = RequestMethod.POST)
+    @RequestMapping(value = Field.OBJECT_NAME + "/"
+	    + ConstantsSystem.REQUEST_UPDATE, method = RequestMethod.POST)
     public String updateField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment newFaBean, SessionStatus status,
 	    RedirectAttributes redirectAttrs, BindingResult result) {
@@ -484,9 +482,9 @@ public class ProjectController {
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService
-		.updateField(faBean.getProjectID(), faBean.getFieldID(), faBean.getLabel(),
-			faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue(), result);
+	String response = this.fieldService.updateField(faBean.getProjectID(), faBean.getFieldID(),
+		faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue(),
+		result);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -505,7 +503,8 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_DELETE, method = RequestMethod.GET)
+    @RequestMapping(value = Field.OBJECT_NAME + "/"
+	    + ConstantsSystem.REQUEST_DELETE, method = RequestMethod.GET)
     public String deleteProjectField(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -547,8 +546,8 @@ public class ProjectController {
 	// Set to model attribute "field".
 	model.addAttribute(ATTR_PROJECT, proj);
 	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label, value));
-	session.setAttribute("old" + ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label,
-		value));
+	session.setAttribute("old" + ATTR_FIELD,
+		new FormFieldAssignment(projectID, fieldID, label, value));
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT_FIELD;
     }
@@ -561,7 +560,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Project.COLUMN_PRIMARY_KEY
+	    + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
@@ -623,7 +623,8 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Field.OBJECT_NAME, method = RequestMethod.POST)
+    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/"
+	    + Field.OBJECT_NAME, method = RequestMethod.POST)
     public String assignField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment faBean, RedirectAttributes redirectAttrs,
 	    SessionStatus status, BindingResult result) {
@@ -674,7 +675,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_UPDATE + "/"
+	    + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String updateMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirectAttrs, BindingResult result) {
 
@@ -696,7 +698,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_DELIVERY }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/"
+	    + ConstantsRedis.OBJECT_DELIVERY }, method = RequestMethod.POST)
     public String createDelivery(@ModelAttribute(ConstantsRedis.OBJECT_DELIVERY) Delivery delivery,
 	    BindingResult result, RedirectAttributes redirectAttrs) {
 
@@ -722,8 +725,8 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.CREATE_ESTIMATE_COST }, method = RequestMethod.POST)
     public String createEstimateCost(
-	    @ModelAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST) EstimateCost cost,
-	    BindingResult result, RedirectAttributes redirectAttrs, SessionStatus status) {
+	    @ModelAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST) EstimateCost cost, BindingResult result,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
 	// Do service and get response.
 	String response = this.estimateCostService.set(cost, result);
@@ -812,8 +815,7 @@ public class ProjectController {
      * Create many staff members by uploading an Excel file.
      */
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)
-    public String uploadExcelStaff(
-	    @ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUploadStaff,
+    public String uploadExcelStaff(@ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUploadStaff,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
 	    BindingResult result) {
 
@@ -884,7 +886,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_ESTIMATE }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/"
+	    + ConstantsRedis.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
 	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimateComputationInputBean estimateInput,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
@@ -997,8 +1000,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Program of Works.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Program of Works.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1029,8 +1032,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Assigned Staff.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Assigned Staff.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1061,8 +1064,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Payrolls.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Payrolls.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1093,8 +1096,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Estimated Costs.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Estimated Costs.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1125,8 +1128,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Inventory.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Inventory.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1157,8 +1160,8 @@ public class ProjectController {
 	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
 	}
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=" + proj.getName()
-		+ " Other Expenses.xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Other Expenses.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1225,8 +1228,8 @@ public class ProjectController {
 	}
 	HSSFSheet sheet = workbook.getSheetAt(0);
 	response.setContentType("application/vnd.ms-excel");
-	response.setHeader("Content-Disposition", "attachment; filename=Payroll " + sheet.getSheetName()
-		+ ".xls");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=Payroll " + sheet.getSheetName() + ".xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1243,8 +1246,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_PAYROLL
-	    + "/{" + ConstantsRedis.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_PAYROLL + "/{"
+	    + ConstantsRedis.OBJECT_PAYROLL + "}-end" }, method = RequestMethod.GET)
     public String deleteProjectPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
@@ -1334,10 +1337,11 @@ public class ProjectController {
 	// If start date is > end date, error.
 	// AlertBoxGenerator here is ok, no service function was called.
 	if (min.after(max)) {
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
-		    .generateHTML(String.format(
-			    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE, "start date",
-			    "end date")));
+	    redirectAttrs
+		    .addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+			    AlertBoxGenerator.FAILED.generateHTML(String.format(
+				    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
+				    "start date", "end date")));
 	    return redirectEditPageStaff(staff.getId());
 	}
 
@@ -1374,8 +1378,8 @@ public class ProjectController {
      */
     @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE }, method = RequestMethod.POST)
     public String addMassAttendance(
-	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass,
-	    HttpSession session, Model model, BindingResult result) {
+	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass, HttpSession session,
+	    Model model, BindingResult result) {
 
 	Date startDate = attendanceMass.getStartDate();
 
@@ -1468,8 +1472,8 @@ public class ProjectController {
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
-	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(project, staff,
-		min, max);
+	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(project, staff, min,
+		max);
 
 	// Given min and max, get range of attendances.
 	// Get wage given attendances.
@@ -1575,7 +1579,8 @@ public class ProjectController {
      * @return
      */
     @RequestMapping(value = RegistryURL.EDIT_TASK, method = RequestMethod.GET)
-    public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model, HttpSession session) {
+    public String editTask(@PathVariable(Task.OBJECT_NAME) long taskID, Model model,
+	    HttpSession session) {
 
 	// Task status selector.
 	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());
@@ -1892,7 +1897,8 @@ public class ProjectController {
      * @param pullOut
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_DO_PULL_OUT + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DO_PULL_OUT + "/"
+	    + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String createPullOut(@ModelAttribute(ATTR_PULL_OUT) PullOut pullOut,
 	    RedirectAttributes redirectAttrs, BindingResult result) {
 
@@ -1994,7 +2000,8 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/" + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ADD + "/"
+	    + ConstantsRedis.OBJECT_MATERIAL }, method = RequestMethod.POST)
     public String addMaterial(@ModelAttribute(ConstantsRedis.OBJECT_MATERIAL) Material material,
 	    RedirectAttributes redirecAttrs, SessionStatus status, BindingResult result) {
 
@@ -2016,7 +2023,8 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_PAYROLL }, method = RequestMethod.POST)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/"
+	    + ConstantsRedis.OBJECT_PAYROLL }, method = RequestMethod.POST)
     public String createPayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
@@ -2083,7 +2091,8 @@ public class ProjectController {
      * @param payrollKey
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_COMPUTE + "/" + ConstantsRedis.OBJECT_PAYROLL, method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_COMPUTE + "/"
+	    + ConstantsRedis.OBJECT_PAYROLL, method = RequestMethod.GET)
     public String computePayroll(@ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 
@@ -2096,8 +2105,8 @@ public class ProjectController {
 
 	// Get payroll maps.
 	// And assign to model.
-	String payrollJSON = this.projectPayrollService
-		.compute(proj, startDate, endDate, projectPayroll);
+	String payrollJSON = this.projectPayrollService.compute(proj, startDate, endDate,
+		projectPayroll);
 
 	// If computation failed.
 	// AlertBoxGenerator here is ok, expecting a JSON.
@@ -2108,8 +2117,8 @@ public class ProjectController {
 	// If success, construct response.
 	else {
 	    String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
-	    response = AlertBoxGenerator.SUCCESS
-		    .generateCompute(ConstantsRedis.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxGenerator.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
+		    datePart);
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
@@ -2438,17 +2447,16 @@ public class ProjectController {
      */
     private void setAttributesDashboard(Model model, List<HighchartsDataPoint> inventoryCumulative,
 	    List<HighchartsDataPoint> payrollCumulative,
-	    List<HighchartsDataPoint> otherExpensesCumulative,
-	    List<HighchartsDataPoint> inventorySeries, List<HighchartsDataPoint> payrollSeries,
-	    List<HighchartsDataPoint> otherExpensesSeries, double payrollAccumulated,
-	    double materialsAccumulated, double otherExpensesAccumulated) {
+	    List<HighchartsDataPoint> otherExpensesCumulative, List<HighchartsDataPoint> inventorySeries,
+	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
+	    double payrollAccumulated, double materialsAccumulated, double otherExpensesAccumulated) {
 
 	// Dashboard.
 	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
 	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
 	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Other Expenses Cumulative",
-		otherExpensesCumulative));
+	dashboardSeries
+		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
 	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
 		new Gson().toJson(dashboardSeries, ArrayList.class));
 
@@ -2482,10 +2490,9 @@ public class ProjectController {
 	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
 	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
 	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
-	model.addAttribute(
-		ATTR_DATA_SERIES_PIE_DASHBOARD,
-		(materialsAccumulated == 0 && payrollAccumulated == 0 && otherExpensesAccumulated == 0) ? "[]"
-			: new Gson().toJson(projectPie, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_DASHBOARD,
+		(materialsAccumulated == 0 && payrollAccumulated == 0 && otherExpensesAccumulated == 0)
+			? "[]" : new Gson().toJson(projectPie, ArrayList.class));
     }
 
     /**
@@ -2503,8 +2510,8 @@ public class ProjectController {
 	double indirect = projectAux.getGrandTotalCostsIndirect();
 	pie.add(new HighchartsDataPoint("Direct", direct));
 	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED, (direct == 0 && indirect == 0) ? "[]"
-		: new Gson().toJson(pie, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED,
+		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
 
 	// Actual.
 	pie = new ArrayList<HighchartsDataPoint>();
@@ -2512,8 +2519,8 @@ public class ProjectController {
 	indirect = projectAux.getGrandTotalActualCostsIndirect();
 	pie.add(new HighchartsDataPoint("Direct", direct));
 	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ACTUAL, (direct == 0 && indirect == 0) ? "[]"
-		: new Gson().toJson(pie, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ACTUAL,
+		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
 
 	// Selectors and forms.
 	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.class.getEnumConstants());
@@ -2616,8 +2623,9 @@ public class ProjectController {
 
 		// Cumulative.
 		accumulation += yValue;
-		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, result.getEndDate()
-			.getTime(), accumulation, CSSClass.backgroundColorOf(payroll.getStatus().css()));
+		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name,
+			result.getEndDate().getTime(), accumulation,
+			CSSClass.backgroundColorOf(payroll.getStatus().css()));
 		dataSeriesCumulative.add(pointCumulative);
 	    }
 	}
