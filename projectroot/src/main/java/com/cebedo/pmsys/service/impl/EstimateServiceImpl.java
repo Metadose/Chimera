@@ -497,7 +497,26 @@ public class EstimateServiceImpl implements EstimateService {
 	// Grand total.
 	HSSFRow row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Grand Total");
-	row.createCell(1).setCellValue(output.getCostGrandTotal());
+	row.createCell(1).setCellValue(output.getCostGrandTotal40kgKilo());
+	row.createCell(3).setCellValue("If buying Cement 40kg & Tie Wire Kilo");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	row.createCell(1).setCellValue(output.getCostGrandTotal40kgRoll());
+	row.createCell(3).setCellValue("If buying Cement 40kg & Tie Wire Roll");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	row.createCell(1).setCellValue(output.getCostGrandTotal50kgKilo());
+	row.createCell(3).setCellValue("If buying Cement 50kg & Tie Wire Kilo");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	row.createCell(1).setCellValue(output.getCostGrandTotal50kgRoll());
+	row.createCell(3).setCellValue("If buying Cement 50kg & Tie Wire Roll");
 	rowIndex++;
 	rowIndex++;
 
@@ -516,13 +535,17 @@ public class EstimateServiceImpl implements EstimateService {
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Cement (if buying 40kg)");
+	row.createCell(0).setCellValue("Cement");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("- if buying 40kg");
 	row.createCell(1).setCellValue(output.getQuantityCement40kg());
 	row.createCell(2).setCellValue(output.getCostCement40kg());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Cement (if buying 50kg)");
+	row.createCell(0).setCellValue("- if buying 50kg");
 	row.createCell(1).setCellValue(output.getQuantityCement50kg());
 	row.createCell(2).setCellValue(output.getCostCement50kg());
 	rowIndex++;
@@ -555,13 +578,17 @@ public class EstimateServiceImpl implements EstimateService {
 	}
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Tie Wire (if buying per Kilo)");
+	row.createCell(0).setCellValue("Tie Wire");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("- if buying per Kilo");
 	row.createCell(1).setCellValue(output.getQuantityTieWireKilos());
 	row.createCell(2).setCellValue(output.getCostTieWireKilos());
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Tie Wire (if buying per Roll)");
+	row.createCell(0).setCellValue("- if buying per Roll");
 	row.createCell(1).setCellValue(output.getQuantityTieWireRolls());
 	row.createCell(2).setCellValue(output.getCostTieWireRolls());
     }
@@ -693,10 +720,22 @@ public class EstimateServiceImpl implements EstimateService {
 	estimationOutput.setQuantityTieWireKilos(quantityTieWireKilos);
 	estimationOutput.setQuantityTieWireRolls(quantityTieWireRolls);
 
-	// Grand total.
-	double rowTotal = costCHB + costCement40kg + costCement50kg + costSand + costGravel
-		+ costSteelBars + costTieWireKilos + costTieWireRolls;
-	estimationOutput.setCostGrandTotal(rowTotal);
+	// 40kg and Kilo
+	double rowTotal = costCHB + costCement40kg + costSand + costGravel + costSteelBars
+		+ costTieWireKilos;
+	estimationOutput.setCostGrandTotal40kgKilo(rowTotal);
+
+	// 40kg and Roll
+	rowTotal = costCHB + costCement40kg + costSand + costGravel + costSteelBars + costTieWireRolls;
+	estimationOutput.setCostGrandTotal40kgRoll(rowTotal);
+
+	// 50kg and Kilo
+	rowTotal = costCHB + costCement50kg + costSand + costGravel + costSteelBars + costTieWireKilos;
+	estimationOutput.setCostGrandTotal50kgKilo(rowTotal);
+
+	// 50kg and Roll
+	rowTotal = costCHB + costCement50kg + costSand + costGravel + costSteelBars + costTieWireRolls;
+	estimationOutput.setCostGrandTotal50kgRoll(rowTotal);
     }
 
     /**

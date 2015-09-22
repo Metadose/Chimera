@@ -62,7 +62,10 @@ public class EstimationOutput implements IDomainObject {
     private double costTieWireRolls = 0;
 
     // Grand total.
-    private double costGrandTotal = 0;
+    private double costGrandTotal40kgKilo = 0;
+    private double costGrandTotal40kgRoll = 0;
+    private double costGrandTotal50kgKilo = 0;
+    private double costGrandTotal50kgRoll = 0;
 
     /**
      * Extension map.
@@ -271,18 +274,6 @@ public class EstimationOutput implements IDomainObject {
 	this.costCHB = costCHB;
     }
 
-    public String getCostGrandTotalAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal);
-    }
-
-    public double getCostGrandTotal() {
-	return costGrandTotal;
-    }
-
-    public void setCostGrandTotal(double costGrandTotal) {
-	this.costGrandTotal = costGrandTotal;
-    }
-
     public double getQuantitySteelBars() {
 	return quantitySteelBars;
     }
@@ -337,6 +328,54 @@ public class EstimationOutput implements IDomainObject {
 
     public void setSteelBarLenToQty(Map<Double, Double> steelBarLenToQty) {
 	this.steelBarLenToQty = steelBarLenToQty;
+    }
+
+    public double getCostGrandTotal40kgKilo() {
+	return costGrandTotal40kgKilo;
+    }
+
+    public void setCostGrandTotal40kgKilo(double costGrandTotal40kgKilo) {
+	this.costGrandTotal40kgKilo = costGrandTotal40kgKilo;
+    }
+
+    public double getCostGrandTotal40kgRoll() {
+	return costGrandTotal40kgRoll;
+    }
+
+    public void setCostGrandTotal40kgRoll(double costGrandTotal40kgRoll) {
+	this.costGrandTotal40kgRoll = costGrandTotal40kgRoll;
+    }
+
+    public double getCostGrandTotal50kgKilo() {
+	return costGrandTotal50kgKilo;
+    }
+
+    public void setCostGrandTotal50kgKilo(double costGrandTotal50kgKilo) {
+	this.costGrandTotal50kgKilo = costGrandTotal50kgKilo;
+    }
+
+    public double getCostGrandTotal50kgRoll() {
+	return costGrandTotal50kgRoll;
+    }
+
+    public void setCostGrandTotal50kgRoll(double costGrandTotal50kgRoll) {
+	this.costGrandTotal50kgRoll = costGrandTotal50kgRoll;
+    }
+
+    public String getCostGrandTotal40kgKiloAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal40kgKilo);
+    }
+
+    public String getCostGrandTotal40kgRollAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal40kgRoll);
+    }
+
+    public String getCostGrandTotal50kgKiloAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal50kgKilo);
+    }
+
+    public String getCostGrandTotal50kgRollAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal50kgRoll);
     }
 
 }

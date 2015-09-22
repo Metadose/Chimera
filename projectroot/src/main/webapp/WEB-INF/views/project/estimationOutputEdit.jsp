@@ -89,12 +89,17 @@
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCHB}))</script></td>
 							</tr>
 							<tr>
-								<td>Cement (if buying 40kg)</td>
+								<td>Cement</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>- if buying 40kg</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement40kg}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement40kg}))</script></td>
 							</tr>
 							<tr>
-								<td>Cement (if buying 50kg)</td>
+								<td>- if buying 50kg</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityCement50kg}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costCement50kg}))</script></td>
 							</tr>
@@ -123,12 +128,17 @@
 							</c:forEach>
 
 							<tr>
-								<td>Tie Wire (if buying per Kilo)</td>
+								<td>Tie Wire</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>- if buying per Kilo</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityTieWireKilos}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costTieWireKilos}))</script></td>
 							</tr>
 							<tr>
-								<td>Tie Wire (if buying per Roll)</td>
+								<td>- if buying per Roll</td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatQuantity(${estimationoutput.quantityTieWireRolls}))</script></td>
 								<td class="cebedo-text-align-right"><script type="text/javascript">document.write(formatCurrency(${estimationoutput.costTieWireRolls}))</script></td>
 							</tr>
@@ -136,10 +146,30 @@
 						</table>
 						
 						<div class="pull-right">
-                  		<h3>Grand Total <b><u>
-                    	${estimationoutput.getCostGrandTotalAsString()}
-						</u></b></h3>
+	                  		<h3>
+	                  			Grand Total <b><u>${estimationoutput.getCostGrandTotal40kgKiloAsString()}</u></b><br/><small>(If buying Cement 40kg & Tie Wire Kilo)</small>
+							</h3>
+	                  		<h3>
+	                  			Grand Total <b><u>${estimationoutput.getCostGrandTotal40kgRollAsString()}</u></b><br/><small>(If buying Cement 40kg & Tie Wire Roll)</small>
+							</h3>
+	                  		<h3>
+	                  			Grand Total <b><u>${estimationoutput.getCostGrandTotal50kgKiloAsString()}</u></b><br/><small>(If buying Cement 50kg & Tie Wire Kilo)</small>
+							</h3>
+	                  		<h3>
+	                  			Grand Total <b><u>${estimationoutput.getCostGrandTotal50kgRollAsString()}</u></b><br/><small>(If buying Cement 50kg & Tie Wire Roll)</small>
+							</h3>
 						</div>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
 						<br/>
 						<br/>
 						<br/>
