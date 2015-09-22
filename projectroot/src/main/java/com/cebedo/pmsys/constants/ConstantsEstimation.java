@@ -17,4 +17,9 @@ public class ConstantsEstimation {
      */
     public static final double PLASTER_THICKNESS = 0.016;
 
+    /**
+     * Standard minimum footing reinforcement underground (in Meters).
+     */
+    public static final double METAL_REINFORCEMENT_MINIMUM_UNDERGROUND_COVER = 0.075;
+
 }

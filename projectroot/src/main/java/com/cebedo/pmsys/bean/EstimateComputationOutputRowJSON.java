@@ -74,6 +74,11 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     private double mrCHBSteelBarLength;
 
+    // Metal reinforcement (Independent Footing).
+    private double mrIFSteelBarLength;
+    private double mrIFSteelBar;
+    private double mrIFCostSteelBar;
+
     public EstimateComputationOutputRowJSON() {
 	;
     }
@@ -87,6 +92,8 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
 	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
 	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
+	EstimateResultMRIndependentFooting mrIndieFooting = estimateComputationBean
+		.getResultMRIndependentFooting();
 
 	// Details.
 	this.uuid = UUID.randomUUID().toString();
@@ -156,6 +163,11 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.mrCHBCostTieWireRoll = mrCHB.getCostTieWireRolls();
 
 	this.mrCHBSteelBarLength = mrCHB.getSteelBarLength();
+
+	// Metal reinforcement (Independent Footing).
+	this.mrIFSteelBarLength = mrIndieFooting.getSteelBarLength();
+	this.mrIFSteelBar = mrIndieFooting.getSteelBarsQuantity();
+	this.mrIFCostSteelBar = mrIndieFooting.getCostSteelBars();
     }
 
     // Setters and Getters.
@@ -534,6 +546,30 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setQuantity(double quantity) {
 	this.quantity = quantity;
+    }
+
+    public double getMrIFSteelBarLength() {
+	return mrIFSteelBarLength;
+    }
+
+    public void setMrIFSteelBarLength(double mrIFSteelBarLength) {
+	this.mrIFSteelBarLength = mrIFSteelBarLength;
+    }
+
+    public double getMrIFSteelBar() {
+	return mrIFSteelBar;
+    }
+
+    public void setMrIFSteelBar(double mrIFSteelBar) {
+	this.mrIFSteelBar = mrIFSteelBar;
+    }
+
+    public double getMrIFCostSteelBar() {
+	return mrIFCostSteelBar;
+    }
+
+    public void setMrIFCostSteelBar(double mrIFCostSteelBar) {
+	this.mrIFCostSteelBar = mrIFCostSteelBar;
     }
 
 }

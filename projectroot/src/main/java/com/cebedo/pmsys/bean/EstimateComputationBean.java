@@ -81,6 +81,7 @@ public class EstimateComputationBean implements Serializable {
     private EstimateResultMasonryPlastering resultPlasteringEstimate = new EstimateResultMasonryPlastering();
     private EstimateResultMasonryCHBFooting resultCHBFootingEstimate = new EstimateResultMasonryCHBFooting();
     private EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB();
+    private EstimateResultMRIndependentFooting resultMRIndependentFooting = new EstimateResultMRIndependentFooting();
 
     // Quantity of the whole row.
     private double quantityCement40kg = 0;
@@ -133,6 +134,10 @@ public class EstimateComputationBean implements Serializable {
 
     public boolean willComputeMRCHB() {
 	return this.estimateTypes.contains(EstimateType.METAL_REINFORCEMENT_CHB);
+    }
+
+    public boolean willComputeMRIndependentFooting() {
+	return this.estimateTypes.contains(EstimateType.METAL_REINFORCEMENT_INDEPENDENT_FOOTING);
     }
 
     public Company getCompany() {
@@ -505,6 +510,15 @@ public class EstimateComputationBean implements Serializable {
 
     public void setQuantity(double quantity) {
 	this.quantity = quantity;
+    }
+
+    public EstimateResultMRIndependentFooting getResultMRIndependentFooting() {
+	return resultMRIndependentFooting;
+    }
+
+    public void setResultMRIndependentFooting(
+	    EstimateResultMRIndependentFooting resultMRIndependentFooting) {
+	this.resultMRIndependentFooting = resultMRIndependentFooting;
     }
 
 }

@@ -29,6 +29,7 @@ import com.cebedo.pmsys.bean.EstimateComputationOutputRowJSON;
 import com.cebedo.pmsys.bean.EstimateComputationShape;
 import com.cebedo.pmsys.bean.EstimateResultConcrete;
 import com.cebedo.pmsys.bean.EstimateResultMRCHB;
+import com.cebedo.pmsys.bean.EstimateResultMRIndependentFooting;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHB;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHBFooting;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHBLaying;
@@ -80,17 +81,20 @@ public class EstimateServiceImpl implements EstimateService {
     private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_WIDTH = 12;
     private static final int EXCEL_ESTIMATE_MASONRY_FOOTING_HEIGHT = 13;
     private static final int EXCEL_ESTIMATE_MR_CHB = 14;
-    private static final int EXCEL_DETAILS_REMARKS = 15;
+    private static final int EXCEL_ESTIMATE_MR_INDEPENDENT_FOOTING = 15;
+    private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_LENGTH = 16;
+    private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_PER_FOOTING = 17;
+    private static final int EXCEL_DETAILS_REMARKS = 18;
 
     // Cost
-    private static final int EXCEL_COST_CHB = 16;
-    private static final int EXCEL_COST_CEMENT_40KG = 17;
-    private static final int EXCEL_COST_CEMENT_50KG = 18;
-    private static final int EXCEL_COST_SAND = 19;
-    private static final int EXCEL_COST_GRAVEL = 20;
-    private static final int EXCEL_COST_STEEL_BAR = 21;
-    private static final int EXCEL_COST_TIE_WIRE_KILOS = 22;
-    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 23;
+    private static final int EXCEL_COST_CHB = 19;
+    private static final int EXCEL_COST_CEMENT_40KG = 20;
+    private static final int EXCEL_COST_CEMENT_50KG = 21;
+    private static final int EXCEL_COST_SAND = 22;
+    private static final int EXCEL_COST_GRAVEL = 23;
+    private static final int EXCEL_COST_STEEL_BAR = 24;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 25;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 26;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -668,6 +672,8 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimateResultMasonryPlastering plaster = estimateComputationBean.getResultPlasteringEstimate();
 	EstimateResultMasonryCHBFooting footing = estimateComputationBean.getResultCHBFootingEstimate();
 	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
+	EstimateResultMRIndependentFooting mrIndieFooting = estimateComputationBean
+		.getResultMRIndependentFooting();
 
 	double costCement40kg = 0, costCement50kg = 0, costSand = 0, costGravel = 0, costCHB = 0;
 	double costSteelBar = 0, costTieWireKG = 0, costTieWireRoll = 0;
@@ -701,6 +707,9 @@ public class EstimateServiceImpl implements EstimateService {
 	costSteelBar += mrCHB.getCostSteelBars();
 	costTieWireKG += mrCHB.getCostTieWireKilos();
 	costTieWireRoll += mrCHB.getCostTieWireRolls();
+
+	// Metal reinforcement (Independent Footing).
+	costSteelBar += mrIndieFooting.getCostSteelBars();
 
 	// Set the results for the whole row.
 	estimateComputationBean.setCostCement40kg(costCement40kg);
@@ -815,8 +824,8 @@ public class EstimateServiceImpl implements EstimateService {
 
 		    case EXCEL_DETAILS_QUANTITY:
 			// If quantity is null (blank), set to 1.
-			double qty = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 1
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			double qty = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 1 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (qty < 0) {
 			    return null;
 			}
@@ -824,14 +833,15 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_DETAILS_NAME:
-			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String name = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateComputationBean.setName(name);
 			continue;
 
 		    case EXCEL_DETAILS_AREA:
-			double area = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			double area = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (area < 0) {
 			    return null;
 			}
@@ -841,8 +851,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_DETAILS_VOLUME:
-			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			double volume = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (volume < 0) {
 			    return null;
 			}
@@ -938,15 +948,44 @@ public class EstimateServiceImpl implements EstimateService {
 			}
 			continue;
 
+		    case EXCEL_ESTIMATE_MR_INDEPENDENT_FOOTING:
+			boolean mrIndependentFooting = getEstimateBooleanFromExcel(workbook, cell);
+			if (mrIndependentFooting) {
+			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_INDEPENDENT_FOOTING);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_ESTIMATE_MR_FOOTING_BAR_LENGTH:
+			double mrBarLength = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (mrBarLength < 0) {
+			    return null;
+			}
+			estimateComputationShape.setFootingBarLength(mrBarLength);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
+		    case EXCEL_ESTIMATE_MR_FOOTING_BAR_PER_FOOTING:
+			double mrBarsPerFooting = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (mrBarsPerFooting < 0) {
+			    return null;
+			}
+			estimateComputationShape.setFootingNumberOfBars(mrBarsPerFooting);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
 		    case EXCEL_DETAILS_REMARKS:
-			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			estimateComputationBean.setRemarks(remarks);
 			continue;
 
 		    case EXCEL_COST_CHB:
-			costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costCHB = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null
+				? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costCHB < 0) {
 			    return null;
 			}
@@ -954,8 +993,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_CEMENT_40KG:
-			costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costCement40kg = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costCement40kg < 0) {
 			    return null;
 			}
@@ -963,8 +1002,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_CEMENT_50KG:
-			costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costCement50kg = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costCement50kg < 0) {
 			    return null;
 			}
@@ -972,8 +1011,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_SAND:
-			costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costSand = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null
+				? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costSand < 0) {
 			    return null;
 			}
@@ -981,8 +1020,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_GRAVEL:
-			costGravel = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costGravel = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costGravel < 0) {
 			    return null;
 			}
@@ -990,8 +1029,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_STEEL_BAR:
-			costSteelBars = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costSteelBars = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costSteelBars < 0) {
 			    return null;
 			}
@@ -999,8 +1038,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_TIE_WIRE_KILOS:
-			costTieWireKilos = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costTieWireKilos = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costTieWireKilos < 0) {
 			    return null;
 			}
@@ -1008,8 +1047,8 @@ public class EstimateServiceImpl implements EstimateService {
 			continue;
 
 		    case EXCEL_COST_TIE_WIRE_ROLLS:
-			costTieWireRoll = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costTieWireRoll = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			if (costTieWireRoll < 0) {
 			    return null;
 			}
@@ -1081,6 +1120,103 @@ public class EstimateServiceImpl implements EstimateService {
 	    estimateMRCHB(estimationOutput, estimateComputationBean);
 	}
 
+	// If we're estimating metal reinforcement for an independent footing.
+	if (estimateComputationBean.willComputeMRIndependentFooting()) {
+	    estimateMRIndependentFooting(estimationOutput, estimateComputationBean);
+	}
+
+    }
+
+    /**
+     * Estimating metal reinforcement for an independent footing.
+     * 
+     * @param estimationOutput
+     * @param estimateComputationBean
+     */
+    private void estimateMRIndependentFooting(EstimationOutput estimationOutput,
+	    EstimateComputationBean estimateComputationBean) {
+
+	EstimateComputationShape shape = estimateComputationBean.getShape();
+	double barLength = shape.getFootingBarLength();
+	double footingLength = shape.getFootingLength();
+
+	// If bar length is not defined, set it.
+	if (barLength == 0) {
+	    barLength = footingLength
+		    - (2 * ConstantsEstimation.METAL_REINFORCEMENT_MINIMUM_UNDERGROUND_COVER);
+	}
+
+	// How many bars in one footing?
+	double barsPerFooting = shape.getFootingNumberOfBars();
+
+	// Total number of bars in all footings.
+	double allBars = barsPerFooting * estimateComputationBean.getQuantity();
+
+	// Length of steel bar to buy.
+	Double lengthToUse = null;
+	Long intPartToUse = null;
+	Double leastFraction = null;
+
+	for (double steelBarLength : ConstantsEstimation.STEEL_BAR_LENGTHS) {
+	    double rawComputedSteelBars = steelBarLength / barLength;
+	    long intPart = (long) rawComputedSteelBars;
+	    double fractionPart = rawComputedSteelBars - intPart;
+
+	    // If not yet initialized, initialize now.
+	    if (leastFraction == null) {
+		leastFraction = fractionPart;
+		intPartToUse = intPart;
+		lengthToUse = steelBarLength;
+	    }
+	    // Else, compare.
+	    // If new part is lower than least,
+	    // assign it as new least.
+	    else if (fractionPart < leastFraction) {
+		leastFraction = fractionPart;
+		intPartToUse = intPart;
+		lengthToUse = steelBarLength;
+	    }
+	}
+
+	// Number of bars to buy at lengthToUse length.
+	double estBarsToBuy = Math.ceil(allBars / intPartToUse);
+
+	// Put the estimated number of bars to buy to map.
+	putSteelBarsToMap(estimationOutput, lengthToUse, estBarsToBuy);
+
+	// Set the results.
+	EstimateResultMRIndependentFooting resultIndependentFooting = new EstimateResultMRIndependentFooting(
+		estimateComputationBean, estBarsToBuy, lengthToUse);
+	estimateComputationBean.setResultMRIndependentFooting(resultIndependentFooting);
+	estimateComputationBean
+		.setQuantitySteelBars(estimateComputationBean.getQuantitySteelBars() + estBarsToBuy);
+    }
+
+    /**
+     * Put the estimated number of bars to buy to map.
+     * 
+     * @param estimationOutput
+     * @param lengthToUse
+     * @param estBarsToBuy
+     */
+    private void putSteelBarsToMap(EstimationOutput estimationOutput, Double lengthToUse,
+	    double estBarsToBuy) {
+	Map<Double, Double> lengthToQuantityMap = estimationOutput.getSteelBarLenToQty();
+
+	// Number of steel bars to buy, given the length of steel bar.
+	// If first time to be declared.
+	if (lengthToQuantityMap == null) {
+	    Map<Double, Double> lenToQty = new HashMap<Double, Double>();
+	    lenToQty.put(lengthToUse, estBarsToBuy);
+	    estimationOutput.setSteelBarLenToQty(lenToQty);
+	} else {
+	    // If this length has not been registered yet,
+	    // register with given quantity.
+	    Double newQuantity = lengthToQuantityMap.get(lengthToUse) == null ? estBarsToBuy
+		    : lengthToQuantityMap.get(lengthToUse) + estBarsToBuy;
+	    lengthToQuantityMap.put(lengthToUse, newQuantity);
+	    estimationOutput.setSteelBarLenToQty(lengthToQuantityMap);
+	}
     }
 
     /**
@@ -1151,8 +1287,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double estTieWireKilos = Math.ceil(area * kgPerSqMeter) * quantity;
 
 	// Number of tie wire rolls to buy.
-	double estTieWireRolls = Math.ceil(estTieWireKilos
-		/ ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
+	double estTieWireRolls = Math
+		.ceil(estTieWireKilos / ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
 
 	// Create the result bean.
 	EstimateResultMRCHB resultMRCHB = new EstimateResultMRCHB(estimateComputationBean, estSteelBars,
@@ -1160,7 +1296,8 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Set the result to the estimation object.
 	estimateComputationBean.setResultMRCHB(resultMRCHB);
-	estimateComputationBean.setQuantitySteelBars(estSteelBars);
+	estimateComputationBean
+		.setQuantitySteelBars(estimateComputationBean.getQuantitySteelBars() + estSteelBars);
 	estimateComputationBean.setQuantityTieWireKilos(estTieWireKilos);
 	estimateComputationBean.setQuantityTieWireRolls(estTieWireRolls);
     }
@@ -1203,13 +1340,13 @@ public class EstimateServiceImpl implements EstimateService {
 	estimateComputationBean.setResultCHBFootingEstimate(footingResults);
 
 	// Update the quantity.
-	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ estCement40kg);
-	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ estCement50kg);
+	estimateComputationBean
+		.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + estCement40kg);
+	estimateComputationBean
+		.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + estCement50kg);
 	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
-	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel()
-		+ estGravel);
+	estimateComputationBean
+		.setQuantityGravel(estimateComputationBean.getQuantityGravel() + estGravel);
     }
 
     /**
@@ -1296,10 +1433,10 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimateResultMasonryPlastering plasteringResults = new EstimateResultMasonryPlastering(
 		estimateComputationBean, estBags40kg, estBags50kg, estSand);
 	estimateComputationBean.setResultPlasteringEstimate(plasteringResults);
-	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ estBags40kg);
-	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ estBags50kg);
+	estimateComputationBean
+		.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + estBags40kg);
+	estimateComputationBean
+		.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + estBags50kg);
 	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
     }
 
@@ -1336,10 +1473,10 @@ public class EstimateServiceImpl implements EstimateService {
 	estimateComputationBean.setResultCHBLayingEstimate(layingResults);
 
 	// Update the quantity.
-	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ estBags40kg);
-	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ estBags50kg);
+	estimateComputationBean
+		.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + estBags40kg);
+	estimateComputationBean
+		.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + estBags50kg);
 	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
     }
 
@@ -1404,13 +1541,13 @@ public class EstimateServiceImpl implements EstimateService {
 	estimateComputationBean.setResultConcreteEstimate(concreteResults);
 
 	// Update the quantity.
-	estimateComputationBean.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg()
-		+ estCement40kg);
-	estimateComputationBean.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg()
-		+ estCement50kg);
+	estimateComputationBean
+		.setQuantityCement40kg(estimateComputationBean.getQuantityCement40kg() + estCement40kg);
+	estimateComputationBean
+		.setQuantityCement50kg(estimateComputationBean.getQuantityCement50kg() + estCement50kg);
 	estimateComputationBean.setQuantitySand(estimateComputationBean.getQuantitySand() + estSand);
-	estimateComputationBean.setQuantityGravel(estimateComputationBean.getQuantityGravel()
-		+ estGravel);
+	estimateComputationBean
+		.setQuantityGravel(estimateComputationBean.getQuantityGravel() + estGravel);
     }
 
     /**

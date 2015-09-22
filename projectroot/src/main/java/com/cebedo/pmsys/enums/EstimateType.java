@@ -12,7 +12,9 @@ public enum EstimateType {
 
     MASONRY_CHB_FOOTING(5, "Masonry (CHB Footing)"),
 
-    METAL_REINFORCEMENT_CHB(6, "Metal Reinforcement (CHB)");
+    METAL_REINFORCEMENT_CHB(6, "Metal Reinforcement (CHB)"),
+
+    METAL_REINFORCEMENT_INDEPENDENT_FOOTING(7, "Metal Reinforcement (Independent Footing)");
 
     int id;
     String label;
@@ -45,6 +47,10 @@ public enum EstimateType {
 
 	else if (typeID == METAL_REINFORCEMENT_CHB.id()) {
 	    return METAL_REINFORCEMENT_CHB;
+	}
+
+	else if (typeID == METAL_REINFORCEMENT_INDEPENDENT_FOOTING.id()) {
+	    return METAL_REINFORCEMENT_INDEPENDENT_FOOTING;
 	}
 
 	return MASONRY_CHB;
