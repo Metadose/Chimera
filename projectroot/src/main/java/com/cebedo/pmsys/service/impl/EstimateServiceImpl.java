@@ -172,7 +172,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(1).setCellValue("Name");
 	row.createCell(2).setCellValue("Steel Bar Length (Meters)");
 	row.createCell(3).setCellValue("Steel Bar (Pieces)");
-	row.createCell(4).setCellValue("Steel Bar (PHP/Piece)");
+	row.createCell(4).setCellValue("Steel Bar (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -213,9 +213,9 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(3).setCellValue("Steel Bar (Pieces)");
 	row.createCell(4).setCellValue("Tie Wire (Kilos)");
 	row.createCell(5).setCellValue("Tie Wire (Rolls)");
-	row.createCell(6).setCellValue("Steel Bar (PHP/Piece)");
-	row.createCell(7).setCellValue("Tie Wire (PHP/Kilo)");
-	row.createCell(8).setCellValue("Tie Wire (PHP/Roll)");
+	row.createCell(6).setCellValue("Steel Bar (PHP)");
+	row.createCell(7).setCellValue("Tie Wire (PHP)");
+	row.createCell(8).setCellValue("Tie Wire (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -260,10 +260,10 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(3).setCellValue("Cement (50kg)");
 	row.createCell(4).setCellValue("Sand (cu.m.)");
 	row.createCell(5).setCellValue("Gravel (cu.m.)");
-	row.createCell(6).setCellValue("Cement (PHP/40kg)");
-	row.createCell(7).setCellValue("Cement (PHP/50kg)");
-	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
-	row.createCell(9).setCellValue("Gravel (PHP/cu.m.)");
+	row.createCell(6).setCellValue("Cement (PHP)");
+	row.createCell(7).setCellValue("Cement (PHP)");
+	row.createCell(8).setCellValue("Sand (PHP)");
+	row.createCell(9).setCellValue("Gravel (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -351,9 +351,9 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(2).setCellValue("Cement (40kg)");
 	row.createCell(3).setCellValue("Cement (50kg)");
 	row.createCell(4).setCellValue("Sand (cu.m.)");
-	row.createCell(5).setCellValue("Cement (PHP/40kg)");
-	row.createCell(6).setCellValue("Cement (PHP/50kg)");
-	row.createCell(7).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(5).setCellValue("Cement (PHP)");
+	row.createCell(6).setCellValue("Cement (PHP)");
+	row.createCell(7).setCellValue("Sand (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -404,10 +404,10 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(3).setCellValue("Cement (40kg)");
 	row.createCell(4).setCellValue("Cement (50kg)");
 	row.createCell(5).setCellValue("Sand (cu.m.)");
-	row.createCell(6).setCellValue("CHB (PHP/Piece)");
-	row.createCell(7).setCellValue("Cement (PHP/40kg)");
-	row.createCell(8).setCellValue("Cement (PHP/50kg)");
-	row.createCell(9).setCellValue("Sand (PHP/cu.m.)");
+	row.createCell(6).setCellValue("CHB (PHP)");
+	row.createCell(7).setCellValue("Cement (PHP)");
+	row.createCell(8).setCellValue("Cement (PHP)");
+	row.createCell(9).setCellValue("Sand (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -460,10 +460,10 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(3).setCellValue("Cement (50kg)");
 	row.createCell(4).setCellValue("Sand (cu.m.)");
 	row.createCell(5).setCellValue("Gravel (cu.m.)");
-	row.createCell(6).setCellValue("Cement (PHP/40kg)");
-	row.createCell(7).setCellValue("Cement (PHP/50kg)");
-	row.createCell(8).setCellValue("Sand (PHP/cu.m.)");
-	row.createCell(9).setCellValue("Gravel (PHP/cu.m.)");
+	row.createCell(6).setCellValue("Cement (PHP)");
+	row.createCell(7).setCellValue("Cement (PHP)");
+	row.createCell(8).setCellValue("Sand (PHP)");
+	row.createCell(9).setCellValue("Gravel (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -506,7 +506,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Material");
 	row.createCell(1).setCellValue("Quantity");
-	row.createCell(2).setCellValue("Cost (PHP/unit)");
+	row.createCell(2).setCellValue("Cost (PHP)");
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
