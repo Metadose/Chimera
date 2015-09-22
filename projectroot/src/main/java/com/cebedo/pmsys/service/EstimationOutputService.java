@@ -11,6 +11,6 @@ public interface EstimationOutputService {
 
     public EstimationOutput get(String uuid);
 
-    public List<EstimationOutput> list(Project proj);
+    public List<EstimationOutput> listDesc(Project proj);
 
 }

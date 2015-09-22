@@ -2542,7 +2542,7 @@ public class ProjectController {
 	model.addAttribute(ATTR_ESTIMATE_INDIRECT_COST_LIST, costsIndirect);
 
 	// Estimation output list, calculator.
-	List<EstimationOutput> estimates = this.estimationOutputService.list(proj);
+	List<EstimationOutput> estimates = this.estimationOutputService.listDesc(proj);
 	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
     }
 

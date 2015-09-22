@@ -1,6 +1,9 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -67,7 +70,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
     @Override
     @Transactional
-    public List<EstimationOutput> list(Project proj) {
+    public List<EstimationOutput> listDesc(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -81,7 +84,22 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	String pattern = EstimationOutput.constructPattern(proj);
 	Set<String> keys = this.estimationOutputValueRepo.keys(pattern);
-	return this.estimationOutputValueRepo.multiGet(keys);
+
+	List<EstimationOutput> estimateList = this.estimationOutputValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(estimateList, new Comparator<EstimationOutput>() {
+	    @Override
+	    public int compare(EstimationOutput aObj, EstimationOutput bObj) {
+		Date aStart = aObj.getLastComputed();
+		Date bStart = bObj.getLastComputed();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return estimateList;
     }
 
 }
