@@ -17,6 +17,7 @@ public class EstimateComputationShape implements Serializable {
     // Metal reinforcement.
     private double footingBarLength = 0;
     private double footingNumberOfBars = 0;
+    private double footingBarIntersectionPerFooting = 0;
 
     public double getArea() {
 	return area;
@@ -88,5 +89,13 @@ public class EstimateComputationShape implements Serializable {
 
     public void setFootingNumberOfBars(double footingNumberOfBars) {
 	this.footingNumberOfBars = footingNumberOfBars;
+    }
+
+    public double getFootingBarIntersectionPerFooting() {
+	return footingBarIntersectionPerFooting;
+    }
+
+    public void setFootingBarIntersectionPerFooting(double footingBarIntersectionPerFooting) {
+	this.footingBarIntersectionPerFooting = footingBarIntersectionPerFooting;
     }
 }

@@ -13,6 +13,11 @@ public class ConstantsEstimation {
     public static final double TIE_WIRE_ONE_ROLL_KILOGRAM = 45;
 
     /**
+     * Tie Wire: Number of meters per kilogram. (in Meters)
+     */
+    public static final double TIE_WIRE_METERS_PER_KILOGRAM = 53;
+
+    /**
      * Standard plaster thickness.
      */
     public static final double PLASTER_THICKNESS = 0.016;

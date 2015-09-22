@@ -64,6 +64,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private double footingCostGravel;
 
     // Metal reinforcement (CHB).
+    private double mrCHBSteelBarLength;
     private double mrCHBSteelBar;
     private double mrCHBTieWireKg;
     private double mrCHBTieWireRoll;
@@ -72,12 +73,15 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private double mrCHBCostTieWireKg;
     private double mrCHBCostTieWireRoll;
 
-    private double mrCHBSteelBarLength;
-
     // Metal reinforcement (Independent Footing).
     private double mrIFSteelBarLength;
     private double mrIFSteelBar;
+    private double mrIFTieWireKg;
+    private double mrIFTieWireRoll;
+
     private double mrIFCostSteelBar;
+    private double mrIFCostTieWireKg;
+    private double mrIFCostTieWireRoll;
 
     public EstimateComputationOutputRowJSON() {
 	;
@@ -154,6 +158,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.footingCostGravel = footing.getCostGravel();
 
 	// Metal reinforcement (CHB).
+	this.mrCHBSteelBarLength = mrCHB.getSteelBarLength();
 	this.mrCHBSteelBar = mrCHB.getSteelBarsQuantity();
 	this.mrCHBTieWireKg = mrCHB.getTieWireKilos();
 	this.mrCHBTieWireRoll = mrCHB.getTieWireRolls();
@@ -162,12 +167,15 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.mrCHBCostTieWireKg = mrCHB.getCostTieWireKilos();
 	this.mrCHBCostTieWireRoll = mrCHB.getCostTieWireRolls();
 
-	this.mrCHBSteelBarLength = mrCHB.getSteelBarLength();
-
 	// Metal reinforcement (Independent Footing).
 	this.mrIFSteelBarLength = mrIndieFooting.getSteelBarLength();
 	this.mrIFSteelBar = mrIndieFooting.getSteelBarsQuantity();
+	this.mrIFTieWireKg = mrIndieFooting.getTieWireKilos();
+	this.mrIFTieWireRoll = mrIndieFooting.getTieWireRolls();
+
 	this.mrIFCostSteelBar = mrIndieFooting.getCostSteelBars();
+	this.mrIFCostTieWireKg = mrIndieFooting.getCostTieWireKilos();
+	this.mrIFCostTieWireRoll = mrIndieFooting.getCostTieWireRolls();
     }
 
     // Setters and Getters.
@@ -570,6 +578,38 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setMrIFCostSteelBar(double mrIFCostSteelBar) {
 	this.mrIFCostSteelBar = mrIFCostSteelBar;
+    }
+
+    public double getMrIFTieWireKg() {
+	return mrIFTieWireKg;
+    }
+
+    public void setMrIFTieWireKg(double mrIFTieWireKg) {
+	this.mrIFTieWireKg = mrIFTieWireKg;
+    }
+
+    public double getMrIFTieWireRoll() {
+	return mrIFTieWireRoll;
+    }
+
+    public void setMrIFTieWireRoll(double mrIFTieWireRoll) {
+	this.mrIFTieWireRoll = mrIFTieWireRoll;
+    }
+
+    public double getMrIFCostTieWireKg() {
+	return mrIFCostTieWireKg;
+    }
+
+    public void setMrIFCostTieWireKg(double mrIFCostTieWireKg) {
+	this.mrIFCostTieWireKg = mrIFCostTieWireKg;
+    }
+
+    public double getMrIFCostTieWireRoll() {
+	return mrIFCostTieWireRoll;
+    }
+
+    public void setMrIFCostTieWireRoll(double mrIFCostTieWireRoll) {
+	this.mrIFCostTieWireRoll = mrIFCostTieWireRoll;
     }
 
 }

@@ -39,6 +39,7 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.CommonLengthUnit;
 import com.cebedo.pmsys.enums.EstimateType;
 import com.cebedo.pmsys.enums.TableDimensionCHB;
 import com.cebedo.pmsys.enums.TableDimensionCHBFooting;
@@ -84,17 +85,18 @@ public class EstimateServiceImpl implements EstimateService {
     private static final int EXCEL_ESTIMATE_MR_INDEPENDENT_FOOTING = 15;
     private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_LENGTH = 16;
     private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_PER_FOOTING = 17;
-    private static final int EXCEL_DETAILS_REMARKS = 18;
+    private static final int EXCEL_ESTIMATE_MR_FOOTING_INTERSECTIONS = 18;
+    private static final int EXCEL_DETAILS_REMARKS = 19;
 
     // Cost
-    private static final int EXCEL_COST_CHB = 19;
-    private static final int EXCEL_COST_CEMENT_40KG = 20;
-    private static final int EXCEL_COST_CEMENT_50KG = 21;
-    private static final int EXCEL_COST_SAND = 22;
-    private static final int EXCEL_COST_GRAVEL = 23;
-    private static final int EXCEL_COST_STEEL_BAR = 24;
-    private static final int EXCEL_COST_TIE_WIRE_KILOS = 25;
-    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 26;
+    private static final int EXCEL_COST_CHB = 20;
+    private static final int EXCEL_COST_CEMENT_40KG = 21;
+    private static final int EXCEL_COST_CEMENT_50KG = 22;
+    private static final int EXCEL_COST_SAND = 23;
+    private static final int EXCEL_COST_GRAVEL = 24;
+    private static final int EXCEL_COST_STEEL_BAR = 25;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 26;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 27;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -643,7 +645,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    computeRowCost(estimateComputationBean);
 
 	    // Update the grand total of the estimation.
-	    updateGrandTotals(estimationOutput, estimateComputationBean);
+	    computeGrandTotals(estimationOutput, estimateComputationBean);
 
 	    // Add to list of beans to be converted to JSON later.
 	    rowListForJSON.add(new EstimateComputationOutputRowJSON(estimateComputationBean));
@@ -654,8 +656,12 @@ public class EstimateServiceImpl implements EstimateService {
 	estimationOutput.setResults(estimateInput, estimateComputationBeans, rowListJson);
 
 	// Save the object.
-	estimationOutput.setUuid(UUID.randomUUID());
+	UUID uuid = UUID.randomUUID();
+	estimationOutput.setUuid(uuid);
 	this.estimationOutputValueRepo.set(estimationOutput);
+
+	// Set success.
+	estimateInput.setKey(estimationOutput.getKey());
 
 	return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
 		estimateInput.getName());
@@ -667,7 +673,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimationOutput
      * @param estimateComputationBean
      */
-    private void updateGrandTotals(EstimationOutput estimationOutput,
+    private void computeGrandTotals(EstimationOutput estimationOutput,
 	    EstimateComputationBean estimateComputationBean) {
 
 	// Cost.
@@ -789,6 +795,8 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Metal reinforcement (Independent Footing).
 	costSteelBar += mrIndieFooting.getCostSteelBars();
+	costTieWireKG += mrIndieFooting.getCostTieWireKilos();
+	costTieWireRoll += mrIndieFooting.getCostTieWireRolls();
 
 	// Set the results for the whole row.
 	estimateComputationBean.setCostCement40kg(costCement40kg);
@@ -1055,6 +1063,18 @@ public class EstimateServiceImpl implements EstimateService {
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
+		    case EXCEL_ESTIMATE_MR_FOOTING_INTERSECTIONS:
+			double intersectionPerFooting = (Double) (this.excelHelper
+				.getValueAsExpected(workbook, cell) == null ? 0
+					: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (intersectionPerFooting < 0) {
+			    return null;
+			}
+			estimateComputationShape
+				.setFootingBarIntersectionPerFooting(intersectionPerFooting);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
 		    case EXCEL_DETAILS_REMARKS:
 			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? ""
@@ -1203,7 +1223,6 @@ public class EstimateServiceImpl implements EstimateService {
 	if (estimateComputationBean.willComputeMRIndependentFooting()) {
 	    estimateMRIndependentFooting(estimationOutput, estimateComputationBean);
 	}
-
     }
 
     /**
@@ -1229,7 +1248,8 @@ public class EstimateServiceImpl implements EstimateService {
 	double barsPerFooting = shape.getFootingNumberOfBars();
 
 	// Total number of bars in all footings.
-	double allBars = barsPerFooting * estimateComputationBean.getQuantity();
+	double quantity = estimateComputationBean.getQuantity();
+	double allBars = barsPerFooting * quantity;
 
 	// Length of steel bar to buy.
 	Double lengthToUse = null;
@@ -1263,12 +1283,28 @@ public class EstimateServiceImpl implements EstimateService {
 	// Put the estimated number of bars to buy to map.
 	putSteelBarsToMap(estimationOutput, lengthToUse, estBarsToBuy);
 
+	// Estimate the tie-wire.
+	double intersectionsPerFooting = shape.getFootingBarIntersectionPerFooting();
+	double totalIntersections = intersectionsPerFooting * quantity;
+	double spacingByMeter = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
+		* CommonLengthUnit.CENTIMETER.getConversionToMeter();
+	double metersOfWire = totalIntersections * spacingByMeter;
+
+	double estTieWireKilos = Math
+		.ceil(metersOfWire / ConstantsEstimation.TIE_WIRE_METERS_PER_KILOGRAM);
+	double estTieWireRolls = Math
+		.ceil(estTieWireKilos / ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
+
 	// Set the results.
 	EstimateResultMRIndependentFooting resultIndependentFooting = new EstimateResultMRIndependentFooting(
-		estimateComputationBean, estBarsToBuy, lengthToUse);
+		estimateComputationBean, estBarsToBuy, lengthToUse, estTieWireKilos, estTieWireRolls);
 	estimateComputationBean.setResultMRIndependentFooting(resultIndependentFooting);
 	estimateComputationBean
 		.setQuantitySteelBars(estimateComputationBean.getQuantitySteelBars() + estBarsToBuy);
+	estimateComputationBean.setQuantityTieWireKilos(
+		estimateComputationBean.getQuantityTieWireKilos() + estTieWireKilos);
+	estimateComputationBean.setQuantityTieWireRolls(
+		estimateComputationBean.getQuantityTieWireRolls() + estTieWireRolls);
     }
 
     /**
@@ -1377,8 +1413,10 @@ public class EstimateServiceImpl implements EstimateService {
 	estimateComputationBean.setResultMRCHB(resultMRCHB);
 	estimateComputationBean
 		.setQuantitySteelBars(estimateComputationBean.getQuantitySteelBars() + estSteelBars);
-	estimateComputationBean.setQuantityTieWireKilos(estTieWireKilos);
-	estimateComputationBean.setQuantityTieWireRolls(estTieWireRolls);
+	estimateComputationBean.setQuantityTieWireKilos(
+		estimateComputationBean.getQuantityTieWireKilos() + estTieWireKilos);
+	estimateComputationBean.setQuantityTieWireRolls(
+		estimateComputationBean.getQuantityTieWireRolls() + estTieWireRolls);
     }
 
     /**

@@ -18,6 +18,8 @@ public class EstimateComputationInputBean implements Serializable {
     private TableEstimationAllowance estimationAllowance;
     private MultipartFile estimationFile;
 
+    private String key;
+
     public EstimateComputationInputBean() {
 	;
     }
@@ -64,6 +66,14 @@ public class EstimateComputationInputBean implements Serializable {
 
     public void setRemarks(String remarks) {
 	this.remarks = StringUtils.trim(remarks);
+    }
+
+    public String getKey() {
+	return key;
+    }
+
+    public void setKey(String key) {
+	this.key = key;
     }
 
 }

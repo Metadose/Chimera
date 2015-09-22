@@ -900,6 +900,10 @@ public class ProjectController {
 
 	// Add to redirect attrs.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	String key = estimateInput.getKey();
+	if (key != null && !key.isEmpty()) {
+	    return String.format(RegistryURL.REDIRECT_VIEW_ESTIMATION_RESULTS, key);
+	}
 
 	// Complete the transaction.
 	return redirectEditPageProject(proj.getId(), status);

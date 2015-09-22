@@ -52,7 +52,8 @@
 
 					<a href="<c:url value="/project/export-xls/estimationoutput/${estimationoutput.getKey()}-end"/>">
                 		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
-                	</a>
+                	</a><br/><br/>
+                    	${uiParamAlert}
 
                     <div class="btn-group">
                     <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
@@ -298,7 +299,12 @@ $(document).ready(function() {
 			
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -382,7 +388,12 @@ $(document).ready(function() {
 			
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -465,7 +476,12 @@ $(document).ready(function() {
 			
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -548,7 +564,12 @@ $(document).ready(function() {
 			
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -628,7 +649,12 @@ $(document).ready(function() {
 			
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -705,10 +731,14 @@ $(document).ready(function() {
 
 			/* METAL REINFORCEMENT CHB */
 			{ headerText: "Quantity", group: [
-			{ headerText: "Steel Bar<br/>(Pieces)", key: "mrIFSteelBar",					columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			{ headerText: "Steel Bar<br/>(Pieces)", key: "mrIFSteelBar",					columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(Kilos)", key: "mrIFTieWireKg",				columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(Rolls)", key: "mrIFTieWireRoll",			columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 			{ headerText: "Cost", group: [
-			{ headerText: "Steel Bar<br/>(PHP)", key: "mrIFCostSteelBar", 			formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			{ headerText: "Steel Bar<br/>(PHP)", key: "mrIFCostSteelBar", 			formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(PHP)", key: "mrIFCostTieWireKg",		formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(PHP)", key: "mrIFCostTieWireRoll",	formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
 			]},
 
 			{ key: "footingLength", dataType: "number", hidden: true },
@@ -796,7 +826,12 @@ $(document).ready(function() {
 
 			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
 			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
-			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true }
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 

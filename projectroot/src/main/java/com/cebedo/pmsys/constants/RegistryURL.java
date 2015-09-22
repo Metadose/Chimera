@@ -88,6 +88,8 @@ public class RegistryURL {
 
     public static final String REDIRECT_LIST_PROJECT = "redirect:/project/list";
 
+    public static final String REDIRECT_VIEW_ESTIMATION_RESULTS = "redirect:/project/view/estimation/%s-end";
+
     public static final String ASSIGN_TASK_STAFF = "/assign/task/staff";
 
     public static final String UNASSIGN_TASK_STAFF = "/unassign/task/staff/{staff}";
