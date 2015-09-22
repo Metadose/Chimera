@@ -145,7 +145,47 @@ public class EstimateServiceImpl implements EstimateService {
 	// Metal Reinforcement (CHB).
 	constructSheetMRCHB(wb, output);
 
+	// Metal Reinforcement (Independent Footing).
+	constructSheetMRIndependentFooting(wb, output);
+
 	return wb;
+    }
+
+    private void constructSheetMRIndependentFooting(HSSFWorkbook wb, EstimationOutput output) {
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("Metal Rein. (Ind. Footing)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(3);
+	HSSFCell cellCost = row.createCell(4);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Steel Bar Length (Meters)");
+	row.createCell(3).setCellValue("Steel Bar (Pieces)");
+	row.createCell(4).setCellValue("Steel Bar (PHP/Piece)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMRIndependentFooting estimate = computedRow.getResultMRIndependentFooting();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getSteelBarLength());
+	    row.createCell(3).setCellValue(estimate.getSteelBarsQuantity());
+	    row.createCell(4).setCellValue(estimate.getCostSteelBars());
+	    rowIndex++;
+	}
     }
 
     private void constructSheetMRCHB(HSSFWorkbook wb, EstimationOutput output) {
