@@ -1,5 +1,5 @@
 .externalToolBuilders
-.settings
+# .settings
 RemoteSystemsTempFiles
 *.classpath
 *.DS_Store
