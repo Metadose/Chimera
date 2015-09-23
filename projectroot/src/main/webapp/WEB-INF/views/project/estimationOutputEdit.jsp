@@ -197,7 +197,7 @@
 						<label>Metal Reinforcement (Independent Footing)</label>
 						<table id="treegrid-mr-indie-footing"></table><br/>
 
-						<label>Metal Reinforcement (Post and Column)</label>
+						<label>Metal Reinforcement (Post & Column)</label>
 						<table id="treegrid-mr-post-column"></table><br/>
 
 						</div>
