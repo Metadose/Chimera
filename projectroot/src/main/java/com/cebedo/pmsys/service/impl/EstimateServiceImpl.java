@@ -30,6 +30,7 @@ import com.cebedo.pmsys.bean.EstimateComputationShape;
 import com.cebedo.pmsys.bean.EstimateResultConcrete;
 import com.cebedo.pmsys.bean.EstimateResultMRCHB;
 import com.cebedo.pmsys.bean.EstimateResultMRIndependentFooting;
+import com.cebedo.pmsys.bean.EstimateResultMRPostColumn;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHB;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHBFooting;
 import com.cebedo.pmsys.bean.EstimateResultMasonryCHBLaying;
@@ -86,17 +87,21 @@ public class EstimateServiceImpl implements EstimateService {
     private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_LENGTH = 16;
     private static final int EXCEL_ESTIMATE_MR_FOOTING_BAR_PER_FOOTING = 17;
     private static final int EXCEL_ESTIMATE_MR_FOOTING_INTERSECTIONS = 18;
-    private static final int EXCEL_DETAILS_REMARKS = 19;
+    private static final int EXCEL_ESTIMATE_MR_POST_COLUMN = 19;
+    private static final int EXCEL_ESTIMATE_MR_LATERAL_TIE_SPACING = 20;
+    private static final int EXCEL_ESTIMATE_MR_LATERAL_TIE_LENGTH = 21;
+    private static final int EXCEL_ESTIMATE_MR_MAIN_REINFORCEMENT = 22;
+    private static final int EXCEL_DETAILS_REMARKS = 23;
 
     // Cost
-    private static final int EXCEL_COST_CHB = 20;
-    private static final int EXCEL_COST_CEMENT_40KG = 21;
-    private static final int EXCEL_COST_CEMENT_50KG = 22;
-    private static final int EXCEL_COST_SAND = 23;
-    private static final int EXCEL_COST_GRAVEL = 24;
-    private static final int EXCEL_COST_STEEL_BAR = 25;
-    private static final int EXCEL_COST_TIE_WIRE_KILOS = 26;
-    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 27;
+    private static final int EXCEL_COST_CHB = 24;
+    private static final int EXCEL_COST_CEMENT_40KG = 25;
+    private static final int EXCEL_COST_CEMENT_50KG = 26;
+    private static final int EXCEL_COST_SAND = 27;
+    private static final int EXCEL_COST_GRAVEL = 28;
+    private static final int EXCEL_COST_STEEL_BAR = 29;
+    private static final int EXCEL_COST_TIE_WIRE_KILOS = 30;
+    private static final int EXCEL_COST_TIE_WIRE_ROLLS = 31;
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
@@ -150,7 +155,57 @@ public class EstimateServiceImpl implements EstimateService {
 	// Metal Reinforcement (Independent Footing).
 	constructSheetMRIndependentFooting(wb, output);
 
+	// Metal Reinforcement (Post and Column).
+	constructSheetMRPostColumn(wb, output);
+
 	return wb;
+    }
+
+    private void constructSheetMRPostColumn(HSSFWorkbook wb, EstimationOutput output) {
+	// For headers.
+	HSSFSheet sheet = wb.createSheet("Metal Rein. (Post & Column)");
+	int rowIndex = 0;
+
+	// Headers.
+	HSSFRow row = sheet.createRow(rowIndex);
+	HSSFCell cellQuantity = row.createCell(3);
+	HSSFCell cellCost = row.createCell(6);
+	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
+	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
+	cellQuantity.setCellValue("Quantity");
+	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 3, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 8));
+	rowIndex++;
+
+	// Headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Quantity");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Steel Bar Length (Meters)");
+	row.createCell(3).setCellValue("Steel Bar (Pieces)");
+	row.createCell(4).setCellValue("Tie Wire (Kilos)");
+	row.createCell(5).setCellValue("Tie Wire (Rolls)");
+	row.createCell(6).setCellValue("Steel Bar (PHP)");
+	row.createCell(7).setCellValue("Tie Wire (PHP)");
+	row.createCell(8).setCellValue("Tie Wire (PHP)");
+	rowIndex++;
+
+	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	    EstimateResultMRPostColumn estimate = computedRow.getResultMRPostColumn();
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue(computedRow.getQuantity());
+	    row.createCell(1).setCellValue(computedRow.getName());
+	    row.createCell(2).setCellValue(estimate.getSteelBarLength());
+	    row.createCell(3).setCellValue(estimate.getSteelBarsQuantity());
+	    row.createCell(4).setCellValue(estimate.getTieWireKilos());
+	    row.createCell(5).setCellValue(estimate.getTieWireRolls());
+	    row.createCell(6).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(7).setCellValue(estimate.getCostTieWireKilos());
+	    row.createCell(8).setCellValue(estimate.getCostTieWireRolls());
+	    rowIndex++;
+	}
     }
 
     private void constructSheetMRIndependentFooting(HSSFWorkbook wb, EstimationOutput output) {
@@ -161,11 +216,13 @@ public class EstimateServiceImpl implements EstimateService {
 	// Headers.
 	HSSFRow row = sheet.createRow(rowIndex);
 	HSSFCell cellQuantity = row.createCell(3);
-	HSSFCell cellCost = row.createCell(4);
+	HSSFCell cellCost = row.createCell(6);
 	CellUtil.setAlignment(cellQuantity, wb, CellStyle.ALIGN_CENTER);
 	CellUtil.setAlignment(cellCost, wb, CellStyle.ALIGN_CENTER);
 	cellQuantity.setCellValue("Quantity");
 	cellCost.setCellValue("Cost");
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 3, 5));
+	sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 6, 8));
 	rowIndex++;
 
 	// Headers.
@@ -174,7 +231,11 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(1).setCellValue("Name");
 	row.createCell(2).setCellValue("Steel Bar Length (Meters)");
 	row.createCell(3).setCellValue("Steel Bar (Pieces)");
-	row.createCell(4).setCellValue("Steel Bar (PHP)");
+	row.createCell(4).setCellValue("Tie Wire (Kilos)");
+	row.createCell(5).setCellValue("Tie Wire (Rolls)");
+	row.createCell(6).setCellValue("Steel Bar (PHP)");
+	row.createCell(7).setCellValue("Tie Wire (PHP)");
+	row.createCell(8).setCellValue("Tie Wire (PHP)");
 	rowIndex++;
 
 	for (EstimateComputationBean computedRow : output.getEstimates()) {
@@ -185,7 +246,11 @@ public class EstimateServiceImpl implements EstimateService {
 	    row.createCell(1).setCellValue(computedRow.getName());
 	    row.createCell(2).setCellValue(estimate.getSteelBarLength());
 	    row.createCell(3).setCellValue(estimate.getSteelBarsQuantity());
-	    row.createCell(4).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(4).setCellValue(estimate.getTieWireKilos());
+	    row.createCell(5).setCellValue(estimate.getTieWireRolls());
+	    row.createCell(6).setCellValue(estimate.getCostSteelBars());
+	    row.createCell(7).setCellValue(estimate.getCostTieWireKilos());
+	    row.createCell(8).setCellValue(estimate.getCostTieWireRolls());
 	    rowIndex++;
 	}
     }
@@ -759,6 +824,7 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
 	EstimateResultMRIndependentFooting mrIndieFooting = estimateComputationBean
 		.getResultMRIndependentFooting();
+	EstimateResultMRPostColumn mrPostCol = estimateComputationBean.getResultMRPostColumn();
 
 	double costCement40kg = 0, costCement50kg = 0, costSand = 0, costGravel = 0, costCHB = 0;
 	double costSteelBar = 0, costTieWireKG = 0, costTieWireRoll = 0;
@@ -797,6 +863,11 @@ public class EstimateServiceImpl implements EstimateService {
 	costSteelBar += mrIndieFooting.getCostSteelBars();
 	costTieWireKG += mrIndieFooting.getCostTieWireKilos();
 	costTieWireRoll += mrIndieFooting.getCostTieWireRolls();
+
+	// Metal reinforcement (Post and Column).
+	costSteelBar += mrPostCol.getCostSteelBars();
+	costTieWireKG += mrPostCol.getCostTieWireKilos();
+	costTieWireRoll += mrPostCol.getCostTieWireRolls();
 
 	// Set the results for the whole row.
 	estimateComputationBean.setCostCement40kg(costCement40kg);
@@ -1075,6 +1146,46 @@ public class EstimateServiceImpl implements EstimateService {
 			estimateComputationBean.setShape(estimateComputationShape);
 			continue;
 
+		    case EXCEL_ESTIMATE_MR_POST_COLUMN:
+			boolean mrPostCol = getEstimateBooleanFromExcel(workbook, cell);
+			if (mrPostCol) {
+			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_POST_COLUMN);
+			    estimateComputationBean.setEstimateTypes(estimateTypes);
+			}
+			continue;
+
+		    case EXCEL_ESTIMATE_MR_LATERAL_TIE_SPACING:
+			double tieSpacing = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (tieSpacing < 0) {
+			    return null;
+			}
+			estimateComputationShape.setPostColumnLateralTiesSpacing(tieSpacing);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
+		    case EXCEL_ESTIMATE_MR_LATERAL_TIE_LENGTH:
+			double tieLen = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			if (tieLen < 0) {
+			    return null;
+			}
+			estimateComputationShape.setPostColumnLateralTiesLength(tieLen);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
+		    case EXCEL_ESTIMATE_MR_MAIN_REINFORCEMENT:
+			double reinforcementPerCol = (Double) (this.excelHelper
+				.getValueAsExpected(workbook, cell) == null ? 0
+					: this.excelHelper.getValueAsExpected(workbook, cell));
+			if (reinforcementPerCol < 0) {
+			    return null;
+			}
+			estimateComputationShape
+				.setPostColumnMainReinforcementsPerCol(reinforcementPerCol);
+			estimateComputationBean.setShape(estimateComputationShape);
+			continue;
+
 		    case EXCEL_DETAILS_REMARKS:
 			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? ""
@@ -1223,6 +1334,95 @@ public class EstimateServiceImpl implements EstimateService {
 	if (estimateComputationBean.willComputeMRIndependentFooting()) {
 	    estimateMRIndependentFooting(estimationOutput, estimateComputationBean);
 	}
+
+	// If we're estimating post and column reinforcement.
+	if (estimateComputationBean.willComputeMRPostColumn()) {
+	    estimateMRPostColumn(estimationOutput, estimateComputationBean);
+	}
+    }
+
+    /**
+     * Estimate metal reinforcements in posts and columns.
+     * 
+     * @param estimationOutput
+     * @param estimateComputationBean
+     */
+    private void estimateMRPostColumn(EstimationOutput estimationOutput,
+	    EstimateComputationBean estimateComputationBean) {
+
+	EstimateComputationShape shape = estimateComputationBean.getShape();
+
+	// Determine spacing of lateral ties.
+	// Convert to meter. E.g., 0.32 Meters.
+	double lateralTiesSpacing = shape.getPostColumnLateralTiesSpacing();
+
+	// Height = Volume / Area.
+	double height = shape.getVolume() / shape.getArea();
+
+	// Number of lateral ties in one column.
+	double quantity = estimateComputationBean.getQuantity();
+	double tiesPerColumn = (Math.ceil(height / lateralTiesSpacing) + 1);
+	double numberOfTies = tiesPerColumn * quantity;
+
+	// Length of one lateral tie in Meters.
+	double lateralTieLength = shape.getPostColumnLateralTiesLength();
+
+	// Get optimized length of steel bar to buy.
+	// Example: steel bar length / lateralTieLength.
+	// 6.00 / lateralTieLength
+	Double lengthToUse = null;
+	Double leastFraction = null;
+
+	for (double steelBarLength : ConstantsEstimation.STEEL_BAR_LENGTHS) {
+	    double rawComputedSteelBars = steelBarLength / lateralTieLength;
+	    long intPart = (long) rawComputedSteelBars;
+	    double fractionPart = rawComputedSteelBars - intPart;
+
+	    // If not yet initialized, initialize now.
+	    if (leastFraction == null) {
+		leastFraction = fractionPart;
+		lengthToUse = steelBarLength;
+	    }
+	    // Else, compare.
+	    // If new part is lower than least,
+	    // assign it as new least.
+	    else if (fractionPart < leastFraction) {
+		leastFraction = fractionPart;
+		lengthToUse = steelBarLength;
+	    }
+	}
+
+	// Number of main reinforcements per column.
+	// Get total intersections for all columns. E.g., 8 reinforcements.
+	double totalIntersections = shape.getPostColumnMainReinforcementsPerCol() * tiesPerColumn
+		* quantity;
+
+	// Length of tie wire is safest length.
+	double tieWireLength = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
+		* CommonLengthUnit.CENTIMETER.getConversionToMeter();
+
+	// Tie wire number of meters.
+	double metersOfTieWire = tieWireLength * totalIntersections;
+
+	// Number of steel bars to buy.
+	// Get kilograms and rolls of tie wire.
+	double estSteelBars = Math.ceil(numberOfTies / lengthToUse);
+	putSteelBarsToMap(estimationOutput, lengthToUse, estSteelBars);
+	double estTieWireKilos = Math
+		.ceil(metersOfTieWire / ConstantsEstimation.TIE_WIRE_METERS_PER_KILOGRAM);
+	double estTieWireRolls = Math
+		.ceil(estTieWireKilos / ConstantsEstimation.TIE_WIRE_ONE_ROLL_KILOGRAM);
+
+	// Set the results.
+	EstimateResultMRPostColumn results = new EstimateResultMRPostColumn(estimateComputationBean,
+		estSteelBars, lengthToUse, estTieWireKilos, estTieWireRolls);
+	estimateComputationBean.setResultMRPostColumn(results);
+	estimateComputationBean
+		.setQuantitySteelBars(estimateComputationBean.getQuantitySteelBars() + estSteelBars);
+	estimateComputationBean.setQuantityTieWireKilos(
+		estimateComputationBean.getQuantityTieWireKilos() + estTieWireKilos);
+	estimateComputationBean.setQuantityTieWireRolls(
+		estimateComputationBean.getQuantityTieWireRolls() + estTieWireRolls);
     }
 
     /**
@@ -1277,12 +1477,6 @@ public class EstimateServiceImpl implements EstimateService {
 	    }
 	}
 
-	// Number of bars to buy at lengthToUse length.
-	double estBarsToBuy = Math.ceil(allBars / intPartToUse);
-
-	// Put the estimated number of bars to buy to map.
-	putSteelBarsToMap(estimationOutput, lengthToUse, estBarsToBuy);
-
 	// Estimate the tie-wire.
 	double intersectionsPerFooting = shape.getFootingBarIntersectionPerFooting();
 	double totalIntersections = intersectionsPerFooting * quantity;
@@ -1290,6 +1484,12 @@ public class EstimateServiceImpl implements EstimateService {
 		* CommonLengthUnit.CENTIMETER.getConversionToMeter();
 	double metersOfWire = totalIntersections * spacingByMeter;
 
+	// Number of bars to buy at lengthToUse length.
+	// Put the estimated number of bars to buy to map.
+	double estBarsToBuy = Math.ceil(allBars / intPartToUse);
+	putSteelBarsToMap(estimationOutput, lengthToUse, estBarsToBuy);
+
+	// Estimates.
 	double estTieWireKilos = Math
 		.ceil(metersOfWire / ConstantsEstimation.TIE_WIRE_METERS_PER_KILOGRAM);
 	double estTieWireRolls = Math

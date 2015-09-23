@@ -2,9 +2,9 @@ package com.cebedo.pmsys.bean;
 
 import java.io.Serializable;
 
-public class EstimateResultMRIndependentFooting implements Serializable {
+public class EstimateResultMRPostColumn implements Serializable {
 
-    private static final long serialVersionUID = 3831778657286959105L;
+    private static final long serialVersionUID = 2344598661619727419L;
 
     private double steelBarLength;
 
@@ -16,22 +16,21 @@ public class EstimateResultMRIndependentFooting implements Serializable {
     private double costTieWireKilos;
     private double costTieWireRolls;
 
-    public EstimateResultMRIndependentFooting() {
+    public EstimateResultMRPostColumn() {
 	;
     }
 
-    public EstimateResultMRIndependentFooting(EstimateComputationBean estimateComputationBean,
+    public EstimateResultMRPostColumn(EstimateComputationBean estimateComputationBean,
 	    double estBarsToBuy, double lengthToUse, double estTieWireKilos, double estTieWireRolls) {
 
 	setSteelBarLength(lengthToUse);
 
 	setSteelBarsQuantity(estBarsToBuy);
-	setCostSteelBars(estimateComputationBean.getCostPerUnitSteelBars() * estBarsToBuy);
-
 	setTieWireKilos(estTieWireKilos);
-	setCostTieWireKilos(estimateComputationBean.getCostPerUnitTieWireKilos() * estTieWireKilos);
-
 	setTieWireRolls(estTieWireRolls);
+
+	setCostSteelBars(estimateComputationBean.getCostPerUnitSteelBars() * estBarsToBuy);
+	setCostTieWireKilos(estimateComputationBean.getCostPerUnitTieWireKilos() * estTieWireKilos);
 	setCostTieWireRolls(estimateComputationBean.getCostPerUnitTieWireRolls() * estTieWireRolls);
 
     }

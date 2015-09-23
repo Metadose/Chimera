@@ -83,6 +83,16 @@ public class EstimateComputationOutputRowJSON implements Serializable {
     private double mrIFCostTieWireKg;
     private double mrIFCostTieWireRoll;
 
+    // Metal reinforcement (Post and Column).
+    private double mrPCSteelBarLength;
+    private double mrPCSteelBar;
+    private double mrPCTieWireKg;
+    private double mrPCTieWireRoll;
+
+    private double mrPCCostSteelBar;
+    private double mrPCCostTieWireKg;
+    private double mrPCCostTieWireRoll;
+
     public EstimateComputationOutputRowJSON() {
 	;
     }
@@ -98,6 +108,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	EstimateResultMRCHB mrCHB = estimateComputationBean.getResultMRCHB();
 	EstimateResultMRIndependentFooting mrIndieFooting = estimateComputationBean
 		.getResultMRIndependentFooting();
+	EstimateResultMRPostColumn mrPostCol = estimateComputationBean.getResultMRPostColumn();
 
 	// Details.
 	this.uuid = UUID.randomUUID().toString();
@@ -176,6 +187,16 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	this.mrIFCostSteelBar = mrIndieFooting.getCostSteelBars();
 	this.mrIFCostTieWireKg = mrIndieFooting.getCostTieWireKilos();
 	this.mrIFCostTieWireRoll = mrIndieFooting.getCostTieWireRolls();
+
+	// Metal reinforcement (Post and Column).
+	this.mrPCSteelBarLength = mrPostCol.getSteelBarLength();
+	this.mrPCSteelBar = mrPostCol.getSteelBarsQuantity();
+	this.mrPCTieWireKg = mrPostCol.getTieWireKilos();
+	this.mrPCTieWireRoll = mrPostCol.getTieWireRolls();
+
+	this.mrPCCostSteelBar = mrPostCol.getCostSteelBars();
+	this.mrPCCostTieWireKg = mrPostCol.getCostTieWireKilos();
+	this.mrPCCostTieWireRoll = mrPostCol.getCostTieWireRolls();
     }
 
     // Setters and Getters.
@@ -610,6 +631,62 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 
     public void setMrIFCostTieWireRoll(double mrIFCostTieWireRoll) {
 	this.mrIFCostTieWireRoll = mrIFCostTieWireRoll;
+    }
+
+    public double getMrPCSteelBarLength() {
+	return mrPCSteelBarLength;
+    }
+
+    public void setMrPCSteelBarLength(double mrPCSteelBarLength) {
+	this.mrPCSteelBarLength = mrPCSteelBarLength;
+    }
+
+    public double getMrPCSteelBar() {
+	return mrPCSteelBar;
+    }
+
+    public void setMrPCSteelBar(double mrPCSteelBar) {
+	this.mrPCSteelBar = mrPCSteelBar;
+    }
+
+    public double getMrPCTieWireKg() {
+	return mrPCTieWireKg;
+    }
+
+    public void setMrPCTieWireKg(double mrPCTieWireKg) {
+	this.mrPCTieWireKg = mrPCTieWireKg;
+    }
+
+    public double getMrPCTieWireRoll() {
+	return mrPCTieWireRoll;
+    }
+
+    public void setMrPCTieWireRoll(double mrPCTieWireRoll) {
+	this.mrPCTieWireRoll = mrPCTieWireRoll;
+    }
+
+    public double getMrPCCostSteelBar() {
+	return mrPCCostSteelBar;
+    }
+
+    public void setMrPCCostSteelBar(double mrPCCostSteelBar) {
+	this.mrPCCostSteelBar = mrPCCostSteelBar;
+    }
+
+    public double getMrPCCostTieWireKg() {
+	return mrPCCostTieWireKg;
+    }
+
+    public void setMrPCCostTieWireKg(double mrPCCostTieWireKg) {
+	this.mrPCCostTieWireKg = mrPCCostTieWireKg;
+    }
+
+    public double getMrPCCostTieWireRoll() {
+	return mrPCCostTieWireRoll;
+    }
+
+    public void setMrPCCostTieWireRoll(double mrPCCostTieWireRoll) {
+	this.mrPCCostTieWireRoll = mrPCCostTieWireRoll;
     }
 
 }

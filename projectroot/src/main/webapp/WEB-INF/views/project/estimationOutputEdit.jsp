@@ -197,6 +197,9 @@
 						<label>Metal Reinforcement (Independent Footing)</label>
 						<table id="treegrid-mr-indie-footing"></table><br/>
 
+						<label>Metal Reinforcement (Post and Column)</label>
+						<table id="treegrid-mr-post-column"></table><br/>
+
 						</div>
 					</div>
 				</div>
@@ -304,7 +307,17 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -393,7 +406,17 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -481,7 +504,17 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -569,7 +602,17 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -654,7 +697,17 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -743,7 +796,17 @@ $(document).ready(function() {
 
 			{ key: "footingLength", dataType: "number", hidden: true },
 			{ key: "footingWidth", dataType: "number", hidden: true },
-			{ key: "footingHeight", dataType: "number", hidden: true }
+			{ key: "footingHeight", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -831,7 +894,115 @@ $(document).ready(function() {
 
 			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
 			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
-			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true }
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrPCSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrPCSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrPCCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrPCCostTieWireRoll", dataType: "number", hidden: true }
+		]
+	});
+
+	/* Details */
+	$("#treegrid-mr-post-column").igGrid({
+		dataSource: flatDS,
+		width: "100%",
+		features:[
+			{ name: "MultiColumnHeaders" },
+			{ name: "Summaries" }
+		],
+		primaryKey: "uuid",
+		columns: [
+
+			/* Details */
+			{ headerText: "uuid", 				   key: "uuid", dataType: "string", hidden: true },
+			{ headerText: "Quantity", key: "quantity", format: "#.##", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Name", 				   key: "name", dataType: "string" },
+			{ headerText: "Steel Bar Length<br/>(Meters)", key: "mrPCSteelBarLength", format: "0.00", columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Remarks", 			   key: "remarks", dataType: "string", hidden: true },
+			{ headerText: "Area (sq.m.)", 				   key: "area", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Volume (cu.m.)", 			   key: "volume", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Area Below Ground<br/>(sq.m.)", key: "areaBelowGround", format: "0", columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			
+			/* Concrete */
+			{ headerText: "Cement<br/>(40kg)",  key: "concreteCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(50kg)",  key: "concreteCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(cu.m.)",   key: "concreteSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(cu.m.)", key: "concreteGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP)",  key: "concreteCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Cement<br/>(PHP)",  key: "concreteCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Sand<br/>(PHP)",   key: "concreteCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			{ headerText: "Gravel<br/>(PHP)", key: "concreteCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true},
+			
+			/* CHB */
+			{ headerText: "CHB<br/>(Pieces)", 	 key: "chbTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "CHB<br/>(PHP)", key: "chbCostTotal", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			
+			/* CHB Laying */
+			{ headerText: "Cement<br/>(40kg)", key: "chbLayingBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", key: "chbLayingBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",  key: "chbLayingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },			
+			{ headerText: "Cement<br/>(PHP)", key: "chbLayingCostBags40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP)", key: "chbLayingCostBags50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP)",  key: "chbLayingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+
+			/* Plastering */
+			{ headerText: "Cement<br/>(40kg)",	  key: "plasteringCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)", 	  key: "plasteringCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)", 	  key: "plasteringSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP)", key: "plasteringCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP)", key: "plasteringCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP)", 	  key: "plasteringCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			
+			/* Footing */
+			{ headerText: "Cement<br/>(40kg)",  key: "footingCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(50kg)",  key: "footingCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(cu.m.)",   key: "footingSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(cu.m.)", key: "footingGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP)",  key: "footingCostCement40kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Cement<br/>(PHP)",  key: "footingCostCement50kg", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Sand<br/>(PHP)",   key: "footingCostSand", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number", hidden: true },
+			{ headerText: "Gravel<br/>(PHP)", key: "footingCostGravel", formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number",  hidden: true },
+
+			/* METAL REINFORCEMENT CHB */
+			{ headerText: "Quantity", group: [
+			{ headerText: "Steel Bar<br/>(Pieces)", key: "mrPCSteelBar",					columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(Kilos)", key: "mrPCTieWireKg",				columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(Rolls)", key: "mrPCTieWireRoll",			columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			]},
+			{ headerText: "Cost", group: [
+			{ headerText: "Steel Bar<br/>(PHP)", key: "mrPCCostSteelBar", 			formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(PHP)", key: "mrPCCostTieWireKg",		formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" },
+			{ headerText: "Tie Wire<br/>(PHP)", key: "mrPCCostTieWireRoll",	formatter: formatCurrency, columnCssClass: "cebedo-text-align-right", dataType: "number" }
+			]},
+
+			{ key: "footingLength", dataType: "number", hidden: true },
+			{ key: "footingWidth", dataType: "number", hidden: true },
+			{ key: "footingHeight", dataType: "number", hidden: true },
+
+			{ key: "mrIFSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrIFSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrIFCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrIFCostTieWireRoll", dataType: "number", hidden: true },
+
+			/* Post and Columns */
+			{ key: "mrCHBSteelBarLength", dataType: "number", hidden: true },
+			{ key: "mrCHBSteelBar", dataType: "number", hidden: true },
+			{ key: "mrCHBTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrCHBTieWireRoll", dataType: "number", hidden: true },
+
+			{ key: "mrCHBCostSteelBar", dataType: "number", hidden: true },
+			{ key: "mrCHBCostTieWireKg", dataType: "number", hidden: true },
+			{ key: "mrCHBCostTieWireRoll", dataType: "number", hidden: true }
 		]
 	});
 
@@ -874,15 +1045,22 @@ $(document).ready(function() {
 	$('#treegrid-mr-chb_summaries_footer_row_max').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_avg').hide();
 	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_quantity').hide()
+	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_mrCHBSteelBarLength').hide();
 
 	$('#treegrid-mr-indie-footing_summaries_footer_row_count').hide();
 	$('#treegrid-mr-indie-footing_summaries_footer_row_min').hide();
 	$('#treegrid-mr-indie-footing_summaries_footer_row_max').hide();
 	$('#treegrid-mr-indie-footing_summaries_footer_row_avg').hide();
 	$('#treegrid-mr-indie-footing_summaries_footer_row_text_container_sum_quantity').hide()
-
-	$('#treegrid-mr-chb_summaries_footer_row_text_container_sum_mrCHBSteelBarLength').hide();
 	$('#treegrid-mr-indie-footing_summaries_footer_row_text_container_sum_mrIFSteelBarLength').hide();
+
+	$('#treegrid-mr-post-column_summaries_footer_row_count').hide();
+	$('#treegrid-mr-post-column_summaries_footer_row_min').hide();
+	$('#treegrid-mr-post-column_summaries_footer_row_max').hide();
+	$('#treegrid-mr-post-column_summaries_footer_row_avg').hide();
+	$('#treegrid-mr-post-column_summaries_footer_row_text_container_sum_quantity').hide()
+	$('#treegrid-mr-post-column_summaries_footer_row_text_container_sum_mrPCSteelBarLength').hide();
+
 });
 </script>
 </html>

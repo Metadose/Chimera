@@ -19,6 +19,10 @@ public class EstimateComputationShape implements Serializable {
     private double footingNumberOfBars = 0;
     private double footingBarIntersectionPerFooting = 0;
 
+    private double postColumnLateralTiesSpacing = 0;
+    private double postColumnLateralTiesLength = 0;
+    private double postColumnMainReinforcementsPerCol = 0;
+
     public double getArea() {
 	return area;
     }
@@ -97,5 +101,29 @@ public class EstimateComputationShape implements Serializable {
 
     public void setFootingBarIntersectionPerFooting(double footingBarIntersectionPerFooting) {
 	this.footingBarIntersectionPerFooting = footingBarIntersectionPerFooting;
+    }
+
+    public double getPostColumnLateralTiesSpacing() {
+	return postColumnLateralTiesSpacing;
+    }
+
+    public void setPostColumnLateralTiesSpacing(double postColumnLateralTiesSpacing) {
+	this.postColumnLateralTiesSpacing = postColumnLateralTiesSpacing;
+    }
+
+    public double getPostColumnLateralTiesLength() {
+	return postColumnLateralTiesLength;
+    }
+
+    public void setPostColumnLateralTiesLength(double postColumnLateralTiesLength) {
+	this.postColumnLateralTiesLength = postColumnLateralTiesLength;
+    }
+
+    public double getPostColumnMainReinforcementsPerCol() {
+	return postColumnMainReinforcementsPerCol;
+    }
+
+    public void setPostColumnMainReinforcementsPerCol(double postColumnMainReinforcementsPerCol) {
+	this.postColumnMainReinforcementsPerCol = postColumnMainReinforcementsPerCol;
     }
 }
