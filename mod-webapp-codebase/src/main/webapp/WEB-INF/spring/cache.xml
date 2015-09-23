@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:hdiv="http://www.hdiv.org/schema/hdiv"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://activemq.apache.org/schema/core
+		http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+		http://www.hdiv.org/schema/hdiv
+		http://www.hdiv.org/schema/hdiv/hdiv.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+		
+	<context:property-placeholder location="classpath:system.properties"/>
+    
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- REDIS CACHE *********************************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<cache:annotation-driven />
+		<beans:bean id="jedisConnFactoryCache" 
+		    class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		    p:host-name="${redis.host}"
+	       	p:port="${redis.port}"
+		    p:use-pool="true"/>
+		
+		<!-- Redis template definition and cache manager-->
+		<!-- Separate redis template since cached objects have a different key serialization -->
+		<beans:bean id="redisTemplateCache" 
+		    class="org.springframework.data.redis.core.RedisTemplate" 
+		    p:connection-factory-ref="jedisConnFactoryCache"/>
+		    
+	    <beans:bean id="cacheManager"
+	        class="com.cebedo.pmsys.manager.CustomRedisCacheManager"
+	        c:template-ref="redisTemplateCache"/>
+	        
+</beans:beans>
