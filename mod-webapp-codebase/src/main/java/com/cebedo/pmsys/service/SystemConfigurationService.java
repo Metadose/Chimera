@@ -24,4 +24,6 @@ public interface SystemConfigurationService {
 
     public String merge(SystemConfiguration config, BindingResult result);
 
+    public Boolean getBetaServer();
+
 }

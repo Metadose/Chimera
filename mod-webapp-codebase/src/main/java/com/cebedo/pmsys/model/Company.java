@@ -41,6 +41,7 @@ public class Company implements Serializable {
     private Set<SystemConfiguration> configs;
     private Set<Task> tasks;
     private Set<AuditLog> auditLogs;
+    private boolean betaTester;
 
     public Company() {
 	;
@@ -162,5 +163,14 @@ public class Company implements Serializable {
 	str += ", dateStarted=" + dateStarted;
 	str += ", dateExpiration=" + dateExpiration;
 	return str;
+    }
+
+    @Column(name = "beta_tester", nullable = false)
+    public boolean isBetaTester() {
+	return betaTester;
+    }
+
+    public void setBetaTester(boolean betaTester) {
+	this.betaTester = betaTester;
     }
 }

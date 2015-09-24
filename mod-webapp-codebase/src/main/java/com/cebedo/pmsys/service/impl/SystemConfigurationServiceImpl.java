@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -26,7 +27,14 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
+    @Value("${config.server.beta}")
+    private Boolean betaServer;
+
     private SystemConfigurationDAO systemConfigurationDAO;
+
+    public void setBetaServer(Boolean betaServer) {
+	this.betaServer = betaServer;
+    }
 
     public void setSystemConfigurationDAO(SystemConfigurationDAO systemConfigurationDAO) {
 	this.systemConfigurationDAO = systemConfigurationDAO;
@@ -42,8 +50,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	// Security check.
 	// Only super admins can create a config.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper
-		    .unauthorized(SystemConfiguration.OBJECT_NAME, systemConfiguration.getId());
+	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME,
+		    systemConfiguration.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -90,8 +98,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
-	    this.messageHelper
-		    .unauthorized(SystemConfiguration.OBJECT_NAME, systemConfiguration.getId());
+	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME,
+		    systemConfiguration.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -122,8 +130,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper
-		.send(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME, conf.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME,
+		conf.getId());
 
 	this.systemConfigurationDAO.delete(id);
 
@@ -208,4 +216,10 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
 		config.getName());
     }
+
+    @Override
+    public Boolean getBetaServer() {
+	return betaServer;
+    }
+
 }

@@ -46,7 +46,8 @@ import org.springframework.util.CollectionUtils;
 /**
  * {@link CacheManager} implementation for Redis. By default saves the keys
  * directly, without appending a prefix (which acts as a namespace). To avoid
- * clashes, it is recommended to change this (by setting 'usePrefix' to 'true'). <br>
+ * clashes, it is recommended to change this (by setting 'usePrefix' to 'true').
+ * <br>
  * By default {@link RedisCache}s will be lazily initialized for each
  * {@link #getCache(String)} request unless a set of predefined cache names is
  * provided. <br>
@@ -66,7 +67,6 @@ public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheM
     private final Log logger = LogFactory.getLog(CustomRedisCacheManager.class);
 
     @SuppressWarnings("rawtypes")
-    //
     private final RedisTemplate template;
 
     private boolean usePrefix = true;
@@ -115,7 +115,8 @@ public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheM
     }
 
     /**
-     * Specify the set of cache names for this CacheManager's 'static' mode. <br>
+     * Specify the set of cache names for this CacheManager's 'static' mode.
+     * <br>
      * The number of caches and their names will be fixed after a call to this
      * method, with no creation of further cache regions at runtime. <br>
      * Calling this with a {@code null} or empty collection argument resets the
@@ -123,8 +124,8 @@ public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheM
      */
     public void setCacheNames(Collection<String> cacheNames) {
 
-	Set<String> newCacheNames = CollectionUtils.isEmpty(cacheNames) ? Collections
-		.<String> emptySet() : new HashSet<String>(cacheNames);
+	Set<String> newCacheNames = CollectionUtils.isEmpty(cacheNames) ? Collections.<String> emptySet()
+		: new HashSet<String>(cacheNames);
 
 	this.configuredCacheNames = newCacheNames;
 	this.dynamic = newCacheNames.isEmpty();
@@ -186,8 +187,8 @@ public class CustomRedisCacheManager extends AbstractTransactionSupportingCacheM
 
 	Assert.notNull(this.template,
 		"A redis template is required in order to interact with data store");
-	return addConfiguredCachesIfNecessary(loadRemoteCachesOnStartup ? loadAndInitRemoteCaches()
-		: Collections.<Cache> emptyList());
+	return addConfiguredCachesIfNecessary(
+		loadRemoteCachesOnStartup ? loadAndInitRemoteCaches() : Collections.<Cache> emptyList());
     }
 
     /**

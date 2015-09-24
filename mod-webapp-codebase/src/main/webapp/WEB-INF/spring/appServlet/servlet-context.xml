@@ -219,7 +219,7 @@
  
     <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
         destroy-method="close">
-        <beans:property name="driverClassName" value="${jdbc.driverClassName}" />
+        <beans:property name="driverClassName" value="${jdbc.driver}" />
         <beans:property name="url" value="${jdbc.url}" />
         <beans:property name="username" value="${jdbc.username}" />
         <beans:property name="password" value="${jdbc.password}" />

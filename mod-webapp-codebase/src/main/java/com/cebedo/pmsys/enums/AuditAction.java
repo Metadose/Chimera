@@ -68,6 +68,8 @@ public enum AuditAction {
 
     LOGIN_AUTHENTICATED(804, "User authenticated"),
 
+    LOGIN_COMPANY_NOT_BETA(805, "Not Beta"),
+
     // Errors.
 
     ERROR_UNAUTHORIZED(900, "Unauthorized");

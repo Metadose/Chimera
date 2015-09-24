@@ -5,17 +5,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -23,6 +19,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -31,7 +28,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
  * in the database and if the username and password are not the same. Otherwise,
  * throw a {@link BadCredentialsException}
  */
-public class CustomAuthenticationManager implements AuthenticationManager, ServletContextAware {
+public class CustomAuthenticationManager implements AuthenticationManager {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
@@ -39,11 +36,16 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
     private static final int MAX_LOGIN_ATTEMPT = 10;
 
     private SystemUserService systemUserService;
-    private ServletContext servletContext;
+    private SystemConfigurationService systemConfigurationService;
 
-    @Override
-    public void setServletContext(ServletContext context) {
-	this.servletContext = context;
+    @Autowired
+    public void setSystemUserService(SystemUserService systemUserService) {
+	this.systemUserService = systemUserService;
+    }
+
+    @Autowired
+    public void setSystemConfigurationService(SystemConfigurationService systemConfigurationService) {
+	this.systemConfigurationService = systemConfigurationService;
     }
 
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
@@ -53,9 +55,6 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 
 	// Check if the user exists.
 	try {
-	    WebApplicationContext applicationContext = WebApplicationContextUtils
-		    .getWebApplicationContext(servletContext);
-	    this.systemUserService = (SystemUserService) applicationContext.getBean("systemUserService");
 	    user = this.systemUserService.searchDatabase(auth.getName());
 	}
 	// If user does not exist.
@@ -65,11 +64,19 @@ public class CustomAuthenticationManager implements AuthenticationManager, Servl
 	}
 
 	Company company = user.getCompany();
+
 	Staff staff = user.getStaff();
 	Object credentials = auth.getCredentials();
 
 	// If not a super admin.
 	if (!user.isSuperAdmin()) {
+
+	    // If server is beta, company must also be beta.
+	    boolean isBeta = this.systemConfigurationService.getBetaServer();
+	    if (!(isBeta && company.isBetaTester())) {
+		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_COMPANY_NOT_BETA);
+		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_NOT_BETA.label());
+	    }
 
 	    // If the current date is already after the company's expiration.
 	    Date currentDatetime = new Date(System.currentTimeMillis());
