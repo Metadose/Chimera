@@ -1,6 +1,7 @@
 import redis
 import datetime
 import shutil
+import os.path
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 
@@ -65,6 +66,11 @@ class RedisController(CementBaseController):
         backup_source = '%s/%s' % (redis_backup_dir, redis_backup_name)
         backup_destination = '%s/%s' % (backup_home, new_backup_name)
         self.app.log.info('Constructed.')
+
+        # If the directory does not exist, create it.
+        if not os.path.isdir(backup_home):
+            os.makedirs(backup_home)
+            self.app.log.info('Backup home did not exist, created directory: %s' % backup_home)
 
         # Copy the RDB file to the backup location.
         self.app.log.info('Backing up RDB file...')
