@@ -1,7 +1,7 @@
 import redis
 import datetime
 import shutil
-import os.path
+import os
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 
@@ -16,8 +16,14 @@ controller_label_mysql = 'controller_mysql'
 redis_host = 'localhost'
 redis_backup_name = 'dump.rdb'
 
-# Backup.
-backup_home = 'C:/Users/QR_User1/Documents/Vic 2/vcc/bak'
+# MySQL details.
+mysql_host = 'localhost'
+mysql_db = 'test'
+mysql_backup_name = 'dump.sql'
+
+# Home.
+home_backup = 'C:/Users/QR_User1/Documents/Vic 2/vcc/bak'
+home_mysql = 'C:/Program Files/MySQL/MySQL Server 5.6/bin'
 
 
 # Base controller.
@@ -48,13 +54,11 @@ class RedisController(CementBaseController):
         # Connect to the Redis server.
         self.app.log.info('Connecting to Redis...')
         redis_server = redis.Redis(redis_host)
-        self.app.log.info('Connected.')
         print('Connected to Redis: %s' % redis_host)
 
         # Do a background save.
         self.app.log.info('Executing background save...')
         redis_server.bgsave()
-        self.app.log.info('RDB Saved.')
         redis_backup_dir = redis_server.config_get('dir').get('dir')
         print('Saved RDB directory: %s' % redis_backup_dir)
 
@@ -64,18 +68,16 @@ class RedisController(CementBaseController):
         datetime_string = ('%s.%s.%s.%s.%s.%s' % (now.year, now.month, now.day, now.hour, now.minute, now.second))
         new_backup_name = '%s.%s' % (datetime_string, redis_backup_name)
         backup_source = '%s/%s' % (redis_backup_dir, redis_backup_name)
-        backup_destination = '%s/%s' % (backup_home, new_backup_name)
-        self.app.log.info('Constructed.')
+        backup_destination = '%s/%s' % (home_backup, new_backup_name)
 
         # If the directory does not exist, create it.
-        if not os.path.isdir(backup_home):
-            os.makedirs(backup_home)
-            self.app.log.info('Backup home did not exist, created directory: %s' % backup_home)
+        if not os.path.isdir(home_backup):
+            os.makedirs(home_backup)
+            self.app.log.info('Backup home did not exist, created directory: %s' % home_backup)
 
         # Copy the RDB file to the backup location.
         self.app.log.info('Backing up RDB file...')
         shutil.copyfile(backup_source, backup_destination)
-        self.app.log.info('Backup done.')
         print('Source file: %s' % backup_source)
         print('Destination file: %s' % backup_destination)
         print('Backup done.')
@@ -92,15 +94,33 @@ class MySQLController(CementBaseController):
     # Backup Redis data.
     @expose(aliases=['mysql-backup'], help='Backup MySQL data')
     def backup_mysql(self):
+
         self.app.log.info('MySQLController.backup')
 
-        # Get MySQL credentials.
+        # Get user inputs.
+        self.app.log.info('Getting MySQL credentials...')
+        print("User:")
+        user = input()
+        print("Password:")
+        password = input()
 
-        # Connect to the MySQL server.
+        # Construct the file name and destination.
+        self.app.log.info('Constructing file name and destination...')
+        now = datetime.datetime.now()
+        datetime_string = ('%s.%s.%s.%s.%s.%s' % (now.year, now.month, now.day, now.hour, now.minute, now.second))
+        new_backup_name = '%s.%s' % (datetime_string, mysql_backup_name)
+        backup_destination = '%s/%s' % (home_backup, new_backup_name)
+        print("Backup destination: %s" % backup_destination)
 
-        # Get backup location string.
+        # Construct the mysqldump command.
+        self.app.log.info('Constructing mysqldump command...')
+        mysqldump_template = '"%s/mysqldump" -u %s -p%s -h %s -e --opt -c "%s" > "%s"'
+        mysql_command = mysqldump_template % (home_mysql, user, password, mysql_host, mysql_db, backup_destination)
+        print("Executing: %s" % mysql_command)
 
-        # Do a dump to the backup location.
+        # Execute mysql dump.
+        os.popen(mysql_command)
+        print("Backup done.")
 
 
 # Setup the application.
