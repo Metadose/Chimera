@@ -1347,7 +1347,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimationOutput
      * @param estimateComputationBean
      */
-    private void estimateMRPostColumn(EstimationOutput estimationOutput,
+    public void estimateMRPostColumn(EstimationOutput estimationOutput,
 	    EstimateComputationBean estimateComputationBean) {
 
 	EstimateComputationShape shape = estimateComputationBean.getShape();
@@ -1431,7 +1431,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimationOutput
      * @param estimateComputationBean
      */
-    private void estimateMRIndependentFooting(EstimationOutput estimationOutput,
+    public void estimateMRIndependentFooting(EstimationOutput estimationOutput,
 	    EstimateComputationBean estimateComputationBean) {
 
 	EstimateComputationShape shape = estimateComputationBean.getShape();
@@ -1541,7 +1541,7 @@ public class EstimateServiceImpl implements EstimateService {
      * 
      * @param estimateComputationBean
      */
-    private void estimateMRCHB(EstimationOutput estimationOutput,
+    public void estimateMRCHB(EstimationOutput estimationOutput,
 	    EstimateComputationBean estimateComputationBean) {
 	EstimateComputationShape shape = estimateComputationBean.getShape();
 	TableMRCHBVertical mrVertical = estimateComputationBean.getMrCHBVertical();
@@ -1625,7 +1625,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      * @param proportions
      */
-    private void estimateMasonryCHBFooting(EstimateComputationBean estimateComputationBean) {
+    public void estimateMasonryCHBFooting(EstimateComputationBean estimateComputationBean) {
 
 	// Get the dimension key.
 	// And the footing mixes.
@@ -1718,7 +1718,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationShape
      * @param proportions
      */
-    private void estimateMasonryPlastering(EstimateComputationBean estimateComputationBean,
+    public void estimateMasonryPlastering(EstimateComputationBean estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	// Consider the height below ground.
@@ -1764,7 +1764,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationShape
      * @param chbList
      */
-    private void estimateCHBLaying(EstimateComputationBean estimateComputationBean,
+    public void estimateCHBLaying(EstimateComputationBean estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	// Prepare needed arguments.
@@ -1830,7 +1830,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      * @param estimateComputationShape
      */
-    private void estimateConcrete(EstimateComputationBean estimateComputationBean,
+    public void estimateConcrete(EstimateComputationBean estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	double volume = estimateComputationShape.getVolume();
@@ -1877,7 +1877,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param chb
      * @return
      */
-    private void estimateCHBTotal(EstimateComputationBean estimateComputationBean,
+    public void estimateCHBTotal(EstimateComputationBean estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	double area = estimateComputationShape.getArea();
