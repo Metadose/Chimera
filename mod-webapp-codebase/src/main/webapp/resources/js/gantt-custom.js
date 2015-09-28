@@ -4,7 +4,6 @@ gantt.templates.tooltip_text = function(start, end, task){
 	var endStr = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + (end.getDate()-1);
 	
 	var template = "";
-	template += "<b>("+task.type+") "+task.text+"</b><br/>";
 	if(task.type != "Project") {
 		template += "<br/><b>Duration:</b> "+ task.duration;
 		template += "<br/><b>Start Date:</b> "+ startStr;
@@ -31,7 +30,7 @@ gantt.config.columns = [
 
 // Text for the task.
 gantt.templates.task_text = function(start, end, task){
-	if(typeof task.content !== "undefined"){
+	if(typeof task.content !== "undefined" && task.content !== ""){
 		return "<b>"+task.text+"</b> ("+task.content+")";	
 	}
 	return "<b>"+task.text+"</b>";
