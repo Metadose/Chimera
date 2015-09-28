@@ -19,6 +19,10 @@ public class AttendanceValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Attendance targetObj = (Attendance) target;
 	double wage = targetObj.getWage(); // < Zero
 	if (this.validationHelper.numberIsNegative(wage)) {

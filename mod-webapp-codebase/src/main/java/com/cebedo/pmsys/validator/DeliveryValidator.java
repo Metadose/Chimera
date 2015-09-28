@@ -19,6 +19,10 @@ public class DeliveryValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Delivery targetObj = (Delivery) target;
 	String name = targetObj.getName();
 

@@ -21,6 +21,10 @@ public class FormMassAttendanceValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	FormMassAttendance targetObj = (FormMassAttendance) target;
 	Date startDate = targetObj.getStartDate(); // Start date is after
 	Date endDate = targetObj.getEndDate(); // End date

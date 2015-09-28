@@ -21,9 +21,13 @@ public class CompanyValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 
 	Company targetObj = (Company) target;
-	Date now = new Date(System.currentTimeMillis());
+	// Date now = new Date(System.currentTimeMillis());
 	Date expire = targetObj.getDateExpiration();
 	Date start = targetObj.getDateStarted();
 	String name = targetObj.getName();

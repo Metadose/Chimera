@@ -22,6 +22,10 @@ public class ProjectValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Project project = (Project) target;
 	Date start = project.getDateStart();
 	Date endTarget = project.getTargetCompletionDate();

@@ -19,6 +19,10 @@ public class FieldAssignmentValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	FieldAssignment targetObj = (FieldAssignment) target;
 	// You cannot set an empty label.
 	String label = targetObj.getLabel();

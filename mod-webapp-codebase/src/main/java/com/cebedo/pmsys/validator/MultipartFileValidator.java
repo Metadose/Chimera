@@ -19,6 +19,10 @@ public class MultipartFileValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	MultipartFile file = (MultipartFile) target;
 
 	// If the file is XLSX.

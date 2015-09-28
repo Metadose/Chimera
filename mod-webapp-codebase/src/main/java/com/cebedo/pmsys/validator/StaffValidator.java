@@ -19,6 +19,10 @@ public class StaffValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Staff staff = (Staff) target;
 
 	// Prefix = 8

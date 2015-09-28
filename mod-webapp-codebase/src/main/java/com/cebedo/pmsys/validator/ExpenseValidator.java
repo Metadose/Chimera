@@ -19,6 +19,10 @@ public class ExpenseValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Expense targetObj = (Expense) target;
 	String name = targetObj.getName();
 

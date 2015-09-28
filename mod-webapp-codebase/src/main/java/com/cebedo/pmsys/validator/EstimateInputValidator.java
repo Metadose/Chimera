@@ -20,6 +20,10 @@ public class EstimateInputValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	EstimateComputationInputBean targetObj = (EstimateComputationInputBean) target;
 	MultipartFile file = targetObj.getEstimationFile();
 	String name = targetObj.getName();

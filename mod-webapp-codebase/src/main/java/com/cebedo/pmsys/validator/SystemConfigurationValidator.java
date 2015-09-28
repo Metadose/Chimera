@@ -19,6 +19,10 @@ public class SystemConfigurationValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	SystemConfiguration systemConfiguration = (SystemConfiguration) target;
 
 	String name = systemConfiguration.getName();

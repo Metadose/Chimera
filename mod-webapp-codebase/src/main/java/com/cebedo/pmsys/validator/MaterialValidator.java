@@ -19,6 +19,10 @@ public class MaterialValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Material targetObj = (Material) target;
 	String name = targetObj.getName();
 

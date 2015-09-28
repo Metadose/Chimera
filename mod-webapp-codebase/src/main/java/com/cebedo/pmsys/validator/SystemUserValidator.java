@@ -19,6 +19,10 @@ public class SystemUserValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 
 	SystemUser systemUser = (SystemUser) target;
 

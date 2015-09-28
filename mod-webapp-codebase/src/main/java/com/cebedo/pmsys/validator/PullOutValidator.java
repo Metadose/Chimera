@@ -22,6 +22,10 @@ public class PullOutValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 
 	PullOut obj = (PullOut) target;
 

@@ -20,6 +20,10 @@ public class TaskValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+	if (errors.hasErrors()) {
+	    this.validationHelper.rejectMissingRequiredFields(errors);
+	    return;
+	}
 	Task task = (Task) target;
 	String title = task.getTitle();
 

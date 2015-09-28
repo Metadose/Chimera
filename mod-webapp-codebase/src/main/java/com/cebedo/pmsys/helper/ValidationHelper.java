@@ -42,10 +42,9 @@ public class ValidationHelper {
 
 	// Start date > end date.
 	if (projectPayroll.getEndDate().before(projectPayroll.getStartDate())) {
-	    return AlertBoxGenerator.FAILED
-		    .generateHTML(String.format(
-			    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE, "start date",
-			    "end date"));
+	    return AlertBoxGenerator.FAILED.generateHTML(
+		    String.format(RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
+			    "start date", "end date"));
 	}
 
 	// No staff is checked.
@@ -103,7 +102,11 @@ public class ValidationHelper {
 	// Loop all errors.
 	List<ObjectError> errors = result.getAllErrors();
 	for (ObjectError error : errors) {
-	    errorsStr += alertBox.generateHTML(error.getDefaultMessage());
+	    String errorMessage = error.getDefaultMessage();
+	    if (errorMessage.contains("Exception")) {
+		continue;
+	    }
+	    errorsStr += alertBox.generateHTML(errorMessage);
 	}
 	return errorsStr;
     }
@@ -143,17 +146,13 @@ public class ValidationHelper {
     }
 
     public void rejectZeroOrNegativeNumber(Errors errors, String propertyName) {
-	errors.reject(
-		"",
-		String.format(RegistryResponseMessage.ERROR_COMMON_POSITIVE,
-			StringUtils.capitalize(propertyName)));
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_POSITIVE,
+		StringUtils.capitalize(propertyName)));
     }
 
     public void rejectNegativeNumber(Errors errors, String propertyName) {
-	errors.reject(
-		"",
-		String.format(RegistryResponseMessage.ERROR_COMMON_ZERO_OR_POSITIVE,
-			StringUtils.capitalize(propertyName)));
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_ZERO_OR_POSITIVE,
+		StringUtils.capitalize(propertyName)));
     }
 
     public void rejectInvalidProperty(Errors errors, String propertyName) {
@@ -182,17 +181,13 @@ public class ValidationHelper {
     }
 
     public void rejectEqualStrings(Errors errors, String string, String string2) {
-	errors.reject(
-		"",
-		String.format(RegistryResponseMessage.ERROR_COMMON_NOT_EQUAL_STRINGS,
-			StringUtils.capitalize(string), string2));
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_NOT_EQUAL_STRINGS,
+		StringUtils.capitalize(string), string2));
     }
 
     public void rejectNotEqualStrings(Errors errors, String string, String string2) {
-	errors.reject(
-		"",
-		String.format(RegistryResponseMessage.ERROR_COMMON_EQUAL_STRINGS,
-			StringUtils.capitalize(string), string2));
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_EQUAL_STRINGS,
+		StringUtils.capitalize(string), string2));
     }
 
     public boolean stringUsernameIsValid(String username) {
@@ -246,11 +241,13 @@ public class ValidationHelper {
 	errors.reject("", RegistryResponseMessage.ERROR_COMMON_CONVERT_XLSX);
     }
 
+    public void rejectMissingRequiredFields(Errors errors) {
+	errors.reject("", RegistryResponseMessage.ERROR_COMMON_MISSING_REQUIRED);
+    }
+
     public void rejectInvalidNumbers(Errors errors, String string, String string2) {
-	errors.reject(
-		"",
-		String.format(RegistryResponseMessage.ERROR_COMMON_X_GT_Y_VALUE,
-			StringUtils.capitalize(string), string2));
+	errors.reject("", String.format(RegistryResponseMessage.ERROR_COMMON_X_GT_Y_VALUE,
+		StringUtils.capitalize(string), string2));
     }
 
     public boolean numberIsZeroOrNegative(double number) {
