@@ -139,10 +139,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 	criteria.add(Restrictions.eq(Company.OBJECT_NAME, company));
 	criteria.add(Restrictions.eq("objectName", Project.OBJECT_NAME));
 	criteria.add(Restrictions.eq("objectID", projID));
+	criteria.add(Restrictions.not(Restrictions.eq("action", AuditAction.ACTION_CONVERT_FILE.id())));
 
 	SimpleExpression ltAction = Restrictions.lt("action", AuditAction.ACTION_GET.id());
-	SimpleExpression gtAction = Restrictions.lt("action", AuditAction.ACTION_RANGE.id());
-	criteria.add(Restrictions.and(ltAction, gtAction));
+	SimpleExpression gtAction = Restrictions.gt("action", AuditAction.ACTION_RANGE.id());
+	criteria.add(Restrictions.or(ltAction, gtAction));
 	return criteria.list();
     }
 }
