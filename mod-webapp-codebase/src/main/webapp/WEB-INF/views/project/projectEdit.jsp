@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<sec:authentication var="authUser" property="user"/>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -229,7 +230,9 @@
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('projectForm')">Update</button>
+		                                            		<c:if test="${authUser.companyAdmin}">
 															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
+															</c:if>
 		                                            	</c:when>
 		                                            </c:choose>
 			                                        </div>

@@ -417,7 +417,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.isActionAuthorized(project) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}

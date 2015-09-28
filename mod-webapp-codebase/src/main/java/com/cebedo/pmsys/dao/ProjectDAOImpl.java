@@ -131,6 +131,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 	session.merge(project);
     }
 
+    /**
+     * TODO
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<AuditLog> logs(long projID, Company company) {

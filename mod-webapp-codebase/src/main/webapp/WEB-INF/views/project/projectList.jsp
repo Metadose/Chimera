@@ -56,9 +56,9 @@
 																		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 	                                								</a>
 			                                            			
-	                                								<a href="<c:url value="/project/logs/${project.id}"/>">
+	                                								<!-- <a href="<c:url value="/project/logs/${project.id}"/>">
 																		<button class="btn btn-cebedo-view btn-flat btn-sm">Logs</button>
-	                                								</a>
+	                                								</a> -->
 																</center>
 															</td>
 															<td>
