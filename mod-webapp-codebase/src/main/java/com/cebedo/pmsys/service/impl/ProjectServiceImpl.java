@@ -2,6 +2,8 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,6 +32,7 @@ import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -427,10 +430,10 @@ public class ProjectServiceImpl implements ProjectService {
 	// company.fk:4:*project:139*
 	// company.fk:4:*project.fk:139*
 	long companyID = project.getCompany().getId();
-	Set<String> keysSet = this.projectAuxValueRepo.keys(String.format("company.fk:%s:*project:%s*",
-		companyID, id));
-	Set<String> keysSet2 = this.projectAuxValueRepo.keys(String.format(
-		"company.fk:%s:*project.fk:%s*", companyID, id));
+	Set<String> keysSet = this.projectAuxValueRepo
+		.keys(String.format("company.fk:%s:*project:%s*", companyID, id));
+	Set<String> keysSet2 = this.projectAuxValueRepo
+		.keys(String.format("company.fk:%s:*project.fk:%s*", companyID, id));
 	keysSet.addAll(keysSet2);
 	this.projectAuxValueRepo.delete(keysSet);
 
@@ -546,8 +549,8 @@ public class ProjectServiceImpl implements ProjectService {
 	for (Task task : proj.getAssignedTasks()) {
 	    int taskStatusInt = task.getStatus();
 	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
-	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1 : taskStatusMap
-		    .get(taskStatus) + 1;
+	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
+		    : taskStatusMap.get(taskStatus) + 1;
 	    taskStatusMap.put(taskStatus, statCount);
 	}
 
@@ -637,6 +640,38 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateMarkAs(Project.OBJECT_NAME, project.getName());
+    }
+
+    @Override
+    @Transactional
+    public List<AuditLog> logsDesc(long projID) {
+	// Get the task.
+	Project project = this.projectDAO.getByID(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(project)) {
+	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    return new ArrayList<AuditLog>();
+	}
+
+	List<AuditLog> logs = this.projectDAO.logs(projID, project.getCompany());
+	for (AuditLog log : logs) {
+	    log.setAuditAction(AuditAction.of(log.getAction()));
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(logs, new Comparator<AuditLog>() {
+	    @Override
+	    public int compare(AuditLog aObj, AuditLog bObj) {
+		Date aStart = aObj.getDateExecuted();
+		Date bStart = bObj.getDateExecuted();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return logs;
     }
 
 }

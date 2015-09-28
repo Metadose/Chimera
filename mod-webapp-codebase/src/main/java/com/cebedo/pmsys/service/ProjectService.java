@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
@@ -60,5 +61,7 @@ public interface ProjectService {
     public String clearActualCompletionDate(Project proj);
 
     public String mark(long projectID, int status);
+
+    public List<AuditLog> logsDesc(long id);
 
 }

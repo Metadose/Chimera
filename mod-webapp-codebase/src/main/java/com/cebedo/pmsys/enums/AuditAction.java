@@ -87,17 +87,12 @@ public enum AuditAction {
     }
 
     public static AuditAction of(int idn) {
-	if (idn == ACTION_CREATE.id()) {
-	    return ACTION_CREATE;
-
-	} else if (idn == ACTION_UPDATE.id()) {
-	    return ACTION_UPDATE;
-
-	} else if (idn == ACTION_DELETE.id()) {
-	    return ACTION_DELETE;
-
+	for (AuditAction action : AuditAction.values()) {
+	    if (action.id() == idn) {
+		return action;
+	    }
 	}
-	return null;
+	return ACTION_GET;
     }
 
     public String label() {

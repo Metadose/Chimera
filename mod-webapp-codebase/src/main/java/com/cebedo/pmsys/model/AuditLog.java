@@ -13,11 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.token.AuthenticationToken;
+import com.cebedo.pmsys.utils.DateUtils;
 
 @Entity
 @Table(name = AuditLog.TABLE_NAME)
@@ -28,22 +31,21 @@ public class AuditLog implements Serializable {
     public static final String TABLE_NAME = "audit_logs";
     public static final String COLUMN_PRIMARY_KEY = OBJECT_NAME + "_id";
 
-    public static final int ACTION_CREATE = 1;
-    public static final int ACTION_UPDATE = 2;
-    public static final int ACTION_DELETE = 3;
-
     private AuthHelper authHelper = new AuthHelper();
 
     public static final String PROPERTY_ID = "id";
 
     private long id;
+    private Company company;
+    private String objectName;
+    private long objectID;
+    private int action;
+
+    // To display:
     private Date dateExecuted;
     private String ipAddress;
     private SystemUser user;
-    private Company company;
-    private int action;
-    private String objectName;
-    private long objectID;
+    private AuditAction auditAction;
 
     public AuditLog() {
 	setDetails();
@@ -99,6 +101,11 @@ public class AuditLog implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     public Date getDateExecuted() {
 	return dateExecuted;
+    }
+
+    @Transient
+    public String getDateExecutedAsString() {
+	return DateUtils.formatDate(getDateExecuted(), DateUtils.PATTERN_DATE_TIME);
     }
 
     public void setDateExecuted(Date dateExecuted) {
@@ -159,6 +166,15 @@ public class AuditLog implements Serializable {
 
     public void setIpAddress(String ipAddress) {
 	this.ipAddress = StringUtils.trim(ipAddress);
+    }
+
+    @Transient
+    public AuditAction getAuditAction() {
+	return auditAction;
+    }
+
+    public void setAuditAction(AuditAction auditAction) {
+	this.auditAction = auditAction;
     }
 
 }

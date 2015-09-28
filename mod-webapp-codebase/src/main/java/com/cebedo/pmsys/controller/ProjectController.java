@@ -63,6 +63,7 @@ import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
@@ -203,6 +204,7 @@ public class ProjectController {
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
     public static final String ATTR_STAFF_LIST = "staffList";
+    public static final String ATTR_LOGS = "logs";
     public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
     public static final String ATTR_PAYROLL_MANUAL_STAFF_LIST = "manualStaffList";
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
@@ -2375,6 +2377,22 @@ public class ProjectController {
 	setAttributesProgramOfWorks(proj, model);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    /**
+     * Open an existing/new project page.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.LOGS_PROJECT)
+    public String logsProject(@PathVariable(Project.OBJECT_NAME) long id, Model model) {
+	Project proj = this.projectService.getByIDWithAllCollections(id);
+	List<AuditLog> logs = this.projectService.logsDesc(id);
+	model.addAttribute(ATTR_LOGS, logs);
+	model.addAttribute(ATTR_PROJECT, proj);
+	return RegistryJSPPath.JSP_LOGS_PROJECT;
     }
 
     /**

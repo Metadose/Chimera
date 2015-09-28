@@ -2,6 +2,8 @@ package com.cebedo.pmsys.dao;
 
 import java.util.List;
 
+import com.cebedo.pmsys.model.AuditLog;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 
 public interface ProjectDAO {
@@ -25,5 +27,7 @@ public interface ProjectDAO {
     public String getNameByID(long projectID);
 
     public void merge(Project project);
+
+    public List<AuditLog> logs(long projID, Company company);
 
 }
