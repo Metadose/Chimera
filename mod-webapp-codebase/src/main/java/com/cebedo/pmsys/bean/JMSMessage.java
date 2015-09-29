@@ -28,6 +28,7 @@ public class JMSMessage implements Serializable {
     private String objectName = "";
     private long objectID = -1;
     private String objectKey = "";
+    private String entryName;
 
     // Associated object and ID.
     private String assocObjectName = "";
@@ -113,12 +114,13 @@ public class JMSMessage implements Serializable {
     }
 
     public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2,
-	    Project project) {
+	    Project project, String entryName) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
 	setObjectID(objectID2);
 	setProjectID(project.getId());
+	setEntryName(entryName);
     }
 
     public AuthenticationToken getAuth() {
@@ -191,6 +193,14 @@ public class JMSMessage implements Serializable {
 
     public void setProjectID(long projectID) {
 	this.projectID = projectID;
+    }
+
+    public String getEntryName() {
+	return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+	this.entryName = entryName;
     }
 
 }

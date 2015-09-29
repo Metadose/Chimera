@@ -11,6 +11,7 @@ import com.cebedo.pmsys.bean.JMSMessage;
 import com.cebedo.pmsys.dao.AuditLogDAO;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -38,6 +39,7 @@ public class AuditMessageListener implements MessageListener {
 		// Get action details.
 		AuthenticationToken auth = sysMessage.getAuth();
 		Company company = auth == null ? null : auth.getCompany();
+		company = auth == null ? null : company;
 		SystemUser user = auth == null ? null : auth.getUser();
 		String ipAddr = (auth == null || auth.getIpAddress().isEmpty())
 			? sysMessage.getIpAddress() : auth.getIpAddress();
@@ -47,15 +49,13 @@ public class AuditMessageListener implements MessageListener {
 
 		// Project reference.
 		long projectID = sysMessage.getProjectID();
+		String entryName = sysMessage.getEntryName();
 
 		// Do the audit.
-		AuditLog audit = null;
-		if (projectID == 0) {
-		    audit = new AuditLog(actionID, user, ipAddr, auth == null ? null : company, objName,
-			    objID);
-		} else {
-		    audit = new AuditLog(actionID, user, ipAddr, auth == null ? null : company, objName,
-			    objID, projectID);
+		AuditLog audit = new AuditLog(actionID, user, ipAddr, company, objName, objID);
+		audit.setEntryName(entryName);
+		if (projectID != 0) {
+		    audit.setProject(new Project(projectID));
 		}
 		this.auditLogDAO.create(audit);
 

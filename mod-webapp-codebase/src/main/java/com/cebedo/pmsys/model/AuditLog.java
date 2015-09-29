@@ -80,18 +80,6 @@ public class AuditLog implements Serializable {
 	setObjectID(objID);
     }
 
-    public AuditLog(int action, SystemUser usr, String ipAddr, Company company2, String objName,
-	    long objID, long projectID2) {
-	setAction(action);
-	setUser(usr);
-	setDateExecuted(new Date(System.currentTimeMillis()));
-	setIpAddress(ipAddr);
-	setCompany(company2);
-	setObjectName(objName);
-	setObjectID(objID);
-	setProject(new Project(projectID2));
-    }
-
     private void setDetails() {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	Date dateExecuted = new Date(System.currentTimeMillis());

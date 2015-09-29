@@ -44,8 +44,8 @@ public class LogMessageListener implements MessageListener {
 		// Identification.
 		long nowLong = System.currentTimeMillis();
 		Date now = new Date(nowLong);
-		String ipAddr = (auth == null || auth.getIpAddress().isEmpty()) ? sysMessage
-			.getIpAddress() : auth.getIpAddress();
+		String ipAddr = (auth == null || auth.getIpAddress().isEmpty())
+			? sysMessage.getIpAddress() : auth.getIpAddress();
 		long companyID = (auth == null || company == null) ? 0 : company.getId();
 		String companyName = (auth == null || company == null) ? "" : company.getName();
 		long userID = auth == null ? 0 : user.getId();
@@ -69,9 +69,10 @@ public class LogMessageListener implements MessageListener {
 		logMessage += "ACT_ID:\"%s\" ACT_NAME:\"%s\" OBJ_ID:\"%s\" OBJ_NAME:\"%s\" OBJ_KEY:\"%s\" ASSOC_ID:\"%s\" ASSOC_NAME:\"%s\"";
 
 		// Do log.
-		logger.info(String.format(logMessage, formatter.format(now), ipAddr, companyID,
-			companyName, userID, userName, staffID, staffName, companyAdmin, superAdmin,
-			actionID, actionName, objectID, objectName, objectKey, assocObjID, assocObjName));
+		logger.info(
+			String.format(logMessage, formatter.format(now), ipAddr, companyID, companyName,
+				userID, userName, staffID, staffName, companyAdmin, superAdmin, actionID,
+				actionName, objectID, objectName, objectKey, assocObjID, assocObjName));
 	    } catch (JMSException e) {
 		e.printStackTrace();
 	    }

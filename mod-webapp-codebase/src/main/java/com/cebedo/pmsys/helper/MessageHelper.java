@@ -98,9 +98,10 @@ public class MessageHelper {
 	send(msg);
     }
 
-    public void send(AuditAction action, String objectName, long objectID, Project project) {
+    public void send(AuditAction action, String objectName, long objectID, Project project,
+	    String entryName) {
 	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, project);
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, project, entryName);
 	send(msg);
     }
 }
