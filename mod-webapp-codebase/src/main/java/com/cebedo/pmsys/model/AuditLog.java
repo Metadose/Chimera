@@ -47,6 +47,10 @@ public class AuditLog implements Serializable {
     private SystemUser user;
     private AuditAction auditAction;
 
+    // Project references.
+    private Project project;
+    private String entryName;
+
     public AuditLog() {
 	setDetails();
     }
@@ -74,6 +78,18 @@ public class AuditLog implements Serializable {
 	setCompany(company2);
 	setObjectName(objName);
 	setObjectID(objID);
+    }
+
+    public AuditLog(int action, SystemUser usr, String ipAddr, Company company2, String objName,
+	    long objID, long projectID2) {
+	setAction(action);
+	setUser(usr);
+	setDateExecuted(new Date(System.currentTimeMillis()));
+	setIpAddress(ipAddr);
+	setCompany(company2);
+	setObjectName(objName);
+	setObjectID(objID);
+	setProject(new Project(projectID2));
     }
 
     private void setDetails() {
@@ -175,6 +191,25 @@ public class AuditLog implements Serializable {
 
     public void setAuditAction(AuditAction auditAction) {
 	this.auditAction = auditAction;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
+    public Project getProject() {
+	return project;
+    }
+
+    public void setProject(Project projectID) {
+	this.project = projectID;
+    }
+
+    @Column(name = "entry_name")
+    public String getEntryName() {
+	return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+	this.entryName = entryName;
     }
 
 }

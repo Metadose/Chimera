@@ -6,6 +6,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 
 import com.cebedo.pmsys.bean.JMSMessage;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -39,8 +40,7 @@ public class MessageHelper {
 
     public void unauthorized(String objectName, String objectKey) {
 	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, AuditAction.ERROR_UNAUTHORIZED, objectName,
-		objectKey);
+	JMSMessage msg = new JMSMessage(auth, AuditAction.ERROR_UNAUTHORIZED, objectName, objectKey);
 	send(msg);
     }
 
@@ -79,7 +79,8 @@ public class MessageHelper {
 	send(msg);
     }
 
-    public void send(AuditAction action, String objectName, long objectID, String assocName, String key) {
+    public void send(AuditAction action, String objectName, long objectID, String assocName,
+	    String key) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, key);
 	send(msg);
@@ -94,6 +95,12 @@ public class MessageHelper {
     public void send(AuditAction action, String objectName, long id, String assocName, long assocID) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, id, assocName, assocID);
+	send(msg);
+    }
+
+    public void send(AuditAction action, String objectName, long objectID, Project project) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, project);
 	send(msg);
     }
 }

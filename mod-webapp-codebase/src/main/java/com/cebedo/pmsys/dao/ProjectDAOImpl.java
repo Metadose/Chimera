@@ -3,15 +3,11 @@ package com.cebedo.pmsys.dao;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.springframework.stereotype.Repository;
 
-import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -131,22 +127,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 	session.merge(project);
     }
 
-    /**
-     * TODO
-     */
-    @SuppressWarnings("unchecked")
     @Override
-    public List<AuditLog> logs(long projID, Company company) {
+    public Set<AuditLog> logs(long projID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Criteria criteria = session.createCriteria(AuditLog.class);
-	criteria.add(Restrictions.eq(Company.OBJECT_NAME, company));
-	criteria.add(Restrictions.eq("objectName", Project.OBJECT_NAME));
-	criteria.add(Restrictions.eq("objectID", projID));
-	criteria.add(Restrictions.not(Restrictions.eq("action", AuditAction.ACTION_CONVERT_FILE.id())));
-
-	SimpleExpression ltAction = Restrictions.lt("action", AuditAction.ACTION_GET.id());
-	SimpleExpression gtAction = Restrictions.gt("action", AuditAction.ACTION_RANGE.id());
-	criteria.add(Restrictions.or(ltAction, gtAction));
-	return criteria.list();
+	Project project = (Project) session.load(Project.class, new Long(projID));
+	Hibernate.initialize(project.getAuditLogs());
+	return project.getAuditLogs();
     }
 }

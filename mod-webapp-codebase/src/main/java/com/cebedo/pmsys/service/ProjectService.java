@@ -2,6 +2,7 @@ package com.cebedo.pmsys.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,6 +63,6 @@ public interface ProjectService {
 
     public String mark(long projectID, int status);
 
-    public List<AuditLog> logsDesc(long id);
+    public Set<AuditLog> logsDesc(long id);
 
 }

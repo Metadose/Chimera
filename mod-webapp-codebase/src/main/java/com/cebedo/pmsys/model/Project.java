@@ -63,6 +63,9 @@ public class Project implements Serializable {
     private Date targetCompletionDate;
     private Date actualCompletionDate;
 
+    // Audit logs.
+    private Set<AuditLog> auditLogs;
+
     /**
      * Bean-backed forms.
      */
@@ -74,6 +77,15 @@ public class Project implements Serializable {
 
     public Project(long id) {
 	setId(id);
+    }
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    public Set<AuditLog> getAuditLogs() {
+	return auditLogs;
+    }
+
+    public void setAuditLogs(Set<AuditLog> auditLogs) {
+	this.auditLogs = auditLogs;
     }
 
     @Id
@@ -131,7 +143,9 @@ public class Project implements Serializable {
     }
 
     @ManyToMany
-    @JoinTable(name = ProjectStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+    @JoinTable(name = ProjectStaffAssignment.TABLE_NAME, joinColumns = {
+	    @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
+		    @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
     public Set<Staff> getAssignedStaff() {
 	return assignedStaff;
     }

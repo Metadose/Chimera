@@ -34,8 +34,10 @@
 	                                            <tr>
 	                                            	<th>Date Executed</th>
 	                                            	<th>IP Address</th>
-	                                                <th>Action</th>
 	                                                <th>User</th>
+	                                                <th>Action</th>
+	                                                <th>Object</th>
+	                                                <th>Name</th>
 	                                            </tr>
 	                                        </thead>
 	                                        <tbody>
@@ -44,8 +46,10 @@
 			                                            <tr>
 			                                                <td>${log.getDateExecutedAsString()}</td>
 			                                                <td>${log.ipAddress}</td>
-			                                                <td>${log.auditAction.label()}</td>
 			                                                <td>${log.user.username}</td>
+			                                                <td>${log.auditAction.label()}</td>
+			                                                <td>${log.objectName}</td>
+			                                                <td>${log.entryName}</td>
 			                                            </tr>
 		                                            </c:forEach>
 	                                            </c:if>
@@ -54,8 +58,10 @@
 	                                            <tr>
 	                                            	<th>Date Executed</th>
 	                                            	<th>IP Address</th>
-	                                                <th>Action</th>
 	                                                <th>User</th>
+	                                                <th>Action</th>
+	                                                <th>Object</th>
+	                                                <th>Name</th>
 	                                            </tr>
 	                                        </tfoot>
 	                                    </table>
