@@ -52,9 +52,8 @@
 
 					<a href="<c:url value="/project/export-xls/estimationoutput/${estimationoutput.getKey()}-end"/>">
                 		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
-                	</a><br/><br/>
-                    	${uiParamAlert}
-
+                	</a>
+                	
                     <div class="btn-group">
                     <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
                     <ul class="dropdown-menu">
@@ -66,8 +65,11 @@
                     	</li>
                     </ul>
                     </div>
+                    
 					<br/>
 					<br/>
+					${uiParamAlert}
+					
 					<div class="box box-body box-default">
 						<div class="box-header">
 						<%--<fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${projectPayroll.lastComputed}" var="lastComputed"/> --%>
