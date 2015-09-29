@@ -19,8 +19,8 @@
     	</c:when>
     </c:choose>
 	
-	<!-- <link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> -->
-	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" />
+<!-- 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />

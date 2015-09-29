@@ -2645,9 +2645,12 @@ public class ProjectController {
 
 		// Cumulative.
 		accumulation += yValue;
+		// HighchartsDataPoint pointCumulative = new
+		// HighchartsDataPoint(name,
+		// result.getEndDate().getTime(), accumulation,
+		// CSSClass.backgroundColorOf(payroll.getStatus().css()));
 		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name,
-			result.getEndDate().getTime(), accumulation,
-			CSSClass.backgroundColorOf(payroll.getStatus().css()));
+			result.getEndDate().getTime(), accumulation, null);
 		dataSeriesCumulative.add(pointCumulative);
 	    }
 	}
