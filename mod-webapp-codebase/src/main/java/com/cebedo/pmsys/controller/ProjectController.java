@@ -2068,7 +2068,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
 	    + ConstantsSystem.CLEAR + "/{" + ConstantsSystem.CLEAR + "}" }, method = RequestMethod.POST)
-    public String createPayrollClearComputation(
+    public String updatePayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    @PathVariable(ConstantsSystem.CLEAR) String toClear, Model model, HttpSession session,
 	    RedirectAttributes redirectAttrs) {
