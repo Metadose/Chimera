@@ -86,7 +86,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	Project proj = obj.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 
 	// Revert old values in the auxiliary.
 	revertOldValues(obj);
@@ -240,14 +242,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 	// Do the action.
 	// Return success.
 	this.expenseValueRepo.set(obj);
+	Project proj = obj.getProject();
 
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_EXPENSE,
-		    obj.getKey());
-	    return AlertBoxGenerator.SUCCESS
-		    .generateCreate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		    ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
+	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE,
+		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
     }
 
