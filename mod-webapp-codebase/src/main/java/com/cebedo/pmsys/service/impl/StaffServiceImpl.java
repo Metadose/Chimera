@@ -202,50 +202,57 @@ public class StaffServiceImpl implements StaffService {
 		    switch (colCountDisplay) {
 
 		    case EXCEL_COLUMN_PREFIX:
-			String prefix = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String prefix = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setPrefix(prefix);
 			continue;
 
 		    case EXCEL_COLUMN_FIRST:
-			String first = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String first = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setFirstName(first);
 			continue;
 
 		    case EXCEL_COLUMN_MIDDLE:
-			String middle = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String middle = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setMiddleName(middle);
 			continue;
 
 		    case EXCEL_COLUMN_LAST:
-			String last = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String last = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setLastName(last);
 			continue;
 
 		    case EXCEL_COLUMN_SUFFIX:
-			String sfx = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String sfx = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setSuffix(sfx);
 			continue;
 
 		    case EXCEL_COLUMN_COMPANY_POSITION:
-			String position = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String position = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setCompanyPosition(position);
 			continue;
 
 		    case EXCEL_COLUMN_WAGE:
-			double wage = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			double wage = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setWage(wage);
 			continue;
 
 		    case EXCEL_COLUMN_CONTACT_NUMBER:
 			Object contactNumber = (Object) (this.excelHelper.getValueAsExpected(workbook,
-				cell) == null ? "" : this.excelHelper.getValueAsExpected(workbook, cell));
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			String cNumber = "";
 			if (contactNumber instanceof Double) {
 			    NumberFormat formatter = new DecimalFormat("###");
@@ -257,8 +264,9 @@ public class StaffServiceImpl implements StaffService {
 			continue;
 
 		    case EXCEL_COLUMN_EMAIL:
-			String email = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String email = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			staff.setEmail(email);
 			continue;
 
@@ -412,8 +420,8 @@ public class StaffServiceImpl implements StaffService {
 	this.taskDAO.unassignAllTasksByStaff(id);
 
 	// Unassign this staff from all projects.
-	List<Project> projects = this.projectDAO.listWithAllCollections(stf.getCompany() == null ? null
-		: stf.getCompany().getId());
+	List<Project> projects = this.projectDAO
+		.listWithAllCollections(stf.getCompany() == null ? null : stf.getCompany().getId());
 	for (Project project : projects) {
 	    unassignStaffMember(project, id);
 	}
@@ -567,8 +575,8 @@ public class StaffServiceImpl implements StaffService {
 
 	    Date myDate = attendance.getDate();
 	    String start = DateUtils.formatDate(myDate, "yyyy-MM-dd");
-	    AttendanceStatus attnStat = attendance.getStatus() == null ? AttendanceStatus.of(attendance
-		    .getStatusID()) : attendance.getStatus();
+	    AttendanceStatus attnStat = attendance.getStatus() == null
+		    ? AttendanceStatus.of(attendance.getStatusID()) : attendance.getStatus();
 
 	    // Construct the event bean for this attendance.
 	    JSONCalendarEvent event = new JSONCalendarEvent();
@@ -660,8 +668,8 @@ public class StaffServiceImpl implements StaffService {
 	for (Task task : staff.getTasks()) {
 	    int taskStatusInt = task.getStatus();
 	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
-	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1 : taskStatusMap
-		    .get(taskStatus) + 1;
+	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
+		    : taskStatusMap.get(taskStatus) + 1;
 	    taskStatusMap.put(taskStatus, statCount);
 	}
 
@@ -689,8 +697,9 @@ public class StaffServiceImpl implements StaffService {
 
 	// Log.
 	if (attendanceList.size() > 0) {
-	    this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME, attendanceList
-		    .iterator().next().getStaff().getId(), AttendanceStatus.class.getName());
+	    this.messageHelper.send(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME,
+		    attendanceList.iterator().next().getStaff().getId(),
+		    AttendanceStatus.class.getName());
 	}
 
 	// And count number per status.
@@ -708,8 +717,8 @@ public class StaffServiceImpl implements StaffService {
 	    AttendanceStatus attnStat = attendance.getStatus();
 
 	    // Get and set status count.
-	    double statCount = attendanceStatusMap.get(attnStat) == null ? 1 : attendanceStatusMap.get(
-		    attnStat).getCount() + 1;
+	    double statCount = attendanceStatusMap.get(attnStat) == null ? 1
+		    : attendanceStatusMap.get(attnStat).getCount() + 1;
 	    double value = attnStat == AttendanceStatus.ABSENT ? 0 : statCount * attendance.getWage();
 	    PairCountValue breakdown = new PairCountValue(statCount, value);
 	    attendanceStatusMap.put(attnStat, breakdown);
@@ -766,9 +775,6 @@ public class StaffServiceImpl implements StaffService {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ASSIGN_MASS, Project.OBJECT_NAME, project.getId(),
-		Staff.OBJECT_NAME);
 
 	// Transform the array of id's to
 	// actual objects.
@@ -777,6 +783,10 @@ public class StaffServiceImpl implements StaffService {
 	for (long id : staffIDs) {
 	    Staff staff = this.staffDAO.getWithAllCollectionsByID(id);
 	    staffList.add(staff);
+
+	    // Log.
+	    this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, project.getId(),
+		    Staff.OBJECT_NAME, staff.getId(), project, staff.getFullName());
 	}
 
 	// Get the existing and append.
@@ -800,8 +810,9 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
+	Staff stf = this.staffDAO.getByID(staffID);
 	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, project.getId(),
-		Staff.OBJECT_NAME, staffID);
+		Staff.OBJECT_NAME, staffID, project, stf.getFullName());
 
 	// Get index of staff to remove.
 	Set<Staff> assignedStaffList = project.getAssignedStaff();
@@ -818,8 +829,7 @@ public class StaffServiceImpl implements StaffService {
 	this.projectDAO.merge(project);
 
 	// Construct response.
-	Staff staff = this.staffDAO.getByID(staffID);
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
+	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, stf.getFullName());
     }
 
     @Transactional
@@ -832,7 +842,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, project.getId(),
-		Staff.OBJECT_NAME);
+		Staff.OBJECT_NAME, "All", project, "All");
 
 	project.setAssignedStaff(new HashSet<Staff>());
 	this.projectDAO.merge(project);
@@ -841,7 +851,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Transactional
     @Override
-    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID, ProjectPayroll projectPayroll) {
+    public List<Staff> listUnassignedStaffInProjectPayroll(Long companyID,
+	    ProjectPayroll projectPayroll) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {

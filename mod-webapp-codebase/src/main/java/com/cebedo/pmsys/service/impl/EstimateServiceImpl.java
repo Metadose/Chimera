@@ -677,10 +677,6 @@ public class EstimateServiceImpl implements EstimateService {
 	    return this.validationHelper.errorMessageHTML(result);
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
-		EstimateComputationInputBean.class.getName());
-
 	// New object.
 	EstimationOutput estimationOutput = new EstimationOutput(estimateInput);
 
@@ -724,6 +720,11 @@ public class EstimateServiceImpl implements EstimateService {
 	UUID uuid = UUID.randomUUID();
 	estimationOutput.setUuid(uuid);
 	this.estimationOutputValueRepo.set(estimationOutput);
+
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, estimationOutput.getKey(), proj,
+		estimationOutput.getName());
 
 	// Set success.
 	estimateInput.setKey(estimationOutput.getKey());

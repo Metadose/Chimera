@@ -61,8 +61,9 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
-		obj.getKey());
+	Project proj = obj.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey(), proj, obj.getName());
 
 	this.estimationOutputValueRepo.delete(key);
 	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE, obj.getName());

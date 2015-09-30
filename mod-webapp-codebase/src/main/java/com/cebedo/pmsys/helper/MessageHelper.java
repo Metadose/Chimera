@@ -104,4 +104,24 @@ public class MessageHelper {
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, project, entryName);
 	send(msg);
     }
+
+    public void send(AuditAction action, String objectName, long objectID, String assocName, String key,
+	    Project proj, String entry) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
+	msg.setProjectID(proj.getId());
+	msg.setEntryName(entry);
+	msg.setAssocObjectKey(key);
+	send(msg);
+    }
+
+    public void send(AuditAction action, String objectName, long objectID, String assocName,
+	    long assocID, Project proj, String entry) {
+	AuthenticationToken auth = this.authHelper.getAuth();
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
+	msg.setProjectID(proj.getId());
+	msg.setEntryName(entry);
+	msg.setAssocObjectID(assocID);
+	send(msg);
+    }
 }

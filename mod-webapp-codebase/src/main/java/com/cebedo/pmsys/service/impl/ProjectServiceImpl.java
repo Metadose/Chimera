@@ -312,12 +312,13 @@ public class ProjectServiceImpl implements ProjectService {
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC);
 	}
 
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+		Staff.OBJECT_NAME, "Mass", proj, "Mass");
+
 	// If everything's ok.
 	assignAllStaffToProject(proj, staffList);
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
-		Staff.OBJECT_NAME);
 	return AlertBoxGenerator.SUCCESS.generateCreateEntries(Staff.OBJECT_NAME);
     }
 
@@ -331,6 +332,10 @@ public class ProjectServiceImpl implements ProjectService {
 	Set<Staff> projectStaff = proj.getAssignedStaff();
 	projectStaff.addAll(staffList);
 	proj.setAssignedStaff(projectStaff);
+	for (Staff staff : projectStaff) {
+	    this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
+		    Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
+	}
 	this.projectDAO.merge(proj);
     }
 
@@ -363,7 +368,8 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.update(project);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(), project,
+		project.getName());
 
 	// Response for the user.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());

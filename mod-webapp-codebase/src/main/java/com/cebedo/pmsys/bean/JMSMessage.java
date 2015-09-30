@@ -33,6 +33,7 @@ public class JMSMessage implements Serializable {
     // Associated object and ID.
     private String assocObjectName = "";
     private long assocObjectID = -1;
+    private String assocObjectKey;
 
     // Transients.
     private String ipAddress = "";
@@ -201,6 +202,14 @@ public class JMSMessage implements Serializable {
 
     public void setEntryName(String entryName) {
 	this.entryName = entryName;
+    }
+
+    public String getAssocObjectKey() {
+	return assocObjectKey;
+    }
+
+    public void setAssocObjectKey(String assocObjectKey) {
+	this.assocObjectKey = assocObjectKey;
     }
 
 }
