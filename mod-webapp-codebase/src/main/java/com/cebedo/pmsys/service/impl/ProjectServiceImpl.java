@@ -2,10 +2,9 @@ package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,12 +312,13 @@ public class ProjectServiceImpl implements ProjectService {
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC);
 	}
 
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+		Staff.OBJECT_NAME, "Mass", proj, "Mass");
+
 	// If everything's ok.
 	assignAllStaffToProject(proj, staffList);
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
-		Staff.OBJECT_NAME);
 	return AlertBoxGenerator.SUCCESS.generateCreateEntries(Staff.OBJECT_NAME);
     }
 
@@ -332,6 +332,10 @@ public class ProjectServiceImpl implements ProjectService {
 	Set<Staff> projectStaff = proj.getAssignedStaff();
 	projectStaff.addAll(staffList);
 	proj.setAssignedStaff(projectStaff);
+	for (Staff staff : projectStaff) {
+	    this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
+		    Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
+	}
 	this.projectDAO.merge(proj);
     }
 
@@ -364,7 +368,8 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.update(project);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(), project,
+		project.getName());
 
 	// Response for the user.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
@@ -631,7 +636,8 @@ public class ProjectServiceImpl implements ProjectService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(), project,
+		project.getName());
 
 	// Do service.
 	project.setActualCompletionDate(null);
@@ -644,33 +650,33 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public List<AuditLog> logsDesc(long projID) {
+    public Set<AuditLog> logsDesc(long projID) {
 	// Get the task.
 	Project project = this.projectDAO.getByID(projID);
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
-	    return new ArrayList<AuditLog>();
+	    return new HashSet<AuditLog>();
 	}
 
-	List<AuditLog> logs = this.projectDAO.logs(projID, project.getCompany());
+	Set<AuditLog> logs = this.projectDAO.logs(projID);
 	for (AuditLog log : logs) {
 	    log.setAuditAction(AuditAction.of(log.getAction()));
 	}
-
 	// Sort the list in descending order.
-	Collections.sort(logs, new Comparator<AuditLog>() {
-	    @Override
-	    public int compare(AuditLog aObj, AuditLog bObj) {
-		Date aStart = aObj.getDateExecuted();
-		Date bStart = bObj.getDateExecuted();
-
-		// To sort in ascending,
-		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
-	    }
-	});
+	// Collections.sort(logs, new Comparator<AuditLog>() {
+	// @Override
+	// public int compare(AuditLog aObj, AuditLog bObj) {
+	// Date aStart = aObj.getDateExecuted();
+	// Date bStart = bObj.getDateExecuted();
+	//
+	// // To sort in ascending,
+	// // remove Not's.
+	// return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 :
+	// 0;
+	// }
+	// });
 	return logs;
     }
 

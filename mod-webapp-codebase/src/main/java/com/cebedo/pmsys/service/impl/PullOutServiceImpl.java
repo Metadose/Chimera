@@ -101,7 +101,9 @@ public class PullOutServiceImpl implements PullOutService {
 	this.materialValueRepo.set(material);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	Project proj = obj.getProject();
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PULL_OUT, obj.getKey(), proj, material.getName());
 
 	// Return.
 	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), material.getUnitSymbol(),
@@ -140,7 +142,9 @@ public class PullOutServiceImpl implements PullOutService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	Project proj = obj.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PULL_OUT, obj.getKey(), proj, obj.getMaterial().getName());
 
 	// Do delete.
 	doDelete(key, obj);

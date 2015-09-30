@@ -267,7 +267,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
+		projectPayroll.getStartEndDisplay());
 
 	String payrollJSON = getPayrollJSON(proj, startDate, endDate, projectPayroll);
 	if (payrollJSON.isEmpty()) {
@@ -290,8 +291,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Old payroll object.
 	ProjectPayroll oldPayroll = this.projectPayrollValueRepo.get(projectPayroll.getKey());
 	double oldGrandTotal = projectAux.getGrandTotalPayroll();
-	double oldPayrollResult = oldPayroll.getPayrollComputationResult() == null ? 0 : oldPayroll
-		.getPayrollComputationResult().getOverallTotalOfStaff();
+	double oldPayrollResult = oldPayroll.getPayrollComputationResult() == null ? 0
+		: oldPayroll.getPayrollComputationResult().getOverallTotalOfStaff();
 	double revertedGrandTotal = oldGrandTotal - oldPayrollResult;
 
 	// Get new payroll result.
@@ -341,8 +342,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_PAYROLL,
-		payroll.getKey());
+	Project proj = payroll.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PAYROLL, payroll.getKey(), proj, payroll.getStartEndDisplay());
 
 	// Revert the grand total in project auxillary.
 	// Get the aux obj.
@@ -444,9 +446,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey());
-
+	this.messageHelper.send(isUpdating ? AuditAction.ACTION_UPDATE : AuditAction.ACTION_CREATE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL,
+		projectPayroll.getKey(), proj, projectPayroll.getStartEndDisplay());
 	return response;
     }
 
@@ -548,8 +550,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey());
+	Project proj = projectPayroll.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
+		projectPayroll.getStartEndDisplay());
 
 	// If the update button is clicked from the "right-side"
 	// project structure checkboxes, reset the payroll JSON.
@@ -587,8 +591,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey());
+	Project proj = projectPayroll.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
+		projectPayroll.getStartEndDisplay());
 
 	// Get current list of staff.
 	// Add the staff member.

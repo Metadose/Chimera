@@ -37,15 +37,27 @@ public class AuditLog implements Serializable {
 
     private long id;
     private Company company;
+
+    // Object details.
     private String objectName;
     private long objectID;
+    private String objectKey;
     private int action;
+
+    // Associated object.
+    private String assocObjName;
+    private Long assocObjID;
+    private String assocObjKey;
 
     // To display:
     private Date dateExecuted;
     private String ipAddress;
     private SystemUser user;
     private AuditAction auditAction;
+
+    // Project references.
+    private Project project;
+    private String entryName;
 
     public AuditLog() {
 	setDetails();
@@ -86,6 +98,27 @@ public class AuditLog implements Serializable {
 	}
     }
 
+    @Transient
+    public String getObjectDetails() {
+	String objectIdentifier = getObjectID() + (getObjectKey() == null ? "" : getObjectKey());
+	String objName = getObjectName();
+	if (StringUtils.isBlank(objectIdentifier)) {
+	    return objName;
+	}
+	return String.format("%s (%s)", objName, objectIdentifier);
+    }
+
+    @Transient
+    public String getAssocObjectDetails() {
+	String objectIdentifier = (getAssocObjID() == null ? "" : getAssocObjID())
+		+ (getAssocObjKey() == null ? "" : getAssocObjKey());
+	String objName = getAssocObjName();
+	if (StringUtils.isBlank(objectIdentifier)) {
+	    return objName;
+	}
+	return String.format("%s (%s)", objName, objectIdentifier);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = COLUMN_PRIMARY_KEY, unique = true, nullable = false)
@@ -105,7 +138,7 @@ public class AuditLog implements Serializable {
 
     @Transient
     public String getDateExecutedAsString() {
-	return DateUtils.formatDate(getDateExecuted(), DateUtils.PATTERN_DATE_TIME);
+	return DateUtils.formatDate(getDateExecuted(), DateUtils.PATTERN_DATE_TIME_SEC);
     }
 
     public void setDateExecuted(Date dateExecuted) {
@@ -175,6 +208,61 @@ public class AuditLog implements Serializable {
 
     public void setAuditAction(AuditAction auditAction) {
 	this.auditAction = auditAction;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = Project.COLUMN_PRIMARY_KEY)
+    public Project getProject() {
+	return project;
+    }
+
+    public void setProject(Project projectID) {
+	this.project = projectID;
+    }
+
+    @Column(name = "entry_name")
+    public String getEntryName() {
+	return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+	this.entryName = entryName;
+    }
+
+    @Column(name = "object_key")
+    public String getObjectKey() {
+	return objectKey;
+    }
+
+    public void setObjectKey(String objectKey) {
+	this.objectKey = objectKey;
+    }
+
+    @Column(name = "assoc_object_name")
+    public String getAssocObjName() {
+	return assocObjName;
+    }
+
+    public void setAssocObjName(String assocObjName) {
+	this.assocObjName = assocObjName;
+    }
+
+    @Column(name = "assoc_object_id")
+    public Long getAssocObjID() {
+	return assocObjID;
+    }
+
+    public void setAssocObjID(Long assocObjID) {
+	this.assocObjID = assocObjID;
+    }
+
+    @Column(name = "assoc_object_key")
+    public String getAssocObjKey() {
+	return assocObjKey;
+    }
+
+    public void setAssocObjKey(String assocObjKey) {
+	this.assocObjKey = assocObjKey;
     }
 
 }

@@ -5,25 +5,35 @@ import java.io.Serializable;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.listener.AuditMessageListener;
 import com.cebedo.pmsys.listener.LogMessageListener;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class JMSMessage implements Serializable {
 
     private static final long serialVersionUID = 1678239421332274417L;
-    public static final String DESTINATIONS = AuditMessageListener.MESSAGE_DESTINATION + ","
-	    + LogMessageListener.MESSAGE_DESTINATION;
+    public static final String DESTINATIONS = String.format("%s,%s",
+	    AuditMessageListener.MESSAGE_DESTINATION, LogMessageListener.MESSAGE_DESTINATION);
 
     // Who?
     private AuthenticationToken auth;
 
     // Audit.
     private AuditAction auditAction;
+
+    // Linked project.
+    private long projectID;
+
+    // Type of object and (ID or Key).
     private String objectName = "";
     private long objectID = -1;
     private String objectKey = "";
+    private String entryName;
+
+    // Associated object and ID.
     private String assocObjectName = "";
     private long assocObjectID = -1;
+    private String assocObjectKey;
 
     // Transients.
     private String ipAddress = "";
@@ -32,7 +42,8 @@ public class JMSMessage implements Serializable {
 	;
     }
 
-    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2) {
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2,
+	    long objectID2) {
 	setAuth(auth2);
 	setAuditAction(action);
 	setObjectName(objectName2);
@@ -103,6 +114,16 @@ public class JMSMessage implements Serializable {
 	setAuditAction(action);
     }
 
+    public JMSMessage(AuthenticationToken auth2, AuditAction action, String objectName2, long objectID2,
+	    Project project, String entryName) {
+	setAuth(auth2);
+	setAuditAction(action);
+	setObjectName(objectName2);
+	setObjectID(objectID2);
+	setProjectID(project.getId());
+	setEntryName(entryName);
+    }
+
     public AuthenticationToken getAuth() {
 	return auth;
     }
@@ -165,6 +186,30 @@ public class JMSMessage implements Serializable {
 
     public void setIpAddress(String ipAddress) {
 	this.ipAddress = ipAddress;
+    }
+
+    public long getProjectID() {
+	return projectID;
+    }
+
+    public void setProjectID(long projectID) {
+	this.projectID = projectID;
+    }
+
+    public String getEntryName() {
+	return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+	this.entryName = entryName;
+    }
+
+    public String getAssocObjectKey() {
+	return assocObjectKey;
+    }
+
+    public void setAssocObjectKey(String assocObjectKey) {
+	this.assocObjectKey = assocObjectKey;
     }
 
 }

@@ -65,7 +65,7 @@ public class FieldServiceImpl implements FieldService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
-		Field.OBJECT_NAME, fieldAssignment.getLabel());
+		Field.OBJECT_NAME, fieldAssignment.getLabel(), proj, fieldAssignment.getLabel());
 
 	// Do service.
 	Field field = this.fieldDAO.getByID(fieldID);
@@ -119,7 +119,7 @@ public class FieldServiceImpl implements FieldService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
-		Field.OBJECT_NAME);
+		Field.OBJECT_NAME, "All", proj, "All");
 
 	// Do service.
 	this.fieldDAO.unassignAllFieldsFromProject(projectID);
@@ -155,7 +155,7 @@ public class FieldServiceImpl implements FieldService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
-		Field.OBJECT_NAME, fieldAssignment.getLabel());
+		Field.OBJECT_NAME, label, proj, label);
 
 	// Do service.
 	this.fieldDAO.updateAssignedField(FieldAssignment.TABLE_NAME, Project.COLUMN_PRIMARY_KEY,

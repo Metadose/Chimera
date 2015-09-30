@@ -2068,7 +2068,7 @@ public class ProjectController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/" + ConstantsRedis.OBJECT_PAYROLL + "/"
 	    + ConstantsSystem.CLEAR + "/{" + ConstantsSystem.CLEAR + "}" }, method = RequestMethod.POST)
-    public String createPayrollClearComputation(
+    public String updatePayrollClearComputation(
 	    @ModelAttribute(ATTR_PROJECT_PAYROLL) ProjectPayroll projectPayroll,
 	    @PathVariable(ConstantsSystem.CLEAR) String toClear, Model model, HttpSession session,
 	    RedirectAttributes redirectAttrs) {
@@ -2389,7 +2389,7 @@ public class ProjectController {
     @RequestMapping(value = RegistryURL.LOGS_PROJECT)
     public String logsProject(@PathVariable(Project.OBJECT_NAME) long id, Model model) {
 	Project proj = this.projectService.getByIDWithAllCollections(id);
-	List<AuditLog> logs = this.projectService.logsDesc(id);
+	Set<AuditLog> logs = this.projectService.logsDesc(id);
 	model.addAttribute(ATTR_LOGS, logs);
 	model.addAttribute(ATTR_PROJECT, proj);
 	return RegistryJSPPath.JSP_LOGS_PROJECT;

@@ -17,7 +17,7 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Logs Projects
+	                Projects Logs
 	                <small>Complete list of all project logs</small>
 	            </h1>
 	        </section>
@@ -32,30 +32,42 @@
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
 	                                            <tr>
+	                                            	<th>ID</th>
 	                                            	<th>Date Executed</th>
 	                                            	<th>IP Address</th>
-	                                                <th>Action</th>
 	                                                <th>User</th>
+	                                                <th>Action</th>
+	                                                <th>Object</th>
+	                                                <th>Linked Object</th>
+	                                                <th>Entry Name</th>
 	                                            </tr>
 	                                        </thead>
 	                                        <tbody>
 	                                        	<c:if test="${!empty logs}">
 	                                        		<c:forEach items="${logs}" var="log">
 			                                            <tr>
+			                                                <td>${log.id}</td>
 			                                                <td>${log.getDateExecutedAsString()}</td>
 			                                                <td>${log.ipAddress}</td>
-			                                                <td>${log.auditAction.label()}</td>
 			                                                <td>${log.user.username}</td>
+			                                                <td>${log.auditAction.label()}</td>
+			                                                <td>${log.getObjectDetails()}</td>
+			                                                <td>${log.getAssocObjectDetails()}</td>
+			                                                <td>${log.entryName}</td>
 			                                            </tr>
 		                                            </c:forEach>
 	                                            </c:if>
 	                                        </tbody>
 	                                        <tfoot>
 	                                            <tr>
+	                                            	<th>ID</th>
 	                                            	<th>Date Executed</th>
 	                                            	<th>IP Address</th>
-	                                                <th>Action</th>
 	                                                <th>User</th>
+	                                                <th>Action</th>
+	                                                <th>Object</th>
+	                                                <th>Linked Object</th>
+	                                                <th>Entry Name</th>
 	                                            </tr>
 	                                        </tfoot>
 	                                    </table>
@@ -70,7 +82,9 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#example-1").dataTable();
+			$('#example-1').DataTable({
+		        "order": [[ 1, "desc" ]]
+		    });
 		});
 	</script>
 </body>

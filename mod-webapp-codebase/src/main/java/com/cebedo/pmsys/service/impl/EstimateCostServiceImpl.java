@@ -29,7 +29,6 @@ import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.repository.EstimateCostValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.EstimateCostService;
@@ -206,7 +205,11 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
+	if (costs.size() > 0) {
+	    Project proj = costs.get(0).getProject();
+	    this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+		    ConstantsRedis.OBJECT_ESTIMATE_COST, "Mass", proj, "Mass");
+	}
 
 	// If reaches this point, do actual service.
 	for (EstimateCost cost : costs) {
@@ -272,26 +275,28 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 		    switch (colCountDisplay) {
 
 		    case EXCEL_COLUMN_NAME:
-			String name = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String name = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			cost.setName(name);
 			continue;
 
 		    case EXCEL_COLUMN_COST_ESTIMATED:
-			Double costVal = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			Double costVal = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			cost.setCost(costVal);
 			continue;
 
 		    case EXCEL_COLUMN_COST_ACTUAL:
-			costVal = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			costVal = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null
+				? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			cost.setActualCost(costVal);
 			continue;
 
 		    case EXCEL_COLUMN_COST_TYPE:
-			String costType = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String costType = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			cost.setCostType(EstimateCostType.of(costType));
 			continue;
 
@@ -318,8 +323,9 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ESTIMATE_COST,
-		obj.getKey());
+	Project proj = obj.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 
 	// Project auxiliary on grand totals of costs.
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(obj.getProject()));
@@ -423,14 +429,16 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	this.estimateCostValueRepo.set(obj);
 	this.projectAuxValueRepo.set(aux);
 
+	Project proj = obj.getProject();
+
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_ESTIMATE_COST,
-		    obj.getKey());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		    ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_ESTIMATE_COST,
-		obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());
     }
