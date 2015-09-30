@@ -123,8 +123,9 @@ public class MaterialServiceImpl implements MaterialService {
 	    this.projectAuxValueRepo.set(projectAux);
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_MATERIAL,
-		    obj.getKey());
+	    Project proj = obj.getProject();
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		    ConstantsRedis.OBJECT_MATERIAL, obj.getKey(), proj, obj.getName());
 
 	    // Return.
 	    return AlertBoxGenerator.SUCCESS.generateAdd(ConstantsRedis.OBJECT_MATERIAL, obj.getName());
@@ -199,8 +200,9 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_MATERIAL,
-		material.getKey());
+	Project proj = material.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_MATERIAL, material.getKey(), proj, material.getName());
 
 	// Get the updated version of the objects.
 	Delivery delivery = this.deliveryValueRepo.get(material.getDelivery().getKey());
@@ -283,8 +285,9 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_MATERIAL,
-		material.getKey());
+	Project proj = material.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_MATERIAL, material.getKey(), proj, material.getName());
 
 	// Set the material.
 	this.materialValueRepo.set(material);

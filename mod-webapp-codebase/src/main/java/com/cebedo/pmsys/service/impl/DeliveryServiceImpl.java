@@ -253,13 +253,15 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Return success.
 	this.deliveryValueRepo.set(obj);
 
+	Project proj = obj.getProject();
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, ConstantsRedis.OBJECT_DELIVERY,
-		    obj.getKey());
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		    ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
 		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
     }
 
@@ -327,11 +329,11 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_DELIVERY,
-		delivery.getKey());
+	Project proj = delivery.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_DELIVERY, delivery.getKey(), proj, delivery.getName());
 
 	// Get the necessary objects.
-	Project proj = delivery.getProject();
 	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
 
 	// Solve for the old grand total.
