@@ -345,8 +345,9 @@ public class StaffServiceImpl implements StaffService {
 	staff.setCompany(authCompany);
 	this.staffDAO.create(staff);
 
-	// Log and notify.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId());
+	// Log.
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Staff.OBJECT_NAME, staff.getId(),
+		new Project(0), staff.getFullName());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Staff.OBJECT_NAME, staff.getFullName());
@@ -389,9 +390,9 @@ public class StaffServiceImpl implements StaffService {
 	if (result.hasErrors()) {
 	    return this.validationHelper.errorMessageHTML(result);
 	}
-
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Staff.OBJECT_NAME, staff.getId());
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Staff.OBJECT_NAME, staff.getId(),
+		new Project(0), staff.getFullName());
 
 	// Do service.
 	this.staffDAO.update(staff);
@@ -414,7 +415,8 @@ public class StaffServiceImpl implements StaffService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Staff.OBJECT_NAME, stf.getId());
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Staff.OBJECT_NAME, stf.getId(),
+		new Project(0), stf.getFullName());
 
 	// Delete all tasks assigned to this staff.
 	this.taskDAO.unassignAllTasksByStaff(id);
@@ -811,14 +813,14 @@ public class StaffServiceImpl implements StaffService {
 	}
 	// Log.
 	Staff stf = this.staffDAO.getByID(staffID);
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, project.getId(),
-		Staff.OBJECT_NAME, staffID, project, stf.getFullName());
 
 	// Get index of staff to remove.
 	Set<Staff> assignedStaffList = project.getAssignedStaff();
 	Set<Staff> newStaffList = new HashSet<Staff>();
 	for (Staff staff : assignedStaffList) {
 	    if (staff.getId() == staffID) {
+		this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME,
+			project.getId(), Staff.OBJECT_NAME, staffID, project, stf.getFullName());
 		continue;
 	    }
 	    newStaffList.add(staff);

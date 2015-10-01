@@ -206,7 +206,7 @@ public class Staff implements Serializable {
 	if (isNameSet()) {
 	    String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "
 		    + getLastName() + " " + getSuffix();
-	    return name;
+	    return StringUtils.trim(name);
 	}
 	return "(No Name)";
     }
@@ -222,8 +222,8 @@ public class Staff implements Serializable {
 		: ", " + getMiddleName().charAt(0) + ".";
 	String lname = getLastName() == null ? "" : getLastName();
 	String sfx = getSuffix() == null ? "" : getSuffix();
-
-	return lname + ", " + fname + " " + sfx + mname + pfx;
+	String name = lname + ", " + fname + " " + sfx + mname + pfx;
+	return StringUtils.trim(name);
     }
 
     @Override

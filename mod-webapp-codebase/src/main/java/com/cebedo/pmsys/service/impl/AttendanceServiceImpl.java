@@ -68,8 +68,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_SET, ConstantsRedis.OBJECT_ATTENDANCE,
-		attendance.getKey());
+	Staff staff = attendance.getStaff();
+	Project proj = attendance.getProject();
+	this.messageHelper.send(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
+		ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey(), proj, staff.getFullName());
 
 	// Set the status.
 	if (attendance.getStatus() == null) {
@@ -80,8 +82,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// If status is delete.
 	if (status == AttendanceStatus.DELETE) {
 	    deleteAllInDate(attendance);
-	    return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE, "on "
-		    + attendance.getFormattedDateString());
+	    return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
+		    "on " + attendance.getFormattedDateString());
 	}
 
 	// If status is absent.
@@ -89,7 +91,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    attendance.setWage(0);
 	}
 	if (status != AttendanceStatus.ABSENT && attendance.getWage() == 0) {
-	    Staff staff = attendance.getStaff();
 	    attendance.setWage(getWage(staff, status));
 	}
 
@@ -97,8 +98,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	deleteAllInDate(attendance);
 	this.attendanceValueRepo.set(attendance);
 
-	return AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE, "on "
-		+ attendance.getFormattedDateString());
+	return AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
+		"on " + attendance.getFormattedDateString());
     }
 
     /**
@@ -118,10 +119,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	String key = Attendance.constructPattern(attendance.getProject(), staff, attendance.getDate());
 	Set<String> keys = this.attendanceValueRepo.keys(key);
 	this.attendanceValueRepo.delete(keys);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, ConstantsRedis.OBJECT_ATTENDANCE,
-		attendance.getKey());
     }
 
     /**
@@ -277,8 +274,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
+	Project proj = attendanceMass.getProject();
 	this.messageHelper.send(AuditAction.ACTION_SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
-		FormMassAttendance.class.getName());
+		ConstantsRedis.OBJECT_ATTENDANCE, "Mass", proj, "Mass");
 
 	// Get the wage.
 	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
