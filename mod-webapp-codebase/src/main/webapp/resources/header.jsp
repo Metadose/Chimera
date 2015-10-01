@@ -86,18 +86,22 @@ $(window).on('load', function() {
                     </a>
                 </li>
                 
+				<c:if test="${authUser.superAdmin || authUser.companyAdmin}">
                 <li>
 	                <a href="<c:url value="/company/logs/"/>">
 	                	<i class="fa fa-clipboard"></i> Logs
 	                </a>
                 </li>
+                </c:if>
 
-<!--                 <li> -->
-<%-- 	                <a href="<c:url value="/company/settings/"/>"> --%>
-<!-- 	                	<i class="fa fa-gear"></i> Settings -->
-<!-- 	                </a> -->
-<!--                 </li> -->
-                    
+				<c:if test="${authUser.companyAdmin}">
+	                <li>
+		                <a href="<c:url value="/company/settings/"/>">
+		                	<i class="fa fa-gear"></i> Settings
+		                </a>
+	                </li>
+                </c:if>
+                
                 <c:if test="${authUser.superAdmin}">
                     <c:url var="urlCompanyList" value="/company/list/"/>
                     <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
