@@ -15,6 +15,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.CompanyService;
@@ -93,6 +94,21 @@ public class CompanyServiceImpl implements CompanyService {
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Company.OBJECT_NAME,
 		company.getId());
 	return company;
+    }
+
+    /**
+     * Get all logs of this company.
+     */
+    @Override
+    @Transactional
+    public List<AuditLog> logs() {
+	Company company = this.authHelper.getAuth().getCompany();
+	Long companyID = company == null ? null : company.getId();
+	List<AuditLog> logs = this.companyDAO.logs(companyID);
+	for (AuditLog log : logs) {
+	    log.setAuditAction(AuditAction.of(log.getAction()));
+	}
+	return logs;
     }
 
     /**

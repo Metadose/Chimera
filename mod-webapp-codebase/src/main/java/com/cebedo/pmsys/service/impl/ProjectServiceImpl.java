@@ -644,7 +644,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public Set<AuditLog> logsDesc(long projID) {
+    public Set<AuditLog> logs(long projID) {
 	// Get the task.
 	Project project = this.projectDAO.getByID(projID);
 
@@ -658,19 +658,6 @@ public class ProjectServiceImpl implements ProjectService {
 	for (AuditLog log : logs) {
 	    log.setAuditAction(AuditAction.of(log.getAction()));
 	}
-	// Sort the list in descending order.
-	// Collections.sort(logs, new Comparator<AuditLog>() {
-	// @Override
-	// public int compare(AuditLog aObj, AuditLog bObj) {
-	// Date aStart = aObj.getDateExecuted();
-	// Date bStart = bObj.getDateExecuted();
-	//
-	// // To sort in ascending,
-	// // remove Not's.
-	// return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 :
-	// 0;
-	// }
-	// });
 	return logs;
     }
 

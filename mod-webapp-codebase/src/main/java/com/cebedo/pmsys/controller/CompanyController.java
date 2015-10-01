@@ -1,5 +1,7 @@
 package com.cebedo.pmsys.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
 
@@ -31,6 +34,7 @@ value = { CompanyController.ATTR_COMPANY }
 public class CompanyController {
 
     public static final String ATTR_LIST = "companyList";
+    public static final String ATTR_LOGS = "logs";
     public static final String ATTR_COMPANY = Company.OBJECT_NAME;
 
     private CompanyService companyService;
@@ -41,7 +45,8 @@ public class CompanyController {
 	this.companyService = ps;
     }
 
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
+	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listCompanies(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.companyService.list());
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
@@ -55,8 +60,8 @@ public class CompanyController {
      * @return
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
-    public String create(@ModelAttribute(ATTR_COMPANY) Company company,
-	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result) {
+    public String create(@ModelAttribute(ATTR_COMPANY) Company company, RedirectAttributes redirectAttrs,
+	    SessionStatus status, BindingResult result) {
 
 	String response = "";
 
@@ -88,7 +93,8 @@ public class CompanyController {
      * @param id
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/{" + Company.COLUMN_PRIMARY_KEY + "}" }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/{" + Company.COLUMN_PRIMARY_KEY
+	    + "}" }, method = RequestMethod.GET)
     public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 	String response = this.companyService.delete(id);
@@ -123,6 +129,21 @@ public class CompanyController {
 	}
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
+    }
+
+    /**
+     * View all logs in this project.
+     * 
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.LOGS)
+    public String logs(Model model, HttpSession session) {
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
+	List<AuditLog> logs = this.companyService.logs();
+	model.addAttribute(ATTR_LOGS, logs);
+	return RegistryJSPPath.JSP_LOGS_COMPANY;
     }
 
 }

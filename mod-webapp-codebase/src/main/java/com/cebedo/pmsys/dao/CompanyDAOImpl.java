@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 
 @Repository
@@ -55,8 +56,8 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public List<Company> list(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<Company> companyList = this.daoHelper.getSelectQueryFilterCompany(session,
-		Company.class.getName(), companyID).list();
+	List<Company> companyList = this.daoHelper
+		.getSelectQueryFilterCompany(session, Company.class.getName(), companyID).list();
 	return companyList;
     }
 
@@ -75,5 +76,14 @@ public class CompanyDAOImpl implements CompanyDAO {
     public Company getCompanyByObjID(String objTable, String objKeyCol, long objID) {
 	long companyID = getCompanyIDByObjID(objTable, objKeyCol, objID);
 	return getByID(companyID);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<AuditLog> logs(Long companyID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	List<AuditLog> logs = this.daoHelper
+		.getSelectQueryFilterCompany(session, AuditLog.class.getName(), companyID).list();
+	return (List<AuditLog>) logs;
     }
 }

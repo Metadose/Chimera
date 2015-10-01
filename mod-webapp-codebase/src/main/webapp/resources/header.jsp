@@ -2,6 +2,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <sec:authentication var="authStaff" property="staff"/>
 <sec:authentication var="authUser" property="user"/>
+<sec:authentication var="authCompany" property="company"/>
+<c:set value="${authCompany.name}" var="companyName"></c:set>
+<c:if test="${empty authCompany}">
+	<c:set value="Admin" var="companyName"></c:set>
+</c:if>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:choose>
@@ -41,7 +46,7 @@ $(window).on('load', function() {
 <header class="header">
     <a href="<c:url value="/dashboard/"/>" class="logo">
         <!-- Add the class icon to your logo image or logo icon to add the margining -->
-        DEMO
+        ${companyName}
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
@@ -80,6 +85,19 @@ $(window).on('load', function() {
                         <i class="fa fa-user"></i> <span>Company Staff</span>
                     </a>
                 </li>
+                
+                <li>
+	                <a href="<c:url value="/company/logs/"/>">
+	                	<i class="fa fa-clipboard"></i> Logs
+	                </a>
+                </li>
+
+                <li>
+	                <a href="<c:url value="/company/settings/"/>">
+	                	<i class="fa fa-gear"></i> Settings
+	                </a>
+                </li>
+                    
                 <c:if test="${authUser.superAdmin}">
                     <c:url var="urlCompanyList" value="/company/list/"/>
                     <li><a href="${urlCompanyList}"><i class="fa fa-angle-double-right"></i> Companies</a></li>
