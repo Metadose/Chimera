@@ -104,7 +104,7 @@ public interface TaskService {
      */
     public String deleteAllTasksByProject(long projectID);
 
-    public String createMassTasks(List<Task> tasks, BindingResult result);
+    public String createMassTasks(Project project, List<Task> tasks, BindingResult result);
 
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project);
 

@@ -93,9 +93,7 @@ public class FieldServiceImpl implements FieldService {
 	}
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, proj.getId(),
-		Field.OBJECT_NAME, fieldAssignment.getLabel());
-
-	// Log and notify.
+		Field.OBJECT_NAME, fieldAssignment.getLabel(), proj, fieldAssignment.getLabel());
 
 	// Do service.
 	this.fieldDAO.unassignFieldFromProject(fieldID, projectID, label, value);

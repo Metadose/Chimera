@@ -164,10 +164,6 @@ public class ProjectServiceImpl implements ProjectService {
 	    return invalid;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
-		ConstantsRedis.OBJECT_ESTIMATE_COST);
-
 	return AlertBoxGenerator.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_ESTIMATE_COST);
     }
 
@@ -232,14 +228,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Create mass.
 	// Returns null if ok.
-	String invalid = this.taskService.createMassTasks(includeTasks, result);
+	String invalid = this.taskService.createMassTasks(project, includeTasks, result);
 	if (invalid != null) {
 	    return invalid;
 	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME);
 
 	return AlertBoxGenerator.SUCCESS.generateAssignEntries(Task.OBJECT_NAME);
     }

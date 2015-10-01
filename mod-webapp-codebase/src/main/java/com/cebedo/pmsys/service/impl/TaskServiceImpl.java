@@ -119,7 +119,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public String createMassTasks(List<Task> tasks, BindingResult result) {
+    public String createMassTasks(Project project, List<Task> tasks, BindingResult result) {
 
 	// Security check.
 	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
@@ -138,11 +138,14 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Task.OBJECT_NAME);
+	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+		Task.OBJECT_NAME, "Mass", project, "Mass");
 
 	// If reaches this point, do actual service.
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
+	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId(),
+		    Task.OBJECT_NAME, task.getId(), project, task.getTitle());
 	}
 	return null;
     }
@@ -209,8 +212,8 @@ public class TaskServiceImpl implements TaskService {
 			continue;
 
 		    case EXCEL_COLUMN_DURATION:
-			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			Double duration = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setDuration(duration);
 			continue;
 
@@ -219,20 +222,22 @@ public class TaskServiceImpl implements TaskService {
 			continue;
 
 		    case EXCEL_COLUMN_ACTUAL_DURATION:
-			duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? 0
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			duration = (Double) (this.excelHelper.getValueAsExpected(workbook, cell) == null
+				? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setActualDuration(duration);
 			continue;
 
 		    case EXCEL_COLUMN_TITLE:
-			String title = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String title = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setTitle(title);
 			continue;
 
 		    case EXCEL_COLUMN_CONTENT:
-			String content = (String) (this.excelHelper.getValueAsExpected(workbook, cell) == null ? ""
-				: this.excelHelper.getValueAsExpected(workbook, cell));
+			String content = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
 			task.setContent(content);
 			continue;
 
@@ -271,7 +276,9 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.create(task);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
@@ -319,7 +326,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
 	this.taskDAO.update(task);
@@ -343,7 +352,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
 	this.taskDAO.delete(id);
@@ -368,7 +379,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
 	task.setActualDateStart(null);
@@ -396,8 +409,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Staff.OBJECT_NAME, staff.getId(),
-		Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Task.OBJECT_NAME, task.getId(),
+		Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
 
 	// Do service.
 	TaskStaffAssignment taskStaffAssign = new TaskStaffAssignment();
@@ -445,10 +459,10 @@ public class TaskServiceImpl implements TaskService {
 	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
-
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Staff.OBJECT_NAME, staff.getId(),
-		Task.OBJECT_NAME, task.getId());
+	Project proj = task.getProject();
+	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Task.OBJECT_NAME, task.getId(),
+		Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
 
 	// Do service.
 	this.taskDAO.unassignStaffTask(taskID, staffID);
@@ -470,10 +484,10 @@ public class TaskServiceImpl implements TaskService {
 	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
-
 	// Log.
+	Project proj = task.getProject();
 	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
-		Staff.OBJECT_NAME);
+		Staff.OBJECT_NAME, "All", proj, "All");
 
 	// Do service.
 	this.taskDAO.unassignAllStaffTasks(id);
@@ -498,7 +512,7 @@ public class TaskServiceImpl implements TaskService {
 
 	// Log.
 	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME);
+		Task.OBJECT_NAME, "All", project, "All");
 
 	// Do service.
 	this.taskDAO.deleteAllTasksByProject(projectID);
