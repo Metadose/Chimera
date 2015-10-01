@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -8,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -15,6 +17,7 @@ import com.cebedo.pmsys.model.Company;
 @Repository
 public class CompanyDAOImpl implements CompanyDAO {
 
+    private AuthHelper authHelper = new AuthHelper();
     private DAOHelper daoHelper = new DAOHelper();
     private SessionFactory sessionFactory;
 
@@ -81,6 +84,9 @@ public class CompanyDAOImpl implements CompanyDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<AuditLog> logs(Long companyID) {
+	if (!this.authHelper.isCompanyAdmin() && !this.authHelper.isSuperAdmin()) {
+	    return new ArrayList<AuditLog>();
+	}
 	Session session = this.sessionFactory.getCurrentSession();
 	List<AuditLog> logs = this.daoHelper
 		.getSelectQueryFilterCompany(session, AuditLog.class.getName(), companyID).list();

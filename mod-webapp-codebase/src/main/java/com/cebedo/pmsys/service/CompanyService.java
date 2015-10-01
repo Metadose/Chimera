@@ -21,4 +21,6 @@ public interface CompanyService {
 
     public List<AuditLog> logs();
 
+    public Company settings();
+
 }

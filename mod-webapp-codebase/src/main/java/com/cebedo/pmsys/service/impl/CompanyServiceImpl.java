@@ -119,7 +119,10 @@ public class CompanyServiceImpl implements CompanyService {
     public String update(Company company, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isSuperAdmin()) {
+	// If the user does not have access to this company,
+	// and the user is not a company admin,
+	// return an error.
+	if (!this.authHelper.hasAccess(company) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
@@ -189,5 +192,16 @@ public class CompanyServiceImpl implements CompanyService {
 	// List as super admin.
 	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, Company.OBJECT_NAME);
 	return this.companyDAO.list(null);
+    }
+
+    @Override
+    @Transactional
+    public Company settings() {
+	AuthHelper authHelper = new AuthHelper();
+	long companyID = authHelper.getAuth().getCompany().getId();
+	Company company = this.companyDAO.getByID(companyID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Company.OBJECT_NAME,
+		company.getId());
+	return company;
     }
 }

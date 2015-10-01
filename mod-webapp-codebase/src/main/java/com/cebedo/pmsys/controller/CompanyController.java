@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.service.CompanyService;
@@ -62,9 +63,7 @@ public class CompanyController {
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_COMPANY) Company company, RedirectAttributes redirectAttrs,
 	    SessionStatus status, BindingResult result) {
-
 	String response = "";
-
 	if (company.getId() == 0) {
 	    response = this.companyService.create(company, result);
 	} else {
@@ -72,7 +71,11 @@ public class CompanyController {
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
-	return editPage(company.getId(), status);
+	AuthHelper authHelper = new AuthHelper();
+	if (authHelper.isSuperAdmin()) {
+	    return editPage(company.getId(), status);
+	}
+	return RegistryURL.REDIRECT_SETTINGS;
     }
 
     /**
@@ -128,6 +131,12 @@ public class CompanyController {
 	    return RegistryJSPPath.JSP_EDIT_COMPANY;
 	}
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
+	return RegistryJSPPath.JSP_EDIT_COMPANY;
+    }
+
+    @RequestMapping(value = RegistryURL.SETTINGS)
+    public String settings(Model model) {
+	model.addAttribute(ATTR_COMPANY, this.companyService.settings());
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
 
