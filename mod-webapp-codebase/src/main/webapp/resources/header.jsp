@@ -92,11 +92,11 @@ $(window).on('load', function() {
 	                </a>
                 </li>
 
-                <li>
-	                <a href="<c:url value="/company/settings/"/>">
-	                	<i class="fa fa-gear"></i> Settings
-	                </a>
-                </li>
+<!--                 <li> -->
+<%-- 	                <a href="<c:url value="/company/settings/"/>"> --%>
+<!-- 	                	<i class="fa fa-gear"></i> Settings -->
+<!-- 	                </a> -->
+<!--                 </li> -->
                     
                 <c:if test="${authUser.superAdmin}">
                     <c:url var="urlCompanyList" value="/company/list/"/>
