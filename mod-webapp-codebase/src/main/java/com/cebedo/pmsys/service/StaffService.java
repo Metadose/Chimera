@@ -112,6 +112,6 @@ public interface StaffService {
 
     public List<Staff> convertExcelToStaffList(MultipartFile multipartFile, Company company);
 
-    public List<Staff> createOrGetStaffInList(List<Staff> staffList, BindingResult result);
+    public List<Staff> refineStaffList(List<Staff> staffList, BindingResult result);
 
 }

@@ -53,7 +53,7 @@ public class FieldServiceImpl implements FieldService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -64,7 +64,7 @@ public class FieldServiceImpl implements FieldService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel(), proj, fieldAssignment.getLabel());
 
 	// Do service.
@@ -88,11 +88,11 @@ public class FieldServiceImpl implements FieldService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, fieldAssignment.getLabel(), proj, fieldAssignment.getLabel());
 
 	// Do service.
@@ -112,11 +112,11 @@ public class FieldServiceImpl implements FieldService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, "All", proj, "All");
 
 	// Do service.
@@ -138,7 +138,7 @@ public class FieldServiceImpl implements FieldService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -152,7 +152,7 @@ public class FieldServiceImpl implements FieldService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		Field.OBJECT_NAME, label, proj, label);
 
 	// Do service.

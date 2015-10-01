@@ -26,47 +26,11 @@ public class AuditLogServiceImpl implements AuditLogService {
 
     @Override
     @Transactional
-    public AuditLog getByID(long id) {
-
-	AuditLog obj = this.auditLogDAO.getByID(id);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(AuditLog.OBJECT_NAME);
-	    return new AuditLog();
-	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, AuditLog.OBJECT_NAME, obj.getId());
-	return obj;
-    }
-
-    @Override
-    @Transactional
-    public void delete(long id) {
-
-	AuditLog obj = this.auditLogDAO.getByID(id);
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(AuditLog.OBJECT_NAME);
-	    return; // TODO Return notification?
-	}
-
-	// Do service.
-	this.auditLogDAO.delete(id);
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, AuditLog.OBJECT_NAME, obj.getId());
-    }
-
-    @Override
-    @Transactional
     public List<AuditLog> list() {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, AuditLog.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, AuditLog.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 	    return this.auditLogDAO.list(null);

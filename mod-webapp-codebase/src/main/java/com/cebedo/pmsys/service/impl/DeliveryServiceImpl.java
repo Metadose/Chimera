@@ -99,10 +99,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, "Inventory", projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, "Inventory", projID);
 
 	HSSFWorkbook wb = new HSSFWorkbook();
 
@@ -232,7 +232,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -255,12 +255,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	Project proj = obj.getProject();
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
 		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
     }
@@ -272,12 +272,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return new Delivery();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 
 	return obj;
     }
@@ -288,12 +288,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Delivery>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);
@@ -324,13 +324,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = delivery.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY, delivery.getKey(), proj, delivery.getName());
 
 	// Get the necessary objects.
@@ -371,12 +371,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Delivery>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);

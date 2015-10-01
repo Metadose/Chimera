@@ -57,7 +57,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -70,7 +70,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Log.
 	Staff staff = attendance.getStaff();
 	Project proj = attendance.getProject();
-	this.messageHelper.send(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_SET, Staff.OBJECT_NAME, staff.getId(),
 		ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey(), proj, staff.getFullName());
 
 	// Set the status.
@@ -111,7 +111,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return;
 	}
 
@@ -132,12 +132,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
 		Staff.PROPERTY_WAGE);
 
 	double wage = 0;
@@ -174,7 +174,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(attd)) {
-		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ATTENDANCE, attd.getKey());
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attd.getKey());
 		return 0.0;
 	    }
 
@@ -184,7 +184,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	if (attendances.size() > 0) {
-	    this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
 		    Staff.PROPERTY_WAGE);
 	}
 
@@ -200,12 +200,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
 		Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
@@ -226,12 +226,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return new HashSet<Attendance>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
 		ConstantsRedis.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(project, staff));
@@ -263,7 +263,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -275,7 +275,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	Project proj = attendanceMass.getProject();
-	this.messageHelper.send(AuditAction.ACTION_SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_SET_MULTI, Staff.OBJECT_NAME, staff.getId(),
 		ConstantsRedis.OBJECT_ATTENDANCE, "Mass", proj, "Mass");
 
 	// Get the wage.

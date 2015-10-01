@@ -119,7 +119,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(systemUser)) {
-		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, systemUser.getId());
+		this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, systemUser.getId());
 		return AlertBoxGenerator.ERROR;
 	    }
 	} else {
@@ -137,7 +137,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.staffDAO.create(staff);
 
 	// Log and notify.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId(),
 		Staff.OBJECT_NAME, staff.getId(), null, systemUser.getUsername());
 
 	// Then link them together.
@@ -160,12 +160,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (!override) {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(obj)) {
-		this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+		this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 		return new SystemUser();
 	    }
 
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
 	}
 
 	// Return obj.
@@ -182,12 +182,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return new SystemUser();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
 
 	// Return obj.
 	return obj;
@@ -203,12 +203,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return new SystemUser();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
 
 	// Return obj.
 	return obj;
@@ -223,7 +223,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(user)) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, user.getId());
+	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -239,10 +239,10 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Log and notify.
 	Staff staff = user.getStaff();
 	if (staff == null) {
-	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(), "",
+	    this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(), "",
 		    "", null, user.getUsername());
 	} else {
-	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(),
+	    this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(),
 		    Staff.OBJECT_NAME, staff.getId(), null, user.getUsername());
 	}
 
@@ -286,12 +286,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log and notify.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId(), "", "",
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId(), "", "",
 		null, obj.getUsername());
 
 	// Do service.
@@ -315,7 +315,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	AuthenticationToken token = this.authHelper.getAuth();
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, SystemUser.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, SystemUser.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 

@@ -31,11 +31,11 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 	    return new ProjectAux();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PROJECT_AUX, obj.getKey());
 
 	return obj;
     }

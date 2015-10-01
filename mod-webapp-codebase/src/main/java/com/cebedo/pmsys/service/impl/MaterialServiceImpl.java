@@ -81,7 +81,7 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -124,7 +124,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	    // Log.
 	    Project proj = obj.getProject();
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_MATERIAL, obj.getKey(), proj, obj.getName());
 
 	    // Return.
@@ -144,12 +144,12 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return new Material();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 
 	return obj;
     }
@@ -159,12 +159,12 @@ public class MaterialServiceImpl implements MaterialService {
     public List<Material> listDesc(Delivery delivery) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return new ArrayList<Material>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_DELIVERY,
+	this.messageHelper.nonAuditableListWithAssoc(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_DELIVERY,
 		delivery.getKey(), ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(delivery);
@@ -195,13 +195,13 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = material.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_MATERIAL, material.getKey(), proj, material.getName());
 
 	// Get the updated version of the objects.
@@ -244,12 +244,12 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Material>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(proj);
@@ -274,7 +274,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -286,7 +286,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Log.
 	Project proj = material.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_MATERIAL, material.getKey(), proj, material.getName());
 
 	// Set the material.

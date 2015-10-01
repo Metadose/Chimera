@@ -106,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -176,7 +176,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -257,7 +257,8 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectAuxValueRepo.set(new ProjectAux(project));
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId(),
+		project.getName());
 
 	// Return success response.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Project.OBJECT_NAME, project.getName());
@@ -272,7 +273,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -295,7 +296,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
-	staffList = this.staffService.createOrGetStaffInList(staffList, result);
+	staffList = this.staffService.refineStaffList(staffList, result);
 
 	// There was a problem with the list of staff you provided. Please
 	// review the list and try again.
@@ -305,8 +306,8 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
-		Staff.OBJECT_NAME, "Mass", proj, "Mass");
+	this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME,
+		proj.getId(), Staff.OBJECT_NAME, "Mass", proj, "Mass");
 
 	// If everything's ok.
 	assignAllStaffToProject(proj, staffList);
@@ -325,7 +326,7 @@ public class ProjectServiceImpl implements ProjectService {
 	projectStaff.addAll(staffList);
 	proj.setAssignedStaff(projectStaff);
 	for (Staff staff : projectStaff) {
-	    this.messageHelper.send(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableID(AuditAction.ACTION_ASSIGN, Project.OBJECT_NAME, proj.getId(),
 		    Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
 	}
 	this.projectDAO.merge(proj);
@@ -340,7 +341,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -360,8 +361,8 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.update(project);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(), project,
-		project.getName());
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(),
+		"", "", project, project.getName());
 
 	// Response for the user.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
@@ -372,7 +373,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> list() {
 
 	AuthenticationToken token = this.authHelper.getAuth();
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
 
 	// List as super admin.
 	if (token.isSuperAdmin()) {
@@ -394,12 +395,12 @@ public class ProjectServiceImpl implements ProjectService {
 	// Check security.
 	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
 	// Log a warning.
-	this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	return new Project();
     }
 
@@ -415,7 +416,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project) && !this.authHelper.isCompanyAdmin()) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -435,7 +436,8 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectAuxValueRepo.delete(keysSet);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, project.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, project.getId(),
+		project.getName());
 
 	// Success response.
 	return AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
@@ -446,7 +448,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> listWithAllCollections() {
 	// Log.
 	AuthenticationToken token = this.authHelper.getAuth();
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, Project.OBJECT_NAME);
 
 	if (token.isSuperAdmin()) {
 	    return this.projectDAO.listWithAllCollections(null);
@@ -465,12 +467,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Log and return.
 	if (this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
 
 	// Log then return empty object.
-	this.messageHelper.unauthorized(Project.OBJECT_NAME, id);
+	this.messageHelper.unauthorizedID(Project.OBJECT_NAME, id);
 	return new Project();
     }
 
@@ -483,13 +485,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Returning empty since expecting a JSON.
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		JSONTimelineGantt.class.getName());
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME,
+		proj.getId(), JSONTimelineGantt.class.getName());
 
 	// Construct JSON data for the gantt chart.
 	List<JSONTimelineGantt> ganttBeanList = new ArrayList<JSONTimelineGantt>();
@@ -529,13 +531,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HashMap<TaskStatus, Integer>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME, proj.getId(),
-		TaskStatus.class.getName());
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME,
+		proj.getId(), TaskStatus.class.getName());
 
 	// Get summary of tasks.
 	// For each task status, count how many.
@@ -567,13 +569,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Empty, expecting JSON.
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		JSONCalendarEvent.class.getName());
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME,
+		proj.getId(), JSONCalendarEvent.class.getName());
 
 	// Get calendar events.
 	List<JSONCalendarEvent> jSONCalendarEvents = new ArrayList<JSONCalendarEvent>();
@@ -624,12 +626,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(), project,
-		project.getName());
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(),
+		"", "", project, project.getName());
 
 	// Do service.
 	project.setActualCompletionDate(null);
@@ -648,7 +650,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return new HashSet<AuditLog>();
 	}
 

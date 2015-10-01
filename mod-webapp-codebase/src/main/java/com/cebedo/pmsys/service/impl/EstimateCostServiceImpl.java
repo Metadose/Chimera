@@ -81,10 +81,10 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE_COST, projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE_COST, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Estimated Costs");
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
@@ -192,7 +192,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	// Security check.
 	if (costs.size() > 0 && !this.authHelper.isActionAuthorized(costs.get(0))) {
 	    long projectID = costs.get(0).getProject().getId();
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, projectID);
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -207,7 +207,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	// Log.
 	if (costs.size() > 0) {
 	    Project proj = costs.get(0).getProject();
-	    this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_ESTIMATE_COST, "Mass", proj, "Mass");
 	}
 
@@ -224,7 +224,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return null;
 	}
 
@@ -235,7 +235,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
 		MultipartFile.class.getName());
 
 	try {
@@ -318,13 +318,13 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = obj.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 
 	// Project auxiliary on grand totals of costs.
@@ -355,11 +355,11 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	EstimateCost obj = this.estimateCostValueRepo.get(key);
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return new EstimateCost();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATE_COST,
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getKey());
 	return obj;
     }
@@ -369,12 +369,12 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     public List<EstimateCost> list(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimateCost>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATE_COST);
 
 	String pattern = EstimateCost.constructPattern(proj);
@@ -388,7 +388,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Override
     public String set(EstimateCost obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -432,12 +432,12 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	Project proj = obj.getProject();
 
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());

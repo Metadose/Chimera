@@ -77,10 +77,10 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, Task.OBJECT_NAME, projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, Task.OBJECT_NAME, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Program of Works");
 
@@ -124,7 +124,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
 	    long projectID = tasks.get(0).getProject().getId();
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, projectID);
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -138,13 +138,13 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME, "Mass", project, "Mass");
 
 	// If reaches this point, do actual service.
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId(),
+	    this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId(),
 		    Task.OBJECT_NAME, task.getId(), project, task.getTitle());
 	}
 	return null;
@@ -156,7 +156,7 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return null;
 	}
 
@@ -167,7 +167,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
 		MultipartFile.class.getName());
 
 	try {
@@ -277,7 +277,7 @@ public class TaskServiceImpl implements TaskService {
 
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Return success.
@@ -294,12 +294,12 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return new Task();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
 
 	// Return obj.
 	return task;
@@ -315,7 +315,7 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -327,7 +327,7 @@ public class TaskServiceImpl implements TaskService {
 
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
@@ -347,13 +347,13 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
@@ -374,13 +374,13 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Do service.
@@ -404,13 +404,13 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_ASSIGN, Task.OBJECT_NAME, task.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_ASSIGN, Task.OBJECT_NAME, task.getId(),
 		Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
 
 	// Do service.
@@ -433,12 +433,12 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return new Task();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Task.OBJECT_NAME, task.getId());
 
 	// Return obj.
 	return task;
@@ -456,12 +456,12 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
-	    this.messageHelper.unauthorized(Staff.OBJECT_NAME, staff.getId());
+	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN, Task.OBJECT_NAME, task.getId(),
+	this.messageHelper.auditableID(AuditAction.ACTION_UNASSIGN, Task.OBJECT_NAME, task.getId(),
 		Staff.OBJECT_NAME, staff.getId(), proj, staff.getFullName());
 
 	// Do service.
@@ -481,12 +481,12 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
-	    this.messageHelper.unauthorized(Task.OBJECT_NAME, task.getId());
+	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	Project proj = task.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN_ALL, Task.OBJECT_NAME, task.getId(),
 		Staff.OBJECT_NAME, "All", proj, "All");
 
 	// Do service.
@@ -506,12 +506,12 @@ public class TaskServiceImpl implements TaskService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, project.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
 		Task.OBJECT_NAME, "All", project, "All");
 
 	// Do service.

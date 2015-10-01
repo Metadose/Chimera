@@ -59,7 +59,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 	}
 	// If user does not exist.
 	catch (Exception e) {
-	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_NOT_EXIST);
+	    this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_USER_NOT_EXIST);
 	    throw new BadCredentialsException(AuditAction.LOGIN_USER_NOT_EXIST.label());
 	}
 
@@ -74,7 +74,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 	    // If server is beta, company must also be beta.
 	    boolean isBeta = this.systemConfigurationService.getBetaServer();
 	    if (!(isBeta && company.isBetaTester())) {
-		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_COMPANY_NOT_BETA);
+		this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_COMPANY_NOT_BETA);
 		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_NOT_BETA.label());
 	    }
 
@@ -82,13 +82,13 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 	    Date currentDatetime = new Date(System.currentTimeMillis());
 	    Date companyExpire = company.getDateExpiration();
 	    if (currentDatetime.after(companyExpire)) {
-		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_COMPANY_EXPIRED);
+		this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_COMPANY_EXPIRED);
 		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_EXPIRED.label());
 	    }
 
 	    // If user is locked.
 	    if (user.getLoginAttempts() > MAX_LOGIN_ATTEMPT) {
-		this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_USER_LOCKED);
+		this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_USER_LOCKED);
 		throw new BadCredentialsException(AuditAction.LOGIN_USER_LOCKED.label());
 	    }
 	}
@@ -99,7 +99,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 	    // Add 1 to the user login attempts.
 	    user.setLoginAttempts(user.getLoginAttempts() + 1);
 	    this.systemUserService.update(user, true);
-	    this.messageHelper.loginError(ipAddress, user, AuditAction.LOGIN_INVALID_PASSWORD);
+	    this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_INVALID_PASSWORD);
 	    throw new BadCredentialsException(AuditAction.LOGIN_INVALID_PASSWORD.label());
 	}
 
@@ -113,7 +113,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 	AuthenticationToken token = new AuthenticationToken(auth.getName(), credentials,
 		getAuthorities(user), staff, company, user.isSuperAdmin(), user.isCompanyAdmin(), user);
 	token.setIpAddress(ipAddress);
-	this.messageHelper.login(AuditAction.LOGIN_AUTHENTICATED, token);
+	this.messageHelper.loginSuccess(token);
 	return token;
     }
 

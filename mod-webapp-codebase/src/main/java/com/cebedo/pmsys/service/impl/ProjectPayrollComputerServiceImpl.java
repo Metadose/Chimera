@@ -318,7 +318,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return;
 	}
 

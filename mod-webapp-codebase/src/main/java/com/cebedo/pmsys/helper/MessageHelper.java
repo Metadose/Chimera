@@ -16,53 +16,79 @@ public class MessageHelper {
     private AuthHelper authHelper = new AuthHelper();
     private BeanHelper beanHelper = new BeanHelper();
 
-    public void send(AuditAction action, String objectName, long objectID, String assocName) {
+    /**
+     * Non-auditable with key.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectID
+     * @param assocName
+     * @param key
+     */
+    public void nonAuditableIDWithAssocWithKey(AuditAction action, String objectName, long objectID,
+	    String assocName, String key) {
 	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName);
-	send(msg);
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, key);
+	queueActiveMQ(msg);
     }
 
-    public void loginError(String ipAddress, SystemUser user, AuditAction action) {
+    /**
+     * Non-auditable without key.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectID
+     * @param assocName
+     * @param key
+     */
+    public void nonAuditableIDWithAssocNoKey(AuditAction action, String objectName, long objectID,
+	    String assocName) {
+	nonAuditableIDWithAssocWithKey(action, objectName, objectID, assocName, "");
+    }
+
+    /**
+     * Non-auditable, no association.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectID
+     */
+    public void nonAuditableIDNoAssoc(AuditAction action, String objectName, long objectID) {
+	nonAuditableIDWithAssocWithKey(action, objectName, objectID, "", "");
+    }
+
+    public void loginFailed(String ipAddress, SystemUser user, AuditAction action) {
 	JMSMessage msg = new JMSMessage(ipAddress, user, action);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void login(AuditAction action, AuthenticationToken auth) {
-	JMSMessage msg = new JMSMessage(auth, action);
-	send(msg);
+    public void loginSuccess(AuthenticationToken auth) {
+	JMSMessage msg = new JMSMessage(auth, AuditAction.LOGIN_AUTHENTICATED);
+	queueActiveMQ(msg);
     }
 
     public void unauthorized(String objectName) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, AuditAction.ERROR_UNAUTHORIZED, objectName);
-	send(msg);
+	unauthorizedKey(objectName, "");
     }
 
-    public void unauthorized(String objectName, String objectKey) {
+    public void unauthorizedKey(String objectName, String objectKey) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, AuditAction.ERROR_UNAUTHORIZED, objectName, objectKey);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void unauthorized(String objectName, long objectID) {
+    public void unauthorizedID(String objectName, long objectID) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, AuditAction.ERROR_UNAUTHORIZED, objectName, objectID);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void send(AuditAction action, String objectName, long objectID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID);
-	send(msg);
-    }
-
-    public void send(AuditAction action, String objectName) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName);
-	send(msg);
-    }
-
-    private void send(JMSMessage msg) {
+    /**
+     * Send the message to ActiveMQ.
+     * 
+     * @param msg
+     */
+    private void queueActiveMQ(JMSMessage msg) {
 	// Get the bean
 	MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
 
@@ -73,56 +99,87 @@ public class MessageHelper {
 	sender.send(dest, msg);
     }
 
-    public void send(AuditAction action, String objectName, String objectKey) {
+    /**
+     * Non-auditable, no association.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectKey
+     */
+    public void nonAuditableKeyNoAssoc(AuditAction action, String objectName, String objectKey) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectKey);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void send(AuditAction action, String objectName, long objectID, String assocName,
-	    String key) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, key);
-	send(msg);
-    }
-
-    public void send(AuditAction action, String objectName, String objectKey, String assocName) {
+    /**
+     * Non-auditable.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectKey
+     * @param assocName
+     */
+    public void nonAuditableListWithAssoc(AuditAction action, String objectName, String objectKey,
+	    String assocName) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectKey, assocName);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void send(AuditAction action, String objectName, long id, String assocName, long assocID) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, id, assocName, assocID);
-	send(msg);
+    /**
+     * Non-auditable.
+     * 
+     * @param action
+     * @param objectName
+     */
+    public void nonAuditableListNoAssoc(AuditAction action, String objectName) {
+	nonAuditableListWithAssoc(action, objectName, "", "");
     }
 
-    public void send(AuditAction action, String objectName, long objectID, Project project,
-	    String entryName) {
-	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID,
-		project == null ? new Project(0) : project, entryName);
-	send(msg);
-    }
-
-    public void send(AuditAction action, String objectName, long objectID, String assocName, String key,
-	    Project proj, String entry) {
+    /**
+     * Auditable.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectID
+     * @param assocName
+     * @param key
+     * @param proj
+     * @param entry
+     */
+    public void auditableKey(AuditAction action, String objectName, long objectID, String assocName,
+	    String key, Project proj, String entry) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
 	msg.setProjectID(proj == null ? 0 : proj.getId());
 	msg.setEntryName(entry);
 	msg.setAssocObjectKey(key);
-	send(msg);
+	queueActiveMQ(msg);
     }
 
-    public void send(AuditAction action, String objectName, long objectID, String assocName,
+    /**
+     * Auditable.
+     * 
+     * @param action
+     * @param objectName
+     * @param objectID
+     * @param assocName
+     * @param assocID
+     * @param proj
+     * @param entry
+     */
+    public void auditableID(AuditAction action, String objectName, long objectID, String assocName,
 	    long assocID, Project proj, String entry) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
 	msg.setProjectID(proj == null ? 0 : proj.getId());
 	msg.setEntryName(entry);
 	msg.setAssocObjectID(assocID);
-	send(msg);
+	queueActiveMQ(msg);
+    }
+
+    public void auditableID(AuditAction action, String objectName, long objectID, String entry) {
+	auditableKey(action, objectName, objectID, "", "", null, entry);
     }
 }

@@ -50,7 +50,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	// Security check.
 	// Only super admins can create a config.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME,
+	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
 		    systemConfiguration.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
@@ -69,8 +69,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	this.systemConfigurationDAO.create(systemConfiguration);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
-		systemConfiguration.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
+		systemConfiguration.getId(), systemConfiguration.getName());
 
 	return AlertBoxGenerator.SUCCESS.generateCreate(SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getName());
@@ -83,11 +83,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(conf)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
+	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 	    return new SystemConfiguration();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME, conf.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME,
+		conf.getId());
 
 	return conf;
     }
@@ -98,7 +99,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME,
+	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
 		    systemConfiguration.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
@@ -110,8 +111,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
-		systemConfiguration.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, SystemConfiguration.OBJECT_NAME,
+		systemConfiguration.getId(), systemConfiguration.getName());
 
 	this.systemConfigurationDAO.update(systemConfiguration);
 
@@ -126,12 +127,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(conf)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
+	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME,
-		conf.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME,
+		conf.getId(), conf.getName());
 
 	this.systemConfigurationDAO.delete(id);
 
@@ -143,7 +144,8 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     public List<SystemConfiguration> list() {
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, SystemConfiguration.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST,
+		SystemConfiguration.OBJECT_NAME);
 
 	AuthenticationToken token = this.authHelper.getAuth();
 	if (token.isSuperAdmin()) {
@@ -160,12 +162,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	if (!override) {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(conf)) {
-		this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, conf.getId());
+		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 		return "";
 	    }
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME,
-		    conf.getId());
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET,
+		    SystemConfiguration.OBJECT_NAME, conf.getId());
 	}
 
 	return conf.getValue();
@@ -179,25 +181,24 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	if (override) {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(config)) {
-		this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
+		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, config.getId());
 		return new SystemConfiguration();
 	    }
 	    // Log.
-	    this.messageHelper.send(AuditAction.ACTION_GET, SystemConfiguration.OBJECT_NAME,
-		    config.getId());
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET,
+		    SystemConfiguration.OBJECT_NAME, config.getId());
 	}
 	return config;
     }
 
+    /**
+     * This is a system-only function.<br>
+     * Do not do security checks.<br>
+     * Do not do logs and audits.
+     */
     @Override
     @Transactional
     public String merge(SystemConfiguration config, BindingResult result) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(config)) {
-	    this.messageHelper.unauthorized(SystemConfiguration.OBJECT_NAME, config.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
 
 	// Service layer form validation.
 	if (result != null) {
@@ -206,13 +207,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 		return this.validationHelper.errorMessageHTML(result);
 	    }
 	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_MERGE, SystemConfiguration.OBJECT_NAME,
-		config.getId());
-
 	this.systemConfigurationDAO.merge(config);
-
 	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
 		config.getName());
     }

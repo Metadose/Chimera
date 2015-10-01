@@ -87,10 +87,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, proj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, proj.getId());
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Summary sheet.
@@ -117,10 +117,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj) || computeResult == null || !obj.isSaved()) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, payrollKey);
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, payrollKey);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	constructPayrollSheet(wb, obj, computeResult);
 	return wb;
@@ -258,7 +258,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // This is meant to be empty, see references.
 	}
 
@@ -266,7 +266,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// compute button. A JSON response is expected.
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_COMPUTE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
 		projectPayroll.getStartEndDisplay());
 
@@ -318,11 +318,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new ProjectPayroll();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 
 	return obj;
     }
@@ -338,12 +338,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(payroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	Project proj = payroll.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, payroll.getKey(), proj, payroll.getStartEndDisplay());
 
 	// Revert the grand total in project auxillary.
@@ -383,7 +383,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(payroll)) {
-		this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 		return NumberFormatUtils.getCurrencyFormatter().format(0);
 	    }
 
@@ -395,7 +395,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    }
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
@@ -406,7 +406,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -446,7 +446,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Log.
-	this.messageHelper.send(isUpdating ? AuditAction.ACTION_UPDATE : AuditAction.ACTION_CREATE,
+	this.messageHelper.auditableKey(isUpdating ? AuditAction.ACTION_UPDATE : AuditAction.ACTION_CREATE,
 		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL,
 		projectPayroll.getKey(), proj, projectPayroll.getStartEndDisplay());
 	return response;
@@ -475,7 +475,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -483,7 +483,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollComputerService.compute(startDate, endDate, projectPayroll);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 
 	// Return the JSON equivalent of the result.
@@ -499,12 +499,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
@@ -539,7 +539,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -551,7 +551,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Log.
 	Project proj = projectPayroll.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
 		projectPayroll.getStartEndDisplay());
 
@@ -587,12 +587,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    FormPayrollIncludeStaff includeStaffBean) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	Project proj = projectPayroll.getProject();
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
 		projectPayroll.getStartEndDisplay());
 
@@ -627,12 +627,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public List<ProjectPayroll> listAsc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
