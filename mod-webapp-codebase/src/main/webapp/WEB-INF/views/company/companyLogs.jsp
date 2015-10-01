@@ -1,13 +1,21 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authCompany" property="company"/>
+<sec:authentication var="authUser" property="user"/>
+<c:set value="${authCompany.name}" var="companyName"></c:set>
+<c:if test="${empty authCompany}">
+	<c:set value="Admin" var="companyName"></c:set>
+</c:if>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>${project.name} | Projects Logs</title>
+	<title>${companyName} | Company Logs</title>
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
@@ -17,8 +25,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	                Projects Logs
-	                <small>Complete list of all project logs</small>
+	                Company Logs
+	                <small>Complete list of all company logs</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -34,6 +42,9 @@
 	                                            <tr>
 	                                            	<th>ID</th>
 	                                            	<th>Date Executed</th>
+	                                            	<c:if test="${authUser.superAdmin}">
+	                                            	<th>Company</th>
+	                                            	</c:if>
 	                                            	<th>IP Address</th>
 	                                                <th>User</th>
 	                                                <th>Action</th>
@@ -48,6 +59,9 @@
 			                                            <tr>
 			                                                <td>${log.id}</td>
 			                                                <td>${log.getDateExecutedAsString()}</td>
+			                                                <c:if test="${authUser.superAdmin}">
+			                                                <td>${log.company.name}</td>
+			                                                </c:if>
 			                                                <td>${log.ipAddress}</td>
 			                                                <td>${log.user.username}</td>
 			                                                <td>${log.auditAction.label()}</td>
@@ -62,6 +76,9 @@
 	                                            <tr>
 	                                            	<th>ID</th>
 	                                            	<th>Date Executed</th>
+	                                            	<c:if test="${authUser.superAdmin}">
+	                                            	<th>Company</th>
+	                                            	</c:if>
 	                                            	<th>IP Address</th>
 	                                                <th>User</th>
 	                                                <th>Action</th>

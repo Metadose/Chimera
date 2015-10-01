@@ -81,13 +81,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = obj.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 
 	// Revert old values in the auxiliary.
@@ -117,11 +117,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 	Expense obj = this.expenseValueRepo.get(key);
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return new Expense();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	return obj;
     }
 
@@ -130,12 +130,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     public List<Expense> listAsc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Expense>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE);
 	String pattern = Expense.constructPattern(proj);
 	Set<String> keys = this.expenseValueRepo.keys(pattern);
@@ -162,10 +162,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_EXPENSE, projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_EXPENSE, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Other Expenses");
 
@@ -208,7 +208,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public String set(Expense obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -245,12 +245,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 	Project proj = obj.getProject();
 
 	if (isCreate) {
-	    this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE,
 		    obj.getName());
 	}
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
     }

@@ -265,4 +265,14 @@ public class AuditLog implements Serializable {
 	this.assocObjKey = assocObjKey;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	return obj instanceof AuditLog ? ((AuditLog) obj).getId() == (getId()) : false;
+    }
+
+    @Override
+    public int hashCode() {
+	return ((Long) getId()).hashCode();
+    }
+
 }

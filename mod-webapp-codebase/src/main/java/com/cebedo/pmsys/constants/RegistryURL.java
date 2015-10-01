@@ -50,6 +50,8 @@ public class RegistryURL {
 
     public static final String LOGS_PROJECT = "/logs/{project}";
 
+    public static final String LOGS = "/logs/";
+
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";
 
     public static final String REDIRECT_LIST_SYSTEM_USER = "redirect:/systemuser/list";

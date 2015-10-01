@@ -38,12 +38,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return new EstimationOutput();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
 		obj.getKey());
 
 	return obj;
@@ -56,13 +56,13 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Log.
 	Project proj = obj.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey(), proj, obj.getName());
 
 	this.estimationOutputValueRepo.delete(key);
@@ -75,12 +75,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimationOutput>();
 	}
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT);
 
 	String pattern = EstimationOutput.constructPattern(proj);

@@ -64,7 +64,7 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -102,7 +102,7 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Log.
 	Project proj = obj.getProject();
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PULL_OUT, obj.getKey(), proj, material.getName());
 
 	// Return.
@@ -121,11 +121,11 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return new PullOut();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 
 	return obj;
     }
@@ -138,12 +138,12 @@ public class PullOutServiceImpl implements PullOutService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
 	Project proj = obj.getProject();
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PULL_OUT, obj.getKey(), proj, obj.getMaterial().getName());
 
 	// Do delete.
@@ -184,11 +184,11 @@ public class PullOutServiceImpl implements PullOutService {
     public List<PullOut> listDesc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<PullOut>();
 	}
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_PULL_OUT);
 
 	String pattern = PullOut.constructPattern(proj);

@@ -197,8 +197,8 @@ public class Staff implements Serializable {
     @Transient
     public boolean isNameSet() {
 	return !(StringUtils.isBlank(getPrefix()) && StringUtils.isBlank(getFirstName())
-		&& StringUtils.isBlank(getMiddleName()) && StringUtils.isBlank(getLastName()) && StringUtils
-		    .isBlank(getSuffix()));
+		&& StringUtils.isBlank(getMiddleName()) && StringUtils.isBlank(getLastName())
+		&& StringUtils.isBlank(getSuffix()));
     }
 
     @Transient
@@ -206,21 +206,24 @@ public class Staff implements Serializable {
 	if (isNameSet()) {
 	    String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "
 		    + getLastName() + " " + getSuffix();
-	    return name;
+	    return StringUtils.trim(name);
 	}
 	return "(No Name)";
     }
 
     @Transient
     public String getFormalName() {
+	if (!isNameSet()) {
+	    return "(No Name)";
+	}
 	String pfx = getPrefix() == null || getPrefix().equals("") ? "" : ", " + getPrefix();
 	String fname = getFirstName() == null ? "" : getFirstName();
-	String mname = getMiddleName() == null || getMiddleName().equals("") ? "" : ", "
-		+ getMiddleName().charAt(0) + ".";
+	String mname = getMiddleName() == null || getMiddleName().equals("") ? ""
+		: ", " + getMiddleName().charAt(0) + ".";
 	String lname = getLastName() == null ? "" : getLastName();
 	String sfx = getSuffix() == null ? "" : getSuffix();
-
-	return lname + ", " + fname + " " + sfx + mname + pfx;
+	String name = lname + ", " + fname + " " + sfx + mname + pfx;
+	return StringUtils.trim(name);
     }
 
     @Override

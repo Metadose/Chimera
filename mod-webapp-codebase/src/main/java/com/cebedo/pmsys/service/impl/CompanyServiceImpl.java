@@ -15,6 +15,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
+import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.CompanyService;
@@ -53,7 +54,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -66,7 +67,8 @@ public class CompanyServiceImpl implements CompanyService {
 	this.companyDAO.create(company);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Company.OBJECT_NAME, company.getId(),
+		company.getName());
 
 	// Do actual service and construct response.
 	return AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
@@ -83,14 +85,30 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return new Company();
 	}
 
 	// Log then
 	// return actual object.
-	this.messageHelper.send(AuditAction.ACTION_GET, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Company.OBJECT_NAME,
+		company.getId());
 	return company;
+    }
+
+    /**
+     * Get all logs of this company.
+     */
+    @Override
+    @Transactional
+    public List<AuditLog> logs() {
+	Company company = this.authHelper.getAuth().getCompany();
+	Long companyID = company == null ? null : company.getId();
+	List<AuditLog> logs = this.companyDAO.logs(companyID);
+	for (AuditLog log : logs) {
+	    log.setAuditAction(AuditAction.of(log.getAction()));
+	}
+	return logs;
     }
 
     /**
@@ -102,7 +120,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -113,7 +131,8 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// Create post-service operations.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, Company.OBJECT_NAME, company.getId(),
+		company.getName());
 
 	// Do actual update to object.
 	// Construct alert box response.
@@ -132,12 +151,13 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorized(Company.OBJECT_NAME, company.getId());
+	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
 	// Proceed to post-service operations.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, Company.OBJECT_NAME, company.getId());
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE, Company.OBJECT_NAME, company.getId(),
+		company.getName());
 
 	// Delete also linked redis objects.
 	// company:4:*
@@ -167,7 +187,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	// List as super admin.
-	this.messageHelper.send(AuditAction.ACTION_LIST, Company.OBJECT_NAME);
+	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, Company.OBJECT_NAME);
 	return this.companyDAO.list(null);
     }
 }

@@ -18,7 +18,6 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
@@ -236,16 +235,18 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	    Map<AttendanceStatus, PairCountValue> staffWageBreakdown, JSONPayrollResult rowBean) {
 
 	// OVERTIME.
-	rowBean.setBreakdownOvertimeCount(getBreakdownCount(staffWageBreakdown,
-		AttendanceStatus.OVERTIME));
-	rowBean.setBreakdownOvertimeWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.OVERTIME));
+	rowBean.setBreakdownOvertimeCount(
+		getBreakdownCount(staffWageBreakdown, AttendanceStatus.OVERTIME));
+	rowBean.setBreakdownOvertimeWage(
+		getBreakdownWage(staffWageBreakdown, AttendanceStatus.OVERTIME));
 
 	// ABSENT.
 	rowBean.setBreakdownAbsentCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.ABSENT));
 	rowBean.setBreakdownAbsentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.ABSENT));
 
 	// HALFDAY.
-	rowBean.setBreakdownHalfdayCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.HALFDAY));
+	rowBean.setBreakdownHalfdayCount(
+		getBreakdownCount(staffWageBreakdown, AttendanceStatus.HALFDAY));
 	rowBean.setBreakdownHalfdayWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.HALFDAY));
 
 	// LATE.
@@ -257,7 +258,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	rowBean.setBreakdownLeaveWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.LEAVE));
 
 	// PRESENT.
-	rowBean.setBreakdownPresentCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.PRESENT));
+	rowBean.setBreakdownPresentCount(
+		getBreakdownCount(staffWageBreakdown, AttendanceStatus.PRESENT));
 	rowBean.setBreakdownPresentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.PRESENT));
 
 	return rowBean;
@@ -316,13 +318,9 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return;
 	}
-
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_COMPUTE, ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey());
 
 	// Clear old data.
 	clear();

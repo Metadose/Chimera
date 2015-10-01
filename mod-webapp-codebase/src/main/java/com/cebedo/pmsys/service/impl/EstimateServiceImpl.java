@@ -125,10 +125,10 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(output)) {
-	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.send(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE, key);
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE, key);
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Summary sheet.
@@ -667,7 +667,7 @@ public class EstimateServiceImpl implements EstimateService {
 	// Security check.
 	Project proj = estimateInput.getProject();
 	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorized(Project.OBJECT_NAME, proj.getId());
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxGenerator.ERROR;
 	}
 
@@ -722,7 +722,7 @@ public class EstimateServiceImpl implements EstimateService {
 	this.estimationOutputValueRepo.set(estimationOutput);
 
 	// Log.
-	this.messageHelper.send(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
+	this.messageHelper.auditableKey(AuditAction.ACTION_ESTIMATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, estimationOutput.getKey(), proj,
 		estimationOutput.getName());
 

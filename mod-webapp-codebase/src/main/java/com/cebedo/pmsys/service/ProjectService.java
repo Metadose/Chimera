@@ -63,6 +63,6 @@ public interface ProjectService {
 
     public String mark(long projectID, int status);
 
-    public Set<AuditLog> logsDesc(long id);
+    public Set<AuditLog> logs(long id);
 
 }
