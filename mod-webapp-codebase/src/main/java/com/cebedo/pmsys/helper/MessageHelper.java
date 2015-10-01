@@ -101,7 +101,8 @@ public class MessageHelper {
     public void send(AuditAction action, String objectName, long objectID, Project project,
 	    String entryName) {
 	AuthenticationToken auth = this.authHelper.getAuth();
-	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, project, entryName);
+	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID,
+		project == null ? new Project(0) : project, entryName);
 	send(msg);
     }
 
@@ -109,7 +110,7 @@ public class MessageHelper {
 	    Project proj, String entry) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
-	msg.setProjectID(proj.getId());
+	msg.setProjectID(proj == null ? 0 : proj.getId());
 	msg.setEntryName(entry);
 	msg.setAssocObjectKey(key);
 	send(msg);
@@ -119,7 +120,7 @@ public class MessageHelper {
 	    long assocID, Project proj, String entry) {
 	AuthenticationToken auth = this.authHelper.getAuth();
 	JMSMessage msg = new JMSMessage(auth, action, objectName, objectID, assocName, null);
-	msg.setProjectID(proj.getId());
+	msg.setProjectID(proj == null ? 0 : proj.getId());
 	msg.setEntryName(entry);
 	msg.setAssocObjectID(assocID);
 	send(msg);

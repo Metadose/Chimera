@@ -137,15 +137,16 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.staffDAO.create(staff);
 
 	// Log and notify.
-	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId());
+	this.messageHelper.send(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId(),
+		Staff.OBJECT_NAME, staff.getId(), null, systemUser.getUsername());
 
 	// Then link them together.
 	systemUser.setStaff(staff);
 	this.systemUserDAO.update(systemUser);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS
-		.generateCreate(SystemUser.OBJECT_NAME, systemUser.getUsername());
+	return AlertBoxGenerator.SUCCESS.generateCreate(SystemUser.OBJECT_NAME,
+		systemUser.getUsername());
     }
 
     /**
@@ -235,8 +236,15 @@ public class SystemUserServiceImpl implements SystemUserService {
 	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
 	user.setPassword(encPassword);
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId());
+	// Log and notify.
+	Staff staff = user.getStaff();
+	if (staff == null) {
+	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(), "",
+		    "", null, user.getUsername());
+	} else {
+	    this.messageHelper.send(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(),
+		    Staff.OBJECT_NAME, staff.getId(), null, user.getUsername());
+	}
 
 	// Do service.
 	this.systemUserDAO.update(user);
@@ -251,7 +259,6 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Override
     @Transactional
     public String update(SystemUser user, boolean systemOverride) {
-
 	// If this is not a system call,
 	// go through the validation.
 	if (systemOverride) {
@@ -283,8 +290,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    return AlertBoxGenerator.ERROR;
 	}
 
-	// Log.
-	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId());
+	// Log and notify.
+	this.messageHelper.send(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId(), "", "",
+		null, obj.getUsername());
 
 	// Do service.
 	this.systemUserDAO.delete(id);
