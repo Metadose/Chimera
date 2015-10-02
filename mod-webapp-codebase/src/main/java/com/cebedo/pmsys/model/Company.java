@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.enums.Theme;
+
 @Entity
 @Table(name = Company.TABLE_NAME)
 public class Company implements Serializable {
@@ -42,6 +44,9 @@ public class Company implements Serializable {
     private Set<Task> tasks;
     private Set<AuditLog> auditLogs;
     private boolean betaTester;
+
+    // Theme.
+    private String themeID;
 
     public Company() {
 	;
@@ -172,5 +177,17 @@ public class Company implements Serializable {
 
     public void setBetaTester(boolean betaTester) {
 	this.betaTester = betaTester;
+    }
+
+    @Column(name = "theme", nullable = false, length = 32)
+    public String getThemeID() {
+	if (StringUtils.isBlank(themeID)) {
+	    return Theme.DEFAULT.getId();
+	}
+	return themeID;
+    }
+
+    public void setThemeID(String themeID) {
+	this.themeID = themeID;
     }
 }

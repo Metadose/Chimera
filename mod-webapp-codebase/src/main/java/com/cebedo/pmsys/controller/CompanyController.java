@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.enums.Theme;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -36,6 +37,7 @@ public class CompanyController {
 
     public static final String ATTR_LIST = "companyList";
     public static final String ATTR_LOGS = "logs";
+    public static final String ATTR_THEMES = "themes";
     public static final String ATTR_COMPANY = Company.OBJECT_NAME;
 
     private CompanyService companyService;
@@ -126,6 +128,7 @@ public class CompanyController {
      */
     @RequestMapping(value = { ConstantsSystem.REQUEST_EDIT + "/{" + Company.COLUMN_PRIMARY_KEY + "}" })
     public String editCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id, Model model) {
+	model.addAttribute(ATTR_THEMES, Theme.values());
 	if (id == 0) {
 	    model.addAttribute(ATTR_COMPANY, new Company());
 	    return RegistryJSPPath.JSP_EDIT_COMPANY;
@@ -136,6 +139,7 @@ public class CompanyController {
 
     @RequestMapping(value = RegistryURL.SETTINGS)
     public String settings(Model model) {
+	model.addAttribute(ATTR_THEMES, Theme.values());
 	model.addAttribute(ATTR_COMPANY, this.companyService.settings());
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
