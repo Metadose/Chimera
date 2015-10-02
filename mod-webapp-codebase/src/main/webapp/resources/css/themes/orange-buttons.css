@@ -1,27 +1,3 @@
-.ion {
-	padding-top: 20%;
-}
-
-input[type=checkbox] {
-	height: 20px;
-}
-
-.btn-success-2 {
-  background-color: #5cb85c;
-  border-color: #008d4c;
-}
-.btn-success-2:hover,
-.btn-success-2:active,
-.btn-success-2.hover {
-  background-color: #5cb85c;
-}
-
-/* Data Tables */
-.table-cebedo-top-header {
-	text-align: center;
-	vertical-align: middle;
-}
-
 /* Create buttons */
 .btn.btn-cebedo-create,
 .btn.btn-cebedo-update,
@@ -92,24 +68,6 @@ input[type=checkbox] {
 .btn.btn-cebedo-back:active,
 .btn.btn-cebedo-back.hover {
   background-color: #dcd1ad!important;
-}
-
-/* Payroll */
-.cebedo-payroll-cell {
-	text-align: right;
-	font-size: smaller;
-}
-.cebedo-payroll-staff-name {
-  white-space: nowrap;
-  font-size: smaller;
-}
-
-/* Misc */
-.cebedo-text-align-right {
-	text-align: right;
-}
-.cebedo-no-wrap {
-  white-space: nowrap;
 }
 
 /* Dropdown */
