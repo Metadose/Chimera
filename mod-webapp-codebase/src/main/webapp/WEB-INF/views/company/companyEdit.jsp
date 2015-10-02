@@ -103,6 +103,14 @@
 					                                            <p class="help-block">Is this company a beta tester?</p>
 															</c:if>
 															
+															<label>Theme</label>
+				                                            <form:select class="form-control" path="themeID"> 
+	                                     						<c:forEach items="${themes}" var="theme"> 
+	                                     							<form:option value="${theme.getId()}" label="${theme.getLabel()}"/> 
+	                                     						</c:forEach> 
+	 		                                    			</form:select>
+				                                            <p class="help-block">Choose the color theme</p>
+															
 				                                        </div>
 				                                    </form:form>
 				                                    <c:choose>

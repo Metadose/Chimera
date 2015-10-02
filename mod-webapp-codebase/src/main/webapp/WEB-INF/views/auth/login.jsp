@@ -11,10 +11,12 @@
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 	<link href="${contextPath}/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath}/resources/lib/font-awesome-4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
-	<!-- Theme style -->
 	<link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/css/cebedo.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/css/AdminLTE.css" />"rel="stylesheet" type="text/css" />
+
+	<!-- Theme style -->
+	<link href="<c:url value="/resources/css/themes/orange-dist.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/themes/orange-buttons.css" />"rel="stylesheet" type="text/css" />
+	
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>

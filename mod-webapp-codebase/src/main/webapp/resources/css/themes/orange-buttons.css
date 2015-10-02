@@ -1,0 +1,104 @@
+/* Create buttons */
+.btn.btn-cebedo-create,
+.btn.btn-cebedo-update,
+.btn.btn-cebedo-view,
+.btn.btn-cebedo-export,
+.btn.btn-cebedo-assign,
+.btn.btn-cebedo-pullout,
+.btn.btn-cebedo-load {
+	background-color: #FF814C;
+	border-color: #FF601D;
+	color: #fff;
+}
+.btn.btn-cebedo-create:hover,
+.btn.btn-cebedo-create:active,
+.btn.btn-cebedo-create.hover,
+.btn.btn-cebedo-update:hover,
+.btn.btn-cebedo-update:active,
+.btn.btn-cebedo-update.hover,
+.btn.btn-cebedo-view:hover,
+.btn.btn-cebedo-view:active,
+.btn.btn-cebedo-view.hover,
+.btn.btn-cebedo-export:hover,
+.btn.btn-cebedo-export:active,
+.btn.btn-cebedo-export.hover,
+.btn.btn-cebedo-assign:hover,
+.btn.btn-cebedo-assign:active,
+.btn.btn-cebedo-assign.hover,
+.btn.btn-cebedo-pullout:hover,
+.btn.btn-cebedo-pullout:active,
+.btn.btn-cebedo-pullout.hover,
+.btn.btn-cebedo-load:hover,
+.btn.btn-cebedo-load:active,
+.btn.btn-cebedo-load.hover {
+  background-color: #f17945;
+}
+
+/* Negative buttons */
+.btn.btn-cebedo-delete,
+.btn.btn-cebedo-unassign,
+.btn.btn-cebedo-unassign-all {
+  background-color: #F45B5B;
+  border-color: #DB4242;
+  color: #FFEBF9;
+}
+.btn.btn-cebedo-delete:hover,
+.btn.btn-cebedo-delete:active,
+.btn.btn-cebedo-delete.hover,
+.btn.btn-cebedo-unassign:hover,
+.btn.btn-cebedo-unassign:active,
+.btn.btn-cebedo-unassign.hover,
+.btn.btn-cebedo-unassign-all:hover,
+.btn.btn-cebedo-unassign-all:active,
+.btn.btn-cebedo-unassign-all.hover {
+  background-color: #f24f4f;
+}
+
+/* Neutral buttons */
+.btn.btn-cebedo-close,
+.btn.btn-cebedo-back {
+  	background-color: #E2D9BC;
+	color: #805E35!important;
+	border-color: #D4C593;
+}
+.btn.btn-cebedo-close:hover,
+.btn.btn-cebedo-close:active,
+.btn.btn-cebedo-close.hover,
+.btn.btn-cebedo-back:hover,
+.btn.btn-cebedo-back:active,
+.btn.btn-cebedo-back.hover {
+  background-color: #dcd1ad!important;
+}
+
+/* Dropdown */
+.cebedo-dropdown-orange-hover:hover {
+	color: white;
+	background-image: none !important;
+	background-color: #FF814C !important;
+}
+.cebedo-dropdown-hover:hover {
+	color: white;
+	background-image: none !important;
+	background-color: #F05959 !important;
+}
+
+/* Forms */
+.form-control {
+	border: 1px solid rgba(240, 96, 35, 0.22);
+}
+.form-control:focus {
+    border-color: #F06023 !important;
+    box-shadow: none;
+}
+
+/* Backgrounds */
+.cebedo-bg-orange {
+  background-color: #F06023 !important;
+}
+.cebedo-bg-forestry {
+  background-color: #38332D !important;
+}
+.cebedo-bg-orange,
+.cebedo-bg-forestry {
+  color: #f9f9f9 !important;
+}

@@ -1,13 +1,18 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authentication var="authTheme" property="theme"/>
 
 <link href="<c:url value="/resources/lib/bootstrap.min.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/lib/font-awesome-4.3.0/css/font-awesome.css" />"rel="stylesheet" type="text/css" />
 
 <link href="<c:url value="/resources/css/datepicker/datepicker3.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/AdminLTE.css" />"rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/cebedo.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />
+
+<!-- Themes -->
+<link href="<c:url value="/resources/css/themes/${authTheme}-dist.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/themes/${authTheme}-buttons.css" />"rel="stylesheet" type="text/css" />
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
