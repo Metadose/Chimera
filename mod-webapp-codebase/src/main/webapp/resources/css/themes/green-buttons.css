@@ -1,0 +1,104 @@
+/* Positive buttons */
+.btn.btn-cebedo-create,
+.btn.btn-cebedo-update,
+.btn.btn-cebedo-view,
+.btn.btn-cebedo-export,
+.btn.btn-cebedo-assign,
+.btn.btn-cebedo-pullout,
+.btn.btn-cebedo-load {
+	background-color: #1FA013;
+	border-color: #28961E;
+	color: #D8FFB9;
+}
+.btn.btn-cebedo-create:hover,
+.btn.btn-cebedo-create:active,
+.btn.btn-cebedo-create.hover,
+.btn.btn-cebedo-update:hover,
+.btn.btn-cebedo-update:active,
+.btn.btn-cebedo-update.hover,
+.btn.btn-cebedo-view:hover,
+.btn.btn-cebedo-view:active,
+.btn.btn-cebedo-view.hover,
+.btn.btn-cebedo-export:hover,
+.btn.btn-cebedo-export:active,
+.btn.btn-cebedo-export.hover,
+.btn.btn-cebedo-assign:hover,
+.btn.btn-cebedo-assign:active,
+.btn.btn-cebedo-assign.hover,
+.btn.btn-cebedo-pullout:hover,
+.btn.btn-cebedo-pullout:active,
+.btn.btn-cebedo-pullout.hover,
+.btn.btn-cebedo-load:hover,
+.btn.btn-cebedo-load:active,
+.btn.btn-cebedo-load.hover {
+  background-color: #20b614;
+}
+
+/* Negative buttons */
+.btn.btn-cebedo-delete,
+.btn.btn-cebedo-unassign,
+.btn.btn-cebedo-unassign-all {
+  background-color: #F45B5B;
+  border-color: #DB4242;
+  color: #FFEBF9;
+}
+.btn.btn-cebedo-delete:hover,
+.btn.btn-cebedo-delete:active,
+.btn.btn-cebedo-delete.hover,
+.btn.btn-cebedo-unassign:hover,
+.btn.btn-cebedo-unassign:active,
+.btn.btn-cebedo-unassign.hover,
+.btn.btn-cebedo-unassign-all:hover,
+.btn.btn-cebedo-unassign-all:active,
+.btn.btn-cebedo-unassign-all.hover {
+  background-color: #f24f4f;
+}
+
+/* Neutral buttons */
+.btn.btn-cebedo-close,
+.btn.btn-cebedo-back {
+  	background-color: #91FF3D;
+	color: #1FA013!important;
+	border-color: #65EF58;
+}
+.btn.btn-cebedo-close:hover,
+.btn.btn-cebedo-close:active,
+.btn.btn-cebedo-close.hover,
+.btn.btn-cebedo-back:hover,
+.btn.btn-cebedo-back:active,
+.btn.btn-cebedo-back.hover {
+  background-color: #9dff55!important;
+}
+
+/* Dropdown */
+.cebedo-dropdown-orange-hover:hover {
+	color: white;
+	background-image: none !important;
+	background-color: #1FA013 !important;
+}
+.cebedo-dropdown-hover:hover {
+	color: white;
+	background-image: none !important;
+	background-color: #F05959 !important;
+}
+
+/* Forms */
+.form-control {
+	border: 1px solid rgba(31, 160, 19, 0.35);
+}
+.form-control:focus {
+    border-color: #1FA013 !important;
+    box-shadow: none;
+}
+
+/* Backgrounds */
+.cebedo-bg-orange {
+  background-color: #4C9D69 !important;
+}
+.cebedo-bg-forestry {
+  background-color: #1FA013 !important;
+}
+.cebedo-bg-orange,
+.cebedo-bg-forestry {
+  color: #f9f9f9 !important;
+}

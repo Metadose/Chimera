@@ -9,8 +9,8 @@
 <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />
 
 <!-- Themes -->
-<link href="<c:url value="/resources/css/themes/blue-dist.css" />"rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/themes/blue-buttons.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/themes/yellow-dist.css" />"rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/themes/yellow-buttons.css" />"rel="stylesheet" type="text/css" />
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
