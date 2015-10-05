@@ -1829,7 +1829,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Comparison of Inventory Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -1897,7 +1897,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Accumulation of Overall Project Expenses'
 	        },
 	        yAxis: {
 	            title: {
@@ -2021,7 +2021,7 @@
 	        	enabled: false
 	        },
 			title: {
-	            text: ''
+	            text: 'Proportional Comparison per Type of Expenditure'
 	        },
 	        tooltip: {
 	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
@@ -2059,7 +2059,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Comparison of Expenses per Type'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2108,7 +2108,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Accumulation of Other Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2160,7 +2160,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Accumulation of Inventory Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2212,7 +2212,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Accumulation of Payroll Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2264,7 +2264,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Comparison of Other Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2316,7 +2316,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: ''
+	            text: 'Comparison of Payroll Expenses'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2371,7 +2371,7 @@
 	        	enabled: false
 	        },
 			title: {
-	            text: ''
+	            text: 'Proportional Comparison per Task Status'
 	        },
 	        tooltip: {
 	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
