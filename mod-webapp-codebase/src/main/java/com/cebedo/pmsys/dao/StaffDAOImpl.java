@@ -13,6 +13,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
@@ -38,8 +39,8 @@ public class StaffDAOImpl implements StaffDAO {
     @Override
     public Staff getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Staff staff = (Staff) this.daoHelper.criteriaGetObjByID(session, Staff.class, Staff.PROPERTY_ID,
-		id).uniqueResult();
+	Staff staff = (Staff) this.daoHelper
+		.criteriaGetObjByID(session, Staff.class, Staff.PROPERTY_ID, id).uniqueResult();
 	return staff;
     }
 
@@ -123,8 +124,8 @@ public class StaffDAOImpl implements StaffDAO {
 	Session session = this.sessionFactory.getCurrentSession();
 
 	// Create a criteria for the staff.
-	Criteria criteria = session.createCriteria(Staff.class).add(
-		Restrictions.eq(Staff.PROPERTY_ID, staffID));
+	Criteria criteria = session.createCriteria(Staff.class)
+		.add(Restrictions.eq(Staff.PROPERTY_ID, staffID));
 
 	// Set all projections.
 	ProjectionList projList = Projections.projectionList();
@@ -137,8 +138,8 @@ public class StaffDAOImpl implements StaffDAO {
 	// Assign projection criteria.
 	criteria.setProjection(Projections.distinct(projList));
 	Object[] staffName = (Object[]) criteria.uniqueResult();
-	String output = staffName[0] + " " + staffName[1] + " " + staffName[2] + " " + staffName[3]
-		+ " " + staffName[4];
+	String output = staffName[0] + " " + staffName[1] + " " + staffName[2] + " " + staffName[3] + " "
+		+ staffName[4];
 	return output;
     }
 
@@ -161,6 +162,15 @@ public class StaffDAOImpl implements StaffDAO {
 
 	List<Staff> staffList = (List<Staff>) query.list();
 	if (staffList != null && staffList.size() > 1) {
+
+	    // Get the staff with the same company as me.
+	    AuthHelper authHelper = new AuthHelper();
+	    Company myCompany = authHelper.getAuth().getCompany();
+	    for (Staff resultStaff : staffList) {
+		if (myCompany.getId() == resultStaff.getCompany().getId()) {
+		    return resultStaff;
+		}
+	    }
 	    return null;
 	}
 	return (Staff) query.uniqueResult();

@@ -18,6 +18,10 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_AUTH_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";
 
+    public static final String ERROR_AUTH_LOGIN_GENERIC = "Login failed";
+
+    public static final String SUCCESS_AUTH_LOGIN_GENERIC = "You have successfully updated your Company settings. Please login again.";
+
     // Commons.
     public static final String ERROR_COMMON_CONVERT_XLSX = "Please <b>convert</b> the <b>Excel *.xlsx</b> file to <b>Excel *.xls</b>.";
 

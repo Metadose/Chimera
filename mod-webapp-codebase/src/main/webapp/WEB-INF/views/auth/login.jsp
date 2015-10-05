@@ -40,12 +40,12 @@
                 </div>
                 <div class="footer">
                 
+                	<br/>
                 	<c:if test="${!empty uiParamAlert}">
                 	<center>
-                	   <font color="red">${uiParamAlert}</font>
+                	   ${uiParamAlert}
                 	</center>
                 	</c:if>
-                	<br/>
                     <button type="submit" class="btn cebedo-bg-orange btn-block" style="color: #fff">Log me in</button>
 
                     <!-- <p><a href="#">I forgot my password</a></p> -->

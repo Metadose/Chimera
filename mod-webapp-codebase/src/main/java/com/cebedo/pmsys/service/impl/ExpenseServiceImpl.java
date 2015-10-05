@@ -121,7 +121,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    return new Expense();
 	}
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_EXPENSE,
+		obj.getKey());
 	return obj;
     }
 
@@ -135,8 +136,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_EXPENSE);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EXPENSE);
 	String pattern = Expense.constructPattern(proj);
 	Set<String> keys = this.expenseValueRepo.keys(pattern);
 	List<Expense> expenses = this.expenseValueRepo.multiGet(keys);
@@ -165,7 +166,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_EXPENSE, projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT,
+		ConstantsRedis.OBJECT_EXPENSE, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Other Expenses");
 
@@ -196,7 +198,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	    expenseRow.createCell(0).setCellValue(DateUtils.formatDate(expense.getDate()));
 	    expenseRow.createCell(1).setCellValue(expense.getName());
-	    expenseRow.createCell(2).setCellValue(expense.getStaff().getFullName());
+	    expenseRow.createCell(2).setCellValue(expense.getStaff().getFullNameWithMiddleName());
 	    expenseRow.createCell(3).setCellValue(expense.getCost());
 
 	    rowIndex++;

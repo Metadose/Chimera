@@ -3,18 +3,23 @@
  */
 package com.cebedo.pmsys.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
+import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
+import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 /**
  * Handles and retrieves the login or denied page depending on the URI template
@@ -44,7 +49,16 @@ public class LoginLogoutController {
 
     @RequestMapping(value = "/login/error", method = RequestMethod.GET)
     public String loginError(Model model) {
-	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, "Login failed");
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT,
+		AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_AUTH_LOGIN_GENERIC));
+	return getLoginPage();
+    }
+
+    @RequestMapping(value = "/logout/company/update", method = RequestMethod.GET)
+    public String loginCompanyUpdate(Model model, HttpSession session) {
+	SecurityContextHolder.getContext().setAuthentication(null);
+	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.SUCCESS
+		.generateHTML(RegistryResponseMessage.SUCCESS_AUTH_LOGIN_GENERIC));
 	return getLoginPage();
     }
 
@@ -80,8 +94,8 @@ public class LoginLogoutController {
 	    // set config, and set flag to false.
 	    else {
 		appInit = false;
-		SystemConfiguration config = this.configService.getByName(
-			ConstantsSystem.CONFIG_ROOT_INIT, true);
+		SystemConfiguration config = this.configService
+			.getByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
 		config.setValue("1");
 		this.configService.merge(config, null);
 	    }

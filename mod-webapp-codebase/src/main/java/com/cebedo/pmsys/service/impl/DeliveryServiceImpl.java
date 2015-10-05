@@ -140,7 +140,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    Material material = pullOut.getMaterial();
 	    pullOutRow.createCell(0).setCellValue(
 		    DateUtils.formatDate(pullOut.getDatetime(), DateUtils.PATTERN_DATE_TIME));
-	    pullOutRow.createCell(1).setCellValue(pullOut.getStaff().getFullName());
+	    pullOutRow.createCell(1).setCellValue(pullOut.getStaff().getFullNameWithMiddleName());
 	    pullOutRow.createCell(2).setCellValue(pullOut.getDelivery().getName());
 	    pullOutRow.createCell(3).setCellValue(material.getMaterialCategory().getLabel());
 	    pullOutRow.createCell(4).setCellValue(material.getName());
@@ -277,7 +277,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_DELIVERY,
+		obj.getKey());
 
 	return obj;
     }
@@ -293,8 +294,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_DELIVERY);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);
 	Set<String> keys = this.deliveryValueRepo.keys(pattern);
@@ -376,8 +377,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_DELIVERY);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_DELIVERY);
 
 	String pattern = Delivery.constructPattern(proj);
 	Set<String> keys = this.deliveryValueRepo.keys(pattern);

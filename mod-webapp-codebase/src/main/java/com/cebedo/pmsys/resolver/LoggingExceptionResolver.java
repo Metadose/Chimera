@@ -53,7 +53,7 @@ public class LoggingExceptionResolver extends SimpleMappingExceptionResolver {
 	    long userID = user.getId();
 	    String userName = user.getUsername();
 	    long staffID = staff.getId();
-	    String staffName = staff.getFullName();
+	    String staffName = staff.getFullNameWithMiddleName();
 	    boolean companyAdmin = auth.isCompanyAdmin();
 	    boolean superAdmin = auth.isSuperAdmin();
 

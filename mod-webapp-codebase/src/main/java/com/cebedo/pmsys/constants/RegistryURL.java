@@ -56,6 +56,8 @@ public class RegistryURL {
 
     public static final String REDIRECT_SETTINGS = "redirect:/company/settings/";
 
+    public static final String REDIRECT_LOGOUT_COMPANY_UPDATE = "redirect:/auth/logout/company/update";
+
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";
 
     public static final String REDIRECT_LIST_SYSTEM_USER = "redirect:/systemuser/list";

@@ -77,7 +77,7 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_SETTINGS;
+	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
     }
 
     /**
