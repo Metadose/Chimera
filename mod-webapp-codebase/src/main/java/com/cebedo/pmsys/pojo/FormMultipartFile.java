@@ -1,0 +1,17 @@
+package com.cebedo.pmsys.pojo;
+
+import org.springframework.web.multipart.MultipartFile;
+
+public class FormMultipartFile {
+
+    private MultipartFile file;
+
+    public MultipartFile getFile() {
+	return file;
+    }
+
+    public void setFile(MultipartFile file) {
+	this.file = file;
+    }
+
+}

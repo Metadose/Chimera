@@ -616,7 +616,7 @@
 	        	enabled: false
 	        },
 			title: {
-	            text: ''
+	            text: 'Proportional Comparison per Task Status'
 	        },
 	        tooltip: {
 	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
@@ -657,7 +657,7 @@
 	        	enabled: false
 	        },
 			title: {
-	            text: ''
+	            text: 'Proportional Comparison per Attendance'
 	        },
 	        tooltip: {
 	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'

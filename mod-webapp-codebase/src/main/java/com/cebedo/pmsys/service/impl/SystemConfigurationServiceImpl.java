@@ -30,6 +30,9 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     @Value("${config.server.beta}")
     private Boolean betaServer;
 
+    @Value("${config.server.home}")
+    private String serverHome;
+
     private SystemConfigurationDAO systemConfigurationDAO;
 
     public void setBetaServer(Boolean betaServer) {
@@ -215,6 +218,15 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     @Override
     public Boolean getBetaServer() {
 	return betaServer;
+    }
+
+    @Override
+    public String getServerHome() {
+	return serverHome;
+    }
+
+    public void setServerHome(String serverHome) {
+	this.serverHome = serverHome;
     }
 
 }

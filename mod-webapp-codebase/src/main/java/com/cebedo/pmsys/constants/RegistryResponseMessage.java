@@ -18,6 +18,10 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_AUTH_USERNAME_NOT_AVAILABLE = "The <b>username</b> you provided is <b>no longer available</b>. Please pick a different one.";
 
+    public static final String ERROR_AUTH_LOGIN_GENERIC = "Login failed";
+
+    public static final String SUCCESS_AUTH_LOGIN_GENERIC = "You have successfully updated your Company settings. Please login again.";
+
     // Commons.
     public static final String ERROR_COMMON_CONVERT_XLSX = "Please <b>convert</b> the <b>Excel *.xlsx</b> file to <b>Excel *.xls</b>.";
 
@@ -38,6 +42,10 @@ public class RegistryResponseMessage {
     public static final String ERROR_COMMON_MISSING_REQUIRED = "Please <b>do not</b> provide <b>blank values</b> to required fields, enter <b>zero</b> instead. Thank you.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted, invalid</b> or may contain <b>negative numbers</b>.";
+
+    public static final String ERROR_COMMON_FILE_NULL_OR_EMPTY = "The <b>file</b> you uploaded may be <b>corrupted or empty</b>.";
+
+    public static final String ERROR_COMMON_FILE_NOT_IMAGE = "Your image type is <b>not supported</b>. Please upload <b>any of the following</b> file formats: <b>JPG/JPEG, PNG/PNEG, BMP, GIF</b>.";
 
     public static final String ERROR_COMMON_MAX_LENGTH = "Maximum length of <b>%s</b> is <b>%s</b> characters.";
 

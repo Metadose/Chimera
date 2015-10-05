@@ -24,6 +24,7 @@ import com.cebedo.pmsys.enums.Theme;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.pojo.FormMultipartFile;
 import com.cebedo.pmsys.service.CompanyService;
 
 @Controller
@@ -37,6 +38,7 @@ public class CompanyController {
 
     public static final String ATTR_LIST = "companyList";
     public static final String ATTR_LOGS = "logs";
+    public static final String ATTR_COMPANY_LOGO = "companyLogo";
     public static final String ATTR_THEMES = "themes";
     public static final String ATTR_COMPANY = Company.OBJECT_NAME;
 
@@ -77,7 +79,32 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_SETTINGS;
+	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
+    }
+
+    /**
+     * Upload a company logo.
+     * 
+     * @param company
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.UPLOAD_COMPANY_LOGO, method = RequestMethod.POST)
+    public String uploadCompanyLogo(@ModelAttribute(ATTR_COMPANY_LOGO) FormMultipartFile companyLogo,
+	    RedirectAttributes redirectAttrs, SessionStatus status, BindingResult result,
+	    HttpSession session) {
+	Company company = (Company) session.getAttribute(ATTR_COMPANY);
+	String response = this.companyService.uploadCompanyLogo(company, companyLogo, result);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// If we had some errors during the upload.
+	if (response != null) {
+	    return RegistryURL.REDIRECT_SETTINGS;
+	}
+	AuthHelper authHelper = new AuthHelper();
+	if (authHelper.isSuperAdmin()) {
+	    return editPage(company.getId(), status);
+	}
+	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
     }
 
     /**
@@ -133,12 +160,14 @@ public class CompanyController {
 	    model.addAttribute(ATTR_COMPANY, new Company());
 	    return RegistryJSPPath.JSP_EDIT_COMPANY;
 	}
+	model.addAttribute(ATTR_COMPANY_LOGO, new FormMultipartFile());
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
 
     @RequestMapping(value = RegistryURL.SETTINGS)
     public String settings(Model model) {
+	model.addAttribute(ATTR_COMPANY_LOGO, new FormMultipartFile());
 	model.addAttribute(ATTR_THEMES, Theme.values());
 	model.addAttribute(ATTR_COMPANY, this.companyService.settings());
 	return RegistryJSPPath.JSP_EDIT_COMPANY;

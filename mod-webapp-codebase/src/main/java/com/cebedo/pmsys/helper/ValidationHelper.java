@@ -1,8 +1,13 @@
 package com.cebedo.pmsys.helper;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -214,6 +219,10 @@ public class ValidationHelper {
 	errors.reject("", RegistryResponseMessage.ERROR_AUTH_PASSWORD_INVALID_PATTERN);
     }
 
+    public void rejectFileIsNullOrEmpty(Errors errors) {
+	errors.reject("", RegistryResponseMessage.ERROR_COMMON_FILE_NULL_OR_EMPTY);
+    }
+
     public boolean numberIsNegative(double nmber) {
 	if (nmber < 0) {
 	    return true;
@@ -255,5 +264,29 @@ public class ValidationHelper {
 	    return false;
 	}
 	return true;
+    }
+
+    public boolean fileIsNotImage(MultipartFile file) {
+	try {
+	    ImageInputStream iis = ImageIO.createImageInputStream(file.getInputStream());
+	    Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+	    readers.next();
+	} catch (Exception e) {
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * Supported: raw, jpeg, tif, WBMP, PNM, JPG, DICOM, wbmp, JPEG, PNG, jpeg
+     * 2000, tiff, BMP, JPEG2000, RAW, jpeg2000, GIF, TIF, TIFF, jpg, bmp, pnm,
+     * png, JPEG 2000, gif
+     * 
+     * @param errors
+     */
+    public void rejectFileIsNotImage(Errors errors) {
+	// Your image type is not supported. Please upload any of the following
+	// file formats: JPG/JPEG, PNG/PNEG, BMP, GIF
+	errors.reject("", RegistryResponseMessage.ERROR_COMMON_FILE_NOT_IMAGE);
     }
 }

@@ -90,7 +90,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, proj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT,
+		ConstantsRedis.OBJECT_PAYROLL, proj.getId());
 	HSSFWorkbook wb = new HSSFWorkbook();
 
 	// Summary sheet.
@@ -120,7 +121,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_PAYROLL, payrollKey);
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_EXPORT,
+		ConstantsRedis.OBJECT_PAYROLL, payrollKey);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	constructPayrollSheet(wb, obj, computeResult);
 	return wb;
@@ -163,7 +165,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	    payrollRow.createCell(0).setCellValue(DateUtils.formatDate(payroll.getStartDate()));
 	    payrollRow.createCell(2).setCellValue(DateUtils.formatDate(payroll.getEndDate()));
-	    payrollRow.createCell(1).setCellValue(payroll.getCreator().getStaff().getFullName());
+	    payrollRow.createCell(1)
+		    .setCellValue(payroll.getCreator().getStaff().getFullNameWithMiddleName());
 	    payrollRow.createCell(1).setCellValue(payroll.getStatus().label());
 	    payrollRow.createCell(3).setCellValue(result.getOverallTotalOfStaff());
 	    payrollRow.createCell(4).setCellValue(
@@ -322,7 +325,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    return new ProjectPayroll();
 	}
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PAYROLL,
+		obj.getKey());
 
 	return obj;
     }
@@ -395,8 +399,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    }
 	}
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
@@ -446,9 +450,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.set(projectPayroll);
 
 	// Log.
-	this.messageHelper.auditableKey(isUpdating ? AuditAction.ACTION_UPDATE : AuditAction.ACTION_CREATE,
-		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey(), proj, projectPayroll.getStartEndDisplay());
+	this.messageHelper.auditableKey(
+		isUpdating ? AuditAction.ACTION_UPDATE : AuditAction.ACTION_CREATE, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), proj,
+		projectPayroll.getStartEndDisplay());
 	return response;
     }
 
@@ -483,8 +488,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollComputerService.compute(startDate, endDate, projectPayroll);
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET_JSON, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET_JSON,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL,
+		projectPayroll.getKey());
 
 	// Return the JSON equivalent of the result.
 	return this.projectPayrollComputerService.getPayrollJSONResult();
@@ -504,8 +510,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
 	// Construct the key.
@@ -632,8 +638,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PAYROLL);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
 
 	// Get the needed ID's for the key.
 	// Construct the key.

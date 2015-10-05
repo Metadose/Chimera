@@ -54,6 +54,12 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-md-12">
+                    	<c:if test="${authUser.companyAdmin}">
+		                    <div class="callout callout-info">
+								<h4>Notice</h4>
+								<p>You will be <b>logged out</b> after updating <b>Company settings</b> to implement new changes.</p>
+							</div>
+                    	</c:if>
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
@@ -66,6 +72,21 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+                   									
+                   									<c:if test="${company.id > 0}">
+                   									<form:form modelAttribute="companyLogo"
+														action="${contextPath}/company/upload/logo"
+														method="post"
+														enctype="multipart/form-data">
+													
+														<div class="form-group">
+														<label>Company Logo</label>
+														<form:input type="file" class="form-control" path="file"/><br/>
+														<button class="btn btn-cebedo-create btn-flat btn-sm">Upload</button>
+														</div>
+													</form:form>
+													</c:if>   
+                   								
                    									<form:form modelAttribute="company" id="companyForm" role="form" method="post" action="${contextPath}/company/create/">
 				                                        <div class="form-group">
 

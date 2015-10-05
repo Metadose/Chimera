@@ -101,7 +101,7 @@
 		
 		<!-- Controller calls that do not have validation -->
 		<hdiv:startPages>/</hdiv:startPages>
-		<hdiv:startPages method="get">/auth/denied,/fix,/fix/500,/fix/405,/fix/404,/fix/400,/,/auth/login,/auth/login/error,/dashboard/</hdiv:startPages>
+		<hdiv:startPages method="get">/auth/denied,/fix,/fix/500,/fix/405,/fix/404,/fix/400,/,/auth/login,/auth/login/error,/dashboard/,/auth/logout/company/update,/image/display/company/logo</hdiv:startPages>
 		<hdiv:startPages method="post">/j_spring_security_check</hdiv:startPages>
 	</hdiv:config>
 	

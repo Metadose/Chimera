@@ -203,10 +203,22 @@ public class Staff implements Serializable {
 
     @Transient
     public String getFullName() {
+	String middleInitial = StringUtils.capitalize(
+		(String) (getMiddleName().length() > 0 ? getMiddleName().charAt(0) + "." : ""));
+	if (isNameSet()) {
+	    String name = getPrefix() + " " + getFirstName() + " " + middleInitial + " " + getLastName()
+		    + " " + getSuffix();
+	    return StringUtils.trim(name.replaceAll("  ", " "));
+	}
+	return "(No Name)";
+    }
+
+    @Transient
+    public String getFullNameWithMiddleName() {
 	if (isNameSet()) {
 	    String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "
 		    + getLastName() + " " + getSuffix();
-	    return StringUtils.trim(name);
+	    return StringUtils.trim(name.replaceAll("  ", " "));
 	}
 	return "(No Name)";
     }
@@ -238,7 +250,7 @@ public class Staff implements Serializable {
 
     @Override
     public String toString() {
-	return getId() + ": " + getFullName();
+	return getId() + ": " + getFullNameWithMiddleName();
     }
 
 }

@@ -46,7 +46,12 @@ $(window).on('load', function() {
 <header class="header">
     <a href="<c:url value="/dashboard/"/>" class="logo">
         <!-- Add the class icon to your logo image or logo icon to add the margining -->
-        ${companyName}
+        <c:if test="${!authUser.superAdmin}">
+        	<img src="${contextPath}/image/display/company/logo" alt="(No Logo Uploaded)" height="50">
+        </c:if>
+        <c:if test="${authUser.superAdmin}">
+	        ${companyName}
+        </c:if>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">

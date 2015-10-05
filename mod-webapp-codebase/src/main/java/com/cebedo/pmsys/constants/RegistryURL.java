@@ -20,6 +20,8 @@ public class RegistryURL {
 
     public static final String CREATE_EXPENSE = "/create/expense";
 
+    public static final String UPLOAD_COMPANY_LOGO = "/upload/logo";
+
     public static final String CREATE_ESTIMATE_COST = "/create/cost";
 
     public static final String EDIT_ESTIMATE_COST = "/edit/cost/{cost}-end";
@@ -56,6 +58,8 @@ public class RegistryURL {
 
     public static final String REDIRECT_SETTINGS = "redirect:/company/settings/";
 
+    public static final String REDIRECT_LOGOUT_COMPANY_UPDATE = "redirect:/auth/logout/company/update";
+
     public static final String REDIRECT_EDIT_SYSTEM_USER = "redirect:/systemuser/edit/%s";
 
     public static final String REDIRECT_LIST_SYSTEM_USER = "redirect:/systemuser/list";
@@ -87,6 +91,8 @@ public class RegistryURL {
     public static final String MARK = "/mark/";
 
     public static final String DELETE_TASK_ALL = "/delete/task/all";
+
+    public static final String DISPLAY_COMPANY_LOGO = "/display/company/logo";
 
     public static final String REDIRECT_EDIT_PROJECT = "redirect:/project/edit/%s";
 
