@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.pojo.FormMultipartFile;
 
 public interface CompanyService {
 
@@ -22,5 +23,8 @@ public interface CompanyService {
     public List<AuditLog> logs();
 
     public Company settings();
+
+    public String uploadCompanyLogo(Company company, FormMultipartFile companyLogo,
+	    BindingResult result);
 
 }

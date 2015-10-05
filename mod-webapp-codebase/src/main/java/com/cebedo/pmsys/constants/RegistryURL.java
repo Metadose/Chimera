@@ -20,6 +20,8 @@ public class RegistryURL {
 
     public static final String CREATE_EXPENSE = "/create/expense";
 
+    public static final String UPLOAD_COMPANY_LOGO = "/upload/logo";
+
     public static final String CREATE_ESTIMATE_COST = "/create/cost";
 
     public static final String EDIT_ESTIMATE_COST = "/edit/cost/{cost}-end";
@@ -89,6 +91,8 @@ public class RegistryURL {
     public static final String MARK = "/mark/";
 
     public static final String DELETE_TASK_ALL = "/delete/task/all";
+
+    public static final String DISPLAY_COMPANY_LOGO = "/display/company/logo";
 
     public static final String REDIRECT_EDIT_PROJECT = "redirect:/project/edit/%s";
 

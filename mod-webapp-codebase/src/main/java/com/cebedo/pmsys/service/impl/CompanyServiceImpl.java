@@ -1,26 +1,36 @@
 package com.cebedo.pmsys.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.FileHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.pojo.FormMultipartFile;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.CompanyService;
+import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.ImageUtils;
 import com.cebedo.pmsys.validator.CompanyValidator;
+import com.cebedo.pmsys.validator.ImageUploadValidator;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -31,6 +41,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyDAO companyDAO;
     private ProjectAuxValueRepo projectAuxValueRepo;
+    private SystemConfigurationService systemConfigurationService;
+
+    @Autowired
+    @Qualifier(value = "systemConfigurationService")
+    public void setSystemConfigurationService(SystemConfigurationService systemConfigurationService) {
+	this.systemConfigurationService = systemConfigurationService;
+    }
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
@@ -44,6 +61,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     CompanyValidator companyValidator;
+
+    @Autowired
+    ImageUploadValidator imageUploadValidator;
 
     /**
      * Create a new company.
@@ -203,5 +223,55 @@ public class CompanyServiceImpl implements CompanyService {
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Company.OBJECT_NAME,
 		company.getId());
 	return company;
+    }
+
+    @Override
+    @Transactional
+    public String uploadCompanyLogo(Company company, FormMultipartFile companyLogo,
+	    BindingResult result) {
+	// Security check.
+	// If the user does not have access to this company,
+	// and the user is not a company admin,
+	// return an error.
+	if (!this.authHelper.hasAccess(company) && !this.authHelper.isCompanyAdmin()) {
+	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Do validator here.
+	this.imageUploadValidator.validate(companyLogo, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
+	}
+
+	// Create post-service operations.
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, Company.OBJECT_NAME, company.getId(),
+		company.getName());
+
+	// Construct file path to store the logo file.
+	// Sample: C:/vcc/sys/
+	String serverHome = this.systemConfigurationService.getServerHome();
+
+	// Get the file.
+	MultipartFile file = companyLogo.getFile();
+
+	// Make directories if necessary.
+	String companyLogoPath = String.format("%s/company/%s/logo/logo.png", serverHome,
+		company.getId());
+	FileHelper.checkDirectoryExistence(companyLogoPath);
+
+	try {
+	    // 1) Convert the file format to JPG.
+	    // 2) Minimize the resolution (width and height).
+	    BufferedImage img = ImageIO.read(file.getInputStream());
+	    BufferedImage resizedImg = ImageUtils.scale(img, 200);
+	    ImageIO.write(resizedImg, "png", new File(companyLogoPath));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Null if no error. See references of this function.
+	return null;
     }
 }

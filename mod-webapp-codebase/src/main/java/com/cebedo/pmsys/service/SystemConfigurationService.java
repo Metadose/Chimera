@@ -26,4 +26,6 @@ public interface SystemConfigurationService {
 
     public Boolean getBetaServer();
 
+    public String getServerHome();
+
 }

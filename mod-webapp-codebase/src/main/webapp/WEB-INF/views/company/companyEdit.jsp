@@ -72,6 +72,21 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+                   									
+                   									<c:if test="${company.id > 0}">
+                   									<form:form modelAttribute="companyLogo"
+														action="${contextPath}/company/upload/logo"
+														method="post"
+														enctype="multipart/form-data">
+													
+														<div class="form-group">
+														<label>Company Logo</label>
+														<form:input type="file" class="form-control" path="file"/><br/>
+														<button class="btn btn-cebedo-create btn-flat btn-sm">Upload</button>
+														</div>
+													</form:form>
+													</c:if>   
+                   								
                    									<form:form modelAttribute="company" id="companyForm" role="form" method="post" action="${contextPath}/company/create/">
 				                                        <div class="form-group">
 

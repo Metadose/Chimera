@@ -7,13 +7,13 @@
 
 <link href="<c:url value="/resources/css/datepicker/datepicker3.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />
 
 <!-- Themes -->
 <link href="<c:url value="/resources/css/themes/${authTheme}-dist.css" />"rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/themes/${authTheme}-buttons.css" />"rel="stylesheet" type="text/css" />
 
+<link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" />
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
