@@ -19,8 +19,8 @@
     	</c:when>
     </c:choose>
 	
-	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" />
-<!-- 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
+<%-- 	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
@@ -331,30 +331,41 @@
                    				<c:when test="${project.id != 0}">
 
                    				<div class="tab-pane ${dashboardVisibility}" id="tab_dashboard">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="info-box">
+											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
+											<div class="info-box-content">
+											<span class="info-box-text">Current Total Expenses</span>
+											<span class="info-box-number">${projectAux.getCurrentTotalProjectAsString()}</span>
+											<span class="progress-description">
+											Grand Total of All Expenses
+											</span>
+											<span class="progress-description">
+											(Payroll, Inventory, Equipment and Other Expenses)
+											</span>
+											</div><!-- /.info-box-content -->
+											</div><!-- /.info-box -->
+										</div><!-- /.col -->
+										<div class="col-md-6">
+											<div class="info-box">
+											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
+											<div class="info-box-content">
+											<span class="info-box-text">Total Project Cost</span>
+											<span class="info-box-number">${projectAux.getPlannedTotalProjectAsString()}</span>
+											<span class="progress-description">
+											Grand Total of Estimated Costs
+											</span>
+											<span class="progress-description">
+											(Direct and Indirect)
+											</span>
+											</div><!-- /.info-box-content -->
+											</div><!-- /.info-box -->
+										</div><!-- /.col -->
+									</div>
                    					<div class="row">
-							            <div class="col-md-3 col-sm-6 col-xs-12">
-							              <div class="info-box">
-							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
-							                <div class="info-box-content">
-							                  <span class="info-box-text">Current Total Expenses</span>
-							                  <span class="info-box-number">${projectAux.getCurrentTotalProjectAsString()}</span>
-							                </div><!-- /.info-box-content -->
-							              </div><!-- /.info-box -->
-							            </div><!-- /.col -->
-							            <div class="col-md-3 col-sm-6 col-xs-12">
-							              <div class="info-box">
-							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-hammer"></i></span>
-							                <div class="info-box-content">
-							                  <span class="info-box-text">Inventory</span>
-							                  <span class="info-box-number">${projectAux.getGrandTotalDeliveryAsString()}</span>
-							                </div><!-- /.info-box-content -->
-							              </div><!-- /.info-box -->
-							            </div><!-- /.col -->
 
-							            <!-- fix for small devices only -->
-							            <div class="clearfix visible-sm-block"></div>
-
-							            <div class="col-md-3 col-sm-6 col-xs-12">
+                   						<div class="col-md-3">
 							              <div class="info-box">
 							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-people"></i></span>
 							                <div class="info-box-content">
@@ -363,7 +374,31 @@
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
-							            <div class="col-md-3 col-sm-6 col-xs-12">
+
+							            <div class="col-md-3">
+							              <div class="info-box">
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-settings"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">Inventory</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalDeliveryAsString()}</span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+
+							            <!-- fix for small devices only -->
+							            <!-- <div class="clearfix visible-sm-block"></div> -->							            
+
+							            <div class="col-md-3">
+							              <div class="info-box">
+							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-gear-a"></i></span>
+							                <div class="info-box-content">
+							                  <span class="info-box-text">Equipment</span>
+							                  <span class="info-box-number">${projectAux.getGrandTotalEquipmentExpensesAsString()}</span>
+							                </div><!-- /.info-box-content -->
+							              </div><!-- /.info-box -->
+							            </div><!-- /.col -->
+							            
+							            <div class="col-md-3">
 							              <div class="info-box">
 							                <span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-cart"></i></span>
 							                <div class="info-box-content">
@@ -372,6 +407,7 @@
 							                </div><!-- /.info-box-content -->
 							              </div><!-- /.info-box -->
 							            </div><!-- /.col -->
+							            
 							          </div>
 
               						<div class="row">
