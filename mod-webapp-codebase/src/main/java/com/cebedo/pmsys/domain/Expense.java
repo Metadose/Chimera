@@ -17,9 +17,9 @@ public class Expense implements IDomainObject {
     private static final long serialVersionUID = -7013450034228364135L;
 
     // Keys.
-    private Company company;
-    private Project project;
-    private UUID uuid;
+    protected Company company;
+    protected Project project;
+    protected UUID uuid;
 
     // Attributes.
     private String name;
@@ -58,8 +58,8 @@ public class Expense implements IDomainObject {
     }
 
     public static String constructPattern(Project proj) {
-	return String
-		.format(RegistryRedisKeys.KEY_EXPENSE, proj.getCompany().getId(), proj.getId(), "*");
+	return String.format(RegistryRedisKeys.KEY_EXPENSE, proj.getCompany().getId(), proj.getId(),
+		"*");
     }
 
     @Override

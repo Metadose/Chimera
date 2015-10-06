@@ -129,6 +129,7 @@
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
+										<li><a href="#tab_equipment_expenses" data-toggle="tab">Equipment</a></li>
 										<li><a href="#tab_other_expenses" data-toggle="tab">Other Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
@@ -789,6 +790,142 @@
 										</div>
 									</div>
 								</div>
+
+								<div class="tab-pane" id="tab_equipment_expenses">
+                                	<div class="row">
+										<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+               										<div id="highcharts-equipment-expenses" style="height: 300px"></div>													
+				                            	</div>
+				                            </div>
+				                        </div>
+										<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+               										<div id="highcharts-equipment-expenses-cumulative" style="height: 300px"></div>													
+				                            	</div>
+				                            </div>
+				                        </div>
+              						</div>
+                                	<div class="row">
+										<div class="col-md-9">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+
+                   									<c:if test="${!empty equipmentExpenseList}">
+	                   									<a href="<c:url value="/project/export-xls/equipment-expenses"/>">
+			                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
+			                                        	</a>
+			                                        	<br/>
+			                                        	<br/>
+		                                        	</c:if>
+
+			                                  		<div class="pull-right">
+			                                  		<h3>Grand Total <b><u>
+				                                	${projectAux.getGrandTotalEquipmentExpensesAsString()}
+													</u></b></h3>
+													</div>
+
+			                                		<table class="table table-bordered table-striped is-data-table">
+				                                    	<thead>
+				                                            <tr>
+				                                            	<th>&nbsp;</th>
+				                                                <th>Date</th>
+				                                                <th>Name</th>
+				                                                <th>Staff</th>
+				                                                <th>Cost</th>
+				                                            </tr>
+			                                    		</thead>
+				                                        <tbody>
+						                                	<c:forEach items="${equipmentExpenseList}" var="expense">
+					                                            <tr>
+					                                            	<td>
+					                                            		<center>
+					                                            			<a href="<c:url value="/project/edit/equipmentexpense/${expense.getKey()}-end"/>">
+									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
+					                                            			</a>
+
+										                                    <div class="btn-group">
+										                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
+										                                    <ul class="dropdown-menu">
+										                                    	<li>
+										                                    		<a href="<c:url value="/project/delete/equipmentexpense/${expense.getKey()}-end"/>" class="cebedo-dropdown-hover">
+										                                        		Confirm Delete
+										                                        	</a>
+										                                    	</li>
+										                                    </ul>
+										                                    </div>
+																		</center>
+																	</td>
+				                                                	<fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
+				                                                	<td>${dateString}</td>
+				                                                	<td>${expense.name}</td>
+				                                                	<td>${expense.staff.getFullName()}</td>
+				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
+					                                            </tr>
+				                                            </c:forEach>
+					                                    </tbody>
+					                                </table>
+				                            	</div>
+				                            </div>
+				                        </div>
+                   						<div class="col-md-3">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   									<div class="form-group">
+	                   									<form:form 
+	                   										modelAttribute="equipmentexpense"
+															id="equipmentExpenseForm"
+															method="post"
+															action="${contextPath}/project/create/equipmentexpense">
+					                                        <div class="form-group">
+
+					                                            <label>Name</label>
+					                                            <form:input type="text" class="form-control" path="name"
+					                                            	placeholder="Sample: Repair, Gasoline, Usage"/>
+					                                            <p class="help-block">Enter the name of this equipment expenditure</p>
+
+					                                            <label>Cost</label>
+					                                            <form:input type="text" class="form-control" path="cost"
+					                                            	placeholder="Sample: 350, 600, 700, 800, 950"/>
+					                                            <p class="help-block">Enter the cost of the equipment expenditure</p>
+
+					                                            <label>Staff</label>
+					                                            <form:select class="form-control" path="staffID"> 
+		                                     						<c:forEach items="${project.assignedStaff}" var="staff"> 
+		                                     							<form:option value="${staff.id}" label="${staff.getFullName()}"/> 
+		                                     						</c:forEach> 
+		 		                                    			</form:select> 
+		 		                                    			<p class="help-block">Choose the staff who conducted the expenditure</p>
+
+					                                            <label>Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <fmt:formatDate value="${equipmentexpense.date}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <form:input type="text" class="form-control date-picker" path="date" placeholder="Sample: 2016/06/25" value="${dateString}"/>
+						                                        </div>
+					                                            <p class="help-block">Enter the date when the equipment expenditure happened</p>
+
+					                                        </div>
+					                                    </form:form>
+					                                    <c:if test="${!empty project.assignedStaff}">
+	                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('equipmentExpenseForm')">Create</button>
+	                                            		</c:if>	                                            		
+														<c:if test="${empty project.assignedStaff}">
+															<div class="callout callout-warning">
+																<p>Please assign <b>staff members</b> first.</p>
+															</div>
+									                	</c:if>
+													</div>	
+												</div>	
+                   							</div>
+                   						</div>
+              						</div>
+                                </div><!-- /.tab-pane -->
+
 
 								<div class="tab-pane" id="tab_other_expenses">
                                 	<div class="row">

@@ -20,6 +20,8 @@ public class RegistryURL {
 
     public static final String CREATE_EXPENSE = "/create/expense";
 
+    public static final String CREATE_EQUIPMENT_EXPENSE = "/create/equipmentexpense";
+
     public static final String UPLOAD_COMPANY_LOGO = "/upload/logo";
 
     public static final String CREATE_ESTIMATE_COST = "/create/cost";
@@ -35,6 +37,8 @@ public class RegistryURL {
     public static final String EXPORT_XLS_ESTIMATION_OUTPUT = "/export-xls/estimationoutput/{estimationoutput}-end";
 
     public static final String EXPORT_XLS_OTHER_EXPENSES = "/export-xls/expenses";
+
+    public static final String EXPORT_XLS_EQUIPMENT_EXPENSES = "/export-xls/equipment-expenses";
 
     public static final String EXPORT_XLS_INVENTORY = "/export-xls/inventory";
 

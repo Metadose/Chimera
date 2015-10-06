@@ -128,7 +128,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Transactional
     @Override
-    public List<Expense> listAsc(Project proj) {
+    public List<Expense> listDesc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
@@ -148,7 +148,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    public int compare(Expense aObj, Expense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
-		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
 	    }
 	});
 
@@ -192,7 +192,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	// Setup the table.
 	// Staff list data.
-	List<Expense> expenses = listAsc(proj);
+	List<Expense> expenses = listDesc(proj);
 	for (Expense expense : expenses) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 

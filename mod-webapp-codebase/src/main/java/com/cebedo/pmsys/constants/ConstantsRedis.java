@@ -16,4 +16,8 @@ public abstract class ConstantsRedis {
     public static final String OBJECT_CONCRETE_ESTIMATION_SUMMARY = "concreteestimationsummary";
     public static final String OBJECT_ESTIMATE_COST = "cost";
     public static final String OBJECT_EXPENSE = "expense";
+    public static final String OBJECT_EQUIPMENT_EXPENSE = "equipmentexpense";
+
+    // For display.
+    public static final String DISPLAY_EQUIPMENT_EXPENSE = "equipment expense";
 }
