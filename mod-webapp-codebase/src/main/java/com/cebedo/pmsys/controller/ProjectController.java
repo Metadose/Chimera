@@ -1856,6 +1856,24 @@ public class ProjectController {
     }
 
     /**
+     * Open an edit page for expense.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EDIT_EQUIPMENT_EXPENSE }, method = RequestMethod.GET)
+    public String editEquipmentExpense(@PathVariable(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) String key,
+	    Model model) {
+
+	// Construct the bean for the form.
+	EquipmentExpense expense = this.equipmentExpenseService.get(key);
+	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, expense);
+	return RegistryJSPPath.JSP_EDIT_EQUIPMENT_EXPENSE;
+    }
+
+    /**
      * Open an edit page for a material.
      * 
      * @param key
@@ -1970,6 +1988,32 @@ public class ProjectController {
 	// Do service
 	// and get response.
 	String response = this.expenseService.delete(key);
+
+	// Attach to redirect attributes.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Return to the project.
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	return redirectEditPageProject(project.getId(), status);
+    }
+
+    /**
+     * Delete an expense.
+     * 
+     * @param material
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.DELETE_EQUIPMENT_EXPENSE }, method = RequestMethod.GET)
+    public String deleteEquipmentExpense(
+	    @PathVariable(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.equipmentExpenseService.delete(key);
 
 	// Attach to redirect attributes.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);

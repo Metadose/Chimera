@@ -71,15 +71,40 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Transactional
     @Override
     public String delete(String key) {
-	// TODO Auto-generated method stub
-	return null;
+	EquipmentExpense obj = this.equipmentExpenseValueRepo.get(key);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Log.
+	Project proj = obj.getProject();
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, Project.OBJECT_NAME, proj.getId(),
+		ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey(), proj, obj.getName());
+
+	// Revert old values in the auxiliary.
+	revertOldValues(obj);
+
+	this.equipmentExpenseValueRepo.delete(key);
+	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
+		obj.getName());
     }
 
     @Transactional
     @Override
-    public EquipmentExpense get(String uuid) {
-	// TODO Auto-generated method stub
-	return null;
+    public EquipmentExpense get(String key) {
+	EquipmentExpense obj = this.equipmentExpenseValueRepo.get(key);
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(obj)) {
+	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
+	    return new EquipmentExpense();
+	}
+	// Log.
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET,
+		ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
+	return obj;
     }
 
     @Transactional

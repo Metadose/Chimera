@@ -32,6 +32,8 @@ public class RegistryURL {
 
     public static final String DELETE_EXPENSE = "/delete/expense/{expense}-end";
 
+    public static final String DELETE_EQUIPMENT_EXPENSE = "/delete/equipmentexpense/{equipmentexpense}-end";
+
     public static final String EXPORT_XLS_PAYROLL = "/export-xls/payroll/{payroll}-end";
 
     public static final String EXPORT_XLS_ESTIMATION_OUTPUT = "/export-xls/estimationoutput/{estimationoutput}-end";
@@ -51,6 +53,8 @@ public class RegistryURL {
     public static final String EXPORT_XLS_PROGRAM_OF_WORKS = "/export-xls/program-of-works";
 
     public static final String EDIT_EXPENSE = "/edit/expense/{expense}-end";
+
+    public static final String EDIT_EQUIPMENT_EXPENSE = "/edit/equipmentexpense/{equipmentexpense}-end";
 
     public static final String EDIT_STAFF = "/edit/staff/{staff}";
 
