@@ -1185,6 +1185,38 @@ public class ProjectController {
      * @param status
      * @return
      */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_EQUIPMENT_EXPENSES }, method = RequestMethod.GET)
+    public void exportXLSEquipmentExpenses(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.equipmentExpenseService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Equipment Expenses.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Export other expenses to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
     @RequestMapping(value = { RegistryURL.EXPORT_XLS_OTHER_EXPENSES }, method = RequestMethod.GET)
     public void exportXLSOtherExpenses(HttpServletResponse response, HttpSession session) {
 

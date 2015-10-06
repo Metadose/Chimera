@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
+import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.ProjectAux;
@@ -28,6 +31,7 @@ import com.cebedo.pmsys.repository.EquipmentExpenseValueRepo;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.EquipmentExpenseValidator;
 
 public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
@@ -39,9 +43,16 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     private ProjectAuxValueRepo projectAuxValueRepo;
     private EquipmentExpenseValueRepo equipmentExpenseValueRepo;
     private StaffDAO staffDAO;
+    private ProjectDAO projectDAO;
 
     @Autowired
     EquipmentExpenseValidator equipmentExpenseValidator;
+
+    @Autowired
+    @Qualifier(value = "projectDAO")
+    public void setProjectDAO(ProjectDAO projectDAO) {
+	this.projectDAO = projectDAO;
+    }
 
     @Autowired
     @Qualifier(value = "staffDAO")
@@ -64,8 +75,49 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Transactional
     @Override
     public HSSFWorkbook exportXLS(long projID) {
-	// TODO Auto-generated method stub
-	return null;
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT,
+		ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, projID);
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet("Equipment Expenses");
+
+	// For grand total.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Grand Total");
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+	row.createCell(1).setCellValue(aux.getGrandTotalEquipmentExpenses());
+	rowIndex++;
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
+	rowIndex++;
+
+	// Create a cell and put a value in it.
+	row.createCell(0).setCellValue("Date");
+	row.createCell(1).setCellValue("Name");
+	row.createCell(2).setCellValue("Staff");
+	row.createCell(3).setCellValue("Cost");
+
+	// Setup the table.
+	// Staff list data.
+	List<EquipmentExpense> expenses = listDesc(proj);
+	for (EquipmentExpense expense : expenses) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+	    expenseRow.createCell(0).setCellValue(DateUtils.formatDate(expense.getDate()));
+	    expenseRow.createCell(1).setCellValue(expense.getName());
+	    expenseRow.createCell(2).setCellValue(expense.getStaff().getFullNameWithMiddleName());
+	    expenseRow.createCell(3).setCellValue(expense.getCost());
+	    rowIndex++;
+	}
+	return wb;
     }
 
     @Transactional
