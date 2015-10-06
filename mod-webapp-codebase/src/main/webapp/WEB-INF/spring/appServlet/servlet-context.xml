@@ -343,6 +343,10 @@
     <!-- Expense -->
     <beans:bean id="expenseService" class="com.cebedo.pmsys.service.impl.ExpenseServiceImpl"></beans:bean>
     <beans:bean id="expenseValueRepo" class="com.cebedo.pmsys.repository.ExpenseValueRepo"></beans:bean>
+
+    <!-- Equipment Expense -->
+    <beans:bean id="equipmentExpenseService" class="com.cebedo.pmsys.service.impl.EquipmentExpenseServiceImpl"></beans:bean>
+    <beans:bean id="equipmentExpenseValueRepo" class="com.cebedo.pmsys.repository.EquipmentExpenseValueRepo"></beans:bean>
     
  	<!-- Material -->
     <beans:bean id="materialService" class="com.cebedo.pmsys.service.impl.MaterialServiceImpl">

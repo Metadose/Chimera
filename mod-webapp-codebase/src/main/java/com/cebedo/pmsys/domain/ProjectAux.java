@@ -24,6 +24,7 @@ public class ProjectAux implements IDomainObject {
     private double grandTotalDelivery;
     private double grandTotalPayroll;
     private double grandTotalOtherExpenses;
+    private double grandTotalEquipmentExpenses;
 
     // Estimate costs.
     private double grandTotalCostsDirect;
@@ -163,7 +164,8 @@ public class ProjectAux implements IDomainObject {
     }
 
     public double getCurrentTotalProject() {
-	return grandTotalDelivery + grandTotalPayroll + grandTotalOtherExpenses;
+	return grandTotalDelivery + grandTotalPayroll + grandTotalOtherExpenses
+		+ grandTotalEquipmentExpenses;
     }
 
     @Transient
@@ -192,8 +194,9 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getRemainingBudgetAsPercentAsString() {
-	return getPlannedTotalProject() == 0 ? "" : "("
-		+ NumberFormatUtils.getQuantityFormatter().format(getRemainingBudgetAsPercent()) + "%)";
+	return getPlannedTotalProject() == 0 ? ""
+		: "(" + NumberFormatUtils.getQuantityFormatter().format(getRemainingBudgetAsPercent())
+			+ "%)";
     }
 
     public double getCurrentTotalProjectAsPercent() {
@@ -203,9 +206,9 @@ public class ProjectAux implements IDomainObject {
     }
 
     public String getCurrentTotalProjectAsPercentAsString() {
-	return getPlannedTotalProject() == 0 ? "" : "("
-		+ NumberFormatUtils.getQuantityFormatter().format(getCurrentTotalProjectAsPercent())
-		+ "%)";
+	return getPlannedTotalProject() == 0 ? ""
+		: "(" + NumberFormatUtils.getQuantityFormatter()
+			.format(getCurrentTotalProjectAsPercent()) + "%)";
     }
 
     public String getPlannedTotalProjectAsString() {
@@ -308,6 +311,18 @@ public class ProjectAux implements IDomainObject {
 
     public void setGrandTotalOtherExpenses(double grandTotalOtherExpenses) {
 	this.grandTotalOtherExpenses = grandTotalOtherExpenses;
+    }
+
+    public double getGrandTotalEquipmentExpenses() {
+	return grandTotalEquipmentExpenses;
+    }
+
+    public String getGrandTotalEquipmentExpensesAsString() {
+	return NumberFormatUtils.getCurrencyFormatter().format(getGrandTotalEquipmentExpenses());
+    }
+
+    public void setGrandTotalEquipmentExpenses(double grandTotalEquipmentExpenses) {
+	this.grandTotalEquipmentExpenses = grandTotalEquipmentExpenses;
     }
 
 }

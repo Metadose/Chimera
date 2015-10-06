@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>${expense.name} | Edit Expense</title>
+	<title>${equipmentexpense.name} | Edit Equipment Expense</title>
 	
 	<style>
 	  ul {         
@@ -30,8 +30,8 @@
 		<!-- Content Header (Page header) -->
 	        <section class="content-header">
 	            <h1>
-	            	<c:out value="${expense.name}"></c:out>
-	                <small>Edit Expense</small>
+	            	<c:out value="${equipmentexpense.name}"></c:out>
+	                <small>Edit Equipment Expense</small>
 	            </h1>
 	        </section>
 	        <section class="content">
@@ -54,21 +54,21 @@
 												<div class="box-body">
 													<div class="form-group">
 	                   									<form:form 
-	                   										modelAttribute="expense"
+	                   										modelAttribute="equipmentexpense"
 															id="expenseForm"
 															method="post"
-															action="${contextPath}/project/create/expense">
+															action="${contextPath}/project/create/equipmentexpense">
 					                                        <div class="form-group">
 
-					                                            <label>Name</label>
+																<label>Name</label>
 					                                            <form:input type="text" class="form-control" path="name"
-					                                            	placeholder="Sample: Signage, Legal papers, Consultants"/>
-					                                            <p class="help-block">Enter the name of this expense</p>
+					                                            	placeholder="Sample: Repair, Gasoline, Usage"/>
+					                                            <p class="help-block">Enter the name of this equipment expenditure</p>
 
 					                                            <label>Cost</label>
 					                                            <form:input type="text" class="form-control" path="cost"
 					                                            	placeholder="Sample: 350, 600, 700, 800, 950"/>
-					                                            <p class="help-block">Enter the cost of the expense</p>
+					                                            <p class="help-block">Enter the cost of the equipment expenditure</p>
 
 					                                            <label>Staff</label>
 					                                            <form:select class="form-control" path="staffID"> 
@@ -83,10 +83,10 @@
 						                                            <div class="input-group-addon">
 						                                                <i class="fa fa-calendar"></i>
 						                                            </div>
-						                                            <fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
+						                                            <fmt:formatDate value="${equipmentexpense.date}" var="dateString" pattern="yyyy/MM/dd" />
 						                                            <form:input type="text" class="form-control date-picker" path="date" placeholder="Sample: 2016/06/25" value="${dateString}"/>
 						                                        </div>
-					                                            <p class="help-block">Enter the date when the expense happened</p>
+					                                            <p class="help-block">Enter the date when the equipment expenditure happened</p>
 
 					                                        </div>
 					                                    </form:form>
@@ -96,7 +96,7 @@
 					                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 					                                    <ul class="dropdown-menu">
 					                                    	<li>
-					                                    		<a href="<c:url value="/project/delete/expense/${expense.getKey()}-end"/>" class="cebedo-dropdown-hover">
+					                                    		<a href="<c:url value="/project/delete/equipmentexpense/${equipmentexpense.getKey()}-end"/>" class="cebedo-dropdown-hover">
 					                                        		Confirm Delete
 					                                        	</a>
 					                                    	</li>

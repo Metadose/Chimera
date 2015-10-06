@@ -21,6 +21,9 @@ public class RegistryJSPPath {
 
     public static final String JSP_EDIT_EXPENSE = Project.OBJECT_NAME + "/expenseEdit";
 
+    public static final String JSP_EDIT_EQUIPMENT_EXPENSE = Project.OBJECT_NAME
+	    + "/equipmentExpenseEdit";
+
     public static final String JSP_EDIT_STAFF = Staff.OBJECT_NAME + "/staffEdit";
 
     public static final String JSP_LIST_STAFF = Staff.OBJECT_NAME + "/staffList";

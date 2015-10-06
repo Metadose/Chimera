@@ -42,6 +42,7 @@ import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.Expense;
@@ -81,6 +82,7 @@ import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.pojo.HighchartsDataSeries;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
+import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.service.EstimateService;
 import com.cebedo.pmsys.service.EstimationOutputService;
@@ -111,6 +113,7 @@ value = {
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
 	ConstantsRedis.OBJECT_PULL_OUT, ConstantsRedis.OBJECT_ESTIMATE,
 	ConstantsRedis.OBJECT_ESTIMATE_COST, ConstantsRedis.OBJECT_EXPENSE,
+	ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE,
 
 	// Staff.
 	ProjectController.ATTR_STAFF, ProjectController.ATTR_ATTENDANCE_MASS,
@@ -164,6 +167,7 @@ public class ProjectController {
     public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
 
     public static final String ATTR_EXPENSE_LIST = "expenseList";
+    public static final String ATTR_EQUIPMENT_EXPENSE_LIST = "equipmentExpenseList";
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
@@ -247,6 +251,13 @@ public class ProjectController {
     private AttendanceService attendanceService;
     private EstimateCostService estimateCostService;
     private ExpenseService expenseService;
+    private EquipmentExpenseService equipmentExpenseService;
+
+    @Autowired
+    @Qualifier(value = "equipmentExpenseService")
+    public void setEquipmentExpenseService(EquipmentExpenseService equipmentExpenseService) {
+	this.equipmentExpenseService = equipmentExpenseService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "expenseService")
@@ -761,6 +772,28 @@ public class ProjectController {
     }
 
     /**
+     * Create an equipment expense object.
+     * 
+     * @param delivery
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.CREATE_EQUIPMENT_EXPENSE }, method = RequestMethod.POST)
+    public String createEquipmentExpense(
+	    @ModelAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) EquipmentExpense expense,
+	    BindingResult result, RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service and get response.
+	String response = this.equipmentExpenseService.set(expense, result);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return redirectEditPageProject(expense.getProject().getId(), status);
+    }
+
+    /**
      * Return to the edit page of the submodule.
      * 
      * @param submodule
@@ -1136,6 +1169,38 @@ public class ProjectController {
 	response.setContentType("application/vnd.ms-excel");
 	response.setHeader("Content-Disposition",
 		"attachment; filename=" + proj.getName() + " Inventory.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Export other expenses to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_EQUIPMENT_EXPENSES }, method = RequestMethod.GET)
+    public void exportXLSEquipmentExpenses(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.equipmentExpenseService.exportXLS(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Equipment Expenses.xls");
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -1823,6 +1888,24 @@ public class ProjectController {
     }
 
     /**
+     * Open an edit page for expense.
+     * 
+     * @param key
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EDIT_EQUIPMENT_EXPENSE }, method = RequestMethod.GET)
+    public String editEquipmentExpense(@PathVariable(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) String key,
+	    Model model) {
+
+	// Construct the bean for the form.
+	EquipmentExpense expense = this.equipmentExpenseService.get(key);
+	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, expense);
+	return RegistryJSPPath.JSP_EDIT_EQUIPMENT_EXPENSE;
+    }
+
+    /**
      * Open an edit page for a material.
      * 
      * @param key
@@ -1937,6 +2020,32 @@ public class ProjectController {
 	// Do service
 	// and get response.
 	String response = this.expenseService.delete(key);
+
+	// Attach to redirect attributes.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Set completed.
+	// Return to the project.
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
+	return redirectEditPageProject(project.getId(), status);
+    }
+
+    /**
+     * Delete an expense.
+     * 
+     * @param material
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.DELETE_EQUIPMENT_EXPENSE }, method = RequestMethod.GET)
+    public String deleteEquipmentExpense(
+	    @PathVariable(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) String key,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
+
+	// Do service
+	// and get response.
+	String response = this.equipmentExpenseService.delete(key);
 
 	// Attach to redirect attributes.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -2345,6 +2454,14 @@ public class ProjectController {
 	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
 	model.addAttribute(ATTR_PROJECT, proj);
 
+	// Init.
+	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> otherExpensesSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> otherExpensesCumulative = new ArrayList<HighchartsDataPoint>();
+
 	// Estimate.
 	setAttributesEstimate(proj, projectAux, model);
 
@@ -2352,21 +2469,20 @@ public class ProjectController {
 	setAttributesStaff(proj, model);
 
 	// Payroll.
-	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
-	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
 	double payrollAccumulated = setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
 
 	// Inventory.
-	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
-	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
 	double materialsAccumulated = setAttributesInventory(proj, model, inventorySeries,
 		inventoryCumulative);
 
 	// Other Expenses.
-	List<HighchartsDataPoint> otherExpensesSeries = new ArrayList<HighchartsDataPoint>();
-	List<HighchartsDataPoint> otherExpensesCumulative = new ArrayList<HighchartsDataPoint>();
 	double otherExpensesAccumulated = setAttributesOtherExpenses(proj, model, otherExpensesSeries,
 		otherExpensesCumulative);
+
+	// TODO Equipment Expenses.
+	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
+	model.addAttribute(ATTR_EQUIPMENT_EXPENSE_LIST, equipmentExpenses);
+	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, new EquipmentExpense(proj));
 
 	// Dashboard.
 	setAttributesDashboard(model, inventoryCumulative, payrollCumulative, otherExpensesCumulative,
@@ -2407,7 +2523,7 @@ public class ProjectController {
     private double setAttributesOtherExpenses(Project proj, Model model,
 	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> otherExpensesCumulative) {
 	double total = 0;
-	List<Expense> expenses = this.expenseService.listAsc(proj);
+	List<Expense> expenses = this.expenseService.listDesc(proj);
 	for (Expense expense : expenses) {
 
 	    // Y-axis.
