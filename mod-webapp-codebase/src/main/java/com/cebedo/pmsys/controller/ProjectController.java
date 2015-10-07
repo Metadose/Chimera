@@ -191,12 +191,15 @@ public class ProjectController {
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
+    public static final String ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE = "dataSeriesDashboardNotCumulative";
     public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
     public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
-    public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
     public static final String ATTR_DATA_SERIES_OTHER_EXPENSES = "dataSeriesOtherExpenses";
     public static final String ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE = "dataSeriesOtherExpensesCumulative";
+    public static final String ATTR_DATA_SERIES_EQUIPMENT = "dataSeriesEquipment";
+    public static final String ATTR_DATA_SERIES_EQUIPMENT_CUMULATIVE = "dataSeriesEquipmentCumulative";
+    public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
     public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
 
     public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
@@ -2449,50 +2452,97 @@ public class ProjectController {
 	    return RegistryJSPPath.JSP_EDIT_PROJECT;
 	}
 
+	// Project main attributes.
 	Project proj = this.projectService.getByIDWithAllCollections(id);
 	ProjectAux projectAux = this.projectAuxService.get(proj);
 	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
 	model.addAttribute(ATTR_PROJECT, proj);
 
-	// Init.
+	// Initialize containers.
 	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> inventorySeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> inventoryCumulative = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> otherExpensesSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> otherExpensesCumulative = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> equipmentSeries = new ArrayList<HighchartsDataPoint>();
+	List<HighchartsDataPoint> equipmentCumulative = new ArrayList<HighchartsDataPoint>();
 
-	// Estimate.
+	// Set attributes.
 	setAttributesEstimate(proj, projectAux, model);
-
-	// Staff.
 	setAttributesStaff(proj, model);
-
-	// Payroll.
-	double payrollAccumulated = setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
-
-	// Inventory.
-	double materialsAccumulated = setAttributesInventory(proj, model, inventorySeries,
-		inventoryCumulative);
-
-	// Other Expenses.
-	double otherExpensesAccumulated = setAttributesOtherExpenses(proj, model, otherExpensesSeries,
-		otherExpensesCumulative);
-
-	// TODO Equipment Expenses.
-	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
-	model.addAttribute(ATTR_EQUIPMENT_EXPENSE_LIST, equipmentExpenses);
-	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, new EquipmentExpense(proj));
-
-	// Dashboard.
-	setAttributesDashboard(model, inventoryCumulative, payrollCumulative, otherExpensesCumulative,
-		inventorySeries, payrollSeries, otherExpensesSeries, payrollAccumulated,
-		materialsAccumulated, otherExpensesAccumulated);
-
-	// Program of Works.
+	setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
+	setAttributesInventory(proj, model, inventorySeries, inventoryCumulative);
+	setAttributesOtherExpenses(proj, model, otherExpensesSeries, otherExpensesCumulative);
+	setAttributesEquipment(proj, model, equipmentSeries, equipmentCumulative);
 	setAttributesProgramOfWorks(proj, model);
 
+	// Dashboard data series.
+	// Bar graph comparison of different data series (Bar graph).
+	// Project cumulative, trend of project expenses (Line/Area graph).
+	// Pie of all expense type.
+	dashboardSeriesComparison(model, inventorySeries, payrollSeries, equipmentSeries,
+		otherExpensesSeries);
+	dashboardCumulativeComparison(model, inventoryCumulative, payrollCumulative,
+		otherExpensesCumulative, equipmentCumulative);
+	dashboardCumulativeTrend(model, inventorySeries, payrollSeries, equipmentSeries,
+		otherExpensesSeries);
+	dashboardProportionalComparison(model, projectAux);
+
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    private void dashboardSeriesComparison(Model model, List<HighchartsDataPoint> inventorySeries,
+	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
+	    List<HighchartsDataPoint> equipmentSeries) {
+
+	// Construct comparison bar graph.
+	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
+	dashboardSeries.add(new HighchartsDataSeries("Inventory", inventorySeries));
+	dashboardSeries.add(new HighchartsDataSeries("Payroll", payrollSeries));
+	dashboardSeries.add(new HighchartsDataSeries("Equipment", equipmentSeries));
+	dashboardSeries.add(new HighchartsDataSeries("Other Expenses", otherExpensesSeries));
+	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE,
+		new Gson().toJson(dashboardSeries, ArrayList.class));
+    }
+
+    /**
+     * Set equipment attributes.
+     * 
+     * @param proj
+     * @param model
+     * @param equipmentSeries
+     * @param equipmentCumulative
+     */
+    private void setAttributesEquipment(Project proj, Model model,
+	    List<HighchartsDataPoint> equipmentSeries, List<HighchartsDataPoint> equipmentCumulative) {
+	double total = 0;
+	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listAsc(proj);
+	for (EquipmentExpense expense : equipmentExpenses) {
+
+	    // Y-axis.
+	    double yValue = expense.getCost();
+	    total += yValue;
+
+	    // Tool tip.
+	    Date datetime = expense.getDate();
+	    String name = String.format("(Equipment) %s<br/>%s",
+		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), expense.getName());
+
+	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
+	    equipmentSeries.add(point);
+
+	    // Cumulative.
+	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
+		    total);
+	    equipmentCumulative.add(pointCumulative);
+	}
+	model.addAttribute(ATTR_DATA_SERIES_EQUIPMENT,
+		new Gson().toJson(equipmentSeries, ArrayList.class));
+	model.addAttribute(ATTR_DATA_SERIES_EQUIPMENT_CUMULATIVE,
+		new Gson().toJson(equipmentCumulative, ArrayList.class));
+	model.addAttribute(ATTR_EQUIPMENT_EXPENSE_LIST, equipmentExpenses);
+	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, new EquipmentExpense(proj));
     }
 
     /**
@@ -2520,10 +2570,10 @@ public class ProjectController {
      * @param otherExpensesCumulative
      * @return
      */
-    private double setAttributesOtherExpenses(Project proj, Model model,
+    private void setAttributesOtherExpenses(Project proj, Model model,
 	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> otherExpensesCumulative) {
 	double total = 0;
-	List<Expense> expenses = this.expenseService.listDesc(proj);
+	List<Expense> expenses = this.expenseService.listAsc(proj);
 	for (Expense expense : expenses) {
 
 	    // Y-axis.
@@ -2549,7 +2599,6 @@ public class ProjectController {
 		new Gson().toJson(otherExpensesCumulative, ArrayList.class));
 	model.addAttribute(ATTR_EXPENSE_LIST, expenses);
 	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, new Expense(proj));
-	return total;
     }
 
     /**
@@ -2570,38 +2619,33 @@ public class ProjectController {
 	return redirectEditPageProject(proj.getId(), status);
     }
 
-    /**
-     * Set dashboard attributes.
-     * 
-     * @param model
-     * @param inventoryCumulative
-     * @param payrollCumulative
-     * @param payrollSeries
-     * @param inventorySeries
-     * @param otherExpensesSeries
-     * @param materialsAccumulated
-     * @param payrollAccumulated
-     * @param otherExpensesAccumulated
-     */
-    private void setAttributesDashboard(Model model, List<HighchartsDataPoint> inventoryCumulative,
-	    List<HighchartsDataPoint> payrollCumulative,
-	    List<HighchartsDataPoint> otherExpensesCumulative, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
-	    double payrollAccumulated, double materialsAccumulated, double otherExpensesAccumulated) {
+    private void dashboardProportionalComparison(Model model, ProjectAux projectAux) {
+	// Proportional comparison.
+	double materialsAccumulated = projectAux.getGrandTotalDelivery();
+	double payrollAccumulated = projectAux.getGrandTotalPayroll();
+	double otherExpensesAccumulated = projectAux.getGrandTotalOtherExpenses();
+	double equipmentAccumulated = projectAux.getGrandTotalEquipmentExpenses();
 
-	// Dashboard.
-	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
-	dashboardSeries
-		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
-		new Gson().toJson(dashboardSeries, ArrayList.class));
+	boolean isEmpty = materialsAccumulated == 0 && payrollAccumulated == 0
+		&& otherExpensesAccumulated == 0 && equipmentAccumulated == 0;
 
+	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
+	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
+	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
+	projectPie.add(new HighchartsDataPoint("Equipment", equipmentAccumulated));
+	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
+	model.addAttribute(ATTR_DATA_SERIES_PIE_DASHBOARD,
+		isEmpty ? "[]" : new Gson().toJson(projectPie, ArrayList.class));
+    }
+
+    private void dashboardCumulativeTrend(Model model, List<HighchartsDataPoint> inventorySeries,
+	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> equipmentSeries,
+	    List<HighchartsDataPoint> otherExpensesSeries) {
 	// Accumulation of expenses in this project.
 	List<HighchartsDataPoint> projectCumulative = new ArrayList<HighchartsDataPoint>();
 	projectCumulative.addAll(inventorySeries);
 	projectCumulative.addAll(payrollSeries);
+	projectCumulative.addAll(equipmentSeries);
 	projectCumulative.addAll(otherExpensesSeries);
 
 	// To sort in ascending,
@@ -2622,15 +2666,21 @@ public class ProjectController {
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PROJECT,
 		new Gson().toJson(projectCumulative, ArrayList.class));
+    }
 
-	// Dashboard pie.
-	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
-	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
-	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
-	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_DASHBOARD,
-		(materialsAccumulated == 0 && payrollAccumulated == 0 && otherExpensesAccumulated == 0)
-			? "[]" : new Gson().toJson(projectPie, ArrayList.class));
+    private void dashboardCumulativeComparison(Model model,
+	    List<HighchartsDataPoint> inventoryCumulative, List<HighchartsDataPoint> payrollCumulative,
+	    List<HighchartsDataPoint> otherExpensesCumulative,
+	    List<HighchartsDataPoint> equipmentCumulative) {
+	// Construct comparison bar graph.
+	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
+	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
+	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
+	dashboardSeries.add(new HighchartsDataSeries("Equipment Cumulative", equipmentCumulative));
+	dashboardSeries
+		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
+	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
+		new Gson().toJson(dashboardSeries, ArrayList.class));
     }
 
     /**
@@ -2736,7 +2786,7 @@ public class ProjectController {
      * @param projectCumulative
      * @param projectAccumulation
      */
-    private double setAttributesPayroll(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+    private void setAttributesPayroll(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
 	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all payrolls.
 	// Add to model.
@@ -2773,7 +2823,6 @@ public class ProjectController {
 	model.addAttribute(ATTR_DATA_SERIES_PAYROLL, new Gson().toJson(dataSeries, ArrayList.class));
 	model.addAttribute(ATTR_DATA_SERIES_PAYROLL_CUMULATIVE,
 		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
-	return accumulation;
     }
 
     /**
@@ -2784,8 +2833,8 @@ public class ProjectController {
      * @param projectAccumulation
      * @param projectCumulative
      */
-    private double setAttributesInventory(Project proj, Model model,
-	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> dataSeriesCumulative) {
+    private void setAttributesInventory(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
+	    List<HighchartsDataPoint> dataSeriesCumulative) {
 	// Get all deliveries.
 	// Get all pull-outs.
 	// Get inventory.
@@ -2823,8 +2872,6 @@ public class ProjectController {
 	// Add to model.
 	List<PullOut> pullOutList = this.pullOutService.listDesc(proj);
 	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
-
-	return accumulation;
     }
 
     /**
