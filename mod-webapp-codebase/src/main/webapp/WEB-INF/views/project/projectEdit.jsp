@@ -334,7 +334,7 @@
 									<div class="row">
 										<div class="col-md-6">
 											<div class="info-box">
-											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
+											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-calculator"></i></span>
 											<div class="info-box-content">
 											<span class="info-box-text">Current Total Expenses</span>
 											<span class="info-box-number">${projectAux.getCurrentTotalProjectAsString()}</span>
@@ -349,7 +349,7 @@
 										</div><!-- /.col -->
 										<div class="col-md-6">
 											<div class="info-box">
-											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-cash"></i></span>
+											<span class="info-box-icon cebedo-bg-forestry"><i class="ion ion-ios-briefcase"></i></span>
 											<div class="info-box-content">
 											<span class="info-box-text">Total Project Cost</span>
 											<span class="info-box-number">${projectAux.getPlannedTotalProjectAsString()}</span>
@@ -410,65 +410,75 @@
 							            
 							          </div>
 
+									
+
               						<div class="row">
 
                    						<div class="col-md-6">
-		                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
+		                                	<c:set value="${projectAux.getCSSofOverspent().className()}" var="css"></c:set>
+											<div class="info-box ${css}">
+												<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
+												<div class="info-box-content">
+													<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} ${projectAux.getCurrentTotalProjectAsPercentAsString()} spent</span>
+													<span class="info-box-number">
+														<c:choose>
+															<c:when test="${projectAux.getRemainingBudget() >= 0}">
+																<c:set value="remaining" var="moneyCaption"/>
+															</c:when>
+															<c:when test="${projectAux.getRemainingBudget() < 0}">
+																<c:set value="overspent" var="moneyCaption"/>
+															</c:when>
+														</c:choose>
+														${projectAux.getRemainingBudgetAsString()} ${projectAux.getRemainingBudgetAsPercentAsString()} ${moneyCaption}
+													</span>
+													<div class="progress">
+													<div class="progress-bar" style="width: ${projectAux.getRemainingBudgetAsPercent()}%"></div>
+													</div>
+													<span class="progress-description">
+													out of project cost ${projectAux.getPlannedTotalProjectAsString()}
+													</span>
+												</div><!-- /.info-box-content -->
+											</div>
 				                        </div>
 
                    						<div class="col-md-6">
-													<c:set value="${projectAux.getCSSofOverspent().className()}" var="css"></c:set>
-													<div class="info-box ${css}">
-														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
-														<div class="info-box-content">
-															<span class="info-box-text">${projectAux.getCurrentTotalProjectAsString()} ${projectAux.getCurrentTotalProjectAsPercentAsString()} spent</span>
-															<span class="info-box-number">
-																<c:choose>
-																	<c:when test="${projectAux.getRemainingBudget() >= 0}">
-																		<c:set value="remaining" var="moneyCaption"/>
-																	</c:when>
-																	<c:when test="${projectAux.getRemainingBudget() < 0}">
-																		<c:set value="overspent" var="moneyCaption"/>
-																	</c:when>
-																</c:choose>
-																${projectAux.getRemainingBudgetAsString()} ${projectAux.getRemainingBudgetAsPercentAsString()} ${moneyCaption}
-															</span>
-															<div class="progress">
-															<div class="progress-bar" style="width: ${projectAux.getRemainingBudgetAsPercent()}%"></div>
-															</div>
-															<span class="progress-description">
-															out of project cost ${projectAux.getPlannedTotalProjectAsString()}
-															</span>
-														</div><!-- /.info-box-content -->
+											<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
+											<div class="info-box ${css}">
+												<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
+												<div class="info-box-content">
+													<span class="info-box-text">${project.getStatusEnum()} (${project.getCSSofDelay().label()})</span>
+													<span class="info-box-number">
+														<c:choose>
+															<c:when test="${project.getCalDaysRemaining() >= 0}">
+																<c:set value="remaining" var="daysCaption"/>
+															</c:when>
+															<c:when test="${project.getCalDaysRemaining() < 0}">
+																<c:set value="delayed" var="daysCaption"/>
+															</c:when>
+														</c:choose>
+														${project.getCalDaysRemainingAsString()} (${project.getCalDaysRemainingAsPercentAsString()}%) calendar days ${daysCaption}
+													</span>
+													<div class="progress">
+													<div class="progress-bar" style="width: ${project.getCalDaysProgressAsPercent()}%"></div>
 													</div>
-
-													<c:set value="${project.getCSSofDelay().className()}" var="css"></c:set>
-													<div class="info-box ${css}">
-														<span class="info-box-icon"><i class="ion ion-ios-pulse-strong" style="padding-top: 20%;"></i></span>
-														<div class="info-box-content">
-															<span class="info-box-text">${project.getStatusEnum()} (${project.getCSSofDelay().label()})</span>
-															<span class="info-box-number">
-																<c:choose>
-																	<c:when test="${project.getCalDaysRemaining() >= 0}">
-																		<c:set value="remaining" var="daysCaption"/>
-																	</c:when>
-																	<c:when test="${project.getCalDaysRemaining() < 0}">
-																		<c:set value="delayed" var="daysCaption"/>
-																	</c:when>
-																</c:choose>
-																${project.getCalDaysRemainingAsString()} (${project.getCalDaysRemainingAsPercentAsString()}%) calendar days ${daysCaption}
-															</span>
-															<div class="progress">
-															<div class="progress-bar" style="width: ${project.getCalDaysProgressAsPercent()}%"></div>
-															</div>
-															<span class="progress-description">
-															out of ${project.getCalDaysTotalAsString()} project days															
-															from <fmt:formatDate value="${project.dateStart}" pattern="yyyy/MM/dd" /> to <fmt:formatDate value="${project.targetCompletionDate}" pattern="yyyy/MM/dd" />
-															</span>
-														</div><!-- /.info-box-content -->
-													</div>
+													<span class="progress-description">
+													out of ${project.getCalDaysTotalAsString()} project days															
+													from <fmt:formatDate value="${project.dateStart}" pattern="yyyy/MM/dd" /> to <fmt:formatDate value="${project.targetCompletionDate}" pattern="yyyy/MM/dd" />
+													</span>
+												</div><!-- /.info-box-content -->
+											</div>
 				                        </div>
 				                   	</div> <!-- End of Row -->
+
+
+				                   	<div class="row">
+                   						<div class="col-md-6">
+		                                	<div id="highcharts-dashboard-not-cumulative" style="height: 300px"></div>
+				                        </div>
+				                        <div class="col-md-6">
+		                                	<div id="highcharts-dashboard-project-pie" style="height: 300px"></div>
+				                        </div>
+				                    </div>
 
               						<div class="row">
                    						<div class="col-md-6">
@@ -2070,7 +2080,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: 'Accumulation of Overall Project Expenses'
+	            text: 'Accumulation of All Project Expenses'
 	        },
 	        yAxis: {
 	            title: {
@@ -2194,7 +2204,7 @@
 	        	enabled: false
 	        },
 			title: {
-	            text: 'Proportional Comparison per Type of Expenditure'
+	            text: 'Proportion Per Type of Expenditure'
 	        },
 	        tooltip: {
 	            pointFormat: '<b>{point.y} ({point.percentage:.2f}%)</b>'
@@ -2223,6 +2233,55 @@
 	});
 
 	$(function () {
+	    $('#highcharts-dashboard-not-cumulative').highcharts({
+	        chart: {
+	            type: 'column',
+            	zoomType: 'x'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: 'Comparison of Expenses per Type'
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Project Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: ${dataSeriesDashboardNotCumulative}
+	    });
+	});
+
+	$(function () {
 	    $('#highcharts-dashboard').highcharts({
 	        chart: {
 	            type: 'area',
@@ -2232,7 +2291,7 @@
 	        	enabled: false
 	        },
 	        title: {
-	            text: 'Comparison of Expenses Accumulation per Type'
+	            text: 'Accumulation Per Type of Expenditure'
 	        },
 	        xAxis: {
 	            type: 'datetime',

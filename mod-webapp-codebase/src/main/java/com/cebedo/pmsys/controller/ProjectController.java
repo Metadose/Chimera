@@ -191,6 +191,7 @@ public class ProjectController {
 
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
+    public static final String ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE = "dataSeriesDashboardNotCumulative";
     public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
     public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
@@ -2480,12 +2481,29 @@ public class ProjectController {
 	// Bar graph comparison of different data series (Bar graph).
 	// Project cumulative, trend of project expenses (Line/Area graph).
 	// Pie of all expense type.
-	dashboardCumulativeComparison(model, inventoryCumulative, payrollCumulative, otherExpensesCumulative,
-		equipmentCumulative);
-	dashboardCumulativeTrend(model, inventorySeries, payrollSeries, equipmentSeries, otherExpensesSeries);
+	dashboardSeriesComparison(model, inventorySeries, payrollSeries, equipmentSeries,
+		otherExpensesSeries);
+	dashboardCumulativeComparison(model, inventoryCumulative, payrollCumulative,
+		otherExpensesCumulative, equipmentCumulative);
+	dashboardCumulativeTrend(model, inventorySeries, payrollSeries, equipmentSeries,
+		otherExpensesSeries);
 	dashboardProportionalComparison(model, projectAux);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    private void dashboardSeriesComparison(Model model, List<HighchartsDataPoint> inventorySeries,
+	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
+	    List<HighchartsDataPoint> equipmentSeries) {
+
+	// Construct comparison bar graph.
+	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
+	dashboardSeries.add(new HighchartsDataSeries("Inventory", inventorySeries));
+	dashboardSeries.add(new HighchartsDataSeries("Payroll", payrollSeries));
+	dashboardSeries.add(new HighchartsDataSeries("Equipment", equipmentSeries));
+	dashboardSeries.add(new HighchartsDataSeries("Other Expenses", otherExpensesSeries));
+	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE,
+		new Gson().toJson(dashboardSeries, ArrayList.class));
     }
 
     /**
@@ -2650,8 +2668,8 @@ public class ProjectController {
 		new Gson().toJson(projectCumulative, ArrayList.class));
     }
 
-    private void dashboardCumulativeComparison(Model model, List<HighchartsDataPoint> inventoryCumulative,
-	    List<HighchartsDataPoint> payrollCumulative,
+    private void dashboardCumulativeComparison(Model model,
+	    List<HighchartsDataPoint> inventoryCumulative, List<HighchartsDataPoint> payrollCumulative,
 	    List<HighchartsDataPoint> otherExpensesCumulative,
 	    List<HighchartsDataPoint> equipmentCumulative) {
 	// Construct comparison bar graph.
