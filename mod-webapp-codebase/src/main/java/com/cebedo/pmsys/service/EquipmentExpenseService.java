@@ -20,4 +20,6 @@ public interface EquipmentExpenseService {
 
     public String set(EquipmentExpense cost, BindingResult result);
 
+    public List<EquipmentExpense> listAsc(Project proj);
+
 }

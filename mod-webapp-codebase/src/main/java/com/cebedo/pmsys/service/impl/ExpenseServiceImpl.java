@@ -128,6 +128,35 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Transactional
     @Override
+    public List<Expense> listAsc(Project proj) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<Expense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EXPENSE);
+	String pattern = Expense.constructPattern(proj);
+	Set<String> keys = this.expenseValueRepo.keys(pattern);
+	List<Expense> expenses = this.expenseValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<Expense>() {
+	    @Override
+	    public int compare(Expense aObj, Expense bObj) {
+		Date aStart = aObj.getDate();
+		Date bStart = bObj.getDate();
+		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+
+	return expenses;
+    }
+
+    @Transactional
+    @Override
     public List<Expense> listDesc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {

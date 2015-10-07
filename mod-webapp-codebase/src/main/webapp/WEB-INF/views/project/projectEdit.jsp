@@ -2225,14 +2225,14 @@
 	$(function () {
 	    $('#highcharts-dashboard').highcharts({
 	        chart: {
-	            type: 'column',
+	            type: 'area',
             	zoomType: 'x'
 	        },
 	        credits: {
 	        	enabled: false
 	        },
 	        title: {
-	            text: 'Comparison of Expenses per Type'
+	            text: 'Comparison of Expenses Accumulation per Type'
 	        },
 	        xAxis: {
 	            type: 'datetime',
@@ -2268,6 +2268,58 @@
 	            }
 	        },
 	        series: ${dataSeriesDashboard}
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-equipment-expenses-cumulative').highcharts({
+	        chart: {
+	            type: 'area',
+            	zoomType: 'x'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: 'Accumulation of Equipment Expenses'
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Equipment Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Equipment Expenses Cumulative',
+	            data: ${dataSeriesEquipmentCumulative}
+	        }]
 	    });
 	});
 
@@ -2475,6 +2527,58 @@
 	        series: [{
 	        	name: 'Other Expenses',
 	            data: ${dataSeriesOtherExpenses}
+	        }]
+	    });
+	});
+
+	$(function () {
+	    $('#highcharts-equipment-expenses').highcharts({
+	        chart: {
+	            type: 'column',
+            	zoomType: 'x'
+	        },
+	        credits: {
+	        	enabled: false
+	        },
+	        title: {
+	            text: 'Comparison of Equipment Expenses'
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: {
+					millisecond: '%e. %b',
+					second: '%e. %b',
+					minute: '%e. %b',
+					hour: '%e. %b',
+					day: '%e. %b',
+					week: '%e. %b',
+					month: '%b \'%y',
+					year: '%Y'
+				},
+				title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Equipment Expenses (PHP)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            pointFormat: '<b>{point.y}</b>'
+	        },
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true,
+	                    radius: 8
+	                }
+	            }
+	        },
+	        series: [{
+	        	name: 'Equipment Expenses',
+	            data: ${dataSeriesEquipment}
 	        }]
 	    });
 	});

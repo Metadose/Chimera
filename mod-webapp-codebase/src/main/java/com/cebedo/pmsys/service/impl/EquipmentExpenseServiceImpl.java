@@ -161,6 +161,34 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 
     @Transactional
     @Override
+    public List<EquipmentExpense> listAsc(Project proj) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<EquipmentExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE);
+	String pattern = EquipmentExpense.constructPattern(proj);
+	Set<String> keys = this.equipmentExpenseValueRepo.keys(pattern);
+	List<EquipmentExpense> expenses = this.equipmentExpenseValueRepo.multiGet(keys);
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<EquipmentExpense>() {
+	    @Override
+	    public int compare(EquipmentExpense aObj, EquipmentExpense bObj) {
+		Date aStart = aObj.getDate();
+		Date bStart = bObj.getDate();
+		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+	return expenses;
+    }
+
+    @Transactional
+    @Override
     public List<EquipmentExpense> listDesc(Project proj) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
