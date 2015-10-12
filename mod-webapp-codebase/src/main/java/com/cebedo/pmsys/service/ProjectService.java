@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,5 +65,7 @@ public interface ProjectService {
     public String mark(long projectID, int status);
 
     public Set<AuditLog> logs(long id);
+
+    public HSSFWorkbook exportXLSBalanceSheet(long id);
 
 }

@@ -132,6 +132,7 @@
 										<li><a href="#tab_equipment_expenses" data-toggle="tab">Equipment</a></li>
 										<li><a href="#tab_other_expenses" data-toggle="tab">Other Expenses</a></li>
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
+		                                <li><a href="#tab_downloads" data-toggle="tab">Downloads</a></li>
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
                                 	<c:when test="${project.id == 0}">
@@ -1105,6 +1106,161 @@
 												</div>	
                    							</div>
                    						</div>
+              						</div>
+                                </div><!-- /.tab-pane -->
+                                
+								<div class="tab-pane" id="tab_downloads">
+                                	<div class="row">
+										<div class="col-md-6">
+               							<div class="box box-body box-default">
+               							<div class="box-header">
+           									<h3 class="box-title">Reports</h3>
+           								</div>
+               							<div class="box-body">
+                                		<table class="table table-bordered table-striped is-data-table">
+                                    	<thead>
+                                            <tr>
+                                           	<th>&nbsp;</th>
+                                               <th>Name</th>
+                                               <th>Description</th>
+                                            </tr>
+                                   		</thead>
+                                        <tbody>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/balance-sheet"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Balance Sheet</td>
+                                               	<td>A summarized report of all project expenses.</td>
+                                            </tr>
+	                                    </tbody>
+		                                </table>
+		                            	</div>
+			                            </div>
+				                        </div>
+              						</div>
+                                	<div class="row">
+										<div class="col-md-6">
+               							<div class="box box-body box-default">
+               							<div class="box-header">
+           									<h3 class="box-title">Project Setup</h3>
+           								</div>
+               							<div class="box-body">
+                                		<table class="table table-bordered table-striped is-data-table">
+                                    	<thead>
+                                            <tr>
+                                           	<th>&nbsp;</th>
+                                               <th>Name</th>
+                                               <th>Description</th>
+                                            </tr>
+                                   		</thead>
+                                        <tbody>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/staff-members"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Assigned Staff</td>
+                                               	<td>The list of assigned staff members.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/costs"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Estimation</td>
+                                               	<td>Project estimation and estimated costs.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/program-of-works"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Program of Works</td>
+                                               	<td>Tasks defined in the program of works.</td>
+                                            </tr>
+	                                    </tbody>
+		                                </table>
+		                            	</div>
+			                            </div>
+				                        </div>
+										<div class="col-md-6">
+               							<div class="box box-body box-default">
+               							<div class="box-header">
+           									<h3 class="box-title">Expenses</h3>
+           								</div>
+               							<div class="box-body">
+                                		<table class="table table-bordered table-striped is-data-table">
+                                    	<thead>
+                                            <tr>
+                                           	<th>&nbsp;</th>
+                                               <th>Name</th>
+                                               <th>Description</th>
+                                            </tr>
+                                   		</thead>
+                                        <tbody>
+                                             <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/payroll/all"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Payrolls</td>
+                                               	<td>All payrolls compiled as one file.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/inventory"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Inventory</td>
+                                               	<td>Project deliveries, materials & pull-outs.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/equipment-expenses"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Equipment</td>
+                                               	<td>Expenses related to equipments.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/expenses"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Other Expenses</td>
+                                               	<td>Export the other expenses.</td>
+                                            </tr>
+	                                    </tbody>
+		                                </table>
+		                            	</div>
+			                            </div>
+				                        </div>
               						</div>
                                 </div><!-- /.tab-pane -->
 

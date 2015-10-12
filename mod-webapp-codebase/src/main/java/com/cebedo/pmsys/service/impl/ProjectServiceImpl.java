@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,12 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.domain.Delivery;
+import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
+import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
+import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.EstimateCostType;
@@ -39,7 +46,11 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
 import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.service.DeliveryService;
+import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.service.EstimateCostService;
+import com.cebedo.pmsys.service.ExpenseService;
+import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
@@ -63,6 +74,36 @@ public class ProjectServiceImpl implements ProjectService {
     private StaffService staffService;
     private TaskService taskService;
     private EstimateCostService estimateCostService;
+
+    // For the balance sheet.
+    private ProjectPayrollService projectPayrollService;
+    private DeliveryService deliveryService;
+    private EquipmentExpenseService equipmentExpenseService;
+    private ExpenseService expenseService;
+
+    @Autowired
+    @Qualifier(value = "expenseService")
+    public void setExpenseService(ExpenseService expenseService) {
+	this.expenseService = expenseService;
+    }
+
+    @Autowired
+    @Qualifier(value = "equipmentExpenseService")
+    public void setEquipmentExpenseService(EquipmentExpenseService equipmentExpenseService) {
+	this.equipmentExpenseService = equipmentExpenseService;
+    }
+
+    @Autowired
+    @Qualifier(value = "deliveryService")
+    public void setDeliveryService(DeliveryService deliveryService) {
+	this.deliveryService = deliveryService;
+    }
+
+    @Autowired
+    @Qualifier(value = "projectPayrollService")
+    public void setProjectPayrollService(ProjectPayrollService projectPayrollService) {
+	this.projectPayrollService = projectPayrollService;
+    }
 
     @Autowired
     @Qualifier(value = "estimateCostService")
@@ -659,6 +700,118 @@ public class ProjectServiceImpl implements ProjectService {
 	    log.setAuditAction(AuditAction.of(log.getAction()));
 	}
 	return logs;
+    }
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLSBalanceSheet(long projID) {
+
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+	String sheetName = "Balance Sheet";
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
+
+	// Payrolls.
+	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
+
+	// Inventory.
+	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
+
+	// Equipment.
+	List<EquipmentExpense> equipments = this.equipmentExpenseService.listDesc(proj);
+
+	// Other Expenses.
+	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
+
+	// Auxiliary.
+	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet(sheetName);
+
+	// For grand total.
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(proj.getName());
+	row.createCell(1).setCellValue(sheetName);
+	rowIndex++;
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Payroll");
+	row.createCell(1).setCellValue("Total");
+	row.createCell(2).setCellValue(aux.getGrandTotalPayroll());
+	rowIndex++;
+
+	// Setup the table.
+	for (ProjectPayroll payroll : payrolls) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+	    expenseRow.createCell(1).setCellValue(payroll.getStartEndDisplay());
+	    expenseRow.createCell(2).setCellValue(payroll.getTotal());
+	    rowIndex++;
+	}
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Inventory");
+	row.createCell(1).setCellValue("Total");
+	row.createCell(2).setCellValue(aux.getGrandTotalDelivery());
+	rowIndex++;
+
+	// Setup the table.
+	for (Delivery delivery : deliveries) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+	    expenseRow.createCell(1).setCellValue(delivery.getName());
+	    expenseRow.createCell(2).setCellValue(delivery.getGrandTotalOfMaterials());
+	    rowIndex++;
+	}
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Equipment");
+	row.createCell(1).setCellValue("Total");
+	row.createCell(2).setCellValue(aux.getGrandTotalEquipmentExpenses());
+	rowIndex++;
+
+	// Setup the table.
+	for (EquipmentExpense equipment : equipments) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+	    expenseRow.createCell(1).setCellValue(equipment.getName());
+	    expenseRow.createCell(2).setCellValue(equipment.getCost());
+	    rowIndex++;
+	}
+	rowIndex++;
+
+	// For headers.
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Other Expenses");
+	row.createCell(1).setCellValue("Total");
+	row.createCell(2).setCellValue(aux.getGrandTotalOtherExpenses());
+	rowIndex++;
+
+	// Setup the table.
+	for (Expense expense : otherExpenses) {
+	    HSSFRow expenseRow = sheet.createRow(rowIndex);
+	    expenseRow.createCell(1).setCellValue(expense.getName());
+	    expenseRow.createCell(2).setCellValue(expense.getCost());
+	    rowIndex++;
+	}
+	rowIndex++;
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(1).setCellValue("Grand Total");
+	row.createCell(2).setCellValue(aux.getCurrentTotalProject());
+
+	return wb;
     }
 
 }
