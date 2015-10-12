@@ -1114,6 +1114,39 @@
 										<div class="col-md-6">
                							<div class="box box-body box-default">
                							<div class="box-header">
+           									<h3 class="box-title">Reports</h3>
+           								</div>
+               							<div class="box-body">
+                                		<table class="table table-bordered table-striped is-data-table">
+                                    	<thead>
+                                            <tr>
+                                           	<th>&nbsp;</th>
+                                               <th>Name</th>
+                                               <th>Description</th>
+                                            </tr>
+                                   		</thead>
+                                        <tbody>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/balance-sheet"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Balance Sheet</td>
+                                               	<td>A summarized report of all project expenses.</td>
+                                            </tr>
+	                                    </tbody>
+		                                </table>
+		                            	</div>
+			                            </div>
+				                        </div>
+              						</div>
+                                	<div class="row">
+										<div class="col-md-6">
+               							<div class="box box-body box-default">
+               							<div class="box-header">
            									<h3 class="box-title">Project Setup</h3>
            								</div>
                							<div class="box-body">

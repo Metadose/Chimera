@@ -60,8 +60,12 @@ public class ProjectPayroll implements IDomainObject {
     private PayrollResultComputation payrollResultComputation;
 
     public String getTotalAsString() {
-	return NumberFormatUtils.getCurrencyFormatter().format(
-		this.payrollResultComputation.getOverallTotalOfStaff());
+	return NumberFormatUtils.getCurrencyFormatter()
+		.format(this.payrollResultComputation.getOverallTotalOfStaff());
+    }
+
+    public double getTotal() {
+	return this.payrollResultComputation.getOverallTotalOfStaff();
     }
 
     public PayrollResultComputation getPayrollComputationResult() {
