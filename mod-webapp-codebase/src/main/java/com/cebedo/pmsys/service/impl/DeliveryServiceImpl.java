@@ -425,7 +425,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public double getTotal(List<Delivery> deliveries) {
+    public double analyzeTotal(List<Delivery> deliveries) {
 
 	double total = 0;
 	Project proj = null;
@@ -443,6 +443,87 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
 		proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Grand Total");
 	return total;
+    }
+
+    @Override
+    @Transactional
+    public List<Delivery> analyzeMax(List<Delivery> objs) {
+	double greatest = 0;
+	Project proj = null;
+	List<Delivery> max = new ArrayList<Delivery>();
+
+	// Identify the greatest value.
+	for (Delivery obj : objs) {
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+		return new ArrayList<Delivery>();
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    double total = obj.getGrandTotalOfMaterials();
+	    if (total > greatest) {
+		greatest = total;
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (Delivery obj : objs) {
+	    double total = obj.getGrandTotalOfMaterials();
+	    if (total == greatest) {
+		max.add(obj);
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Max");
+	return max;
+    }
+
+    @Override
+    @Transactional
+    public List<Delivery> analyzeMin(List<Delivery> objs) {
+	Double least = null;
+	Project proj = null;
+	List<Delivery> min = new ArrayList<Delivery>();
+
+	// Identify the greatest value.
+	for (Delivery obj : objs) {
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+		return new ArrayList<Delivery>();
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    double total = obj.getGrandTotalOfMaterials();
+	    if (least == null) {
+		least = total;
+		continue;
+	    }
+	    if (total < least) {
+		least = total;
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (Delivery obj : objs) {
+	    double total = obj.getGrandTotalOfMaterials();
+	    if (total == least) {
+		min.add(obj);
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Min");
+	return min;
+    }
+
+    @Override
+    @Transactional
+    public double analyzeMean(Project proj, List<Delivery> objs) {
+	double total = analyzeTotal(objs);
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Mean");
+	return total / objs.size();
     }
 
 }

@@ -261,7 +261,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 
     @Override
     @Transactional
-    public double getTotal(List<EquipmentExpense> expenses) {
+    public double analyzeTotal(List<EquipmentExpense> expenses) {
 
 	double total = 0;
 	Project proj = null;
@@ -326,6 +326,89 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	    }
 	});
 	return expenses;
+    }
+
+    @Override
+    @Transactional
+    public List<EquipmentExpense> analyzeMax(List<EquipmentExpense> objs) {
+	double greatest = 0;
+	Project proj = null;
+	List<EquipmentExpense> max = new ArrayList<EquipmentExpense>();
+
+	// Identify the greatest value.
+	for (EquipmentExpense obj : objs) {
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE,
+			obj.getKey());
+		return new ArrayList<EquipmentExpense>();
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    double total = obj.getCost();
+	    if (total > greatest) {
+		greatest = total;
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (EquipmentExpense obj : objs) {
+	    double total = obj.getCost();
+	    if (total == greatest) {
+		max.add(obj);
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, "Max");
+	return max;
+    }
+
+    @Override
+    @Transactional
+    public List<EquipmentExpense> analyzeMin(List<EquipmentExpense> objs) {
+	Double least = null;
+	Project proj = null;
+	List<EquipmentExpense> min = new ArrayList<EquipmentExpense>();
+
+	// Identify the greatest value.
+	for (EquipmentExpense obj : objs) {
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE,
+			obj.getKey());
+		return new ArrayList<EquipmentExpense>();
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    double total = obj.getCost();
+	    if (least == null) {
+		least = total;
+		continue;
+	    }
+	    if (total < least) {
+		least = total;
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (EquipmentExpense obj : objs) {
+	    double total = obj.getCost();
+	    if (total == least) {
+		min.add(obj);
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, "Min");
+	return min;
+    }
+
+    @Override
+    @Transactional
+    public double analyzeMean(Project proj, List<EquipmentExpense> objs) {
+	double total = analyzeTotal(objs);
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, "Mean");
+	return total / objs.size();
     }
 
 }

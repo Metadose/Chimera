@@ -23,8 +23,14 @@ public interface ExpenseService {
 
     public List<Expense> listAsc(Project proj);
 
-    public double getTotal(List<Expense> otherExpenses);
+    public double analyzeTotal(List<Expense> otherExpenses);
 
     public List<Expense> listDesc(Project proj, Date startDate, Date endDate);
+
+    public List<Expense> analyzeMax(List<Expense> otherExpenses);
+
+    public List<Expense> analyzeMin(List<Expense> otherExpenses);
+
+    public double analyzeMean(Project proj, List<Expense> otherExpenses);
 
 }

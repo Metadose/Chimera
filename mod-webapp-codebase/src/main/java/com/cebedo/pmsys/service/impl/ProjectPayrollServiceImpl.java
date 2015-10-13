@@ -409,7 +409,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
      */
     @Transactional
     @Override
-    public double getTotal(List<ProjectPayroll> payrollList) {
+    public double analyzeTotal(List<ProjectPayroll> payrollList) {
 	double total = 0;
 
 	Project proj = null;
@@ -427,8 +427,8 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    }
 	}
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Total");
 	return total;
     }
 
@@ -717,6 +717,122 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	});
 
 	return projectPayrolls;
+    }
+
+    @Override
+    @Transactional
+    public List<ProjectPayroll> analyzeMax(List<ProjectPayroll> payrolls) {
+	double greatest = 0;
+	Project proj = null;
+	List<ProjectPayroll> max = new ArrayList<ProjectPayroll>();
+
+	// Identify the greatest value.
+	for (ProjectPayroll payroll : payrolls) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(payroll)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
+		return new ArrayList<ProjectPayroll>();
+	    }
+	    proj = proj == null ? payroll.getProject() : proj;
+
+	    // If there were no previous computations,
+	    // then skip.
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result != null) {
+		double total = result.getOverallTotalOfStaff();
+		if (total > greatest) {
+		    greatest = total;
+		}
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (ProjectPayroll payroll : payrolls) {
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result != null) {
+		double total = result.getOverallTotalOfStaff();
+		if (total == greatest) {
+		    max.add(payroll);
+		}
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Max");
+	return max;
+    }
+
+    @Override
+    @Transactional
+    public List<ProjectPayroll> analyzeMin(List<ProjectPayroll> payrolls) {
+	Double least = null;
+	Project proj = null;
+	List<ProjectPayroll> min = new ArrayList<ProjectPayroll>();
+
+	// Identify the greatest value.
+	for (ProjectPayroll payroll : payrolls) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(payroll)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
+		return new ArrayList<ProjectPayroll>();
+	    }
+	    proj = proj == null ? payroll.getProject() : proj;
+
+	    // If there were no previous computations,
+	    // then skip.
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result != null) {
+		double total = result.getOverallTotalOfStaff();
+		if (least == null) {
+		    least = total;
+		    continue;
+		}
+		if (total < least) {
+		    least = total;
+		}
+	    }
+	}
+
+	// Get all objects that are equal with the greatest value.
+	for (ProjectPayroll payroll : payrolls) {
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result != null) {
+		double total = result.getOverallTotalOfStaff();
+		if (total == least) {
+		    min.add(payroll);
+		}
+	    }
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Min");
+	return min;
+    }
+
+    @Override
+    @Transactional
+    public double analyzeMean(Project proj, List<ProjectPayroll> objs) {
+	double total = analyzeTotal(objs);
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
+		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Mean");
+	int size = getSize(objs);
+	return total / size;
+    }
+
+    @Override
+    @Transactional
+    public int getSize(List<ProjectPayroll> objs) {
+	int size = 0;
+	for (ProjectPayroll payroll : objs) {
+	    if (payroll.getPayrollComputationResult() != null) {
+		size++;
+	    }
+	}
+	return size;
     }
 
 }

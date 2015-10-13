@@ -1140,6 +1140,17 @@
                                             <tr>
                                             	<td>
                                             		<center>
+                                            			<a href="<c:url value="/project/export-xls/analysis"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Analysis (Overall)</td>
+                                               	<td>Analyze the project and export a file containing resulting values.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
                                             			<form:form 
 	                   										modelAttribute="balanceSheetDateRange"
 															method="post"

@@ -745,10 +745,10 @@ public class ProjectServiceImpl implements ProjectService {
 	double totalOthers = 0;
 	double totalGrand = 0;
 	if (isRange) {
-	    totalPayroll = this.projectPayrollService.getTotal(payrolls);
-	    totalDelivery = this.deliveryService.getTotal(deliveries);
-	    totalEquipment = this.equipmentExpenseService.getTotal(equipmentExpenses);
-	    totalOthers = this.expenseService.getTotal(otherExpenses);
+	    totalPayroll = this.projectPayrollService.analyzeTotal(payrolls);
+	    totalDelivery = this.deliveryService.analyzeTotal(deliveries);
+	    totalEquipment = this.equipmentExpenseService.analyzeTotal(equipmentExpenses);
+	    totalOthers = this.expenseService.analyzeTotal(otherExpenses);
 	    totalGrand = totalPayroll + totalDelivery + totalEquipment + totalOthers;
 	} else {
 	    ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
@@ -841,6 +841,82 @@ public class ProjectServiceImpl implements ProjectService {
 	row.createCell(2).setCellValue(totalGrand);
 
 	return wb;
+    }
+
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLSAnalysis(long projID) {
+	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new HSSFWorkbook();
+	}
+
+	// Construct sheet name.
+	String sheetName = "Analysis";
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
+
+	// Load lists.
+	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
+	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
+	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
+	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
+
+	// Analysis (Max).
+	List<ProjectPayroll> maxPayroll = this.projectPayrollService.analyzeMax(payrolls);
+	List<Delivery> maxDeliveries = this.deliveryService.analyzeMax(deliveries);
+	List<EquipmentExpense> maxEquip = this.equipmentExpenseService.analyzeMax(equipmentExpenses);
+	List<Expense> maxOtherExpenses = this.expenseService.analyzeMax(otherExpenses);
+	// TODO setGreatestExpense
+	// (sheet, maxPayroll, maxDeliveries, maxEquip, maxOtherExpenses);
+
+	// Analysis (Min).
+	List<ProjectPayroll> minPayroll = this.projectPayrollService.analyzeMin(payrolls);
+	List<Delivery> minDeliveries = this.deliveryService.analyzeMin(deliveries);
+	List<EquipmentExpense> minEquip = this.equipmentExpenseService.analyzeMin(equipmentExpenses);
+	List<Expense> minOtherExpenses = this.expenseService.analyzeMin(otherExpenses);
+	// TODO setLeastExpense
+	// (sheet, minPayroll, minDeliveries, minEquip, minOtherExpenses);
+
+	// Analysis (Mean).
+	double meanPayroll = this.projectPayrollService.analyzeMean(proj, payrolls);
+	double meanDeliveries = this.deliveryService.analyzeMean(proj, deliveries);
+	double meanEquip = this.equipmentExpenseService.analyzeMean(proj, equipmentExpenses);
+	double meanOtherExpenses = this.expenseService.analyzeMean(proj, otherExpenses);
+	double meanProject = analyzeMean(payrolls, deliveries, equipmentExpenses, otherExpenses);
+
+	// TODO Transactional check.
+
+	// Initialize.
+	HSSFWorkbook wb = new HSSFWorkbook();
+	HSSFSheet sheet = wb.createSheet(sheetName);
+
+	return wb;
+    }
+
+    /**
+     * Get the mean of all project expenses.
+     * 
+     * @param payrolls
+     * @param deliveries
+     * @param equipmentExpenses
+     * @param otherExpenses
+     * @return
+     */
+    private double analyzeMean(List<ProjectPayroll> payrolls, List<Delivery> deliveries,
+	    List<EquipmentExpense> equipmentExpenses, List<Expense> otherExpenses) {
+	double totalPayroll = this.projectPayrollService.analyzeTotal(payrolls);
+	double totalDelivery = this.deliveryService.analyzeTotal(deliveries);
+	double totalEquip = this.equipmentExpenseService.analyzeTotal(equipmentExpenses);
+	double totalOthers = this.expenseService.analyzeTotal(otherExpenses);
+	double grandTotal = totalPayroll + totalDelivery + totalEquip + totalOthers;
+
+	int numOfEntries = this.projectPayrollService.getSize(payrolls) + deliveries.size()
+		+ equipmentExpenses.size() + otherExpenses.size();
+
+	return grandTotal / numOfEntries;
     }
 
 }
