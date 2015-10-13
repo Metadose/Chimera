@@ -705,7 +705,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public HSSFWorkbook exportXLSBalanceSheet(long projID) {
+	return exportXLSBalanceSheet(projID, null, null);
+    }
 
+    @Override
+    @Transactional
+    public HSSFWorkbook exportXLSBalanceSheet(long projID, Date startDate, Date endDate) {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
@@ -713,24 +718,48 @@ public class ProjectServiceImpl implements ProjectService {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	String sheetName = "Balance Sheet";
+	boolean isRange = startDate != null && endDate != null;
+
+	// Construct sheet name.
+	String sheetName = "";
+	if (isRange) {
+	    String dateFormat = "yyyy-MM-dd";
+	    sheetName = String.format("%s to %s", DateUtils.formatDate(startDate, dateFormat),
+		    DateUtils.formatDate(endDate, dateFormat));
+	} else {
+	    sheetName = "Balance Sheet";
+	}
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
 
-	// Payrolls.
-	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
+	// Load lists.
+	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj, startDate, endDate);
+	List<Delivery> deliveries = this.deliveryService.listDesc(proj, startDate, endDate);
+	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj, startDate,
+		endDate);
+	List<Expense> otherExpenses = this.expenseService.listDesc(proj, startDate, endDate);
 
-	// Inventory.
-	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
+	// Get totals.
+	double totalPayroll = 0;
+	double totalDelivery = 0;
+	double totalEquipment = 0;
+	double totalOthers = 0;
+	double totalGrand = 0;
+	if (isRange) {
+	    totalPayroll = this.projectPayrollService.getTotal(payrolls);
+	    totalDelivery = this.deliveryService.getTotal(deliveries);
+	    totalEquipment = this.equipmentExpenseService.getTotal(equipmentExpenses);
+	    totalOthers = this.expenseService.getTotal(otherExpenses);
+	    totalGrand = totalPayroll + totalDelivery + totalEquipment + totalOthers;
+	} else {
+	    ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+	    totalPayroll = aux.getGrandTotalPayroll();
+	    totalDelivery = aux.getGrandTotalDelivery();
+	    totalEquipment = aux.getGrandTotalEquipmentExpenses();
+	    totalOthers = aux.getGrandTotalOtherExpenses();
+	    totalGrand = aux.getCurrentTotalProject();
+	}
 
-	// Equipment.
-	List<EquipmentExpense> equipments = this.equipmentExpenseService.listDesc(proj);
-
-	// Other Expenses.
-	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
-
-	// Auxiliary.
-	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
-
+	// Initialize.
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet(sheetName);
 
@@ -746,7 +775,7 @@ public class ProjectServiceImpl implements ProjectService {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Payroll");
 	row.createCell(1).setCellValue("Total");
-	row.createCell(2).setCellValue(aux.getGrandTotalPayroll());
+	row.createCell(2).setCellValue(totalPayroll);
 	rowIndex++;
 
 	// Setup the table.
@@ -762,7 +791,7 @@ public class ProjectServiceImpl implements ProjectService {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Inventory");
 	row.createCell(1).setCellValue("Total");
-	row.createCell(2).setCellValue(aux.getGrandTotalDelivery());
+	row.createCell(2).setCellValue(totalDelivery);
 	rowIndex++;
 
 	// Setup the table.
@@ -778,11 +807,11 @@ public class ProjectServiceImpl implements ProjectService {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Equipment");
 	row.createCell(1).setCellValue("Total");
-	row.createCell(2).setCellValue(aux.getGrandTotalEquipmentExpenses());
+	row.createCell(2).setCellValue(totalEquipment);
 	rowIndex++;
 
 	// Setup the table.
-	for (EquipmentExpense equipment : equipments) {
+	for (EquipmentExpense equipment : equipmentExpenses) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 	    expenseRow.createCell(1).setCellValue(equipment.getName());
 	    expenseRow.createCell(2).setCellValue(equipment.getCost());
@@ -794,7 +823,7 @@ public class ProjectServiceImpl implements ProjectService {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Other Expenses");
 	row.createCell(1).setCellValue("Total");
-	row.createCell(2).setCellValue(aux.getGrandTotalOtherExpenses());
+	row.createCell(2).setCellValue(totalOthers);
 	rowIndex++;
 
 	// Setup the table.
@@ -809,7 +838,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	row = sheet.createRow(rowIndex);
 	row.createCell(1).setCellValue("Grand Total");
-	row.createCell(2).setCellValue(aux.getCurrentTotalProject());
+	row.createCell(2).setCellValue(totalGrand);
 
 	return wb;
     }

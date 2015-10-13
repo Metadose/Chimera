@@ -238,6 +238,9 @@ public class ProjectController {
     // Task attributes.
     public static final String ATTR_STAFF_ASSIGNMENT = "staffAssignment";
 
+    // Forms.
+    private static final String FORM_BALANCE_SHEET_RANGE = "balanceSheetDateRange";
+
     private AuthHelper authHelper = new AuthHelper();
 
     private ProjectService projectService;
@@ -1236,6 +1239,43 @@ public class ProjectController {
 	response.setContentType("application/vnd.ms-excel");
 	response.setHeader("Content-Disposition",
 		"attachment; filename=" + proj.getName() + " Balance Sheet.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
+     * Export balance sheet to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_BALANCE_SHEET_RANGE }, method = RequestMethod.POST)
+    public void exportXLSBalanceSheetRange(
+	    @ModelAttribute(FORM_BALANCE_SHEET_RANGE) FormDateRange dateRange,
+	    HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.projectService.exportXLSBalanceSheet(proj.getId(),
+		dateRange.getStartDate(), dateRange.getEndDate());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	String header = String.format("attachment; filename=%s %s to %s Balance Sheet.xls",
+		proj.getName(), DateUtils.formatDate(dateRange.getStartDate(), "yyyy-MM-dd"),
+		DateUtils.formatDate(dateRange.getEndDate(), "yyyy-MM-dd"));
+	response.setHeader("Content-Disposition", header);
 	try {
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
@@ -2508,6 +2548,7 @@ public class ProjectController {
 	setAttributesOtherExpenses(proj, model, otherExpensesSeries, otherExpensesCumulative);
 	setAttributesEquipment(proj, model, equipmentSeries, equipmentCumulative);
 	setAttributesProgramOfWorks(proj, model);
+	setAttributesDownloads(model);
 
 	// Dashboard data series.
 	// Bar graph comparison of different data series (Bar graph).
@@ -2522,6 +2563,10 @@ public class ProjectController {
 	dashboardProportionalComparison(model, projectAux);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    private void setAttributesDownloads(Model model) {
+	model.addAttribute(FORM_BALANCE_SHEET_RANGE, new FormDateRange());
     }
 
     private void dashboardSeriesComparison(Model model, List<HighchartsDataPoint> inventorySeries,

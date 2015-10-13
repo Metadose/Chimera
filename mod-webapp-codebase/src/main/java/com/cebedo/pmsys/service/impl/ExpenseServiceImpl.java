@@ -158,30 +158,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     @Override
     public List<Expense> listDesc(Project proj) {
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new ArrayList<Expense>();
-	}
-
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_EXPENSE);
-	String pattern = Expense.constructPattern(proj);
-	Set<String> keys = this.expenseValueRepo.keys(pattern);
-	List<Expense> expenses = this.expenseValueRepo.multiGet(keys);
-
-	// Sort the list in descending order.
-	Collections.sort(expenses, new Comparator<Expense>() {
-	    @Override
-	    public int compare(Expense aObj, Expense bObj) {
-		Date aStart = aObj.getDate();
-		Date bStart = bObj.getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
-	    }
-	});
-
-	return expenses;
+	return listDesc(proj, null, null);
     }
 
     @Override
@@ -284,6 +261,75 @@ public class ExpenseServiceImpl implements ExpenseService {
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
+    }
+
+    @Override
+    @Transactional
+    public double getTotal(List<Expense> expenses) {
+
+	double total = 0;
+	Project proj = null;
+	for (Expense obj : expenses) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
+		return 0.0;
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    total += obj.getCost();
+	}
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EXPENSE, "Grand Total");
+	return total;
+    }
+
+    @Override
+    @Transactional
+    public List<Expense> listDesc(Project proj, Date startDate, Date endDate) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<Expense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EXPENSE);
+	String pattern = Expense.constructPattern(proj);
+	Set<String> keys = this.expenseValueRepo.keys(pattern);
+	List<Expense> expenses = this.expenseValueRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<Expense> toInclude = new ArrayList<Expense>();
+	    for (Expense obj : expenses) {
+		Date objDate = obj.getDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (objDate.equals(startDate) || objDate.equals(endDate)
+			|| (objDate.after(startDate) && objDate.before(endDate))) {
+		    toInclude.add(obj);
+		}
+	    }
+	    expenses = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<Expense>() {
+	    @Override
+	    public int compare(Expense aObj, Expense bObj) {
+		Date aStart = aObj.getDate();
+		Date bStart = bObj.getDate();
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+
+	return expenses;
     }
 
 }

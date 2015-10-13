@@ -190,29 +190,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Transactional
     @Override
     public List<EquipmentExpense> listDesc(Project proj) {
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new ArrayList<EquipmentExpense>();
-	}
-
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE);
-	String pattern = EquipmentExpense.constructPattern(proj);
-	Set<String> keys = this.equipmentExpenseValueRepo.keys(pattern);
-	List<EquipmentExpense> expenses = this.equipmentExpenseValueRepo.multiGet(keys);
-
-	// Sort the list in descending order.
-	Collections.sort(expenses, new Comparator<EquipmentExpense>() {
-	    @Override
-	    public int compare(EquipmentExpense aObj, EquipmentExpense bObj) {
-		Date aStart = aObj.getDate();
-		Date bStart = bObj.getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
-	    }
-	});
-	return expenses;
+	return listDesc(proj, null, null);
     }
 
     /**
@@ -279,6 +257,75 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 		ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey(), proj, obj.getName());
 	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
 		obj.getName());
+    }
+
+    @Override
+    @Transactional
+    public double getTotal(List<EquipmentExpense> expenses) {
+
+	double total = 0;
+	Project proj = null;
+	for (EquipmentExpense obj : expenses) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE,
+			obj.getKey());
+		return 0.0;
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    total += obj.getCost();
+	}
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, "Grand Total");
+	return total;
+    }
+
+    @Transactional
+    @Override
+    public List<EquipmentExpense> listDesc(Project proj, Date startDate, Date endDate) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<EquipmentExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE);
+	String pattern = EquipmentExpense.constructPattern(proj);
+	Set<String> keys = this.equipmentExpenseValueRepo.keys(pattern);
+	List<EquipmentExpense> expenses = this.equipmentExpenseValueRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<EquipmentExpense> toInclude = new ArrayList<EquipmentExpense>();
+	    for (EquipmentExpense obj : expenses) {
+		Date objDate = obj.getDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (objDate.equals(startDate) || objDate.equals(endDate)
+			|| (objDate.after(startDate) && objDate.before(endDate))) {
+		    toInclude.add(obj);
+		}
+	    }
+	    expenses = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<EquipmentExpense>() {
+	    @Override
+	    public int compare(EquipmentExpense aObj, EquipmentExpense bObj) {
+		Date aStart = aObj.getDate();
+		Date bStart = bObj.getDate();
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return expenses;
     }
 
 }
