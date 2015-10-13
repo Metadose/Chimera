@@ -404,6 +404,34 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
+    /**
+     * Get the grand total value as string, formatted as currency.
+     */
+    @Transactional
+    @Override
+    public double getTotal(List<ProjectPayroll> payrollList) {
+	double total = 0;
+
+	Project proj = null;
+	for (ProjectPayroll payroll : payrollList) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(payroll)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
+		return 0.0;
+	    }
+	    proj = proj == null ? payroll.getProject() : proj;
+	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	    if (result != null) {
+		total += result.getOverallTotalOfStaff();
+	    }
+	}
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
+	return total;
+    }
+
     @Transactional
     @Override
     public String createPayroll(Project proj, ProjectPayroll projectPayroll) {
@@ -502,41 +530,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Transactional
     @Override
     public List<ProjectPayroll> listDesc(Project proj) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new ArrayList<ProjectPayroll>();
-	}
-
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
-
-	// Get the needed ID's for the key.
-	// Construct the key.
-	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
-	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
-
-	// Get all keys based on pattern.
-	// Multi-get all objects based on keys.
-	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
-	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo.multiGet(keys);
-
-	// Sort the list in descending order.
-	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
-	    @Override
-	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
-		Date aStart = aObj.getEndDate();
-		Date bStart = bObj.getEndDate();
-
-		// To sort in ascending,
-		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
-	    }
-	});
-
-	return projectPayrolls;
+	return listDesc(proj, null, null);
     }
 
     @Transactional
@@ -661,6 +655,64 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 		// To sort in ascending,
 		// remove Not's.
 		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+	    }
+	});
+
+	return projectPayrolls;
+    }
+
+    @Override
+    @Transactional
+    public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<ProjectPayroll>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
+
+	// Get the needed ID's for the key.
+	// Construct the key.
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
+	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
+
+	// Get all keys based on pattern.
+	// Multi-get all objects based on keys.
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<ProjectPayroll> projectPayrolls = this.projectPayrollValueRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<ProjectPayroll> toInclude = new ArrayList<ProjectPayroll>();
+	    for (ProjectPayroll payroll : projectPayrolls) {
+		Date payrollEnd = payroll.getEndDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (payrollEnd.equals(startDate) || payrollEnd.equals(endDate)
+			|| (payrollEnd.after(startDate) && payrollEnd.before(endDate))) {
+		    toInclude.add(payroll);
+		}
+	    }
+	    projectPayrolls = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(projectPayrolls, new Comparator<ProjectPayroll>() {
+	    @Override
+	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
+		Date aStart = aObj.getEndDate();
+		Date bStart = bObj.getEndDate();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
 	    }
 	});
 

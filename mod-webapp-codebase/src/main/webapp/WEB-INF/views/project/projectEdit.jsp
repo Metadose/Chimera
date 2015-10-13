@@ -1111,7 +1111,7 @@
                                 
 								<div class="tab-pane" id="tab_downloads">
                                 	<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-12">
                							<div class="box box-body box-default">
                							<div class="box-header">
            									<h3 class="box-title">Reports</h3>
@@ -1134,8 +1134,40 @@
                                             			</a>
 													</center>
 												</td>
-                                               	<td>Balance Sheet</td>
-                                               	<td>A summarized report of all project expenses.</td>
+                                               	<td>Balance Sheet (Overall)</td>
+                                               	<td>A summarized report of all expenses throughout the course of the project.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<form:form 
+	                   										modelAttribute="balanceSheetDateRange"
+															method="post"
+															action="${contextPath}/project/export-xls/balance-sheet/range">
+					                                        <div class="form-group">
+					                                        
+					                                            <label>Start Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <form:input type="text" class="form-control date-picker" path="startDate" placeholder="Sample: 2016/06/25"/>
+						                                        </div>
+						                                        <br/>
+					                                            <label>End Date</label>
+						                                        <div class="input-group">
+						                                            <div class="input-group-addon">
+						                                                <i class="fa fa-calendar"></i>
+						                                            </div>
+						                                            <form:input type="text" class="form-control date-picker" path="endDate" placeholder="Sample: 2016/06/25"/>
+						                                        </div>
+					                                        </div>
+					                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+					                                    </form:form>
+													</center>
+												</td>
+                                               	<td>Balance Sheet (Date Range)</td>
+                                               	<td>A summarized report of all expenses given a specific start and end date.</td>
                                             </tr>
 	                                    </tbody>
 		                                </table>

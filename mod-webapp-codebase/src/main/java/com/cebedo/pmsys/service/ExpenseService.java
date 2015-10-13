@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,5 +22,9 @@ public interface ExpenseService {
     public String set(Expense cost, BindingResult result);
 
     public List<Expense> listAsc(Project proj);
+
+    public double getTotal(List<Expense> otherExpenses);
+
+    public List<Expense> listDesc(Project proj, Date startDate, Date endDate);
 
 }

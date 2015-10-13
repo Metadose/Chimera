@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,5 +22,9 @@ public interface DeliveryService {
     public List<Delivery> listDesc(Project proj);
 
     public List<Delivery> listAsc(Project proj);
+
+    public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
+
+    public double getTotal(List<Delivery> deliveries);
 
 }

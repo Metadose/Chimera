@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,5 +68,7 @@ public interface ProjectService {
     public Set<AuditLog> logs(long id);
 
     public HSSFWorkbook exportXLSBalanceSheet(long id);
+
+    public HSSFWorkbook exportXLSBalanceSheet(long id, Date startDate, Date endDate);
 
 }

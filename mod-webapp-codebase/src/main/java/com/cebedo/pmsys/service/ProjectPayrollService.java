@@ -55,4 +55,8 @@ public interface ProjectPayrollService {
 
     public List<ProjectPayroll> listAsc(Project proj);
 
+    public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate);
+
+    public double getTotal(List<ProjectPayroll> payrollList);
+
 }

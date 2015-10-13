@@ -286,35 +286,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Transactional
     public List<Delivery> listDesc(Project proj) {
-
-	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
-	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new ArrayList<Delivery>();
-	}
-
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_DELIVERY);
-
-	String pattern = Delivery.constructPattern(proj);
-	Set<String> keys = this.deliveryValueRepo.keys(pattern);
-
-	List<Delivery> deliveries = this.deliveryValueRepo.multiGet(keys);
-
-	// Sort the list in descending order.
-	Collections.sort(deliveries, new Comparator<Delivery>() {
-	    @Override
-	    public int compare(Delivery aObj, Delivery bObj) {
-		Date aStart = aObj.getDatetime();
-		Date bStart = bObj.getDatetime();
-
-		// To sort in ascending,
-		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
-	    }
-	});
-	return deliveries;
+	return listDesc(proj, null, null);
     }
 
     @Override
@@ -397,6 +369,80 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    }
 	});
 	return deliveries;
+    }
+
+    @Override
+    @Transactional
+    public List<Delivery> listDesc(Project proj, Date startDate, Date endDate) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<Delivery>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_DELIVERY);
+
+	String pattern = Delivery.constructPattern(proj);
+	Set<String> keys = this.deliveryValueRepo.keys(pattern);
+
+	List<Delivery> deliveries = this.deliveryValueRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<Delivery> toInclude = new ArrayList<Delivery>();
+	    for (Delivery obj : deliveries) {
+		Date objDate = obj.getDatetime();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (objDate.equals(startDate) || objDate.equals(endDate)
+			|| (objDate.after(startDate) && objDate.before(endDate))) {
+		    toInclude.add(obj);
+		}
+	    }
+	    deliveries = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(deliveries, new Comparator<Delivery>() {
+	    @Override
+	    public int compare(Delivery aObj, Delivery bObj) {
+		Date aStart = aObj.getDatetime();
+		Date bStart = bObj.getDatetime();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return deliveries;
+    }
+
+    @Override
+    @Transactional
+    public double getTotal(List<Delivery> deliveries) {
+
+	double total = 0;
+	Project proj = null;
+	for (Delivery obj : deliveries) {
+
+	    // Security check.
+	    if (!this.authHelper.isActionAuthorized(obj)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
+		return 0.0;
+	    }
+	    proj = proj == null ? obj.getProject() : proj;
+	    total += obj.getGrandTotalOfMaterials();
+	}
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Grand Total");
+	return total;
     }
 
 }
