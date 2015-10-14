@@ -425,28 +425,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public double analyzeTotal(List<Delivery> deliveries) {
-
-	double total = 0;
-	Project proj = null;
-	for (Delivery obj : deliveries) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(obj)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? obj.getProject() : proj;
-	    total += obj.getGrandTotalOfMaterials();
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Grand Total");
-	return total;
-    }
-
-    @Override
-    @Transactional
     public List<Delivery> analyzeMax(List<Delivery> objs) {
 	double greatest = 0;
 	Project proj = null;
@@ -515,15 +493,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
 		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Min");
 	return min;
-    }
-
-    @Override
-    @Transactional
-    public double analyzeMean(Project proj, List<Delivery> objs) {
-	double total = analyzeTotal(objs);
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
-		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_DELIVERY, "Mean");
-	return total / objs.size();
     }
 
 }

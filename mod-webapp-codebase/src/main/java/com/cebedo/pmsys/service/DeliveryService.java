@@ -25,12 +25,8 @@ public interface DeliveryService {
 
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
 
-    public double analyzeTotal(List<Delivery> deliveries);
-
     public List<Delivery> analyzeMax(List<Delivery> deliveries);
 
     public List<Delivery> analyzeMin(List<Delivery> deliveries);
-
-    public double analyzeMean(Project proj, List<Delivery> deliveries);
 
 }

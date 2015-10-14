@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -34,6 +37,7 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -745,10 +749,11 @@ public class ProjectServiceImpl implements ProjectService {
 	double totalOthers = 0;
 	double totalGrand = 0;
 	if (isRange) {
-	    totalPayroll = this.projectPayrollService.analyzeTotal(payrolls);
-	    totalDelivery = this.deliveryService.analyzeTotal(deliveries);
-	    totalEquipment = this.equipmentExpenseService.analyzeTotal(equipmentExpenses);
-	    totalOthers = this.expenseService.analyzeTotal(otherExpenses);
+	    StatisticsProject statistics = new StatisticsProject();
+	    totalPayroll = statistics.getSumAndClearPayroll(payrolls);
+	    totalDelivery = statistics.getSumAndClearDelivery(deliveries);
+	    totalEquipment = statistics.getSumAndClearEquipment(equipmentExpenses);
+	    totalOthers = statistics.getSumAndClearOtherExpenses(otherExpenses);
 	    totalGrand = totalPayroll + totalDelivery + totalEquipment + totalOthers;
 	} else {
 	    ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
@@ -881,42 +886,218 @@ public class ProjectServiceImpl implements ProjectService {
 	// (sheet, minPayroll, minDeliveries, minEquip, minOtherExpenses);
 
 	// Analysis (Mean).
-	double meanPayroll = this.projectPayrollService.analyzeMean(proj, payrolls);
-	double meanDeliveries = this.deliveryService.analyzeMean(proj, deliveries);
-	double meanEquip = this.equipmentExpenseService.analyzeMean(proj, equipmentExpenses);
-	double meanOtherExpenses = this.expenseService.analyzeMean(proj, otherExpenses);
-	double meanProject = analyzeMean(payrolls, deliveries, equipmentExpenses, otherExpenses);
+	StatisticsProject statistics = new StatisticsProject();
+	double meanPayroll = statistics.getMeanAndClearPayroll(payrolls);
+	double meanDeliveries = statistics.getMeanAndClearDelivery(deliveries);
+	double meanEquip = statistics.getMeanAndClearEquipment(equipmentExpenses);
+	double meanOtherExpenses = statistics.getMeanAndClearOtherExpenses(otherExpenses);
+	double meanProject = statistics.getMeanAndClearProject(payrolls, deliveries, equipmentExpenses,
+		otherExpenses);
+
+	// Population.
+	int popPayroll = this.projectPayrollService.getSize(payrolls);
+	int popDelivery = deliveries.size();
+	int popEquip = equipmentExpenses.size();
+	int popOtherExpenses = otherExpenses.size();
+	int popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
 
 	// TODO Transactional check.
 
-	// Initialize.
+	// Start constructing the Excel.
+	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet(sheetName);
+	int rowIndex = 0;
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Project Analysis");
+	rowIndex++;
+
+	// Basic details.
+	analysisDetails(row, sheet, rowIndex, proj);
+
+	// Project estimated cost.
+	// TODO Include actual.
+	double plannedDirect = projAux.getGrandTotalCostsDirect();
+	double plannedIndirect = projAux.getGrandTotalCostsIndirect();
+	double projCost = plannedDirect + plannedIndirect;
+	analysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect, projCost);
+
+	// Physical Target.
+	analysisPhysicalTarget(row, sheet, rowIndex, proj, projCost);
+
+	// Progress.
+	analysisProgress(row, sheet, rowIndex, proj);
+
+	// Staff.
+	analysisStaff(row, sheet, rowIndex, proj, statistics);
+
+	// Program of works.
+	Set<Task> tasks = proj.getAssignedTasks();
+	int numOfTasks = tasks.size();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Number of Tasks");
+	row.createCell(1).setCellValue(numOfTasks);
+	rowIndex++;
+
+	// Map of task status to number.
+	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
 
 	return wb;
     }
 
-    /**
-     * Get the mean of all project expenses.
-     * 
-     * @param payrolls
-     * @param deliveries
-     * @param equipmentExpenses
-     * @param otherExpenses
-     * @return
-     */
-    private double analyzeMean(List<ProjectPayroll> payrolls, List<Delivery> deliveries,
-	    List<EquipmentExpense> equipmentExpenses, List<Expense> otherExpenses) {
-	double totalPayroll = this.projectPayrollService.analyzeTotal(payrolls);
-	double totalDelivery = this.deliveryService.analyzeTotal(deliveries);
-	double totalEquip = this.equipmentExpenseService.analyzeTotal(equipmentExpenses);
-	double totalOthers = this.expenseService.analyzeTotal(otherExpenses);
-	double grandTotal = totalPayroll + totalDelivery + totalEquip + totalOthers;
+    private void analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
+	    StatisticsProject statistics) {
+	// Number of staff members assigned to this project.
+	Set<Staff> assignedStaff = proj.getAssignedStaff();
+	int numOfAssignedStaff = assignedStaff.size();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Number of Assigned Staff");
+	row.createCell(1).setCellValue(numOfAssignedStaff);
+	rowIndex++;
 
-	int numOfEntries = this.projectPayrollService.getSize(payrolls) + deliveries.size()
-		+ equipmentExpenses.size() + otherExpenses.size();
+	// Mean salary per day.
+	double meanWage = statistics.getMeanWageAndClear(assignedStaff);
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Salary Mean (Daily)");
+	row.createCell(1).setCellValue(meanWage);
+	rowIndex++;
 
-	return grandTotal / numOfEntries;
+	// Summation of salary per day.
+	double sumWage = statistics.getMeanSumAndClear(assignedStaff);
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Salary Sum (Daily)");
+	row.createCell(1).setCellValue(sumWage);
+	rowIndex++;
+    }
+
+    private void analysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+	Date dateStart = proj.getDateStart();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Date Start");
+	row.createCell(1).setCellValue(dateStart);
+	rowIndex++;
+
+	// Expected project runtime.
+	int plannedNumOfDays = proj.getCalDaysTotal();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Number of Days (Planned)");
+	row.createCell(1).setCellValue(plannedNumOfDays);
+	rowIndex++;
+
+	// If project is completed,
+	// do post-project analysis.
+	ProjectStatus projStatus = proj.getStatusEnum();
+	if (projStatus == ProjectStatus.COMPLETED) {
+
+	    // TODO If Project is Completed but actual completion date not set.
+	    // TODO In JSP, also add notice that completed but date not set.
+	    // Actual date of completion.
+	    Date dateCompletionActual = proj.getActualCompletionDate();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Date Completion (Actual)");
+	    row.createCell(1).setCellValue(dateCompletionActual);
+	    rowIndex++;
+
+	    // How many days was the actual project runtime?
+	    int actualNumOfDays = Days
+		    .daysBetween(new DateTime(dateStart), new DateTime(dateCompletionActual)).getDays();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Actual)");
+	    row.createCell(1).setCellValue(actualNumOfDays);
+	    rowIndex++;
+
+	    // Distance between the planned and actual number of days.
+	    int difference = plannedNumOfDays - actualNumOfDays;
+	    String diffLabel = difference > 0 ? "Ahead of Schedule"
+		    : (difference < 0 ? "Delayed" : "On-Time");
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Difference)");
+	    row.createCell(1).setCellValue(difference);
+	    row.createCell(2).setCellValue(diffLabel);
+	    rowIndex++;
+
+	    // Actual vs Planned number of days.
+	    // How many days were actually used?
+	    double percentUsed = (actualNumOfDays / plannedNumOfDays) * 100;
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Percent Used)");
+	    row.createCell(1).setCellValue(percentUsed);
+	    rowIndex++;
+
+	}
+	// If project is not yet completed.
+	else {
+	    // Target date of completion.
+	    Date dateCompletionTarget = proj.getTargetCompletionDate();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Date Completion (Target)");
+	    row.createCell(1).setCellValue(dateCompletionTarget);
+	    rowIndex++;
+
+	    // Number of days remaining.
+	    int remainingNumOfDays = Days
+		    .daysBetween(new DateTime(dateStart), new DateTime(dateCompletionTarget)).getDays();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Remaining)");
+	    row.createCell(1).setCellValue(remainingNumOfDays);
+	    rowIndex++;
+
+	    double remainingDaysPercent = (remainingNumOfDays / plannedNumOfDays) * 100;
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Percent Used)");
+	    row.createCell(1).setCellValue(remainingDaysPercent);
+	    rowIndex++;
+	}
+    }
+
+    private void analysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
+	    double projCost) {
+	double phyTarget = proj.getPhysicalTarget();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Physical Target (sq.m.)");
+	row.createCell(1).setCellValue(phyTarget);
+	rowIndex++;
+
+	double phyTargetCost = projCost / phyTarget;
+	row = sheet.createRow(rowIndex); // PHP per square meter.
+	row.createCell(0).setCellValue("Physical Target Cost (PHP/sq.m.)");
+	row.createCell(1).setCellValue(phyTargetCost);
+	rowIndex++;
+    }
+
+    private void analysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
+	    double plannedDirect, double plannedIndirect, double projCost) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Project Cost (Planned Direct)");
+	row.createCell(1).setCellValue(plannedDirect);
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Project Cost (Planned Indirect)");
+	row.createCell(1).setCellValue(plannedIndirect);
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Project Cost (Planned Total)");
+	row.createCell(1).setCellValue(projCost);
+	rowIndex++;
+    }
+
+    private void analysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Name");
+	row.createCell(1).setCellValue(proj.getName());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Location");
+	row.createCell(1).setCellValue(proj.getLocation());
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Status");
+	row.createCell(1).setCellValue(proj.getStatusEnum().label());
+	rowIndex++;
     }
 
 }

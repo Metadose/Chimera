@@ -404,34 +404,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
-    /**
-     * Get the grand total value as string, formatted as currency.
-     */
-    @Transactional
-    @Override
-    public double analyzeTotal(List<ProjectPayroll> payrollList) {
-	double total = 0;
-
-	Project proj = null;
-	for (ProjectPayroll payroll : payrollList) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(payroll)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? payroll.getProject() : proj;
-	    PayrollResultComputation result = payroll.getPayrollComputationResult();
-	    if (result != null) {
-		total += result.getOverallTotalOfStaff();
-	    }
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
-		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Total");
-	return total;
-    }
-
     @Transactional
     @Override
     public String createPayroll(Project proj, ProjectPayroll projectPayroll) {
@@ -811,16 +783,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
 		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Min");
 	return min;
-    }
-
-    @Override
-    @Transactional
-    public double analyzeMean(Project proj, List<ProjectPayroll> objs) {
-	double total = analyzeTotal(objs);
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
-		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Mean");
-	int size = getSize(objs);
-	return total / size;
     }
 
     @Override

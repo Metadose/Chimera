@@ -265,28 +265,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     @Transactional
-    public double analyzeTotal(List<Expense> expenses) {
-
-	double total = 0;
-	Project proj = null;
-	for (Expense obj : expenses) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(obj)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? obj.getProject() : proj;
-	    total += obj.getCost();
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_EXPENSE, "Grand Total");
-	return total;
-    }
-
-    @Override
-    @Transactional
     public List<Expense> listDesc(Project proj, Date startDate, Date endDate) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -402,15 +380,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
 		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_EXPENSE, "Min");
 	return min;
-    }
-
-    @Override
-    @Transactional
-    public double analyzeMean(Project proj, List<Expense> objs) {
-	double total = analyzeTotal(objs);
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_ANALYZE,
-		Project.OBJECT_NAME, proj.getId(), ConstantsRedis.OBJECT_EXPENSE, "Mean");
-	return total / objs.size();
     }
 
 }
