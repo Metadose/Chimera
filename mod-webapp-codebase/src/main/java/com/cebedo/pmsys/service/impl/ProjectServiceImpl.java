@@ -901,8 +901,6 @@ public class ProjectServiceImpl implements ProjectService {
 	int popOtherExpenses = otherExpenses.size();
 	int popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
 
-	// TODO Transactional check.
-
 	// Start constructing the Excel.
 	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
 	HSSFWorkbook wb = new HSSFWorkbook();
@@ -911,25 +909,30 @@ public class ProjectServiceImpl implements ProjectService {
 	HSSFRow row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Project Analysis");
 	rowIndex++;
+	rowIndex++;
 
 	// Basic details.
-	analysisDetails(row, sheet, rowIndex, proj);
+	rowIndex = analysisDetails(row, sheet, rowIndex, proj);
 
 	// Project estimated cost.
-	// TODO Include actual.
 	double plannedDirect = projAux.getGrandTotalCostsDirect();
 	double plannedIndirect = projAux.getGrandTotalCostsIndirect();
-	double projCost = plannedDirect + plannedIndirect;
-	analysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect, projCost);
+	double actualDirect = projAux.getGrandTotalActualCostsDirect();
+	double actualIndirect = projAux.getGrandTotalActualCostsIndirect();
+	double plannedProjCost = plannedDirect + plannedIndirect;
+	double actualProjCost = actualDirect + actualIndirect;
+
+	rowIndex = analysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect,
+		plannedProjCost, actualDirect, actualIndirect, actualProjCost, proj);
 
 	// Physical Target.
-	analysisPhysicalTarget(row, sheet, rowIndex, proj, projCost);
+	rowIndex = analysisPhysicalTarget(row, sheet, rowIndex, proj, plannedProjCost, actualProjCost);
 
 	// Progress.
-	analysisProgress(row, sheet, rowIndex, proj);
+	rowIndex = analysisProgress(row, sheet, rowIndex, proj);
 
 	// Staff.
-	analysisStaff(row, sheet, rowIndex, proj, statistics);
+	rowIndex = analysisStaff(row, sheet, rowIndex, proj, statistics);
 
 	// Program of works.
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -945,8 +948,12 @@ public class ProjectServiceImpl implements ProjectService {
 	return wb;
     }
 
-    private void analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
+    private int analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
 	    StatisticsProject statistics) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Staff");
+	rowIndex++;
+
 	// Number of staff members assigned to this project.
 	Set<Staff> assignedStaff = proj.getAssignedStaff();
 	int numOfAssignedStaff = assignedStaff.size();
@@ -968,20 +975,28 @@ public class ProjectServiceImpl implements ProjectService {
 	row.createCell(0).setCellValue("Salary Sum (Daily)");
 	row.createCell(1).setCellValue(sumWage);
 	rowIndex++;
+	rowIndex++;
+	return rowIndex;
     }
 
-    private void analysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+    /**
+     * Progress section of analysis Excel.
+     * 
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param proj
+     * @return
+     */
+    private int analysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Project Runtime");
+	rowIndex++;
+
 	Date dateStart = proj.getDateStart();
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Date Start");
-	row.createCell(1).setCellValue(dateStart);
-	rowIndex++;
-
-	// Expected project runtime.
-	int plannedNumOfDays = proj.getCalDaysTotal();
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Number of Days (Planned)");
-	row.createCell(1).setCellValue(plannedNumOfDays);
+	row.createCell(1).setCellValue(DateUtils.formatDate(dateStart));
 	rowIndex++;
 
 	// If project is completed,
@@ -989,41 +1004,48 @@ public class ProjectServiceImpl implements ProjectService {
 	ProjectStatus projStatus = proj.getStatusEnum();
 	if (projStatus == ProjectStatus.COMPLETED) {
 
-	    // TODO If Project is Completed but actual completion date not set.
-	    // TODO In JSP, also add notice that completed but date not set.
-	    // Actual date of completion.
 	    Date dateCompletionActual = proj.getActualCompletionDate();
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue("Date Completion (Actual)");
-	    row.createCell(1).setCellValue(dateCompletionActual);
+	    row.createCell(1).setCellValue(dateCompletionActual == null ? "(Not Set)"
+		    : DateUtils.formatDate(dateCompletionActual));
 	    rowIndex++;
 
-	    // How many days was the actual project runtime?
-	    int actualNumOfDays = Days
-		    .daysBetween(new DateTime(dateStart), new DateTime(dateCompletionActual)).getDays();
+	    // Expected project runtime.
+	    int plannedNumOfDays = proj.getCalDaysTotal();
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue("Number of Days (Actual)");
-	    row.createCell(1).setCellValue(actualNumOfDays);
+	    row.createCell(0).setCellValue("Number of Days (Planned)");
+	    row.createCell(1).setCellValue(plannedNumOfDays);
 	    rowIndex++;
 
-	    // Distance between the planned and actual number of days.
-	    int difference = plannedNumOfDays - actualNumOfDays;
-	    String diffLabel = difference > 0 ? "Ahead of Schedule"
-		    : (difference < 0 ? "Delayed" : "On-Time");
-	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue("Number of Days (Difference)");
-	    row.createCell(1).setCellValue(difference);
-	    row.createCell(2).setCellValue(diffLabel);
-	    rowIndex++;
+	    if (dateCompletionActual != null) {
+		// How many days was the actual project runtime?
+		int actualNumOfDays = Days
+			.daysBetween(new DateTime(dateStart), new DateTime(dateCompletionActual))
+			.getDays();
+		row = sheet.createRow(rowIndex);
+		row.createCell(0).setCellValue("Number of Days (Actual)");
+		row.createCell(1).setCellValue(actualNumOfDays);
+		rowIndex++;
 
-	    // Actual vs Planned number of days.
-	    // How many days were actually used?
-	    double percentUsed = (actualNumOfDays / plannedNumOfDays) * 100;
-	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue("Number of Days (Percent Used)");
-	    row.createCell(1).setCellValue(percentUsed);
-	    rowIndex++;
+		// Distance between the planned and actual number of days.
+		int difference = plannedNumOfDays - actualNumOfDays;
+		String diffLabel = difference > 0 ? "Ahead of Schedule"
+			: (difference < 0 ? "Delayed" : "On-Time");
+		row = sheet.createRow(rowIndex);
+		row.createCell(0).setCellValue("Number of Days (Difference)");
+		row.createCell(1).setCellValue(difference);
+		row.createCell(2).setCellValue(diffLabel);
+		rowIndex++;
 
+		// Actual vs Planned number of days.
+		// How many days were actually used?
+		double percentUsed = ((double) actualNumOfDays / (double) plannedNumOfDays) * 100;
+		row = sheet.createRow(rowIndex);
+		row.createCell(0).setCellValue("Number of Days (Percent Used)");
+		row.createCell(1).setCellValue(percentUsed);
+		rowIndex++;
+	    }
 	}
 	// If project is not yet completed.
 	else {
@@ -1031,27 +1053,42 @@ public class ProjectServiceImpl implements ProjectService {
 	    Date dateCompletionTarget = proj.getTargetCompletionDate();
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue("Date Completion (Target)");
-	    row.createCell(1).setCellValue(dateCompletionTarget);
+	    row.createCell(1).setCellValue(DateUtils.formatDate(dateCompletionTarget));
+	    rowIndex++;
+
+	    // Expected project runtime.
+	    int plannedNumOfDays = proj.getCalDaysTotal();
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Number of Days (Planned)");
+	    row.createCell(1).setCellValue(plannedNumOfDays);
 	    rowIndex++;
 
 	    // Number of days remaining.
-	    int remainingNumOfDays = Days
-		    .daysBetween(new DateTime(dateStart), new DateTime(dateCompletionTarget)).getDays();
+	    int remainingNumOfDays = Days.daysBetween(new DateTime(new Date(System.currentTimeMillis())),
+		    new DateTime(dateCompletionTarget)).getDays();
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue("Number of Days (Remaining)");
 	    row.createCell(1).setCellValue(remainingNumOfDays);
 	    rowIndex++;
 
-	    double remainingDaysPercent = (remainingNumOfDays / plannedNumOfDays) * 100;
+	    double remainingDaysPercent = ((double) remainingNumOfDays / (double) plannedNumOfDays)
+		    * 100;
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue("Number of Days (Percent Used)");
+	    row.createCell(0).setCellValue("Percent of Days (Remaining)");
 	    row.createCell(1).setCellValue(remainingDaysPercent);
 	    rowIndex++;
 	}
+	rowIndex++;
+
+	return rowIndex;
     }
 
-    private void analysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
-	    double projCost) {
+    private int analysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
+	    double projCost, double actualProjCost) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Physical Target Details");
+	rowIndex++;
+
 	double phyTarget = proj.getPhysicalTarget();
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Physical Target (sq.m.)");
@@ -1060,30 +1097,91 @@ public class ProjectServiceImpl implements ProjectService {
 
 	double phyTargetCost = projCost / phyTarget;
 	row = sheet.createRow(rowIndex); // PHP per square meter.
-	row.createCell(0).setCellValue("Physical Target Cost (PHP/sq.m.)");
+	row.createCell(0).setCellValue("Planned Phy. Tgt. Cost (PHP/sq.m.)");
 	row.createCell(1).setCellValue(phyTargetCost);
 	rowIndex++;
+
+	if (proj.getStatusEnum() == ProjectStatus.COMPLETED) {
+	    double actualPhyTargetCost = actualProjCost / phyTarget;
+	    row = sheet.createRow(rowIndex); // PHP per square meter.
+	    row.createCell(0).setCellValue("Actual Phy. Tgt. Cost (PHP/sq.m.)");
+	    row.createCell(1).setCellValue(actualPhyTargetCost);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex); // PHP per square meter.
+	    row.createCell(0).setCellValue("Difference Phy. Tgt. Cost (PHP/sq.m.)");
+	    row.createCell(1).setCellValue(phyTargetCost - actualPhyTargetCost);
+	    rowIndex++;
+	}
+
+	rowIndex++;
+	return rowIndex;
     }
 
-    private void analysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
-	    double plannedDirect, double plannedIndirect, double projCost) {
+    private int analysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
+	    double plannedDirect, double plannedIndirect, double projCost, double actualDirect,
+	    double actualIndirect, double actualProjCost, Project proj) {
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Cost (Planned Direct)");
+	row.createCell(0).setCellValue("Project Cost Estimate");
+	rowIndex++;
+
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Planned Cost (Direct)");
 	row.createCell(1).setCellValue(plannedDirect);
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Cost (Planned Indirect)");
+	row.createCell(0).setCellValue("Planned Cost (Indirect)");
 	row.createCell(1).setCellValue(plannedIndirect);
 	rowIndex++;
 
 	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Cost (Planned Total)");
+	row.createCell(0).setCellValue("Planned Cost (Total)");
 	row.createCell(1).setCellValue(projCost);
 	rowIndex++;
+
+	if (proj.getStatusEnum() == ProjectStatus.COMPLETED) {
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Actual Cost (Direct)");
+	    row.createCell(1).setCellValue(actualDirect);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Actual Cost (Indirect)");
+	    row.createCell(1).setCellValue(actualIndirect);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Actual Cost (Total)");
+	    row.createCell(1).setCellValue(actualProjCost);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Difference (Direct)");
+	    row.createCell(1).setCellValue(plannedDirect - actualDirect);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Difference (Indirect)");
+	    row.createCell(1).setCellValue(plannedIndirect - actualIndirect);
+	    rowIndex++;
+
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(0).setCellValue("Difference (Total)");
+	    row.createCell(1).setCellValue(projCost - actualProjCost);
+	    rowIndex++;
+	}
+
+	rowIndex++;
+
+	return rowIndex;
     }
 
-    private void analysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+    private int analysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Details");
+	rowIndex++;
+
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Name");
 	row.createCell(1).setCellValue(proj.getName());
@@ -1098,6 +1196,9 @@ public class ProjectServiceImpl implements ProjectService {
 	row.createCell(0).setCellValue("Status");
 	row.createCell(1).setCellValue(proj.getStatusEnum().label());
 	rowIndex++;
+	rowIndex++;
+
+	return rowIndex;
     }
 
 }

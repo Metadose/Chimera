@@ -118,6 +118,12 @@
 								<p>There are <b>no staff members</b> assigned to the <b>project</b>.</p>
 							</div>
 	                	</c:if>
+						<c:if test="${project.status == 2 && empty project.actualCompletionDate}">
+							<div class="callout callout-warning">
+								<h4>Warning!</h4>
+								<p>Project is marked as <b>COMPLETED</b> but <b>Actual Completion Date</b> (Contract tab) is <b>not set</b>.</p>
+							</div>
+	                	</c:if>
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
