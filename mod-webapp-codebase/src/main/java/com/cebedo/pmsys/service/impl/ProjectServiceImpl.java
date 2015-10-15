@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
@@ -749,11 +750,12 @@ public class ProjectServiceImpl implements ProjectService {
 	double totalOthers = 0;
 	double totalGrand = 0;
 	if (isRange) {
-	    StatisticsProject statistics = new StatisticsProject();
-	    totalPayroll = statistics.getSumAndClearPayroll(payrolls);
-	    totalDelivery = statistics.getSumAndClearDelivery(deliveries);
-	    totalEquipment = statistics.getSumAndClearEquipment(equipmentExpenses);
-	    totalOthers = statistics.getSumAndClearOtherExpenses(otherExpenses);
+	    StatisticsProject statistics = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
+		    otherExpenses);
+	    totalPayroll = statistics.getSumPayroll();
+	    totalDelivery = statistics.getSumDelivery();
+	    totalEquipment = statistics.getSumEquipment();
+	    totalOthers = statistics.getSumOtherExpenses();
 	    totalGrand = totalPayroll + totalDelivery + totalEquipment + totalOthers;
 	} else {
 	    ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
@@ -886,13 +888,14 @@ public class ProjectServiceImpl implements ProjectService {
 	// (sheet, minPayroll, minDeliveries, minEquip, minOtherExpenses);
 
 	// Analysis (Mean).
-	StatisticsProject statistics = new StatisticsProject();
-	double meanPayroll = statistics.getMeanAndClearPayroll(payrolls);
-	double meanDeliveries = statistics.getMeanAndClearDelivery(deliveries);
-	double meanEquip = statistics.getMeanAndClearEquipment(equipmentExpenses);
-	double meanOtherExpenses = statistics.getMeanAndClearOtherExpenses(otherExpenses);
-	double meanProject = statistics.getMeanAndClearProject(payrolls, deliveries, equipmentExpenses,
+	// TODO Improve StatisticsProject object.
+	StatisticsProject statisticsProj = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
 		otherExpenses);
+	double meanPayroll = statisticsProj.getMeanPayroll();
+	double meanDeliveries = statisticsProj.getMeanDelivery();
+	double meanEquip = statisticsProj.getMeanEquipment();
+	double meanOtherExpenses = statisticsProj.getMeanOtherExpenses();
+	double meanProject = statisticsProj.getMeanProject();
 
 	// Population.
 	int popPayroll = this.projectPayrollService.getSize(payrolls);
@@ -932,7 +935,7 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex = analysisProgress(row, sheet, rowIndex, proj);
 
 	// Staff.
-	rowIndex = analysisStaff(row, sheet, rowIndex, proj, statistics);
+	rowIndex = analysisStaff(row, sheet, rowIndex, proj, statisticsProj);
 
 	// Program of works.
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -941,6 +944,36 @@ public class ProjectServiceImpl implements ProjectService {
 	row.createCell(0).setCellValue("Number of Tasks");
 	row.createCell(1).setCellValue(numOfTasks);
 	rowIndex++;
+
+	// Process tasks.
+	StatisticsProgramOfWorks statisticsPOW = new StatisticsProgramOfWorks(tasks);
+
+	// (Max) Which task took the most duration and actualDuration?
+	// How long? Who did it?
+	List<Task> maxPlannedDuration = statisticsPOW.getMaxDuration();
+	List<Task> maxActualDuration = statisticsPOW.getMaxActualDuration();
+
+	// (Min) Which task took the least duration and actualDuration?
+	// How long? Who did it?
+	List<Task> leastPlannedDuration = statisticsPOW.getMinDuration();
+	List<Task> leastActualDuration = statisticsPOW.getMinActualDuration();
+
+	// (Max) Biggest negative (duration - actualDuration)
+	// How much? Who did it?
+	List<Task> maxDifference = statisticsPOW.getMaxDifferenceDuration();
+
+	// (Min) Least negative (duration - actualDuration)
+	// How much? Who did it?
+	List<Task> minDifference = statisticsPOW.getMinDifferenceDuration();
+
+	// (Mean) Of all tasks: duration. How much?
+	double meanPlanned = statisticsPOW.getMeanDuration();
+
+	// (Mean) Of all tasks: actualDuration. How much?
+	double meanActual = statisticsPOW.getMeanActualDuration();
+
+	// (Difference of Means) duration - actualDuration. How much?
+	double meanDiff = statisticsPOW.getMeanDifference();
 
 	// Map of task status to number.
 	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
