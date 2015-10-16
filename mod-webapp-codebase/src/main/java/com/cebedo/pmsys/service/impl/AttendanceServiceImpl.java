@@ -137,8 +137,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
-		Staff.PROPERTY_WAGE);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME,
+		staff.getId(), Staff.PROPERTY_WAGE);
 
 	double wage = 0;
 
@@ -184,8 +184,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Log.
 	if (attendances.size() > 0) {
-	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
-		    Staff.PROPERTY_WAGE);
+	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME,
+		    staff.getId(), Staff.PROPERTY_WAGE);
 	}
 
 	return totalWage;
@@ -205,8 +205,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME, staff.getId(),
-		Staff.PROPERTY_WAGE);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET, Staff.OBJECT_NAME,
+		staff.getId(), Staff.PROPERTY_WAGE);
 
 	// Get all the attendances.
 	Set<Attendance> attendances = this.rangeStaffAttendance(project, staff, min, max);
@@ -222,7 +222,8 @@ public class AttendanceServiceImpl implements AttendanceService {
      */
     @Override
     @Transactional
-    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, long min, long max) {
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, Long min, Long max,
+	    boolean includeAll) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
@@ -231,8 +232,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME, staff.getId(),
-		ConstantsRedis.OBJECT_ATTENDANCE);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_RANGE, Staff.OBJECT_NAME,
+		staff.getId(), ConstantsRedis.OBJECT_ATTENDANCE);
 
 	Set<String> keys = this.attendanceValueRepo.keys(Attendance.constructPattern(project, staff));
 	Set<Attendance> attnSet = new HashSet<Attendance>();
@@ -242,6 +243,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    // TODO Optimize this.
 	    // Leverage on the Date object. Don't use Timestamp millis.
 	    long timestamp = attn.getDate().getTime();
+	    if (includeAll) {
+		attnSet.add(attn);
+		continue;
+	    }
 	    if (timestamp <= max && timestamp >= min) {
 		attnSet.add(attn);
 	    }
@@ -251,8 +256,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff) {
+	return this.rangeStaffAttendance(project, staff, null, null, true);
+    }
+
+    @Override
+    @Transactional
     public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, Date min, Date max) {
-	return this.rangeStaffAttendance(project, staff, min.getTime(), max.getTime());
+	return this.rangeStaffAttendance(project, staff, min.getTime(), max.getTime(), false);
     }
 
     @Override

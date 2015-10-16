@@ -27,7 +27,8 @@ public interface AttendanceService {
      */
     public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, Date min, Date max);
 
-    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, long min, long max);
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff, Long min, Long max,
+	    boolean includeAll);
 
     /**
      * Get the total wage of a staff in a range of dates.
@@ -43,5 +44,7 @@ public interface AttendanceService {
     public double getTotalWageFromAttendance(Collection<Attendance> attendances);
 
     public String multiSet(FormMassAttendance attendanceMass, BindingResult result);
+
+    public Set<Attendance> rangeStaffAttendance(Project project, Staff staff);
 
 }

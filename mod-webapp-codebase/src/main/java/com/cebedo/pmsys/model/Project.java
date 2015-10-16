@@ -302,4 +302,9 @@ public class Project implements Serializable {
 	this.actualCompletionDate = actualCompletionDate;
     }
 
+    @Transient
+    public boolean isCompleted() {
+	return getStatusEnum() == ProjectStatus.COMPLETED;
+    }
+
 }

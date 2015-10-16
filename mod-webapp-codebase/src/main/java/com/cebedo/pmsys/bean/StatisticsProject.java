@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.bean;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
@@ -9,7 +8,6 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.model.Staff;
 
 public class StatisticsProject extends SummaryStatistics {
 
@@ -130,29 +128,6 @@ public class StatisticsProject extends SummaryStatistics {
 
     public double getSumOtherExpenses() {
 	addValuesOtherExpenses();
-	double sum = getSum();
-	clear();
-	return sum;
-    }
-
-    @Deprecated
-    public double getMeanWageAndClear(Set<Staff> assignedStaff) {
-	addValuesWage(assignedStaff);
-	double mean = getMean();
-	clear();
-	return mean;
-    }
-
-    @Deprecated
-    public void addValuesWage(Set<Staff> assignedStaff) {
-	for (Staff staff : assignedStaff) {
-	    addValue(staff.getWage());
-	}
-    }
-
-    @Deprecated
-    public double getMeanSumAndClear(Set<Staff> assignedStaff) {
-	addValuesWage(assignedStaff);
 	double sum = getSum();
 	clear();
 	return sum;

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
+import com.cebedo.pmsys.bean.StatisticsStaff;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -35,6 +36,7 @@ import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.EstimateCostType;
@@ -888,7 +890,6 @@ public class ProjectServiceImpl implements ProjectService {
 	// (sheet, minPayroll, minDeliveries, minEquip, minOtherExpenses);
 
 	// Analysis (Mean).
-	// TODO Improve StatisticsProject object.
 	StatisticsProject statisticsProj = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
 		otherExpenses);
 	double meanPayroll = statisticsProj.getMeanPayroll();
@@ -924,7 +925,6 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualIndirect = projAux.getGrandTotalActualCostsIndirect();
 	double plannedProjCost = plannedDirect + plannedIndirect;
 	double actualProjCost = actualDirect + actualIndirect;
-
 	rowIndex = analysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect,
 		plannedProjCost, actualDirect, actualIndirect, actualProjCost, proj);
 
@@ -935,7 +935,7 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex = analysisProgress(row, sheet, rowIndex, proj);
 
 	// Staff.
-	rowIndex = analysisStaff(row, sheet, rowIndex, proj, statisticsProj);
+	rowIndex = analysisStaff(row, sheet, rowIndex, proj);
 
 	// Program of works.
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -981,8 +981,16 @@ public class ProjectServiceImpl implements ProjectService {
 	return wb;
     }
 
-    private int analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
-	    StatisticsProject statistics) {
+    /**
+     * Analysis regarding staff members and attendances.
+     * 
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param proj
+     * @return
+     */
+    private int analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Staff");
 	rowIndex++;
@@ -996,18 +1004,43 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Mean salary per day.
-	double meanWage = statistics.getMeanWageAndClear(assignedStaff);
+	StatisticsStaff statisticsStaff = new StatisticsStaff(proj, assignedStaff);
+	double meanWage = statisticsStaff.getMeanWage();
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Salary Mean (Daily)");
 	row.createCell(1).setCellValue(meanWage);
 	rowIndex++;
 
 	// Summation of salary per day.
-	double sumWage = statistics.getMeanSumAndClear(assignedStaff);
+	double sumWage = statisticsStaff.getSumWage();
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Salary Sum (Daily)");
 	row.createCell(1).setCellValue(sumWage);
 	rowIndex++;
+
+	// Staff list with the most absences. Get top 5 absentees.
+	// Top 5 staff member per attendance status.
+	int max = 5;
+	Map<Staff, Integer> topAbsent = statisticsStaff.getTop(AttendanceStatus.ABSENT, max);
+	Map<Staff, Integer> topOvertime = statisticsStaff.getTop(AttendanceStatus.OVERTIME, max);
+	Map<Staff, Integer> topLate = statisticsStaff.getTop(AttendanceStatus.LATE, max);
+	Map<Staff, Integer> topHalfday = statisticsStaff.getTop(AttendanceStatus.HALFDAY, max);
+	Map<Staff, Integer> topLeave = statisticsStaff.getTop(AttendanceStatus.LEAVE, max);
+
+	// Bottom 5 staff member per attendance status.
+	Map<Staff, Integer> bottomAbsent = statisticsStaff.getBottom(AttendanceStatus.ABSENT, max);
+	Map<Staff, Integer> bottomOvertime = statisticsStaff.getBottom(AttendanceStatus.OVERTIME, max);
+	Map<Staff, Integer> bottomLate = statisticsStaff.getBottom(AttendanceStatus.LATE, max);
+	Map<Staff, Integer> bottomHalfday = statisticsStaff.getBottom(AttendanceStatus.HALFDAY, max);
+	Map<Staff, Integer> bottomLeave = statisticsStaff.getBottom(AttendanceStatus.LEAVE, max);
+
+	// Mean per attendance status.
+	double meanAbsences = statisticsStaff.getMeanOf(AttendanceStatus.ABSENT);
+	double meanOvertime = statisticsStaff.getMeanOf(AttendanceStatus.OVERTIME);
+	double meanLate = statisticsStaff.getMeanOf(AttendanceStatus.LATE);
+	double meanHalfday = statisticsStaff.getMeanOf(AttendanceStatus.HALFDAY);
+	double meanLeave = statisticsStaff.getMeanOf(AttendanceStatus.LEAVE);
+
 	rowIndex++;
 	return rowIndex;
     }
@@ -1116,6 +1149,17 @@ public class ProjectServiceImpl implements ProjectService {
 	return rowIndex;
     }
 
+    /**
+     * Analysis regarding the physical target.
+     * 
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param proj
+     * @param projCost
+     * @param actualProjCost
+     * @return
+     */
     private int analysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
 	    double projCost, double actualProjCost) {
 	row = sheet.createRow(rowIndex);
@@ -1151,9 +1195,26 @@ public class ProjectServiceImpl implements ProjectService {
 	return rowIndex;
     }
 
+    /**
+     * Analysis of project estimation and estimated costs.
+     * 
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param projAux
+     * @param plannedDirect
+     * @param plannedIndirect
+     * @param projCost
+     * @param actualDirect
+     * @param actualIndirect
+     * @param actualProjCost
+     * @param proj
+     * @return
+     */
     private int analysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
 	    double plannedDirect, double plannedIndirect, double projCost, double actualDirect,
 	    double actualIndirect, double actualProjCost, Project proj) {
+
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Project Cost Estimate");
 	rowIndex++;
@@ -1173,7 +1234,9 @@ public class ProjectServiceImpl implements ProjectService {
 	row.createCell(1).setCellValue(projCost);
 	rowIndex++;
 
-	if (proj.getStatusEnum() == ProjectStatus.COMPLETED) {
+	// If the project is completed, display actual costs
+	// and compare.
+	if (proj.isCompleted()) {
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue("Actual Cost (Direct)");
 	    row.createCell(1).setCellValue(actualDirect);
@@ -1205,11 +1268,23 @@ public class ProjectServiceImpl implements ProjectService {
 	    rowIndex++;
 	}
 
+	// TODO Statistics of estimated costs.
+	List<EstimateCost> estimatedCosts = this.estimateCostService.list(proj);
+
 	rowIndex++;
 
 	return rowIndex;
     }
 
+    /**
+     * Displaying project details in the analysis Excel file.
+     * 
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param proj
+     * @return
+     */
     private int analysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Details");
