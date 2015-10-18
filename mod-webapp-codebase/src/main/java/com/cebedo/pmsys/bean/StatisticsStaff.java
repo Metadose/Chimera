@@ -1,37 +1,49 @@
 package com.cebedo.pmsys.bean;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.cebedo.pmsys.bean.ComparatorValue.ValueOrdering;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.service.AttendanceService;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class StatisticsStaff extends SummaryStatistics {
 
     private static final long serialVersionUID = 3100862015017954781L;
 
     private Project project;
-    private Set<Staff> staffList;
-    private Set<Attendance> attendances;
-    private Map<AttendanceStatus, Map<Staff, Integer>> attendaceMap = new HashMap<AttendanceStatus, Map<Staff, Integer>>();
+    private Set<Staff> staffList = new HashSet<Staff>();
+    private Set<Attendance> attendances = new HashSet<Attendance>();
+    private Map<AttendanceStatus, HashMap<Staff, Integer>> attendaceMap = new HashMap<AttendanceStatus, HashMap<Staff, Integer>>();
 
-    private AttendanceService attendanceService;
-
-    @Autowired
-    @Qualifier(value = "attendanceService")
-    public void setAttendanceService(AttendanceService attendanceService) {
-	this.attendanceService = attendanceService;
-    }
+    private Ordering<Map.Entry<Staff, Integer>> byMapValuesAsc = new Ordering<Map.Entry<Staff, Integer>>() {
+	@Override
+	public int compare(Map.Entry<Staff, Integer> left, Map.Entry<Staff, Integer> right) {
+	    return left.getValue().compareTo(right.getValue());
+	}
+    };
+    private Ordering<Map.Entry<Staff, Integer>> byMapValuesDesc = new Ordering<Map.Entry<Staff, Integer>>() {
+	@Override
+	public int compare(Map.Entry<Staff, Integer> left, Map.Entry<Staff, Integer> right) {
+	    return (left.getValue().compareTo(right.getValue())) * -1;
+	}
+    };
 
     public StatisticsStaff() {
 	;
@@ -41,8 +53,11 @@ public class StatisticsStaff extends SummaryStatistics {
 	this.staffList = assignedStaff;
 	this.project = proj;
 
+	BeanHelper beanHelper = new BeanHelper();
+	AttendanceService attendanceService = (AttendanceService) beanHelper
+		.getBean("attendanceService");
 	for (Staff staff : assignedStaff) {
-	    Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(proj, staff);
+	    Set<Attendance> attendanceList = attendanceService.rangeStaffAttendance(proj, staff);
 	    this.attendances.addAll(attendanceList);
 	}
 
@@ -52,7 +67,7 @@ public class StatisticsStaff extends SummaryStatistics {
 
 	    // Open the map for this status.
 	    AttendanceStatus status = attendance.getStatus();
-	    Map<Staff, Integer> staffAttendance = this.attendaceMap.get(status);
+	    HashMap<Staff, Integer> staffAttendance = this.attendaceMap.get(status);
 	    Staff staffMember = attendance.getStaff();
 
 	    // If first time.
@@ -87,59 +102,59 @@ public class StatisticsStaff extends SummaryStatistics {
 	return sum;
     }
 
-    public Map<Staff, Integer> getTop(AttendanceStatus status) {
+    public ImmutableList<Entry<Staff, Integer>> getTop(AttendanceStatus status) {
 	return getSortedAttendance(status, null, ValueOrdering.DESCENDING);
     }
 
-    public Map<Staff, Integer> getTop(AttendanceStatus status, Integer maxCount) {
+    public ImmutableList<Entry<Staff, Integer>> getTop(AttendanceStatus status, Integer maxCount) {
 	return getSortedAttendance(status, maxCount, ValueOrdering.DESCENDING);
     }
 
-    public Map<Staff, Integer> getBottom(AttendanceStatus status) {
+    public ImmutableList<Entry<Staff, Integer>> getBottom(AttendanceStatus status) {
 	return getSortedAttendance(status, null, ValueOrdering.ASCENDING);
     }
 
-    public Map<Staff, Integer> getBottom(AttendanceStatus status, Integer maxCount) {
+    public ImmutableList<Entry<Staff, Integer>> getBottom(AttendanceStatus status, Integer maxCount) {
 	return getSortedAttendance(status, maxCount, ValueOrdering.ASCENDING);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Map<Staff, Integer> getSortedAttendance(AttendanceStatus status, Integer maxCount,
-	    ValueOrdering order) {
+    /**
+     * Given the attendance status, get the list ordered in descending or
+     * ascending, limited by max number of counts.
+     * 
+     * @param status
+     * @param maxCount
+     * @param order
+     * @return
+     */
+    private ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
+	    Integer maxCount, ValueOrdering order) {
 
-	// Get map from pre-computed attendances.
-	// Sort by count (value).
-	Map<Staff, Integer> staffAttendance = this.attendaceMap.get(status);
-	ComparatorValue comparator = new ComparatorValue(staffAttendance, order);
-	TreeMap sortedMap = new TreeMap(comparator);
-	sortedMap.putAll(staffAttendance);
+	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
+	if (storedMap == null) {
+	    return FluentIterable.from(new ArrayList<Entry<Staff, Integer>>()).toList();
+	}
+	ArrayList<Entry<Staff, Integer>> sortedEntries = Lists.newArrayList(storedMap.entrySet());
+	Collections.sort(sortedEntries,
+		order == ValueOrdering.ASCENDING ? this.byMapValuesAsc : this.byMapValuesDesc);
 
 	// If not null, limit the return to specific number.
 	if (maxCount != null) {
-
-	    Map<Staff, Integer> returnMap = new HashMap<Staff, Integer>();
-	    int topIndex = 0;
-	    for (Object key : sortedMap.keySet()) {
-
-		// If has reached the limit, return.
-		if (topIndex == maxCount) {
-		    return returnMap;
-		}
-		// Get the value and key.
-		// Put to the return map.
-		Staff staff = (Staff) key;
-		Integer value = (Integer) sortedMap.get(staff);
-		returnMap.put(staff, value);
-		topIndex++;
-	    }
+	    return FluentIterable.from(sortedEntries).limit(maxCount).toList();
 	}
-	return staffAttendance;
+	return FluentIterable.from(sortedEntries).toList();
     }
 
-    public double getMeanOf(AttendanceStatus absent) {
-	Map<Staff, Integer> staffCount = getTop(absent);
-	for (Integer count : staffCount.values()) {
-	    addValue(count);
+    /**
+     * Get mean count of a given status.
+     * 
+     * @param status
+     * @return
+     */
+    public double getMeanOf(AttendanceStatus status) {
+	ImmutableList<Entry<Staff, Integer>> staffCount = getTop(status);
+	for (Entry<Staff, Integer> pair : staffCount) {
+	    addValue(pair.getValue());
 	}
 	double mean = getMean();
 	clear();

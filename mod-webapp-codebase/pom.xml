@@ -26,8 +26,16 @@
 		<apache-poi>3.12</apache-poi>		
 		<apache-math>3.5</apache-math>		
 		<joda-time>2.8.2</joda-time>
+		<google-guava>18.0</google-guava>
 	</properties>
 	<dependencies>
+		<!-- Google Guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${google-guava}</version>
+		</dependency>
+	
 		<!-- Joda Time -->
 		<dependency>
 		  <groupId>joda-time</groupId>

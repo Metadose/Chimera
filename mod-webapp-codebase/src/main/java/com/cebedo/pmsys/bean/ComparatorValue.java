@@ -20,10 +20,11 @@ public class ComparatorValue implements Comparator {
 
     @Override
     public int compare(Object arg0, Object arg1) {
-	if ((Double) this.base.get(arg0) >= (Double) this.base.get(arg1)) {
-	    return this.ordering == ValueOrdering.ASCENDING ? -1 : 1;
+	// TODO Extend this to handle Double, Long, etc.
+	if ((Integer) this.base.get(arg0) >= (Integer) this.base.get(arg1)) {
+	    return this.ordering == ValueOrdering.DESCENDING ? -1 : 1;
 	} else {
-	    return this.ordering == ValueOrdering.ASCENDING ? 1 : -1;
+	    return this.ordering == ValueOrdering.DESCENDING ? 1 : -1;
 	}
     }
 }

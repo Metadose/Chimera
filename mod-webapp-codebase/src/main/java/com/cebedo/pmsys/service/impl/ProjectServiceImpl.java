@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,6 +67,7 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.MultipartFileValidator;
 import com.cebedo.pmsys.validator.ProjectValidator;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 @Service
@@ -1020,19 +1022,19 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Staff list with the most absences. Get top 5 absentees.
 	// Top 5 staff member per attendance status.
-	int max = 5;
-	Map<Staff, Integer> topAbsent = statisticsStaff.getTop(AttendanceStatus.ABSENT, max);
-	Map<Staff, Integer> topOvertime = statisticsStaff.getTop(AttendanceStatus.OVERTIME, max);
-	Map<Staff, Integer> topLate = statisticsStaff.getTop(AttendanceStatus.LATE, max);
-	Map<Staff, Integer> topHalfday = statisticsStaff.getTop(AttendanceStatus.HALFDAY, max);
-	Map<Staff, Integer> topLeave = statisticsStaff.getTop(AttendanceStatus.LEAVE, max);
+	int max = 5;  
+	ImmutableList<Entry<Staff, Integer>> topAbsent = statisticsStaff.getTop(AttendanceStatus.ABSENT, max);
+	ImmutableList<Entry<Staff, Integer>> topOvertime = statisticsStaff.getTop(AttendanceStatus.OVERTIME, max);
+	ImmutableList<Entry<Staff, Integer>> topLate = statisticsStaff.getTop(AttendanceStatus.LATE, max);
+	ImmutableList<Entry<Staff, Integer>> topHalfday = statisticsStaff.getTop(AttendanceStatus.HALFDAY, max);
+	ImmutableList<Entry<Staff, Integer>> topLeave = statisticsStaff.getTop(AttendanceStatus.LEAVE, max);
 
 	// Bottom 5 staff member per attendance status.
-	Map<Staff, Integer> bottomAbsent = statisticsStaff.getBottom(AttendanceStatus.ABSENT, max);
-	Map<Staff, Integer> bottomOvertime = statisticsStaff.getBottom(AttendanceStatus.OVERTIME, max);
-	Map<Staff, Integer> bottomLate = statisticsStaff.getBottom(AttendanceStatus.LATE, max);
-	Map<Staff, Integer> bottomHalfday = statisticsStaff.getBottom(AttendanceStatus.HALFDAY, max);
-	Map<Staff, Integer> bottomLeave = statisticsStaff.getBottom(AttendanceStatus.LEAVE, max);
+	ImmutableList<Entry<Staff, Integer>> bottomAbsent = statisticsStaff.getBottom(AttendanceStatus.ABSENT, max);
+	ImmutableList<Entry<Staff, Integer>> bottomOvertime = statisticsStaff.getBottom(AttendanceStatus.OVERTIME, max);
+	ImmutableList<Entry<Staff, Integer>> bottomLate = statisticsStaff.getBottom(AttendanceStatus.LATE, max);
+	ImmutableList<Entry<Staff, Integer>> bottomHalfday = statisticsStaff.getBottom(AttendanceStatus.HALFDAY, max);
+	ImmutableList<Entry<Staff, Integer>> bottomLeave = statisticsStaff.getBottom(AttendanceStatus.LEAVE, max);
 
 	// Mean per attendance status.
 	double meanAbsences = statisticsStaff.getMeanOf(AttendanceStatus.ABSENT);
