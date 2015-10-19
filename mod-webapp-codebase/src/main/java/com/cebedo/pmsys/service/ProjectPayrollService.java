@@ -57,10 +57,6 @@ public interface ProjectPayrollService {
 
     public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate);
 
-    public List<ProjectPayroll> analyzeMax(List<ProjectPayroll> payrolls);
-
-    public List<ProjectPayroll> analyzeMin(List<ProjectPayroll> payrolls);
-
     public int getSize(List<ProjectPayroll> objs);
 
 }

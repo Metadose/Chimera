@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.PayrollStatus;
 import com.cebedo.pmsys.model.Company;
@@ -15,7 +16,7 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class ProjectPayroll implements IDomainObject {
+public class ProjectPayroll extends AbstractExpense implements IDomainObject, IExpense {
 
     private static final long serialVersionUID = 5324023297418291423L;
     /**
@@ -249,5 +250,26 @@ public class ProjectPayroll implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    @Override
+    public String toString() {
+	return String.format("[%s = %s]", getName(), getCost());
+    }
+
+    @Override
+    public double getCost() {
+	PayrollResultComputation result = getPayrollComputationResult();
+	return result == null ? 0 : result.getOverallTotalOfStaff();
+    }
+
+    @Override
+    public String getName() {
+	return getStartEndDisplay();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_PAYROLL;
     }
 }

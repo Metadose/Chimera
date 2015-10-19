@@ -1,6 +1,7 @@
 package com.cebedo.pmsys.bean;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,10 +13,10 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
 
     private static final long serialVersionUID = -7423281390013147949L;
 
-    private List<Double> durations;
-    private List<Double> actualDurations;
-    private List<Double> differenceDurations;
-    private Set<Task> tasks;
+    private List<Double> durations = new ArrayList<Double>();
+    private List<Double> actualDurations = new ArrayList<Double>();
+    private List<Double> differenceDurations = new ArrayList<Double>();
+    private Set<Task> tasks = new HashSet<Task>();
 
     public StatisticsProgramOfWorks() {
 	;

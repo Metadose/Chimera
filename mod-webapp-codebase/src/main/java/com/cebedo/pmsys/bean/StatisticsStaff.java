@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import com.cebedo.pmsys.bean.ComparatorMapEntry.Order;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -103,21 +103,21 @@ public class StatisticsStaff extends SummaryStatistics {
     }
 
     public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusDesc(AttendanceStatus status) {
-	return getSortedAttendance(status, null, Order.DESCENDING);
+	return getSortedAttendance(status, null, SortOrder.DESCENDING);
     }
 
     public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusDesc(AttendanceStatus status,
 	    Integer maxCount) {
-	return getSortedAttendance(status, maxCount, Order.DESCENDING);
+	return getSortedAttendance(status, maxCount, SortOrder.DESCENDING);
     }
 
     public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusAsc(AttendanceStatus status) {
-	return getSortedAttendance(status, null, Order.ASCENDING);
+	return getSortedAttendance(status, null, SortOrder.ASCENDING);
     }
 
     public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusAsc(AttendanceStatus status,
 	    Integer maxCount) {
-	return getSortedAttendance(status, maxCount, Order.ASCENDING);
+	return getSortedAttendance(status, maxCount, SortOrder.ASCENDING);
     }
 
     /**
@@ -130,7 +130,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @return
      */
     private ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
-	    Integer maxCount, Order order) {
+	    Integer maxCount, SortOrder order) {
 
 	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
 

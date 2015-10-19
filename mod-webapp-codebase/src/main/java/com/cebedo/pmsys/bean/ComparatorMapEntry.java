@@ -2,35 +2,32 @@ package com.cebedo.pmsys.bean;
 
 import java.util.Map;
 
-import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.Ordering;
 
-public class ComparatorMapEntry extends Ordering<Map.Entry<Staff, Integer>> {
+public class ComparatorMapEntry extends Ordering<Map.Entry<? extends Object, Integer>> {
 
-    public enum Order {
-	ASCENDING(), DESCENDING();
-    }
-
-    private Order order = Order.ASCENDING;
+    private SortOrder order = SortOrder.ASCENDING;
 
     public ComparatorMapEntry() {
 	;
     }
 
     @Override
-    public int compare(Map.Entry<Staff, Integer> left, Map.Entry<Staff, Integer> right) {
+    public int compare(Map.Entry<? extends Object, Integer> left,
+	    Map.Entry<? extends Object, Integer> right) {
 	int comparison = left.getValue().compareTo(right.getValue());
-	if (this.order == Order.DESCENDING) {
+	if (this.order == SortOrder.DESCENDING) {
 	    return comparison * -1;
 	}
 	return comparison;
     }
 
-    public Order getOrder() {
+    public SortOrder getOrder() {
 	return order;
     }
 
-    public ComparatorMapEntry setOrder(Order order) {
+    public ComparatorMapEntry setOrder(SortOrder order) {
 	this.order = order;
 	return this;
     }

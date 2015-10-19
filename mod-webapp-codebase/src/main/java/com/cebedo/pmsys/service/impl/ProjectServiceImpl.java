@@ -31,10 +31,12 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.domain.AbstractExpense;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
+import com.cebedo.pmsys.domain.IExpense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -42,6 +44,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.CalendarEventType;
 import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.enums.ProjectStatus;
+import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -869,44 +872,6 @@ public class ProjectServiceImpl implements ProjectService {
 	String sheetName = "Analysis";
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
 
-	// Load lists.
-	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
-	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
-	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
-	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
-
-	// Analysis (Max).
-	List<ProjectPayroll> maxPayroll = this.projectPayrollService.analyzeMax(payrolls);
-	List<Delivery> maxDeliveries = this.deliveryService.analyzeMax(deliveries);
-	List<EquipmentExpense> maxEquip = this.equipmentExpenseService.analyzeMax(equipmentExpenses);
-	List<Expense> maxOtherExpenses = this.expenseService.analyzeMax(otherExpenses);
-	// TODO setGreatestExpense
-	// (sheet, maxPayroll, maxDeliveries, maxEquip, maxOtherExpenses);
-
-	// Analysis (Min).
-	List<ProjectPayroll> minPayroll = this.projectPayrollService.analyzeMin(payrolls);
-	List<Delivery> minDeliveries = this.deliveryService.analyzeMin(deliveries);
-	List<EquipmentExpense> minEquip = this.equipmentExpenseService.analyzeMin(equipmentExpenses);
-	List<Expense> minOtherExpenses = this.expenseService.analyzeMin(otherExpenses);
-	// TODO setLeastExpense
-	// (sheet, minPayroll, minDeliveries, minEquip, minOtherExpenses);
-
-	// Analysis (Mean).
-	StatisticsProject statisticsProj = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
-		otherExpenses);
-	double meanPayroll = statisticsProj.getMeanPayroll();
-	double meanDeliveries = statisticsProj.getMeanDelivery();
-	double meanEquip = statisticsProj.getMeanEquipment();
-	double meanOtherExpenses = statisticsProj.getMeanOtherExpenses();
-	double meanProject = statisticsProj.getMeanProject();
-
-	// Population.
-	int popPayroll = this.projectPayrollService.getSize(payrolls);
-	int popDelivery = deliveries.size();
-	int popEquip = equipmentExpenses.size();
-	int popOtherExpenses = otherExpenses.size();
-	int popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
-
 	// Start constructing the Excel.
 	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
 	HSSFWorkbook wb = new HSSFWorkbook();
@@ -919,6 +884,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Basic details.
 	rowIndex = analysisDetails(row, sheet, rowIndex, proj);
+
+	// Pass Excel objects then process.
+	analysisExpenses(wb, row, proj);
 
 	// Project estimated cost.
 	double plannedDirect = projAux.getGrandTotalCostsDirect();
@@ -981,6 +949,180 @@ public class ProjectServiceImpl implements ProjectService {
 	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
 
 	return wb;
+    }
+
+    private void analysisExpenses(HSSFWorkbook wb, HSSFRow row, Project proj) {
+	int rowIndex = 0;
+	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
+	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
+	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
+	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
+
+	// Analysis (Max).
+	StatisticsProject statisticsProj = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
+		otherExpenses);
+	List<ProjectPayroll> maxPayroll = statisticsProj.getMaxPayrolls();
+	List<Delivery> maxDeliveries = statisticsProj.getMaxDelivery();
+	List<EquipmentExpense> maxEquip = statisticsProj.getMaxEquipment();
+	List<Expense> maxOtherExpenses = statisticsProj.getMaxOtherExpenses();
+
+	// Most costly expenses for each type.
+	HSSFSheet sheet = wb.createSheet("Expenses");
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Maximum");
+	rowIndex++;
+	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, maxPayroll);
+	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, maxDeliveries);
+	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, maxEquip);
+	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, maxOtherExpenses);
+
+	// Top expenses by category and altogether.
+	Integer limit = 5;
+	ImmutableList<ProjectPayroll> payrollsCostDesc = statisticsProj
+		.getLimitedSortedByCostPayrolls(limit, SortOrder.DESCENDING);
+	ImmutableList<Delivery> deliveryCostDesc = statisticsProj.getLimitedSortedByCostDeliveries(limit,
+		SortOrder.DESCENDING);
+	ImmutableList<EquipmentExpense> equipCostDesc = statisticsProj
+		.getLimitedSortedByCostEquipment(limit, SortOrder.DESCENDING);
+	ImmutableList<Expense> othersCostDesc = statisticsProj.getLimitedSortedByCostOtherExpenses(limit,
+		SortOrder.DESCENDING);
+	ImmutableList<IExpense> projDesc = statisticsProj.getLimitedSortedByCostProject(limit,
+		SortOrder.DESCENDING);
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(String.format("Top %s Most Expensive", limit));
+	rowIndex++;
+	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostDesc);
+	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostDesc);
+	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, equipCostDesc);
+	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostDesc);
+	rowIndex = addSectionExpenses("Overall Project", row, sheet, rowIndex, projDesc);
+
+	// Analysis (Min).
+	List<ProjectPayroll> minPayroll = statisticsProj.getMinPayrolls();
+	List<Delivery> minDeliveries = statisticsProj.getMinDeliveries();
+	List<EquipmentExpense> minEquip = statisticsProj.getMinEquipment();
+	List<Expense> minOtherExpenses = statisticsProj.getMinOtherExpenses();
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue("Minimum");
+	rowIndex++;
+	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, minPayroll);
+	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, minDeliveries);
+	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, minEquip);
+	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, minOtherExpenses);
+
+	// Bottom expenses by category and altogether.
+	ImmutableList<ProjectPayroll> payrollsCostAsc = statisticsProj
+		.getLimitedSortedByCostPayrolls(limit, SortOrder.ASCENDING);
+	ImmutableList<Delivery> deliveryCostAsc = statisticsProj.getLimitedSortedByCostDeliveries(limit,
+		SortOrder.ASCENDING);
+	ImmutableList<EquipmentExpense> equipCostAsc = statisticsProj
+		.getLimitedSortedByCostEquipment(limit, SortOrder.ASCENDING);
+	ImmutableList<Expense> othersCostAsc = statisticsProj.getLimitedSortedByCostOtherExpenses(limit,
+		SortOrder.ASCENDING);
+	ImmutableList<IExpense> projAsc = statisticsProj.getLimitedSortedByCostProject(limit,
+		SortOrder.ASCENDING);
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(String.format("Top %s Least Expensive", limit));
+	rowIndex++;
+	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostAsc);
+	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostAsc);
+	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, equipCostAsc);
+	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostAsc);
+	rowIndex = addSectionExpenses("Overall Project", row, sheet, rowIndex, projAsc);
+
+	// Analysis (Mean).
+	double meanPayroll = statisticsProj.getMeanPayroll();
+	double meanDeliveries = statisticsProj.getMeanDelivery();
+	double meanEquip = statisticsProj.getMeanEquipment();
+	double meanOtherExpenses = statisticsProj.getMeanOtherExpenses();
+	double meanProject = statisticsProj.getMeanProject();
+	Map<String, Double> labelValueMap = new HashMap<String, Double>();
+	labelValueMap.put("Payroll", meanPayroll);
+	labelValueMap.put("Deliveries", meanDeliveries);
+	labelValueMap.put("Equipment", meanEquip);
+	labelValueMap.put("Other Expenses", meanOtherExpenses);
+	labelValueMap.put("Overall Project", meanProject);
+	rowIndex = addSectionFromMap("Means", row, sheet, rowIndex, labelValueMap);
+
+	// Population.
+	labelValueMap = new HashMap<String, Double>();
+	double popPayroll = this.projectPayrollService.getSize(payrolls);
+	double popDelivery = deliveries.size();
+	double popEquip = equipmentExpenses.size();
+	double popOtherExpenses = otherExpenses.size();
+	double popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
+	labelValueMap.put("Payroll", popPayroll);
+	labelValueMap.put("Deliveries", popDelivery);
+	labelValueMap.put("Equipment", popEquip);
+	labelValueMap.put("Other Expenses", popOtherExpenses);
+	labelValueMap.put("Overall Project", popProject);
+	rowIndex = addSectionFromMap("Number of Entries", row, sheet, rowIndex, labelValueMap);
+    }
+
+    private int addSectionFromMap(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+	    Map<String, Double> labelValueMap) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(sectionName);
+	rowIndex++;
+	for (String key : labelValueMap.keySet()) {
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(1).setCellValue(key);
+	    row.createCell(2).setCellValue(labelValueMap.get(key));
+	    rowIndex++;
+	}
+	rowIndex++;
+	return rowIndex;
+    }
+
+    /**
+     * Create a section for the list of expenses.
+     * 
+     * @param sectionName
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param expenses
+     * @return
+     */
+    private int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+	    ImmutableList<IExpense> expenses) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(sectionName);
+	rowIndex++;
+	for (IExpense expense : expenses) {
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(1).setCellValue(expense.getName());
+	    row.createCell(2).setCellValue(expense.getCost());
+	    row.createCell(3).setCellValue(StringUtils.capitalize(expense.getObjectName()));
+	    rowIndex++;
+	}
+	rowIndex++;
+	return rowIndex;
+    }
+
+    /**
+     * Create a section for the list of expenses.
+     * 
+     * @param sectionName
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param expenses
+     * @return
+     */
+    private int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+	    List<? extends AbstractExpense> expenses) {
+	row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellValue(sectionName);
+	rowIndex++;
+	for (AbstractExpense expense : expenses) {
+	    row = sheet.createRow(rowIndex);
+	    row.createCell(1).setCellValue(expense.getName());
+	    row.createCell(2).setCellValue(expense.getCost());
+	    rowIndex++;
+	}
+	rowIndex++;
+	return rowIndex;
     }
 
     /**

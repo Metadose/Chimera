@@ -25,8 +25,4 @@ public interface DeliveryService {
 
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
 
-    public List<Delivery> analyzeMax(List<Delivery> deliveries);
-
-    public List<Delivery> analyzeMin(List<Delivery> deliveries);
-
 }

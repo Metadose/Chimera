@@ -19,5 +19,6 @@ public abstract class ConstantsRedis {
     public static final String OBJECT_EQUIPMENT_EXPENSE = "equipmentexpense";
 
     // For display.
-    public static final String DISPLAY_EQUIPMENT_EXPENSE = "equipment expense";
+    public static final String DISPLAY_EQUIPMENT_EXPENSE = "Equipment Expense";
+    public static final String DISPLAY_OTHER_EXPENSE = "Other Expense";
 }
