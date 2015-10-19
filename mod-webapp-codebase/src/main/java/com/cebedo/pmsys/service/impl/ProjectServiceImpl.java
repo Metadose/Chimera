@@ -881,15 +881,11 @@ public class ProjectServiceImpl implements ProjectService {
 	HSSFSheet sheet = wb.createSheet(sheetName);
 	int rowIndex = 0;
 	HSSFRow row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Analysis");
-	rowIndex++;
+	rowIndex = xlsConstructLabelCell("Project Analysis", sheet, rowIndex);
 	rowIndex++;
 
 	// Basic details.
 	rowIndex = xlsAnalysisDetails(row, sheet, rowIndex, proj);
-
-	// Pass Excel objects then process.
-	xlsAnalysisExpenses(wb, row, proj);
 
 	// Project estimated cost.
 	double plannedDirect = projAux.getGrandTotalCostsDirect();
@@ -898,8 +894,11 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualIndirect = projAux.getGrandTotalActualCostsIndirect();
 	double plannedProjCost = plannedDirect + plannedIndirect;
 	double actualProjCost = actualDirect + actualIndirect;
-	rowIndex = xlsAnalysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect,
-		plannedProjCost, actualDirect, actualIndirect, actualProjCost, proj);
+	xlsAnalysisEstimate(wb, row, projAux, plannedDirect, plannedIndirect, plannedProjCost,
+		actualDirect, actualIndirect, actualProjCost, proj);
+
+	// Pass Excel objects then process.
+	xlsAnalysisExpenses(wb, row, proj);
 
 	// Physical Target.
 	rowIndex = xlsAnalysisPhysicalTarget(row, sheet, rowIndex, proj, plannedProjCost,
@@ -1154,9 +1153,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private int xlsAnalysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Staff");
-	rowIndex++;
+	rowIndex = xlsConstructLabelCell("Staff", sheet, rowIndex);
 
 	// Number of staff members assigned to this project.
 	Set<Staff> assignedStaff = proj.getAssignedStaff();
@@ -1228,9 +1225,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private int xlsAnalysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Runtime");
-	rowIndex++;
+	rowIndex = xlsConstructLabelCell("Project Runtime", sheet, rowIndex);
 
 	Date dateStart = proj.getDateStart();
 	row = sheet.createRow(rowIndex);
@@ -1335,9 +1330,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     private int xlsAnalysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
 	    double projCost, double actualProjCost) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Physical Target Details");
-	rowIndex++;
+	rowIndex = xlsConstructLabelCell("Physical Target Details", sheet, rowIndex);
 
 	double phyTarget = proj.getPhysicalTarget();
 	row = sheet.createRow(rowIndex);
@@ -1371,8 +1364,9 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * Analysis of project estimation and estimated costs.
      * 
+     * @param wb
+     * 
      * @param row
-     * @param sheet
      * @param rowIndex
      * @param projAux
      * @param plannedDirect
@@ -1384,13 +1378,13 @@ public class ProjectServiceImpl implements ProjectService {
      * @param proj
      * @return
      */
-    private int xlsAnalysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
+    private void xlsAnalysisEstimate(HSSFWorkbook wb, HSSFRow row, ProjectAux projAux,
 	    double plannedDirect, double plannedIndirect, double projCost, double actualDirect,
 	    double actualIndirect, double actualProjCost, Project proj) {
 
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Project Cost Estimate");
-	rowIndex++;
+	HSSFSheet sheet = wb.createSheet("Estimate");
+	int rowIndex = 0;
+	rowIndex = xlsConstructLabelCell("Project Cost Estimate", sheet, rowIndex);
 
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Planned Cost (Direct)");
@@ -1446,7 +1440,6 @@ public class ProjectServiceImpl implements ProjectService {
 
 	rowIndex++;
 
-	return rowIndex;
     }
 
     /**
@@ -1459,9 +1452,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private int xlsAnalysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Details");
-	rowIndex++;
+	rowIndex = xlsConstructLabelCell("Details", sheet, rowIndex);
 
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Name");
