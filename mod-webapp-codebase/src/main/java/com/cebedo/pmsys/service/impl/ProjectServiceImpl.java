@@ -1022,19 +1022,29 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Staff list with the most absences. Get top 5 absentees.
 	// Top 5 staff member per attendance status.
-	int max = 5;  
-	ImmutableList<Entry<Staff, Integer>> topAbsent = statisticsStaff.getTop(AttendanceStatus.ABSENT, max);
-	ImmutableList<Entry<Staff, Integer>> topOvertime = statisticsStaff.getTop(AttendanceStatus.OVERTIME, max);
-	ImmutableList<Entry<Staff, Integer>> topLate = statisticsStaff.getTop(AttendanceStatus.LATE, max);
-	ImmutableList<Entry<Staff, Integer>> topHalfday = statisticsStaff.getTop(AttendanceStatus.HALFDAY, max);
-	ImmutableList<Entry<Staff, Integer>> topLeave = statisticsStaff.getTop(AttendanceStatus.LEAVE, max);
+	int max = 5;
+	ImmutableList<Entry<Staff, Integer>> topAbsent = statisticsStaff
+		.getAttendancesByStatusDesc(AttendanceStatus.ABSENT, max);
+	ImmutableList<Entry<Staff, Integer>> topOvertime = statisticsStaff
+		.getAttendancesByStatusDesc(AttendanceStatus.OVERTIME, max);
+	ImmutableList<Entry<Staff, Integer>> topLate = statisticsStaff
+		.getAttendancesByStatusDesc(AttendanceStatus.LATE, max);
+	ImmutableList<Entry<Staff, Integer>> topHalfday = statisticsStaff
+		.getAttendancesByStatusDesc(AttendanceStatus.HALFDAY, max);
+	ImmutableList<Entry<Staff, Integer>> topLeave = statisticsStaff
+		.getAttendancesByStatusDesc(AttendanceStatus.LEAVE, max);
 
 	// Bottom 5 staff member per attendance status.
-	ImmutableList<Entry<Staff, Integer>> bottomAbsent = statisticsStaff.getBottom(AttendanceStatus.ABSENT, max);
-	ImmutableList<Entry<Staff, Integer>> bottomOvertime = statisticsStaff.getBottom(AttendanceStatus.OVERTIME, max);
-	ImmutableList<Entry<Staff, Integer>> bottomLate = statisticsStaff.getBottom(AttendanceStatus.LATE, max);
-	ImmutableList<Entry<Staff, Integer>> bottomHalfday = statisticsStaff.getBottom(AttendanceStatus.HALFDAY, max);
-	ImmutableList<Entry<Staff, Integer>> bottomLeave = statisticsStaff.getBottom(AttendanceStatus.LEAVE, max);
+	ImmutableList<Entry<Staff, Integer>> bottomAbsent = statisticsStaff
+		.getAttendancesByStatusAsc(AttendanceStatus.ABSENT, max);
+	ImmutableList<Entry<Staff, Integer>> bottomOvertime = statisticsStaff
+		.getAttendancesByStatusAsc(AttendanceStatus.OVERTIME, max);
+	ImmutableList<Entry<Staff, Integer>> bottomLate = statisticsStaff
+		.getAttendancesByStatusAsc(AttendanceStatus.LATE, max);
+	ImmutableList<Entry<Staff, Integer>> bottomHalfday = statisticsStaff
+		.getAttendancesByStatusAsc(AttendanceStatus.HALFDAY, max);
+	ImmutableList<Entry<Staff, Integer>> bottomLeave = statisticsStaff
+		.getAttendancesByStatusAsc(AttendanceStatus.LEAVE, max);
 
 	// Mean per attendance status.
 	double meanAbsences = statisticsStaff.getMeanOf(AttendanceStatus.ABSENT);

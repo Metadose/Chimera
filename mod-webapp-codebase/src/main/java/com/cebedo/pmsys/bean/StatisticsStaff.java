@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import com.cebedo.pmsys.bean.ComparatorValue.ValueOrdering;
+import com.cebedo.pmsys.bean.ComparatorMapEntry.Order;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.helper.BeanHelper;
@@ -20,39 +20,26 @@ import com.cebedo.pmsys.service.AttendanceService;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class StatisticsStaff extends SummaryStatistics {
 
     private static final long serialVersionUID = 3100862015017954781L;
 
-    private Project project;
     private Set<Staff> staffList = new HashSet<Staff>();
     private Set<Attendance> attendances = new HashSet<Attendance>();
     private Map<AttendanceStatus, HashMap<Staff, Integer>> attendaceMap = new HashMap<AttendanceStatus, HashMap<Staff, Integer>>();
-
-    private Ordering<Map.Entry<Staff, Integer>> byMapValuesAsc = new Ordering<Map.Entry<Staff, Integer>>() {
-	@Override
-	public int compare(Map.Entry<Staff, Integer> left, Map.Entry<Staff, Integer> right) {
-	    return left.getValue().compareTo(right.getValue());
-	}
-    };
-    private Ordering<Map.Entry<Staff, Integer>> byMapValuesDesc = new Ordering<Map.Entry<Staff, Integer>>() {
-	@Override
-	public int compare(Map.Entry<Staff, Integer> left, Map.Entry<Staff, Integer> right) {
-	    return (left.getValue().compareTo(right.getValue())) * -1;
-	}
-    };
+    private ComparatorMapEntry mapEntryComparator = new ComparatorMapEntry();
 
     public StatisticsStaff() {
 	;
     }
 
     public StatisticsStaff(Project proj, Set<Staff> assignedStaff) {
-	this.staffList = assignedStaff;
-	this.project = proj;
 
+	// Set the staff list.
+	this.staffList = assignedStaff;
+
+	// Add all attendances of staff members.
 	BeanHelper beanHelper = new BeanHelper();
 	AttendanceService attendanceService = (AttendanceService) beanHelper
 		.getBean("attendanceService");
@@ -82,6 +69,11 @@ public class StatisticsStaff extends SummaryStatistics {
 	}
     }
 
+    /**
+     * Get the mean wage of all staff members.
+     * 
+     * @return
+     */
     public double getMeanWage() {
 	addValuesWage();
 	double mean = getMean();
@@ -89,12 +81,20 @@ public class StatisticsStaff extends SummaryStatistics {
 	return mean;
     }
 
+    /**
+     * Add all wage values.
+     */
     private void addValuesWage() {
 	for (Staff staff : this.staffList) {
 	    addValue(staff.getWage());
 	}
     }
 
+    /**
+     * Get the sum of all staff member's wage.
+     * 
+     * @return
+     */
     public double getSumWage() {
 	addValuesWage();
 	double sum = getSum();
@@ -102,20 +102,22 @@ public class StatisticsStaff extends SummaryStatistics {
 	return sum;
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getTop(AttendanceStatus status) {
-	return getSortedAttendance(status, null, ValueOrdering.DESCENDING);
+    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusDesc(AttendanceStatus status) {
+	return getSortedAttendance(status, null, Order.DESCENDING);
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getTop(AttendanceStatus status, Integer maxCount) {
-	return getSortedAttendance(status, maxCount, ValueOrdering.DESCENDING);
+    public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusDesc(AttendanceStatus status,
+	    Integer maxCount) {
+	return getSortedAttendance(status, maxCount, Order.DESCENDING);
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getBottom(AttendanceStatus status) {
-	return getSortedAttendance(status, null, ValueOrdering.ASCENDING);
+    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusAsc(AttendanceStatus status) {
+	return getSortedAttendance(status, null, Order.ASCENDING);
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getBottom(AttendanceStatus status, Integer maxCount) {
-	return getSortedAttendance(status, maxCount, ValueOrdering.ASCENDING);
+    public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusAsc(AttendanceStatus status,
+	    Integer maxCount) {
+	return getSortedAttendance(status, maxCount, Order.ASCENDING);
     }
 
     /**
@@ -128,21 +130,66 @@ public class StatisticsStaff extends SummaryStatistics {
      * @return
      */
     private ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
-	    Integer maxCount, ValueOrdering order) {
+	    Integer maxCount, Order order) {
 
 	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
+
+	// If empty map.
 	if (storedMap == null) {
 	    return FluentIterable.from(new ArrayList<Entry<Staff, Integer>>()).toList();
 	}
+
+	// Sort.
 	ArrayList<Entry<Staff, Integer>> sortedEntries = Lists.newArrayList(storedMap.entrySet());
-	Collections.sort(sortedEntries,
-		order == ValueOrdering.ASCENDING ? this.byMapValuesAsc : this.byMapValuesDesc);
+	Collections.sort(sortedEntries, this.mapEntryComparator.setOrder(order));
 
 	// If not null, limit the return to specific number.
 	if (maxCount != null) {
 	    return FluentIterable.from(sortedEntries).limit(maxCount).toList();
 	}
+
+	// Return all sorted entries.
 	return FluentIterable.from(sortedEntries).toList();
+    }
+
+    /**
+     * Get list of unsorted attendances.
+     * 
+     * @param status
+     * @param maxCount
+     * @return
+     */
+    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(AttendanceStatus status) {
+	return getUnsortedAttendance(status, null);
+    }
+
+    /**
+     * Get list of unsorted attendances.
+     * 
+     * @param status
+     * @param maxCount
+     * @return
+     */
+    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(AttendanceStatus status,
+	    Integer maxCount) {
+
+	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
+
+	// If empty map.
+	if (storedMap == null) {
+	    return FluentIterable.from(new ArrayList<Entry<Staff, Integer>>()).toList();
+	}
+
+	// Sort.
+	ArrayList<Entry<Staff, Integer>> unsortedEntries = Lists.newArrayList(storedMap.entrySet());
+
+	// If not null, limit the return to specific number.
+	if (maxCount != null) {
+	    return FluentIterable.from(unsortedEntries).limit(maxCount).toList();
+	}
+
+	// Return all sorted entries.
+	return FluentIterable.from(unsortedEntries).toList();
     }
 
     /**
@@ -152,7 +199,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @return
      */
     public double getMeanOf(AttendanceStatus status) {
-	ImmutableList<Entry<Staff, Integer>> staffCount = getTop(status);
+	ImmutableList<Entry<Staff, Integer>> staffCount = getUnsortedAttendance(status);
 	for (Entry<Staff, Integer> pair : staffCount) {
 	    addValue(pair.getValue());
 	}
