@@ -12,9 +12,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -883,10 +886,10 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Basic details.
-	rowIndex = analysisDetails(row, sheet, rowIndex, proj);
+	rowIndex = xlsAnalysisDetails(row, sheet, rowIndex, proj);
 
 	// Pass Excel objects then process.
-	analysisExpenses(wb, row, proj);
+	xlsAnalysisExpenses(wb, row, proj);
 
 	// Project estimated cost.
 	double plannedDirect = projAux.getGrandTotalCostsDirect();
@@ -895,17 +898,18 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualIndirect = projAux.getGrandTotalActualCostsIndirect();
 	double plannedProjCost = plannedDirect + plannedIndirect;
 	double actualProjCost = actualDirect + actualIndirect;
-	rowIndex = analysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect,
+	rowIndex = xlsAnalysisCost(row, sheet, rowIndex, projAux, plannedDirect, plannedIndirect,
 		plannedProjCost, actualDirect, actualIndirect, actualProjCost, proj);
 
 	// Physical Target.
-	rowIndex = analysisPhysicalTarget(row, sheet, rowIndex, proj, plannedProjCost, actualProjCost);
+	rowIndex = xlsAnalysisPhysicalTarget(row, sheet, rowIndex, proj, plannedProjCost,
+		actualProjCost);
 
 	// Progress.
-	rowIndex = analysisProgress(row, sheet, rowIndex, proj);
+	rowIndex = xlsAnalysisProgress(row, sheet, rowIndex, proj);
 
 	// Staff.
-	rowIndex = analysisStaff(row, sheet, rowIndex, proj);
+	rowIndex = xlsAnalysisStaff(row, sheet, rowIndex, proj);
 
 	// Program of works.
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -948,10 +952,20 @@ public class ProjectServiceImpl implements ProjectService {
 	// Map of task status to number.
 	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
 
+	// Resize all sheets.
+	for (int sheetIndex = 0; sheetIndex < wb.getNumberOfSheets(); sheetIndex++) {
+	    HSSFSheet wbSheet = wb.getSheetAt(sheetIndex);
+	    wbSheet.autoSizeColumn(0);
+	    wbSheet.autoSizeColumn(1);
+	    wbSheet.autoSizeColumn(2);
+	    wbSheet.autoSizeColumn(3);
+	    wbSheet.setZoom(85, 100);
+	}
+
 	return wb;
     }
 
-    private void analysisExpenses(HSSFWorkbook wb, HSSFRow row, Project proj) {
+    private void xlsAnalysisExpenses(HSSFWorkbook wb, HSSFRow row, Project proj) {
 	int rowIndex = 0;
 	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
 	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
@@ -968,13 +982,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Most costly expenses for each type.
 	HSSFSheet sheet = wb.createSheet("Expenses");
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Maximum");
-	rowIndex++;
-	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, maxPayroll);
-	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, maxDeliveries);
-	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, maxEquip);
-	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, maxOtherExpenses);
+	rowIndex = xlsConstructLabelCell("Maximum", sheet, rowIndex);
+	rowIndex = xlsAddSectionExpenses("Payrolls", row, sheet, rowIndex, maxPayroll);
+	rowIndex = xlsAddSectionExpenses("Deliveries", row, sheet, rowIndex, maxDeliveries);
+	rowIndex = xlsAddSectionExpenses("Equipment", row, sheet, rowIndex, maxEquip);
+	rowIndex = xlsAddSectionExpenses("Other Expenses", row, sheet, rowIndex, maxOtherExpenses);
 
 	// Top expenses by category and altogether.
 	Integer limit = 5;
@@ -988,27 +1000,23 @@ public class ProjectServiceImpl implements ProjectService {
 		SortOrder.DESCENDING);
 	ImmutableList<IExpense> projDesc = statisticsProj.getLimitedSortedByCostProject(limit,
 		SortOrder.DESCENDING);
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue(String.format("Top %s Most Expensive", limit));
-	rowIndex++;
-	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostDesc);
-	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostDesc);
-	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, equipCostDesc);
-	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostDesc);
-	rowIndex = addSectionExpenses("Overall Project", row, sheet, rowIndex, projDesc);
+	rowIndex = xlsConstructLabelCell(String.format("Top %s Most Expensive", limit), sheet, rowIndex);
+	rowIndex = xlsAddSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostDesc);
+	rowIndex = xlsAddSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostDesc);
+	rowIndex = xlsAddSectionExpenses("Equipment", row, sheet, rowIndex, equipCostDesc);
+	rowIndex = xlsAddSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostDesc);
+	rowIndex = xlsAddSectionExpenses("Overall Project", row, sheet, rowIndex, projDesc);
 
 	// Analysis (Min).
 	List<ProjectPayroll> minPayroll = statisticsProj.getMinPayrolls();
 	List<Delivery> minDeliveries = statisticsProj.getMinDeliveries();
 	List<EquipmentExpense> minEquip = statisticsProj.getMinEquipment();
 	List<Expense> minOtherExpenses = statisticsProj.getMinOtherExpenses();
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Minimum");
-	rowIndex++;
-	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, minPayroll);
-	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, minDeliveries);
-	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, minEquip);
-	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, minOtherExpenses);
+	rowIndex = xlsConstructLabelCell("Minimum", sheet, rowIndex);
+	rowIndex = xlsAddSectionExpenses("Payrolls", row, sheet, rowIndex, minPayroll);
+	rowIndex = xlsAddSectionExpenses("Deliveries", row, sheet, rowIndex, minDeliveries);
+	rowIndex = xlsAddSectionExpenses("Equipment", row, sheet, rowIndex, minEquip);
+	rowIndex = xlsAddSectionExpenses("Other Expenses", row, sheet, rowIndex, minOtherExpenses);
 
 	// Bottom expenses by category and altogether.
 	ImmutableList<ProjectPayroll> payrollsCostAsc = statisticsProj
@@ -1021,14 +1029,13 @@ public class ProjectServiceImpl implements ProjectService {
 		SortOrder.ASCENDING);
 	ImmutableList<IExpense> projAsc = statisticsProj.getLimitedSortedByCostProject(limit,
 		SortOrder.ASCENDING);
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue(String.format("Top %s Least Expensive", limit));
-	rowIndex++;
-	rowIndex = addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostAsc);
-	rowIndex = addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostAsc);
-	rowIndex = addSectionExpenses("Equipment", row, sheet, rowIndex, equipCostAsc);
-	rowIndex = addSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostAsc);
-	rowIndex = addSectionExpenses("Overall Project", row, sheet, rowIndex, projAsc);
+	rowIndex = xlsConstructLabelCell(String.format("Top %s Least Expensive", limit), sheet,
+		rowIndex);
+	rowIndex = xlsAddSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostAsc);
+	rowIndex = xlsAddSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostAsc);
+	rowIndex = xlsAddSectionExpenses("Equipment", row, sheet, rowIndex, equipCostAsc);
+	rowIndex = xlsAddSectionExpenses("Other Expenses", row, sheet, rowIndex, othersCostAsc);
+	rowIndex = xlsAddSectionExpenses("Overall Project", row, sheet, rowIndex, projAsc);
 
 	// Analysis (Mean).
 	double meanPayroll = statisticsProj.getMeanPayroll();
@@ -1042,7 +1049,7 @@ public class ProjectServiceImpl implements ProjectService {
 	labelValueMap.put("Equipment", meanEquip);
 	labelValueMap.put("Other Expenses", meanOtherExpenses);
 	labelValueMap.put("Overall Project", meanProject);
-	rowIndex = addSectionFromMap("Means", row, sheet, rowIndex, labelValueMap);
+	rowIndex = xlsAddSectionFromMap("Means", row, sheet, rowIndex, labelValueMap);
 
 	// Population.
 	labelValueMap = new HashMap<String, Double>();
@@ -1056,14 +1063,26 @@ public class ProjectServiceImpl implements ProjectService {
 	labelValueMap.put("Equipment", popEquip);
 	labelValueMap.put("Other Expenses", popOtherExpenses);
 	labelValueMap.put("Overall Project", popProject);
-	rowIndex = addSectionFromMap("Number of Entries", row, sheet, rowIndex, labelValueMap);
+	rowIndex = xlsAddSectionFromMap("Number of Entries", row, sheet, rowIndex, labelValueMap);
     }
 
-    private int addSectionFromMap(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
-	    Map<String, Double> labelValueMap) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue(sectionName);
+    private int xlsConstructLabelCell(String label, HSSFSheet sheet, int rowIndex) {
+	// Create the style.
+	HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+	style.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
+	style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+	// Create the label cell.
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellStyle(style);
+	row.getCell(0).setCellValue(label);
 	rowIndex++;
+	return rowIndex;
+    }
+
+    private int xlsAddSectionFromMap(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+	    Map<String, Double> labelValueMap) {
+	rowIndex = xlsConstructLabelCell(sectionName, sheet, rowIndex);
 	for (String key : labelValueMap.keySet()) {
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(1).setCellValue(key);
@@ -1084,7 +1103,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param expenses
      * @return
      */
-    private int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+    private int xlsAddSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
 	    ImmutableList<IExpense> expenses) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue(sectionName);
@@ -1110,7 +1129,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param expenses
      * @return
      */
-    private int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+    private int xlsAddSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
 	    List<? extends AbstractExpense> expenses) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue(sectionName);
@@ -1134,7 +1153,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param proj
      * @return
      */
-    private int analysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+    private int xlsAnalysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Staff");
 	rowIndex++;
@@ -1208,7 +1227,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param proj
      * @return
      */
-    private int analysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+    private int xlsAnalysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Project Runtime");
 	rowIndex++;
@@ -1314,7 +1333,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualProjCost
      * @return
      */
-    private int analysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
+    private int xlsAnalysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
 	    double projCost, double actualProjCost) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Physical Target Details");
@@ -1365,7 +1384,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param proj
      * @return
      */
-    private int analysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
+    private int xlsAnalysisCost(HSSFRow row, HSSFSheet sheet, int rowIndex, ProjectAux projAux,
 	    double plannedDirect, double plannedIndirect, double projCost, double actualDirect,
 	    double actualIndirect, double actualProjCost, Project proj) {
 
@@ -1439,7 +1458,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param proj
      * @return
      */
-    private int analysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
+    private int xlsAnalysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue("Details");
 	rowIndex++;
