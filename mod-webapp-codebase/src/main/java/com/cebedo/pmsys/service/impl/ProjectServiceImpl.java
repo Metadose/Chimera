@@ -1441,6 +1441,30 @@ public class ProjectServiceImpl implements ProjectService {
 
 	StatisticsEstimateCost statEstimates = new StatisticsEstimateCost(estimatedCosts);
 
+	List<EstimateCost> tempContainer = new ArrayList<EstimateCost>();
+	tempContainer = statEstimates.getMaxPlannedDirect();
+	tempContainer = statEstimates.getMaxPlannedIndirect();
+	tempContainer = statEstimates.getMaxActualDirect();
+	tempContainer = statEstimates.getMaxActualIndirect();
+
+	tempContainer = statEstimates.getMinPlannedDirect();
+	tempContainer = statEstimates.getMinPlannedIndirect();
+	tempContainer = statEstimates.getMinActualDirect();
+	tempContainer = statEstimates.getMinActualIndirect();
+
+	Integer limit = null;
+	SortOrder order = SortOrder.ASCENDING;
+	tempContainer = statEstimates.getSortedActualDirect(order, limit);
+	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+	tempContainer = statEstimates.getSortedPlannedDirect(order, limit);
+	tempContainer = statEstimates.getSortedPlannedIndirect(order, limit);
+
+	order = SortOrder.DESCENDING;
+	tempContainer = statEstimates.getSortedActualDirect(order, limit);
+	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+	tempContainer = statEstimates.getSortedPlannedDirect(order, limit);
+	tempContainer = statEstimates.getSortedPlannedIndirect(order, limit);
+
 	rowIndex++;
 
     }

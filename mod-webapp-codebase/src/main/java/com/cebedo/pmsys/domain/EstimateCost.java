@@ -156,4 +156,9 @@ public class EstimateCost implements IDomainObject {
 	return getKey().hashCode();
     }
 
+    @Override
+    public String toString() {
+	return String.format("[(%s) %s: planned = %s, actual = %s]", this.costType, this.name, this.cost,
+		this.actualCost);
+    }
 }
