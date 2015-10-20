@@ -1436,34 +1436,49 @@ public class ProjectServiceImpl implements ProjectService {
 	    rowIndex++;
 	}
 
-	// TODO Statistics of estimated costs.
+	// Statistics of estimated costs.
 	List<EstimateCost> estimatedCosts = this.estimateCostService.list(proj);
-
 	StatisticsEstimateCost statEstimates = new StatisticsEstimateCost(estimatedCosts);
-
 	List<EstimateCost> tempContainer = new ArrayList<EstimateCost>();
+
+	// Maximum costs.
 	tempContainer = statEstimates.getMaxPlannedDirect();
 	tempContainer = statEstimates.getMaxPlannedIndirect();
 	tempContainer = statEstimates.getMaxActualDirect();
 	tempContainer = statEstimates.getMaxActualIndirect();
 
+	// Minimum costs.
 	tempContainer = statEstimates.getMinPlannedDirect();
 	tempContainer = statEstimates.getMinPlannedIndirect();
 	tempContainer = statEstimates.getMinActualDirect();
 	tempContainer = statEstimates.getMinActualIndirect();
 
+	// Top estimated costs.
 	Integer limit = null;
-	SortOrder order = SortOrder.ASCENDING;
-	tempContainer = statEstimates.getSortedActualDirect(order, limit);
-	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+	SortOrder order = SortOrder.DESCENDING;
 	tempContainer = statEstimates.getSortedPlannedDirect(order, limit);
 	tempContainer = statEstimates.getSortedPlannedIndirect(order, limit);
+	tempContainer = statEstimates.getSortedActualDirect(order, limit);
+	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
 
-	order = SortOrder.DESCENDING;
-	tempContainer = statEstimates.getSortedActualDirect(order, limit);
-	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+	// TODO Top absolute differences (planned - actual) of direct.
+	// TODO Top absolute differences (planned - actual) of indirect.
+	// TODO Top absolute differences (planned - actual) of overall.
+
+	// Bottom estimated costs.
+	order = SortOrder.ASCENDING;
 	tempContainer = statEstimates.getSortedPlannedDirect(order, limit);
 	tempContainer = statEstimates.getSortedPlannedIndirect(order, limit);
+	tempContainer = statEstimates.getSortedActualDirect(order, limit);
+	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+
+	// TODO Mean of planned direct.
+	// TODO Mean of planned indirect.
+	// TODO Mean of planned overall.
+
+	// TODO Mean of actual direct.
+	// TODO Mean of actual indirect.
+	// TODO Mean of actual overall.
 
 	rowIndex++;
 

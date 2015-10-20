@@ -5,7 +5,7 @@ import java.util.Map;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.Ordering;
 
-public class ComparatorMapEntry extends Ordering<Map.Entry<? extends Object, Integer>> {
+public class ComparatorMapEntry extends Ordering<Map.Entry<? extends Object, ? extends Number>> {
 
     private SortOrder order = SortOrder.ASCENDING;
 
@@ -13,23 +13,19 @@ public class ComparatorMapEntry extends Ordering<Map.Entry<? extends Object, Int
 	;
     }
 
+    public ComparatorMapEntry(SortOrder order2) {
+	this.order = order2;
+    }
+
     @Override
-    public int compare(Map.Entry<? extends Object, Integer> left,
-	    Map.Entry<? extends Object, Integer> right) {
-	int comparison = left.getValue().compareTo(right.getValue());
+    public int compare(Map.Entry<? extends Object, ? extends Number> left,
+	    Map.Entry<? extends Object, ? extends Number> right) {
+	Double leftVal = left.getValue().doubleValue();
+	Double rightVal = right.getValue().doubleValue();
+	int comparison = leftVal.compareTo(rightVal);
 	if (this.order == SortOrder.DESCENDING) {
 	    return comparison * -1;
 	}
 	return comparison;
     }
-
-    public SortOrder getOrder() {
-	return order;
-    }
-
-    public ComparatorMapEntry setOrder(SortOrder order) {
-	this.order = order;
-	return this;
-    }
-
 }

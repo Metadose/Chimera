@@ -28,7 +28,6 @@ public class StatisticsStaff extends SummaryStatistics {
     private Set<Staff> staffList = new HashSet<Staff>();
     private Set<Attendance> attendances = new HashSet<Attendance>();
     private Map<AttendanceStatus, HashMap<Staff, Integer>> attendaceMap = new HashMap<AttendanceStatus, HashMap<Staff, Integer>>();
-    private ComparatorMapEntry mapEntryComparator = new ComparatorMapEntry();
 
     public StatisticsStaff() {
 	;
@@ -141,14 +140,13 @@ public class StatisticsStaff extends SummaryStatistics {
 
 	// Sort.
 	ArrayList<Entry<Staff, Integer>> sortedEntries = Lists.newArrayList(storedMap.entrySet());
-	Collections.sort(sortedEntries, this.mapEntryComparator.setOrder(order));
+	Collections.sort(sortedEntries, new ComparatorMapEntry(order));
 
 	// If not null, limit the return to specific number.
+	// Else, return all sorted entries.
 	if (maxCount != null) {
 	    return FluentIterable.from(sortedEntries).limit(maxCount).toList();
 	}
-
-	// Return all sorted entries.
 	return FluentIterable.from(sortedEntries).toList();
     }
 
