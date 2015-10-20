@@ -4,12 +4,16 @@ import com.cebedo.pmsys.domain.IExpense;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.Ordering;
 
-public class ComparatorIExpense extends Ordering<IExpense> {
+public class ComparatorExpenseI extends Ordering<IExpense> {
 
     private SortOrder order = SortOrder.ASCENDING;
 
-    public ComparatorIExpense() {
+    public ComparatorExpenseI() {
 	;
+    }
+
+    public ComparatorExpenseI(SortOrder order2) {
+	this.order = order2;
     }
 
     @Override
@@ -21,15 +25,6 @@ public class ComparatorIExpense extends Ordering<IExpense> {
 	// And all results are valid.
 	int comparison = leftValue > rightValue ? 1 : rightValue > leftValue ? -1 : 0;
 	return this.order == SortOrder.ASCENDING ? comparison : comparison * -1;
-    }
-
-    public SortOrder getOrder() {
-	return order;
-    }
-
-    public ComparatorIExpense setOrder(SortOrder order) {
-	this.order = order;
-	return this;
     }
 
 }

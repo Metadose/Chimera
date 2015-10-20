@@ -222,7 +222,7 @@ public class StatisticsProject extends SummaryStatistics {
      */
     private ImmutableList<IExpense> sortByCostInterface(List<IExpense> objList, Integer maxCount,
 	    SortOrder order) {
-	Collections.sort(objList, new ComparatorIExpense().setOrder(order));
+	Collections.sort(objList, new ComparatorExpenseI(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}
@@ -239,7 +239,7 @@ public class StatisticsProject extends SummaryStatistics {
      */
     private ImmutableList<? extends Object> sortByCostAbstract(List<? extends AbstractExpense> objList,
 	    Integer maxCount, SortOrder order) {
-	Collections.sort(objList, new ComparatorAbstractExpense().setOrder(order));
+	Collections.sort(objList, new ComparatorExpenseA(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}

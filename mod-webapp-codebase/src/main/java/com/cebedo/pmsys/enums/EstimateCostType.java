@@ -6,6 +6,9 @@ public enum EstimateCostType {
 
     INDIRECT(1, "Indirect");
 
+    public static final int PLANNED = 0;
+    public static final int ACTUAL = 1;
+
     EstimateCostType(int i, String lbl) {
 	setId(i);
 	setLabel(lbl);

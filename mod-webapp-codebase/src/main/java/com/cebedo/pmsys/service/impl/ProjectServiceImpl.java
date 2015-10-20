@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.bean.StatisticsStaff;
@@ -1437,6 +1438,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// TODO Statistics of estimated costs.
 	List<EstimateCost> estimatedCosts = this.estimateCostService.list(proj);
+
+	StatisticsEstimateCost statEstimates = new StatisticsEstimateCost(estimatedCosts);
 
 	rowIndex++;
 
