@@ -44,6 +44,13 @@ public class StatisticsEstimateCost extends SummaryStatistics {
     private Map<EstimateCost, Double> absDiffIndirect = new HashMap<EstimateCost, Double>();
     private Map<EstimateCost, Double> absDiffOverall = new HashMap<EstimateCost, Double>();
 
+    private double meanPlannedDirect;
+    private double meanPlannedIndirect;
+    private double meanPlannedOverall;
+    private double meanActualDirect;
+    private double meanActualIndirect;
+    private double meanActualOverall;
+
     public StatisticsEstimateCost() {
 	;
     }
@@ -67,8 +74,16 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	}
 	initPlannedDirect();
 	initPlannedIndirect();
+	initPlannedOverall();
 	initActualDirect();
 	initActualIndirect();
+	initActualOverall();
+    }
+
+    private void initActualOverall() {
+	initValues(EstimateCostType.ACTUAL);
+	this.meanActualOverall = getMean();
+	clear();
     }
 
     /**
@@ -177,6 +192,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
+	this.meanActualIndirect = getMean();
 	this.maxActualIndirect = matchingList(max, costType, subType);
 	this.minActualIndirect = matchingList(min, costType, subType);
 	clear();
@@ -191,6 +207,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
+	this.meanPlannedIndirect = getMean();
 	this.maxPlannedIndirect = matchingList(max, costType, subType);
 	this.minPlannedIndirect = matchingList(min, costType, subType);
 	clear();
@@ -205,8 +222,18 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
+	this.meanActualDirect = getMean();
 	this.maxActualDirect = matchingList(max, costType, subType);
 	this.minActualDirect = matchingList(min, costType, subType);
+	clear();
+    }
+
+    /**
+     * Initialize data.
+     */
+    private void initPlannedOverall() {
+	initValues(EstimateCostType.PLANNED);
+	this.meanPlannedOverall = getMean();
 	clear();
     }
 
@@ -219,6 +246,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
+	this.meanPlannedDirect = getMean();
 	this.maxPlannedDirect = matchingList(max, costType, subType);
 	this.minPlannedDirect = matchingList(min, costType, subType);
 	clear();
@@ -245,6 +273,10 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	return returnList;
     }
 
+    private void initValues(int subType) {
+	initValues(null, subType);
+    }
+
     /**
      * Initialize values.
      * 
@@ -252,8 +284,9 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * @param subType
      */
     private void initValues(EstimateCostType costType, int subType) {
-	for (EstimateCost expense : (costType == EstimateCostType.DIRECT ? this.estimatesDirect
-		: this.estimatesIndirect)) {
+	for (EstimateCost expense : costType == null ? this.estimates
+		: (costType == EstimateCostType.DIRECT ? this.estimatesDirect
+			: this.estimatesIndirect)) {
 	    if (subType == EstimateCostType.PLANNED) {
 		addValue(expense.getCost());
 	    } else {
@@ -315,6 +348,30 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	Collections.sort(estCosts, new ComparatorEstimateCost(subType, order));
 	return limit == null ? FluentIterable.from(estCosts).toList()
 		: FluentIterable.from(estCosts).limit(limit).toList();
+    }
+
+    public double getMeanPlannedDirect() {
+	return meanPlannedDirect;
+    }
+
+    public double getMeanPlannedIndirect() {
+	return meanPlannedIndirect;
+    }
+
+    public double getMeanPlannedOverall() {
+	return meanPlannedOverall;
+    }
+
+    public double getMeanActualDirect() {
+	return meanActualDirect;
+    }
+
+    public double getMeanActualIndirect() {
+	return meanActualIndirect;
+    }
+
+    public double getMeanActualOverall() {
+	return meanActualOverall;
     }
 
 }
