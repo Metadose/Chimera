@@ -1461,9 +1461,29 @@ public class ProjectServiceImpl implements ProjectService {
 	tempContainer = statEstimates.getSortedActualDirect(order, limit);
 	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
 
-	// TODO Top absolute differences (planned - actual) of direct.
-	// TODO Top absolute differences (planned - actual) of indirect.
-	// TODO Top absolute differences (planned - actual) of overall.
+	// Top differences (planned - actual) of direct.
+	ImmutableList<Entry<EstimateCost, Double>> diffDirectDesc = statEstimates
+		.getSortedDifferencesDirect(limit, order);
+
+	// Top differences (planned - actual) of indirect.
+	ImmutableList<Entry<EstimateCost, Double>> diffIndirectDesc = statEstimates
+		.getSortedDifferencesIndirect(limit, order);
+
+	// Top differences (planned - actual) of overall.
+	ImmutableList<Entry<EstimateCost, Double>> diffOverallDesc = statEstimates
+		.getSortedDifferencesOverall(limit, order);
+
+	// Top absolute differences (planned - actual) of direct.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffDirectDesc = statEstimates
+		.getSortedAbsDiffDirect(limit, order);
+
+	// Top absolute differences (planned - actual) of indirect.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffIndirectDesc = statEstimates
+		.getSortedAbsDiffIndirect(limit, order);
+
+	// Top absolute differences (planned - actual) of overall.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffOverallDesc = statEstimates
+		.getSortedAbsDiffOverall(limit, order);
 
 	// Bottom estimated costs.
 	order = SortOrder.ASCENDING;
@@ -1471,6 +1491,30 @@ public class ProjectServiceImpl implements ProjectService {
 	tempContainer = statEstimates.getSortedPlannedIndirect(order, limit);
 	tempContainer = statEstimates.getSortedActualDirect(order, limit);
 	tempContainer = statEstimates.getSortedActualIndirect(order, limit);
+
+	// Bottom absolute differences (planned - actual) of direct.
+	ImmutableList<Entry<EstimateCost, Double>> diffDirectAsc = statEstimates
+		.getSortedDifferencesDirect(limit, order);
+
+	// Bottom absolute differences (planned - actual) of indirect.
+	ImmutableList<Entry<EstimateCost, Double>> diffIndirectAsc = statEstimates
+		.getSortedDifferencesIndirect(limit, order);
+
+	// Bottom absolute differences (planned - actual) of overall.
+	ImmutableList<Entry<EstimateCost, Double>> diffOverallAsc = statEstimates
+		.getSortedDifferencesOverall(limit, order);
+
+	// Bottom absolute differences (planned - actual) of direct.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffDirectAsc = statEstimates
+		.getSortedAbsDiffDirect(limit, order);
+
+	// Bottom absolute differences (planned - actual) of indirect.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffIndirectAsc = statEstimates
+		.getSortedAbsDiffIndirect(limit, order);
+
+	// Bottom absolute differences (planned - actual) of overall.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffOverallAsc = statEstimates
+		.getSortedAbsDiffOverall(limit, order);
 
 	// TODO Mean of planned direct.
 	// TODO Mean of planned indirect.

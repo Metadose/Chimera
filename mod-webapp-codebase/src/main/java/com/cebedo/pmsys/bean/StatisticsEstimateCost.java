@@ -38,6 +38,11 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 
     private Map<EstimateCost, Double> differencesDirect = new HashMap<EstimateCost, Double>();
     private Map<EstimateCost, Double> differencesIndirect = new HashMap<EstimateCost, Double>();
+    private Map<EstimateCost, Double> differencesOverall = new HashMap<EstimateCost, Double>();
+
+    private Map<EstimateCost, Double> absDiffDirect = new HashMap<EstimateCost, Double>();
+    private Map<EstimateCost, Double> absDiffIndirect = new HashMap<EstimateCost, Double>();
+    private Map<EstimateCost, Double> absDiffOverall = new HashMap<EstimateCost, Double>();
 
     public StatisticsEstimateCost() {
 	;
@@ -51,10 +56,14 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	    if (est.getCostType() == EstimateCostType.DIRECT) {
 		this.estimatesDirect.add(est);
 		this.differencesDirect.put(est, difference);
+		this.absDiffDirect.put(est, Math.abs(difference));
 	    } else {
 		this.estimatesIndirect.add(est);
 		this.differencesIndirect.put(est, difference);
+		this.absDiffIndirect.put(est, Math.abs(difference));
 	    }
+	    this.differencesOverall.put(est, difference);
+	    this.absDiffOverall.put(est, Math.abs(difference));
 	}
 	initPlannedDirect();
 	initPlannedIndirect();
@@ -62,16 +71,93 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	initActualIndirect();
     }
 
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
     public ImmutableList<Entry<EstimateCost, Double>> getSortedDifferencesIndirect(Integer limit,
 	    SortOrder order) {
 	return sortDifferences(this.differencesIndirect, limit, order);
     }
 
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
+    public ImmutableList<Entry<EstimateCost, Double>> getSortedAbsDiffOverall(Integer limit,
+	    SortOrder order) {
+	return sortDifferences(this.absDiffOverall, limit, order);
+    }
+
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
+    public ImmutableList<Entry<EstimateCost, Double>> getSortedAbsDiffIndirect(Integer limit,
+	    SortOrder order) {
+	return sortDifferences(this.absDiffIndirect, limit, order);
+    }
+
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
+    public ImmutableList<Entry<EstimateCost, Double>> getSortedAbsDiffDirect(Integer limit,
+	    SortOrder order) {
+	return sortDifferences(this.absDiffDirect, limit, order);
+    }
+
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
     public ImmutableList<Entry<EstimateCost, Double>> getSortedDifferencesDirect(Integer limit,
 	    SortOrder order) {
 	return sortDifferences(this.differencesDirect, limit, order);
     }
 
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param limit
+     * @param order
+     * @return
+     */
+    public ImmutableList<Entry<EstimateCost, Double>> getSortedDifferencesOverall(Integer limit,
+	    SortOrder order) {
+	return sortDifferences(this.differencesOverall, limit, order);
+    }
+
+    /**
+     * Get the difference between the planned and the actual, then sort the
+     * differences.
+     * 
+     * @param toSort
+     * @param limit
+     * @param order
+     * @return
+     */
     public ImmutableList<Entry<EstimateCost, Double>> sortDifferences(Map<EstimateCost, Double> toSort,
 	    Integer limit, SortOrder order) {
 	ArrayList<Entry<EstimateCost, Double>> entryList = Lists.newArrayList(toSort.entrySet());
@@ -82,6 +168,9 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	return FluentIterable.from(entryList).toList();
     }
 
+    /**
+     * Initialize data.
+     */
     private void initActualIndirect() {
 	EstimateCostType costType = EstimateCostType.INDIRECT;
 	int subType = EstimateCostType.ACTUAL;
@@ -93,6 +182,9 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	clear();
     }
 
+    /**
+     * Initialize data.
+     */
     private void initPlannedIndirect() {
 	EstimateCostType costType = EstimateCostType.INDIRECT;
 	int subType = EstimateCostType.PLANNED;
@@ -104,6 +196,9 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	clear();
     }
 
+    /**
+     * Initialize data.
+     */
     private void initActualDirect() {
 	EstimateCostType costType = EstimateCostType.DIRECT;
 	int subType = EstimateCostType.ACTUAL;
@@ -115,6 +210,9 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	clear();
     }
 
+    /**
+     * Initialize data.
+     */
     private void initPlannedDirect() {
 	EstimateCostType costType = EstimateCostType.DIRECT;
 	int subType = EstimateCostType.PLANNED;
@@ -126,6 +224,14 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	clear();
     }
 
+    /**
+     * Get the list of estimated cost by matching the arguments.
+     * 
+     * @param comparator
+     * @param costType
+     * @param subType
+     * @return
+     */
     private List<EstimateCost> matchingList(double comparator, EstimateCostType costType, int subType) {
 	List<EstimateCost> returnList = new ArrayList<EstimateCost>();
 	for (EstimateCost expense : (costType == EstimateCostType.DIRECT ? this.estimatesDirect
@@ -139,6 +245,12 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	return returnList;
     }
 
+    /**
+     * Initialize values.
+     * 
+     * @param costType
+     * @param subType
+     */
     private void initValues(EstimateCostType costType, int subType) {
 	for (EstimateCost expense : (costType == EstimateCostType.DIRECT ? this.estimatesDirect
 		: this.estimatesIndirect)) {
