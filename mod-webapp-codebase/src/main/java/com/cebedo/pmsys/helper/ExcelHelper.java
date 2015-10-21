@@ -2,6 +2,7 @@ package com.cebedo.pmsys.helper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -22,7 +23,27 @@ import com.google.common.collect.ImmutableList;
 
 public class ExcelHelper {
 
-    public int addCellLabel(String label, HSSFSheet sheet, int rowIndex) {
+    public int addSectionLabel(String label, HSSFSheet sheet, int rowIndex, IndexedColors color,
+	    Object... moreValues) {
+	// Create the style.
+	HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+	style.setFillForegroundColor(color.getIndex());
+	style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+	// Create the label cell.
+	HSSFRow row = sheet.createRow(rowIndex);
+	row.createCell(0).setCellStyle(style);
+	row.getCell(0).setCellValue(label);
+	int cellIndex = 1;
+	for (Object additionalVal : moreValues) {
+	    row.createCell(cellIndex).setCellValue(String.valueOf(additionalVal));
+	    cellIndex++;
+	}
+	rowIndex++;
+	return rowIndex;
+    }
+
+    public int addSectionLabel(String label, HSSFSheet sheet, int rowIndex, Object... moreValues) {
 	// Create the style.
 	HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
 	style.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
@@ -32,17 +53,22 @@ public class ExcelHelper {
 	HSSFRow row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellStyle(style);
 	row.getCell(0).setCellValue(label);
+	int cellIndex = 1;
+	for (Object additionalVal : moreValues) {
+	    row.createCell(cellIndex).setCellValue(String.valueOf(additionalVal));
+	    cellIndex++;
+	}
 	rowIndex++;
 	return rowIndex;
     }
 
     public int addSectionFromMap(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
 	    Map<String, Double> labelValueMap) {
-	rowIndex = addCellLabel(sectionName, sheet, rowIndex);
+	rowIndex = addSectionLabel(sectionName, sheet, rowIndex);
 	for (String key : labelValueMap.keySet()) {
 	    row = sheet.createRow(rowIndex);
-	    row.createCell(1).setCellValue(key);
-	    row.createCell(2).setCellValue(labelValueMap.get(key));
+	    row.createCell(0).setCellValue(key);
+	    row.createCell(1).setCellValue(labelValueMap.get(key));
 	    rowIndex++;
 	}
 	rowIndex++;
@@ -75,18 +101,38 @@ public class ExcelHelper {
 	return rowIndex;
     }
 
-    public int addSectionEstimates(List<EstimateCost> list, HSSFRow row, HSSFSheet sheet,
-	    int rowIndex, int subType) {
-	for (EstimateCost cost : list) {
-	    rowIndex = addCell(cost.getName(),
-		    subType == EstimateCostType.PLANNED ? cost.getCost() : cost.getActualCost(), row,
-		    sheet, rowIndex, subType == EstimateCostType.PLANNED ? "Estimated" : "Actual",
+    public int addSectionEstimates(ImmutableList<Entry<EstimateCost, Double>> list, HSSFRow row,
+	    HSSFSheet sheet, int rowIndex, int subType) {
+	for (Entry<EstimateCost, Double> entry : list) {
+	    EstimateCost cost = entry.getKey();
+	    double value = entry.getValue();
+	    if (subType == EstimateCostType.SUB_TYPE_DIFFERENCE
+		    || subType == EstimateCostType.SUB_TYPE_ABSOLUTE) {
+		rowIndex = addRow(cost.getName(), value, row, sheet, rowIndex,
+			subType == EstimateCostType.SUB_TYPE_DIFFERENCE ? "Difference" : "Absolute",
+			cost.getCostType().getLabel());
+		continue;
+	    }
+	    rowIndex = addRow(cost.getName(), value, row, sheet, rowIndex,
+		    subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual",
 		    cost.getCostType().getLabel());
 	}
 	return rowIndex;
     }
 
-    public int addCell(String key, Object value, HSSFRow row, HSSFSheet sheet, int rowIndex,
+    public int addSectionEstimates(List<EstimateCost> list, HSSFRow row, HSSFSheet sheet, int rowIndex,
+	    int subType) {
+	for (EstimateCost cost : list) {
+	    rowIndex = addRow(cost.getName(),
+		    subType == EstimateCostType.SUB_TYPE_PLANNED ? cost.getCost() : cost.getActualCost(),
+		    row, sheet, rowIndex,
+		    subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual",
+		    cost.getCostType().getLabel());
+	}
+	return rowIndex;
+    }
+
+    public int addRow(String key, Object value, HSSFRow row, HSSFSheet sheet, int rowIndex,
 	    Object... moreValues) {
 	row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue(key);

@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,7 @@ import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.MultipartFileValidator;
 import com.cebedo.pmsys.validator.ProjectValidator;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
 @Service
@@ -880,7 +882,7 @@ public class ProjectServiceImpl implements ProjectService {
 	HSSFSheet sheet = wb.createSheet(sheetName);
 	int rowIndex = 0;
 	HSSFRow row = sheet.createRow(rowIndex);
-	rowIndex = this.xlsHelp.addCellLabel("Project Analysis", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Project Analysis", sheet, rowIndex);
 	rowIndex++;
 
 	// Basic details.
@@ -953,10 +955,8 @@ public class ProjectServiceImpl implements ProjectService {
 	// Resize all sheets.
 	for (int sheetIndex = 0; sheetIndex < wb.getNumberOfSheets(); sheetIndex++) {
 	    HSSFSheet wbSheet = wb.getSheetAt(sheetIndex);
+	    wbSheet.setDefaultColumnWidth(20);
 	    wbSheet.autoSizeColumn(0);
-	    wbSheet.autoSizeColumn(1);
-	    wbSheet.autoSizeColumn(2);
-	    wbSheet.autoSizeColumn(3);
 	    wbSheet.setZoom(85, 100);
 	}
 
@@ -980,7 +980,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Most costly expenses for each type.
 	HSSFSheet sheet = wb.createSheet("Expenses");
-	rowIndex = this.xlsHelp.addCellLabel("Maximum", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Maximum", sheet, rowIndex,
+		"Expense(s) with the greatest value");
 	rowIndex = this.xlsHelp.addSectionExpenses("Payrolls", row, sheet, rowIndex, maxPayroll);
 	rowIndex = this.xlsHelp.addSectionExpenses("Deliveries", row, sheet, rowIndex, maxDeliveries);
 	rowIndex = this.xlsHelp.addSectionExpenses("Equipment", row, sheet, rowIndex, maxEquip);
@@ -999,8 +1000,8 @@ public class ProjectServiceImpl implements ProjectService {
 		SortOrder.DESCENDING);
 	ImmutableList<IExpense> projDesc = statisticsProj.getLimitedSortedByCostProject(limit,
 		SortOrder.DESCENDING);
-	rowIndex = this.xlsHelp.addCellLabel(String.format("Top %s Most Expensive", limit), sheet,
-		rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel(String.format("Top %s Expenses", limit), sheet, rowIndex,
+		"Most expensive");
 	rowIndex = this.xlsHelp.addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostDesc);
 	rowIndex = this.xlsHelp.addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostDesc);
 	rowIndex = this.xlsHelp.addSectionExpenses("Equipment", row, sheet, rowIndex, equipCostDesc);
@@ -1013,7 +1014,7 @@ public class ProjectServiceImpl implements ProjectService {
 	List<Delivery> minDeliveries = statisticsProj.getMinDeliveries();
 	List<EquipmentExpense> minEquip = statisticsProj.getMinEquipment();
 	List<Expense> minOtherExpenses = statisticsProj.getMinOtherExpenses();
-	rowIndex = this.xlsHelp.addCellLabel("Minimum", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Minimum", sheet, rowIndex);
 	rowIndex = this.xlsHelp.addSectionExpenses("Payrolls", row, sheet, rowIndex, minPayroll);
 	rowIndex = this.xlsHelp.addSectionExpenses("Deliveries", row, sheet, rowIndex, minDeliveries);
 	rowIndex = this.xlsHelp.addSectionExpenses("Equipment", row, sheet, rowIndex, minEquip);
@@ -1031,7 +1032,7 @@ public class ProjectServiceImpl implements ProjectService {
 		SortOrder.ASCENDING);
 	ImmutableList<IExpense> projAsc = statisticsProj.getLimitedSortedByCostProject(limit,
 		SortOrder.ASCENDING);
-	rowIndex = this.xlsHelp.addCellLabel(String.format("Top %s Least Expensive", limit), sheet,
+	rowIndex = this.xlsHelp.addSectionLabel(String.format("Top %s Least Expensive", limit), sheet,
 		rowIndex);
 	rowIndex = this.xlsHelp.addSectionExpenses("Payrolls", row, sheet, rowIndex, payrollsCostAsc);
 	rowIndex = this.xlsHelp.addSectionExpenses("Deliveries", row, sheet, rowIndex, deliveryCostAsc);
@@ -1080,22 +1081,22 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private int xlsAnalysisStaff(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
-	rowIndex = this.xlsHelp.addCellLabel("Staff", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Staff", sheet, rowIndex);
 
 	// Number of staff members assigned to this project.
 	Set<Staff> assignedStaff = proj.getAssignedStaff();
 	int numOfAssignedStaff = assignedStaff.size();
-	rowIndex = this.xlsHelp.addCell("Number of Assigned Staff", numOfAssignedStaff, row, sheet,
+	rowIndex = this.xlsHelp.addRow("Number of Assigned Staff", numOfAssignedStaff, row, sheet,
 		rowIndex);
 
 	// Mean salary per day.
 	StatisticsStaff statisticsStaff = new StatisticsStaff(proj, assignedStaff);
 	double meanWage = statisticsStaff.getMeanWage();
-	rowIndex = this.xlsHelp.addCell("Salary Mean (Daily)", meanWage, row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Salary Mean (Daily)", meanWage, row, sheet, rowIndex);
 
 	// Summation of salary per day.
 	double sumWage = statisticsStaff.getSumWage();
-	rowIndex = this.xlsHelp.addCell("Salary Sum (Daily)", sumWage, row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Salary Sum (Daily)", sumWage, row, sheet, rowIndex);
 
 	// Staff list with the most absences. Get top 5 absentees.
 	// Top 5 staff member per attendance status.
@@ -1144,7 +1145,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private int xlsAnalysisProgress(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
-	rowIndex = this.xlsHelp.addCellLabel("Project Runtime", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Project Runtime", sheet, rowIndex);
 
 	Date dateStart = proj.getDateStart();
 	row = sheet.createRow(rowIndex);
@@ -1249,7 +1250,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     private int xlsAnalysisPhysicalTarget(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj,
 	    double projCost, double actualProjCost) {
-	rowIndex = this.xlsHelp.addCellLabel("Physical Target Details", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Physical Target Details", sheet, rowIndex);
 
 	double phyTarget = proj.getPhysicalTarget();
 	row = sheet.createRow(rowIndex);
@@ -1303,24 +1304,31 @@ public class ProjectServiceImpl implements ProjectService {
 
 	HSSFSheet sheet = wb.createSheet("Estimate");
 	int rowIndex = 0;
-	rowIndex = this.xlsHelp.addCellLabel("Project Cost Estimate", sheet, rowIndex);
-	rowIndex = this.xlsHelp.addCell("Planned Cost (Direct)", plannedDirect, row, sheet, rowIndex);
-	rowIndex = this.xlsHelp.addCell("Planned Cost (Indirect)", plannedIndirect, row, sheet,
-		rowIndex);
-	rowIndex = this.xlsHelp.addCell("Planned Cost (Total)", projCost, row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("PROJECT COST ESTIMATE", sheet, rowIndex,
+		IndexedColors.PALE_BLUE);
+	rowIndex++;
+	rowIndex = this.xlsHelp.addSectionLabel("SUM", sheet, rowIndex, IndexedColors.YELLOW,
+		"Summation");
+	rowIndex = this.xlsHelp.addSectionLabel("Cost Totals", sheet, rowIndex,
+		"Cost total per category");
+	rowIndex = this.xlsHelp.addRow("Planned Cost (Direct)", plannedDirect, row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Planned Cost (Indirect)", plannedIndirect, row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Planned Cost (Total)", projCost, row, sheet, rowIndex);
+	rowIndex++;
 
 	// If the project is completed, display actual costs
 	// and compare.
 	if (proj.isCompleted()) {
-	    rowIndex = this.xlsHelp.addCell("Actual Cost (Direct)", actualDirect, row, sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addCell("Actual Cost (Indirect)", actualIndirect, row, sheet,
+	    rowIndex = this.xlsHelp.addRow("Actual Cost (Direct)", actualDirect, row, sheet, rowIndex);
+	    rowIndex = this.xlsHelp.addRow("Actual Cost (Indirect)", actualIndirect, row, sheet,
 		    rowIndex);
-	    rowIndex = this.xlsHelp.addCell("Actual Cost (Total)", actualProjCost, row, sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addCell("Difference (Direct)", plannedDirect - actualDirect, row,
+	    rowIndex = this.xlsHelp.addRow("Actual Cost (Total)", actualProjCost, row, sheet, rowIndex);
+	    rowIndex++;
+	    rowIndex = this.xlsHelp.addRow("Difference (Direct)", plannedDirect - actualDirect, row,
 		    sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addCell("Difference (Indirect)", plannedIndirect - actualIndirect,
+	    rowIndex = this.xlsHelp.addRow("Difference (Indirect)", plannedIndirect - actualIndirect,
 		    row, sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addCell("Difference (Total)", projCost - actualProjCost, row, sheet,
+	    rowIndex = this.xlsHelp.addRow("Difference (Total)", projCost - actualProjCost, row, sheet,
 		    rowIndex);
 	}
 
@@ -1330,125 +1338,200 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Maximum costs.
-	rowIndex = this.xlsHelp.addCellLabel("Maximum Costs", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("MAX & MIN", sheet, rowIndex, IndexedColors.YELLOW,
+		"Max and min of the dataset");
+	rowIndex = this.xlsHelp.addSectionLabel("Maximum Costs", sheet, rowIndex,
+		"Estimate(s) with the MOST expensive cost per category");
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxPlannedDirect(), row, sheet,
-		rowIndex, EstimateCostType.PLANNED);
+		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxPlannedIndirect(), row, sheet,
-		rowIndex, EstimateCostType.PLANNED);
+		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxActualDirect(), row, sheet,
-		rowIndex, EstimateCostType.ACTUAL);
+		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxActualIndirect(), row, sheet,
-		rowIndex, EstimateCostType.ACTUAL);
+		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex++;
 
 	// Minimum costs.
-	rowIndex = this.xlsHelp.addCellLabel("Minimum Costs", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Minimum Costs", sheet, rowIndex,
+		"Estimate(s) with the LEAST expensive cost per category");
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinPlannedDirect(), row, sheet,
-		rowIndex, EstimateCostType.PLANNED);
+		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinPlannedIndirect(), row, sheet,
-		rowIndex, EstimateCostType.PLANNED);
+		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinActualDirect(), row, sheet,
-		rowIndex, EstimateCostType.ACTUAL);
+		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinActualIndirect(), row, sheet,
-		rowIndex, EstimateCostType.ACTUAL);
+		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex++;
 
 	// Top estimated costs.
-	Integer limit = null;
+	Integer limit = 5;
 	SortOrder order = SortOrder.DESCENDING;
-	rowIndex = this.xlsHelp.addCellLabel("Top Planned Direct", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("TOP ENTRIES", sheet, rowIndex, IndexedColors.YELLOW,
+		"Greatest costs in descending order");
+	rowIndex = this.xlsHelp.addSectionLabel("Top Planned Direct", sheet, rowIndex,
+		String.format("Top %s MOST expensive ESTIMATED DIRECT costs", limit));
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedPlannedDirect(order, limit),
-		row, sheet, rowIndex, EstimateCostType.PLANNED);
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex++;
 
-	rowIndex = this.xlsHelp.addCellLabel("Top Planned Indirect", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Planned Indirect", sheet, rowIndex,
+		String.format("Top %s MOST expensive ESTIMATED INDIRECT costs", limit));
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedPlannedIndirect(order, limit),
-		row, sheet, rowIndex, EstimateCostType.PLANNED);
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
 	rowIndex++;
 
-	rowIndex = this.xlsHelp.addCellLabel("Top Actual Direct", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Actual Direct", sheet, rowIndex,
+		String.format("Top %s MOST expensive ACTUAL DIRECT costs", limit));
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedActualDirect(order, limit),
-		row, sheet, rowIndex, EstimateCostType.ACTUAL);
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex++;
 
-	rowIndex = this.xlsHelp.addCellLabel("Top Actual Indirect", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Actual Indirect", sheet, rowIndex,
+		String.format("Top %s MOST expensive ACTUAL INDIRECT costs", limit));
 	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedActualIndirect(order, limit),
-		row, sheet, rowIndex, EstimateCostType.ACTUAL);
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
 	rowIndex++;
 
-	// Top differences (planned - actual) of direct.
+	// Bottom estimated costs.
+	order = SortOrder.ASCENDING;
+	rowIndex = this.xlsHelp.addSectionLabel("BOTTOM ENTRIES", sheet, rowIndex, IndexedColors.YELLOW,
+		"Least costs in ascending order");
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Planned Direct", sheet, rowIndex,
+		String.format("Bottom %s LEAST expensive ESTIMATED DIRECT costs", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedPlannedDirect(order, limit),
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
+	rowIndex++;
+
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Planned Indirect", sheet, rowIndex,
+		String.format("Bottom %s LEAST expensive ESTIMATED INDIRECT costs", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedPlannedIndirect(order, limit),
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
+	rowIndex++;
+
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Actual Direct", sheet, rowIndex,
+		String.format("Bottom %s LEAST expensive ACTUAL DIRECT costs", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedActualDirect(order, limit),
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
+	rowIndex++;
+
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Actual Indirect", sheet, rowIndex,
+		String.format("Bottom %s LEAST expensive ACTUAL INDIRECT costs", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getSortedActualIndirect(order, limit),
+		row, sheet, rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
+	rowIndex++;
+
+	// Top Overestimated Direct.
+	order = SortOrder.DESCENDING;
 	ImmutableList<Entry<EstimateCost, Double>> diffDirectDesc = statEstimates
 		.getSortedDifferencesDirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("TOP DIFFERENCES", sheet, rowIndex, IndexedColors.YELLOW,
+		"Greatest differences (estimated minus actual) in descending order");
+	rowIndex = this.xlsHelp.addSectionLabel("Top Difference Direct", sheet, rowIndex,
+		String.format("Top %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffDirectDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
 	// Top differences (planned - actual) of indirect.
 	ImmutableList<Entry<EstimateCost, Double>> diffIndirectDesc = statEstimates
 		.getSortedDifferencesIndirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Difference Indirect", sheet, rowIndex,
+		String.format("Top %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffIndirectDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
 	// Top differences (planned - actual) of overall.
 	ImmutableList<Entry<EstimateCost, Double>> diffOverallDesc = statEstimates
 		.getSortedDifferencesOverall(limit, order);
-
-	// Top absolute differences (planned - actual) of direct.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffDirectDesc = statEstimates
-		.getSortedAbsDiffDirect(limit, order);
-
-	// Top absolute differences (planned - actual) of indirect.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffIndirectDesc = statEstimates
-		.getSortedAbsDiffIndirect(limit, order);
-
-	// Top absolute differences (planned - actual) of overall.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffOverallDesc = statEstimates
-		.getSortedAbsDiffOverall(limit, order);
-
-	// Bottom estimated costs.
-	order = SortOrder.ASCENDING;
-	statEstimates.getSortedPlannedDirect(order, limit);
-	statEstimates.getSortedPlannedIndirect(order, limit);
-	statEstimates.getSortedActualDirect(order, limit);
-	statEstimates.getSortedActualIndirect(order, limit);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Difference Overall", sheet, rowIndex,
+		String.format("Top %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffOverallDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
 	// Bottom absolute differences (planned - actual) of direct.
+	order = SortOrder.ASCENDING;
 	ImmutableList<Entry<EstimateCost, Double>> diffDirectAsc = statEstimates
 		.getSortedDifferencesDirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("BOTTOM DIFFERENCES", sheet, rowIndex,
+		IndexedColors.YELLOW, "Least differences (estimated minus actual) in ascending order");
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Difference Direct", sheet, rowIndex,
+		String.format("Bottom %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffDirectAsc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
 	// Bottom absolute differences (planned - actual) of indirect.
 	ImmutableList<Entry<EstimateCost, Double>> diffIndirectAsc = statEstimates
 		.getSortedDifferencesIndirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Difference Indirect", sheet, rowIndex,
+		String.format("Bottom %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffIndirectAsc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
 	// Bottom absolute differences (planned - actual) of overall.
 	ImmutableList<Entry<EstimateCost, Double>> diffOverallAsc = statEstimates
 		.getSortedDifferencesOverall(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Bottom Difference Overall", sheet, rowIndex,
+		String.format("Bottom %s DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(diffOverallAsc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_DIFFERENCE);
+	rowIndex++;
 
-	// Bottom absolute differences (planned - actual) of direct.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffDirectAsc = statEstimates
+	// Top absolute differences (planned - actual) of direct.
+	order = SortOrder.DESCENDING;
+	rowIndex = this.xlsHelp.addSectionLabel("ABSOLUTE DIFFERENCES", sheet, rowIndex,
+		IndexedColors.YELLOW, "Most over and underestimated costs");
+	ImmutableList<Entry<EstimateCost, Double>> absDiffDirectDesc = statEstimates
 		.getSortedAbsDiffDirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Absolute Difference Direct", sheet, rowIndex, String
+		.format("Top %s ABSOLUTE DIFFERENCE between the estimated and actual cost", limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(absDiffDirectDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_ABSOLUTE);
+	rowIndex++;
 
-	// Bottom absolute differences (planned - actual) of indirect.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffIndirectAsc = statEstimates
+	// Top absolute differences (planned - actual) of indirect.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffIndirectDesc = statEstimates
 		.getSortedAbsDiffIndirect(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Absolute Difference Indirect", sheet, rowIndex,
+		String.format("Top %s ABSOLUTE DIFFERENCE between the estimated and actual cost",
+			limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(absDiffIndirectDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_ABSOLUTE);
+	rowIndex++;
 
-	// Bottom absolute differences (planned - actual) of overall.
-	ImmutableList<Entry<EstimateCost, Double>> absDiffOverallAsc = statEstimates
+	// Top absolute differences (planned - actual) of overall.
+	ImmutableList<Entry<EstimateCost, Double>> absDiffOverallDesc = statEstimates
 		.getSortedAbsDiffOverall(limit, order);
+	rowIndex = this.xlsHelp.addSectionLabel("Top Absolute Difference Overall", sheet, rowIndex,
+		String.format("Top %s ABSOLUTE DIFFERENCE between the estimated and actual cost",
+			limit));
+	rowIndex = this.xlsHelp.addSectionEstimates(absDiffOverallDesc, row, sheet, rowIndex,
+		EstimateCostType.SUB_TYPE_ABSOLUTE);
+	rowIndex++;
 
-	// Mean of planned direct.
+	// Means.
+	rowIndex = this.xlsHelp.addSectionLabel("MEANS", sheet, rowIndex, IndexedColors.YELLOW,
+		"Average cost per category");
+	Map<String, Double> labelValueMap = Maps.newLinkedHashMap();
 	double meanPlannedDirect = statEstimates.getMeanPlannedDirect();
-
-	// Mean of planned indirect.
 	double meanPlannedIndirect = statEstimates.getMeanPlannedIndirect();
-
-	// Mean of planned overall.
 	double meanPlannedOverall = statEstimates.getMeanPlannedOverall();
-
-	// Mean of planned direct.
 	double meanActualDirect = statEstimates.getMeanActualDirect();
-
-	// Mean of planned indirect.
 	double meanActualIndirect = statEstimates.getMeanActualIndirect();
-
-	// Mean of planned overall.
 	double meanActualOverall = statEstimates.getMeanActualOverall();
-
+	labelValueMap.put("Estimated Direct", meanPlannedDirect);
+	labelValueMap.put("Estimated Indirect", meanPlannedIndirect);
+	labelValueMap.put("Estimated Overall", meanPlannedOverall);
+	labelValueMap.put("Actual Direct", meanActualDirect);
+	labelValueMap.put("Actual Indirect", meanActualIndirect);
+	labelValueMap.put("Actual Overall", meanActualOverall);
+	rowIndex = this.xlsHelp.addSectionFromMap("Mean per Category", row, sheet, rowIndex,
+		labelValueMap);
 	rowIndex++;
 
     }
@@ -1464,10 +1547,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     private int xlsAnalysisDetails(HSSFRow row, HSSFSheet sheet, int rowIndex, Project proj) {
 
-	rowIndex = this.xlsHelp.addCellLabel("Details", sheet, rowIndex);
-	rowIndex = this.xlsHelp.addCell("Name", proj.getName(), row, sheet, rowIndex);
-	rowIndex = this.xlsHelp.addCell("Location", proj.getLocation(), row, sheet, rowIndex);
-	rowIndex = this.xlsHelp.addCell("Status", proj.getStatusEnum().label(), row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addSectionLabel("Details", sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Name", proj.getName(), row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Location", proj.getLocation(), row, sheet, rowIndex);
+	rowIndex = this.xlsHelp.addRow("Status", proj.getStatusEnum().label(), row, sheet, rowIndex);
 	rowIndex++;
 
 	return rowIndex;

@@ -7,7 +7,7 @@ import com.google.common.collect.Ordering;
 
 public class ComparatorEstimateCost extends Ordering<EstimateCost> {
 
-    private int subType = EstimateCostType.PLANNED;
+    private int subType = EstimateCostType.SUB_TYPE_PLANNED;
     private SortOrder order = SortOrder.ASCENDING;
 
     public ComparatorEstimateCost() {
@@ -21,9 +21,9 @@ public class ComparatorEstimateCost extends Ordering<EstimateCost> {
 
     @Override
     public int compare(EstimateCost left, EstimateCost right) {
-	double leftValue = this.subType == EstimateCostType.PLANNED ? left.getCost()
+	double leftValue = this.subType == EstimateCostType.SUB_TYPE_PLANNED ? left.getCost()
 		: left.getActualCost();
-	double rightValue = this.subType == EstimateCostType.PLANNED ? right.getCost()
+	double rightValue = this.subType == EstimateCostType.SUB_TYPE_PLANNED ? right.getCost()
 		: right.getActualCost();
 
 	// And all results are valid.
