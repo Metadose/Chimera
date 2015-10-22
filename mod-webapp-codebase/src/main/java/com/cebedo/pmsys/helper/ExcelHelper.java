@@ -23,7 +23,17 @@ import com.google.common.collect.ImmutableList;
 
 public class ExcelHelper {
 
-    public int addSectionLabel(String label, HSSFSheet sheet, int rowIndex, IndexedColors color,
+    /**
+     * Add a label.
+     * 
+     * @param label
+     * @param sheet
+     * @param rowIndex
+     * @param color
+     * @param moreValues
+     * @return
+     */
+    public int addLabel(String label, HSSFSheet sheet, int rowIndex, IndexedColors color,
 	    Object... moreValues) {
 	// Create the style.
 	HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
@@ -43,7 +53,17 @@ public class ExcelHelper {
 	return rowIndex;
     }
 
-    public int addSectionLabel(String label, HSSFSheet sheet, int rowIndex, Object... moreValues) {
+    /**
+     * Add a label.
+     * 
+     * @param label
+     * @param sheet
+     * @param rowIndex
+     * @param moreValues
+     * @return
+     */
+    public int addLabel(String label, HSSFSheet sheet, int rowIndex, Object... moreValues) {
+
 	// Create the style.
 	HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
 	style.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
@@ -62,14 +82,21 @@ public class ExcelHelper {
 	return rowIndex;
     }
 
-    public int addSectionFromMap(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+    /**
+     * Add a section.
+     * 
+     * @param sectionName
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param labelValueMap
+     * @return
+     */
+    public int addRowsFromMap(String sectionName, HSSFSheet sheet, int rowIndex,
 	    Map<String, Double> labelValueMap) {
-	rowIndex = addSectionLabel(sectionName, sheet, rowIndex);
+	rowIndex = addLabel(sectionName, sheet, rowIndex);
 	for (String key : labelValueMap.keySet()) {
-	    row = sheet.createRow(rowIndex);
-	    row.createCell(0).setCellValue(key);
-	    row.createCell(1).setCellValue(labelValueMap.get(key));
-	    rowIndex++;
+	    rowIndex = addRow(key, labelValueMap.get(key), sheet, rowIndex);
 	}
 	rowIndex++;
 	return rowIndex;
@@ -85,59 +112,91 @@ public class ExcelHelper {
      * @param expenses
      * @return
      */
-    public int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
+    public int addRowsExpenses(String sectionName, HSSFSheet sheet, int rowIndex,
 	    ImmutableList<IExpense> expenses) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue(sectionName);
-	rowIndex++;
 	for (IExpense expense : expenses) {
-	    row = sheet.createRow(rowIndex);
-	    row.createCell(1).setCellValue(expense.getName());
-	    row.createCell(2).setCellValue(expense.getCost());
-	    row.createCell(3).setCellValue(StringUtils.capitalize(expense.getObjectName()));
-	    rowIndex++;
+	    rowIndex = addRow(expense.getName(), expense.getCost(), sheet, rowIndex,
+		    StringUtils.capitalize(expense.getObjectName()));
 	}
 	rowIndex++;
 	return rowIndex;
     }
 
-    public int addSectionEstimates(ImmutableList<Entry<EstimateCost, Double>> list, HSSFRow row,
-	    HSSFSheet sheet, int rowIndex, int subType) {
+    /**
+     * Add a section.
+     * 
+     * @param list
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param subType
+     * @return
+     */
+    public int addSectionEstimates(ImmutableList<Entry<EstimateCost, Double>> list, HSSFSheet sheet,
+	    int rowIndex, int subType) {
+
+	// Loop through all entries.
 	for (Entry<EstimateCost, Double> entry : list) {
+
+	    // Get key and value.
 	    EstimateCost cost = entry.getKey();
 	    double value = entry.getValue();
+
+	    // If the sub type is computed.
 	    if (subType == EstimateCostType.SUB_TYPE_DIFFERENCE
 		    || subType == EstimateCostType.SUB_TYPE_ABSOLUTE) {
-		rowIndex = addRow(cost.getName(), value, row, sheet, rowIndex,
+		rowIndex = addRow(cost.getName(), value, sheet, rowIndex,
 			subType == EstimateCostType.SUB_TYPE_DIFFERENCE ? "Difference" : "Absolute",
 			cost.getCostType().getLabel());
 		continue;
 	    }
-	    rowIndex = addRow(cost.getName(), value, row, sheet, rowIndex,
+
+	    // If plain data render.
+	    rowIndex = addRow(cost.getName(), value, sheet, rowIndex,
 		    subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual",
 		    cost.getCostType().getLabel());
 	}
 	return rowIndex;
     }
 
-    public int addSectionEstimates(List<EstimateCost> list, HSSFRow row, HSSFSheet sheet, int rowIndex,
-	    int subType) {
+    /**
+     * Add a section.
+     * 
+     * @param list
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param subType
+     * @return
+     */
+    public int addSectionEstimates(List<EstimateCost> list, HSSFSheet sheet, int rowIndex, int subType) {
+
+	// Add row based on parameters.
 	for (EstimateCost cost : list) {
 	    rowIndex = addRow(cost.getName(),
 		    subType == EstimateCostType.SUB_TYPE_PLANNED ? cost.getCost() : cost.getActualCost(),
-		    row, sheet, rowIndex,
+		    sheet, rowIndex,
 		    subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual",
 		    cost.getCostType().getLabel());
 	}
 	return rowIndex;
     }
 
-    public int addRow(String key, Object value, HSSFRow row, HSSFSheet sheet, int rowIndex,
-	    Object... moreValues) {
-	row = sheet.createRow(rowIndex);
+    /**
+     * Add an Excel row.
+     * 
+     * @param key
+     * @param value
+     * @param row
+     * @param sheet
+     * @param rowIndex
+     * @param moreValues
+     * @return
+     */
+    public int addRow(String key, Object value, HSSFSheet sheet, int rowIndex, Object... moreValues) {
+	HSSFRow row = sheet.createRow(rowIndex);
 	row.createCell(0).setCellValue(key);
 	row.createCell(1).setCellValue(String.valueOf(value));
-
 	int cellIndex = 2;
 	for (Object additionalVal : moreValues) {
 	    row.createCell(cellIndex).setCellValue(String.valueOf(additionalVal));
@@ -157,16 +216,9 @@ public class ExcelHelper {
      * @param expenses
      * @return
      */
-    public int addSectionExpenses(String sectionName, HSSFRow row, HSSFSheet sheet, int rowIndex,
-	    List<? extends AbstractExpense> expenses) {
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue(sectionName);
-	rowIndex++;
+    public int addRowsExpenses(HSSFSheet sheet, int rowIndex, List<? extends AbstractExpense> expenses) {
 	for (AbstractExpense expense : expenses) {
-	    row = sheet.createRow(rowIndex);
-	    row.createCell(1).setCellValue(expense.getName());
-	    row.createCell(2).setCellValue(expense.getCost());
-	    rowIndex++;
+	    rowIndex = addRow(expense.getName(), expense.getCost(), sheet, rowIndex);
 	}
 	rowIndex++;
 	return rowIndex;

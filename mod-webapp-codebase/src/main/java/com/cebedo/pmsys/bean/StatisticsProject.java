@@ -18,6 +18,10 @@ import com.google.common.collect.ImmutableList;
 
 public class StatisticsProject extends SummaryStatistics {
 
+    public static final int DESCRIPTIVE_MAX = 0;
+    public static final int DESCRIPTIVE_MIN = 1;
+    public static final int DESCRIPTIVE_MEAN = 2;
+
     private static final long serialVersionUID = 1330741496424321113L;
 
     private List<ProjectPayroll> payrolls;
