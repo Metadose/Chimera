@@ -10,14 +10,32 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-public class GeneratorXLS {
+public class GeneratorExcel {
 
     private HSSFWorkbook workbook = new HSSFWorkbook();
-    private Map<String, HSSFSheet> sheetMap = new HashMap<String, HSSFSheet>();
     private Map<String, Integer> rowIndexMap = new HashMap<String, Integer>();
 
-    public GeneratorXLS() {
+    public GeneratorExcel() {
 	;
+    }
+
+    /**
+     * Add a new plain row.
+     * 
+     * @param sheetName
+     * @param values
+     */
+    public void addRow(String sheetName, Object... values) {
+	HSSFSheet sheet = getSheet(sheetName);
+	Integer rowIndex = getRowIndex(sheetName);
+	HSSFRow row = sheet.createRow(rowIndex);
+	int cellIndex = 0;
+	for (Object value : values) {
+	    row.createCell(cellIndex).setCellValue(String.valueOf(value));
+	    cellIndex++;
+	}
+	rowIndex++;
+	saveIndex(sheetName, rowIndex);
     }
 
     /**
@@ -28,7 +46,7 @@ public class GeneratorXLS {
      * @param values
      * @return
      */
-    public int addRowColored(String sheetName, IndexedColors color, Object... values) {
+    public void addRow(String sheetName, IndexedColors color, Object... values) {
 
 	// Create the style.
 	HSSFCellStyle style = this.workbook.createCellStyle();
@@ -49,16 +67,25 @@ public class GeneratorXLS {
 	    cellIndex++;
 	}
 	rowIndex++;
-	save(sheetName, sheet, rowIndex);
-
-	return rowIndex;
+	saveIndex(sheetName, rowIndex);
     }
 
-    private void save(String sheetName, HSSFSheet sheet, Integer rowIndex) {
-	this.sheetMap.put(sheetName, sheet);
+    /**
+     * Save the last state of the index.
+     * 
+     * @param sheetName
+     * @param rowIndex
+     */
+    private void saveIndex(String sheetName, Integer rowIndex) {
 	this.rowIndexMap.put(sheetName, rowIndex);
     }
 
+    /**
+     * Get the last state of the index.
+     * 
+     * @param sheetName
+     * @return
+     */
     private Integer getRowIndex(String sheetName) {
 	Integer rowIndex = this.rowIndexMap.get(sheetName);
 	if (rowIndex == null) {
@@ -68,11 +95,16 @@ public class GeneratorXLS {
 	return rowIndex;
     }
 
+    /**
+     * Get the sheet. If null, create new.
+     * 
+     * @param sheetName
+     * @return
+     */
     private HSSFSheet getSheet(String sheetName) {
-	HSSFSheet sheet = this.sheetMap.get(sheetName);
+	HSSFSheet sheet = this.workbook.getSheet(sheetName);
 	if (sheet == null) {
 	    sheet = this.workbook.createSheet(sheetName);
-	    this.sheetMap.put(sheetName, sheet);
 	}
 	return sheet;
     }

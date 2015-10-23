@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.GeneratorExcel;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
@@ -74,7 +75,6 @@ import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.MultipartFileValidator;
 import com.cebedo.pmsys.validator.ProjectValidator;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
 @Service
@@ -879,15 +879,21 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Start constructing the Excel.
 	ProjectAux projAux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
+
+	// TODO Remove
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet(sheetName);
 	int rowIndex = 0;
-	HSSFRow row = sheet.createRow(rowIndex);
-	rowIndex = this.xlsHelp.addLabel("Project Analysis", sheet, rowIndex);
-	rowIndex++;
+	// ----------------- End of Remove
+
+	GeneratorExcel xlsGen = new GeneratorExcel();
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Project Analysis");
 
 	// Basic details.
-	rowIndex = xlsAnalysisDetails(sheet, rowIndex, proj);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Details");
+	xlsGen.addRow(sheetName, "Name", proj.getName());
+	xlsGen.addRow(sheetName, "Location", proj.getLocation());
+	xlsGen.addRow(sheetName, "Status", proj.getStatusEnum().label());
 
 	// Project estimated cost.
 	double plannedDirect = projAux.getGrandTotalCostsDirect();
@@ -896,11 +902,11 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualIndirect = projAux.getGrandTotalActualCostsIndirect();
 	double plannedProjCost = plannedDirect + plannedIndirect;
 	double actualProjCost = actualDirect + actualIndirect;
-	xlsAnalysisEstimate(wb, projAux, plannedDirect, plannedIndirect, plannedProjCost, actualDirect,
-		actualIndirect, actualProjCost, proj);
+	xlsAnalysisEstimate(xlsGen, proj, plannedDirect, plannedIndirect, plannedProjCost, actualDirect,
+		actualIndirect, actualProjCost);
 
 	// Pass Excel objects then process.
-	xlsAnalysisExpenses(wb, proj);
+	xlsAnalysisExpenses(xlsGen, wb, proj);
 
 	// Physical Target.
 	rowIndex = xlsAnalysisPhysicalTarget(sheet, rowIndex, proj, plannedProjCost, actualProjCost);
@@ -913,11 +919,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Program of works.
 	Set<Task> tasks = proj.getAssignedTasks();
-	int numOfTasks = tasks.size();
-	row = sheet.createRow(rowIndex);
-	row.createCell(0).setCellValue("Number of Tasks");
-	row.createCell(1).setCellValue(numOfTasks);
-	rowIndex++;
+	xlsGen.addRow(sheetName, "Number of Tasks", tasks.size());
 
 	// Process tasks.
 	StatisticsProgramOfWorks statisticsPOW = new StatisticsProgramOfWorks(tasks);
@@ -963,7 +965,7 @@ public class ProjectServiceImpl implements ProjectService {
 	return wb;
     }
 
-    private void xlsAnalysisExpenses(HSSFWorkbook wb, Project proj) {
+    private void xlsAnalysisExpenses(GeneratorExcel xlsGen, HSSFWorkbook wb, Project proj) {
 
 	// Compute data.
 	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
@@ -974,8 +976,7 @@ public class ProjectServiceImpl implements ProjectService {
 		otherExpenses);
 
 	// Prepare variables.
-	HSSFSheet sheet = wb.createSheet("Expenses");
-	int rowIndex = 0;
+	String sheetName = "Expenses";
 
 	// Analysis (Max).
 	rowIndex = xlsAddExpensesDescriptive(sheet, rowIndex, statisticsProj,
@@ -1291,145 +1292,126 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * Analysis of project estimation and estimated costs.
      * 
-     * @param wb
-     * 
-     * @param row
-     * @param rowIndex
-     * @param projAux
+     * @param xlsGen
+     * @param proj
      * @param plannedDirect
      * @param plannedIndirect
      * @param projCost
      * @param actualDirect
      * @param actualIndirect
      * @param actualProjCost
-     * @param proj
-     * @return
      */
-    private void xlsAnalysisEstimate(HSSFWorkbook wb, ProjectAux projAux, double plannedDirect,
+    private void xlsAnalysisEstimate(GeneratorExcel xlsGen, Project proj, double plannedDirect,
 	    double plannedIndirect, double projCost, double actualDirect, double actualIndirect,
-	    double actualProjCost, Project proj) {
+	    double actualProjCost) {
 
-	HSSFSheet sheet = wb.createSheet("Estimate");
-	int rowIndex = 0;
-	rowIndex = this.xlsHelp.addLabel("PROJECT COST ESTIMATE", sheet, rowIndex,
-		IndexedColors.PALE_BLUE);
-	rowIndex++;
-	rowIndex = this.xlsHelp.addLabel("SUM", sheet, rowIndex, IndexedColors.YELLOW, "Summation");
-	rowIndex = this.xlsHelp.addLabel("Cost Totals", sheet, rowIndex, "Cost total per category");
-	rowIndex = this.xlsHelp.addRow("Planned Cost (Direct)", plannedDirect, sheet, rowIndex);
-	rowIndex = this.xlsHelp.addRow("Planned Cost (Indirect)", plannedIndirect, sheet, rowIndex);
-	rowIndex = this.xlsHelp.addRow("Planned Cost (Total)", projCost, sheet, rowIndex);
-	rowIndex++;
+	String sheetName = "Estimate";
+
+	xlsGen.addRow(sheetName, IndexedColors.PALE_BLUE, "PROJECT COST ESTIMATE");
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "SUM", "Summation");
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Cost Totals", "Cost total per category");
+	xlsGen.addRow(sheetName, "Planned Cost (Direct)", plannedDirect);
+	xlsGen.addRow(sheetName, "Planned Cost (Indirect)", plannedIndirect);
+	xlsGen.addRow(sheetName, "Planned Cost (Total)", projCost);
 
 	// If the project is completed, display actual costs
 	// and compare.
 	if (proj.isCompleted()) {
-	    rowIndex = this.xlsHelp.addRow("Actual Cost (Direct)", actualDirect, sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addRow("Actual Cost (Indirect)", actualIndirect, sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addRow("Actual Cost (Total)", actualProjCost, sheet, rowIndex);
-	    rowIndex++;
-	    rowIndex = this.xlsHelp.addRow("Difference (Direct)", plannedDirect - actualDirect, sheet,
-		    rowIndex);
-	    rowIndex = this.xlsHelp.addRow("Difference (Indirect)", plannedIndirect - actualIndirect,
-		    sheet, rowIndex);
-	    rowIndex = this.xlsHelp.addRow("Difference (Total)", projCost - actualProjCost, sheet,
-		    rowIndex);
+	    xlsGen.addRow(sheetName, "Actual Cost (Direct)", actualDirect);
+	    xlsGen.addRow(sheetName, "Actual Cost (Indirect)", actualIndirect);
+	    xlsGen.addRow(sheetName, "Actual Cost (Total)", actualProjCost);
+	    xlsGen.addRow(sheetName, "Difference Cost (Direct)", plannedDirect - actualDirect);
+	    xlsGen.addRow(sheetName, "Difference Cost (Indirect)", plannedIndirect - actualIndirect);
+	    xlsGen.addRow(sheetName, "Difference Cost (Total)", projCost - actualProjCost);
 	}
 
 	// Statistics of estimated costs.
 	List<EstimateCost> estimatedCosts = this.estimateCostService.list(proj);
 	StatisticsEstimateCost statEstimates = new StatisticsEstimateCost(estimatedCosts);
-	rowIndex++;
 
 	// Maximum costs.
-	rowIndex = this.xlsHelp.addLabel("MAX & MIN", sheet, rowIndex, IndexedColors.YELLOW,
-		"Max and min of the dataset");
-	rowIndex = this.xlsHelp.addLabel("Maximum Costs", sheet, rowIndex,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "MAX & MIN", "Max and min of the dataset");
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum Costs",
 		"Estimate(s) with the MOST expensive cost per category");
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxPlannedDirect(), sheet, rowIndex,
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxPlannedIndirect(), sheet,
-		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxActualDirect(), sheet, rowIndex,
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxPlannedIndirect(),
+		EstimateCostType.SUB_TYPE_PLANNED);
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxActualDirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMaxActualIndirect(), sheet,
-		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
-	rowIndex++;
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxActualIndirect(),
+		EstimateCostType.SUB_TYPE_ACTUAL);
 
 	// Minimum costs.
-	rowIndex = this.xlsHelp.addLabel("Minimum Costs", sheet, rowIndex,
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum Costs",
 		"Estimate(s) with the LEAST expensive cost per category");
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinPlannedDirect(), sheet, rowIndex,
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinPlannedIndirect(), sheet,
-		rowIndex, EstimateCostType.SUB_TYPE_PLANNED);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinActualDirect(), sheet, rowIndex,
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinPlannedIndirect(),
+		EstimateCostType.SUB_TYPE_PLANNED);
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinActualDirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
-	rowIndex = this.xlsHelp.addSectionEstimates(statEstimates.getMinActualIndirect(), sheet,
-		rowIndex, EstimateCostType.SUB_TYPE_ACTUAL);
-	rowIndex++;
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinActualIndirect(),
+		EstimateCostType.SUB_TYPE_ACTUAL);
 
 	// Top entries.
 	Integer limit = 5;
-	rowIndex = this.xlsHelp.addLabel("TOP ENTRIES", sheet, rowIndex, IndexedColors.YELLOW,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "TOP ENTRIES",
 		"Greatest costs in descending order");
-	rowIndex = xlsAddEstimatesDisplay(sheet, rowIndex, SortOrder.DESCENDING, limit, statEstimates);
+	xlsAddEstimatesDisplay(xlsGen, sheetName, statEstimates, SortOrder.DESCENDING, limit);
 
 	// Bottom entries.
-	rowIndex = this.xlsHelp.addLabel("BOTTOM ENTRIES", sheet, rowIndex, IndexedColors.YELLOW,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "BOTTOM ENTRIES",
 		"Least costs in ascending order");
-	rowIndex = xlsAddEstimatesDisplay(sheet, rowIndex, SortOrder.ASCENDING, limit, statEstimates);
+	xlsAddEstimatesDisplay(xlsGen, sheetName, statEstimates, SortOrder.ASCENDING, limit);
 
 	// Top absolute differences (planned - actual) of direct.
-	rowIndex = this.xlsHelp.addLabel("TOP DIFFERENCES", sheet, rowIndex, IndexedColors.YELLOW,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "TOP DIFFERENCES",
 		"Greatest differences (estimated minus actual) in descending order");
-	rowIndex = xlsAddEstimatesComputed(sheet, rowIndex, EstimateCostType.SUB_TYPE_DIFFERENCE,
-		SortOrder.DESCENDING, limit, statEstimates);
+	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_DIFFERENCE,
+		SortOrder.DESCENDING, limit);
 
 	// Bottom absolute differences (planned - actual) of direct.
-	rowIndex = this.xlsHelp.addLabel("BOTTOM DIFFERENCES", sheet, rowIndex, IndexedColors.YELLOW,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "BOTTOM DIFFERENCES",
 		"Least differences (estimated minus actual) in ascending order");
-	rowIndex = xlsAddEstimatesComputed(sheet, rowIndex, EstimateCostType.SUB_TYPE_DIFFERENCE,
-		SortOrder.ASCENDING, limit, statEstimates);
+	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_DIFFERENCE,
+		SortOrder.ASCENDING, limit);
 
 	// Top absolute differences (planned - actual) of direct.
-	rowIndex = this.xlsHelp.addLabel("ABSOLUTE DIFFERENCES", sheet, rowIndex, IndexedColors.YELLOW,
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "ABSOLUTE DIFFERENCES",
 		"Most over and underestimated costs");
-	rowIndex = xlsAddEstimatesComputed(sheet, rowIndex, EstimateCostType.SUB_TYPE_ABSOLUTE,
-		SortOrder.DESCENDING, limit, statEstimates);
+	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_ABSOLUTE,
+		SortOrder.DESCENDING, limit);
 
 	// Means.
-	rowIndex = this.xlsHelp.addLabel("MEANS", sheet, rowIndex, IndexedColors.YELLOW,
-		"Average cost per category");
-	Map<String, Double> labelValueMap = Maps.newLinkedHashMap();
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "MEANS", "Average cost per category");
 	double meanPlannedDirect = statEstimates.getMeanPlannedDirect();
 	double meanPlannedIndirect = statEstimates.getMeanPlannedIndirect();
 	double meanPlannedOverall = statEstimates.getMeanPlannedOverall();
 	double meanActualDirect = statEstimates.getMeanActualDirect();
 	double meanActualIndirect = statEstimates.getMeanActualIndirect();
 	double meanActualOverall = statEstimates.getMeanActualOverall();
-	labelValueMap.put("Estimated Direct", meanPlannedDirect);
-	labelValueMap.put("Estimated Indirect", meanPlannedIndirect);
-	labelValueMap.put("Estimated Overall", meanPlannedOverall);
-	labelValueMap.put("Actual Direct", meanActualDirect);
-	labelValueMap.put("Actual Indirect", meanActualIndirect);
-	labelValueMap.put("Actual Overall", meanActualOverall);
-	rowIndex = this.xlsHelp.addRowsFromMap("Mean per Category", sheet, rowIndex, labelValueMap);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Mean per Category");
+	xlsGen.addRow(sheetName, "Estimated Direct", meanPlannedDirect);
+	xlsGen.addRow(sheetName, "Estimated Indirect", meanPlannedIndirect);
+	xlsGen.addRow(sheetName, "Estimated Overall", meanPlannedOverall);
+	xlsGen.addRow(sheetName, "Actual Direct", meanActualDirect);
+	xlsGen.addRow(sheetName, "Actual Indirect", meanActualIndirect);
+	xlsGen.addRow(sheetName, "Actual Overall", meanActualOverall);
     }
 
     /**
      * Add computed entries like absolute difference and difference.
      * 
-     * @param sheet
-     * @param row
-     * @param rowIndex
+     * @param xlsGen
+     * @param sheetName
+     * @param statEstimates
      * @param subType
      * @param order
      * @param limit
-     * @param statEstimates
      */
-    private int xlsAddEstimatesComputed(HSSFSheet sheet, int rowIndex, int subType, SortOrder order,
-	    Integer limit, StatisticsEstimateCost statEstimates) {
+    private void xlsAddEstimatesComputed(GeneratorExcel xlsGen, String sheetName,
+	    StatisticsEstimateCost statEstimates, int subType, SortOrder order, Integer limit) {
 
 	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
 	String subTypeText = subType == EstimateCostType.SUB_TYPE_ABSOLUTE ? "ABSOLUTE DIFFERENCE"
@@ -1439,104 +1421,76 @@ public class ProjectServiceImpl implements ProjectService {
 	ImmutableList<Entry<EstimateCost, Double>> direct = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
 		? statEstimates.getSortedAbsDiffDirect(limit, order)
 		: statEstimates.getSortedDifferencesDirect(limit, order);
+
 	ImmutableList<Entry<EstimateCost, Double>> indirect = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
 		? statEstimates.getSortedAbsDiffIndirect(limit, order)
 		: statEstimates.getSortedDifferencesIndirect(limit, order);
+
 	ImmutableList<Entry<EstimateCost, Double>> overall = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
 		? statEstimates.getSortedAbsDiffOverall(limit, order)
 		: statEstimates.getSortedDifferencesOverall(limit, order);
 
 	// Render.
-	rowIndex = xlsEnterEstimatesComputed(sheet, rowIndex, limit, subType, direct,
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s %s Direct", adjective, WordUtils.capitalizeFully(subTypeText)),
 		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
 			subTypeText));
+	this.xlsHelp.addEstimates(xlsGen, sheetName, direct, subType);
 
-	rowIndex = xlsEnterEstimatesComputed(sheet, rowIndex, limit, subType, indirect,
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s %s Indirect", adjective, WordUtils.capitalizeFully(subTypeText)),
 		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
 			subTypeText));
+	this.xlsHelp.addEstimates(xlsGen, sheetName, indirect, subType);
 
-	rowIndex = xlsEnterEstimatesComputed(sheet, rowIndex, limit, subType, overall,
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s %s Overall", adjective, WordUtils.capitalizeFully(subTypeText)),
 		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
 			subTypeText));
-
-	return rowIndex;
+	this.xlsHelp.addEstimates(xlsGen, sheetName, overall, subType);
     }
 
     /**
      * Add plain sorted stored entries.
      * 
-     * @param sheet
-     * @param row
-     * @param rowIndex
+     * @param xlsGen
+     * @param sheetName
+     * @param statEstimates
      * @param order
      * @param limit
-     * @param statEstimates
-     * @return
      */
-    private int xlsAddEstimatesDisplay(HSSFSheet sheet, int rowIndex, SortOrder order, Integer limit,
-	    StatisticsEstimateCost statEstimates) {
+    private void xlsAddEstimatesDisplay(GeneratorExcel xlsGen, String sheetName,
+	    StatisticsEstimateCost statEstimates, SortOrder order, Integer limit) {
 
 	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
 	String superlative = order == SortOrder.DESCENDING ? "MOST" : "LEAST";
 
-	rowIndex = xlsEnterEstimatesPlain(sheet, rowIndex, limit, EstimateCostType.SUB_TYPE_PLANNED,
-		statEstimates.getSortedPlannedDirect(order, limit),
-		String.format("%s Planned Direct", adjective), String.format(
-			"%s %s %s expensive ESTIMATED DIRECT costs", adjective, limit, superlative));
+	// Direct planned.
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Planned Direct", adjective),
+		String.format("%s %s %s expensive ESTIMATED DIRECT costs", adjective, limit,
+			superlative));
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedPlannedDirect(order, limit),
+		EstimateCostType.SUB_TYPE_PLANNED);
 
-	rowIndex = xlsEnterEstimatesPlain(sheet, rowIndex, limit, EstimateCostType.SUB_TYPE_PLANNED,
-		statEstimates.getSortedPlannedIndirect(order, limit),
+	// Indirect planned.
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s Planned Indirect", adjective), String.format(
 			"%s %s %s expensive ESTIMATED INDIRECT costs", adjective, limit, superlative));
+	this.xlsHelp.addEstimates(xlsGen, sheetName,
+		statEstimates.getSortedPlannedIndirect(order, limit), EstimateCostType.SUB_TYPE_PLANNED);
 
-	rowIndex = xlsEnterEstimatesPlain(sheet, rowIndex, limit, EstimateCostType.SUB_TYPE_ACTUAL,
-		statEstimates.getSortedActualDirect(order, limit),
-		String.format("%s Actual Direct", adjective),
+	// Direct actual.
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Direct", adjective),
 		String.format("%s %s %s expensive ACTUAL DIRECT costs", adjective, limit, superlative));
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedActualDirect(order, limit),
+		EstimateCostType.SUB_TYPE_ACTUAL);
 
-	rowIndex = xlsEnterEstimatesPlain(sheet, rowIndex, limit, EstimateCostType.SUB_TYPE_ACTUAL,
-		statEstimates.getSortedActualIndirect(order, limit),
-		String.format("%s Actual Indirect", adjective), String.format(
-			"%s %s %s expensive ACTUAL INDIRECT costs", adjective, limit, superlative));
-
-	return rowIndex;
-    }
-
-    private int xlsEnterEstimatesPlain(HSSFSheet sheet, int rowIndex, Integer limit, int subType,
-	    ImmutableList<EstimateCost> entries, String label, Object... moreLabels) {
-	rowIndex = this.xlsHelp.addLabel(label, sheet, rowIndex, moreLabels);
-	rowIndex = this.xlsHelp.addSectionEstimates(entries, sheet, rowIndex, subType);
-	rowIndex++;
-	return rowIndex;
-    }
-
-    private int xlsEnterEstimatesComputed(HSSFSheet sheet, int rowIndex, Integer limit, int subType,
-	    ImmutableList<Entry<EstimateCost, Double>> entries, String label, Object... moreLabels) {
-	rowIndex = this.xlsHelp.addLabel(label, sheet, rowIndex, moreLabels);
-	rowIndex = this.xlsHelp.addSectionEstimates(entries, sheet, rowIndex, subType);
-	rowIndex++;
-	return rowIndex;
-    }
-
-    /**
-     * Displaying project details in the analysis Excel file.
-     * 
-     * @param row
-     * @param sheet
-     * @param rowIndex
-     * @param proj
-     * @return
-     */
-    private int xlsAnalysisDetails(HSSFSheet sheet, int rowIndex, Project proj) {
-	rowIndex = this.xlsHelp.addLabel("Details", sheet, rowIndex);
-	rowIndex = this.xlsHelp.addRow("Name", proj.getName(), sheet, rowIndex);
-	rowIndex = this.xlsHelp.addRow("Location", proj.getLocation(), sheet, rowIndex);
-	rowIndex = this.xlsHelp.addRow("Status", proj.getStatusEnum().label(), sheet, rowIndex);
-	rowIndex++;
-	return rowIndex;
+	// Indirect actual.
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Indirect", adjective),
+		String.format("%s %s %s expensive ACTUAL INDIRECT costs", adjective, limit,
+			superlative));
+	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedActualIndirect(order, limit),
+		EstimateCostType.SUB_TYPE_ACTUAL);
     }
 
 }

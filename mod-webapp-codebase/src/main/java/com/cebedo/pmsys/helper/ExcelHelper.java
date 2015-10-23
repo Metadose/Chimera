@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
+import com.cebedo.pmsys.bean.GeneratorExcel;
 import com.cebedo.pmsys.domain.AbstractExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.IExpense;
@@ -160,26 +161,62 @@ public class ExcelHelper {
     }
 
     /**
-     * Add a section.
+     * Add a list of estimates.
      * 
      * @param list
-     * @param row
-     * @param sheet
-     * @param rowIndex
      * @param subType
-     * @return
+     * @param xlsGen
+     * @param sheetName
      */
-    public int addSectionEstimates(List<EstimateCost> list, HSSFSheet sheet, int rowIndex, int subType) {
+    public void addEstimates(GeneratorExcel xlsGen, String sheetName, List<EstimateCost> list,
+	    int subType) {
 
-	// Add row based on parameters.
 	for (EstimateCost cost : list) {
-	    rowIndex = addRow(cost.getName(),
-		    subType == EstimateCostType.SUB_TYPE_PLANNED ? cost.getCost() : cost.getActualCost(),
-		    sheet, rowIndex,
-		    subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual",
-		    cost.getCostType().getLabel());
+
+	    // Data.
+	    double costValue = subType == EstimateCostType.SUB_TYPE_PLANNED ? cost.getCost()
+		    : cost.getActualCost();
+	    String phase = subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual";
+
+	    // Render
+	    xlsGen.addRow(sheetName, cost.getName(), costValue, phase, cost.getCostType().getLabel());
 	}
-	return rowIndex;
+    }
+
+    /**
+     * Add a list of estimates
+     * 
+     * @param xlsGen
+     * @param sheetName
+     * @param list
+     * @param subType
+     */
+    public void addEstimates(GeneratorExcel xlsGen, String sheetName,
+	    ImmutableList<Entry<EstimateCost, Double>> list, int subType) {
+
+	// Loop through all entries.
+	for (Entry<EstimateCost, Double> entry : list) {
+
+	    // Data.
+	    EstimateCost cost = entry.getKey();
+	    String costName = cost.getName();
+	    double costValue = entry.getValue();
+	    String subTypeText = "";
+	    String costTypeLabel = cost.getCostType().getLabel();
+
+	    // If the sub type is computed.
+	    if (subType == EstimateCostType.SUB_TYPE_DIFFERENCE
+		    || subType == EstimateCostType.SUB_TYPE_ABSOLUTE) {
+		subTypeText = subType == EstimateCostType.SUB_TYPE_DIFFERENCE ? "Difference"
+			: "Absolute";
+	    }
+	    // If plain data render.
+	    else {
+
+		subTypeText = subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual";
+	    }
+	    xlsGen.addRow(sheetName, costName, costValue, subTypeText, costTypeLabel);
+	}
     }
 
     /**
