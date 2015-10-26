@@ -57,14 +57,25 @@ public class GeneratorExcel {
 	// create it.
 	HSSFSheet sheet = getSheet(sheetName);
 	Integer rowIndex = getRowIndex(sheetName);
+	rowIndex = rowIndex == 0 ? 0 : rowIndex + 1;
 
 	// Create the label cell.
 	HSSFRow row = sheet.createRow(rowIndex);
 	int cellIndex = 0;
+	boolean firstRun = true;
 	for (Object val : values) {
 	    row.createCell(cellIndex).setCellStyle(style);
 	    row.getCell(cellIndex).setCellValue(String.valueOf(val));
 	    cellIndex++;
+
+	    // Go to next row,
+	    // reset the cell index.
+	    if (firstRun && values.length > 1) {
+		rowIndex++;
+		row = sheet.createRow(rowIndex);
+		cellIndex = 0;
+		firstRun = false;
+	    }
 	}
 	rowIndex++;
 	saveIndex(sheetName, rowIndex);
@@ -107,6 +118,19 @@ public class GeneratorExcel {
 	    sheet = this.workbook.createSheet(sheetName);
 	}
 	return sheet;
+    }
+
+    public HSSFWorkbook getWorkbook() {
+	return workbook;
+    }
+
+    public void fixColumnSizes() {
+	for (int sheetIndex = 0; sheetIndex < this.workbook.getNumberOfSheets(); sheetIndex++) {
+	    HSSFSheet wbSheet = this.workbook.getSheetAt(sheetIndex);
+	    wbSheet.setDefaultColumnWidth(20);
+	    wbSheet.autoSizeColumn(0);
+	    wbSheet.setZoom(85, 100);
+	}
     }
 
 }
