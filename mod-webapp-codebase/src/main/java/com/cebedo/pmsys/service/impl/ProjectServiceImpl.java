@@ -8,11 +8,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -40,7 +38,6 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
-import com.cebedo.pmsys.domain.IExpense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -51,7 +48,6 @@ import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.helper.AuthHelper;
-import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.AuditLog;
@@ -75,7 +71,6 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.MultipartFileValidator;
 import com.cebedo.pmsys.validator.ProjectValidator;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 @Service
@@ -84,7 +79,6 @@ public class ProjectServiceImpl implements ProjectService {
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
-    private ExcelHelper xlsHelp = new ExcelHelper();
 
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
@@ -903,7 +897,6 @@ public class ProjectServiceImpl implements ProjectService {
 		actualDirect, actualIndirect, actualProjCost);
 
 	// Staff.
-	// Bug: Not coloring
 	xlsAnalysisStaff(xlsGen, proj);
 
 	// Program of works.
@@ -1045,94 +1038,19 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsGen.addRow(sheetName, "Overall Project", popProject);
 
 	// Analysis (Max).
-	xlsAddExpensesDescriptive(xlsGen, sheetName, statisticsProj, StatisticsProject.DESCRIPTIVE_MAX);
+	xlsGen.addStatisticsExpensesDescriptive(sheetName, statisticsProj,
+		StatisticsProject.DESCRIPTIVE_MAX);
 
 	// Analysis (Min).
-	xlsAddExpensesDescriptive(xlsGen, sheetName, statisticsProj, StatisticsProject.DESCRIPTIVE_MIN);
+	xlsGen.addStatisticsExpensesDescriptive(sheetName, statisticsProj,
+		StatisticsProject.DESCRIPTIVE_MIN);
 
 	// Descending expenses.
 	Integer limit = 5;
-	xlsAddExpensesEntries(xlsGen, sheetName, limit, SortOrder.DESCENDING, statisticsProj);
+	xlsGen.addStatisticsExpensesPlain(sheetName, limit, SortOrder.DESCENDING, statisticsProj);
 
 	// Ascending expenses.
-	xlsAddExpensesEntries(xlsGen, sheetName, limit, SortOrder.ASCENDING, statisticsProj);
-    }
-
-    /**
-     * Max and minimum rendering of expenses.
-     * 
-     * @param xlsGen
-     * @param sheetName
-     * @param statisticsProj
-     * @param descriptiveType
-     */
-    private void xlsAddExpensesDescriptive(GeneratorExcel xlsGen, String sheetName,
-	    StatisticsProject statisticsProj, int descriptiveType) {
-
-	String adjective = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX ? "Maximum"
-		: descriptiveType == StatisticsProject.DESCRIPTIVE_MIN ? "Minimum" : "";
-	String superlative = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX ? "greatest"
-		: descriptiveType == StatisticsProject.DESCRIPTIVE_MIN ? "least" : "";
-
-	// Data.
-	List<ProjectPayroll> payroll = statisticsProj.getMaxPayrolls();
-	List<Delivery> deliveries = statisticsProj.getMaxDelivery();
-	List<EquipmentExpense> equips = statisticsProj.getMaxEquipment();
-	List<Expense> others = statisticsProj.getMaxOtherExpenses();
-
-	// Render.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
-		String.format(RegistryExcel.DYNAMIC_EXPENSE_VALUE, superlative));
-
-	this.xlsHelp.addExpenses(xlsGen, sheetName, payroll);
-	this.xlsHelp.addExpenses(xlsGen, sheetName, deliveries);
-	this.xlsHelp.addExpenses(xlsGen, sheetName, equips);
-	this.xlsHelp.addExpenses(xlsGen, sheetName, others);
-    }
-
-    /**
-     * Displaying plain expense objects.
-     * 
-     * @param xlsGen
-     * @param sheetName
-     * @param limit
-     * @param order
-     * @param statisticsProj
-     */
-    private void xlsAddExpensesEntries(GeneratorExcel xlsGen, String sheetName, Integer limit,
-	    SortOrder order, StatisticsProject statisticsProj) {
-
-	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
-	String superlative = order == SortOrder.DESCENDING ? "Most" : "Least";
-
-	// Data.
-	ImmutableList<ProjectPayroll> payrolls = statisticsProj.getLimitedSortedByCostPayrolls(limit,
-		order);
-	ImmutableList<Delivery> deliveries = statisticsProj.getLimitedSortedByCostDeliveries(limit,
-		order);
-	ImmutableList<EquipmentExpense> equips = statisticsProj.getLimitedSortedByCostEquipment(limit,
-		order);
-	ImmutableList<Expense> others = statisticsProj.getLimitedSortedByCostOtherExpenses(limit, order);
-	ImmutableList<IExpense> projAll = statisticsProj.getLimitedSortedByCostProject(limit, order);
-
-	// Render.
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW,
-		String.format("%s %s %s Expensive", adjective, limit, superlative));
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Payrolls");
-	this.xlsHelp.addExpenses(xlsGen, sheetName, payrolls);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Deliveries");
-	this.xlsHelp.addExpenses(xlsGen, sheetName, deliveries);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Equipment");
-	this.xlsHelp.addExpenses(xlsGen, sheetName, equips);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Other Expenses");
-	this.xlsHelp.addExpenses(xlsGen, sheetName, others);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Overall Project");
-	this.xlsHelp.addExpenses(xlsGen, sheetName, projAll);
+	xlsGen.addStatisticsExpensesPlain(sheetName, limit, SortOrder.ASCENDING, statisticsProj);
     }
 
     /**
@@ -1189,12 +1107,12 @@ public class ProjectServiceImpl implements ProjectService {
 	int max = 5;
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "TOP 5 STAFF PER ATTENDANCE STATUS",
 		"Greatest number of entries for each attendance type");
-	xlsGen.addAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.DESCENDING);
+	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.DESCENDING);
 
 	// Bottom 5 staff member per attendance status.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "BOTTOM 5 STAFF PER ATTENDANCE STATUS",
 		"Least number of entries for each attendance type");
-	xlsGen.addAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.ASCENDING);
+	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.ASCENDING);
     }
 
     /**
@@ -1329,154 +1247,59 @@ public class ProjectServiceImpl implements ProjectService {
 	// Maximum costs.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN,
 		RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN_EXTRA);
-
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MAX_COST,
 		RegistryExcel.HEADER2_MAX_COST_EXTRA);
-
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxPlannedDirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMaxPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxPlannedIndirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMaxPlannedIndirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxActualDirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMaxActualDirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMaxActualIndirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMaxActualIndirect(),
+		EstimateCostType.SUB_TYPE_ACTUAL);
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMaxActualIndirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
 
 	// Minimum costs.
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MIN_COST,
 		RegistryExcel.HEADER2_MIN_COST_EXTRA);
-
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinPlannedDirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMinPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinPlannedIndirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMinPlannedIndirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinActualDirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMinActualDirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getMinActualIndirect(),
+	xlsGen.addRowsEstimates(sheetName, statEstimates.getMinActualIndirect(),
 		EstimateCostType.SUB_TYPE_ACTUAL);
 
 	// Top absolute differences (planned - actual) of direct.
 	Integer limit = 5;
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_COMPUTED_ABS,
 		RegistryExcel.HEADER1_COMPUTED_ABS_EXTRA);
-	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_ABSOLUTE,
-		SortOrder.DESCENDING, limit);
+	xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
+		EstimateCostType.SUB_TYPE_ABSOLUTE, SortOrder.DESCENDING, limit);
 
 	// Top entries.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_SORTED_ENTRIES_TOP,
 		RegistryExcel.HEADER1_SORTED_ENTRIES_TOP_EXTRA);
-
-	xlsAddEstimatesEntries(xlsGen, sheetName, statEstimates, SortOrder.DESCENDING, limit);
+	xlsGen.addStatisticsEstimatesEntries(sheetName, statEstimates, SortOrder.DESCENDING, limit);
 
 	// Bottom entries.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_SORTED_ENTRIES_BOTTOM,
 		RegistryExcel.HEADER1_SORTED_ENTRIES_BOTTOM_EXTRA);
-	xlsAddEstimatesEntries(xlsGen, sheetName, statEstimates, SortOrder.ASCENDING, limit);
+	xlsGen.addStatisticsEstimatesEntries(sheetName, statEstimates, SortOrder.ASCENDING, limit);
 
 	// Top absolute differences (planned - actual) of direct.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_COMPUTED_DIFF_TOP,
 		RegistryExcel.HEADER1_COMPUTED_DIFF_TOP_EXTRA);
-	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_DIFFERENCE,
-		SortOrder.DESCENDING, limit);
+	xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
+		EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.DESCENDING, limit);
 
 	// Bottom absolute differences (planned - actual) of direct.
 	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_COMPUTED_DIFF_BOTTOM,
 		RegistryExcel.HEADER1_COMPUTED_DIFF_BOTTOM_EXTRA);
-	xlsAddEstimatesComputed(xlsGen, sheetName, statEstimates, EstimateCostType.SUB_TYPE_DIFFERENCE,
-		SortOrder.ASCENDING, limit);
-    }
-
-    /**
-     * Add computed entries like absolute difference and difference.
-     * 
-     * @param xlsGen
-     * @param sheetName
-     * @param statEstimates
-     * @param subType
-     * @param order
-     * @param limit
-     */
-    private void xlsAddEstimatesComputed(GeneratorExcel xlsGen, String sheetName,
-	    StatisticsEstimateCost statEstimates, int subType, SortOrder order, Integer limit) {
-
-	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
-	String subTypeText = subType == EstimateCostType.SUB_TYPE_ABSOLUTE ? "ABSOLUTE DIFFERENCE"
-		: "DIFFERENCE";
-
-	// Data.
-	ImmutableList<Entry<EstimateCost, Double>> direct = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
-		? statEstimates.getSortedAbsDiffDirect(limit, order)
-		: statEstimates.getSortedDifferencesDirect(limit, order);
-
-	ImmutableList<Entry<EstimateCost, Double>> indirect = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
-		? statEstimates.getSortedAbsDiffIndirect(limit, order)
-		: statEstimates.getSortedDifferencesIndirect(limit, order);
-
-	ImmutableList<Entry<EstimateCost, Double>> overall = subType == EstimateCostType.SUB_TYPE_ABSOLUTE
-		? statEstimates.getSortedAbsDiffOverall(limit, order)
-		: statEstimates.getSortedDifferencesOverall(limit, order);
-
-	// Render.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Direct", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, direct, subType);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Indirect", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, indirect, subType);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Overall", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, overall, subType);
-    }
-
-    /**
-     * Add plain sorted stored entries.
-     * 
-     * @param xlsGen
-     * @param sheetName
-     * @param statEstimates
-     * @param order
-     * @param limit
-     */
-    private void xlsAddEstimatesEntries(GeneratorExcel xlsGen, String sheetName,
-	    StatisticsEstimateCost statEstimates, SortOrder order, Integer limit) {
-
-	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
-	String superlative = order == SortOrder.DESCENDING ? "MOST" : "LEAST";
-
-	// Direct planned.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Planned Direct", adjective),
-		String.format("%s %s %s expensive ESTIMATED DIRECT costs", adjective, limit,
-			superlative));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedPlannedDirect(order, limit),
-		EstimateCostType.SUB_TYPE_PLANNED);
-
-	// Indirect planned.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s Planned Indirect", adjective), String.format(
-			"%s %s %s expensive ESTIMATED INDIRECT costs", adjective, limit, superlative));
-	this.xlsHelp.addEstimates(xlsGen, sheetName,
-		statEstimates.getSortedPlannedIndirect(order, limit), EstimateCostType.SUB_TYPE_PLANNED);
-
-	// Direct actual.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Direct", adjective),
-		String.format("%s %s %s expensive ACTUAL DIRECT costs", adjective, limit, superlative));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedActualDirect(order, limit),
-		EstimateCostType.SUB_TYPE_ACTUAL);
-
-	// Indirect actual.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Indirect", adjective),
-		String.format("%s %s %s expensive ACTUAL INDIRECT costs", adjective, limit,
-			superlative));
-	this.xlsHelp.addEstimates(xlsGen, sheetName, statEstimates.getSortedActualIndirect(order, limit),
-		EstimateCostType.SUB_TYPE_ACTUAL);
+	xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
+		EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.ASCENDING, limit);
     }
 
 }
