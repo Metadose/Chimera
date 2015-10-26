@@ -23,8 +23,6 @@ public interface ExpenseService {
 
     public List<Expense> listAsc(Project proj);
 
-    public double getTotal(List<Expense> otherExpenses);
-
     public List<Expense> listDesc(Project proj, Date startDate, Date endDate);
 
 }

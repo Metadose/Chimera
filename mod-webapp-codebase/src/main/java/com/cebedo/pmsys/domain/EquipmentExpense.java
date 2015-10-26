@@ -1,5 +1,6 @@
 package com.cebedo.pmsys.domain;
 
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Project;
 
@@ -36,6 +37,11 @@ public class EquipmentExpense extends Expense implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE;
     }
 
 }

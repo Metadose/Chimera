@@ -67,6 +67,8 @@ public interface ProjectService {
 
     public Set<AuditLog> logs(long id);
 
+    public HSSFWorkbook exportXLSAnalysis(long id);
+
     public HSSFWorkbook exportXLSBalanceSheet(long id);
 
     public HSSFWorkbook exportXLSBalanceSheet(long id, Date startDate, Date endDate);

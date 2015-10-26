@@ -259,29 +259,6 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 		obj.getName());
     }
 
-    @Override
-    @Transactional
-    public double getTotal(List<EquipmentExpense> expenses) {
-
-	double total = 0;
-	Project proj = null;
-	for (EquipmentExpense obj : expenses) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(obj)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE,
-			obj.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? obj.getProject() : proj;
-	    total += obj.getCost();
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, "Grand Total");
-	return total;
-    }
-
     @Transactional
     @Override
     public List<EquipmentExpense> listDesc(Project proj, Date startDate, Date endDate) {
@@ -327,5 +304,4 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	});
 	return expenses;
     }
-
 }

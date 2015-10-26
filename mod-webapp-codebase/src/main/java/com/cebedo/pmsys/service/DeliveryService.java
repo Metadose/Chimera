@@ -25,6 +25,4 @@ public interface DeliveryService {
 
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
 
-    public double getTotal(List<Delivery> deliveries);
-
 }

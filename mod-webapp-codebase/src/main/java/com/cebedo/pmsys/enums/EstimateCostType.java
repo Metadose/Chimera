@@ -6,6 +6,11 @@ public enum EstimateCostType {
 
     INDIRECT(1, "Indirect");
 
+    public static final int SUB_TYPE_PLANNED = 0;
+    public static final int SUB_TYPE_ACTUAL = 1;
+    public static final int SUB_TYPE_DIFFERENCE = 2;
+    public static final int SUB_TYPE_ABSOLUTE = 3;
+
     EstimateCostType(int i, String lbl) {
 	setId(i);
 	setLabel(lbl);

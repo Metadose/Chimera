@@ -7,13 +7,14 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class Delivery implements IDomainObject {
+public class Delivery extends AbstractExpense implements IDomainObject, IExpense {
 
     private static final long serialVersionUID = 2539632179017470796L;
     /**
@@ -167,6 +168,20 @@ public class Delivery implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    @Override
+    public double getCost() {
+	return getGrandTotalOfMaterials();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_DELIVERY;
+    }
+
+    public String toString() {
+	return String.format("[%s = %s]", getName(), getCost());
     }
 
 }

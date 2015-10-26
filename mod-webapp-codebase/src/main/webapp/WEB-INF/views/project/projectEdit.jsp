@@ -118,6 +118,12 @@
 								<p>There are <b>no staff members</b> assigned to the <b>project</b>.</p>
 							</div>
 	                	</c:if>
+						<c:if test="${project.status == 2 && empty project.actualCompletionDate}">
+							<div class="callout callout-warning">
+								<h4>Warning!</h4>
+								<p>Project is marked as <b>COMPLETED</b> but <b>Actual Completion Date</b> (Contract tab) is <b>not set</b>.</p>
+							</div>
+	                	</c:if>
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" id="myTab">
@@ -1136,6 +1142,17 @@
 												</td>
                                                	<td>Balance Sheet (Overall)</td>
                                                	<td>A summarized report of all expenses throughout the course of the project.</td>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                            		<center>
+                                            			<a href="<c:url value="/project/export-xls/analysis"/>">
+				                                    	<button class="btn btn-cebedo-export btn-flat btn-sm">Excel</button>
+                                            			</a>
+													</center>
+												</td>
+                                               	<td>Analysis (Overall)</td>
+                                               	<td>Analyze the project and export a file containing resulting values.</td>
                                             </tr>
                                             <tr>
                                             	<td>

@@ -6,13 +6,14 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class Expense implements IDomainObject {
+public class Expense extends AbstractExpense implements IDomainObject, IExpense {
 
     private static final long serialVersionUID = -7013450034228364135L;
 
@@ -138,6 +139,16 @@ public class Expense implements IDomainObject {
 
     public void setStaffID(long staffID) {
 	this.staffID = staffID;
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.DISPLAY_OTHER_EXPENSE;
+    }
+
+    @Override
+    public String toString() {
+	return String.format("[%s = %s]", getName(), getCost());
     }
 
 }

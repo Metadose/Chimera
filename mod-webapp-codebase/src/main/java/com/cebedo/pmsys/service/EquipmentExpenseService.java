@@ -23,8 +23,5 @@ public interface EquipmentExpenseService {
 
     public List<EquipmentExpense> listAsc(Project proj);
 
-    public double getTotal(List<EquipmentExpense> equipmentExpenses);
-
     public List<EquipmentExpense> listDesc(Project proj, Date startDate, Date endDate);
-
 }

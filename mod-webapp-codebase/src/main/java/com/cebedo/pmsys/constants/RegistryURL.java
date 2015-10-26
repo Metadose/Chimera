@@ -42,6 +42,8 @@ public class RegistryURL {
 
     public static final String EXPORT_XLS_BALANCE_SHEET = "/export-xls/balance-sheet";
 
+    public static final String EXPORT_XLS_ANALYSIS = "/export-xls/analysis";
+
     public static final String EXPORT_XLS_BALANCE_SHEET_RANGE = "/export-xls/balance-sheet/range";
 
     public static final String EXPORT_XLS_EQUIPMENT_EXPENSES = "/export-xls/equipment-expenses";

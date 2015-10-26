@@ -265,28 +265,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     @Transactional
-    public double getTotal(List<Expense> expenses) {
-
-	double total = 0;
-	Project proj = null;
-	for (Expense obj : expenses) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(obj)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? obj.getProject() : proj;
-	    total += obj.getCost();
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_EXPENSE, "Grand Total");
-	return total;
-    }
-
-    @Override
-    @Transactional
     public List<Expense> listDesc(Project proj, Date startDate, Date endDate) {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
@@ -331,5 +309,4 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	return expenses;
     }
-
 }

@@ -143,7 +143,9 @@ public class Task implements Serializable {
     }
 
     @ManyToMany
-    @JoinTable(name = TaskStaffAssignment.TABLE_NAME, joinColumns = { @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = { @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
+    @JoinTable(name = TaskStaffAssignment.TABLE_NAME, joinColumns = {
+	    @JoinColumn(name = COLUMN_PRIMARY_KEY) }, inverseJoinColumns = {
+		    @JoinColumn(name = Staff.COLUMN_PRIMARY_KEY, nullable = false, updatable = false) })
     public Set<Staff> getStaff() {
 	return staff;
     }
@@ -214,6 +216,11 @@ public class Task implements Serializable {
 
     public void setActualDateStart(Date actualDateStart) {
 	this.actualDateStart = actualDateStart;
+    }
+
+    @Transient
+    public boolean isCompleted() {
+	return getStatusEnum() == TaskStatus.COMPLETED;
     }
 
 }

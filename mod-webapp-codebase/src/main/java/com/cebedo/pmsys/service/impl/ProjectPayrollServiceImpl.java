@@ -404,34 +404,6 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return NumberFormatUtils.getCurrencyFormatter().format(total);
     }
 
-    /**
-     * Get the grand total value as string, formatted as currency.
-     */
-    @Transactional
-    @Override
-    public double getTotal(List<ProjectPayroll> payrollList) {
-	double total = 0;
-
-	Project proj = null;
-	for (ProjectPayroll payroll : payrollList) {
-
-	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(payroll)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
-		return 0.0;
-	    }
-	    proj = proj == null ? payroll.getProject() : proj;
-	    PayrollResultComputation result = payroll.getPayrollComputationResult();
-	    if (result != null) {
-		total += result.getOverallTotalOfStaff();
-	    }
-	}
-	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_GET, Project.OBJECT_NAME,
-		proj.getId(), ConstantsRedis.OBJECT_PAYROLL, "Grand Total");
-	return total;
-    }
-
     @Transactional
     @Override
     public String createPayroll(Project proj, ProjectPayroll projectPayroll) {
@@ -717,6 +689,18 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	});
 
 	return projectPayrolls;
+    }
+
+    @Override
+    @Transactional
+    public int getSize(List<ProjectPayroll> objs) {
+	int size = 0;
+	for (ProjectPayroll payroll : objs) {
+	    if (payroll.getPayrollComputationResult() != null) {
+		size++;
+	    }
+	}
+	return size;
     }
 
 }

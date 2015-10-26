@@ -1216,6 +1216,38 @@ public class ProjectController {
     }
 
     /**
+     * Export analysis sheet to XLS.
+     * 
+     * @param key
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.EXPORT_XLS_ANALYSIS }, method = RequestMethod.GET)
+    public void exportXLSAnalysis(HttpServletResponse response, HttpSession session) {
+
+	// Do service
+	// and get response.
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	HSSFWorkbook workbook = this.projectService.exportXLSAnalysis(proj.getId());
+
+	// Write the output to a file
+	int numSheets = workbook.getNumberOfSheets();
+	if (numSheets == 0) {
+	    workbook.createSheet("No Data").createRow(0).createCell(0).setCellValue("No Data");
+	}
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("Content-Disposition",
+		"attachment; filename=" + proj.getName() + " Analysis.xls");
+	try {
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    /**
      * Export balance sheet to XLS.
      * 
      * @param key
