@@ -105,18 +105,8 @@ public class StatisticsStaff extends SummaryStatistics {
 	return getSortedAttendance(status, null, SortOrder.DESCENDING);
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusDesc(AttendanceStatus status,
-	    Integer maxCount) {
-	return getSortedAttendance(status, maxCount, SortOrder.DESCENDING);
-    }
-
     public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusAsc(AttendanceStatus status) {
 	return getSortedAttendance(status, null, SortOrder.ASCENDING);
-    }
-
-    public ImmutableList<Entry<Staff, Integer>> getAttendancesByStatusAsc(AttendanceStatus status,
-	    Integer maxCount) {
-	return getSortedAttendance(status, maxCount, SortOrder.ASCENDING);
     }
 
     /**
@@ -128,7 +118,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @param order
      * @return
      */
-    private ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
+    public ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
 	    Integer maxCount, SortOrder order) {
 
 	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
@@ -201,7 +191,7 @@ public class StatisticsStaff extends SummaryStatistics {
 	for (Entry<Staff, Integer> pair : staffCount) {
 	    addValue(pair.getValue());
 	}
-	double mean = getMean();
+	double mean = getSum() / this.attendances.size();
 	clear();
 	return mean;
     }

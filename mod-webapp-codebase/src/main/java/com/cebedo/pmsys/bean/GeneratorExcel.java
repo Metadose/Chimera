@@ -38,6 +38,11 @@ public class GeneratorExcel {
 	saveIndex(sheetName, rowIndex);
     }
 
+    public void addRowEmpty(String sheetName) {
+	Integer rowIndex = getRowIndex(sheetName) + 1;
+	saveIndex(sheetName, rowIndex);
+    }
+
     /**
      * Add a colored row.
      * 

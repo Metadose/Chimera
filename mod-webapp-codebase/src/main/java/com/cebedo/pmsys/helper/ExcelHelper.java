@@ -10,10 +10,14 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 import com.cebedo.pmsys.bean.GeneratorExcel;
+import com.cebedo.pmsys.bean.StatisticsStaff;
 import com.cebedo.pmsys.domain.AbstractExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.IExpense;
+import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.SortOrder;
+import com.cebedo.pmsys.model.Staff;
 import com.google.common.collect.ImmutableList;
 
 public class ExcelHelper {
@@ -151,6 +155,27 @@ public class ExcelHelper {
 	    return null;
 	} catch (Exception e) {
 	    return null;
+	}
+    }
+
+    /**
+     * Add attendance of staff and count.
+     * 
+     * @param xlsGen
+     * @param sheetName
+     * @param statisticsStaff
+     * @param attendanceStatus
+     * @param max
+     * @param order
+     */
+    public void addAttendanceCount(GeneratorExcel xlsGen, String sheetName,
+	    StatisticsStaff statisticsStaff, AttendanceStatus attendanceStatus, int max,
+	    SortOrder order) {
+
+	ImmutableList<Entry<Staff, Integer>> entries = statisticsStaff
+		.getSortedAttendance(attendanceStatus, max, order);
+	for (Entry<Staff, Integer> entry : entries) {
+	    xlsGen.addRow(sheetName, entry.getKey().getFullName(), entry.getValue());
 	}
     }
 
