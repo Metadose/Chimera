@@ -8,7 +8,7 @@ public class RegistryExcel {
 
     public static final String SHEET_OVERVIEW = "Overview";
 
-    public static final String SHEET_ESTIMATE = "Estimate";
+    public static final String SHEET_COST_ESTIMATE = "Cost Estimate";
 
     public static final String SHEET_EXPENSES = "Expenses";
 
@@ -64,9 +64,9 @@ public class RegistryExcel {
 
     public static final String HEADER2_MEAN_EXTRA = "Mean per Category";
 
-    public static final String HEADER2_PHYSICAL_TARGET = "Physical Target Details";
+    public static final String HEADER2_PHYSICAL_TARGET = "Physical Target";
 
-    public static final String HEADER2_PROJECT_RUNTIME = "Project Runtime";
+    public static final String HEADER2_ESTIMATE_TIME = "Time Estimate";
 
     public static final String HEADER2_STAFF = "Staff";
 

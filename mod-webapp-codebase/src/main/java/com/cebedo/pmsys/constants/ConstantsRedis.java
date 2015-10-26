@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.constants;
 
-public abstract class ConstantsRedis {
+public class ConstantsRedis {
 
     // Redis objects.
     public static final String OBJECT_ATTENDANCE = "attendance";

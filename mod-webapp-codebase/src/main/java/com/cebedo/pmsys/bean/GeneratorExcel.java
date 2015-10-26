@@ -2,6 +2,7 @@ package com.cebedo.pmsys.bean;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -10,13 +11,28 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
+import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.SortOrder;
+import com.cebedo.pmsys.model.Staff;
+import com.google.common.collect.ImmutableList;
+
 public class GeneratorExcel {
 
     private HSSFWorkbook workbook = new HSSFWorkbook();
     private Map<String, Integer> rowIndexMap = new HashMap<String, Integer>();
 
+    // Styles.
+    private HSSFCellStyle styleYellowFill;
+    private HSSFCellStyle styleSeaGreenFill;
+
     public GeneratorExcel() {
-	;
+	this.styleYellowFill = this.workbook.createCellStyle();
+	this.styleYellowFill.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+	this.styleYellowFill.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+	this.styleSeaGreenFill = this.workbook.createCellStyle();
+	this.styleSeaGreenFill.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
+	this.styleSeaGreenFill.setFillPattern(CellStyle.SOLID_FOREGROUND);
     }
 
     /**
@@ -53,18 +69,16 @@ public class GeneratorExcel {
      */
     public void addRow(String sheetName, IndexedColors color, Object... values) {
 
-	// Create the style.
-	HSSFCellStyle style = this.workbook.createCellStyle();
-	style.setFillForegroundColor(color.getIndex());
-	style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	HSSFCellStyle style = color == IndexedColors.YELLOW ? this.styleYellowFill
+		: this.styleSeaGreenFill;
 
 	// If sheet or index is not initialized,
 	// create it.
-	HSSFSheet sheet = getSheet(sheetName);
 	Integer rowIndex = getRowIndex(sheetName);
 	rowIndex = rowIndex == 0 ? 0 : rowIndex + 1;
 
 	// Create the label cell.
+	HSSFSheet sheet = getSheet(sheetName);
 	HSSFRow row = sheet.createRow(rowIndex);
 	int cellIndex = 0;
 	boolean firstRun = true;
@@ -135,6 +149,54 @@ public class GeneratorExcel {
 	    wbSheet.setDefaultColumnWidth(20);
 	    wbSheet.autoSizeColumn(0);
 	    wbSheet.setZoom(85, 100);
+	}
+    }
+
+    /**
+     * Add attendance entries.
+     * 
+     * @param sheetName
+     * @param statisticsStaff
+     * @param max
+     * @param order
+     */
+    public void addAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff, int max,
+	    SortOrder order) {
+	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.ABSENT.label());
+	addAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.ABSENT, max, order);
+
+	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.OVERTIME.label());
+	addAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.OVERTIME, max, order);
+
+	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LATE.label());
+	addAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LATE, max, order);
+
+	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.HALFDAY.label());
+	addAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.HALFDAY, max, order);
+
+	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LEAVE.label());
+	addAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LEAVE, max, order);
+    }
+
+    /**
+     * Add attendance of staff and count.
+     * 
+     * @param sheetName
+     * @param statisticsStaff
+     * @param attendanceStatus
+     * @param max
+     * @param order
+     */
+    private void addAttendanceCount(String sheetName, StatisticsStaff statisticsStaff,
+	    AttendanceStatus attendanceStatus, int max, SortOrder order) {
+
+	ImmutableList<Entry<Staff, Integer>> entries = statisticsStaff
+		.getSortedAttendance(attendanceStatus, max, order);
+	if (entries.size() == 0) {
+	    addRow(sheetName, "(None)", "");
+	}
+	for (Entry<Staff, Integer> entry : entries) {
+	    addRow(sheetName, entry.getKey().getFullName(), entry.getValue());
 	}
     }
 

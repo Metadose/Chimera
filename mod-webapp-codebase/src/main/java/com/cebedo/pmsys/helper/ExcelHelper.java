@@ -174,6 +174,9 @@ public class ExcelHelper {
 
 	ImmutableList<Entry<Staff, Integer>> entries = statisticsStaff
 		.getSortedAttendance(attendanceStatus, max, order);
+	if (entries.size() == 0) {
+	    xlsGen.addRow(sheetName, "(None)", "");
+	}
 	for (Entry<Staff, Integer> entry : entries) {
 	    xlsGen.addRow(sheetName, entry.getKey().getFullName(), entry.getValue());
 	}

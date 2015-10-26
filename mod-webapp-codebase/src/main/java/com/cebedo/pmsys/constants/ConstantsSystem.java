@@ -2,7 +2,7 @@ package com.cebedo.pmsys.constants;
 
 import com.cebedo.pmsys.model.Project;
 
-public abstract class ConstantsSystem {
+public class ConstantsSystem {
 
     /**
      * TODO Put this is system.properties
