@@ -1,9 +1,11 @@
 package com.cebedo.pmsys.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -24,7 +26,10 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.enums.SortOrder;
+import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.model.Task.TaskSubType;
 import com.google.common.collect.ImmutableList;
 
 public class GeneratorExcel {
@@ -58,7 +63,8 @@ public class GeneratorExcel {
 	HSSFRow row = sheet.createRow(rowIndex);
 	int cellIndex = 0;
 	for (Object value : values) {
-	    row.createCell(cellIndex).setCellValue(String.valueOf(value));
+	    String strVal = String.valueOf(value);
+	    row.createCell(cellIndex).setCellValue(strVal);
 	    cellIndex++;
 	}
 	rowIndex++;
@@ -94,18 +100,14 @@ public class GeneratorExcel {
 	int cellIndex = 0;
 	boolean firstRun = true;
 	for (Object val : values) {
-	    row.createCell(cellIndex).setCellStyle(style);
+	    if (firstRun) {
+		row.createCell(cellIndex).setCellStyle(style);
+		firstRun = false;
+	    } else {
+		row.createCell(cellIndex);
+	    }
 	    row.getCell(cellIndex).setCellValue(String.valueOf(val));
 	    cellIndex++;
-
-	    // Go to next row,
-	    // reset the cell index.
-	    if (firstRun && values.length > 1) {
-		rowIndex++;
-		row = sheet.createRow(rowIndex);
-		cellIndex = 0;
-		firstRun = false;
-	    }
 	}
 	rowIndex++;
 	saveIndex(sheetName, rowIndex);
@@ -171,8 +173,8 @@ public class GeneratorExcel {
      * @param max
      * @param order
      */
-    public void addStatisticsAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff, int max,
-	    SortOrder order) {
+    public void addStatisticsAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff,
+	    int max, SortOrder order) {
 	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.ABSENT.label());
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.ABSENT, max, order);
 
@@ -217,7 +219,7 @@ public class GeneratorExcel {
      * @param list
      * @param subType
      */
-    public void addRowsEstimates(String sheetName, List<EstimateCost> list, int subType) {
+    public void addRowsEstimateCosts(String sheetName, List<EstimateCost> list, int subType) {
 	for (EstimateCost cost : list) {
 
 	    // Data.
@@ -230,8 +232,8 @@ public class GeneratorExcel {
 	}
     }
 
-    public void addStatisticsEstimatesComputed(String sheetName, StatisticsEstimateCost statEstimates, int subType,
-	    SortOrder order, Integer limit) {
+    public void addStatisticsEstimatesComputed(String sheetName, StatisticsEstimateCost statEstimates,
+	    int subType, SortOrder order, Integer limit) {
 	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
 	String subTypeText = subType == EstimateCostType.SUB_TYPE_ABSOLUTE ? "ABSOLUTE DIFFERENCE"
 		: "DIFFERENCE";
@@ -251,22 +253,22 @@ public class GeneratorExcel {
 
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Direct", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	addRowsEstimatesComputed(sheetName, direct, subType);
+		String.format("Direct", adjective, WordUtils.capitalizeFully(subTypeText)));
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
+		"Cost Type");
+	addRowsEstimateCostsComputed(sheetName, direct);
 
 	addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Indirect", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	addRowsEstimatesComputed(sheetName, indirect, subType);
+		String.format("Indirect", adjective, WordUtils.capitalizeFully(subTypeText)));
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
+		"Cost Type");
+	addRowsEstimateCostsComputed(sheetName, indirect);
 
 	addRow(sheetName, IndexedColors.SEA_GREEN,
-		String.format("%s %s Overall", adjective, WordUtils.capitalizeFully(subTypeText)),
-		String.format("%s %s %s between the estimated and actual cost", adjective, limit,
-			subTypeText));
-	addRowsEstimatesComputed(sheetName, overall, subType);
+		String.format("Overall", adjective, WordUtils.capitalizeFully(subTypeText)));
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
+		"Cost Type");
+	addRowsEstimateCostsComputed(sheetName, overall);
     }
 
     /**
@@ -275,33 +277,15 @@ public class GeneratorExcel {
      * @param xlsGen
      * @param sheetName
      * @param list
-     * @param subType
      */
-    private void addRowsEstimatesComputed(String sheetName,
-	    ImmutableList<Entry<EstimateCost, Double>> list, int subType) {
-
-	// Loop through all entries.
+    private void addRowsEstimateCostsComputed(String sheetName,
+	    ImmutableList<Entry<EstimateCost, Double>> list) {
 	for (Entry<EstimateCost, Double> entry : list) {
-
-	    // Data.
 	    EstimateCost cost = entry.getKey();
 	    String costName = cost.getName();
 	    double costValue = entry.getValue();
-	    String subTypeText = "";
 	    String costTypeLabel = cost.getCostType().getLabel();
-
-	    // If the sub type is computed.
-	    if (subType == EstimateCostType.SUB_TYPE_DIFFERENCE
-		    || subType == EstimateCostType.SUB_TYPE_ABSOLUTE) {
-		subTypeText = subType == EstimateCostType.SUB_TYPE_DIFFERENCE ? "Difference"
-			: "Absolute";
-	    }
-	    // If plain data render.
-	    else {
-
-		subTypeText = subType == EstimateCostType.SUB_TYPE_PLANNED ? "Estimated" : "Actual";
-	    }
-	    addRow(sheetName, costName, costValue, subTypeText, costTypeLabel);
+	    addRow(sheetName, costName, costValue, costTypeLabel);
 	}
     }
 
@@ -315,32 +299,28 @@ public class GeneratorExcel {
      */
     public void addStatisticsEstimatesEntries(String sheetName, StatisticsEstimateCost statEstimates,
 	    SortOrder order, Integer limit) {
-	String adjective = order == SortOrder.DESCENDING ? "Top" : "Bottom";
-	String superlative = order == SortOrder.DESCENDING ? "MOST" : "LEAST";
 
 	// Direct planned.
-	addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Planned Direct", adjective), String
-		.format("%s %s %s expensive ESTIMATED DIRECT costs", adjective, limit, superlative));
-	addRowsEstimates(sheetName, statEstimates.getSortedPlannedDirect(order, limit),
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	addRowsEstimateCosts(sheetName, statEstimates.getSortedPlannedDirect(order, limit),
 		EstimateCostType.SUB_TYPE_PLANNED);
+	addRowEmpty(sheetName);
 
 	// Indirect planned.
-	addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Planned Indirect", adjective),
-		String.format("%s %s %s expensive ESTIMATED INDIRECT costs", adjective, limit,
-			superlative));
-	addRowsEstimates(sheetName, statEstimates.getSortedPlannedIndirect(order, limit),
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	addRowsEstimateCosts(sheetName, statEstimates.getSortedPlannedIndirect(order, limit),
 		EstimateCostType.SUB_TYPE_PLANNED);
+	addRowEmpty(sheetName);
 
 	// Direct actual.
-	addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Direct", adjective),
-		String.format("%s %s %s expensive ACTUAL DIRECT costs", adjective, limit, superlative));
-	addRowsEstimates(sheetName, statEstimates.getSortedActualDirect(order, limit),
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	addRowsEstimateCosts(sheetName, statEstimates.getSortedActualDirect(order, limit),
 		EstimateCostType.SUB_TYPE_ACTUAL);
+	addRowEmpty(sheetName);
 
 	// Indirect actual.
-	addRow(sheetName, IndexedColors.SEA_GREEN, String.format("%s Actual Indirect", adjective), String
-		.format("%s %s %s expensive ACTUAL INDIRECT costs", adjective, limit, superlative));
-	addRowsEstimates(sheetName, statEstimates.getSortedActualIndirect(order, limit),
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	addRowsEstimateCosts(sheetName, statEstimates.getSortedActualIndirect(order, limit),
 		EstimateCostType.SUB_TYPE_ACTUAL);
     }
 
@@ -436,6 +416,66 @@ public class GeneratorExcel {
 
 	addRow(sheetName, IndexedColors.SEA_GREEN, "Overall Project");
 	addRowsExpenses(sheetName, projAll);
+    }
+
+    public void addRowsTasks(String sheetName, List<Task> list, TaskSubType type) {
+	for (Task task : list) {
+
+	    // Get names from the staff set.
+	    Set<Staff> staff = task.getStaff();
+	    List<String> names = new ArrayList<String>();
+	    for (Staff member : staff) {
+		names.add(member.getFullName());
+	    }
+
+	    // Get the value based on the sub type.
+	    double value = 0;
+	    if (type == TaskSubType.ESTIMATED) {
+		value = task.getDuration();
+	    } else if (type == TaskSubType.ACTUAL) {
+		value = task.getActualDuration();
+	    } else if (type == TaskSubType.DIFFERENCE) {
+		value = task.getDuration() - task.getActualDuration();
+	    } else if (type == TaskSubType.ABSOLUTE) {
+		value = Math.abs(task.getDuration() - task.getActualDuration());
+	    }
+	    if (names.size() > 0) {
+		addRow(sheetName, task.getTitle(), value, type.getLabel(), names);
+	    } else {
+		addRow(sheetName, task.getTitle(), value, type.getLabel());
+	    }
+	}
+    }
+
+    public void addRowsTaskCount(String sheetName, Map<TaskStatus, Integer> taskStatusCountMap,
+	    int tasksPopulation) {
+	for (TaskStatus status : taskStatusCountMap.keySet()) {
+	    double percent = ((double) taskStatusCountMap.get(status) / (double) tasksPopulation) * 100;
+	    addRow(sheetName, status.label(), taskStatusCountMap.get(status), percent + "%");
+	}
+    }
+
+    public void addRowHeader(String sheetName, IndexedColors color, Object... values) {
+
+	HSSFCellStyle style = color == IndexedColors.YELLOW ? this.styleYellowFill
+		: this.styleSeaGreenFill;
+
+	// If sheet or index is not initialized,
+	// create it.
+	Integer rowIndex = getRowIndex(sheetName);
+
+	// Create the label cell.
+	HSSFSheet sheet = getSheet(sheetName);
+	HSSFRow row = sheet.createRow(rowIndex);
+	int cellIndex = 0;
+	for (Object val : values) {
+	    String valStr = String.valueOf(val);
+	    row.createCell(cellIndex).setCellStyle(style);
+	    row.getCell(cellIndex).setCellValue(valStr);
+	    cellIndex++;
+	}
+	rowIndex++;
+	saveIndex(sheetName, rowIndex);
     }
 
 }

@@ -16,6 +16,7 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
     private List<Double> durations = new ArrayList<Double>();
     private List<Double> actualDurations = new ArrayList<Double>();
     private List<Double> differenceDurations = new ArrayList<Double>();
+    private List<Double> absoluteDurations = new ArrayList<Double>();
     private Set<Task> tasks = new HashSet<Task>();
 
     public StatisticsProgramOfWorks() {
@@ -35,7 +36,9 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
 	    if (task.isCompleted()) {
 		double actualDuration = task.getActualDuration();
 		this.actualDurations.add(actualDuration);
-		this.differenceDurations.add(duration - actualDuration);
+		double diff = duration - actualDuration;
+		this.differenceDurations.add(diff);
+		this.absoluteDurations.add(Math.abs(diff));
 	    }
 	}
 	this.tasks = tasks;
@@ -128,6 +131,26 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
 	return getMatchingDifferenceTasks(leastDiff);
     }
 
+    public List<Task> getMaxAbsoluteDuration() {
+	addValuesAbsolute();
+	double greatestDiff = getMax();
+	clear();
+	return getMatchingDifferenceTasks(greatestDiff, true);
+    }
+
+    public List<Task> getMinAbsoluteDuration() {
+	addValuesAbsolute();
+	double leastDiff = getMin();
+	clear();
+	return getMatchingDifferenceTasks(leastDiff, true);
+    }
+
+    private void addValuesAbsolute() {
+	for (double diff : this.absoluteDurations) {
+	    addValue(diff);
+	}
+    }
+
     private void addValuesDifference() {
 	for (double diff : this.differenceDurations) {
 	    addValue(diff);
@@ -135,6 +158,10 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
     }
 
     private List<Task> getMatchingDifferenceTasks(double comparator) {
+	return getMatchingDifferenceTasks(comparator, false);
+    }
+
+    private List<Task> getMatchingDifferenceTasks(double comparator, boolean absolute) {
 	List<Task> tasksToReturn = new ArrayList<Task>();
 	for (Task task : this.tasks) {
 	    if (!task.isCompleted()) {
@@ -142,7 +169,8 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
 	    }
 	    double duration = task.getDuration();
 	    double actual = task.getActualDuration();
-	    if (comparator == (duration - actual)) {
+	    double diff = absolute ? Math.abs(duration - actual) : duration - actual;
+	    if (comparator == diff) {
 		tasksToReturn.add(task);
 	    }
 	}
@@ -165,6 +193,13 @@ public class StatisticsProgramOfWorks extends SummaryStatistics {
 
     public double getMeanDifference() {
 	addValuesDifference();
+	double mean = getMean();
+	clear();
+	return mean;
+    }
+
+    public double getMeanAbsolute() {
+	addValuesAbsolute();
 	double mean = getMean();
 	clear();
 	return mean;
