@@ -27,6 +27,7 @@ import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.EstimateCostType;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Task.TaskSubType;
@@ -297,8 +298,8 @@ public class GeneratorExcel {
      * @param order
      * @param limit
      */
-    public void addStatisticsEstimatesEntries(String sheetName, StatisticsEstimateCost statEstimates,
-	    SortOrder order, Integer limit) {
+    public void addStatisticsEstimatesEntries(String sheetName, Project proj,
+	    StatisticsEstimateCost statEstimates, SortOrder order, Integer limit) {
 
 	// Direct planned.
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
@@ -312,16 +313,18 @@ public class GeneratorExcel {
 		EstimateCostType.SUB_TYPE_PLANNED);
 	addRowEmpty(sheetName);
 
-	// Direct actual.
-	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
-	addRowsEstimateCosts(sheetName, statEstimates.getSortedActualDirect(order, limit),
-		EstimateCostType.SUB_TYPE_ACTUAL);
-	addRowEmpty(sheetName);
+	if (proj.isCompleted()) {
+	    // Direct actual.
+	    addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	    addRowsEstimateCosts(sheetName, statEstimates.getSortedActualDirect(order, limit),
+		    EstimateCostType.SUB_TYPE_ACTUAL);
+	    addRowEmpty(sheetName);
 
-	// Indirect actual.
-	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
-	addRowsEstimateCosts(sheetName, statEstimates.getSortedActualIndirect(order, limit),
-		EstimateCostType.SUB_TYPE_ACTUAL);
+	    // Indirect actual.
+	    addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
+	    addRowsEstimateCosts(sheetName, statEstimates.getSortedActualIndirect(order, limit),
+		    EstimateCostType.SUB_TYPE_ACTUAL);
+	}
     }
 
     /**
