@@ -159,7 +159,7 @@ public class GeneratorExcel {
 	return workbook;
     }
 
-    public void fixColumnSizes() {
+    public void fixSheets() {
 	for (int sheetIndex = 0; sheetIndex < this.workbook.getNumberOfSheets(); sheetIndex++) {
 	    HSSFSheet wbSheet = this.workbook.getSheetAt(sheetIndex);
 	    wbSheet.setDefaultColumnWidth(20);
@@ -337,16 +337,33 @@ public class GeneratorExcel {
 	}
     }
 
+    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses) {
+	addRowsExpenses(sheetName, expenses, null);
+    }
+
     /**
      * Create a section for the list of expenses.
      * 
      * @param xlsGen
      * @param sheetName
      * @param expenses
+     * @param moduleName
      */
-    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses) {
+    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses,
+	    String moduleName) {
 	for (AbstractExpense expense : expenses) {
-	    addRow(sheetName, expense.getName(), expense.getCost());
+	    if (moduleName == null) {
+		addRow(sheetName, expense.getName(), expense.getCost());
+	    } else {
+		addRow(sheetName, moduleName, expense.getName(), expense.getCost());
+	    }
+	}
+	if (expenses.isEmpty()) {
+	    if (moduleName == null) {
+		addRow(sheetName, "(None)");
+	    } else {
+		addRow(sheetName, moduleName, "(None)");
+	    }
 	}
     }
 
@@ -382,10 +399,11 @@ public class GeneratorExcel {
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
 		String.format("Expense(s) with the %s value", superlative));
-	addRowsExpenses(sheetName, payroll);
-	addRowsExpenses(sheetName, deliveries);
-	addRowsExpenses(sheetName, equips);
-	addRowsExpenses(sheetName, others);
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "Name", "Cost");
+	addRowsExpenses(sheetName, payroll, "Payroll");
+	addRowsExpenses(sheetName, deliveries, "Deliveries");
+	addRowsExpenses(sheetName, equips, "Equipment");
+	addRowsExpenses(sheetName, others, "Other Expenses");
     }
 
     /**
@@ -412,25 +430,36 @@ public class GeneratorExcel {
 	ImmutableList<IExpense> projAll = statisticsProj.getLimitedSortedByCostProject(limit, order);
 
 	// Render.
-	addRow(sheetName, IndexedColors.YELLOW,
+	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s %s %s Expensive", adjective, limit, superlative));
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Payrolls");
+	addRow(sheetName, IndexedColors.YELLOW, "Payrolls");
 	addRowsExpenses(sheetName, payrolls);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Deliveries");
+	addRow(sheetName, IndexedColors.YELLOW, "Deliveries");
 	addRowsExpenses(sheetName, deliveries);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Equipment");
+	addRow(sheetName, IndexedColors.YELLOW, "Equipment");
 	addRowsExpenses(sheetName, equips);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Other Expenses");
+	addRow(sheetName, IndexedColors.YELLOW, "Other Expenses");
 	addRowsExpenses(sheetName, others);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Overall Project");
+	addRow(sheetName, IndexedColors.YELLOW, "Overall Project");
 	addRowsExpenses(sheetName, projAll);
     }
 
+    /**
+     * Add rows with tasks.
+     * 
+     * @param sheetName
+     * @param list
+     * @param type
+     */
     public void addRowsTasks(String sheetName, List<Task> list, TaskSubType type) {
 	for (Task task : list) {
 
@@ -453,13 +482,20 @@ public class GeneratorExcel {
 		value = Math.abs(task.getDuration() - task.getActualDuration());
 	    }
 	    if (names.size() > 0) {
-		addRow(sheetName, task.getTitle(), value, type.getLabel(), names);
+		addRow(sheetName, type.getLabel(), task.getTitle(), value, names);
 	    } else {
-		addRow(sheetName, task.getTitle(), value, type.getLabel());
+		addRow(sheetName, type.getLabel(), task.getTitle(), value);
 	    }
 	}
     }
 
+    /**
+     * Add rows of tasks given a map.
+     * 
+     * @param sheetName
+     * @param taskStatusCountMap
+     * @param tasksPopulation
+     */
     public void addRowsTaskCount(String sheetName, Map<TaskStatus, Integer> taskStatusCountMap,
 	    int tasksPopulation) {
 	for (TaskStatus status : taskStatusCountMap.keySet()) {
