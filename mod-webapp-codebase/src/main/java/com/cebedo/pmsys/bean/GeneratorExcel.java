@@ -15,7 +15,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-import com.cebedo.pmsys.constants.RegistryExcel;
 import com.cebedo.pmsys.domain.AbstractExpense;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
@@ -73,7 +72,11 @@ public class GeneratorExcel {
     }
 
     public void addRowEmpty(String sheetName) {
-	Integer rowIndex = getRowIndex(sheetName) + 1;
+	addRowEmpty(sheetName, 1);
+    }
+
+    public void addRowEmpty(String sheetName, int num) {
+	Integer rowIndex = getRowIndex(sheetName) + num;
 	saveIndex(sheetName, rowIndex);
     }
 
@@ -93,7 +96,6 @@ public class GeneratorExcel {
 	// If sheet or index is not initialized,
 	// create it.
 	Integer rowIndex = getRowIndex(sheetName);
-	rowIndex = rowIndex == 0 ? 0 : rowIndex + 1;
 
 	// Create the label cell.
 	HSSFSheet sheet = getSheet(sheetName);
@@ -157,7 +159,7 @@ public class GeneratorExcel {
 	return workbook;
     }
 
-    public void fixColumnSizes() {
+    public void fixSheets() {
 	for (int sheetIndex = 0; sheetIndex < this.workbook.getNumberOfSheets(); sheetIndex++) {
 	    HSSFSheet wbSheet = this.workbook.getSheetAt(sheetIndex);
 	    wbSheet.setDefaultColumnWidth(20);
@@ -176,19 +178,23 @@ public class GeneratorExcel {
      */
     public void addStatisticsAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff,
 	    int max, SortOrder order) {
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.ABSENT.label());
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.ABSENT.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.ABSENT, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.OVERTIME.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.OVERTIME.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.OVERTIME, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LATE.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.LATE.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LATE, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.HALFDAY.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.HALFDAY.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.HALFDAY, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LEAVE.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.LEAVE.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LEAVE, max, order);
     }
 
@@ -259,12 +265,14 @@ public class GeneratorExcel {
 		"Cost Type");
 	addRowsEstimateCostsComputed(sheetName, direct);
 
+	addRowEmpty(sheetName);
 	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("Indirect", adjective, WordUtils.capitalizeFully(subTypeText)));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
 		"Cost Type");
 	addRowsEstimateCostsComputed(sheetName, indirect);
 
+	addRowEmpty(sheetName);
 	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("Overall", adjective, WordUtils.capitalizeFully(subTypeText)));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
@@ -311,9 +319,11 @@ public class GeneratorExcel {
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	addRowsEstimateCosts(sheetName, statEstimates.getSortedPlannedIndirect(order, limit),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	addRowEmpty(sheetName);
 
 	if (proj.isCompleted()) {
+
+	    addRowEmpty(sheetName);
+
 	    // Direct actual.
 	    addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	    addRowsEstimateCosts(sheetName, statEstimates.getSortedActualDirect(order, limit),
@@ -327,16 +337,33 @@ public class GeneratorExcel {
 	}
     }
 
+    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses) {
+	addRowsExpenses(sheetName, expenses, null);
+    }
+
     /**
      * Create a section for the list of expenses.
      * 
      * @param xlsGen
      * @param sheetName
      * @param expenses
+     * @param moduleName
      */
-    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses) {
+    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses,
+	    String moduleName) {
 	for (AbstractExpense expense : expenses) {
-	    addRow(sheetName, expense.getName(), expense.getCost());
+	    if (moduleName == null) {
+		addRow(sheetName, expense.getName(), expense.getCost());
+	    } else {
+		addRow(sheetName, moduleName, expense.getName(), expense.getCost());
+	    }
+	}
+	if (expenses.isEmpty()) {
+	    if (moduleName == null) {
+		addRow(sheetName, "(None)");
+	    } else {
+		addRow(sheetName, moduleName, "(None)");
+	    }
 	}
     }
 
@@ -371,11 +398,12 @@ public class GeneratorExcel {
 
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
-		String.format(RegistryExcel.DYNAMIC_EXPENSE_VALUE, superlative));
-	addRowsExpenses(sheetName, payroll);
-	addRowsExpenses(sheetName, deliveries);
-	addRowsExpenses(sheetName, equips);
-	addRowsExpenses(sheetName, others);
+		String.format("Expense(s) with the %s value", superlative));
+	addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "Name", "Cost");
+	addRowsExpenses(sheetName, payroll, "Payroll");
+	addRowsExpenses(sheetName, deliveries, "Deliveries");
+	addRowsExpenses(sheetName, equips, "Equipment");
+	addRowsExpenses(sheetName, others, "Other Expenses");
     }
 
     /**
@@ -402,25 +430,36 @@ public class GeneratorExcel {
 	ImmutableList<IExpense> projAll = statisticsProj.getLimitedSortedByCostProject(limit, order);
 
 	// Render.
-	addRow(sheetName, IndexedColors.YELLOW,
+	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("%s %s %s Expensive", adjective, limit, superlative));
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Payrolls");
+	addRow(sheetName, IndexedColors.YELLOW, "Payrolls");
 	addRowsExpenses(sheetName, payrolls);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Deliveries");
+	addRow(sheetName, IndexedColors.YELLOW, "Deliveries");
 	addRowsExpenses(sheetName, deliveries);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Equipment");
+	addRow(sheetName, IndexedColors.YELLOW, "Equipment");
 	addRowsExpenses(sheetName, equips);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Other Expenses");
+	addRow(sheetName, IndexedColors.YELLOW, "Other Expenses");
 	addRowsExpenses(sheetName, others);
+	addRowEmpty(sheetName);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, "Overall Project");
+	addRow(sheetName, IndexedColors.YELLOW, "Overall Project");
 	addRowsExpenses(sheetName, projAll);
     }
 
+    /**
+     * Add rows with tasks.
+     * 
+     * @param sheetName
+     * @param list
+     * @param type
+     */
     public void addRowsTasks(String sheetName, List<Task> list, TaskSubType type) {
 	for (Task task : list) {
 
@@ -443,13 +482,20 @@ public class GeneratorExcel {
 		value = Math.abs(task.getDuration() - task.getActualDuration());
 	    }
 	    if (names.size() > 0) {
-		addRow(sheetName, task.getTitle(), value, type.getLabel(), names);
+		addRow(sheetName, type.getLabel(), task.getTitle(), value, names);
 	    } else {
-		addRow(sheetName, task.getTitle(), value, type.getLabel());
+		addRow(sheetName, type.getLabel(), task.getTitle(), value);
 	    }
 	}
     }
 
+    /**
+     * Add rows of tasks given a map.
+     * 
+     * @param sheetName
+     * @param taskStatusCountMap
+     * @param tasksPopulation
+     */
     public void addRowsTaskCount(String sheetName, Map<TaskStatus, Integer> taskStatusCountMap,
 	    int tasksPopulation) {
 	for (TaskStatus status : taskStatusCountMap.keySet()) {

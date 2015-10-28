@@ -30,7 +30,6 @@ import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.bean.StatisticsStaff;
 import com.cebedo.pmsys.constants.ConstantsRedis;
-import com.cebedo.pmsys.constants.RegistryExcel;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -906,7 +905,7 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsAnalysisExpenses(xlsGen, proj);
 
 	// Re-size the columns.
-	xlsGen.fixColumnSizes();
+	xlsGen.fixSheets();
 
 	return xlsGen.getWorkbook();
     }
@@ -922,58 +921,14 @@ public class ProjectServiceImpl implements ProjectService {
 
 	Set<Task> tasks = proj.getAssignedTasks();
 	int tasksPopulation = tasks.size();
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Descriptive",
+		"Descriptive statistics on program of works");
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "Basic");
 	xlsGen.addRow(sheetName, "Number of Tasks", tasksPopulation);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Process tasks.
 	StatisticsProgramOfWorks statisticsPOW = new StatisticsProgramOfWorks(tasks);
-
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN,
-		RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN_EXTRA);
-
-	// (Max) Which task took the most duration and actualDuration?
-	// How long? Who did it?
-	List<Task> maxPlannedDuration = statisticsPOW.getMaxDuration();
-	List<Task> maxActualDuration = statisticsPOW.getMaxActualDuration();
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum Durations",
-		"Which tasks took the MOST durations?");
-	xlsGen.addRowsTasks(sheetName, maxPlannedDuration, TaskSubType.ESTIMATED);
-	xlsGen.addRowsTasks(sheetName, maxActualDuration, TaskSubType.ACTUAL);
-
-	// (Min) Which task took the least duration and actualDuration?
-	// How long? Who did it?
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum Durations",
-		"Which tasks took the LEAST durations?");
-	List<Task> leastPlannedDuration = statisticsPOW.getMinDuration();
-	List<Task> leastActualDuration = statisticsPOW.getMinActualDuration();
-	xlsGen.addRowsTasks(sheetName, leastPlannedDuration, TaskSubType.ESTIMATED);
-	xlsGen.addRowsTasks(sheetName, leastActualDuration, TaskSubType.ACTUAL);
-
-	// (Max) Biggest negative (duration - actualDuration)
-	// How much? Who did it?
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum Difference",
-		"Most OVER-estimated task(s)");
-	List<Task> maxDifference = statisticsPOW.getMaxDifferenceDuration();
-	xlsGen.addRowsTasks(sheetName, maxDifference, TaskSubType.DIFFERENCE);
-
-	// (Min) Least negative (duration - actualDuration)
-	// How much? Who did it?
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum Difference",
-		"Most UNDER-estimated task(s)");
-	List<Task> minDifference = statisticsPOW.getMinDifferenceDuration();
-	xlsGen.addRowsTasks(sheetName, minDifference, TaskSubType.DIFFERENCE);
-
-	// Absolute difference.
-	// (Max) Biggest negative (duration - actualDuration)
-	// How much? Who did it?
-	List<Task> maxAbsolute = statisticsPOW.getMaxAbsoluteDuration();
-	List<Task> minAbsolute = statisticsPOW.getMinAbsoluteDuration();
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Max Absolute Difference",
-		"Task(s) with the GREATEST difference (estimated duration minus actual duration)");
-	xlsGen.addRowsTasks(sheetName, maxAbsolute, TaskSubType.ABSOLUTE);
-
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Min Absolute Difference",
-		"Task(s) with the LEAST difference (estimated duration minus actual duration)");
-	xlsGen.addRowsTasks(sheetName, minAbsolute, TaskSubType.ABSOLUTE);
 
 	// (Mean) Of all tasks: duration. How much?
 	double meanPlanned = statisticsPOW.getMeanDuration();
@@ -981,17 +936,50 @@ public class ProjectServiceImpl implements ProjectService {
 	double meanDiff = statisticsPOW.getMeanDifference();
 	double meanAbs = statisticsPOW.getMeanAbsolute();
 
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means", "Average value");
-	xlsGen.addRow(sheetName, "Duration (Estimated)", meanPlanned);
-	xlsGen.addRow(sheetName, "Duration (Actual)", meanActual);
-	xlsGen.addRow(sheetName, "Duration (Difference)", meanDiff);
-	xlsGen.addRow(sheetName, "Duration (Absolute Difference)", meanAbs);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means", "Average duration per type of data");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Type", "Duration");
+	xlsGen.addRow(sheetName, "Estimated", meanPlanned);
+	xlsGen.addRow(sheetName, "Actual", meanActual);
+	xlsGen.addRow(sheetName, "Difference", meanDiff);
+	xlsGen.addRow(sheetName, "Absolute Difference", meanAbs);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Map of task status to number.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Counter",
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Task Total & Percentage",
 		"How many tasks are set for each task status?");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Status", "Total", "Percentage (%)");
 	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
 	xlsGen.addRowsTaskCount(sheetName, taskStatusCountMap, tasksPopulation);
+	xlsGen.addRowEmpty(sheetName);
+
+	// (Max) Which task took the most duration and actualDuration?
+	// How long? Who did it?
+	List<Task> maxPlannedDuration = statisticsPOW.getMaxDuration();
+	List<Task> maxActualDuration = statisticsPOW.getMaxActualDuration();
+	List<Task> maxDifference = statisticsPOW.getMaxDifferenceDuration();
+	List<Task> maxAbsolute = statisticsPOW.getMaxAbsoluteDuration();
+
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Type", "Task", "Duration");
+	xlsGen.addRowsTasks(sheetName, maxPlannedDuration, TaskSubType.ESTIMATED);
+	xlsGen.addRowsTasks(sheetName, maxActualDuration, TaskSubType.ACTUAL);
+	xlsGen.addRowsTasks(sheetName, maxDifference, TaskSubType.DIFFERENCE);
+	xlsGen.addRowsTasks(sheetName, maxAbsolute, TaskSubType.ABSOLUTE);
+	xlsGen.addRowEmpty(sheetName);
+
+	// (Min) Which task took the least duration and actualDuration?
+	// How long? Who did it?
+	List<Task> leastPlannedDuration = statisticsPOW.getMinDuration();
+	List<Task> leastActualDuration = statisticsPOW.getMinActualDuration();
+	List<Task> minDifference = statisticsPOW.getMinDifferenceDuration();
+	List<Task> minAbsolute = statisticsPOW.getMinAbsoluteDuration();
+
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Type", "Task", "Duration");
+	xlsGen.addRowsTasks(sheetName, leastPlannedDuration, TaskSubType.ESTIMATED);
+	xlsGen.addRowsTasks(sheetName, leastActualDuration, TaskSubType.ACTUAL);
+	xlsGen.addRowsTasks(sheetName, minDifference, TaskSubType.DIFFERENCE);
+	xlsGen.addRowsTasks(sheetName, minAbsolute, TaskSubType.ABSOLUTE);
     }
 
     /**
@@ -1019,12 +1007,13 @@ public class ProjectServiceImpl implements ProjectService {
 	double projCostDiff = projCost - actualProjCost;
 	double projCostDiffPercent = (projCostDiff / projCost) * 100;
 
+	xlsGen.addRowEmpty(sheetName);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Project Cost & Physical Target");
 	xlsGen.addRow(sheetName, "Physical Target (sq.m.)", phyTarget);
 	xlsGen.addRowEmpty(sheetName);
 
 	// Project cost.
-	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Project Cost", "PHP", "Percent (%)");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Project Cost", "PHP", "Percentage (%)");
 	xlsGen.addRow(sheetName, "Estimated", projCost);
 	if (proj.isCompleted()) {
 	    xlsGen.addRow(sheetName, "Actual", actualProjCost, projCostPercent,
@@ -1036,7 +1025,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Physical target.
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Physical Target Cost", "PHP / sq.m.",
-		"Percent (%)");
+		"Percentage (%)");
 	xlsGen.addRow(sheetName, "Estimated", phyTargetCost);
 	if (proj.isCompleted()) {
 	    double actualPhyTargetCost = actualProjCost / phyTarget;
@@ -1049,6 +1038,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    xlsGen.addRow(sheetName, "Difference", diffTargetCosts, percentDiffPhy,
 		    "% comparison with Estimated");
 	}
+	xlsGen.addRowEmpty(sheetName);
     }
 
     /**
@@ -1068,7 +1058,7 @@ public class ProjectServiceImpl implements ProjectService {
 		otherExpenses);
 
 	// Prepare variables.
-	String sheetName = RegistryExcel.SHEET_EXPENSES;
+	String sheetName = "Expenses";
 
 	// Analysis (Mean).
 	double meanPayroll = statisticsProj.getMeanPayroll();
@@ -1076,12 +1066,14 @@ public class ProjectServiceImpl implements ProjectService {
 	double meanEquip = statisticsProj.getMeanEquipment();
 	double meanOtherExpenses = statisticsProj.getMeanOtherExpenses();
 	double meanProject = statisticsProj.getMeanProject();
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.MEANS);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "Mean");
 	xlsGen.addRow(sheetName, "Payroll", meanPayroll);
 	xlsGen.addRow(sheetName, "Deliveries", meanDeliveries);
 	xlsGen.addRow(sheetName, "Equipment", meanEquip);
 	xlsGen.addRow(sheetName, "Other Expenses", meanOtherExpenses);
 	xlsGen.addRow(sheetName, "Overall Project", meanProject);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Population.
 	double popPayroll = this.projectPayrollService.getSize(payrolls);
@@ -1089,24 +1081,29 @@ public class ProjectServiceImpl implements ProjectService {
 	double popEquip = equipmentExpenses.size();
 	double popOtherExpenses = otherExpenses.size();
 	double popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_POPULATION);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Number of Entries");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "No. of Entries");
 	xlsGen.addRow(sheetName, "Payroll", popPayroll);
 	xlsGen.addRow(sheetName, "Deliveries", popDelivery);
 	xlsGen.addRow(sheetName, "Equipment", popEquip);
 	xlsGen.addRow(sheetName, "Other Expenses", popOtherExpenses);
 	xlsGen.addRow(sheetName, "Overall Project", popProject);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Analysis (Max).
 	xlsGen.addStatisticsExpensesDescriptive(sheetName, statisticsProj,
 		StatisticsProject.DESCRIPTIVE_MAX);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Analysis (Min).
 	xlsGen.addStatisticsExpensesDescriptive(sheetName, statisticsProj,
 		StatisticsProject.DESCRIPTIVE_MIN);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Descending expenses.
 	Integer limit = 5;
 	xlsGen.addStatisticsExpensesPlain(sheetName, limit, SortOrder.DESCENDING, statisticsProj);
+	xlsGen.addRowEmpty(sheetName);
 
 	// Ascending expenses.
 	xlsGen.addStatisticsExpensesPlain(sheetName, limit, SortOrder.ASCENDING, statisticsProj);
@@ -1123,12 +1120,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 	String sheetName = "Staff";
 
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_STAFF,
-		"Analytics regarding staff members and attendance");
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Descriptive",
+		"Descriptive statistics on attendance data");
 
 	// Number of staff members assigned to this project.
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.DESCRIPTIVE,
-		"Descriptive statistics on attendance data");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Basic");
 	Set<Staff> assignedStaff = proj.getAssignedStaff();
 	int numOfAssignedStaff = assignedStaff.size();
 	xlsGen.addRow(sheetName, "Number of Assigned Staff", numOfAssignedStaff);
@@ -1143,34 +1139,36 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsGen.addRow(sheetName, "Salary Sum (Daily)", sumWage, "Total daily staff salary");
 
 	// Mean per attendance status.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.MEANS);
+	xlsGen.addRowEmpty(sheetName);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means",
+		"Average number of attendances per type of attendance");
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Attendance Type", "Mean");
 	double meanAbsences = statisticsStaff.getMeanOf(AttendanceStatus.ABSENT);
 	double meanOvertime = statisticsStaff.getMeanOf(AttendanceStatus.OVERTIME);
 	double meanLate = statisticsStaff.getMeanOf(AttendanceStatus.LATE);
 	double meanHalfday = statisticsStaff.getMeanOf(AttendanceStatus.HALFDAY);
 	double meanLeave = statisticsStaff.getMeanOf(AttendanceStatus.LEAVE);
 
-	xlsGen.addRow(sheetName, AttendanceStatus.ABSENT.label(), meanAbsences,
-		"Average number of staff absences");
-	xlsGen.addRow(sheetName, AttendanceStatus.OVERTIME.label(), meanOvertime,
-		"Average number of staff overtimes");
-	xlsGen.addRow(sheetName, AttendanceStatus.LATE.label(), meanLate,
-		"Average number of staff lates");
-	xlsGen.addRow(sheetName, AttendanceStatus.HALFDAY.label(), meanHalfday,
-		"Average number of staff half-days");
-	xlsGen.addRow(sheetName, AttendanceStatus.LEAVE.label(), meanLeave,
-		"Average number of staff leaves");
+	xlsGen.addRow(sheetName, AttendanceStatus.ABSENT.label(), meanAbsences);
+	xlsGen.addRow(sheetName, AttendanceStatus.OVERTIME.label(), meanOvertime);
+	xlsGen.addRow(sheetName, AttendanceStatus.LATE.label(), meanLate);
+	xlsGen.addRow(sheetName, AttendanceStatus.HALFDAY.label(), meanHalfday);
+	xlsGen.addRow(sheetName, AttendanceStatus.LEAVE.label(), meanLeave);
 
 	// Staff list with the most per attendance. Get top 5.
 	// Top 5 staff member per attendance status.
 	int max = 5;
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "TOP 5 STAFF PER ATTENDANCE STATUS",
-		"Greatest number of entries for each attendance type");
+	xlsGen.addRowEmpty(sheetName, 2);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
+		String.format("Top %s Per Attendance Type", max),
+		"Staff member(s) with the MOST number of attendances per type");
 	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.DESCENDING);
 
 	// Bottom 5 staff member per attendance status.
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "BOTTOM 5 STAFF PER ATTENDANCE STATUS",
-		"Least number of entries for each attendance type");
+	xlsGen.addRowEmpty(sheetName, 2);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
+		String.format("Bottom %s Per Attendance Type", max),
+		"Staff member(s) with the LEAST number of attendances per type");
 	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.ASCENDING);
     }
 
@@ -1189,7 +1187,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Date dateCompletionTarget = proj.getTargetCompletionDate();
 	int plannedNumOfDays = proj.getCalDaysTotal(); // Expected project days.
 
-	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "", "Date", "No. of Days", "Percent (%)",
+	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "", "Date", "No. of Days", "Percentage (%)",
 		"Remarks");
 	xlsGen.addRow(sheetName, "Start", DateUtils.formatDate(dateStart));
 	xlsGen.addRow(sheetName, "Completion (Estimated)", DateUtils.formatDate(dateCompletionTarget),
@@ -1254,10 +1252,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	String sheetName = "Cost Estimate";
 
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Costs Total and Proportion");
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Costs Total and Percentage");
 
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Project Cost", "Total", "Direct",
-		"Percent (%)", "Indirect", "Percent (%)");
+		"Percentage (%)", "Indirect", "Percentage (%)");
 	double percentEstimatedDirect = (plannedDirect / plannedProjCost) * 100;
 	double percentEstimatedIndirect = (plannedIndirect / plannedProjCost) * 100;
 	xlsGen.addRow(sheetName, "Estimated", plannedProjCost, plannedDirect, percentEstimatedDirect,
@@ -1291,6 +1289,7 @@ public class ProjectServiceImpl implements ProjectService {
 	double meanPlannedIndirect = statEstimates.getMeanPlannedIndirect();
 	double meanPlannedOverall = statEstimates.getMeanPlannedOverall();
 
+	xlsGen.addRowEmpty(sheetName);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Project Cost", "Mean (Average)", "Direct",
 		"Indirect");
@@ -1308,8 +1307,9 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Maximum costs.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MAXIMUM,
-		RegistryExcel.HEADER2_MAX_COST_EXTRA);
+	xlsGen.addRowEmpty(sheetName);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum",
+		"Estimate(s) with the MOST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
@@ -1323,8 +1323,9 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	// Minimum costs.
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MINIMUM,
-		RegistryExcel.HEADER2_MIN_COST_EXTRA);
+	xlsGen.addRowEmpty(sheetName);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum",
+		"Estimate(s) with the LEAST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
@@ -1341,38 +1342,41 @@ public class ProjectServiceImpl implements ProjectService {
 
 	if (proj.isCompleted()) {
 	    // Top absolute differences (planned - actual) of direct.
-	    xlsGen.addRowEmpty(sheetName);
+	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Absolute Differences",
-		    RegistryExcel.HEADER1_COMPUTED_ABS_EXTRA);
+		    "Most over and underestimated costs");
+	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_ABSOLUTE, SortOrder.DESCENDING, limit);
 	}
 
 	// Top entries.
-	xlsGen.addRowEmpty(sheetName);
+	xlsGen.addRowEmpty(sheetName, 2);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Top Costs",
-		RegistryExcel.HEADER1_SORTED_ENTRIES_TOP_EXTRA);
+		"Greatest costs in descending order");
 	xlsGen.addStatisticsEstimatesEntries(sheetName, proj, statEstimates, SortOrder.DESCENDING,
 		limit);
 
 	// Bottom entries.
-	xlsGen.addRowEmpty(sheetName);
+	xlsGen.addRowEmpty(sheetName, 2);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Bottom Costs",
-		RegistryExcel.HEADER1_SORTED_ENTRIES_BOTTOM_EXTRA);
+		"Least costs in ascending order");
 	xlsGen.addStatisticsEstimatesEntries(sheetName, proj, statEstimates, SortOrder.ASCENDING, limit);
 
 	if (proj.isCompleted()) {
 	    // Top absolute differences (planned - actual) of direct.
-	    xlsGen.addRowEmpty(sheetName);
+	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Top Differences",
-		    RegistryExcel.HEADER1_COMPUTED_DIFF_TOP_EXTRA);
+		    "Greatest differences (estimated minus actual) in descending order");
+	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.DESCENDING, limit);
 
 	    // Bottom absolute differences (planned - actual) of direct.
-	    xlsGen.addRowEmpty(sheetName);
+	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Bottom Differences",
-		    RegistryExcel.HEADER1_COMPUTED_DIFF_BOTTOM_EXTRA);
+		    "Least differences (estimated minus actual) in ascending order");
+	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.ASCENDING, limit);
 	}
