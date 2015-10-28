@@ -73,7 +73,11 @@ public class GeneratorExcel {
     }
 
     public void addRowEmpty(String sheetName) {
-	Integer rowIndex = getRowIndex(sheetName) + 1;
+	addRowEmpty(sheetName, 1);
+    }
+
+    public void addRowEmpty(String sheetName, int num) {
+	Integer rowIndex = getRowIndex(sheetName) + num;
 	saveIndex(sheetName, rowIndex);
     }
 
@@ -93,7 +97,6 @@ public class GeneratorExcel {
 	// If sheet or index is not initialized,
 	// create it.
 	Integer rowIndex = getRowIndex(sheetName);
-	rowIndex = rowIndex == 0 ? 0 : rowIndex + 1;
 
 	// Create the label cell.
 	HSSFSheet sheet = getSheet(sheetName);
@@ -176,19 +179,23 @@ public class GeneratorExcel {
      */
     public void addStatisticsAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff,
 	    int max, SortOrder order) {
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.ABSENT.label());
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.ABSENT.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.ABSENT, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.OVERTIME.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.OVERTIME.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.OVERTIME, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LATE.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.LATE.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LATE, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.HALFDAY.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.HALFDAY.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.HALFDAY, max, order);
 
-	addRow(sheetName, IndexedColors.SEA_GREEN, AttendanceStatus.LEAVE.label());
+	addRowEmpty(sheetName);
+	addRowHeader(sheetName, IndexedColors.YELLOW, AttendanceStatus.LEAVE.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, AttendanceStatus.LEAVE, max, order);
     }
 
@@ -259,12 +266,14 @@ public class GeneratorExcel {
 		"Cost Type");
 	addRowsEstimateCostsComputed(sheetName, direct);
 
+	addRowEmpty(sheetName);
 	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("Indirect", adjective, WordUtils.capitalizeFully(subTypeText)));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
 		"Cost Type");
 	addRowsEstimateCostsComputed(sheetName, indirect);
 
+	addRowEmpty(sheetName);
 	addRow(sheetName, IndexedColors.SEA_GREEN,
 		String.format("Overall", adjective, WordUtils.capitalizeFully(subTypeText)));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", WordUtils.capitalizeFully(subTypeText),
@@ -311,9 +320,11 @@ public class GeneratorExcel {
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	addRowsEstimateCosts(sheetName, statEstimates.getSortedPlannedIndirect(order, limit),
 		EstimateCostType.SUB_TYPE_PLANNED);
-	addRowEmpty(sheetName);
 
 	if (proj.isCompleted()) {
+
+	    addRowEmpty(sheetName);
+
 	    // Direct actual.
 	    addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	    addRowsEstimateCosts(sheetName, statEstimates.getSortedActualDirect(order, limit),
