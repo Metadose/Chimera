@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Map;
 
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.AttendanceStatus;
@@ -21,11 +20,6 @@ public class Attendance implements IDomainObject {
     private AttendanceStatus status;
 
     private double wage;
-
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
 
     /**
      * Bean-backed form.
@@ -106,16 +100,6 @@ public class Attendance implements IDomainObject {
 
     public void setWage(double wage) {
 	this.wage = wage;
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     public static String constructPattern(Project project, Staff staff, Date myDate) {

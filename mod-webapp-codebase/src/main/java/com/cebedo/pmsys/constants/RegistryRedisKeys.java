@@ -10,7 +10,12 @@ public class RegistryRedisKeys {
 
     public static final String KEY_CONCRETE_ESTIMATION_SUMMARY = "company.fk:%s:project.fk:%s:concreteestimationsummary:%s";
 
-    public static final String KEY_PROJECT_AUX = "company.fk:%s:project:%s";
+    /**
+     * Auxiliaries.
+     */
+    public static final String KEY_AUX_PROJECT = "company.fk:%s:project:%s";
+
+    public static final String KEY_AUX_USER = "company.fk:%s:user:%s";
 
     /**
      * 2nd-level dependents.

@@ -146,6 +146,76 @@
                    								</div>
                    							</div>
                    						</div>
+                   						
+                   						<c:if test="${systemuser.id > 0}">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-header">
+                   									<h3 class="box-title">Authorization</h3>
+                   								</div>
+                   								<div class="box-body">
+                   									<form:form modelAttribute="userAux"
+														id="checkboxesForm"
+														method="post"
+														action="${contextPath}/systemuser/update/authority">
+			                                        <div class="form-group">
+														<a href="#" onclick="checkAll('module-checkboxes')" class="general-link">Check All</a>&nbsp;
+														<a href="#" onclick="uncheckAll('module-checkboxes')" class="general-link">Uncheck All</a>
+														<p class="help-block">Check or uncheck modules</p>
+		                                            	<table class="table table-bordered table-striped">
+														<thead>
+				                                    		<tr>
+					                                            <th>Check</th>
+					                                            <th>Project Module</th>
+					                                        </tr>
+				                                    	</thead>
+														<tbody>
+					                                		<c:forEach items="${moduleList}" var="module">
+															<tr>
+																<td align="center">
+							                                		<form:checkbox class="form-control include-checkbox module-checkboxes" 
+							                                			path="modules" 
+							                                			value="${module}"
+							                                			/>
+																</td>
+																<td>${module.getLabel()}</td>
+															</tr>
+					                                		</c:forEach>
+														</tbody>
+														</table>
+														<br/>
+														<br/>
+														<a href="#" onclick="checkAll('action-checkboxes')" class="general-link">Check All</a>&nbsp;
+														<a href="#" onclick="uncheckAll('action-checkboxes')" class="general-link">Uncheck All</a>
+														<p class="help-block">Check or uncheck actions</p>
+		                                            	<table class="table table-bordered table-striped">
+														<thead>
+				                                    		<tr>
+					                                            <th>Check</th>
+					                                            <th>Authorized Action</th>
+					                                        </tr>
+				                                    	</thead>
+														<tbody>
+					                                		<c:forEach items="${actionList}" var="action">
+															<tr>
+																<td align="center">
+							                                		<form:checkbox class="form-control include-checkbox action-checkboxes" 
+							                                			path="actions" 
+							                                			value="${action}"
+							                                			/>
+																</td>
+																<td>${action.getLabel()}</td>
+															</tr>
+					                                		</c:forEach>
+														</tbody>
+														</table>
+			                                        </div>
+			                                        <button class="btn btn-cebedo-update btn-flat btn-sm">Authorize</button>
+				                                    </form:form>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->

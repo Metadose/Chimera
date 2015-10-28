@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.domain;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,8 +27,6 @@ public class EstimateCost implements IDomainObject {
     private double actualCost;
     private EstimateCostType costType;
 
-    private Map<String, Object> extMap;
-
     public EstimateCost() {
 	;
     }
@@ -37,16 +34,6 @@ public class EstimateCost implements IDomainObject {
     public EstimateCost(Project proj) {
 	setProject(proj);
 	setCompany(proj.getCompany());
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override

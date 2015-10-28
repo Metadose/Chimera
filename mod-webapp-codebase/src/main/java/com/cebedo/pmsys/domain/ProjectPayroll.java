@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,7 +40,6 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
      */
     private boolean saved;
     private long[] staffIDs;
-    private Map<String, Object> extMap;
 
     /**
      * List of staff during the object was created.
@@ -201,16 +199,6 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
 
     public void setStaffList(Set<Staff> staffList) {
 	this.staffList = staffList;
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     /**
