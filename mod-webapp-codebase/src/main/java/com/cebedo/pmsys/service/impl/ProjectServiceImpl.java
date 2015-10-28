@@ -884,12 +884,12 @@ public class ProjectServiceImpl implements ProjectService {
 	GeneratorExcel xlsGen = new GeneratorExcel();
 
 	// Basic details and physical target.
-	// Done.
-	xlsAnalysisOverview(xlsGen, proj, plannedProjCost, actualProjCost);
-
 	// Project estimate (Time).
 	// Done.
-	xlsAnalysisEstimateTime(xlsGen, proj);
+	String sheetName = "Overview";
+	xlsAnalysisOverview(xlsGen, sheetName, proj, plannedProjCost, actualProjCost);
+	// Done.
+	xlsAnalysisProgress(xlsGen, sheetName, proj);
 
 	// Project estimate (Estimate Costs).
 	// Done.
@@ -1003,10 +1003,8 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualProjCost
      * @param projCost
      */
-    private void xlsAnalysisOverview(GeneratorExcel xlsGen, Project proj, double projCost,
-	    double actualProjCost) {
-
-	String sheetName = "Overview";
+    private void xlsAnalysisOverview(GeneratorExcel xlsGen, String sheetName, Project proj,
+	    double projCost, double actualProjCost) {
 
 	// Basic details.
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Project Details");
@@ -1183,10 +1181,9 @@ public class ProjectServiceImpl implements ProjectService {
      * @param sheetName
      * @param proj
      */
-    private void xlsAnalysisEstimateTime(GeneratorExcel xlsGen, Project proj) {
+    private void xlsAnalysisProgress(GeneratorExcel xlsGen, String sheetName, Project proj) {
 
-	String sheetName = "Time Estimate";
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Time Estimate");
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Progress");
 
 	Date dateStart = proj.getDateStart();
 	Date dateCompletionTarget = proj.getTargetCompletionDate();
