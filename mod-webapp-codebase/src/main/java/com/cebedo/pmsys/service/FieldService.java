@@ -2,9 +2,12 @@ package com.cebedo.pmsys.service;
 
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 public interface FieldService {
+
+    public Field getByName(String name);
 
     /**
      * Assign a field to a project.
@@ -31,4 +34,6 @@ public interface FieldService {
      */
     public String updateField(long projectID, long fieldID, String oldLabel, String oldValue,
 	    String label, String value, BindingResult result);
+
+    public void create(Field newField);
 }

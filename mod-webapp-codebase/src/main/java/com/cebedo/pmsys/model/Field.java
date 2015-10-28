@@ -19,7 +19,6 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 /**
  * TODO Update this whole class. Introduce UUID's as primary keys.
  */
-@Deprecated
 @Entity
 @Table(name = Field.TABLE_NAME)
 public class Field implements Serializable {
@@ -33,6 +32,8 @@ public class Field implements Serializable {
     public static final String COLUMN_LABEL = "label";
     public static final String COLUMN_VALUE = "value";
 
+    public static final String FIELD_TEXTFIELD_NAME = "Textfield";
+
     public static final String PROPERTY_ID = "id";
 
     private long id;
@@ -45,6 +46,10 @@ public class Field implements Serializable {
 
     public Field(long fieldID) {
 	setId(fieldID);
+    }
+
+    public Field(String fieldName) {
+	setName(fieldName);
     }
 
     @Id

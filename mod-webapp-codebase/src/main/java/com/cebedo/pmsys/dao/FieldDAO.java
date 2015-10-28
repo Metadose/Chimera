@@ -7,6 +7,8 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 public interface FieldDAO {
 
+    public Field getByName(String name);
+
     public void create(Field field);
 
     public Field getByID(long id);

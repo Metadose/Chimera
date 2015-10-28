@@ -651,7 +651,8 @@ public class ProjectController {
 	// Get project from session.
 	// Construct commit object.
 	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
-	long fieldID = 1;
+	Field field = this.fieldService.getByName(Field.FIELD_TEXTFIELD_NAME);
+	long fieldID = field.getId();
 	FieldAssignment fieldAssignment = new FieldAssignment();
 	fieldAssignment.setLabel(faBean.getLabel());
 	fieldAssignment.setField(new Field(faBean.getFieldID()));

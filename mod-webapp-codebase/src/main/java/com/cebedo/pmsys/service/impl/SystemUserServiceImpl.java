@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -37,8 +38,11 @@ public class SystemUserServiceImpl implements SystemUserService {
     private StaffDAO staffDAO;
     private SystemConfigurationDAO systemConfigurationDAO;
 
-    private static final String ROOT_USER_NAME = "root_098";
-    private static final String ROOT_PASSWORD = "0p;/9ol.8ik,";
+    @Value("${webapp.accounts.root.username}")
+    private String rootUsername;
+
+    @Value("${webapp.accounts.root.password}")
+    private String rootPassword;
 
     public void setSystemConfigurationDAO(SystemConfigurationDAO systemConfigurationDAO) {
 	this.systemConfigurationDAO = systemConfigurationDAO;
@@ -64,19 +68,19 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Check if the root account exists.
 	// If not, create it.
 	try {
-	    this.systemUserDAO.searchDatabase(ROOT_USER_NAME);
+	    this.systemUserDAO.searchDatabase(this.rootUsername);
 	} catch (Exception e) {
 	    // Setup the root account.
 	    SystemUser rootUser = new SystemUser();
-	    rootUser.setUsername(ROOT_USER_NAME);
-	    rootUser.setPassword(this.authHelper.encodePassword(ROOT_PASSWORD, rootUser));
+	    rootUser.setUsername(this.rootUsername);
+	    rootUser.setPassword(this.authHelper.encodePassword(this.rootPassword, rootUser));
 	    rootUser.setSuperAdmin(true);
 
 	    // Create the account.
 	    this.systemUserDAO.create(rootUser);
 
 	    // Update the config value.
-	    LoginLogoutController.appInit = true;
+	    LoginLogoutController.initWebApp = true;
 	    SystemConfiguration appInit = this.systemConfigurationDAO
 		    .getByName(ConstantsSystem.CONFIG_ROOT_INIT);
 	    appInit.setValue("1");
@@ -137,8 +141,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.staffDAO.create(staff);
 
 	// Log and notify.
-	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME, systemUser.getId(),
-		Staff.OBJECT_NAME, staff.getId(), null, systemUser.getUsername());
+	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME,
+		systemUser.getId(), Staff.OBJECT_NAME, staff.getId(), null, systemUser.getUsername());
 
 	// Then link them together.
 	systemUser.setStaff(staff);
@@ -165,7 +169,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    }
 
 	    // Log.
-	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME,
+		    obj.getId());
 	}
 
 	// Return obj.
@@ -187,7 +192,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME,
+		obj.getId());
 
 	// Return obj.
 	return obj;
@@ -208,7 +214,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME, obj.getId());
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, SystemUser.OBJECT_NAME,
+		obj.getId());
 
 	// Return obj.
 	return obj;
@@ -239,11 +246,11 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Log and notify.
 	Staff staff = user.getStaff();
 	if (staff == null) {
-	    this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(), "",
-		    "", null, user.getUsername());
+	    this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME,
+		    user.getId(), "", "", null, user.getUsername());
 	} else {
-	    this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME, user.getId(),
-		    Staff.OBJECT_NAME, staff.getId(), null, user.getUsername());
+	    this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, SystemUser.OBJECT_NAME,
+		    user.getId(), Staff.OBJECT_NAME, staff.getId(), null, user.getUsername());
 	}
 
 	// Do service.
@@ -291,8 +298,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Log and notify.
-	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId(), "", "",
-		null, obj.getUsername());
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE, SystemUser.OBJECT_NAME, obj.getId(),
+		"", "", null, obj.getUsername());
 
 	// Do service.
 	this.systemUserDAO.delete(id);

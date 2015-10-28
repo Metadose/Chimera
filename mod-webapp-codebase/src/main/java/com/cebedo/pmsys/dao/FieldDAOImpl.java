@@ -25,6 +25,14 @@ public class FieldDAOImpl implements FieldDAO {
     }
 
     @Override
+    public Field getByName(String name) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Field field = (Field) this.daoHelper.criteriaGetObjByID(session, Field.class, "name", name)
+		.uniqueResult();
+	return field;
+    }
+
+    @Override
     public void create(Field field) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(field);
@@ -33,8 +41,8 @@ public class FieldDAOImpl implements FieldDAO {
     @Override
     public Field getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Field field = (Field) this.daoHelper.criteriaGetObjByID(session, Field.class, Field.PROPERTY_ID,
-		id).uniqueResult();
+	Field field = (Field) this.daoHelper
+		.criteriaGetObjByID(session, Field.class, Field.PROPERTY_ID, id).uniqueResult();
 	return field;
     }
 

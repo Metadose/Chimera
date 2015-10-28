@@ -27,10 +27,10 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    @Value("${config.server.beta}")
+    @Value("${webapp.config.version.beta}")
     private Boolean betaServer;
 
-    @Value("${config.server.home}")
+    @Value("${webapp.config.files.home}")
     private String serverHome;
 
     private SystemConfigurationDAO systemConfigurationDAO;
@@ -50,30 +50,34 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     @Transactional
     public String create(SystemConfiguration systemConfiguration, BindingResult result) {
 
-	// Security check.
-	// Only super admins can create a config.
-	if (!this.authHelper.isSuperAdmin()) {
-	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
-		    systemConfiguration.getId());
-	    return AlertBoxGenerator.ERROR;
-	}
-
-	// Service layer form validation.
+	// Result is null if it is a system override call.
 	if (result != null) {
+
+	    // Security check.
+	    // Only super admins can create a config.
+	    if (!this.authHelper.isSuperAdmin()) {
+		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
+			systemConfiguration.getId());
+		return AlertBoxGenerator.ERROR;
+	    }
+
+	    // Service layer form validation.
 	    this.systemConfigurationValidator.validate(systemConfiguration, result);
 	    if (result.hasErrors()) {
 		return this.validationHelper.errorMessageHTML(result);
 	    }
+
+	    // Set the company.
+	    AuthenticationToken auth = this.authHelper.getAuth();
+	    Company authCompany = auth.getCompany();
+	    systemConfiguration.setCompany(authCompany);
+
+	    // Log.
+	    this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
+		    systemConfiguration.getId(), systemConfiguration.getName());
 	}
 
-	AuthenticationToken auth = this.authHelper.getAuth();
-	Company authCompany = auth.getCompany();
-	systemConfiguration.setCompany(authCompany);
 	this.systemConfigurationDAO.create(systemConfiguration);
-
-	// Log.
-	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemConfiguration.OBJECT_NAME,
-		systemConfiguration.getId(), systemConfiguration.getName());
 
 	return AlertBoxGenerator.SUCCESS.generateCreate(SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getName());
@@ -173,7 +177,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 		    SystemConfiguration.OBJECT_NAME, conf.getId());
 	}
 
-	return conf.getValue();
+	return conf == null ? null : conf.getValue();
     }
 
     @Override

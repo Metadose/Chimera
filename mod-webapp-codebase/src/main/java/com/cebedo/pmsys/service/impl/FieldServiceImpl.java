@@ -19,7 +19,6 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.FieldAssignmentValidator;
 
 // TODO Transfer all below functions to Project Service.
-@Deprecated
 @Service
 public class FieldServiceImpl implements FieldService {
 
@@ -116,8 +115,8 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxGenerator.ERROR;
 	}
 	// Log.
-	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME, proj.getId(),
-		Field.OBJECT_NAME, "All", proj, "All");
+	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME,
+		proj.getId(), Field.OBJECT_NAME, "All", proj, "All");
 
 	// Do service.
 	this.fieldDAO.unassignAllFieldsFromProject(projectID);
@@ -161,6 +160,20 @@ public class FieldServiceImpl implements FieldService {
 
 	// Return success.
 	return AlertBoxGenerator.SUCCESS.generateUpdate(FieldAssignment.OBJECT_LABEL, label);
+    }
+
+    @Transactional
+    @Override
+    public Field getByName(String name) {
+	// TODO Add validations.
+	return this.fieldDAO.getByName(name);
+    }
+
+    @Transactional
+    @Override
+    public void create(Field newField) {
+	// TODO Add validations.
+	this.fieldDAO.create(newField);
     }
 
 }
