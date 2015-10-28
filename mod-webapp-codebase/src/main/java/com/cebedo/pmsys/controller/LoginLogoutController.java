@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
+import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.SystemConfiguration;
+import com.cebedo.pmsys.service.FieldService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -31,9 +33,19 @@ public class LoginLogoutController {
     protected static Logger logger = Logger.getLogger(ConstantsSystem.LOGGER_LOGIN);
     public static final String MAPPING_CONTROLLER = "auth";
     public static final String JSP_LOGIN = MAPPING_CONTROLLER + "/login";
-    public static Boolean appInit = null;
+
+    public static Boolean initWebApp = null;
+    public boolean initFields = false;
+
     private SystemConfigurationService configService;
     private SystemUserService systemUserService;
+    private FieldService fieldService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "fieldService")
+    public void setFieldService(FieldService fieldService) {
+	this.fieldService = fieldService;
+    }
 
     @Autowired(required = true)
     @Qualifier(value = "systemUserService")
@@ -69,14 +81,44 @@ public class LoginLogoutController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginPage() {
+	initWebApp();
+	initFields();
+	return JSP_LOGIN;
+    }
+
+    private void initFields() {
+
 	// If no value, get value.
-	if (appInit == null) {
+	if (!this.initFields) {
+
+	    // Get from database.
+	    String fieldName = Field.FIELD_TEXTFIELD_NAME;
+	    Field textField = this.fieldService.getByName(fieldName);
+
+	    // If the field is not found,
+	    // create a new field, set to true.
+	    if (textField == null) {
+		Field newField = new Field(fieldName);
+		this.fieldService.create(newField);
+		this.initFields = true;
+	    }
+	    // If found, set to true.
+	    else {
+		this.initFields = true;
+	    }
+	}
+    }
+
+    private void initWebApp() {
+
+	// If no value, get value.
+	if (initWebApp == null) {
 	    String valStr = this.configService.getValueByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
 
 	    // If the configuration is not found,
 	    // app init is false, and create a new config.
 	    if (valStr == null) {
-		appInit = false;
+		initWebApp = false;
 		SystemConfiguration config = new SystemConfiguration();
 		config.setName(ConstantsSystem.CONFIG_ROOT_INIT);
 		config.setValue("1");
@@ -87,13 +129,13 @@ public class LoginLogoutController {
 	    // set flag to true.
 	    else if (valStr.equalsIgnoreCase("1") || valStr.equalsIgnoreCase("Yes")
 		    || valStr.equalsIgnoreCase("True")) {
-		appInit = true;
+		initWebApp = true;
 	    }
 
 	    // If found, but not yet init,
 	    // set config, and set flag to false.
 	    else {
-		appInit = false;
+		initWebApp = false;
 		SystemConfiguration config = this.configService
 			.getByName(ConstantsSystem.CONFIG_ROOT_INIT, true);
 		config.setValue("1");
@@ -102,10 +144,9 @@ public class LoginLogoutController {
 	}
 
 	// If not yet init. Init it.
-	if (!appInit) {
+	if (!initWebApp) {
 	    this.systemUserService.initRoot();
 	}
-	return JSP_LOGIN;
     }
 
     /**

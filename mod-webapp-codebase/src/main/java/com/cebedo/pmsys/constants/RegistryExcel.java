@@ -20,7 +20,7 @@ public class RegistryExcel {
 
     public static final String HEADER1_DESCRIPTIVE_MEANS = "MEANS";
 
-    public static final String HEADER1_DESCRIPTIVE_MEANS_EXTRA = "Average cost per category";
+    public static final String HEADER1_DESCRIPTIVE_MEANS_EXTRA = "Average cost";
 
     public static final String HEADER1_DESCRIPTIVE_MAX_MIN = "MAX & MIN";
 
@@ -50,19 +50,19 @@ public class RegistryExcel {
 
     public static final String HEADER2_TOTAL_COST = "Cost Totals";
 
-    public static final String HEADER2_TOTAL_COST_EXTRA = "Cost total per category";
+    public static final String HEADER2_TOTAL_COST_EXTRA = "Cost total";
 
-    public static final String HEADER2_MAX_COST = "Maximum Costs";
+    public static final String HEADER2_MAXIMUM = "Maximum";
 
-    public static final String HEADER2_MAX_COST_EXTRA = "Estimate(s) with the MOST expensive cost per category";
+    public static final String HEADER2_MAX_COST_EXTRA = "Estimate(s) with the MOST expensive cost";
 
-    public static final String HEADER2_MIN_COST = "Maximum Costs";
+    public static final String HEADER2_MINIMUM = "Minimum";
 
-    public static final String HEADER2_MIN_COST_EXTRA = "Estimate(s) with the LEAST expensive cost per category";
+    public static final String HEADER2_MIN_COST_EXTRA = "Estimate(s) with the LEAST expensive cost";
 
     public static final String HEADER2_POPULATION = "Number of Entries";
 
-    public static final String HEADER2_MEAN_EXTRA = "Mean per Category";
+    public static final String HEADER2_MEAN_EXTRA = "Mean";
 
     public static final String HEADER2_PHYSICAL_TARGET = "Physical Target";
 

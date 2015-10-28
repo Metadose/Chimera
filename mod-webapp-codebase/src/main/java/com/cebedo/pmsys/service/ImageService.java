@@ -29,7 +29,7 @@ public class ImageService {
     public static final String SERVICE_NAME = "image";
     public static final String PARAM_FILENAME = "filename";
 
-    @Value("${config.server.home}")
+    @Value("${webapp.config.files.home}")
     private String serverHome;
 
     @RequestMapping(RegistryURL.DISPLAY_COMPANY_LOGO)

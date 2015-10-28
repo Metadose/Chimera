@@ -42,6 +42,21 @@ public class Task implements Serializable {
     public static final String PROPERTY_TITLE = "title";
     public static final String PROPERTY_PROJECT = "project";
 
+    public enum TaskSubType {
+	ESTIMATED("Estimated"), ACTUAL("Actual"), DIFFERENCE("Difference"), ABSOLUTE(
+		"Absolute Difference");
+
+	private String label;
+
+	TaskSubType(String type) {
+	    this.label = type;
+	}
+
+	public String getLabel() {
+	    return label;
+	}
+    }
+
     private long id;
     private String title;
     private String content;
