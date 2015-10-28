@@ -15,7 +15,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-import com.cebedo.pmsys.constants.RegistryExcel;
 import com.cebedo.pmsys.domain.AbstractExpense;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
@@ -382,7 +381,7 @@ public class GeneratorExcel {
 
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
-		String.format(RegistryExcel.DYNAMIC_EXPENSE_VALUE, superlative));
+		String.format("Expense(s) with the %s value", superlative));
 	addRowsExpenses(sheetName, payroll);
 	addRowsExpenses(sheetName, deliveries);
 	addRowsExpenses(sheetName, equips);

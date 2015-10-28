@@ -30,7 +30,6 @@ import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.bean.StatisticsStaff;
 import com.cebedo.pmsys.constants.ConstantsRedis;
-import com.cebedo.pmsys.constants.RegistryExcel;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -927,8 +926,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Process tasks.
 	StatisticsProgramOfWorks statisticsPOW = new StatisticsProgramOfWorks(tasks);
 
-	xlsGen.addRow(sheetName, IndexedColors.YELLOW, RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN,
-		RegistryExcel.HEADER1_DESCRIPTIVE_MAX_MIN_EXTRA);
+	xlsGen.addRow(sheetName, IndexedColors.YELLOW, "MAX & MIN", "Max and min of the dataset");
 
 	// (Max) Which task took the most duration and actualDuration?
 	// How long? Who did it?
@@ -1070,7 +1068,7 @@ public class ProjectServiceImpl implements ProjectService {
 		otherExpenses);
 
 	// Prepare variables.
-	String sheetName = RegistryExcel.SHEET_EXPENSES;
+	String sheetName = "Expenses";
 
 	// Analysis (Mean).
 	double meanPayroll = statisticsProj.getMeanPayroll();
@@ -1078,7 +1076,7 @@ public class ProjectServiceImpl implements ProjectService {
 	double meanEquip = statisticsProj.getMeanEquipment();
 	double meanOtherExpenses = statisticsProj.getMeanOtherExpenses();
 	double meanProject = statisticsProj.getMeanProject();
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.MEANS);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means");
 	xlsGen.addRow(sheetName, "Payroll", meanPayroll);
 	xlsGen.addRow(sheetName, "Deliveries", meanDeliveries);
 	xlsGen.addRow(sheetName, "Equipment", meanEquip);
@@ -1091,7 +1089,7 @@ public class ProjectServiceImpl implements ProjectService {
 	double popEquip = equipmentExpenses.size();
 	double popOtherExpenses = otherExpenses.size();
 	double popProject = popPayroll + popDelivery + popEquip + popOtherExpenses;
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_POPULATION);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Number of Entries");
 	xlsGen.addRow(sheetName, "Payroll", popPayroll);
 	xlsGen.addRow(sheetName, "Deliveries", popDelivery);
 	xlsGen.addRow(sheetName, "Equipment", popEquip);
@@ -1313,8 +1311,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Maximum costs.
 	xlsGen.addRowEmpty(sheetName);
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MAXIMUM,
-		RegistryExcel.HEADER2_MAX_COST_EXTRA);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Maximum",
+		"Estimate(s) with the MOST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
@@ -1329,8 +1327,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Minimum costs.
 	xlsGen.addRowEmpty(sheetName);
-	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, RegistryExcel.HEADER2_MINIMUM,
-		RegistryExcel.HEADER2_MIN_COST_EXTRA);
+	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Minimum",
+		"Estimate(s) with the LEAST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinPlannedDirect(),
 		EstimateCostType.SUB_TYPE_PLANNED);
@@ -1349,7 +1347,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    // Top absolute differences (planned - actual) of direct.
 	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Absolute Differences",
-		    RegistryExcel.HEADER1_COMPUTED_ABS_EXTRA);
+		    "Most over and underestimated costs");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_ABSOLUTE, SortOrder.DESCENDING, limit);
@@ -1358,21 +1356,21 @@ public class ProjectServiceImpl implements ProjectService {
 	// Top entries.
 	xlsGen.addRowEmpty(sheetName, 2);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Top Costs",
-		RegistryExcel.HEADER1_SORTED_ENTRIES_TOP_EXTRA);
+		"Greatest costs in descending order");
 	xlsGen.addStatisticsEstimatesEntries(sheetName, proj, statEstimates, SortOrder.DESCENDING,
 		limit);
 
 	// Bottom entries.
 	xlsGen.addRowEmpty(sheetName, 2);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Bottom Costs",
-		RegistryExcel.HEADER1_SORTED_ENTRIES_BOTTOM_EXTRA);
+		"Least costs in ascending order");
 	xlsGen.addStatisticsEstimatesEntries(sheetName, proj, statEstimates, SortOrder.ASCENDING, limit);
 
 	if (proj.isCompleted()) {
 	    // Top absolute differences (planned - actual) of direct.
 	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Top Differences",
-		    RegistryExcel.HEADER1_COMPUTED_DIFF_TOP_EXTRA);
+		    "Greatest differences (estimated minus actual) in descending order");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.DESCENDING, limit);
@@ -1380,7 +1378,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    // Bottom absolute differences (planned - actual) of direct.
 	    xlsGen.addRowEmpty(sheetName, 2);
 	    xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Bottom Differences",
-		    RegistryExcel.HEADER1_COMPUTED_DIFF_BOTTOM_EXTRA);
+		    "Least differences (estimated minus actual) in ascending order");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
 		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.ASCENDING, limit);
