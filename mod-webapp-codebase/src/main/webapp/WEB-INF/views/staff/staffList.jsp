@@ -56,7 +56,9 @@
 					                                            	</sec:authorize>
 					                                            	
 					                                                <th>Full Name</th>
+					                                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 					                                                <th>User Account</th>
+					                                                </sec:authorize>
 					                                                <th>Company Position</th>
 					                                                <th>Salary (Daily)</th>
 					                                                <th>E-Mail</th>
@@ -96,11 +98,13 @@
 																			</sec:authorize>
 																			
 							                                                <td>${staff.getFullName()}</td>
+						                                                	<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 							                                                <td>
 																				<a href="<c:url value="/systemuser/edit/${staff.user.id}"/>" class="general-link">
 							                                                	${staff.user.username}
 																				</a>
 							                                                </td>
+																			</sec:authorize>
 							                                                <td>${staff.companyPosition}</td>
 							                                                <td style="text-align: right;">${staff.getWageAsString()}</td>
 							                                                <td>${staff.email}</td>
@@ -116,7 +120,9 @@
 					                                            	</sec:authorize>
 					                                            	
 					                                                <th>Full Name</th>
+					                                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 					                                                <th>User Account</th>
+					                                                </sec:authorize>
 					                                                <th>Company Position</th>
 					                                                <th>Salary (Daily)</th>
 					                                                <th>E-Mail</th>

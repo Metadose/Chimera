@@ -76,20 +76,24 @@ $(window).on('load', function() {
                         <i class="fa fa-building"></i> <span>Projects</span>
                     </a>
                 </li>
-                <c:if test="${authUser.superAdmin || authUser.companyAdmin}">
+                
+                <sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
                 <li>
                     <c:url var="urlSystemUserList" value="/systemuser/list/"/>
                     <a href="${urlSystemUserList}">
                         <i class="fa fa-male"></i> <span>User Accounts</span>
                     </a>
                 </li>
-                </c:if>
+                </sec:authorize>
+                
+                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
                 <li>
                     <c:url var="urlStaffList" value="/staff/list/"/>
                     <a href="${urlStaffList}">
                         <i class="fa fa-user"></i> <span>Company Staff</span>
                     </a>
                 </li>
+                </sec:authorize>
                 
 				<c:if test="${authUser.superAdmin || authUser.companyAdmin}">
                 <li>

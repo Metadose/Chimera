@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -78,6 +79,11 @@
 																<c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																<span class="label ${css}">${task.getStatusEnum()}</span>
 					                                        	<label>&nbsp;</label>
+					                                        	
+					                                        	<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
+					                                        	<br/>
+					                                        	</sec:authorize>
+					                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
 					                                            <div class="btn-group">
 						                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 						                                                Mark As&nbsp;
@@ -90,6 +96,7 @@
 						                                            </ul>
 						                                        </div>
 					                                            <p class="help-block">Choose the task status</p>
+					                                            </sec:authorize>
 				                                        	</c:if>
 
 				                                            <label>Title</label>
@@ -136,8 +143,11 @@
 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${task.id > 0}">
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		</sec:authorize>
 		                                            		
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_DELETE')">
 															<div class="btn-group">
 															<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 															<ul class="dropdown-menu">
@@ -148,6 +158,7 @@
 																</li>
 															</ul>
 															</div>
+															</sec:authorize>
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -168,6 +179,7 @@
 			                                	</c:if>
 
 			                                	<c:if test="${!empty staffList || !empty task.staff}">
+	                                    		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
 			                                	<table>
 			                                    	<tr>
 			                                    		<c:if test="${!empty staffList}">
@@ -190,6 +202,7 @@
 	 		                                    			</td> 
 	 		                                    		</form:form> 
 			                                    		</c:if>
+			                                    		
 			                                    		<td> 
 			                                    			&nbsp;
 			                                    		</td>
@@ -212,11 +225,14 @@
 			                                    	</tr>
 			                                    </table>
 			                                    <br/>
+	                                    		</sec:authorize>
 			                                    </c:if>
 			                                    <table id="staff-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                            <tr>
+			                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW', 'PROGRAM_OF_WORKS_UPDATE')">
 			                                            	<th>&nbsp;</th>
+			                                            	</sec:authorize>
 			                                                <th>Full Name</th>
 			                                                <th>Company Position</th>
 			                                                <th>Salary (Daily)</th>
@@ -227,12 +243,16 @@
 			                                        <tbody>
 				                                		<c:forEach items="${task.staff}" var="staffAssign">
 				                                            <tr>
+		                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW', 'PROGRAM_OF_WORKS_UPDATE')">
 				                                            	<td>
 				                                            		<center>
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 				                                            			<a href="<c:url value="/project/edit/staff/${staffAssign.id}"/>">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-
+				                                            			</sec:authorize>
+				                                            			
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
 		                   												<div class="btn-group">
 		                   												<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign</button>
 		                   												<ul class="dropdown-menu">
@@ -244,8 +264,11 @@
 		                   													</li>
 		                   												</ul>
 		                   												</div>
+		                   												</sec:authorize>
 																	</center>
 																</td>
+																</sec:authorize>
+																
 				                                                <td>${staffAssign.getFullName()}</td>
 				                                                <td>${staffAssign.companyPosition}</td>
 				                                                <td style="text-align: right;">${staffAssign.getWageAsString()}</td>

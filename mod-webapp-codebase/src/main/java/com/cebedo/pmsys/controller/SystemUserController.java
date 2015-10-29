@@ -16,7 +16,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
-import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
@@ -171,7 +171,10 @@ public class SystemUserController {
 
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY
 	    + "}", method = RequestMethod.GET)
-    public String editSystemUser(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
+    public String editSystemUser(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model,
+	    HttpSession session) {
+
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 
 	// Only super admins can change company,
 	// view list of all companies.
@@ -194,7 +197,7 @@ public class SystemUserController {
 	// Get the UserAux from database.
 	UserAux userAux = this.systemUserService.getUserAux(resultUser);
 	model.addAttribute(ATTR_USER_AUX, userAux);
-	model.addAttribute(ATTR_MODULE_LIST, AuthorizedProjectModule.values());
+	model.addAttribute(ATTR_MODULE_LIST, AuthorizedModule.values());
 	model.addAttribute(ATTR_ACTION_LIST, AuthorizedAction.values());
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);
 	return RegistryJSPPath.JSP_EDIT_SYSTEM_USER;

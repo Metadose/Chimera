@@ -2,12 +2,14 @@ package com.cebedo.pmsys.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.AuditLog;
+import com.cebedo.pmsys.model.SystemUser;
 
 @Repository
 public class AuditLogDAOImpl implements AuditLogDAO {
@@ -28,8 +30,8 @@ public class AuditLogDAOImpl implements AuditLogDAO {
     @Override
     public AuditLog getByID(long id) {
 	Session session = this.sessionFactory.getCurrentSession();
-	AuditLog auditLog = (AuditLog) this.daoHelper.criteriaGetObjByID(session, AuditLog.class,
-		AuditLog.PROPERTY_ID, id).uniqueResult();
+	AuditLog auditLog = (AuditLog) this.daoHelper
+		.criteriaGetObjByID(session, AuditLog.class, AuditLog.PROPERTY_ID, id).uniqueResult();
 	return auditLog;
     }
 
@@ -42,12 +44,23 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 	}
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<AuditLog> list(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<AuditLog> auditLogList = this.daoHelper.getSelectQueryFilterCompany(session,
-		AuditLog.class.getName(), companyID).list();
+	List<AuditLog> auditLogList = this.daoHelper
+		.getSelectQueryFilterCompany(session, AuditLog.class.getName(), companyID).list();
 	return auditLogList;
+    }
+
+    @Override
+    public void deleteAll(long userID) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String queryStr = "DELETE FROM " + AuditLog.class.getName() + " WHERE "
+		+ SystemUser.PROPERTY_PRIMARY_KEY + "=:" + SystemUser.PROPERTY_PRIMARY_KEY;
+	Query query = session.createQuery(queryStr);
+	query.setParameter(SystemUser.PROPERTY_PRIMARY_KEY, userID);
+	query.executeUpdate();
     }
 
 }

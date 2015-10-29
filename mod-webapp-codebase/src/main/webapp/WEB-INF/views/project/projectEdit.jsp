@@ -817,7 +817,14 @@
 											</div>
 											<div class="tab-pane" id="tab_calculator">
 							                   	<div class="row">
+							                   	
+							                   		<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')">
+			                   						<div class="col-md-12">
+			                   						</sec:authorize>
+							                   	
+							                   		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')">
 			                   						<div class="col-md-9">
+			                   						</sec:authorize>
 					                                	<div class="box box-body box-default">
 			<!-- 				                                		<div class="box-header"> -->
 			<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
@@ -945,7 +952,13 @@
 				                        </div>
               						</div>
                                 	<div class="row">
+                                		<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_CREATE')">
+										<div class="col-md-12">
+										</sec:authorize>
+										
+										<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_CREATE')">
 										<div class="col-md-9">
+										</sec:authorize>
                    							<div class="box box-body box-default">
                    								<div class="box-body">
 
@@ -966,7 +979,9 @@
 			                                		<table class="table table-bordered table-striped is-data-table">
 				                                    	<thead>
 				                                            <tr>
+				                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_UPDATE', 'EQUIPMENT_DELETE')">
 				                                            	<th>&nbsp;</th>
+				                                            	</sec:authorize>
 				                                                <th>Date</th>
 				                                                <th>Name</th>
 				                                                <th>Staff</th>
@@ -976,12 +991,16 @@
 				                                        <tbody>
 						                                	<c:forEach items="${equipmentExpenseList}" var="expense">
 					                                            <tr>
+					                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_UPDATE', 'EQUIPMENT_DELETE')">
 					                                            	<td>
 					                                            		<center>
+					                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_UPDATE')">
 					                                            			<a href="<c:url value="/project/edit/equipmentexpense/${expense.getKey()}-end"/>">
 									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            			</a>
-
+					                                            			</sec:authorize>
+					                                            			
+					                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_DELETE')">
 										                                    <div class="btn-group">
 										                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 										                                    <ul class="dropdown-menu">
@@ -992,12 +1011,27 @@
 										                                    	</li>
 										                                    </ul>
 										                                    </div>
+										                                    </sec:authorize>
 																		</center>
 																	</td>
+																	</sec:authorize>
 				                                                	<fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
 				                                                	<td>${dateString}</td>
 				                                                	<td>${expense.name}</td>
+				                                                	
+				                                                	<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 				                                                	<td>${expense.staff.getFullName()}</td>
+																	</sec:authorize>
+																	
+																	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
+																	<td>
+																	<c:url var="urlLink" value="/project/edit/staff/${expense.staff.id}"/>
+								                                    <a href="${urlLink}" class="general-link">
+																	${expense.staff.getFullName()}
+								                                    </a>
+																	</td>
+																	</sec:authorize>
+				                                                	
 				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
 					                                            </tr>
 				                                            </c:forEach>
@@ -1006,6 +1040,8 @@
 				                            	</div>
 				                            </div>
 				                        </div>
+				                        
+				                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_CREATE')">
                    						<div class="col-md-3">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
@@ -1059,6 +1095,7 @@
 												</div>	
                    							</div>
                    						</div>
+                   						</sec:authorize>
               						</div>
                                 </div><!-- /.tab-pane -->
                                 </sec:authorize>
@@ -1082,7 +1119,14 @@
 				                        </div>
               						</div>
                                 	<div class="row">
+                                	
+                                		<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_CREATE')">
+										<div class="col-md-12">
+										</sec:authorize>
+                                	
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_CREATE')">
 										<div class="col-md-9">
+										</sec:authorize>
                    							<div class="box box-body box-default">
                    								<div class="box-body">
 
@@ -1103,7 +1147,10 @@
 			                                		<table class="table table-bordered table-striped is-data-table">
 				                                    	<thead>
 				                                            <tr>
+				                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_UPDATE', 'OTHER_EXPENSES_DELETE')">
 				                                            	<th>&nbsp;</th>
+				                                            	</sec:authorize>
+				                                            	
 				                                                <th>Date</th>
 				                                                <th>Name</th>
 				                                                <th>Staff</th>
@@ -1113,12 +1160,16 @@
 				                                        <tbody>
 						                                	<c:forEach items="${expenseList}" var="expense">
 					                                            <tr>
+			                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_UPDATE', 'OTHER_EXPENSES_DELETE')">
 					                                            	<td>
 					                                            		<center>
+					                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_UPDATE')">
 					                                            			<a href="<c:url value="/project/edit/expense/${expense.getKey()}-end"/>">
 									                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            			</a>
-
+					                                            			</sec:authorize>
+					                                            			
+					                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_DELETE')">
 										                                    <div class="btn-group">
 										                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 										                                    <ul class="dropdown-menu">
@@ -1129,12 +1180,25 @@
 										                                    	</li>
 										                                    </ul>
 										                                    </div>
+										                                    </sec:authorize>
 																		</center>
 																	</td>
+																	</sec:authorize>
 				                                                	<fmt:formatDate value="${expense.date}" var="dateString" pattern="yyyy/MM/dd" />
 				                                                	<td>${dateString}</td>
 				                                                	<td>${expense.name}</td>
+				                                                	<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 				                                                	<td>${expense.staff.getFullName()}</td>
+																	</sec:authorize>
+																	
+																	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
+																	<td>
+																	<c:url var="urlLink" value="/project/edit/staff/${expense.staff.id}"/>
+								                                    <a href="${urlLink}" class="general-link">
+																	${expense.staff.getFullName()}
+								                                    </a>
+																	</td>
+																	</sec:authorize>
 				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
 					                                            </tr>
 				                                            </c:forEach>
@@ -1143,6 +1207,8 @@
 				                            	</div>
 				                            </div>
 				                        </div>
+				                        
+				                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_CREATE')">
                    						<div class="col-md-3">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
@@ -1196,6 +1262,7 @@
 												</div>	
                    							</div>
                    						</div>
+                   						</sec:authorize>
               						</div>
                                 </div><!-- /.tab-pane -->
                                 </sec:authorize>
@@ -1294,6 +1361,7 @@
                                             </tr>
                                    		</thead>
                                         <tbody>
+                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1305,6 +1373,9 @@
                                                	<td>Assigned Staff</td>
                                                	<td>The list of assigned staff members.</td>
                                             </tr>
+                                            </sec:authorize>
+                                            
+                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1316,6 +1387,9 @@
                                                	<td>Estimation</td>
                                                	<td>Project estimation and estimated costs.</td>
                                             </tr>
+                                            </sec:authorize>
+                                            
+                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1327,6 +1401,7 @@
                                                	<td>Program of Works</td>
                                                	<td>Tasks defined in the program of works.</td>
                                             </tr>
+                                            </sec:authorize>
 	                                    </tbody>
 		                                </table>
 		                            	</div>
@@ -1347,7 +1422,8 @@
                                             </tr>
                                    		</thead>
                                         <tbody>
-                                             <tr>
+                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_VIEW')">
+                                            <tr>
                                             	<td>
                                             		<center>
                                             			<a href="<c:url value="/project/export-xls/payroll/all"/>">
@@ -1358,6 +1434,9 @@
                                                	<td>Payrolls</td>
                                                	<td>All payrolls compiled as one file.</td>
                                             </tr>
+                                            </sec:authorize>
+                                            
+                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1369,6 +1448,9 @@
                                                	<td>Inventory</td>
                                                	<td>Project deliveries, materials & pull-outs.</td>
                                             </tr>
+                                            </sec:authorize>
+                                            
+                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1380,6 +1462,9 @@
                                                	<td>Equipment</td>
                                                	<td>Expenses related to equipments.</td>
                                             </tr>
+                                            </sec:authorize>
+                                            
+                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_VIEW')">
                                             <tr>
                                             	<td>
                                             		<center>
@@ -1391,6 +1476,7 @@
                                                	<td>Other Expenses</td>
                                                	<td>Export the other expenses.</td>
                                             </tr>
+                                            </sec:authorize>
 	                                    </tbody>
 		                                </table>
 		                            	</div>
@@ -1487,6 +1573,7 @@
 	                   						<div class="col-md-12">
 	                   							<div class="box box-body box-default">
 	                   								<div class="box-body">
+	                   										<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_CREATE')">
 										                	<form:form modelAttribute="massUploadBean"
 																action="${contextPath}/project/mass/upload-and-assign/task"
 																method="post"
@@ -1498,14 +1585,19 @@
 																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload Tasks</button>
 																</div>
 															</form:form>
+															</sec:authorize>
+															
 						                                	<table>
 						                                    	<tr>
+						                                    		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_CREATE')">
 						                                    		<td>
 						                                    			<c:url value="/project/edit/task/0" var="urlAddTask"/>
 						                                    			<a href="${urlAddTask}">
 								                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Task</button>
 						                                    			</a>
 						                                    		</td>
+						                                    		</sec:authorize>
+						                                    		
 						                                    		<c:if test="${!empty project.assignedTasks}">
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
@@ -1513,6 +1605,8 @@
 							                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 							                                        	</a>
 						                                    		</td>
+						                                    		
+						                                    		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_DELETE')">
 						                                    		<td>&nbsp;</td>
 						                                    		<td>
 				               											<!-- Delete All button -->
@@ -1528,6 +1622,7 @@
 								                                        </ul>
 								                                        </div>
 						                                    		</td>
+						                                    		</sec:authorize>
 						                                    		</c:if>
 						                                    	</tr>
 						                                    </table><br/>
@@ -1550,6 +1645,8 @@
 						                                        		<c:forEach items="${taskList}" var="task">
 						                                        			<tr>
 						                                        				<td style="text-align: center;">
+						                                        				
+						                                        					<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_UPDATE')">
 						                                        					<div class="btn-group">
 											                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
 											                                                Mark As&nbsp;
@@ -1561,13 +1658,15 @@
 											                                            	</c:forEach>
 											                                            </ul>
 											                                        </div>
+											                                        </sec:authorize>
 											                                        
 											                                        <!-- View button -->
 											                                        <c:url value="/project/edit/task/${task.id}" var="urlViewTask"/>
 											                                        <a href="${urlViewTask}">
 									                                            	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 											                                        </a>
-
+											                                        
+											                                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_DELETE')">
 											                                        <!-- Delete button -->
 											                                        <div class="btn-group">
 											                                        <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
@@ -1579,6 +1678,7 @@
 											                                        	</li>
 											                                        </ul>
 											                                        </div>
+											                                        </sec:authorize>
 						                                        				</td>
 									                                            <td>
 										                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
@@ -1595,10 +1695,18 @@
 									                                            	<c:choose>
 									                                            		<c:when test="${!empty task.staff}">
 									                                            			<c:forEach items="${task.staff}" var="taskStaff">
+									                                            			
 									                                            			<c:set var="taskStaffName" value="${taskStaff.getFullName()}"/>
+									                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 									                                            			<a class="general-link" href="<c:url value="/project/edit/staff/${taskStaff.id}"/>">
 											                                            	${taskStaffName}
 											                                            	</a>
+											                                            	</sec:authorize>
+											                                            	
+									                                            			<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
+									                                            			${taskStaffName}
+											                                            	</sec:authorize>
+											                                            	
 											                                            	<br/>
 									                                            			</c:forEach>
 									                                            		</c:when>
@@ -1745,13 +1853,7 @@
 			                                                <td>${payrollStartDate}</td>
 			                                                <fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.endDate}" var="payrollEndDate"/>
 			                                                <td>${payrollEndDate}</td>
-			                                                
-			                                                <td>
-			                                                <c:url var="urlLink" value="/project/edit/staff/${payrollRow.creator.staff.id}"/>
-						                                    <a href="${urlLink}" class="general-link">
-			                                                ${payrollRow.creator.staff.getFullName()}
-						                                    </a>
-			                                                </td>
+			                                                <td>${payrollRow.creator.staff.getFullName()}</td>
 			                                                
 			                                                <td>
 			                                                <c:set value="${payrollRow.status}" var="payrollStatus"></c:set>
@@ -1811,13 +1913,17 @@
 				                                            			<a href="${urlEdit}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
+				                                            			
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
 				                                            			<c:if test="${row.available > 0}">
 				                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
 									                                    <a href="${urlPullout}">
 		                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 									                                    </a>
 									                                    </c:if>
-
+									                                    </sec:authorize>
+									                                    
+									                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 									                                    <div class="btn-group">
 									                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 									                                    <ul class="dropdown-menu">
@@ -1829,6 +1935,8 @@
 									                                    	</li>
 									                                    </ul>
 									                                    </div>
+									                                    </sec:authorize>
+									                                    
 																	</center>
 																</td>
 																<td>
@@ -1917,11 +2025,14 @@
 				                                	${projectAux.getGrandTotalDeliveryAsString()}
 													</u></b></h3>
 													</div>
-
+													
+													<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
 											  	  	<c:url var="urlCreateDelivery" value="/project/edit/delivery/0-end"/>
 			                                  		<a href="${urlCreateDelivery}">
 			                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Delivery</button>
 			                                  		</a>
+			                                  		</sec:authorize>
+			                                  		
 			                                  		<c:if test="${!empty deliveryList}">
 	                   									<a href="<c:url value="/project/export-xls/inventory"/>">
 			                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
@@ -1949,7 +2060,8 @@
 				                                            			<a href="${urlEditDelivery}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-
+				                                            			
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 									                                    <div class="btn-group">
 									                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 									                                    <ul class="dropdown-menu">
@@ -1961,6 +2073,8 @@
 									                                    	</li>
 									                                    </ul>
 									                                    </div>
+									                                    </sec:authorize>
+									                                    
 																	</center>
 																</td>
 																<td>${deliveryDateTime}</td>
@@ -2007,7 +2121,8 @@
 				                                            			<a href="${urlEdit}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
-
+				                                            			
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 									                                    <div class="btn-group">
 									                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 									                                    <ul class="dropdown-menu">
@@ -2019,17 +2134,24 @@
 									                                    	</li>
 									                                    </ul>
 									                                    </div>
+									                                    </sec:authorize>
 																	</center>
 																</td>
 																<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${row.datetime}" var="rowDatetime"/>
 																<td>${rowDatetime}</td>
-
+																
+																<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
+																<td>${row.staff.getFullName()}</td>
+																</sec:authorize>
+																
+																<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 																<td>
 																<c:url var="urlLink" value="/project/edit/staff/${row.staff.id}"/>
 							                                    <a href="${urlLink}" class="general-link">
 																${row.staff.getFullName()}
 							                                    </a>
 																</td>
+																</sec:authorize>
 
 																<td>
 																<c:url var="urlLink" value="/project/edit/delivery/${row.delivery.getKey()}-end"/>

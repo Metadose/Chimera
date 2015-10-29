@@ -116,6 +116,7 @@
 		                                            	<c:when test="${systemuser.id > 0}">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" onclick="submitForm('detailsForm')" id="detailsButton">Update</button>
 															                                        
+															<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 											                <div class="btn-group">
 											                <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 											                <ul class="dropdown-menu">
@@ -127,6 +128,7 @@
 											                    </li>
 											                </ul>
 											                </div>
+											                </sec:authorize>
 		                                            	</c:when>
 		                                            </c:choose>
 
@@ -150,6 +152,7 @@
                    							</div>
                    						</div>
                    						
+                   						<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
                    						<c:if test="${systemuser.id > 0}">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -202,7 +205,7 @@
 														<thead>
 				                                    		<tr>
 					                                            <th>Check</th>
-					                                            <th>Project Module</th>
+					                                            <th>Authorized Module</th>
 					                                        </tr>
 				                                    	</thead>
 														<tbody>
@@ -256,6 +259,7 @@
                    							</div>
                    						</div>
                    						</c:if>
+                   						</sec:authorize>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->

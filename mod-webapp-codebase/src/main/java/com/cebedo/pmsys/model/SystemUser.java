@@ -26,6 +26,7 @@ public class SystemUser implements Serializable {
     public static final String OBJECT_NAME = "systemuser";
     public static final String OBJECT_NAME_DISPLAY = "system user";
     public static final String COLUMN_PRIMARY_KEY = "user_id";
+    public static final String PROPERTY_PRIMARY_KEY = "id";
     public static final String COLUMN_USER_NAME = "username";
     public static final String COLUMN_PASSWORD = "password";
     public static final String COLUMN_ACCESS = "access";

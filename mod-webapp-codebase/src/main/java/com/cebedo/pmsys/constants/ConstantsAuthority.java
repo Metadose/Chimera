@@ -1,14 +1,18 @@
 package com.cebedo.pmsys.constants;
 
-public class ConstantsAuthority {
+import java.io.Serializable;
+
+public class ConstantsAuthority implements Serializable {
+
+    private static final long serialVersionUID = 3115704947882396322L;
 
     public static final String ADMIN_COMPANY = "ADMIN_COMPANY";
     public static final String ADMIN_SUPER = "ADMIN_SUPER";
 
     /**
-     * Project Modules.
+     * Modules.
      */
-    public enum AuthorizedProjectModule {
+    public enum AuthorizedModule {
 
 	CONTRACT("Contract"),
 
@@ -30,7 +34,7 @@ public class ConstantsAuthority {
 
 	private String label;
 
-	AuthorizedProjectModule(String lbl) {
+	AuthorizedModule(String lbl) {
 	    this.label = lbl;
 	}
 

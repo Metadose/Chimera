@@ -11,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.cebedo.pmsys.constants.ConstantsAuthority;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
-import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
@@ -22,10 +22,10 @@ public class UserAux implements IDomainObject {
 
     private Company company;
     private SystemUser user;
-    private Map<AuthorizedProjectModule, List<AuthorizedAction>> authorization = new HashMap<AuthorizedProjectModule, List<AuthorizedAction>>();
+    private Map<AuthorizedModule, List<AuthorizedAction>> authorization = new HashMap<AuthorizedModule, List<AuthorizedAction>>();
 
     // Form.
-    private AuthorizedProjectModule[] modules;
+    private AuthorizedModule[] modules;
     private AuthorizedAction[] actions;
 
     public UserAux() {
@@ -44,7 +44,7 @@ public class UserAux implements IDomainObject {
 
     public Collection<GrantedAuthority> getAuthorities() {
 	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-	for (AuthorizedProjectModule module : this.authorization.keySet()) {
+	for (AuthorizedModule module : this.authorization.keySet()) {
 	    List<AuthorizedAction> actions = this.authorization.get(module);
 	    for (AuthorizedAction action : actions) {
 		String authority = String.format("%s_%s", module, action);
@@ -97,11 +97,11 @@ public class UserAux implements IDomainObject {
 	this.user = user;
     }
 
-    public AuthorizedProjectModule[] getModules() {
+    public AuthorizedModule[] getModules() {
 	return modules;
     }
 
-    public void setModules(AuthorizedProjectModule[] modules) {
+    public void setModules(AuthorizedModule[] modules) {
 	this.modules = modules;
     }
 
@@ -113,11 +113,11 @@ public class UserAux implements IDomainObject {
 	this.actions = actions;
     }
 
-    public Map<AuthorizedProjectModule, List<AuthorizedAction>> getAuthorization() {
+    public Map<AuthorizedModule, List<AuthorizedAction>> getAuthorization() {
 	return authorization;
     }
 
-    public void setAuthorization(Map<AuthorizedProjectModule, List<AuthorizedAction>> authorization) {
+    public void setAuthorization(Map<AuthorizedModule, List<AuthorizedAction>> authorization) {
 	this.authorization = authorization;
     }
 

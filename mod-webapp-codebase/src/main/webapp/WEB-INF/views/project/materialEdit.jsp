@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -156,14 +157,21 @@
 				                                            <p class="help-block">Add more information regarding this material</p>
 				                                        </div>
 				                                    </form:form>
+				                                    
+				                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_UPDATE')">
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		</sec:authorize>
+                                            		
+                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
                                             		<c:if test="${material.available > 0}">
                                         			<c:url var="urlPullout" value="/project/pullout/material/${material.getKey()}-end"/>
 				                                    <a href="${urlPullout}">
        													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 				                                    </a>
 				                                    </c:if>
-
+				                                    </sec:authorize>
+				                                    
+				                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 				                                    <div class="btn-group">
 				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 				                                    <ul class="dropdown-menu">
@@ -175,6 +183,7 @@
 				                                    	</li>
 				                                    </ul>
 				                                    </div>
+				                                    </sec:authorize>
                    								</div>
                    							</div>
                    						</div>

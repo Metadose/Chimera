@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
-import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -245,7 +245,7 @@ public class AuthHelper {
 	return false;
     }
 
-    public boolean hasAuthority(AuthorizedProjectModule module, AuthorizedAction action) {
+    public boolean hasAuthority(AuthorizedModule module, AuthorizedAction action) {
 	if (isCompanyAdmin()) {
 	    return true;
 	}

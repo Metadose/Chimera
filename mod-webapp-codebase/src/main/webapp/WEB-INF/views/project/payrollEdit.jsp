@@ -231,12 +231,19 @@
 								                                			value="${staff.id}"
 								                                			/>
 																	</td>
+																	
+																	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
 																	<td>
 																		<c:url var="staffLink" value="/project/edit/staff/${staff.id}"/>
 																		<a href="${staffLink}" class="general-link">
 																		${staff.getFullName()}
 				                                            			</a>
 																	</td>
+																	</sec:authorize>
+																	
+																	<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
+																	<td>${staff.getFullName()}</td>
+																	</sec:authorize>
 																</tr>
 																</c:if>
 						                                		</c:forEach>

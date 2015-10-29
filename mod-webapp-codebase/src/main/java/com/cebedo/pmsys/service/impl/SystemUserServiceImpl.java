@@ -15,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
-import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.controller.LoginLogoutController;
+import com.cebedo.pmsys.dao.AuditLogDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
@@ -47,12 +48,19 @@ public class SystemUserServiceImpl implements SystemUserService {
     private StaffDAO staffDAO;
     private SystemConfigurationDAO systemConfigurationDAO;
     private UserAuxValueRepo userAuxValueRepo;
+    private AuditLogDAO auditLogDAO;
 
     @Value("${webapp.accounts.root.username}")
     private String rootUsername;
 
     @Value("${webapp.accounts.root.password}")
     private String rootPassword;
+
+    @Autowired
+    @Qualifier(value = "auditLogDAO")
+    public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
+	this.auditLogDAO = auditLogDAO;
+    }
 
     @Autowired
     @Qualifier(value = "userAuxValueRepo")
@@ -374,8 +382,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Construct the map of authorities.
-	Map<AuthorizedProjectModule, List<AuthorizedAction>> authorization = userAux.getAuthorization();
-	for (AuthorizedProjectModule module : userAux.getModules()) {
+	Map<AuthorizedModule, List<AuthorizedAction>> authorization = userAux.getAuthorization();
+	for (AuthorizedModule module : userAux.getModules()) {
 	    List<AuthorizedAction> authActions = Arrays.asList(userAux.getActions());
 	    if (authActions.isEmpty()) {
 		authorization.remove(module);
