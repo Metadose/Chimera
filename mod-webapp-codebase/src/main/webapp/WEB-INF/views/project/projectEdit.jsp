@@ -328,7 +328,7 @@
    															</div>
    															</c:if>
    															
-															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
+															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_CREATE')">
    															<c:if test="${!empty projectFields}">
    															<h4>Add More Information</h4>
    															</c:if>
@@ -2400,6 +2400,7 @@
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
 	
+	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
@@ -2415,6 +2416,7 @@
 		});
 	</script>
    	</c:if>
+   	</sec:authorize>
    	
    	
    	<c:if test="${project.id != 0}">

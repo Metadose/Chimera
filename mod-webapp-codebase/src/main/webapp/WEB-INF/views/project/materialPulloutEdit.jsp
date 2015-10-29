@@ -106,44 +106,8 @@
 									                	<td><label>Units</label></td>
 									                	<td>${pullout.material.getUnitName()}</td>
 									                </tr>
-									                <tr>
-									                	<td><label>Available</label></td>
-									                	<td align="right">
-															<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
-									                	</td>
-									                </tr>
-									                <tr>
-									                	<td><label>Used</label></td>
-									                	<td align="right">
-									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.used}" />
-									                	</td>
-									                </tr>
-									                <tr>
-									                	<td><label>Total Quantity</label></td>
-									                	<td align="right">
-									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
-									                	</td>
-									                </tr>
 									                </table>
 									                <br/>
-									                <div class="progress">
-														<div class="progress-bar progress-bar-${pullout.material.getAvailableCSS()} progress-bar-striped" 
-														    role="progressbar" 
-														    aria-valuenow="${pullout.material.available}" 
-														    aria-valuemin="0" 
-														    aria-valuemax="${pullout.material.quantity}"
-														    style="width:${pullout.material.getAvailableAsPercentage()}">
-														    <c:if test="${pullout.material.available <= 0}">
-														    	Out of Stock
-														    </c:if>
-														    <c:if test="${pullout.material.available > 0}">
-														    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
-														    	out of 
-																<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
-														    	(${pullout.material.getAvailableAsPercentageForDisplay()})
-														    </c:if>
-													    </div>
-													</div>
 									                
 													<c:set value="${contextPath}/project/do-pullout/material" var="formURL" />
 

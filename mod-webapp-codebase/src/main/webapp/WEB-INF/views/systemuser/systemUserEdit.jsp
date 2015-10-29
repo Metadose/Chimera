@@ -246,6 +246,12 @@
 																<td>${action.getLabel()}</td>
 															</tr>
 					                                		</c:forEach>
+					                                		<tr>
+																<td align="center">
+							                                		<input type="checkbox" class="form-control include-checkbox"/>
+																</td>
+																<td>(Clear All)</td>
+															</tr>
 														</tbody>
 														</table>
 													</td>
