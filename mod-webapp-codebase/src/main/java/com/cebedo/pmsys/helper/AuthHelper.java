@@ -1,8 +1,13 @@
 package com.cebedo.pmsys.helper;
 
+import java.util.Collection;
+
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -36,8 +41,8 @@ public class AuthHelper {
     }
 
     public boolean isPasswordValid(String rawPassword, SystemUser user) {
-	return this.passwordEncoder.isPasswordValid(user.getPassword(), rawPassword, user.getUsername()
-		+ PASSWORD_SALT);
+	return this.passwordEncoder.isPasswordValid(user.getPassword(), rawPassword,
+		user.getUsername() + PASSWORD_SALT);
     }
 
     public String encodePassword(String rawPassword, SystemUser user) {
@@ -236,6 +241,20 @@ public class AuthHelper {
 	    return true;
 	} else if (obj.getCompany().getId() == auth.getCompany().getId()) {
 	    return true;
+	}
+	return false;
+    }
+
+    public boolean hasAuthority(AuthorizedProjectModule module, AuthorizedAction action) {
+	if (isCompanyAdmin()) {
+	    return true;
+	}
+	Collection<GrantedAuthority> authorities = this.getAuth().getAuthorities();
+	String testModAction = String.format("%s_%s", module, action);
+	for (GrantedAuthority auth : authorities) {
+	    if (auth.toString().equals(testModAction)) {
+		return true;
+	    }
 	}
 	return false;
     }

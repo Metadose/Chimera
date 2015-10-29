@@ -882,7 +882,7 @@ public class ProjectController {
      */
     @RequestMapping(value = RegistryURL.CREATE_STAFF, method = RequestMethod.POST)
     public String createStaff(@ModelAttribute(ATTR_STAFF) Staff staff, RedirectAttributes redirectAttrs,
-	    BindingResult result) {
+	    BindingResult result, SessionStatus status, HttpSession session) {
 
 	String response = "";
 

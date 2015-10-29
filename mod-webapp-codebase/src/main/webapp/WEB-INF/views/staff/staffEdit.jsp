@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -157,8 +158,11 @@
 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-
+		                                            		</sec:authorize>
+		                                            		
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_DELETE')">
 															<div class="btn-group">
 															<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 															<ul class="dropdown-menu">
@@ -169,6 +173,8 @@
 																</li>
 															</ul>
 															</div>
+															</sec:authorize>
+															
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -314,6 +320,7 @@
                    						</div>
               						</div>
                                 	<div class="row">
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
@@ -371,11 +378,12 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</sec:authorize>
                    						
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-													<div class="pull-right">												
+													<div class="pull-right" style="padding-right: 2%">												
 					                                	<h3>Grand Total <b><u>
 					                                	<fmt:formatNumber type="currency" 
 					                                		currencySymbol="&#8369;"
@@ -521,8 +529,10 @@
                     </form:form>
 	            </div>
 	            <div class="modal-footer">
+	            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-cebedo-update btn-flat btn-sm">Update</button>
 	            	<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
+	            	</sec:authorize>
 	            </div>
 	        </div>
 	    </div>

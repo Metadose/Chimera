@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <fmt:formatDate pattern="yyyy/MM/dd" value="${projectPayroll.startDate}" var="startDate"/>
@@ -114,10 +114,14 @@
 				                                            
 				                                        </div>
 				                                        <c:if test="${projectPayroll.saved}">
+				                                        
+				                                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
 	                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">
 	                                            		Update
 	                                            		</button>
-
+	                                            		</sec:authorize>
+	                                            		
+	                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_DELETE')">
 	                                            		<div class="btn-group">
 	                                            		<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 	                                            		<ul class="dropdown-menu">
@@ -129,6 +133,7 @@
 	                                            			</li>
 	                                            		</ul>
 	                                            		</div>
+	                                            		</sec:authorize>
 	                                            		
 				                                        </c:if>
 				                                        <c:if test="${!projectPayroll.saved}">
@@ -137,6 +142,8 @@
 				                                    </form:form>
                    								</div>
                    							</div>
+                   							
+                   							<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
                    							<c:if test="${projectPayroll.saved && !empty manualStaffList}">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
@@ -174,6 +181,7 @@
                    								</div>
                    							</div>
                    							</c:if>
+                   							</sec:authorize>
                    						</div>
                    						<c:if test="${projectPayroll.saved}">
                    						<div class="col-md-6">
@@ -190,18 +198,25 @@
 														method="post"
 														action="${contextPath}/project/create/payroll/clear/computation">
 				                                        <div class="form-group">
-															
-
+				                                        
+				                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
 															<c:if test="${!empty staffList}">
 															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
 															<p class="help-block">Check or uncheck staff members</p>
 															</c:if>
+															</sec:authorize>
 
 			                                            	<table class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
+						                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
 						                                            <th>Add</th>
+						                                            </sec:authorize>
+						                                            <sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
+						                                            <th>Added</th>
+						                                            </sec:authorize>
+						                                            
 						                                            <th>Staff</th>
 						                                        </tr>
 					                                    	</thead>
@@ -230,17 +245,22 @@
 				                                        </div>
 				                                    </form:form>
 				                                    
+				                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
 			                                        <c:if test="${!empty staffList || !empty managerList}">
                                             		<button onclick="submitForm('checkboxesForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">
                                             		Update
                                             		</button>
 			                                        </c:if>
+			                                        </sec:authorize>
 			                                        
 				                                    <c:if test="${!empty projectPayroll.assignedStaffList && fn:length(projectPayroll.assignedStaffList) > 0}">
+				                                    
+				                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
                                             		<c:url var="urlCompute" value="/project/compute/payroll" />
                                             		<a href="${urlCompute}">
 														<button class="btn btn-cebedo-update btn-flat btn-sm">Compute Payroll</button>
 													</a>
+													</sec:authorize>
 													
 													<c:choose>
 													<c:when test="${empty projectPayroll.lastComputed}">

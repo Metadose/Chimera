@@ -1681,11 +1681,14 @@
 			                                	${projectAux.getGrandTotalPayrollAsString()}
 												</u></b></h3>
 												</div>
-
+												
+												<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_CREATE')">
 										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
 		                                  		<a href="${urlCreateTeam}">
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
 		                                  		</a>
+		                                  		</sec:authorize>
+		                                  		
 		                                  		<c:if test="${!empty payrollList}">
 		                                  		<a href="<c:url value="/project/export-xls/payroll/all"/>">
 	                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
@@ -1721,7 +1724,8 @@
 			                                            			<a href="<c:url value="/project/export-xls/payroll/${payrollRow.getKey()}-end"/>">
 						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
 						                                        	</a>
-
+						                                        	
+						                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_DELETE')">
 								                                    <div class="btn-group">
 								                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 								                                    <ul class="dropdown-menu">
@@ -1733,6 +1737,8 @@
 								                                    	</li>
 								                                    </ul>
 								                                    </div>
+								                                    </sec:authorize>
+								                                    
 																</center>
 															</td>
 															<fmt:formatDate pattern="yyyy/MM/dd" value="${payrollRow.startDate}" var="payrollStartDate"/>
@@ -2082,7 +2088,8 @@
 						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
 					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 					                                        	</a>
-
+					                                        	
+					                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 							                                    <div class="btn-group">
 							                                    <button type="button" class="btn btn-cebedo-unassign-all btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign All</button>
 							                                    <ul class="dropdown-menu">
@@ -2094,6 +2101,7 @@
 							                                    	</li>
 							                                    </ul>
 							                                    </div>
+							                                    </sec:authorize>
 
 																<br/>
 																<br/>
@@ -2121,7 +2129,8 @@
 							                                            			<a href="${urlViewStaff}">
 											                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
-
+							                                            			
+									                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 												                                    <div class="btn-group">
 												                                    <button type="button" class="btn btn-cebedo-unassign btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Unassign</button>
 												                                    <ul class="dropdown-menu">
@@ -2133,6 +2142,7 @@
 												                                    	</li>
 												                                    </ul>
 												                                    </div>
+														                            </sec:authorize>
 																				</center>
 																			</td>
 						                                                	<td>${assignedStaffMember.getFullName()}</td>
@@ -2158,6 +2168,8 @@
 <!-- 			              									<h3 class="box-title">Staff Assignment Controls</h3> -->
 <!-- 			              								</div> -->
 						                                <div class="box-body">
+						                                
+						                                	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')">
 				                                    		<form:form modelAttribute="massUploadBean"
 																action="${contextPath}/project/mass/upload-and-assign/staff"
 																method="post"
@@ -2169,21 +2181,31 @@
 																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload and Assign</button>
 																</div>
 															</form:form>
+															</sec:authorize>
 															
+															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')">
 			                                    			<a href="<c:url value="/project/edit/staff/0"/>">
 					                                    	<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 			                                    			</a>
+			                                    			</sec:authorize>
 				                                    		
+				                                    		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 				                                    		<c:if test="${!empty availableStaffToAssign}">
 				                                    		<button onclick="submitForm('assignStaffForm')" class="btn btn-cebedo-assign btn-flat btn-sm">Assign</button>
 				                                    		</c:if>
+				                                    		</sec:authorize>
 
 				                                    		<c:if test="${!empty availableStaffToAssign}">
+				                                    		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 				                                    		&nbsp;&nbsp;
 				                                    		<a href="#" onclick="checkAll('include-checkbox')" class="general-link">Check All</a>&nbsp;
 															<a href="#" onclick="uncheckAll('include-checkbox')" class="general-link">Uncheck All</a>
+							                                </sec:authorize>
+							                                
+							                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE', 'STAFF_UPDATE')">
 							                                <br/>
 							                                <br/>
+							                                </sec:authorize>
 
 					                                    	<form:form modelAttribute="project" 
 							                                    method="post" 
@@ -2193,7 +2215,11 @@
 				                                    		<table class="table table-bordered table-striped">
 				                                    			<thead>
 				                                    			<tr>
+				                                    			
+				                                    			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 				                                    			<th>Check/Uncheck</th>
+				                                    			</sec:authorize>
+				                                    			
 				                                                <th>Full Name</th>
 				                                                <th>Company Position</th>
 				                                                <th>Salary (Daily)</th>
@@ -2205,14 +2231,14 @@
 				                                    			<tbody>
 					                                    			<c:forEach items="${availableStaffToAssign}" var="staff">
 						                                    			<tr>
+						                                    			
+						                                    			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 						                                    			<td align="center">
 							                                    			<form:checkbox class="form-control include-checkbox" path="staffIDs" value="${staff.id}"/><br/>
 						                                    			</td>
-						                                    			<td>
-					                                            			<a href="<c:url value="/project/edit/staff/${staff.id}"/>" class="general-link">
-						                                    				${staff.getFullName()}
-					                                            			</a>
-						                                    			</td>
+						                                    			</sec:authorize>
+						                                    			
+						                                    			<td>${staff.getFullName()}</td>
 						                                    			<td>${staff.companyPosition}</td>
 					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
 					                                                	<td>${staff.email}</td>

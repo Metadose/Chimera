@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -39,15 +39,22 @@
 					<!--                                     <h3 class="box-title">Data Table With Full Features</h3> -->
 					                                </div><!-- /.box-header -->
 					                                <div class="box-body">
+					                                	
+					                                	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')">
 					                                	<c:url var="urlCreateStaff" value="/staff/edit/0"/>
 					                                	<a href="${urlCreateStaff}">
 					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 					                                	<br/><br/>
+					                                	</sec:authorize>
+					                                	
 					                                    <table id="example-1" class="table table-bordered table-striped">
 					                                        <thead>
 					                                            <tr>
+																	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE', 'STAFF_DELETE')">
 					                                            	<th>&nbsp;</th>
+					                                            	</sec:authorize>
+					                                            	
 					                                                <th>Full Name</th>
 					                                                <th>User Account</th>
 					                                                <th>Company Position</th>
@@ -60,13 +67,17 @@
 					                                        	<c:if test="${!empty staffList}">
 					                                        		<c:forEach items="${staffList}" var="staff">
 							                                            <tr>
+																			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE', 'STAFF_DELETE')">
 							                                            	<td>
 							                                            		<center>
+																					<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 							                                            			<c:url var="urlEditStaff" value="/staff/edit/${staff.id}"/>
 																					<a href="${urlEditStaff}">
 																						<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 																					</a>
-
+																					</sec:authorize>
+																					
+																					<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_DELETE')">
 																					<div class="btn-group">
 																					<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 																					<ul class="dropdown-menu">
@@ -78,9 +89,12 @@
 																						</li>
 																					</ul>
 																					</div>
+																					</sec:authorize>
 
 																				</center>
 																			</td>
+																			</sec:authorize>
+																			
 							                                                <td>${staff.getFullName()}</td>
 							                                                <td>
 																				<a href="<c:url value="/systemuser/edit/${staff.user.id}"/>" class="general-link">
@@ -97,7 +111,10 @@
 					                                        </tbody>
 					                                        <tfoot>
 					                                            <tr>
+					                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE', 'STAFF_DELETE')">
 					                                            	<th>&nbsp;</th>
+					                                            	</sec:authorize>
+					                                            	
 					                                                <th>Full Name</th>
 					                                                <th>User Account</th>
 					                                                <th>Company Position</th>
