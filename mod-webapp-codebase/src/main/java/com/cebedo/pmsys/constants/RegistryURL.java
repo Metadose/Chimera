@@ -16,6 +16,8 @@ public class RegistryURL {
 
     public static final String CREATE_TASK = "/create/task";
 
+    public static final String AUTHORIZE = "/authorize";
+
     public static final String CREATE_STAFF = "/create/staff";
 
     public static final String CREATE_EXPENSE = "/create/expense";

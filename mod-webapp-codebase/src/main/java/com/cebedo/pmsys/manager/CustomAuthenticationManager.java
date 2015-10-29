@@ -1,9 +1,7 @@
 package com.cebedo.pmsys.manager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -118,16 +116,13 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     }
 
     /**
-     * TODO Get all the granted authorities from a specific user.
+     * Get all the granted authorities from a specific user.
      * 
      * @param user
      * @return
      */
-    @Deprecated
     public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
-	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-	// authList.add(new SimpleGrantedAuthority(access.getName()));
-	return authList;
+	return this.systemUserService.getAuthorities(user);
     }
 
 }

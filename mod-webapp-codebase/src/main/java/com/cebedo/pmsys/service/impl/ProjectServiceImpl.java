@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.GeneratorExcel;
+import com.cebedo.pmsys.bean.GeneratorHSSFWorkbook;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
@@ -880,18 +880,16 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualProjCost = actualDirect + actualIndirect;
 
 	// Construct essentials.
-	GeneratorExcel xlsGen = new GeneratorExcel();
+	GeneratorHSSFWorkbook xlsGen = new GeneratorHSSFWorkbook();
 
 	// Basic details and physical target.
 	// Project estimate (Time).
 	// Done.
 	String sheetName = "Overview";
 	xlsAnalysisOverview(xlsGen, sheetName, proj, plannedProjCost, actualProjCost);
-	// Done.
 	xlsAnalysisProgress(xlsGen, sheetName, proj);
 
 	// Project estimate (Estimate Costs).
-	// Done.
 	xlsAnalysisEstimateCost(xlsGen, proj, plannedDirect, plannedIndirect, plannedProjCost,
 		actualDirect, actualIndirect, actualProjCost);
 
@@ -916,7 +914,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param xlsGen
      * @param proj
      */
-    private void xlsAnalysisProgramOfWorks(GeneratorExcel xlsGen, Project proj) {
+    private void xlsAnalysisProgramOfWorks(GeneratorHSSFWorkbook xlsGen, Project proj) {
 	String sheetName = "Program of Works";
 
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -991,7 +989,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualProjCost
      * @param projCost
      */
-    private void xlsAnalysisOverview(GeneratorExcel xlsGen, String sheetName, Project proj,
+    private void xlsAnalysisOverview(GeneratorHSSFWorkbook xlsGen, String sheetName, Project proj,
 	    double projCost, double actualProjCost) {
 
 	// Basic details.
@@ -1047,7 +1045,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param xlsGen
      * @param proj
      */
-    private void xlsAnalysisExpenses(GeneratorExcel xlsGen, Project proj) {
+    private void xlsAnalysisExpenses(GeneratorHSSFWorkbook xlsGen, Project proj) {
 
 	// Compute data.
 	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
@@ -1116,7 +1114,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param sheetName
      * @param proj
      */
-    private void xlsAnalysisStaff(GeneratorExcel xlsGen, Project proj) {
+    private void xlsAnalysisStaff(GeneratorHSSFWorkbook xlsGen, Project proj) {
 
 	String sheetName = "Staff";
 
@@ -1179,7 +1177,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param sheetName
      * @param proj
      */
-    private void xlsAnalysisProgress(GeneratorExcel xlsGen, String sheetName, Project proj) {
+    private void xlsAnalysisProgress(GeneratorHSSFWorkbook xlsGen, String sheetName, Project proj) {
 
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Progress");
 
@@ -1246,9 +1244,9 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualIndirect
      * @param actualProjCost
      */
-    private void xlsAnalysisEstimateCost(GeneratorExcel xlsGen, Project proj, double plannedDirect,
-	    double plannedIndirect, double plannedProjCost, double actualDirect, double actualIndirect,
-	    double actualProjCost) {
+    private void xlsAnalysisEstimateCost(GeneratorHSSFWorkbook xlsGen, Project proj,
+	    double plannedDirect, double plannedIndirect, double plannedProjCost, double actualDirect,
+	    double actualIndirect, double actualProjCost) {
 
 	String sheetName = "Cost Estimate";
 

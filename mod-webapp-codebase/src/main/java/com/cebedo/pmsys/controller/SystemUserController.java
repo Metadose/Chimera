@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
@@ -29,7 +32,7 @@ import com.cebedo.pmsys.ui.AlertBoxGenerator;
 @Controller
 @SessionAttributes(
 
-value = { SystemUserController.ATTR_SYSTEM_USER }
+value = { SystemUserController.ATTR_SYSTEM_USER, SystemUserController.ATTR_USER_AUX }
 
 )
 @RequestMapping(SystemUser.OBJECT_NAME)
@@ -38,6 +41,11 @@ public class SystemUserController {
     public static final String ATTR_LIST = "systemUserList";
     public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
     public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
+
+    // Authorizations.
+    public static final String ATTR_USER_AUX = "userAux";
+    public static final String ATTR_MODULE_LIST = "moduleList";
+    public static final String ATTR_ACTION_LIST = "actionList";
 
     private AuthHelper authHelper = new AuthHelper();
     private SystemUserService systemUserService;
@@ -61,11 +69,30 @@ public class SystemUserController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
+	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listSystemUsers(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.systemUserService.list());
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_SYSTEM_USER;
+    }
+
+    /**
+     * Update authorities of a user.
+     * 
+     * @param userAux
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.AUTHORIZE, method = RequestMethod.POST)
+    public String updateAuthority(@ModelAttribute(ATTR_USER_AUX) UserAux userAux, SessionStatus status,
+	    RedirectAttributes redirectAttrs) {
+	SystemUser systemUser = userAux.getUser();
+	String response = this.systemUserService.updateAuthority(userAux);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	status.setComplete();
+	return editPage(systemUser.getId());
     }
 
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
@@ -133,7 +160,8 @@ public class SystemUserController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + SystemUser.COLUMN_PRIMARY_KEY
+	    + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 	String response = this.systemUserService.delete(id);
@@ -141,8 +169,12 @@ public class SystemUserController {
 	return listPage(status);
     }
 
-    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY + "}", method = RequestMethod.GET)
-    public String editSystemUser(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model) {
+    @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + SystemUser.COLUMN_PRIMARY_KEY
+	    + "}", method = RequestMethod.GET)
+    public String editSystemUser(@PathVariable(SystemUser.COLUMN_PRIMARY_KEY) int id, Model model,
+	    HttpSession session) {
+
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 
 	// Only super admins can change company,
 	// view list of all companies.
@@ -162,6 +194,11 @@ public class SystemUserController {
 	resultUser
 		.setCompanyID(resultUser.getCompany() == null ? null : resultUser.getCompany().getId());
 
+	// Get the UserAux from database.
+	UserAux userAux = this.systemUserService.getUserAux(resultUser);
+	model.addAttribute(ATTR_USER_AUX, userAux);
+	model.addAttribute(ATTR_MODULE_LIST, AuthorizedModule.values());
+	model.addAttribute(ATTR_ACTION_LIST, AuthorizedAction.values());
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);
 	return RegistryJSPPath.JSP_EDIT_SYSTEM_USER;
     }

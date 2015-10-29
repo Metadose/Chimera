@@ -43,7 +43,8 @@ public class StaffController {
 	this.staffService = s;
     }
 
-    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT, ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
+    @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
+	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listStaff(Model model, HttpSession session) {
 	model.addAttribute(ATTR_LIST, this.staffService.listWithAllCollections());
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
@@ -92,7 +93,8 @@ public class StaffController {
      * @param redirectAttrs
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = ConstantsSystem.REQUEST_DELETE + "/{" + Staff.OBJECT_NAME
+	    + "}", method = RequestMethod.GET)
     public String delete(@PathVariable(Staff.OBJECT_NAME) long id, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 	String response = this.staffService.delete(id);
@@ -109,7 +111,10 @@ public class StaffController {
      * @return
      */
     @RequestMapping(value = ConstantsSystem.REQUEST_EDIT + "/{" + Staff.COLUMN_PRIMARY_KEY + "}")
-    public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model) {
+    public String editStaff(@PathVariable(Staff.COLUMN_PRIMARY_KEY) int id, Model model,
+	    HttpSession session) {
+
+	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 
 	// If action is to create new staff.
 	if (id == 0) {

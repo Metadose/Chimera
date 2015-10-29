@@ -60,7 +60,7 @@ public class ProjectAux implements IDomainObject {
      */
     @Override
     public String getKey() {
-	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, this.company.getId(),
+	return String.format(RegistryRedisKeys.KEY_AUX_PROJECT, this.company.getId(),
 		this.project.getId());
     }
 
@@ -82,7 +82,7 @@ public class ProjectAux implements IDomainObject {
 
     public static String constructKey(Project project) {
 	Company company = project.getCompany();
-	return String.format(RegistryRedisKeys.KEY_PROJECT_AUX, company.getId(), project.getId());
+	return String.format(RegistryRedisKeys.KEY_AUX_PROJECT, company.getId(), project.getId());
     }
 
     public double getPlannedTotalProject() {

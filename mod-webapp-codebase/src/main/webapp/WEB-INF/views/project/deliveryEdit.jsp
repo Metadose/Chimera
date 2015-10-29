@@ -1,7 +1,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -95,8 +95,12 @@
 				                                        </div>
 				                                    </form:form>
 			                                        <c:if test="${isUpdating}">
+			                                        
+			                                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_UPDATE')">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>
+                                            		</sec:authorize>
                                             		
+			                                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 				                                    <div class="btn-group">
 				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 				                                    <ul class="dropdown-menu">
@@ -108,13 +112,19 @@
 				                                    	</li>
 				                                    </ul>
 				                                    </div>
+				                                    </sec:authorize>
+				                                    
 			                                        </c:if>
+			                                        
+			                                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
 			                                        <c:if test="${!isUpdating}">
                                             		<button onclick="submitForm('detailsForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Create</button>
 			                                        </c:if>
+			                                        </sec:authorize>
                    								</div>
                    							</div>
                    						</div>
+                   						<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
                    						<c:if test="${isUpdating}">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
@@ -183,6 +193,7 @@
                    							</div>
                    						</div>
                    						</c:if>
+                   						</sec:authorize>
               						</div>
               						<c:if test="${isUpdating}">
               						<div class="row">
@@ -220,13 +231,17 @@
 				                                            			<a href="${urlEdit}">
 								                                    	<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 				                                            			</a>
+				                                            			
+				                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')">
 				                                            			<c:if test="${row.available > 0}">
 				                                            			<c:url var="urlPullout" value="/project/pullout/material/${row.getKey()}-end"/>
 									                                    <a href="${urlPullout}">
 		                   													<button class="btn btn-cebedo-pullout btn-flat btn-sm">Pull-Out</button>
 									                                    </a>
 									                                    </c:if>
+									                                    </sec:authorize>
 									                                    
+									                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
                             		                                    <div class="btn-group">
                             		                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
                             		                                    <ul class="dropdown-menu">
@@ -238,6 +253,7 @@
                             		                                    	</li>
                             		                                    </ul>
                             		                                    </div>
+                            		                                    </sec:authorize>
 																	</center>
 																</td>
 																<td>${row.materialCategory.getLabel()}</td>

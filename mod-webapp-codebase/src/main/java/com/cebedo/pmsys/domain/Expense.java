@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,8 +30,6 @@ public class Expense extends AbstractExpense implements IDomainObject, IExpense 
     // Bean-backed form.
     private long staffID;
 
-    private Map<String, Object> extMap;
-
     public Expense() {
 	;
     }
@@ -40,16 +37,6 @@ public class Expense extends AbstractExpense implements IDomainObject, IExpense 
     public Expense(Project proj) {
 	setProject(proj);
 	setCompany(proj.getCompany());
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override

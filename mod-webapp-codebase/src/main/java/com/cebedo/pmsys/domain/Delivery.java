@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,11 +39,6 @@ public class Delivery extends AbstractExpense implements IDomainObject, IExpense
     @Deprecated
     private Set<Staff> staff;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
     public Delivery() {
 	;
     }
@@ -52,16 +46,6 @@ public class Delivery extends AbstractExpense implements IDomainObject, IExpense
     public Delivery(Project proj) {
 	setCompany(proj.getCompany());
 	setProject(proj);
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override

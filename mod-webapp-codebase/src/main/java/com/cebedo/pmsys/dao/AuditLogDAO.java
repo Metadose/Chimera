@@ -6,12 +6,14 @@ import com.cebedo.pmsys.model.AuditLog;
 
 public interface AuditLogDAO {
 
-	public void create(AuditLog auditLog);
+    public void deleteAll(long userID);
 
-	public AuditLog getByID(long id);
+    public void create(AuditLog auditLog);
 
-	public void delete(long id);
+    public AuditLog getByID(long id);
 
-	public List<AuditLog> list(Long companyID);
+    public void delete(long id);
+
+    public List<AuditLog> list(Long companyID);
 
 }

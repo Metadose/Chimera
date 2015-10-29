@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.domain;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -61,11 +60,6 @@ public class Material implements IDomainObject {
     private double totalCostPerUnitEquipment;
     private double totalCost;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
     public Material() {
 	;
     }
@@ -74,16 +68,6 @@ public class Material implements IDomainObject {
 	setCompany(delivery2.getCompany());
 	setProject(delivery2.getProject());
 	setDelivery(delivery2);
-    }
-
-    @Override
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    @Override
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override

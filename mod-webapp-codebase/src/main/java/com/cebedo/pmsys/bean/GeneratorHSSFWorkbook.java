@@ -32,7 +32,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Task.TaskSubType;
 import com.google.common.collect.ImmutableList;
 
-public class GeneratorExcel {
+public class GeneratorHSSFWorkbook {
 
     private HSSFWorkbook workbook = new HSSFWorkbook();
     private Map<String, Integer> rowIndexMap = new HashMap<String, Integer>();
@@ -41,7 +41,7 @@ public class GeneratorExcel {
     private HSSFCellStyle styleYellowFill;
     private HSSFCellStyle styleSeaGreenFill;
 
-    public GeneratorExcel() {
+    public GeneratorHSSFWorkbook() {
 	this.styleYellowFill = this.workbook.createCellStyle();
 	this.styleYellowFill.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
 	this.styleYellowFill.setFillPattern(CellStyle.SOLID_FOREGROUND);

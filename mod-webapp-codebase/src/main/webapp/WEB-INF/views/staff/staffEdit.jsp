@@ -1,7 +1,9 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authStaff" property="staff"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="staffWage" value="${staff.wage}"/>
 <c:set var="taskList" value="${staff.tasks}"/>
@@ -157,8 +159,18 @@
 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${staff.id > 0}">
+		                                            	
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-
+		                                            		</sec:authorize>
+		                                            		
+		                                            		<sec:authorize access="!hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
+		                                            		<c:if test="${authStaff.id == staff.id}">
+			                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
+		                                            		</c:if>
+		                                            		</sec:authorize>
+		                                            		
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_DELETE')">
 															<div class="btn-group">
 															<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 															<ul class="dropdown-menu">
@@ -169,6 +181,8 @@
 																</li>
 															</ul>
 															</div>
+															</sec:authorize>
+															
 		                                            	</c:when>
 		                                            </c:choose>
                    								</div>
@@ -225,7 +239,10 @@
 			                                    <table id="task-table" class="table table-bordered table-striped">
 			                                    	<thead>
 			                                    		<tr>
+			                                    			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 				                                        	<th>&nbsp;</th>
+				                                        	</sec:authorize>
+				                                        	
 				                                            <th>Status</th>
 				                                            <th>Start Date</th>
 				                                            <th>End Date</th>
@@ -237,11 +254,13 @@
 			                                        <tbody>
 		                                        		<c:forEach items="${taskList}" var="task">
 		                                        			<tr>
+		                                        				<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 		                                        				<td style="text-align: center;">
 							                                        <a href="<c:url value="/project/edit/task/${task.id}"/>">
 					                                            		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 					                                            	</a>
 		                                        				</td>
+		                                        				</sec:authorize>
 					                                            <td>
 						                                            <c:set value="${task.getStatusEnum().css()}" var="css"></c:set>
 																	<span class="label ${css}">${task.getStatusEnum()}</span>
@@ -314,6 +333,7 @@
                    						</div>
               						</div>
                                 	<div class="row">
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
@@ -371,11 +391,12 @@
                    								</div>
                    							</div>
                    						</div>
+                   						</sec:authorize>
                    						
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">
-													<div class="pull-right">												
+													<div class="pull-right" style="padding-right: 2%">												
 					                                	<h3>Grand Total <b><u>
 					                                	<fmt:formatNumber type="currency" 
 					                                		currencySymbol="&#8369;"
@@ -521,8 +542,10 @@
                     </form:form>
 	            </div>
 	            <div class="modal-footer">
+	            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 	                <button type="button" onclick="submitForm('attendanceForm')" class="btn btn-cebedo-update btn-flat btn-sm">Update</button>
 	            	<button type="button" class="btn btn-cebedo-close btn-flat btn-sm" data-dismiss="modal">Close</button>
+	            	</sec:authorize>
 	            </div>
 	        </div>
 	    </div>

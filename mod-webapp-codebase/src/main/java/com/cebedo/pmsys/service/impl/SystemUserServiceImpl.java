@@ -1,19 +1,28 @@
 package com.cebedo.pmsys.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
+import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.controller.LoginLogoutController;
+import com.cebedo.pmsys.dao.AuditLogDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
+import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -22,6 +31,7 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.repository.UserAuxValueRepo;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.ui.AlertBoxGenerator;
@@ -37,12 +47,26 @@ public class SystemUserServiceImpl implements SystemUserService {
     private SystemUserDAO systemUserDAO;
     private StaffDAO staffDAO;
     private SystemConfigurationDAO systemConfigurationDAO;
+    private UserAuxValueRepo userAuxValueRepo;
+    private AuditLogDAO auditLogDAO;
 
     @Value("${webapp.accounts.root.username}")
     private String rootUsername;
 
     @Value("${webapp.accounts.root.password}")
     private String rootPassword;
+
+    @Autowired
+    @Qualifier(value = "auditLogDAO")
+    public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
+	this.auditLogDAO = auditLogDAO;
+    }
+
+    @Autowired
+    @Qualifier(value = "userAuxValueRepo")
+    public void setUserAuxValueRepo(UserAuxValueRepo userAuxValueRepo) {
+	this.userAuxValueRepo = userAuxValueRepo;
+    }
 
     public void setSystemConfigurationDAO(SystemConfigurationDAO systemConfigurationDAO) {
 	this.systemConfigurationDAO = systemConfigurationDAO;
@@ -139,6 +163,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Create the objects first.
 	this.systemUserDAO.create(systemUser);
 	this.staffDAO.create(staff);
+	this.userAuxValueRepo.set(new UserAux(systemUser));
 
 	// Log and notify.
 	this.messageHelper.auditableID(AuditAction.ACTION_CREATE, SystemUser.OBJECT_NAME,
@@ -343,6 +368,57 @@ public class SystemUserServiceImpl implements SystemUserService {
     @Transactional
     public SystemUser searchDatabase(String name) {
 	return this.systemUserDAO.searchDatabase(name);
+    }
+
+    @Override
+    @Transactional
+    public String updateAuthority(UserAux userAux) {
+
+	// Only company admins can give authority to others.
+	SystemUser user = userAux.getUser();
+	if (!this.authHelper.isCompanyAdmin() && !this.authHelper.isActionAuthorized(user)) {
+	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
+	    return AlertBoxGenerator.ERROR;
+	}
+
+	// Construct the map of authorities.
+	Map<AuthorizedModule, List<AuthorizedAction>> authorization = userAux.getAuthorization();
+	for (AuthorizedModule module : userAux.getModules()) {
+	    List<AuthorizedAction> authActions = Arrays.asList(userAux.getActions());
+	    if (authActions.isEmpty()) {
+		authorization.remove(module);
+		continue;
+	    }
+	    authorization.put(module, authActions);
+	}
+	userAux.setAuthorization(authorization);
+	userAux.clearFromInput();
+	this.userAuxValueRepo.set(userAux);
+	return AlertBoxGenerator.SUCCESS.generateAuthorize();
+    }
+
+    @Override
+    @Transactional
+    public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
+	UserAux userAux = this.userAuxValueRepo.get(UserAux.constructKey(user));
+
+	// If no aux for this user, create one.
+	if (userAux == null) {
+	    this.userAuxValueRepo.set(new UserAux(user));
+	    return new ArrayList<GrantedAuthority>();
+	}
+	return userAux.getAuthorities();
+    }
+
+    @Override
+    @Transactional
+    public UserAux getUserAux(SystemUser user) {
+	UserAux userAux = this.userAuxValueRepo.get(UserAux.constructKey(user));
+	if (userAux == null) {
+	    this.userAuxValueRepo.set(new UserAux(user));
+	    return getUserAux(user);
+	}
+	return userAux;
     }
 
 }

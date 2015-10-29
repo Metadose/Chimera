@@ -336,6 +336,9 @@
  	<!-- *********************************************************** -->
  	<!-- *********************************************************** -->
     
+    <!-- User Auxiliary -->
+    <beans:bean id="userAuxValueRepo" class="com.cebedo.pmsys.repository.UserAuxValueRepo"></beans:bean>
+
     <!-- Estimate Cost -->
     <beans:bean id="estimateCostService" class="com.cebedo.pmsys.service.impl.EstimateCostServiceImpl"></beans:bean>
     <beans:bean id="estimateCostValueRepo" class="com.cebedo.pmsys.repository.EstimateCostValueRepo"></beans:bean>

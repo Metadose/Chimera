@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -71,7 +71,8 @@
 					                                        </div>
 					                                    </form:form>
                                             			<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('detailsForm')">Update</button>
-
+                                            			
+                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_DELETE')">
 														<div class="btn-group">
 														<button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 														<ul class="dropdown-menu">
@@ -83,6 +84,8 @@
 															</li>
 														</ul>
 														</div>
+														</sec:authorize>
+														
 													</div>	
 												</div>
 											</div>

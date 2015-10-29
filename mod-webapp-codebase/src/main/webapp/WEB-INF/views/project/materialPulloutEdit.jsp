@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -106,44 +106,8 @@
 									                	<td><label>Units</label></td>
 									                	<td>${pullout.material.getUnitName()}</td>
 									                </tr>
-									                <tr>
-									                	<td><label>Available</label></td>
-									                	<td align="right">
-															<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
-									                	</td>
-									                </tr>
-									                <tr>
-									                	<td><label>Used</label></td>
-									                	<td align="right">
-									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.used}" />
-									                	</td>
-									                </tr>
-									                <tr>
-									                	<td><label>Total Quantity</label></td>
-									                	<td align="right">
-									                		<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
-									                	</td>
-									                </tr>
 									                </table>
 									                <br/>
-									                <div class="progress">
-														<div class="progress-bar progress-bar-${pullout.material.getAvailableCSS()} progress-bar-striped" 
-														    role="progressbar" 
-														    aria-valuenow="${pullout.material.available}" 
-														    aria-valuemin="0" 
-														    aria-valuemax="${pullout.material.quantity}"
-														    style="width:${pullout.material.getAvailableAsPercentage()}">
-														    <c:if test="${pullout.material.available <= 0}">
-														    	Out of Stock
-														    </c:if>
-														    <c:if test="${pullout.material.available > 0}">
-														    	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.available}" />
-														    	out of 
-																<fmt:formatNumber type="number" pattern="###,##0.0###" value="${pullout.material.quantity}" />
-														    	(${pullout.material.getAvailableAsPercentageForDisplay()})
-														    </c:if>
-													    </div>
-													</div>
 									                
 													<c:set value="${contextPath}/project/do-pullout/material" var="formURL" />
 
@@ -172,8 +136,8 @@
 				                                            <p class="help-block">Additional remarks</p>
 				                                        </div>
 				                                    </form:form>
-
-
+				                                    
+				                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_DELETE')">
 				                                    <div class="btn-group">
 				                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 				                                    <ul class="dropdown-menu">
@@ -185,6 +149,7 @@
 				                                    	</li>
 				                                    </ul>
 				                                    </div>
+				                                    </sec:authorize>
 
 													</c:when>
 

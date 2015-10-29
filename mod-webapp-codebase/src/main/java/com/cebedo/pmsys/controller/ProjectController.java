@@ -130,7 +130,7 @@ public class ProjectController {
     // TODO Clean this whole thing.
     public static final String ATTR_LIST = "projectList";
     public static final String ATTR_PROJECT = Project.OBJECT_NAME;
-    public static final String ATTR_PROJECT_AUX = ConstantsRedis.OBJECT_PROJECT_AUX;
+    public static final String ATTR_PROJECT_AUX = "projectAux";
     public static final String ATTR_DELIVERY = ConstantsRedis.OBJECT_DELIVERY;
     public static final String ATTR_MATERIAL = ConstantsRedis.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = ConstantsRedis.OBJECT_PULL_OUT;
@@ -882,7 +882,7 @@ public class ProjectController {
      */
     @RequestMapping(value = RegistryURL.CREATE_STAFF, method = RequestMethod.POST)
     public String createStaff(@ModelAttribute(ATTR_STAFF) Staff staff, RedirectAttributes redirectAttrs,
-	    BindingResult result) {
+	    BindingResult result, SessionStatus status, HttpSession session) {
 
 	String response = "";
 
