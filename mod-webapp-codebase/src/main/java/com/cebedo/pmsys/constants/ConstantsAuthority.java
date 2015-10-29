@@ -2,6 +2,9 @@ package com.cebedo.pmsys.constants;
 
 public class ConstantsAuthority {
 
+    public static final String ADMIN_COMPANY = "ADMIN_COMPANY";
+    public static final String ADMIN_SUPER = "ADMIN_SUPER";
+
     /**
      * Project Modules.
      */

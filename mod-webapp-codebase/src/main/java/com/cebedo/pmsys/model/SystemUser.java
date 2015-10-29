@@ -24,6 +24,7 @@ public class SystemUser implements Serializable {
     private static final long serialVersionUID = -5847055437189444297L;
     public static final String TABLE_NAME = "system_users";
     public static final String OBJECT_NAME = "systemuser";
+    public static final String OBJECT_NAME_DISPLAY = "system user";
     public static final String COLUMN_PRIMARY_KEY = "user_id";
     public static final String COLUMN_USER_NAME = "username";
     public static final String COLUMN_PASSWORD = "password";

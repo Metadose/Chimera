@@ -131,14 +131,39 @@
                                 	<c:when test="${project.id != 0}">
                                 		<li class="${dashboardVisibility}"><a href="#tab_dashboard" data-toggle="tab">Dashboard</a></li>
                                 		<li class="${detailsVisibility}"><a href="#tab_1" data-toggle="tab">Contract</a></li>
+                                		
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_VIEW')">
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
+                                		</sec:authorize>
+                                		
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
+                                		</sec:authorize>
+
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_VIEW')">
 		                                <li><a href="#tab_payroll" data-toggle="tab">Payroll</a></li>
+                                		</sec:authorize>
+
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_VIEW')">
 										<li><a href="#tab_inventory" data-toggle="tab">Inventory</a></li>
+										</sec:authorize>
+										
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_VIEW')">
 										<li><a href="#tab_equipment_expenses" data-toggle="tab">Equipment</a></li>
+										</sec:authorize>
+
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_VIEW')">
 										<li><a href="#tab_other_expenses" data-toggle="tab">Other Expenses</a></li>
+										</sec:authorize>
+
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
+										</sec:authorize>
+
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'DOWNLOADS_VIEW')">
 		                                <li><a href="#tab_downloads" data-toggle="tab">Downloads</a></li>
+										</sec:authorize>
+		                                
 		                                <!-- <li><a href="#tab_calendar" data-toggle="tab">TODO Calendar</a></li> -->
                                 	</c:when>
                                 	<c:when test="${project.id == 0}">
@@ -167,7 +192,12 @@
 
 					                                        	<label>&nbsp;</label>
 					                                            <div class="btn-group">
-						                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Mark As&nbsp;<span class="caret"></span></button>
+					                                            	
+					                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
+						                                            <button type="button" class="btn btn-cebedo-update btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">
+						                                            Mark As&nbsp;<span class="caret"></span>
+						                                            </button>
+					                                            	</sec:authorize>
 						                                            <ul class="dropdown-menu">
 						                                            	<c:forEach var="projectStatus" items="${projectStatusList}">
 								                                    		<li>
@@ -212,8 +242,12 @@
 					                                        <c:if test="${project.status == 2}"> <!-- If completed -->
 					                                        	<!-- Update form Input -->
 					                                            <label>Actual Completion Date</label>
+					                                            
+					                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
 																		<c:url var="clearActualCompletion" value="/project/clear/actual-completion-date"/>
 						                                            	(<a class="general-link" href="${clearActualCompletion}">Clear</a>)
+						                                        </sec:authorize>
+						                                            	
 						                                        <div class="input-group">
 						                                            <div class="input-group-addon">
 						                                                <i class="fa fa-calendar"></i>
@@ -237,10 +271,14 @@
 		                                            		<button class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton" onclick="submitForm('projectForm')">Create</button>
 		                                            	</c:when>
 		                                            	<c:when test="${project.id > 0}">
+		                                            	
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
 		                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton" onclick="submitForm('projectForm')">Update</button>
-		                                            		<c:if test="${authUser.companyAdmin}">
+		                                            		</sec:authorize>
+		                                            		
+		                                            		<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 															<button class="btn btn-cebedo-delete btn-flat btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
-															</c:if>
+															</sec:authorize>
 		                                            	</c:when>
 		                                            </c:choose>
 			                                        </div>
@@ -274,12 +312,14 @@
 	               												<c:forEach var="field" items="${projectFields}"  varStatus="loop">
                														<!-- More Information Output -->
 	       															<label><c:out value="${field.label}"/></label>
+	       															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
 	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-3edc-${field.label}-3edc-${field.value}"/>
 						                                            	(
 		                                								<a class="general-link" href="${urlEditProjectField}">
 						                                            	Edit
 	               														</a>
 						                                            	)
+						                                            </sec:authorize>
 						                                            <br/>
 						                                            <c:out value="${field.value}"/>
 	       															<br/>
@@ -287,6 +327,8 @@
 																</c:forEach>
    															</div>
    															</c:if>
+   															
+															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
    															<c:if test="${!empty projectFields}">
    															<h4>Add More Information</h4>
    															</c:if>
@@ -308,6 +350,9 @@
 															
 															</form:form>
 	                                           				<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('fieldsForm')">Add Information</button>
+	                                           				</sec:authorize>
+	                                           				
+	                                           				<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_DELETE')">
 	                                           				<c:if test="${!empty projectFields}">
 
 	       														<div class="btn-group">
@@ -322,6 +367,7 @@
 																</ul>
 																</div>
 															</c:if>
+															</sec:authorize>
 			                                        </div>
                    								</div>
                    							</div>
@@ -334,6 +380,8 @@
                						</c:when>
                						</c:choose>
                                 </div><!-- /.tab-pane -->
+                                
+                                
                                 <c:choose>
                    				<c:when test="${project.id != 0}">
 
@@ -505,6 +553,8 @@
 				                   	</div> <!-- End of Row -->
                                 </div><!-- /.tab-pane -->
 
+
+								<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_VIEW')">
                                 <div class="tab-pane" id="tab_project_estimate">
 	                                <div class="nav-tabs-custom">
 										<ul class="nav nav-tabs">
@@ -570,9 +620,10 @@
 																	</tr>
 																</tbody>
 																</table>
-																<br/>
-
-
+															<br/>
+																
+															
+															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')">
 				                                    		<form:form modelAttribute="massUploadBean"
 																action="${contextPath}/project/mass/upload/cost"
 																method="post"
@@ -584,8 +635,11 @@
 																<button class="btn btn-cebedo-create btn-flat btn-sm">Upload</button>
 																</div>
 															</form:form>
+															</sec:authorize>
 						                                  		
 							                                    <div class="form-group">
+							                                    
+							                                    <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')">
 																<form:form modelAttribute="cost"
 																	action="${contextPath}/project/create/cost"
 																	method="post"
@@ -627,7 +681,9 @@
 																	</table>
 					                                    			
 						                                        </form:form>
-					                                    		<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('costForm')">Create</button>					                                    			
+					                                    		<button class="btn btn-cebedo-create btn-flat btn-sm" onclick="submitForm('costForm')">Create</button>	
+					                                    		</sec:authorize>
+					                                    						                                    			
 																<c:if test="${!empty directCostList || !empty indirectCostList}">
 				                   									<a href="<c:url value="/project/export-xls/costs"/>">
 						                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
@@ -650,7 +706,10 @@
 							                                    <table class="table table-bordered table-striped is-data-table">	
 							                                    	<thead>
 							                                            <tr>
+							                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
 							                                            	<th>&nbsp;</th>
+							                                            	</sec:authorize>
+							                                            	
 							                                                <th>Name</th>
 							                                                <th>Estimated</th>
 							                                                <th>Actual</th>
@@ -660,12 +719,17 @@
 							                                        <tbody>
 								                                		<c:forEach items="${directCostList}" var="directCost">
 							                                            <tr>
+					                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
 							                                            	<td>
 							                                            		<center>
+							                                            		
+							                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE')">
 							                                            			<a href="<c:url value="/project/edit/cost/${directCost.getKey()}-end"/>">
 											                                    		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
+							                                            			</sec:authorize>
 
+							                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_DELETE')">
 												                                    <div class="btn-group">
 												                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 												                                    <ul class="dropdown-menu">
@@ -676,9 +740,11 @@
 												                                    	</li>
 												                                    </ul>
 												                                    </div>
+							                                            			</sec:authorize>
 
 																				</center>
 																			</td>
+																			</sec:authorize>
 						                                                	<td class="cebedo-text-align-right">${directCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getActualCostAsString()}</td>
@@ -699,7 +765,10 @@
 							                                    <table class="table table-bordered table-striped is-data-table">	
 							                                    	<thead>
 							                                            <tr>
+							                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
 							                                            	<th>&nbsp;</th>
+							                                            	</sec:authorize>
+							                                            	
 							                                                <th>Name</th>
 							                                                <th>Estimated</th>
 							                                                <th>Actual</th>
@@ -709,12 +778,16 @@
 							                                        <tbody>
 								                                		<c:forEach items="${indirectCostList}" var="indirectCost">
 							                                            <tr>
+							                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
 							                                            	<td>
 							                                            		<center>
+							                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE')">
 							                                            			<a href="<c:url value="/project/edit/cost/${indirectCost.getKey()}-end"/>">
 											                                    		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 							                                            			</a>
-
+							                                            			</sec:authorize>
+							                                            			
+							                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_DELETE')">
 												                                    <div class="btn-group">
 												                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 												                                    <ul class="dropdown-menu">
@@ -725,8 +798,10 @@
 												                                    	</li>
 												                                    </ul>
 												                                    </div>
+												                                    </sec:authorize>
 																				</center>
 																			</td>
+																			</sec:authorize>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getActualCostAsString()}</td>
@@ -771,7 +846,8 @@
 							                                            			<a href="<c:url value="/project/export-xls/estimationoutput/${estimationOutput.getKey()}-end"/>">
 										                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
 										                                        	</a>
-
+										                                        	
+										                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_DELETE')">
 												                                    <div class="btn-group">
 												                                    <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
 												                                    <ul class="dropdown-menu">
@@ -783,6 +859,7 @@
 												                                    	</li>
 												                                    </ul>
 												                                    </div>
+												                                    </sec:authorize>
 																				</center>
 																			</td>
 						                                                	<td>${estimationOutput.name}</td>
@@ -797,6 +874,8 @@
 							                                </div><!-- /.box-body -->
 							                             </div>
 							                        </div>
+							                        
+							                        <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')">
 			                   						<div class="col-md-3">
 			                   							<div class="box box-body box-default">
 			                   								<div class="box-header">
@@ -838,12 +917,16 @@
 			                   								</div>
 			                   							</div>
 			                   						</div>
+			                   						</sec:authorize>
+			                   						
 			              						</div>
 			                                </div><!-- /.tab-pane -->
 										</div>
 									</div>
 								</div>
+								</sec:authorize>
 
+								<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_VIEW')">
 								<div class="tab-pane" id="tab_equipment_expenses">
                                 	<div class="row">
 										<div class="col-md-6">
@@ -978,8 +1061,9 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
-
-
+                                </sec:authorize>
+                                
+                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_VIEW')">
 								<div class="tab-pane" id="tab_other_expenses">
                                 	<div class="row">
 										<div class="col-md-6">
@@ -1114,7 +1198,9 @@
                    						</div>
               						</div>
                                 </div><!-- /.tab-pane -->
+                                </sec:authorize>
                                 
+                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'DOWNLOADS_VIEW')">
 								<div class="tab-pane" id="tab_downloads">
                                 	<div class="row">
 										<div class="col-md-12">
@@ -1312,7 +1398,9 @@
 				                        </div>
               						</div>
                                 </div><!-- /.tab-pane -->
-
+                                </sec:authorize>
+                                
+                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
                                 <div class="tab-pane" id="tab_timeline">
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-timeline">
@@ -1531,11 +1619,9 @@
 										</div>
 									</div>
 									</div>
-                                
-                                	
-                                	
-		                            
                                 </div><!-- /.tab-pane -->
+                                </sec:authorize>
+                                
                                 <div class="tab-pane" id="tab_calendar">
                                	<div class="row">
                						<div class="col-md-12">
@@ -1566,6 +1652,8 @@
                						</div>
           						</div>
            						</div>
+           						
+           						<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_VIEW')">
                                 <div class="tab-pane" id="tab_payroll">
 		                            <div class="row">
                						<div class="col-md-6">
@@ -1675,8 +1763,10 @@
                							</div>
                						</div>
                						</div>
-               						
                                 </div><!-- /.tab-pane -->
+                                </sec:authorize>
+                                
+                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'INVENTORY_VIEW')">
                                 <div class="tab-pane" id="tab_inventory">
                                 
                                 	<div class="nav-tabs-custom">
@@ -1969,6 +2059,9 @@
 		                            </div>
 		                            </div>
                                 </div><!-- /.tab-pane -->
+                                </sec:authorize>
+                                
+                                <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
                                 <div class="tab-pane" id="tab_staff">
                                 	<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs" id="subtabs-staff">
@@ -2141,6 +2234,8 @@
 									</div>
 									</div>	
 				                </div>
+				                </sec:authorize>
+				                
                                 </c:when>
                                 </c:choose>
                             </div><!-- /.tab-content -->

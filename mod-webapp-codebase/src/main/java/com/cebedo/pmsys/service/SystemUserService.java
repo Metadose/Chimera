@@ -1,9 +1,12 @@
 package com.cebedo.pmsys.service;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.model.SystemUser;
 
 public interface SystemUserService {
@@ -54,5 +57,11 @@ public interface SystemUserService {
     public SystemUser getByID(long id, boolean override);
 
     public SystemUser searchDatabase(String name);
+
+    public String updateAuthority(UserAux userAux);
+
+    public Collection<GrantedAuthority> getAuthorities(SystemUser user);
+
+    public UserAux getUserAux(SystemUser user);
 
 }

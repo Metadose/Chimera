@@ -77,11 +77,20 @@ public class SystemUserController {
 	return RegistryJSPPath.JSP_LIST_SYSTEM_USER;
     }
 
-    @RequestMapping(value = RegistryURL.UPDATE_AUTHORITY, method = RequestMethod.POST)
+    /**
+     * Update authorities of a user.
+     * 
+     * @param userAux
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.AUTHORIZE, method = RequestMethod.POST)
     public String updateAuthority(@ModelAttribute(ATTR_USER_AUX) UserAux userAux, SessionStatus status,
-	    RedirectAttributes redirectAttrs, HttpSession session) {
-	SystemUser systemUser = (SystemUser) session.getAttribute(ATTR_SYSTEM_USER);
-	// TODO
+	    RedirectAttributes redirectAttrs) {
+	SystemUser systemUser = userAux.getUser();
+	String response = this.systemUserService.updateAuthority(userAux);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
 	return editPage(systemUser.getId());
     }
@@ -182,7 +191,9 @@ public class SystemUserController {
 	resultUser
 		.setCompanyID(resultUser.getCompany() == null ? null : resultUser.getCompany().getId());
 
-	model.addAttribute(ATTR_USER_AUX, new UserAux(resultUser));
+	// Get the UserAux from database.
+	UserAux userAux = this.systemUserService.getUserAux(resultUser);
+	model.addAttribute(ATTR_USER_AUX, userAux);
 	model.addAttribute(ATTR_MODULE_LIST, AuthorizedProjectModule.values());
 	model.addAttribute(ATTR_ACTION_LIST, AuthorizedAction.values());
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);

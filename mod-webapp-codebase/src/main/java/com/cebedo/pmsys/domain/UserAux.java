@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.cebedo.pmsys.constants.ConstantsAuthority;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedProjectModule;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
@@ -35,6 +36,8 @@ public class UserAux implements IDomainObject {
 	Company com = usr.getCompany();
 	if (com != null) {
 	    this.company = com;
+	} else {
+	    this.company = new Company(0);
 	}
 	this.user = usr;
     }
@@ -48,12 +51,24 @@ public class UserAux implements IDomainObject {
 		authList.add(new SimpleGrantedAuthority(authority));
 	    }
 	}
+	if (this.user.isCompanyAdmin() || this.user.isSuperAdmin()) {
+	    authList.add(new SimpleGrantedAuthority(ConstantsAuthority.ADMIN_COMPANY));
+	}
+	if (this.user.isSuperAdmin()) {
+	    authList.add(new SimpleGrantedAuthority(ConstantsAuthority.ADMIN_SUPER));
+	}
 	return authList;
     }
 
     @Override
     public String getKey() {
 	return String.format(RegistryRedisKeys.KEY_AUX_USER, this.company.getId(), this.user.getId());
+    }
+
+    public static String constructKey(SystemUser user) {
+	Company company = user.getCompany();
+	return String.format(RegistryRedisKeys.KEY_AUX_USER, company == null ? 0 : company.getId(),
+		user.getId());
     }
 
     @Override
@@ -96,6 +111,23 @@ public class UserAux implements IDomainObject {
 
     public void setActions(AuthorizedAction[] actions) {
 	this.actions = actions;
+    }
+
+    public Map<AuthorizedProjectModule, List<AuthorizedAction>> getAuthorization() {
+	return authorization;
+    }
+
+    public void setAuthorization(Map<AuthorizedProjectModule, List<AuthorizedAction>> authorization) {
+	this.authorization = authorization;
+    }
+
+    public String toString() {
+	return String.format("[%s = %s]", this.user.getId(), this.authorization.toString());
+    }
+
+    public void clearFromInput() {
+	this.modules = null;
+	this.actions = null;
     }
 
 }

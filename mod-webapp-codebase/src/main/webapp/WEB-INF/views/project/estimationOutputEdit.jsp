@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -54,6 +55,7 @@
                 		<button class="btn btn-cebedo-export btn-flat btn-sm">Export</button>
                 	</a>
                 	
+                	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_DELETE')">
                     <div class="btn-group">
                     <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
                     <ul class="dropdown-menu">
@@ -65,6 +67,7 @@
                     	</li>
                     </ul>
                     </div>
+                    </sec:authorize>
                     
 					<br/>
 					<br/>
