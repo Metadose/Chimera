@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -30,11 +31,15 @@
 						<div class="col-md-12">
 							<div class="box">
 									<div class="box-body">
+									
+										<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
 										<c:url var="urlCreateProject" value="/project/edit/0"/>
 	                                	<a href="${urlCreateProject}">
 	                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>
 	                                	</a>
 	                                	<br/><br/>
+	                                	</sec:authorize>
+	                                	
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
 	                                            <tr>
