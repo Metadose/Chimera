@@ -15,15 +15,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-import com.cebedo.pmsys.base.AbstractExpense;
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProject;
 import com.cebedo.pmsys.bean.StatisticsStaff;
-import com.cebedo.pmsys.domain.Delivery;
-import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
-import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.StatusTask;
@@ -339,36 +335,6 @@ public class HSSFWorkbookFactory {
 	}
     }
 
-    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses) {
-	addRowsExpenses(sheetName, expenses, null);
-    }
-
-    /**
-     * Create a section for the list of expenses.
-     * 
-     * @param xlsGen
-     * @param sheetName
-     * @param expenses
-     * @param moduleName
-     */
-    public void addRowsExpenses(String sheetName, List<? extends AbstractExpense> expenses,
-	    String moduleName) {
-	for (AbstractExpense expense : expenses) {
-	    if (moduleName == null) {
-		addRow(sheetName, expense.getName(), expense.getCost());
-	    } else {
-		addRow(sheetName, moduleName, expense.getName(), expense.getCost());
-	    }
-	}
-	if (expenses.isEmpty()) {
-	    if (moduleName == null) {
-		addRow(sheetName, "(None)");
-	    } else {
-		addRow(sheetName, moduleName, "(None)");
-	    }
-	}
-    }
-
     /**
      * Create a section for the list of expenses.
      * 
@@ -379,8 +345,8 @@ public class HSSFWorkbookFactory {
      * @param expenses
      * @return
      */
-    public void addRowsExpenses(String sheetName, ImmutableList<IExpense> expenses) {
-	for (IExpense expense : expenses) {
+    public void addRowsExpenses(String sheetName, ImmutableList<IObjectExpense> expenses) {
+	for (IObjectExpense expense : expenses) {
 	    addRow(sheetName, expense.getName(), expense.getCost());
 	}
     }
@@ -393,23 +359,30 @@ public class HSSFWorkbookFactory {
 		: descriptiveType == StatisticsProject.DESCRIPTIVE_MIN ? "least" : "";
 
 	// Data.
-	List<IExpense> payroll = statisticsProj.getMaxPayrolls();
-	List<Delivery> deliveries = statisticsProj.getMaxDelivery();
-	List<EquipmentExpense> equips = statisticsProj.getMaxEquipment();
-	List<Expense> others = statisticsProj.getMaxOtherExpenses();
+	List<IObjectExpense> payroll = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX
+		? statisticsProj.getMaxPayrolls() : statisticsProj.getMinPayrolls();
+
+	List<IObjectExpense> deliveries = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX
+		? statisticsProj.getMaxDelivery() : statisticsProj.getMinDeliveries();
+
+	List<IObjectExpense> equips = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX
+		? statisticsProj.getMaxEquipment() : statisticsProj.getMinEquipment();
+
+	List<IObjectExpense> others = descriptiveType == StatisticsProject.DESCRIPTIVE_MAX
+		? statisticsProj.getMaxOtherExpenses() : statisticsProj.getMinOtherExpenses();
 
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
 		String.format("Expense(s) with the %s value", superlative));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "Name", "Cost");
-	addRowsExpensesI(sheetName, payroll, "Payroll");
+	addRowsExpenses(sheetName, payroll, "Payroll");
 	addRowsExpenses(sheetName, deliveries, "Deliveries");
 	addRowsExpenses(sheetName, equips, "Equipment");
 	addRowsExpenses(sheetName, others, "Other Expenses");
     }
 
-    private void addRowsExpensesI(String sheetName, List<IExpense> expenses, String moduleName) {
-	for (IExpense expense : expenses) {
+    private void addRowsExpenses(String sheetName, List<IObjectExpense> expenses, String moduleName) {
+	for (IObjectExpense expense : expenses) {
 	    if (moduleName == null) {
 		addRow(sheetName, expense.getName(), expense.getCost());
 	    } else {
@@ -439,13 +412,16 @@ public class HSSFWorkbookFactory {
 	String superlative = order == SortOrder.DESCENDING ? "Most" : "Least";
 
 	// Data.
-	ImmutableList<IExpense> payrolls = statisticsProj.getLimitedSortedByCostPayrolls(limit, order);
-	ImmutableList<Delivery> deliveries = statisticsProj.getLimitedSortedByCostDeliveries(limit,
+	ImmutableList<IObjectExpense> payrolls = statisticsProj.getLimitedSortedByCostPayrolls(limit,
 		order);
-	ImmutableList<EquipmentExpense> equips = statisticsProj.getLimitedSortedByCostEquipment(limit,
+	ImmutableList<IObjectExpense> deliveries = statisticsProj.getLimitedSortedByCostDeliveries(limit,
 		order);
-	ImmutableList<Expense> others = statisticsProj.getLimitedSortedByCostOtherExpenses(limit, order);
-	ImmutableList<IExpense> projAll = statisticsProj.getLimitedSortedByCostProject(limit, order);
+	ImmutableList<IObjectExpense> equips = statisticsProj.getLimitedSortedByCostEquipment(limit,
+		order);
+	ImmutableList<IObjectExpense> others = statisticsProj.getLimitedSortedByCostOtherExpenses(limit,
+		order);
+	ImmutableList<IObjectExpense> projAll = statisticsProj.getLimitedSortedByCostProject(limit,
+		order);
 
 	// Render.
 	addRow(sheetName, IndexedColors.SEA_GREEN,

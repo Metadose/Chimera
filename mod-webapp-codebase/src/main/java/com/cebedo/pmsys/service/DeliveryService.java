@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.model.Project;
 
@@ -48,5 +49,9 @@ public interface DeliveryService {
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
 
     public Delivery get(String uuid);
+
+    public List<IObjectExpense> listDescExpense(Project proj);
+
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate);
 
 }

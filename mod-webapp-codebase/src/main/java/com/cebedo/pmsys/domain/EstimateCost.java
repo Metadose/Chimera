@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.HTMLCSSDetails;
@@ -14,7 +14,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.HTMLUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class EstimateCost implements IObjectDomain {
+public class EstimateCost implements IObjectExpense {
 
     private static final long serialVersionUID = 2824011225211953462L;
 

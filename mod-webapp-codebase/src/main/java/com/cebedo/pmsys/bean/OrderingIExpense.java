@@ -1,10 +1,10 @@
 package com.cebedo.pmsys.bean;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.Ordering;
 
-public class OrderingIExpense extends Ordering<IExpense> {
+public class OrderingIExpense extends Ordering<IObjectExpense> {
 
     private SortOrder order = SortOrder.ASCENDING;
 
@@ -17,7 +17,7 @@ public class OrderingIExpense extends Ordering<IExpense> {
     }
 
     @Override
-    public int compare(IExpense left, IExpense right) {
+    public int compare(IObjectExpense left, IObjectExpense right) {
 
 	double leftValue = left.getCost();
 	double rightValue = right.getCost();

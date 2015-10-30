@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.Delivery;
@@ -30,6 +31,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ExpenseRepoImpl;
 import com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
@@ -53,6 +55,13 @@ public class DeliveryServiceImpl implements DeliveryService {
     private PullOutValueRepoImpl pullOutValueRepo;
     private PullOutService pullOutService;
     private ProjectDAO projectDAO;
+    private ExpenseRepoImpl expenseRepo;
+
+    @Autowired
+    @Qualifier(value = "expenseRepo")
+    public void setExpenseRepo(ExpenseRepoImpl expenseRepo) {
+	this.expenseRepo = expenseRepo;
+    }
 
     @Autowired
     @Qualifier(value = "pullOutService")
@@ -257,8 +266,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
-	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
-		    obj.getName());
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
@@ -414,6 +422,61 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    public int compare(Delivery aObj, Delivery bObj) {
 		Date aStart = aObj.getDatetime();
 		Date bStart = bObj.getDatetime();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+	return deliveries;
+    }
+
+    @Override
+    public List<IObjectExpense> listDescExpense(Project proj) {
+	return listDescExpense(proj, null, null);
+    }
+
+    @Override
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<IObjectExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_DELIVERY);
+
+	String pattern = Delivery.constructPattern(proj);
+	Set<String> keys = this.deliveryValueRepo.keys(pattern);
+	List<IObjectExpense> deliveries = this.expenseRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<IObjectExpense> toInclude = new ArrayList<IObjectExpense>();
+	    for (IObjectExpense obj : deliveries) {
+		Date objDate = ((Delivery) obj).getDatetime();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (objDate.equals(startDate) || objDate.equals(endDate)
+			|| (objDate.after(startDate) && objDate.before(endDate))) {
+		    toInclude.add(obj);
+		}
+	    }
+	    deliveries = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(deliveries, new Comparator<IObjectExpense>() {
+	    @Override
+	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
+		Date aStart = ((Delivery) aObj).getDatetime();
+		Date bStart = ((Delivery) bObj).getDatetime();
 
 		// To sort in ascending,
 		// remove Not's.

@@ -9,21 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.repository.IExpenseRepo;
 
-public class ExpenseRepoImpl implements IExpenseRepo<IExpense> {
+public class ExpenseRepoImpl implements IExpenseRepo<IObjectExpense> {
 
-    private RedisTemplate<String, IExpense> redisTemplate;
+    private RedisTemplate<String, IObjectExpense> redisTemplate;
 
     @Autowired
     @Qualifier(value = "redisTemplate")
-    public void setRedisTemplate(RedisTemplate<String, IExpense> redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<String, IObjectExpense> redisTemplate) {
 	this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public void rename(IExpense obj, String newKey) {
+    public void rename(IObjectExpense obj, String newKey) {
 	this.redisTemplate.rename(obj.getKey(), newKey);
     }
 
@@ -33,17 +33,17 @@ public class ExpenseRepoImpl implements IExpenseRepo<IExpense> {
     }
 
     @Override
-    public void set(IExpense obj) {
+    public void set(IObjectExpense obj) {
 	this.redisTemplate.opsForValue().set(obj.getKey(), obj);
     }
 
     @Override
-    public void setIfAbsent(IExpense obj) {
+    public void setIfAbsent(IObjectExpense obj) {
 	this.redisTemplate.opsForValue().setIfAbsent(obj.getKey(), obj);
     }
 
     @Override
-    public IExpense get(String key) {
+    public IObjectExpense get(String key) {
 	return this.redisTemplate.opsForValue().get(key);
     }
 
@@ -53,12 +53,12 @@ public class ExpenseRepoImpl implements IExpenseRepo<IExpense> {
     }
 
     @Override
-    public void multiSet(Map<String, IExpense> m) {
+    public void multiSet(Map<String, IObjectExpense> m) {
 	this.redisTemplate.opsForValue().multiSet(m);
     }
 
     @Override
-    public List<IExpense> multiGet(Collection<String> keys) {
+    public List<IObjectExpense> multiGet(Collection<String> keys) {
 	return this.redisTemplate.opsForValue().multiGet(keys);
     }
 

@@ -6,11 +6,7 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import com.cebedo.pmsys.base.AbstractExpense;
-import com.cebedo.pmsys.base.IExpense;
-import com.cebedo.pmsys.domain.Delivery;
-import com.cebedo.pmsys.domain.EquipmentExpense;
-import com.cebedo.pmsys.domain.Expense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.FluentIterable;
@@ -24,17 +20,17 @@ public class StatisticsProject extends SummaryStatistics {
 
     private static final long serialVersionUID = 1330741496424321113L;
 
-    private List<IExpense> payrolls;
-    private List<Delivery> deliveries;
-    private List<EquipmentExpense> equipment;
-    private List<Expense> otherExpenses;
+    private List<IObjectExpense> payrolls;
+    private List<IObjectExpense> deliveries;
+    private List<IObjectExpense> equipment;
+    private List<IObjectExpense> otherExpenses;
 
     public StatisticsProject() {
 	;
     }
 
-    public StatisticsProject(List<IExpense> payrolls, List<Delivery> deliveries,
-	    List<EquipmentExpense> equipmentExpenses, List<Expense> otherExpenses) {
+    public StatisticsProject(List<IObjectExpense> payrolls, List<IObjectExpense> deliveries,
+	    List<IObjectExpense> equipmentExpenses, List<IObjectExpense> otherExpenses) {
 	this.payrolls = payrolls;
 	this.deliveries = deliveries;
 	this.equipment = equipmentExpenses;
@@ -42,7 +38,7 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     private void addValuesPayroll() {
-	for (IExpense payroll : this.payrolls) {
+	for (IObjectExpense payroll : this.payrolls) {
 	    PayrollResultComputation result = ((ProjectPayroll) payroll).getPayrollComputationResult();
 	    if (result != null) {
 		addValue(result.getOverallTotalOfStaff());
@@ -71,8 +67,8 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     private void addValuesDelivery() {
-	for (Delivery obj : this.deliveries) {
-	    addValue(obj.getGrandTotalOfMaterials());
+	for (IObjectExpense obj : this.deliveries) {
+	    addValue(obj.getCost());
 	}
     }
 
@@ -84,7 +80,7 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     private void addValuesEquipment() {
-	for (EquipmentExpense obj : this.equipment) {
+	for (IObjectExpense obj : this.equipment) {
 	    addValue(obj.getCost());
 	}
     }
@@ -97,7 +93,7 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     private void addValuesOtherExpenses() {
-	for (Expense obj : this.otherExpenses) {
+	for (IObjectExpense obj : this.otherExpenses) {
 	    addValue(obj.getCost());
 	}
     }
@@ -150,7 +146,7 @@ public class StatisticsProject extends SummaryStatistics {
      * @return
      */
     // public List<ProjectPayroll> getMaxPayrolls() {
-    public List<IExpense> getMaxPayrolls() {
+    public List<IObjectExpense> getMaxPayrolls() {
 
 	// Get the greatest value.
 	addValuesPayroll();
@@ -158,59 +154,52 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<IExpense> returnList = getMatchingPayrolls(comparator);
+	List<IObjectExpense> returnList = getMatchingPayrolls(comparator);
 	return returnList;
     }
 
-    public ImmutableList<IExpense> getAllSortedByCostPayrolls(SortOrder order) {
+    public ImmutableList<IObjectExpense> getAllSortedByCostPayrolls(SortOrder order) {
 	return getLimitedSortedByCostPayrolls(null, order);
     }
 
-    public ImmutableList<Delivery> getAllSortedByCostDeliveries(SortOrder order) {
+    public ImmutableList<IObjectExpense> getAllSortedByCostDeliveries(SortOrder order) {
 	return getLimitedSortedByCostDeliveries(null, order);
     }
 
-    public ImmutableList<EquipmentExpense> getAllSortedByCostEquipment(SortOrder order) {
+    public ImmutableList<IObjectExpense> getAllSortedByCostEquipment(SortOrder order) {
 	return getLimitedSortedByCostEquipment(null, order);
     }
 
-    public ImmutableList<Expense> getAllSortedByCostOtherExpenses(SortOrder order) {
+    public ImmutableList<IObjectExpense> getAllSortedByCostOtherExpenses(SortOrder order) {
 	return getLimitedSortedByCostOtherExpenses(null, order);
     }
 
-    @SuppressWarnings("unchecked")
-    public ImmutableList<Expense> getLimitedSortedByCostOtherExpenses(Integer limit, SortOrder order) {
-	return (ImmutableList<Expense>) sortByCostAbstract(this.otherExpenses, limit, order);
+    public ImmutableList<IObjectExpense> getLimitedSortedByCostOtherExpenses(Integer limit, SortOrder order) {
+	return sortByCostInterface(this.otherExpenses, limit, order);
     }
 
-    @SuppressWarnings("unchecked")
-    public ImmutableList<EquipmentExpense> getLimitedSortedByCostEquipment(Integer limit,
-	    SortOrder order) {
-	return (ImmutableList<EquipmentExpense>) sortByCostAbstract(this.equipment, limit, order);
+    public ImmutableList<IObjectExpense> getLimitedSortedByCostEquipment(Integer limit, SortOrder order) {
+	return sortByCostInterface(this.equipment, limit, order);
     }
 
-    @SuppressWarnings("unchecked")
-    public ImmutableList<Delivery> getLimitedSortedByCostDeliveries(Integer limit, SortOrder order) {
-	return (ImmutableList<Delivery>) sortByCostAbstract(this.deliveries, limit, order);
+    public ImmutableList<IObjectExpense> getLimitedSortedByCostDeliveries(Integer limit, SortOrder order) {
+	return sortByCostInterface(this.deliveries, limit, order);
     }
 
-    @SuppressWarnings("unchecked")
-    public ImmutableList<IExpense> getLimitedSortedByCostPayrolls(Integer maxCount, SortOrder order) {
-	// return (ImmutableList<IExpense>) sortByCostAbstract(this.payrolls,
-	// maxCount, order);
+    public ImmutableList<IObjectExpense> getLimitedSortedByCostPayrolls(Integer maxCount, SortOrder order) {
 	return sortByCostInterface(this.payrolls, maxCount, order);
     }
 
-    public ImmutableList<IExpense> getAllSortedByCostProject(SortOrder order) {
+    public ImmutableList<IObjectExpense> getAllSortedByCostProject(SortOrder order) {
 	return sortByCostInterface(collectExpenses(), null, order);
     }
 
-    public ImmutableList<IExpense> getLimitedSortedByCostProject(Integer maxCount, SortOrder order) {
+    public ImmutableList<IObjectExpense> getLimitedSortedByCostProject(Integer maxCount, SortOrder order) {
 	return sortByCostInterface(collectExpenses(), maxCount, order);
     }
 
-    private List<IExpense> collectExpenses() {
-	List<IExpense> expenses = new ArrayList<IExpense>();
+    private List<IObjectExpense> collectExpenses() {
+	List<IObjectExpense> expenses = new ArrayList<IObjectExpense>();
 	expenses.addAll(this.deliveries);
 	expenses.addAll(this.equipment);
 	expenses.addAll(this.otherExpenses);
@@ -226,26 +215,9 @@ public class StatisticsProject extends SummaryStatistics {
      * @param order
      * @return
      */
-    private ImmutableList<IExpense> sortByCostInterface(List<IExpense> objList, Integer maxCount,
+    private ImmutableList<IObjectExpense> sortByCostInterface(List<IObjectExpense> objList, Integer maxCount,
 	    SortOrder order) {
 	Collections.sort(objList, new OrderingIExpense(order));
-	if (maxCount != null) {
-	    return FluentIterable.from(objList).limit(maxCount).toList();
-	}
-	return FluentIterable.from(objList).toList();
-    }
-
-    /**
-     * Sort and limit the given list.
-     * 
-     * @param objList
-     * @param maxCount
-     * @param order
-     * @return
-     */
-    private ImmutableList<? extends Object> sortByCostAbstract(List<? extends AbstractExpense> objList,
-	    Integer maxCount, SortOrder order) {
-	Collections.sort(objList, new OrderingAbstractExpense(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}
@@ -257,7 +229,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<IExpense> getMinPayrolls() {
+    public List<IObjectExpense> getMinPayrolls() {
 
 	// Get the greatest value.
 	addValuesPayroll();
@@ -265,7 +237,7 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<IExpense> returnList = getMatchingPayrolls(comparator);
+	List<IObjectExpense> returnList = getMatchingPayrolls(comparator);
 	return returnList;
     }
 
@@ -275,9 +247,9 @@ public class StatisticsProject extends SummaryStatistics {
      * @param comparator
      * @return
      */
-    private List<IExpense> getMatchingPayrolls(double comparator) {
-	List<IExpense> max = new ArrayList<IExpense>();
-	for (IExpense payroll : this.payrolls) {
+    private List<IObjectExpense> getMatchingPayrolls(double comparator) {
+	List<IObjectExpense> max = new ArrayList<IObjectExpense>();
+	for (IObjectExpense payroll : this.payrolls) {
 	    PayrollResultComputation result = ((ProjectPayroll) payroll).getPayrollComputationResult();
 	    if (result != null) {
 		double total = result.getOverallTotalOfStaff();
@@ -294,7 +266,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<Delivery> getMinDeliveries() {
+    public List<IObjectExpense> getMinDeliveries() {
 
 	// Get the greatest value.
 	addValuesDelivery();
@@ -302,7 +274,7 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<Delivery> returnList = getMatchingDeliveries(comparator);
+	List<IObjectExpense> returnList = getMatchingDeliveries(comparator);
 	return returnList;
     }
 
@@ -311,7 +283,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<Delivery> getMaxDelivery() {
+    public List<IObjectExpense> getMaxDelivery() {
 
 	// Get the greatest value.
 	addValuesDelivery();
@@ -319,7 +291,7 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<Delivery> returnList = getMatchingDeliveries(comparator);
+	List<IObjectExpense> returnList = getMatchingDeliveries(comparator);
 	return returnList;
     }
 
@@ -329,12 +301,12 @@ public class StatisticsProject extends SummaryStatistics {
      * @param comparator
      * @return
      */
-    private List<Delivery> getMatchingDeliveries(double comparator) {
+    private List<IObjectExpense> getMatchingDeliveries(double comparator) {
 	// Get all objects that are equal with the greatest value.
-	List<Delivery> returnList = new ArrayList<Delivery>();
+	List<IObjectExpense> returnList = new ArrayList<IObjectExpense>();
 	// Get all objects that are equal with the greatest value.
-	for (Delivery obj : this.deliveries) {
-	    double total = obj.getGrandTotalOfMaterials();
+	for (IObjectExpense obj : this.deliveries) {
+	    double total = obj.getCost();
 	    if (total == comparator) {
 		returnList.add(obj);
 	    }
@@ -347,7 +319,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<EquipmentExpense> getMinEquipment() {
+    public List<IObjectExpense> getMinEquipment() {
 
 	// Get the greatest value.
 	addValuesEquipment();
@@ -355,7 +327,7 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<EquipmentExpense> returnList = getMatchingEquipment(comparator);
+	List<IObjectExpense> returnList = getMatchingEquipment(comparator);
 	return returnList;
     }
 
@@ -364,7 +336,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<EquipmentExpense> getMaxEquipment() {
+    public List<IObjectExpense> getMaxEquipment() {
 
 	// Get the greatest value.
 	addValuesEquipment();
@@ -372,16 +344,16 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<EquipmentExpense> returnList = getMatchingEquipment(comparator);
+	List<IObjectExpense> returnList = getMatchingEquipment(comparator);
 	return returnList;
     }
 
-    private List<EquipmentExpense> getMatchingEquipment(double comparator) {
+    private List<IObjectExpense> getMatchingEquipment(double comparator) {
 	// Get all objects that are equal with the greatest value.
-	List<EquipmentExpense> returnList = new ArrayList<EquipmentExpense>();
+	List<IObjectExpense> returnList = new ArrayList<IObjectExpense>();
 
 	// Get all objects that are equal with the greatest value.
-	for (EquipmentExpense obj : this.equipment) {
+	for (IObjectExpense obj : this.equipment) {
 	    double total = obj.getCost();
 	    if (total == comparator) {
 		returnList.add(obj);
@@ -390,14 +362,14 @@ public class StatisticsProject extends SummaryStatistics {
 	return returnList;
     }
 
-    public List<Expense> getMinOtherExpenses() {
+    public List<IObjectExpense> getMinOtherExpenses() {
 	// Get the greatest value.
 	addValuesOtherExpenses();
 	double comparator = getMin();
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<Expense> returnList = getMatchingOtherExpenses(comparator);
+	List<IObjectExpense> returnList = getMatchingOtherExpenses(comparator);
 	return returnList;
     }
 
@@ -406,23 +378,23 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<Expense> getMaxOtherExpenses() {
+    public List<IObjectExpense> getMaxOtherExpenses() {
 	// Get the greatest value.
 	addValuesOtherExpenses();
 	double comparator = getMax();
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<Expense> returnList = getMatchingOtherExpenses(comparator);
+	List<IObjectExpense> returnList = getMatchingOtherExpenses(comparator);
 	return returnList;
     }
 
-    private List<Expense> getMatchingOtherExpenses(double comparator) {
+    private List<IObjectExpense> getMatchingOtherExpenses(double comparator) {
 	// Get all objects that are equal with the greatest value.
-	List<Expense> returnList = new ArrayList<Expense>();
+	List<IObjectExpense> returnList = new ArrayList<IObjectExpense>();
 
 	// Get all objects that are equal with the greatest value.
-	for (Expense obj : this.otherExpenses) {
+	for (IObjectExpense obj : this.otherExpenses) {
 	    double total = obj.getCost();
 	    if (total == comparator) {
 		returnList.add(obj);

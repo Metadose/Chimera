@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
@@ -55,11 +55,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private ValidationHelper validationHelper = new ValidationHelper();
 
     private ProjectPayrollValueRepoImpl projectPayrollValueRepo;
-    private ExpenseRepoImpl expenseRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
     private ProjectAuxService projectAuxService;
     private ProjectAuxValueRepoImpl projectAuxValueRepo;
+    private ExpenseRepoImpl expenseRepo;
 
     @Autowired
     @Qualifier(value = "expenseRepo")
@@ -702,12 +702,12 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Override
     @Transactional
-    public List<IExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new ArrayList<IExpense>();
+	    return new ArrayList<IObjectExpense>();
 	}
 
 	// Log.
@@ -722,13 +722,13 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Get all keys based on pattern.
 	// Multi-get all objects based on keys.
 	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
-	List<IExpense> projectPayrolls = this.expenseRepo.multiGet(keys);
+	List<IObjectExpense> projectPayrolls = this.expenseRepo.multiGet(keys);
 
 	// If we are getting a specific range.
 	boolean isRange = startDate != null && endDate != null;
 	if (isRange) {
-	    List<IExpense> toInclude = new ArrayList<IExpense>();
-	    for (IExpense payroll : projectPayrolls) {
+	    List<IObjectExpense> toInclude = new ArrayList<IObjectExpense>();
+	    for (IObjectExpense payroll : projectPayrolls) {
 		Date payrollEnd = ((ProjectPayroll) payroll).getEndDate();
 
 		// If the date is equal to the start or end,
@@ -743,9 +743,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	}
 
 	// Sort the list in descending order.
-	Collections.sort(projectPayrolls, new Comparator<IExpense>() {
+	Collections.sort(projectPayrolls, new Comparator<IObjectExpense>() {
 	    @Override
-	    public int compare(IExpense aObj, IExpense bObj) {
+	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
 		Date aStart = ((ProjectPayroll) aObj).getEndDate();
 		Date bStart = ((ProjectPayroll) aObj).getEndDate();
 
@@ -760,14 +760,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Override
     @Transactional
-    public int getSize(List<IExpense> objs) {
+    public int getSize(List<IObjectExpense> objs) {
 	int size = 0;
-	for (IExpense payroll : objs) {
+	for (IObjectExpense payroll : objs) {
 	    if (((ProjectPayroll) payroll).getPayrollComputationResult() != null) {
 		size++;
 	    }
 	}
 	return size;
+    }
+
+    @Override
+    @Transactional
+    public List<IObjectExpense> listDescExpense(Project proj) {
+	return listDescExpense(proj, null, null);
     }
 
 }

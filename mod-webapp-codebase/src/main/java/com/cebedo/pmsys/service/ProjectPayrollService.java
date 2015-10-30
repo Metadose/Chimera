@@ -7,14 +7,16 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
 
-    public List<IExpense> listDescExpense(Project proj, Date startDate, Date endDate);
+    public List<IObjectExpense> listDescExpense(Project proj);
+
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate);
 
     public HSSFWorkbook exportXLSAll(Project proj);
 
@@ -60,6 +62,6 @@ public interface ProjectPayrollService {
 
     public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate);
 
-    public int getSize(List<IExpense> objs);
+    public int getSize(List<IObjectExpense> objs);
 
 }

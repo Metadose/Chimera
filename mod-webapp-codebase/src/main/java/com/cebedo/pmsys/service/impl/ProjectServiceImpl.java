@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
@@ -33,10 +33,7 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
-import com.cebedo.pmsys.domain.Delivery;
-import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
-import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.SortOrder;
@@ -743,11 +740,13 @@ public class ProjectServiceImpl implements ProjectService {
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
 
 	// Load lists.
-	List<IExpense> payrolls = this.projectPayrollService.listDescExpense(proj, startDate, endDate);
-	List<Delivery> deliveries = this.deliveryService.listDesc(proj, startDate, endDate);
-	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj, startDate,
+	List<IObjectExpense> payrolls = this.projectPayrollService.listDescExpense(proj, startDate,
 		endDate);
-	List<Expense> otherExpenses = this.expenseService.listDesc(proj, startDate, endDate);
+	List<IObjectExpense> deliveries = this.deliveryService.listDescExpense(proj, startDate, endDate);
+	List<IObjectExpense> equipmentExpenses = this.equipmentExpenseService.listDescExpense(proj,
+		startDate, endDate);
+	List<IObjectExpense> otherExpenses = this.expenseService.listDescExpense(proj, startDate,
+		endDate);
 
 	// Get totals.
 	double totalPayroll = 0;
@@ -792,7 +791,7 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Setup the table.
-	for (IExpense payroll : payrolls) {
+	for (IObjectExpense payroll : payrolls) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 	    expenseRow.createCell(1).setCellValue(payroll.getName());
 	    expenseRow.createCell(2).setCellValue(payroll.getCost());
@@ -808,10 +807,10 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Setup the table.
-	for (Delivery delivery : deliveries) {
+	for (IObjectExpense delivery : deliveries) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 	    expenseRow.createCell(1).setCellValue(delivery.getName());
-	    expenseRow.createCell(2).setCellValue(delivery.getGrandTotalOfMaterials());
+	    expenseRow.createCell(2).setCellValue(delivery.getCost());
 	    rowIndex++;
 	}
 	rowIndex++;
@@ -824,7 +823,7 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Setup the table.
-	for (EquipmentExpense equipment : equipmentExpenses) {
+	for (IObjectExpense equipment : equipmentExpenses) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 	    expenseRow.createCell(1).setCellValue(equipment.getName());
 	    expenseRow.createCell(2).setCellValue(equipment.getCost());
@@ -840,7 +839,7 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Setup the table.
-	for (Expense expense : otherExpenses) {
+	for (IObjectExpense expense : otherExpenses) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
 	    expenseRow.createCell(1).setCellValue(expense.getName());
 	    expenseRow.createCell(2).setCellValue(expense.getCost());
@@ -1048,10 +1047,10 @@ public class ProjectServiceImpl implements ProjectService {
     private void xlsAnalysisExpenses(HSSFWorkbookFactory xlsGen, Project proj) {
 
 	// Compute data.
-	List<IExpense> payrolls = this.projectPayrollService.listDescExpense(proj, null, null);
-	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
-	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
-	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
+	List<IObjectExpense> payrolls = this.projectPayrollService.listDescExpense(proj);
+	List<IObjectExpense> deliveries = this.deliveryService.listDescExpense(proj);
+	List<IObjectExpense> equipmentExpenses = this.equipmentExpenseService.listDescExpense(proj);
+	List<IObjectExpense> otherExpenses = this.expenseService.listDescExpense(proj);
 	StatisticsProject statisticsProj = new StatisticsProject(payrolls, deliveries, equipmentExpenses,
 		otherExpenses);
 
@@ -1161,6 +1160,18 @@ public class ProjectServiceImpl implements ProjectService {
 		String.format("Top %s Per Attendance Type", max),
 		"Staff member(s) with the MOST number of attendances per type");
 	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.DESCENDING);
+
+	//
+	//
+	//
+	//
+	//
+	//
+	// FIXME DI MUDISPLAY ANG STAFF ATTENDANCES, REVIEW THE PROJECT
+	// ANALYSIS.
+	//
+	//
+	//
 
 	// Bottom 5 staff member per attendance status.
 	xlsGen.addRowEmpty(sheetName, 2);

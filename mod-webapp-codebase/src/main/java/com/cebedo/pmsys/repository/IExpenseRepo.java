@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectExpense;
 
-public interface IExpenseRepo<V extends IExpense> {
+public interface IExpenseRepo<V extends IObjectExpense> {
 
     void rename(V obj, String newKey);
 

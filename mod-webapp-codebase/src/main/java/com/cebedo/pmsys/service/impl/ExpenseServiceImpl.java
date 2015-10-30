@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
@@ -29,6 +30,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.repository.impl.ExpenseRepoImpl;
 import com.cebedo.pmsys.repository.impl.ExpenseValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.ExpenseService;
@@ -46,6 +48,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     private ProjectAuxValueRepoImpl projectAuxValueRepo;
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
+    private ExpenseRepoImpl expenseRepo;
+
+    @Autowired
+    @Qualifier(value = "expenseRepo")
+    public void setExpenseRepo(ExpenseRepoImpl expenseRepo) {
+	this.expenseRepo = expenseRepo;
+    }
 
     @Autowired
     @Qualifier(value = "projectDAO")
@@ -255,8 +264,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
-	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE,
-		    obj.getName());
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
@@ -303,6 +311,57 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    public int compare(Expense aObj, Expense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+
+	return expenses;
+    }
+
+    @Override
+    public List<IObjectExpense> listDescExpense(Project proj) {
+	return listDescExpense(proj, null, null);
+    }
+
+    @Override
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<IObjectExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_EXPENSE);
+	String pattern = Expense.constructPattern(proj);
+	Set<String> keys = this.expenseValueRepo.keys(pattern);
+	List<IObjectExpense> expenses = this.expenseRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<IObjectExpense> toInclude = new ArrayList<IObjectExpense>();
+	    for (IObjectExpense obj : expenses) {
+		Date objDate = Expense.class.cast(obj).getDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (objDate.equals(startDate) || objDate.equals(endDate)
+			|| (objDate.after(startDate) && objDate.before(endDate))) {
+		    toInclude.add(obj);
+		}
+	    }
+	    expenses = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(expenses, new Comparator<IObjectExpense>() {
+	    @Override
+	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
+		Date aStart = Expense.class.cast(aObj).getDate();
+		Date bStart = Expense.class.cast(bObj).getDate();
 		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
 	    }
 	});
