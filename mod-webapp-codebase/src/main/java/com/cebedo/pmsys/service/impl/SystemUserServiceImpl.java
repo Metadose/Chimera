@@ -174,8 +174,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.systemUserDAO.update(systemUser);
 
 	// Return success.
-	return AlertBoxFactory.SUCCESS.generateCreate(SystemUser.OBJECT_NAME,
-		systemUser.getUsername());
+	return AlertBoxFactory.SUCCESS.generateCreate(SystemUser.OBJECT_NAME, systemUser.getUsername());
     }
 
     /**
@@ -406,9 +405,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// If no aux for this user, create one.
 	if (userAux == null) {
 	    this.userAuxValueRepo.set(new UserAux(user));
-	    return new ArrayList<GrantedAuthority>();
+	    return getAuthorities(user);
 	}
-	return userAux.getAuthorities();
+	return userAux.getAuthorities(user);
     }
 
     @Override

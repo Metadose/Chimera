@@ -2,7 +2,8 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Date;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.model.Company;
@@ -10,7 +11,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
 
-public class Attendance implements IDomainObject {
+public class Attendance implements IObjectDomain {
 
     private static final long serialVersionUID = -724701840751019923L;
 
@@ -144,5 +145,15 @@ public class Attendance implements IDomainObject {
 
     public void setProject(Project project) {
 	this.project = project;
+    }
+
+    @Override
+    public String getName() {
+	return getFormattedDateString();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_ATTENDANCE;
     }
 }

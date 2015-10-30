@@ -1,11 +1,11 @@
 package com.cebedo.pmsys.domain;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Project;
 
-public class EquipmentExpense extends Expense implements IDomainObject {
+public class EquipmentExpense extends Expense implements IObjectDomain {
 
     private static final long serialVersionUID = -7653621455415987526L;
 

@@ -4,9 +4,8 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-import com.cebedo.pmsys.base.AbstractExpense;
-import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.base.IExpense;
+import com.cebedo.pmsys.base.IObjectDomain;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
@@ -18,7 +17,7 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class ProjectPayroll extends AbstractExpense implements IDomainObject, IExpense {
+public class ProjectPayroll implements IObjectDomain, IExpense {
 
     private static final long serialVersionUID = 5324023297418291423L;
     /**
@@ -66,6 +65,12 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
 		.format(this.payrollResultComputation.getOverallTotalOfStaff());
     }
 
+    /**
+     * Use getCost() instead.
+     * 
+     * @return
+     */
+    @Deprecated
     public double getTotal() {
 	return this.payrollResultComputation.getOverallTotalOfStaff();
     }

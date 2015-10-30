@@ -20,14 +20,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.base.IExpense;
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.StatusPayroll;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -36,6 +37,7 @@ import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
+import com.cebedo.pmsys.repository.impl.ExpenseRepoImpl;
 import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl;
 import com.cebedo.pmsys.service.ProjectAuxService;
@@ -53,10 +55,17 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private ValidationHelper validationHelper = new ValidationHelper();
 
     private ProjectPayrollValueRepoImpl projectPayrollValueRepo;
+    private ExpenseRepoImpl expenseRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
     private ProjectAuxService projectAuxService;
     private ProjectAuxValueRepoImpl projectAuxValueRepo;
+
+    @Autowired
+    @Qualifier(value = "expenseRepo")
+    public void setExpenseRepo(ExpenseRepoImpl expenseRepo) {
+	this.expenseRepo = expenseRepo;
+    }
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
@@ -693,10 +702,68 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Override
     @Transactional
-    public int getSize(List<ProjectPayroll> objs) {
+    public List<IExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
+
+	// Security check.
+	if (!this.authHelper.isActionAuthorized(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<IExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
+
+	// Get the needed ID's for the key.
+	// Construct the key.
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
+	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
+
+	// Get all keys based on pattern.
+	// Multi-get all objects based on keys.
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<IExpense> projectPayrolls = this.expenseRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<IExpense> toInclude = new ArrayList<IExpense>();
+	    for (IExpense payroll : projectPayrolls) {
+		Date payrollEnd = ((ProjectPayroll) payroll).getEndDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (payrollEnd.equals(startDate) || payrollEnd.equals(endDate)
+			|| (payrollEnd.after(startDate) && payrollEnd.before(endDate))) {
+		    toInclude.add(payroll);
+		}
+	    }
+	    projectPayrolls = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(projectPayrolls, new Comparator<IExpense>() {
+	    @Override
+	    public int compare(IExpense aObj, IExpense bObj) {
+		Date aStart = ((ProjectPayroll) aObj).getEndDate();
+		Date bStart = ((ProjectPayroll) aObj).getEndDate();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+
+	return projectPayrolls;
+    }
+
+    @Override
+    @Transactional
+    public int getSize(List<IExpense> objs) {
 	int size = 0;
-	for (ProjectPayroll payroll : objs) {
-	    if (payroll.getPayrollComputationResult() != null) {
+	for (IExpense payroll : objs) {
+	    if (((ProjectPayroll) payroll).getPayrollComputationResult() != null) {
 		size++;
 	    }
 	}

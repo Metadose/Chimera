@@ -404,6 +404,7 @@
     </beans:bean>
     
     <!-- Project Payroll -->
+    <beans:bean id="expenseRepo" class="com.cebedo.pmsys.repository.impl.ExpenseRepoImpl"/>
     <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>

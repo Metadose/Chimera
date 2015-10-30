@@ -7,16 +7,17 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
 import com.cebedo.pmsys.bean.EstimateComputation;
 import com.cebedo.pmsys.bean.EstimateComputationInput;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class EstimationOutput implements IDomainObject {
+public class EstimationOutput implements IObjectDomain {
 
     private static final long serialVersionUID = -4949844838990090245L;
 
@@ -186,8 +187,8 @@ public class EstimationOutput implements IDomainObject {
 	this.remarks = StringUtils.trim(remarks);
     }
 
-    public void setResults(EstimateComputationInput estimateInput,
-	    List<EstimateComputation> estimates2, String rowListJson) {
+    public void setResults(EstimateComputationInput estimateInput, List<EstimateComputation> estimates2,
+	    String rowListJson) {
 	setName(estimateInput.getName());
 	setRemarks(estimateInput.getRemarks());
 	setEstimates(estimates2);
@@ -377,6 +378,11 @@ public class EstimationOutput implements IDomainObject {
 
     public String getCostGrandTotal50kgRollAsString() {
 	return NumberFormatUtils.getCurrencyFormatter().format(costGrandTotal50kgRoll);
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_ESTIMATION_OUTPUT;
     }
 
 }

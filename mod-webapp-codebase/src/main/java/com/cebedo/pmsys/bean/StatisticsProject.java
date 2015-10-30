@@ -24,7 +24,7 @@ public class StatisticsProject extends SummaryStatistics {
 
     private static final long serialVersionUID = 1330741496424321113L;
 
-    private List<ProjectPayroll> payrolls;
+    private List<IExpense> payrolls;
     private List<Delivery> deliveries;
     private List<EquipmentExpense> equipment;
     private List<Expense> otherExpenses;
@@ -33,7 +33,7 @@ public class StatisticsProject extends SummaryStatistics {
 	;
     }
 
-    public StatisticsProject(List<ProjectPayroll> payrolls, List<Delivery> deliveries,
+    public StatisticsProject(List<IExpense> payrolls, List<Delivery> deliveries,
 	    List<EquipmentExpense> equipmentExpenses, List<Expense> otherExpenses) {
 	this.payrolls = payrolls;
 	this.deliveries = deliveries;
@@ -42,8 +42,8 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     private void addValuesPayroll() {
-	for (ProjectPayroll payroll : this.payrolls) {
-	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+	for (IExpense payroll : this.payrolls) {
+	    PayrollResultComputation result = ((ProjectPayroll) payroll).getPayrollComputationResult();
 	    if (result != null) {
 		addValue(result.getOverallTotalOfStaff());
 	    }
@@ -149,7 +149,8 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<ProjectPayroll> getMaxPayrolls() {
+    // public List<ProjectPayroll> getMaxPayrolls() {
+    public List<IExpense> getMaxPayrolls() {
 
 	// Get the greatest value.
 	addValuesPayroll();
@@ -157,11 +158,11 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<ProjectPayroll> returnList = getMatchingPayrolls(comparator);
+	List<IExpense> returnList = getMatchingPayrolls(comparator);
 	return returnList;
     }
 
-    public ImmutableList<ProjectPayroll> getAllSortedByCostPayrolls(SortOrder order) {
+    public ImmutableList<IExpense> getAllSortedByCostPayrolls(SortOrder order) {
 	return getLimitedSortedByCostPayrolls(null, order);
     }
 
@@ -194,9 +195,10 @@ public class StatisticsProject extends SummaryStatistics {
     }
 
     @SuppressWarnings("unchecked")
-    public ImmutableList<ProjectPayroll> getLimitedSortedByCostPayrolls(Integer maxCount,
-	    SortOrder order) {
-	return (ImmutableList<ProjectPayroll>) sortByCostAbstract(this.payrolls, maxCount, order);
+    public ImmutableList<IExpense> getLimitedSortedByCostPayrolls(Integer maxCount, SortOrder order) {
+	// return (ImmutableList<IExpense>) sortByCostAbstract(this.payrolls,
+	// maxCount, order);
+	return sortByCostInterface(this.payrolls, maxCount, order);
     }
 
     public ImmutableList<IExpense> getAllSortedByCostProject(SortOrder order) {
@@ -255,7 +257,7 @@ public class StatisticsProject extends SummaryStatistics {
      * 
      * @return
      */
-    public List<ProjectPayroll> getMinPayrolls() {
+    public List<IExpense> getMinPayrolls() {
 
 	// Get the greatest value.
 	addValuesPayroll();
@@ -263,7 +265,7 @@ public class StatisticsProject extends SummaryStatistics {
 	clear();
 
 	// Get all objects that are equal with the greatest value.
-	List<ProjectPayroll> returnList = getMatchingPayrolls(comparator);
+	List<IExpense> returnList = getMatchingPayrolls(comparator);
 	return returnList;
     }
 
@@ -273,10 +275,10 @@ public class StatisticsProject extends SummaryStatistics {
      * @param comparator
      * @return
      */
-    private List<ProjectPayroll> getMatchingPayrolls(double comparator) {
-	List<ProjectPayroll> max = new ArrayList<ProjectPayroll>();
-	for (ProjectPayroll payroll : this.payrolls) {
-	    PayrollResultComputation result = payroll.getPayrollComputationResult();
+    private List<IExpense> getMatchingPayrolls(double comparator) {
+	List<IExpense> max = new ArrayList<IExpense>();
+	for (IExpense payroll : this.payrolls) {
+	    PayrollResultComputation result = ((ProjectPayroll) payroll).getPayrollComputationResult();
 	    if (result != null) {
 		double total = result.getOverallTotalOfStaff();
 		if (total == comparator) {

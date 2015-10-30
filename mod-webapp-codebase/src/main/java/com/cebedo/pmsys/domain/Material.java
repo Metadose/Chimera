@@ -4,17 +4,18 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
+import com.cebedo.pmsys.enums.CategoryMaterial;
 import com.cebedo.pmsys.enums.UnitCommonLength;
 import com.cebedo.pmsys.enums.UnitCommonMass;
 import com.cebedo.pmsys.enums.UnitCommonVolume;
-import com.cebedo.pmsys.enums.CategoryMaterial;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class Material implements IDomainObject {
+public class Material implements IObjectDomain {
 
     private static final long serialVersionUID = 2300406369596684113L;
     /**
@@ -350,6 +351,11 @@ public class Material implements IDomainObject {
 
     public void setUnitOfMeasure(String unitOfMeasure) {
 	this.unitOfMeasure = unitOfMeasure;
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_MATERIAL;
     }
 
 }

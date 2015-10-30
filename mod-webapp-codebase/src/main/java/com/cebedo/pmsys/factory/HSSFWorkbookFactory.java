@@ -24,11 +24,10 @@ import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
-import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.StatusAttendance;
-import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.enums.SortOrder;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.StatusTask;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -394,7 +393,7 @@ public class HSSFWorkbookFactory {
 		: descriptiveType == StatisticsProject.DESCRIPTIVE_MIN ? "least" : "";
 
 	// Data.
-	List<ProjectPayroll> payroll = statisticsProj.getMaxPayrolls();
+	List<IExpense> payroll = statisticsProj.getMaxPayrolls();
 	List<Delivery> deliveries = statisticsProj.getMaxDelivery();
 	List<EquipmentExpense> equips = statisticsProj.getMaxEquipment();
 	List<Expense> others = statisticsProj.getMaxOtherExpenses();
@@ -403,10 +402,27 @@ public class HSSFWorkbookFactory {
 	addRow(sheetName, IndexedColors.SEA_GREEN, adjective,
 		String.format("Expense(s) with the %s value", superlative));
 	addRowHeader(sheetName, IndexedColors.YELLOW, "Expense Type", "Name", "Cost");
-	addRowsExpenses(sheetName, payroll, "Payroll");
+	addRowsExpensesI(sheetName, payroll, "Payroll");
 	addRowsExpenses(sheetName, deliveries, "Deliveries");
 	addRowsExpenses(sheetName, equips, "Equipment");
 	addRowsExpenses(sheetName, others, "Other Expenses");
+    }
+
+    private void addRowsExpensesI(String sheetName, List<IExpense> expenses, String moduleName) {
+	for (IExpense expense : expenses) {
+	    if (moduleName == null) {
+		addRow(sheetName, expense.getName(), expense.getCost());
+	    } else {
+		addRow(sheetName, moduleName, expense.getName(), expense.getCost());
+	    }
+	}
+	if (expenses.isEmpty()) {
+	    if (moduleName == null) {
+		addRow(sheetName, "(None)");
+	    } else {
+		addRow(sheetName, moduleName, "(None)");
+	    }
+	}
     }
 
     /**
@@ -423,8 +439,7 @@ public class HSSFWorkbookFactory {
 	String superlative = order == SortOrder.DESCENDING ? "Most" : "Least";
 
 	// Data.
-	ImmutableList<ProjectPayroll> payrolls = statisticsProj.getLimitedSortedByCostPayrolls(limit,
-		order);
+	ImmutableList<IExpense> payrolls = statisticsProj.getLimitedSortedByCostPayrolls(limit, order);
 	ImmutableList<Delivery> deliveries = statisticsProj.getLimitedSortedByCostDeliveries(limit,
 		order);
 	ImmutableList<EquipmentExpense> equips = statisticsProj.getLimitedSortedByCostEquipment(limit,

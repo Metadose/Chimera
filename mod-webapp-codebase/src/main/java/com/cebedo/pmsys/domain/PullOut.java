@@ -6,13 +6,14 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 
-public class PullOut implements IDomainObject {
+public class PullOut implements IObjectDomain {
 
     private static final long serialVersionUID = 2087762852857215717L;
 
@@ -179,6 +180,16 @@ public class PullOut implements IDomainObject {
     @Override
     public int hashCode() {
 	return getKey().hashCode();
+    }
+
+    @Override
+    public String getName() {
+	return this.material.getName();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_PULL_OUT;
     }
 
 }

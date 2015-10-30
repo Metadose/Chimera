@@ -4,7 +4,8 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.HTMLCSSDetails;
 import com.cebedo.pmsys.model.Company;
@@ -12,7 +13,7 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.HTMLUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class ProjectAux implements IDomainObject {
+public class ProjectAux implements IObjectDomain {
 
     private static final long serialVersionUID = 4250896962237506975L;
 
@@ -324,6 +325,16 @@ public class ProjectAux implements IDomainObject {
 
     public void setGrandTotalEquipmentExpenses(double grandTotalEquipmentExpenses) {
 	this.grandTotalEquipmentExpenses = grandTotalEquipmentExpenses;
+    }
+
+    @Override
+    public String getName() {
+	return this.project.getName();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_AUX_PROJECT;
     }
 
 }

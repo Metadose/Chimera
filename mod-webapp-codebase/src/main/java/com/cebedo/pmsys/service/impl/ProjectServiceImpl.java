@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.base.IExpense;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
@@ -37,15 +38,14 @@ import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
-import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.SortOrder;
+import com.cebedo.pmsys.enums.StatusAttendance;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.enums.TypeCalendarEvent;
 import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.factory.HSSFWorkbookFactory;
-import com.cebedo.pmsys.enums.SortOrder;
-import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -743,7 +743,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, sheetName, projID);
 
 	// Load lists.
-	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj, startDate, endDate);
+	List<IExpense> payrolls = this.projectPayrollService.listDescExpense(proj, startDate, endDate);
 	List<Delivery> deliveries = this.deliveryService.listDesc(proj, startDate, endDate);
 	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj, startDate,
 		endDate);
@@ -792,10 +792,10 @@ public class ProjectServiceImpl implements ProjectService {
 	rowIndex++;
 
 	// Setup the table.
-	for (ProjectPayroll payroll : payrolls) {
+	for (IExpense payroll : payrolls) {
 	    HSSFRow expenseRow = sheet.createRow(rowIndex);
-	    expenseRow.createCell(1).setCellValue(payroll.getStartEndDisplay());
-	    expenseRow.createCell(2).setCellValue(payroll.getTotal());
+	    expenseRow.createCell(1).setCellValue(payroll.getName());
+	    expenseRow.createCell(2).setCellValue(payroll.getCost());
 	    rowIndex++;
 	}
 	rowIndex++;
@@ -1048,7 +1048,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void xlsAnalysisExpenses(HSSFWorkbookFactory xlsGen, Project proj) {
 
 	// Compute data.
-	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
+	List<IExpense> payrolls = this.projectPayrollService.listDescExpense(proj, null, null);
 	List<Delivery> deliveries = this.deliveryService.listDesc(proj);
 	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listDesc(proj);
 	List<Expense> otherExpenses = this.expenseService.listDesc(proj);
@@ -1244,9 +1244,9 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualIndirect
      * @param actualProjCost
      */
-    private void xlsAnalysisEstimateCost(HSSFWorkbookFactory xlsGen, Project proj,
-	    double plannedDirect, double plannedIndirect, double plannedProjCost, double actualDirect,
-	    double actualIndirect, double actualProjCost) {
+    private void xlsAnalysisEstimateCost(HSSFWorkbookFactory xlsGen, Project proj, double plannedDirect,
+	    double plannedIndirect, double plannedProjCost, double actualDirect, double actualIndirect,
+	    double actualProjCost) {
 
 	String sheetName = "Cost Estimate";
 

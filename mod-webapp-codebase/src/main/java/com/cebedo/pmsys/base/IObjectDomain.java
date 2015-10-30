@@ -2,7 +2,7 @@ package com.cebedo.pmsys.base;
 
 import java.io.Serializable;
 
-public interface IDomainObject extends Serializable {
+public interface IObjectDomain extends IBase, Serializable {
 
     String getKey();
 

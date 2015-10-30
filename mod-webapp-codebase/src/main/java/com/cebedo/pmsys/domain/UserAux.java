@@ -9,15 +9,16 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
 import com.cebedo.pmsys.constants.ConstantsAuthority;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
 
-public class UserAux implements IDomainObject {
+public class UserAux implements IObjectDomain {
 
     private static final long serialVersionUID = -1696724026282355245L;
 
@@ -43,7 +44,7 @@ public class UserAux implements IDomainObject {
 	this.user = usr;
     }
 
-    public Collection<GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities(SystemUser user) {
 	List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 	for (AuthorizedModule module : this.authorization.keySet()) {
 	    List<AuthorizedAction> actions = this.authorization.get(module);
@@ -52,10 +53,10 @@ public class UserAux implements IDomainObject {
 		authList.add(new SimpleGrantedAuthority(authority));
 	    }
 	}
-	if (this.user.isCompanyAdmin() || this.user.isSuperAdmin()) {
+	if (user.isCompanyAdmin() || user.isSuperAdmin()) {
 	    authList.add(new SimpleGrantedAuthority(ConstantsAuthority.ADMIN_COMPANY));
 	}
-	if (this.user.isSuperAdmin()) {
+	if (user.isSuperAdmin()) {
 	    authList.add(new SimpleGrantedAuthority(ConstantsAuthority.ADMIN_SUPER));
 	}
 	return authList;
@@ -129,6 +130,16 @@ public class UserAux implements IDomainObject {
     public void clearFromInput() {
 	this.modules = null;
 	this.actions = null;
+    }
+
+    @Override
+    public String getName() {
+	return this.user.getUsername();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_AUX_USER;
     }
 
 }
