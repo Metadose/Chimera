@@ -61,9 +61,11 @@
 																		<button class="btn btn-cebedo-view btn-flat btn-sm">View</button>
 	                                								</a>
 			                                            			
+			                                            			<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'LOGS_VIEW')">
 	                                								<a href="<c:url value="/project/logs/${project.id}"/>">
 																		<button class="btn btn-cebedo-view btn-flat btn-sm">Logs</button>
 	                                								</a>
+	                                								</sec:authorize>
 																</center>
 															</td>
 															<td>

@@ -7,6 +7,7 @@ public class ConstantsAuthority implements Serializable {
     private static final long serialVersionUID = 3115704947882396322L;
 
     public static final String ADMIN_COMPANY = "ADMIN_COMPANY";
+
     public static final String ADMIN_SUPER = "ADMIN_SUPER";
 
     /**
@@ -30,7 +31,9 @@ public class ConstantsAuthority implements Serializable {
 
 	PROGRAM_OF_WORKS("Program of Works"),
 
-	DOWNLOADS("Downloads");
+	DOWNLOADS("Downloads"),
+
+	LOGS("Logs");
 
 	private String label;
 

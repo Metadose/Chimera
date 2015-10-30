@@ -327,6 +327,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 		"", "", null, obj.getUsername());
 
 	// Do service.
+	this.auditLogDAO.deleteAll(id);
 	this.systemUserDAO.delete(id);
 
 	// Return success.

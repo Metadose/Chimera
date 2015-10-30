@@ -35,7 +35,7 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_X_GT_Y_VALUE = "<b>%s</b> must be greater than or equal to <b>%s</b>.";
 
-    public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please try again.";
+    public static final String ERROR_COMMON_GENERIC = "There was an <b>error</b> on your previous request. Please <b>report</b> this issue. Thank you.";
 
     public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b> and <b>all information is valid</b>.";
 

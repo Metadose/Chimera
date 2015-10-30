@@ -2,7 +2,7 @@ package com.cebedo.pmsys.dao;
 
 import java.util.List;
 
-import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -55,11 +55,12 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 
     @Override
     public void deleteAll(long userID) {
+	// TODO Use Hibernate, rather than SQLQuery.
 	Session session = this.sessionFactory.getCurrentSession();
-	String queryStr = "DELETE FROM " + AuditLog.class.getName() + " WHERE "
-		+ SystemUser.PROPERTY_PRIMARY_KEY + "=:" + SystemUser.PROPERTY_PRIMARY_KEY;
-	Query query = session.createQuery(queryStr);
-	query.setParameter(SystemUser.PROPERTY_PRIMARY_KEY, userID);
+	String queryStr = String.format("DELETE FROM %s WHERE %s=:%s", AuditLog.TABLE_NAME,
+		SystemUser.COLUMN_PRIMARY_KEY, SystemUser.COLUMN_PRIMARY_KEY);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.setParameter(SystemUser.COLUMN_PRIMARY_KEY, userID);
 	query.executeUpdate();
     }
 
