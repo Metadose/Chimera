@@ -39,6 +39,8 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_400 = "Please <b>make sure</b> that you have entered <b>all needed information</b> and <b>all information is valid</b>.";
 
+    public static final String ERROR_COMMON_ACCESS_DENIED = "You do not have <b>authorization</b> to do this action. Please <b>report</b> this issue. Thank you.";
+
     public static final String ERROR_COMMON_MISSING_REQUIRED = "Please <b>do not</b> provide <b>blank values</b> to required fields, enter <b>zero</b> instead. Thank you.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted, invalid</b> or may contain <b>negative numbers</b>.";

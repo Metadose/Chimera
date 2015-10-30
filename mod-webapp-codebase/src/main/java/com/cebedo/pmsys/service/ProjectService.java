@@ -6,15 +6,26 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.enums.ProjectStatus;
 import com.cebedo.pmsys.enums.TaskStatus;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
 
+    /**
+     * Mass create estimate costs.
+     * 
+     * @param multipartFile
+     * @param project
+     * @param result
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')")
     public String uploadExcelCosts(MultipartFile multipartFile, Project project, BindingResult result);
 
     /**
@@ -24,8 +35,15 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY')")
     public String create(Project project, BindingResult result);
 
+    /**
+     * Get a project given an ID.
+     * 
+     * @param projectID
+     * @return
+     */
     public Project getByID(long projectID);
 
     /**
@@ -35,6 +53,7 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
     public String update(Project project, BindingResult result);
 
     /**
@@ -43,6 +62,7 @@ public interface ProjectService {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY')")
     public String delete(long id);
 
     public List<Project> list();
@@ -57,20 +77,96 @@ public interface ProjectService {
 
     public String getCalendarJSON(Project proj);
 
+    /**
+     * Mass create and assign staff members.
+     * 
+     * @param multipartFile
+     * @param proj
+     * @param result
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')")
     public String uploadExcelStaff(MultipartFile multipartFile, Project proj, BindingResult result);
 
+    /**
+     * Mass create tasks in the Project of Works.
+     * 
+     * @param multipartFile
+     * @param project
+     * @param result
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_CREATE')")
     public String uploadExcelTasks(MultipartFile multipartFile, Project project, BindingResult result);
 
+    /**
+     * Clear the Actual Completion Date value.
+     * 
+     * @param proj
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
     public String clearActualCompletionDate(Project proj);
 
-    public String mark(long projectID, int status);
+    /**
+     * Update the status of the project.
+     * 
+     * @param projectID
+     *            ID of the project.
+     * @param projectStatusID
+     *            ID of the project status.
+     * @return Response message to the user.
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
+    public String mark(long projectID, int projectStatusID);
 
-    public Set<AuditLog> logs(long id);
+    /**
+     * Get the list of audit logs in a specific project.
+     * 
+     * @param projectID
+     * @return Set of audit logs of the project.
+     */
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'LOGS_VIEW')")
+    public Set<AuditLog> logs(long projectID);
 
-    public HSSFWorkbook exportXLSAnalysis(long id);
+    /**
+     * Export an {@link HSSFWorkbook} Excel XLS file containing a
+     * {@link Project} analysis from start to end {@link Date}.
+     * 
+     * @param projectID
+     *            ID of the {@link Project}.
+     * @return {@link HSSFWorkbook} Excel XLS file which contains the balance
+     *         sheet.
+     */
+    public HSSFWorkbook exportXLSAnalysis(long projectID);
 
-    public HSSFWorkbook exportXLSBalanceSheet(long id);
+    /**
+     * Export an {@link HSSFWorkbook} Excel XLS file containing a balance sheet
+     * <br>
+     * from start to end (if project is {@link ProjectStatus#COMPLETED}) or<br>
+     * from start to current {@link Date} (if {@link ProjectStatus#NEW} or
+     * {@link ProjectStatus#ONGOING}).
+     * 
+     * @param projectID
+     *            ID of the {@link Project}.
+     * @return {@link HSSFWorkbook} Excel XLS file which contains the balance
+     *         sheet.
+     */
+    public HSSFWorkbook exportXLSBalanceSheet(long projectID);
 
-    public HSSFWorkbook exportXLSBalanceSheet(long id, Date startDate, Date endDate);
+    /**
+     * Export an {@link HSSFWorkbook} Excel XLS file containing a balance sheet
+     * from the given start and end {@link Date}.
+     * 
+     * @param projectID
+     *            ID of the {@link Project}.
+     * @param startDate
+     *            Start {@link Date} of the balance sheet.
+     * @param endDate
+     *            End {@link Date} of the balance sheet.
+     * @return {@link HSSFWorkbook} Excel XLS file which contains the balance
+     *         sheet.
+     */
+    public HSSFWorkbook exportXLSBalanceSheet(long projectID, Date startDate, Date endDate);
 
 }
