@@ -23,15 +23,15 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.repository.ExpenseValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.ExpenseValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.ExpenseService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.ExpenseValidator;
 
@@ -42,8 +42,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     private AuthHelper authHelper = new AuthHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private ExpenseValueRepo expenseValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ExpenseValueRepoImpl expenseValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
 
@@ -61,13 +61,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
     @Autowired
     @Qualifier(value = "expenseValueRepo")
-    public void setExpenseValueRepo(ExpenseValueRepo expenseValueRepo) {
+    public void setExpenseValueRepo(ExpenseValueRepoImpl expenseValueRepo) {
 	this.expenseValueRepo = expenseValueRepo;
     }
 
@@ -82,7 +82,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -94,7 +94,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	revertOldValues(obj);
 
 	this.expenseValueRepo.delete(key);
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
     }
 
     /**
@@ -217,7 +217,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     public String set(Expense obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	this.expenseValidator.validate(obj, result);
@@ -255,12 +255,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE,
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_EXPENSE,
 		    obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EXPENSE, obj.getKey(), proj, obj.getName());
-	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
+	return AlertBoxFactory.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_EXPENSE, obj.getName());
     }
 
     @Override

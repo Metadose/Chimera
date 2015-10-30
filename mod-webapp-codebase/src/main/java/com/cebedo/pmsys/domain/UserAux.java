@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.constants.ConstantsAuthority;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedAction;
 import com.cebedo.pmsys.constants.ConstantsAuthority.AuthorizedModule;

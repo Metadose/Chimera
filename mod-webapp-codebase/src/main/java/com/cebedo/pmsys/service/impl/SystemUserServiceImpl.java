@@ -24,6 +24,7 @@ import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -31,10 +32,9 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.repository.UserAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.UserAuxValueRepoImpl;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.SystemUserValidator;
 
 @Service
@@ -47,7 +47,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     private SystemUserDAO systemUserDAO;
     private StaffDAO staffDAO;
     private SystemConfigurationDAO systemConfigurationDAO;
-    private UserAuxValueRepo userAuxValueRepo;
+    private UserAuxValueRepoImpl userAuxValueRepo;
     private AuditLogDAO auditLogDAO;
 
     @Value("${webapp.accounts.root.username}")
@@ -64,7 +64,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
     @Autowired
     @Qualifier(value = "userAuxValueRepo")
-    public void setUserAuxValueRepo(UserAuxValueRepo userAuxValueRepo) {
+    public void setUserAuxValueRepo(UserAuxValueRepoImpl userAuxValueRepo) {
 	this.userAuxValueRepo = userAuxValueRepo;
     }
 
@@ -121,7 +121,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Only company admins are allowed to create users.
 	if (!this.authHelper.isCompanyAdmin()) {
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -148,7 +148,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    // Security check.
 	    if (!this.authHelper.isActionAuthorized(systemUser)) {
 		this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, systemUser.getId());
-		return AlertBoxGenerator.ERROR;
+		return AlertBoxFactory.ERROR;
 	    }
 	} else {
 	    // Else, get it somewhere else.
@@ -174,7 +174,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.systemUserDAO.update(systemUser);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateCreate(SystemUser.OBJECT_NAME,
+	return AlertBoxFactory.SUCCESS.generateCreate(SystemUser.OBJECT_NAME,
 		systemUser.getUsername());
     }
 
@@ -256,7 +256,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(user)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -282,7 +282,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.systemUserDAO.update(user);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	return AlertBoxFactory.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
     }
 
     /**
@@ -298,9 +298,9 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    this.systemUserDAO.update(user);
 
 	    // Return success.
-	    return AlertBoxGenerator.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
+	    return AlertBoxFactory.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
 	}
-	return AlertBoxGenerator.ERROR;
+	return AlertBoxFactory.ERROR;
     }
 
     /**
@@ -311,7 +311,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     public String delete(long id) {
 	// Only company admins are allowed to delete users.
 	if (!this.authHelper.isCompanyAdmin()) {
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	SystemUser obj = this.systemUserDAO.getByID(id);
@@ -319,7 +319,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log and notify.
@@ -331,7 +331,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	this.systemUserDAO.delete(id);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDelete(SystemUser.OBJECT_NAME, obj.getUsername());
+	return AlertBoxFactory.SUCCESS.generateDelete(SystemUser.OBJECT_NAME, obj.getUsername());
     }
 
     /**
@@ -379,7 +379,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	SystemUser user = userAux.getUser();
 	if (!this.authHelper.isCompanyAdmin() && !this.authHelper.isActionAuthorized(user)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Construct the map of authorities.
@@ -395,7 +395,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	userAux.setAuthorization(authorization);
 	userAux.clearFromInput();
 	this.userAuxValueRepo.set(userAux);
-	return AlertBoxGenerator.SUCCESS.generateAuthorize();
+	return AlertBoxFactory.SUCCESS.generateAuthorize();
     }
 
     @Override

@@ -126,4 +126,16 @@ public class RegistryURL {
 
     public static final String UNASSIGN_ALL_TASK_STAFF = "/unassign/task/staff/all";
 
+    public static final String MASS_ASSIGN_STAFF = "assign/staff/mass";
+
+    public static final String ASSIGN_FIELD = "assign/field";
+
+    public static final String DELETE_FIELD = "field/delete";
+
+    public static final String UNASSIGN_ALL_FIELD = "unassign/field/all";
+
+    public static final String UPDATE_FIELD = "field/update";
+
+    public static final String DELETE_DELIVERY = "delete/delivery/{delivery}-end";
+
 }

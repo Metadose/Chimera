@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 
 public class ValidationHelper {
 
@@ -47,7 +47,7 @@ public class ValidationHelper {
 
 	// Start date > end date.
 	if (projectPayroll.getEndDate().before(projectPayroll.getStartDate())) {
-	    return AlertBoxGenerator.FAILED.generateHTML(
+	    return AlertBoxFactory.FAILED.generateHTML(
 		    String.format(RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
 			    "start date", "end date"));
 	}
@@ -56,7 +56,7 @@ public class ValidationHelper {
 	if (action == AuditAction.ACTION_UPDATE) {
 	    long[] staffIDs = projectPayroll.getStaffIDs();
 	    if (staffIDs.length == 0) {
-		return AlertBoxGenerator.FAILED
+		return AlertBoxFactory.FAILED
 			.generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF_CHECK);
 	    }
 	}
@@ -103,7 +103,7 @@ public class ValidationHelper {
     public String errorMessageHTML(BindingResult result) {
 	// Variables used.
 	String errorsStr = "";
-	AlertBoxGenerator alertBox = AlertBoxGenerator.FAILED;
+	AlertBoxFactory alertBox = AlertBoxFactory.FAILED;
 	// Loop all errors.
 	List<ObjectError> errors = result.getAllErrors();
 	for (ObjectError error : errors) {

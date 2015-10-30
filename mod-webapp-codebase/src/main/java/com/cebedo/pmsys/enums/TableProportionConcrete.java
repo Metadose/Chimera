@@ -2,21 +2,21 @@ package com.cebedo.pmsys.enums;
 
 public enum TableProportionConcrete {
 
-    CLASS_AA("Class AA", "A", 1, 1.5, 3, 12, CommonMassUnit.CEMENT_BAG_40KG,
-	    9.5, CommonMassUnit.CEMENT_BAG_50KG, 0.5,
-	    CommonVolumeUnit.CUBIC_METER, 1.0, CommonVolumeUnit.CUBIC_METER),
+    CLASS_AA("Class AA", "A", 1, 1.5, 3, 12, UnitCommonMass.CEMENT_BAG_40KG,
+	    9.5, UnitCommonMass.CEMENT_BAG_50KG, 0.5,
+	    UnitCommonVolume.CUBIC_METER, 1.0, UnitCommonVolume.CUBIC_METER),
 
-    CLASS_A("Class A", "B", 1, 2, 4, 9, CommonMassUnit.CEMENT_BAG_40KG, 7,
-	    CommonMassUnit.CEMENT_BAG_50KG, 0.5, CommonVolumeUnit.CUBIC_METER,
-	    1.0, CommonVolumeUnit.CUBIC_METER),
+    CLASS_A("Class A", "B", 1, 2, 4, 9, UnitCommonMass.CEMENT_BAG_40KG, 7,
+	    UnitCommonMass.CEMENT_BAG_50KG, 0.5, UnitCommonVolume.CUBIC_METER,
+	    1.0, UnitCommonVolume.CUBIC_METER),
 
-    CLASS_B("Class B", "C", 1, 2.5, 5, 7.5, CommonMassUnit.CEMENT_BAG_40KG, 6,
-	    CommonMassUnit.CEMENT_BAG_50KG, 0.5, CommonVolumeUnit.CUBIC_METER,
-	    1.0, CommonVolumeUnit.CUBIC_METER),
+    CLASS_B("Class B", "C", 1, 2.5, 5, 7.5, UnitCommonMass.CEMENT_BAG_40KG, 6,
+	    UnitCommonMass.CEMENT_BAG_50KG, 0.5, UnitCommonVolume.CUBIC_METER,
+	    1.0, UnitCommonVolume.CUBIC_METER),
 
-    CLASS_C("Class C", "D", 1, 3, 6, 6, CommonMassUnit.CEMENT_BAG_40KG, 5,
-	    CommonMassUnit.CEMENT_BAG_50KG, 0.5, CommonVolumeUnit.CUBIC_METER,
-	    1.0, CommonVolumeUnit.CUBIC_METER);
+    CLASS_C("Class C", "D", 1, 3, 6, 6, UnitCommonMass.CEMENT_BAG_40KG, 5,
+	    UnitCommonMass.CEMENT_BAG_50KG, 0.5, UnitCommonVolume.CUBIC_METER,
+	    1.0, UnitCommonVolume.CUBIC_METER);
 
     private String label;
     private String mixClass;
@@ -27,17 +27,17 @@ public enum TableProportionConcrete {
     private double partCement50kg;
     private double partSand;
     private double partGravel;
-    private CommonMassUnit partCement40kgUnit;
-    private CommonMassUnit partCement50kgUnit;
-    private CommonVolumeUnit partSandUnit;
-    private CommonVolumeUnit partGravelUnit;
+    private UnitCommonMass partCement40kgUnit;
+    private UnitCommonMass partCement50kgUnit;
+    private UnitCommonVolume partSandUnit;
+    private UnitCommonVolume partGravelUnit;
 
     TableProportionConcrete(String label, String mixClass, double ratioCement,
 	    double ratioGravel, double ratioSand, double partCement40kg,
-	    CommonMassUnit partCement40kgUnit, double partCement50kg,
-	    CommonMassUnit partCement50kgUnit, double partSand,
-	    CommonVolumeUnit partSandUnit, double partGravel,
-	    CommonVolumeUnit partGravelUnit) {
+	    UnitCommonMass partCement40kgUnit, double partCement50kg,
+	    UnitCommonMass partCement50kgUnit, double partSand,
+	    UnitCommonVolume partSandUnit, double partGravel,
+	    UnitCommonVolume partGravelUnit) {
 
 	this.label = label;
 	this.mixClass = mixClass;
@@ -126,35 +126,35 @@ public enum TableProportionConcrete {
 	this.partGravel = partGravel;
     }
 
-    public CommonMassUnit getPartCement40kgUnit() {
+    public UnitCommonMass getPartCement40kgUnit() {
 	return partCement40kgUnit;
     }
 
-    public void setPartCement40kgUnit(CommonMassUnit partCement40kgUnit) {
+    public void setPartCement40kgUnit(UnitCommonMass partCement40kgUnit) {
 	this.partCement40kgUnit = partCement40kgUnit;
     }
 
-    public CommonMassUnit getPartCement50kgUnit() {
+    public UnitCommonMass getPartCement50kgUnit() {
 	return partCement50kgUnit;
     }
 
-    public void setPartCement50kgUnit(CommonMassUnit partCement50kgUnit) {
+    public void setPartCement50kgUnit(UnitCommonMass partCement50kgUnit) {
 	this.partCement50kgUnit = partCement50kgUnit;
     }
 
-    public CommonVolumeUnit getPartSandUnit() {
+    public UnitCommonVolume getPartSandUnit() {
 	return partSandUnit;
     }
 
-    public void setPartSandUnit(CommonVolumeUnit partSandUnit) {
+    public void setPartSandUnit(UnitCommonVolume partSandUnit) {
 	this.partSandUnit = partSandUnit;
     }
 
-    public CommonVolumeUnit getPartGravelUnit() {
+    public UnitCommonVolume getPartGravelUnit() {
 	return partGravelUnit;
     }
 
-    public void setPartGravelUnit(CommonVolumeUnit partGravelUnit) {
+    public void setPartGravelUnit(UnitCommonVolume partGravelUnit) {
 	this.partGravelUnit = partGravelUnit;
     }
 }

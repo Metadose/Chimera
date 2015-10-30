@@ -4,8 +4,9 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
+import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.CSSClass;
+import com.cebedo.pmsys.enums.HTMLCSSDetails;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.HTMLUtils;
@@ -106,9 +107,9 @@ public class ProjectAux implements IDomainObject {
 	String label = getDiffEstimatedActualTotalAsString();
 	double diff = getDiffEstimatedActualTotal();
 	if (diff < 0) {
-	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	    return HTMLUtils.getBadgeHTML(HTMLCSSDetails.DANGER, label);
 	}
-	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+	return HTMLUtils.getBadgeHTML(HTMLCSSDetails.SUCCESS, label);
     }
 
     public double getDiffEstimatedActualDirect() {
@@ -128,9 +129,9 @@ public class ProjectAux implements IDomainObject {
 	String label = getDiffEstimatedActualDirectAsString();
 	double diff = getDiffEstimatedActualDirect();
 	if (diff < 0) {
-	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	    return HTMLUtils.getBadgeHTML(HTMLCSSDetails.DANGER, label);
 	}
-	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+	return HTMLUtils.getBadgeHTML(HTMLCSSDetails.SUCCESS, label);
     }
 
     public double getDiffEstimatedActualIndirect() {
@@ -150,9 +151,9 @@ public class ProjectAux implements IDomainObject {
 	String label = getDiffEstimatedActualIndirectAsString();
 	double diff = getDiffEstimatedActualIndirect();
 	if (diff < 0) {
-	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	    return HTMLUtils.getBadgeHTML(HTMLCSSDetails.DANGER, label);
 	}
-	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+	return HTMLUtils.getBadgeHTML(HTMLCSSDetails.SUCCESS, label);
     }
 
     public double getActualTotalProject() {
@@ -169,11 +170,11 @@ public class ProjectAux implements IDomainObject {
     }
 
     @Transient
-    public CSSClass getCSSofOverspent() {
+    public HTMLCSSDetails getCSSofOverspent() {
 	if (getRemainingBudget() < 0) {
-	    return CSSClass.OVERSPENT;
+	    return HTMLCSSDetails.OVERSPENT;
 	}
-	return CSSClass.SPENT;
+	return HTMLCSSDetails.SPENT;
     }
 
     public double getRemainingBudget() {

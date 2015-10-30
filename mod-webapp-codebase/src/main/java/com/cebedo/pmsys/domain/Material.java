@@ -4,11 +4,12 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.CommonLengthUnit;
-import com.cebedo.pmsys.enums.CommonMassUnit;
-import com.cebedo.pmsys.enums.CommonVolumeUnit;
-import com.cebedo.pmsys.enums.MaterialCategory;
+import com.cebedo.pmsys.enums.UnitCommonLength;
+import com.cebedo.pmsys.enums.UnitCommonMass;
+import com.cebedo.pmsys.enums.UnitCommonVolume;
+import com.cebedo.pmsys.enums.CategoryMaterial;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -41,7 +42,7 @@ public class Material implements IDomainObject {
      * Bean-backed form.
      * 
      */
-    private MaterialCategory materialCategory;
+    private CategoryMaterial materialCategory;
     private String unitOfMeasure;
 
     /**
@@ -81,19 +82,19 @@ public class Material implements IDomainObject {
 	String unitStr = getUnitOfMeasure();
 	// If Length.
 	try {
-	    CommonLengthUnit unitOfMeasure = CommonLengthUnit.valueOf(unitStr);
+	    UnitCommonLength unitOfMeasure = UnitCommonLength.valueOf(unitStr);
 	    return unitOfMeasure.getLabel();
 	} catch (IllegalArgumentException e) {
 
 	    // If Mass.
 	    try {
-		CommonMassUnit unitOfMeasure = CommonMassUnit.valueOf(unitStr);
+		UnitCommonMass unitOfMeasure = UnitCommonMass.valueOf(unitStr);
 		return unitOfMeasure.getLabel();
 	    } catch (IllegalArgumentException e2) {
 
 		// If Volume.
 		try {
-		    CommonVolumeUnit unitOfMeasure = CommonVolumeUnit.valueOf(unitStr);
+		    UnitCommonVolume unitOfMeasure = UnitCommonVolume.valueOf(unitStr);
 		    return unitOfMeasure.getLabel();
 		}
 		// Others.
@@ -108,18 +109,18 @@ public class Material implements IDomainObject {
 	String unitStr = getUnitOfMeasure();
 	// If Length.
 	try {
-	    CommonLengthUnit unitOfMeasure = CommonLengthUnit.valueOf(unitStr);
+	    UnitCommonLength unitOfMeasure = UnitCommonLength.valueOf(unitStr);
 	    return unitOfMeasure.getSymbol();
 	} catch (IllegalArgumentException e) {
 
 	    // If Mass.
 	    try {
-		CommonMassUnit unitOfMeasure = CommonMassUnit.valueOf(unitStr);
+		UnitCommonMass unitOfMeasure = UnitCommonMass.valueOf(unitStr);
 		return unitOfMeasure.getSymbol();
 	    } catch (IllegalArgumentException e2) {
 		// If Volume.
 		try {
-		    CommonVolumeUnit unitOfMeasure = CommonVolumeUnit.valueOf(unitStr);
+		    UnitCommonVolume unitOfMeasure = UnitCommonVolume.valueOf(unitStr);
 		    return unitOfMeasure.getSymbol();
 		}
 		// Others.
@@ -335,11 +336,11 @@ public class Material implements IDomainObject {
 	return getKey().hashCode();
     }
 
-    public MaterialCategory getMaterialCategory() {
+    public CategoryMaterial getMaterialCategory() {
 	return materialCategory;
     }
 
-    public void setMaterialCategory(MaterialCategory materialCategory) {
+    public void setMaterialCategory(CategoryMaterial materialCategory) {
 	this.materialCategory = materialCategory;
     }
 

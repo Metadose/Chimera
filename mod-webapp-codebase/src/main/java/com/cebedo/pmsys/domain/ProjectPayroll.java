@@ -4,10 +4,13 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import com.cebedo.pmsys.base.AbstractExpense;
+import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IExpense;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.StatusPayroll;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -29,7 +32,7 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
      * Specs.
      */
     private SystemUser creator;
-    private PayrollStatus status; // Give me all payrolls not yet approved.
+    private StatusPayroll status; // Give me all payrolls not yet approved.
     private Date startDate;
     private Date endDate;
 
@@ -177,11 +180,11 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
 	this.project = projectID;
     }
 
-    public PayrollStatus getStatus() {
+    public StatusPayroll getStatus() {
 	return status;
     }
 
-    public void setStatus(PayrollStatus status2) {
+    public void setStatus(StatusPayroll status2) {
 	this.status = status2;
     }
 

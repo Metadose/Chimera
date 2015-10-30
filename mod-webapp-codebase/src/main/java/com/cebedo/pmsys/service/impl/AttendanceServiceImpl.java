@@ -16,7 +16,8 @@ import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -25,9 +26,8 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormMassAttendance;
-import com.cebedo.pmsys.repository.AttendanceValueRepo;
+import com.cebedo.pmsys.repository.impl.AttendanceValueRepoImpl;
 import com.cebedo.pmsys.service.AttendanceService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.AttendanceValidator;
 import com.cebedo.pmsys.validator.FormMassAttendanceValidator;
@@ -39,9 +39,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private AttendanceValueRepo attendanceValueRepo;
+    private AttendanceValueRepoImpl attendanceValueRepo;
 
-    public void setAttendanceValueRepo(AttendanceValueRepo r) {
+    public void setAttendanceValueRepo(AttendanceValueRepoImpl r) {
 	this.attendanceValueRepo = r;
     }
 
@@ -58,7 +58,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(attendance)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -75,22 +75,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Set the status.
 	if (attendance.getStatus() == null) {
-	    attendance.setStatus(AttendanceStatus.of(attendance.getStatusID()));
+	    attendance.setStatus(StatusAttendance.of(attendance.getStatusID()));
 	}
-	AttendanceStatus status = attendance.getStatus();
+	StatusAttendance status = attendance.getStatus();
 
 	// If status is delete.
-	if (status == AttendanceStatus.DELETE) {
+	if (status == StatusAttendance.DELETE) {
 	    deleteAllInDate(attendance);
-	    return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
+	    return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
 		    "on " + attendance.getFormattedDateString());
 	}
 
 	// If status is absent.
-	if (status == AttendanceStatus.ABSENT && attendance.getWage() > 0) {
+	if (status == StatusAttendance.ABSENT && attendance.getWage() > 0) {
 	    attendance.setWage(0);
 	}
-	if (status != AttendanceStatus.ABSENT && attendance.getWage() == 0) {
+	if (status != StatusAttendance.ABSENT && attendance.getWage() == 0) {
 	    attendance.setWage(getWage(staff, status));
 	}
 
@@ -98,7 +98,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	deleteAllInDate(attendance);
 	this.attendanceValueRepo.set(attendance);
 
-	return AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
+	return AlertBoxFactory.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
 		"on " + attendance.getFormattedDateString());
     }
 
@@ -128,7 +128,7 @@ public class AttendanceServiceImpl implements AttendanceService {
      * @param status
      * @return
      */
-    private double getWage(Staff staff, AttendanceStatus status) {
+    private double getWage(Staff staff, StatusAttendance status) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
@@ -142,19 +142,19 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	double wage = 0;
 
-	if (status == AttendanceStatus.PRESENT) {
+	if (status == StatusAttendance.PRESENT) {
 	    wage = staff.getWage();
 
-	} else if (status == AttendanceStatus.LEAVE) {
+	} else if (status == StatusAttendance.LEAVE) {
 	    wage = staff.getWage();
 
-	} else if (status == AttendanceStatus.LATE) {
+	} else if (status == StatusAttendance.LATE) {
 	    wage = staff.getWage();
 
-	} else if (status == AttendanceStatus.ABSENT) {
+	} else if (status == StatusAttendance.ABSENT) {
 	    wage = 0;
 
-	} else if (status == AttendanceStatus.HALFDAY) {
+	} else if (status == StatusAttendance.HALFDAY) {
 	    wage = staff.getWage() / 2;
 	}
 	return wage;
@@ -275,7 +275,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -290,8 +290,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		ConstantsRedis.OBJECT_ATTENDANCE, "Mass", proj, "Mass");
 
 	// Get the wage.
-	AttendanceStatus status = AttendanceStatus.of(attendanceMass.getStatusID());
-	if (status == AttendanceStatus.ABSENT) {
+	StatusAttendance status = StatusAttendance.of(attendanceMass.getStatusID());
+	if (status == StatusAttendance.ABSENT) {
 	    attendanceMass.setWage(0);
 	}
 	double wage = attendanceMass.getWage();
@@ -316,7 +316,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    boolean isSunday = dayOfWeek == Calendar.SUNDAY;
 
 	    // If status is delete.
-	    if (status == AttendanceStatus.DELETE) {
+	    if (status == StatusAttendance.DELETE) {
 		if ((!includeSaturdays && isSaturday) || (!includeSundays && isSunday)) {
 		    continue;
 		}
@@ -334,12 +334,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	String response = "";
 	String startDateStr = DateUtils.formatDate(startDate);
 	String endDateStr = DateUtils.formatDate(endDate);
-	if (status != AttendanceStatus.DELETE) {
+	if (status != StatusAttendance.DELETE) {
 	    this.attendanceValueRepo.multiSet(keyAttendanceMap);
-	    response = AlertBoxGenerator.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
+	    response = AlertBoxFactory.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
 		    String.format("on %s to %s", startDateStr, endDateStr));
 	} else {
-	    response = AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
+	    response = AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
 		    String.format("on %s to %s", startDateStr, endDateStr));
 	}
 	return response;

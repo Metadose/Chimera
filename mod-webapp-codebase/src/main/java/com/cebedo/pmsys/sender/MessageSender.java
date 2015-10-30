@@ -5,7 +5,7 @@ import javax.jms.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 
-import com.cebedo.pmsys.bean.JMSMessageCreator;
+import com.cebedo.pmsys.bean.JMSMessageCreatorImpl;
 import com.cebedo.pmsys.bean.JMSMessage;
 
 public class MessageSender {
@@ -19,6 +19,6 @@ public class MessageSender {
     }
 
     public void send(Queue dest, final JMSMessage msg) {
-	this.jmsTemplate.send(dest, new JMSMessageCreator(msg));
+	this.jmsTemplate.send(dest, new JMSMessageCreatorImpl(msg));
     }
 }

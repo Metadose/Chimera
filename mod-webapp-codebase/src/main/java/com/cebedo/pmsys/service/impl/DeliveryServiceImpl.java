@@ -24,18 +24,18 @@ import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.DeliveryValueRepo;
-import com.cebedo.pmsys.repository.MaterialValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
-import com.cebedo.pmsys.repository.PullOutValueRepo;
+import com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.PullOutService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.DeliveryValidator;
 
@@ -46,11 +46,11 @@ public class DeliveryServiceImpl implements DeliveryService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private DeliveryValueRepo deliveryValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
-    private MaterialValueRepo materialValueRepo;
+    private DeliveryValueRepoImpl deliveryValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
+    private MaterialValueRepoImpl materialValueRepo;
     private MaterialService materialService;
-    private PullOutValueRepo pullOutValueRepo;
+    private PullOutValueRepoImpl pullOutValueRepo;
     private PullOutService pullOutService;
     private ProjectDAO projectDAO;
 
@@ -72,19 +72,19 @@ public class DeliveryServiceImpl implements DeliveryService {
 	this.projectDAO = projectDAO;
     }
 
-    public void setMaterialValueRepo(MaterialValueRepo materialValueRepo) {
+    public void setMaterialValueRepo(MaterialValueRepoImpl materialValueRepo) {
 	this.materialValueRepo = materialValueRepo;
     }
 
-    public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
+    public void setPullOutValueRepo(PullOutValueRepoImpl pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
     }
 
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
-    public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
+    public void setDeliveryValueRepo(DeliveryValueRepoImpl deliveryValueRepo) {
 	this.deliveryValueRepo = deliveryValueRepo;
     }
 
@@ -233,7 +233,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -257,12 +257,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_DELIVERY,
 		    obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_DELIVERY, obj.getKey(), proj, obj.getName());
-	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
+	return AlertBoxFactory.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_DELIVERY, obj.getName());
     }
 
     @Override
@@ -298,7 +298,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(delivery)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -334,7 +334,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	// Delete this object.
 	this.deliveryValueRepo.delete(key);
 
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_DELIVERY,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_DELIVERY,
 		delivery.getName());
     }
 

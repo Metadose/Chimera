@@ -2,39 +2,39 @@ package com.cebedo.pmsys.enums;
 
 public enum TableDimensionCHBFooting {
 
-    FOOTING_10_30("10cm x 30cm", 10, CommonLengthUnit.CENTIMETER, 30,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_30("10cm x 30cm", 10, UnitCommonLength.CENTIMETER, 30,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_10_35("10cm x 35cm", 10, CommonLengthUnit.CENTIMETER, 35,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_35("10cm x 35cm", 10, UnitCommonLength.CENTIMETER, 35,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_10_40("10cm x 40cm", 10, CommonLengthUnit.CENTIMETER, 40,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_40("10cm x 40cm", 10, UnitCommonLength.CENTIMETER, 40,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_10_50("10cm x 50cm", 10, CommonLengthUnit.CENTIMETER, 50,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_50("10cm x 50cm", 10, UnitCommonLength.CENTIMETER, 50,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_15_40("15cm x 40cm", 15, CommonLengthUnit.CENTIMETER, 40,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_40("15cm x 40cm", 15, UnitCommonLength.CENTIMETER, 40,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_15_45("15cm x 45cm", 15, CommonLengthUnit.CENTIMETER, 45,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_45("15cm x 45cm", 15, UnitCommonLength.CENTIMETER, 45,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_15_50("15cm x 50cm", 15, CommonLengthUnit.CENTIMETER, 50,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_50("15cm x 50cm", 15, UnitCommonLength.CENTIMETER, 50,
+	    UnitCommonLength.CENTIMETER),
 
-    FOOTING_15_60("15cm x 60cm", 15, CommonLengthUnit.CENTIMETER, 60,
-	    CommonLengthUnit.CENTIMETER);
+    FOOTING_15_60("15cm x 60cm", 15, UnitCommonLength.CENTIMETER, 60,
+	    UnitCommonLength.CENTIMETER);
 
     private String label;
     private double thickness;
-    private CommonLengthUnit thickessUnit;
+    private UnitCommonLength thickessUnit;
     private double width;
-    private CommonLengthUnit widthUnit;
+    private UnitCommonLength widthUnit;
 
     TableDimensionCHBFooting(String label, double thickness,
-	    CommonLengthUnit thickessUnit, double width,
-	    CommonLengthUnit widthUnit) {
+	    UnitCommonLength thickessUnit, double width,
+	    UnitCommonLength widthUnit) {
 	this.label = label;
 	this.thickness = thickness;
 	this.thickessUnit = thickessUnit;
@@ -58,11 +58,11 @@ public enum TableDimensionCHBFooting {
 	this.thickness = thickness;
     }
 
-    public CommonLengthUnit getThickessUnit() {
+    public UnitCommonLength getThickessUnit() {
 	return thickessUnit;
     }
 
-    public void setThickessUnit(CommonLengthUnit thickessUnit) {
+    public void setThickessUnit(UnitCommonLength thickessUnit) {
 	this.thickessUnit = thickessUnit;
     }
 
@@ -74,11 +74,11 @@ public enum TableDimensionCHBFooting {
 	this.width = width;
     }
 
-    public CommonLengthUnit getWidthUnit() {
+    public UnitCommonLength getWidthUnit() {
 	return widthUnit;
     }
 
-    public void setWidthUnit(CommonLengthUnit widthUnit) {
+    public void setWidthUnit(UnitCommonLength widthUnit) {
 	this.widthUnit = widthUnit;
     }
 

@@ -7,7 +7,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 
 @Controller
 @RequestMapping("fix")
@@ -21,7 +21,7 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/" })
     public String error(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.ERROR);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -33,7 +33,7 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/500" })
     public String error500(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.ERROR);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -45,7 +45,7 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/405" })
     public String error405(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.ERROR);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -57,7 +57,7 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/404" })
     public String error404(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.ERROR);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -70,7 +70,7 @@ public class ErrorController {
     @RequestMapping(value = { "", "/400" })
     public String error400(RedirectAttributes redirectAttrs) {
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-		AlertBoxGenerator.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_400));
+		AlertBoxFactory.FAILED.generateHTML(RegistryResponseMessage.ERROR_COMMON_400));
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 

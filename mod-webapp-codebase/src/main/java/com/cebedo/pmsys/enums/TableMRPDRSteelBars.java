@@ -6,59 +6,59 @@ package com.cebedo.pmsys.enums;
 @Deprecated
 public enum TableMRPDRSteelBars {
 
-    BAR_8_5(8, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 1.98, CommonMassUnit.KILOGRAM),
+    BAR_8_5(8, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 1.98, UnitCommonMass.KILOGRAM),
 
-    BAR_10_5(10, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 38, CommonMassUnit.KILOGRAM),
+    BAR_10_5(10, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 38, UnitCommonMass.KILOGRAM),
 
-    BAR_12_5(12, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 4.44, CommonMassUnit.KILOGRAM),
+    BAR_12_5(12, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 4.44, UnitCommonMass.KILOGRAM),
 
-    BAR_13_5(13, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 5.21, CommonMassUnit.KILOGRAM),
+    BAR_13_5(13, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 5.21, UnitCommonMass.KILOGRAM),
 
-    BAR_16_5(16, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 7.90, CommonMassUnit.KILOGRAM),
+    BAR_16_5(16, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 7.90, UnitCommonMass.KILOGRAM),
 
-    BAR_20_5(20, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 12.33, CommonMassUnit.KILOGRAM),
+    BAR_20_5(20, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 12.33, UnitCommonMass.KILOGRAM),
 
-    BAR_25_5(25, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 19.27, CommonMassUnit.KILOGRAM),
+    BAR_25_5(25, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 19.27, UnitCommonMass.KILOGRAM),
 
-    BAR_26_5(26, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 24.17, CommonMassUnit.KILOGRAM),
+    BAR_26_5(26, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 24.17, UnitCommonMass.KILOGRAM),
 
-    BAR_30_5(30, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 27.75, CommonMassUnit.KILOGRAM),
+    BAR_30_5(30, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 27.75, UnitCommonMass.KILOGRAM),
 
-    BAR_32_5(32, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 31.57, CommonMassUnit.KILOGRAM),
+    BAR_32_5(32, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 31.57, UnitCommonMass.KILOGRAM),
 
-    BAR_36_5(36, 5, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 39.96, CommonMassUnit.KILOGRAM),
+    BAR_36_5(36, 5, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 39.96, UnitCommonMass.KILOGRAM),
 
-    BAR_8_6(8, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 2.37, CommonMassUnit.KILOGRAM),
+    BAR_8_6(8, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 2.37, UnitCommonMass.KILOGRAM),
 
-    BAR_10_6(10, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 3.70, CommonMassUnit.KILOGRAM),
+    BAR_10_6(10, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 3.70, UnitCommonMass.KILOGRAM),
 
-    BAR_12_6(12, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 5.33, CommonMassUnit.KILOGRAM),
+    BAR_12_6(12, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 5.33, UnitCommonMass.KILOGRAM),
 
-    BAR_13_6(13, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 6.25, CommonMassUnit.KILOGRAM),
+    BAR_13_6(13, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 6.25, UnitCommonMass.KILOGRAM),
 
-    BAR_16_6(16, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 9.47, CommonMassUnit.KILOGRAM),
+    BAR_16_6(16, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 9.47, UnitCommonMass.KILOGRAM),
 
-    BAR_20_6(20, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 14.80, CommonMassUnit.KILOGRAM),
+    BAR_20_6(20, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 14.80, UnitCommonMass.KILOGRAM),
 
-    BAR_25_6(25, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 23.12, CommonMassUnit.KILOGRAM),
+    BAR_25_6(25, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 23.12, UnitCommonMass.KILOGRAM),
 
-    BAR_26_6(26, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 29.00, CommonMassUnit.KILOGRAM),
+    BAR_26_6(26, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 29.00, UnitCommonMass.KILOGRAM),
 
-    BAR_30_6(30, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 33.29, CommonMassUnit.KILOGRAM),
+    BAR_30_6(30, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 33.29, UnitCommonMass.KILOGRAM),
 
-    BAR_32_6(32, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 37.88, CommonMassUnit.KILOGRAM),
+    BAR_32_6(32, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 37.88, UnitCommonMass.KILOGRAM),
 
-    BAR_36_6(36, 6, CommonLengthUnit.MILLIMETER, CommonLengthUnit.METER, 47.95, CommonMassUnit.KILOGRAM);
+    BAR_36_6(36, 6, UnitCommonLength.MILLIMETER, UnitCommonLength.METER, 47.95, UnitCommonMass.KILOGRAM);
 
     private double diameter;
     private double length;
-    private CommonLengthUnit diameterUnit;
-    private CommonLengthUnit lengthUnit;
+    private UnitCommonLength diameterUnit;
+    private UnitCommonLength lengthUnit;
     private double weight;
-    private CommonMassUnit weightUnit;
+    private UnitCommonMass weightUnit;
 
-    TableMRPDRSteelBars(double diam, double length, CommonLengthUnit diamUnit, CommonLengthUnit lenUnit,
-	    double weight, CommonMassUnit weightUnit) {
+    TableMRPDRSteelBars(double diam, double length, UnitCommonLength diamUnit, UnitCommonLength lenUnit,
+	    double weight, UnitCommonMass weightUnit) {
 	this.diameter = diam;
 	this.diameterUnit = diamUnit;
 	this.length = length;
@@ -83,19 +83,19 @@ public enum TableMRPDRSteelBars {
 	this.length = length;
     }
 
-    public CommonLengthUnit getDiameterUnit() {
+    public UnitCommonLength getDiameterUnit() {
 	return diameterUnit;
     }
 
-    public void setDiameterUnit(CommonLengthUnit diameterUnit) {
+    public void setDiameterUnit(UnitCommonLength diameterUnit) {
 	this.diameterUnit = diameterUnit;
     }
 
-    public CommonLengthUnit getLengthUnit() {
+    public UnitCommonLength getLengthUnit() {
 	return lengthUnit;
     }
 
-    public void setLengthUnit(CommonLengthUnit lengthUnit) {
+    public void setLengthUnit(UnitCommonLength lengthUnit) {
 	this.lengthUnit = lengthUnit;
     }
 
@@ -107,11 +107,11 @@ public enum TableMRPDRSteelBars {
 	this.weight = weight;
     }
 
-    public CommonMassUnit getWeightUnit() {
+    public UnitCommonMass getWeightUnit() {
 	return weightUnit;
     }
 
-    public void setWeightUnit(CommonMassUnit weightUnit) {
+    public void setWeightUnit(UnitCommonMass weightUnit) {
 	this.weightUnit = weightUnit;
     }
 }

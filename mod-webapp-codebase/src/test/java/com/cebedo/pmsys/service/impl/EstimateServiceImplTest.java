@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cebedo.pmsys.bean.EstimateComputationBean;
+import com.cebedo.pmsys.bean.EstimateComputation;
 import com.cebedo.pmsys.bean.EstimateComputationShape;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.service.EstimateService;
@@ -25,7 +25,7 @@ public class EstimateServiceImplTest {
     @Test
     public void estimateConcreteTest() {
 	EstimateServiceImpl impl = (EstimateServiceImpl) estimateService;
-	EstimateComputationBean estimateComputationBean = new EstimateComputationBean();
+	EstimateComputation estimateComputationBean = new EstimateComputation();
 	estimateComputationBean.setEstimationAllowance(TableEstimationAllowance.ALLOWANCE_0);
 
 	EstimateComputationShape estimateComputationShape = new EstimateComputationShape();

@@ -22,15 +22,15 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.repository.EquipmentExpenseValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.EquipmentExpenseValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.EquipmentExpenseValidator;
 
@@ -40,8 +40,8 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     private AuthHelper authHelper = new AuthHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private ProjectAuxValueRepo projectAuxValueRepo;
-    private EquipmentExpenseValueRepo equipmentExpenseValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
+    private EquipmentExpenseValueRepoImpl equipmentExpenseValueRepo;
     private StaffDAO staffDAO;
     private ProjectDAO projectDAO;
 
@@ -62,13 +62,13 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
     @Autowired
     @Qualifier(value = "equipmentExpenseValueRepo")
-    public void setEquipmentExpenseValueRepo(EquipmentExpenseValueRepo equipmentExpenseValueRepo) {
+    public void setEquipmentExpenseValueRepo(EquipmentExpenseValueRepoImpl equipmentExpenseValueRepo) {
 	this.equipmentExpenseValueRepo = equipmentExpenseValueRepo;
     }
 
@@ -128,7 +128,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -140,7 +140,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	revertOldValues(obj);
 
 	this.equipmentExpenseValueRepo.delete(key);
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
 		obj.getName());
     }
 
@@ -212,7 +212,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     public String set(EquipmentExpense obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	this.equipmentExpenseValidator.validate(obj, result);
@@ -250,12 +250,12 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey(), proj, obj.getName());
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
 		    obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey(), proj, obj.getName());
-	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
+	return AlertBoxFactory.SUCCESS.generateUpdate(ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE,
 		obj.getName());
     }
 

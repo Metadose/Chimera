@@ -53,7 +53,7 @@
        	   </beans:props>
 		</beans:property>
 	</beans:bean>
-	<beans:bean id="mailer" class="com.cebedo.pmsys.service.Mailer">
+	<beans:bean id="mailer" class="com.cebedo.pmsys.service.MailerService">
 		<beans:property name="mailSender" ref="mailSender" />
 	</beans:bean>
 </beans:beans>

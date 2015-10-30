@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -17,7 +18,6 @@ import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemConfiguration;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.SystemConfigurationValidator;
 
 @Service
@@ -58,7 +58,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    if (!this.authHelper.isSuperAdmin()) {
 		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
 			systemConfiguration.getId());
-		return AlertBoxGenerator.ERROR;
+		return AlertBoxFactory.ERROR;
 	    }
 
 	    // Service layer form validation.
@@ -79,7 +79,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	this.systemConfigurationDAO.create(systemConfiguration);
 
-	return AlertBoxGenerator.SUCCESS.generateCreate(SystemConfiguration.OBJECT_NAME,
+	return AlertBoxFactory.SUCCESS.generateCreate(SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getName());
     }
 
@@ -108,7 +108,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
 	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
 		    systemConfiguration.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -123,7 +123,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	this.systemConfigurationDAO.update(systemConfiguration);
 
-	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
+	return AlertBoxFactory.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
 		systemConfiguration.getName());
     }
 
@@ -135,7 +135,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(conf)) {
 	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	this.messageHelper.auditableID(AuditAction.ACTION_DELETE, SystemConfiguration.OBJECT_NAME,
@@ -143,7 +143,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	this.systemConfigurationDAO.delete(id);
 
-	return AlertBoxGenerator.SUCCESS.generateDelete(SystemConfiguration.OBJECT_NAME, conf.getName());
+	return AlertBoxFactory.SUCCESS.generateDelete(SystemConfiguration.OBJECT_NAME, conf.getName());
     }
 
     @Override
@@ -215,7 +215,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    }
 	}
 	this.systemConfigurationDAO.merge(config);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
+	return AlertBoxFactory.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
 		config.getName());
     }
 

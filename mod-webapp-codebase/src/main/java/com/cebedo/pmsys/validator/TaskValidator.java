@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Task;
 
@@ -44,7 +44,7 @@ public class TaskValidator implements Validator {
 	    this.validationHelper.rejectZeroOrNegativeNumber(errors, "planned duration");
 	}
 	// Duration (actual) must be positive.
-	if (task.getStatus() == TaskStatus.COMPLETED.id()
+	if (task.getStatus() == StatusTask.COMPLETED.id()
 		&& this.validationHelper.numberIsZeroOrNegative(task.getActualDuration())) {
 	    this.validationHelper.rejectZeroOrNegativeNumber(errors, "actual duration");
 	}

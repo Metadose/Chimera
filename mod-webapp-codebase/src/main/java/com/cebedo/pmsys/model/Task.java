@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 
@@ -66,7 +66,7 @@ public class Task implements Serializable {
     private double actualDuration;
     private Project project;
     private Set<Staff> staff;
-    private int status = TaskStatus.NEW.id();
+    private int status = StatusTask.NEW.id();
     private Company company;
 
     public Task() {
@@ -179,8 +179,8 @@ public class Task implements Serializable {
     }
 
     @Transient
-    public TaskStatus getStatusEnum() {
-	return TaskStatus.of(getStatus());
+    public StatusTask getStatusEnum() {
+	return StatusTask.of(getStatus());
     }
 
     @Override
@@ -235,7 +235,7 @@ public class Task implements Serializable {
 
     @Transient
     public boolean isCompleted() {
-	return getStatusEnum() == TaskStatus.COMPLETED;
+	return getStatusEnum() == StatusTask.COMPLETED;
     }
 
 }

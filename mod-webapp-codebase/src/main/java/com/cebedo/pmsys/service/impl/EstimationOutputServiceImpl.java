@@ -13,21 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
+import com.cebedo.pmsys.repository.impl.EstimationOutputValueRepoImpl;
 import com.cebedo.pmsys.service.EstimationOutputService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Service
 public class EstimationOutputServiceImpl implements EstimationOutputService {
 
     private MessageHelper messageHelper = new MessageHelper();
     private AuthHelper authHelper = new AuthHelper();
-    private EstimationOutputValueRepo estimationOutputValueRepo;
+    private EstimationOutputValueRepoImpl estimationOutputValueRepo;
 
-    public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
+    public void setEstimationOutputValueRepo(EstimationOutputValueRepoImpl estimationOutputValueRepo) {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
@@ -57,7 +57,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -66,7 +66,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey(), proj, obj.getName());
 
 	this.estimationOutputValueRepo.delete(key);
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE, obj.getName());
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE, obj.getName());
     }
 
     @Override

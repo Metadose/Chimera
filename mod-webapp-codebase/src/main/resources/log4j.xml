@@ -59,7 +59,7 @@
 	</logger>
 	
 	<!-- Performance Loggers -->
-	<logger name="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor">
+	<logger name="com.cebedo.pmsys.interceptor.PerformanceMonitoringInterceptorImpl">
 		<level value="trace"/>
 		<appender-ref ref="webappPerformanceFile"/>
 	</logger>

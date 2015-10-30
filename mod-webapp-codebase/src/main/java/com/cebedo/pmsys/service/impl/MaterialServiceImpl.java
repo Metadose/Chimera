@@ -20,17 +20,17 @@ import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.DeliveryValueRepo;
-import com.cebedo.pmsys.repository.MaterialValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
-import com.cebedo.pmsys.repository.PullOutValueRepo;
+import com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
 import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectAuxService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.MaterialValidator;
 
 @Service
@@ -40,19 +40,19 @@ public class MaterialServiceImpl implements MaterialService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private MaterialValueRepo materialValueRepo;
-    private DeliveryValueRepo deliveryValueRepo;
+    private MaterialValueRepoImpl materialValueRepo;
+    private DeliveryValueRepoImpl deliveryValueRepo;
     private ProjectAuxService projectAuxService;
-    private PullOutValueRepo pullOutValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private PullOutValueRepoImpl pullOutValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
-    public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
+    public void setPullOutValueRepo(PullOutValueRepoImpl pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
     }
 
@@ -60,11 +60,11 @@ public class MaterialServiceImpl implements MaterialService {
 	this.projectAuxService = projectAuxService;
     }
 
-    public void setDeliveryValueRepo(DeliveryValueRepo deliveryValueRepo) {
+    public void setDeliveryValueRepo(DeliveryValueRepoImpl deliveryValueRepo) {
 	this.deliveryValueRepo = deliveryValueRepo;
     }
 
-    public void setMaterialValueRepo(MaterialValueRepo materialValueRepo) {
+    public void setMaterialValueRepo(MaterialValueRepoImpl materialValueRepo) {
 	this.materialValueRepo = materialValueRepo;
     }
 
@@ -82,7 +82,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	else if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -128,12 +128,12 @@ public class MaterialServiceImpl implements MaterialService {
 		    ConstantsRedis.OBJECT_MATERIAL, obj.getKey(), proj, obj.getName());
 
 	    // Return.
-	    return AlertBoxGenerator.SUCCESS.generateAdd(ConstantsRedis.OBJECT_MATERIAL, obj.getName());
+	    return AlertBoxFactory.SUCCESS.generateAdd(ConstantsRedis.OBJECT_MATERIAL, obj.getName());
 	}
 
 	// This service used only for adding.
 	// Not updating.
-	return AlertBoxGenerator.ERROR;
+	return AlertBoxFactory.ERROR;
     }
 
     @Override
@@ -196,7 +196,7 @@ public class MaterialServiceImpl implements MaterialService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -231,7 +231,7 @@ public class MaterialServiceImpl implements MaterialService {
 	this.pullOutValueRepo.delete(keys);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_MATERIAL,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_MATERIAL,
 		material.getName());
     }
 
@@ -275,7 +275,7 @@ public class MaterialServiceImpl implements MaterialService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(material)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -291,7 +291,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	// Set the material.
 	this.materialValueRepo.set(material);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_MATERIAL,
+	return AlertBoxFactory.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_MATERIAL,
 		material.getName());
     }
 

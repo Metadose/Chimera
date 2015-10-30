@@ -23,16 +23,16 @@ import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.EstimateCostValueRepo;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.EstimateCostValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.EstimateCostService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.EstimateCostValidator;
 
 @Service
@@ -48,8 +48,8 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     private static final int EXCEL_COLUMN_COST_ACTUAL = 3;
     private static final int EXCEL_COLUMN_COST_TYPE = 4;
 
-    private EstimateCostValueRepo estimateCostValueRepo;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private EstimateCostValueRepoImpl estimateCostValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
     private ProjectDAO projectDAO;
 
     @Autowired
@@ -63,13 +63,13 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
     @Autowired
     @Qualifier(value = "estimateCostValueRepo")
-    public void setEstimateCostValueRepo(EstimateCostValueRepo estimateCostValueRepo) {
+    public void setEstimateCostValueRepo(EstimateCostValueRepoImpl estimateCostValueRepo) {
 	this.estimateCostValueRepo = estimateCostValueRepo;
     }
 
@@ -146,8 +146,8 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	// Direct costs.
 	for (EstimateCost cost : costs) {
 
-	    EstimateCostType costType = cost.getCostType();
-	    if (costType == EstimateCostType.INDIRECT) {
+	    TypeEstimateCost costType = cost.getCostType();
+	    if (costType == TypeEstimateCost.INDIRECT) {
 		indirectCosts.add(cost);
 		continue;
 	    }
@@ -172,7 +172,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    HSSFRow costRow = sheet.createRow(rowIndex);
 	    double estCost = cost.getCost();
 	    double actCost = cost.getActualCost();
-	    EstimateCostType costType = cost.getCostType();
+	    TypeEstimateCost costType = cost.getCostType();
 
 	    costRow.createCell(0).setCellValue(costType.getLabel());
 	    costRow.createCell(1).setCellValue(cost.getName());
@@ -193,7 +193,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	if (costs.size() > 0 && !this.authHelper.isActionAuthorized(costs.get(0))) {
 	    long projectID = costs.get(0).getProject().getId();
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	for (EstimateCost cost : costs) {
@@ -297,7 +297,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 			String costType = (String) (this.excelHelper.getValueAsExpected(workbook,
 				cell) == null ? ""
 					: this.excelHelper.getValueAsExpected(workbook, cell));
-			cost.setCostType(EstimateCostType.of(costType));
+			cost.setCostType(TypeEstimateCost.of(costType));
 			continue;
 
 		    }
@@ -319,7 +319,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -329,23 +329,23 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Project auxiliary on grand totals of costs.
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(obj.getProject()));
-	EstimateCostType costType = obj.getCostType();
+	TypeEstimateCost costType = obj.getCostType();
 	double actualCost = obj.getActualCost();
 	double estimatedCost = obj.getCost();
 	// Direct cost.
-	if (costType == EstimateCostType.DIRECT) {
+	if (costType == TypeEstimateCost.DIRECT) {
 	    aux.setGrandTotalCostsDirect(aux.getGrandTotalCostsDirect() - estimatedCost);
 	    aux.setGrandTotalActualCostsDirect(aux.getGrandTotalActualCostsDirect() - actualCost);
 	}
 	// If cost is indirect.
-	else if (costType == EstimateCostType.INDIRECT) {
+	else if (costType == TypeEstimateCost.INDIRECT) {
 	    aux.setGrandTotalCostsIndirect(aux.getGrandTotalCostsIndirect() - estimatedCost);
 	    aux.setGrandTotalActualCostsIndirect(aux.getGrandTotalActualCostsIndirect() - actualCost);
 	}
 
 	this.estimateCostValueRepo.delete(key);
 	this.projectAuxValueRepo.set(aux);
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE_COST,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());
     }
 
@@ -389,7 +389,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     public String set(EstimateCost obj, BindingResult result) {
 	if (!this.authHelper.isActionAuthorized(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	this.estimateCostValidator.validate(obj, result);
@@ -410,16 +410,16 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Project auxiliary on grand totals of costs.
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(obj.getProject()));
-	EstimateCostType costType = obj.getCostType();
+	TypeEstimateCost costType = obj.getCostType();
 	double actualCost = obj.getActualCost();
 	double estimatedCost = obj.getCost();
 	// Direct cost.
-	if (costType == EstimateCostType.DIRECT) {
+	if (costType == TypeEstimateCost.DIRECT) {
 	    aux.setGrandTotalCostsDirect(aux.getGrandTotalCostsDirect() + estimatedCost);
 	    aux.setGrandTotalActualCostsDirect(aux.getGrandTotalActualCostsDirect() + actualCost);
 	}
 	// If cost is indirect.
-	else if (costType == EstimateCostType.INDIRECT) {
+	else if (costType == TypeEstimateCost.INDIRECT) {
 	    aux.setGrandTotalCostsIndirect(aux.getGrandTotalCostsIndirect() + estimatedCost);
 	    aux.setGrandTotalActualCostsIndirect(aux.getGrandTotalActualCostsIndirect() + actualCost);
 	}
@@ -434,12 +434,12 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	if (isCreate) {
 	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, proj.getId(),
 		    ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
-	    return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE_COST,
+	    return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		    obj.getName());
 	}
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, proj.getId(),
 		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey(), proj, obj.getName());
-	return AlertBoxGenerator.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
+	return AlertBoxFactory.SUCCESS.generateUpdate(ConstantsRedis.OBJECT_ESTIMATE_COST,
 		obj.getName());
     }
 
@@ -456,13 +456,13 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 
 	// Direct cost.
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(oldCost.getProject()));
-	EstimateCostType costType = oldCost.getCostType();
-	if (costType == EstimateCostType.DIRECT) {
+	TypeEstimateCost costType = oldCost.getCostType();
+	if (costType == TypeEstimateCost.DIRECT) {
 	    aux.setGrandTotalCostsDirect(aux.getGrandTotalCostsDirect() - oldEstimatedCost);
 	    aux.setGrandTotalActualCostsDirect(aux.getGrandTotalActualCostsDirect() - oldActualCost);
 	}
 	// If cost is indirect.
-	else if (costType == EstimateCostType.INDIRECT) {
+	else if (costType == TypeEstimateCost.INDIRECT) {
 	    aux.setGrandTotalCostsIndirect(aux.getGrandTotalCostsIndirect() - oldEstimatedCost);
 	    aux.setGrandTotalActualCostsIndirect(aux.getGrandTotalActualCostsIndirect() - oldActualCost);
 	}

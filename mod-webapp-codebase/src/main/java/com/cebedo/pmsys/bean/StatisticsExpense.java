@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import com.cebedo.pmsys.domain.AbstractExpense;
+import com.cebedo.pmsys.base.AbstractExpense;
 
 public class StatisticsExpense extends SummaryStatistics {
 

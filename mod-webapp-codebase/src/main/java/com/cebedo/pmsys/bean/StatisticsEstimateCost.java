@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.cebedo.pmsys.domain.EstimateCost;
-import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -60,7 +60,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
 	for (EstimateCost est : this.estimates) {
 
 	    double difference = est.getCost() - est.getActualCost();
-	    if (est.getCostType() == EstimateCostType.DIRECT) {
+	    if (est.getCostType() == TypeEstimateCost.DIRECT) {
 		this.estimatesDirect.add(est);
 		this.differencesDirect.put(est, difference);
 		this.absDiffDirect.put(est, Math.abs(difference));
@@ -81,7 +81,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
     }
 
     private void initActualOverall() {
-	initValues(EstimateCostType.SUB_TYPE_ACTUAL);
+	initValues(TypeEstimateCost.SUB_TYPE_ACTUAL);
 	this.meanActualOverall = getMean();
 	clear();
     }
@@ -176,7 +176,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
     public ImmutableList<Entry<EstimateCost, Double>> sortDifferences(Map<EstimateCost, Double> toSort,
 	    Integer limit, SortOrder order) {
 	ArrayList<Entry<EstimateCost, Double>> entryList = Lists.newArrayList(toSort.entrySet());
-	Collections.sort(entryList, new ComparatorMapEntry(order));
+	Collections.sort(entryList, new OrderingObjectNumberMap(order));
 	if (limit != null) {
 	    return FluentIterable.from(entryList).limit(limit).toList();
 	}
@@ -187,8 +187,8 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * Initialize data.
      */
     private void initActualIndirect() {
-	EstimateCostType costType = EstimateCostType.INDIRECT;
-	int subType = EstimateCostType.SUB_TYPE_ACTUAL;
+	TypeEstimateCost costType = TypeEstimateCost.INDIRECT;
+	int subType = TypeEstimateCost.SUB_TYPE_ACTUAL;
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
@@ -202,8 +202,8 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * Initialize data.
      */
     private void initPlannedIndirect() {
-	EstimateCostType costType = EstimateCostType.INDIRECT;
-	int subType = EstimateCostType.SUB_TYPE_PLANNED;
+	TypeEstimateCost costType = TypeEstimateCost.INDIRECT;
+	int subType = TypeEstimateCost.SUB_TYPE_PLANNED;
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
@@ -217,8 +217,8 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * Initialize data.
      */
     private void initActualDirect() {
-	EstimateCostType costType = EstimateCostType.DIRECT;
-	int subType = EstimateCostType.SUB_TYPE_ACTUAL;
+	TypeEstimateCost costType = TypeEstimateCost.DIRECT;
+	int subType = TypeEstimateCost.SUB_TYPE_ACTUAL;
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
@@ -232,7 +232,7 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * Initialize data.
      */
     private void initPlannedOverall() {
-	initValues(EstimateCostType.SUB_TYPE_PLANNED);
+	initValues(TypeEstimateCost.SUB_TYPE_PLANNED);
 	this.meanPlannedOverall = getMean();
 	clear();
     }
@@ -241,8 +241,8 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * Initialize data.
      */
     private void initPlannedDirect() {
-	EstimateCostType costType = EstimateCostType.DIRECT;
-	int subType = EstimateCostType.SUB_TYPE_PLANNED;
+	TypeEstimateCost costType = TypeEstimateCost.DIRECT;
+	int subType = TypeEstimateCost.SUB_TYPE_PLANNED;
 	initValues(costType, subType);
 	double max = getMax();
 	double min = getMin();
@@ -260,11 +260,11 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * @param subType
      * @return
      */
-    private List<EstimateCost> matchingList(double comparator, EstimateCostType costType, int subType) {
+    private List<EstimateCost> matchingList(double comparator, TypeEstimateCost costType, int subType) {
 	List<EstimateCost> returnList = new ArrayList<EstimateCost>();
-	for (EstimateCost expense : (costType == EstimateCostType.DIRECT ? this.estimatesDirect
+	for (EstimateCost expense : (costType == TypeEstimateCost.DIRECT ? this.estimatesDirect
 		: this.estimatesIndirect)) {
-	    double cost = subType == EstimateCostType.SUB_TYPE_PLANNED ? expense.getCost()
+	    double cost = subType == TypeEstimateCost.SUB_TYPE_PLANNED ? expense.getCost()
 		    : expense.getActualCost();
 	    if (comparator == cost) {
 		returnList.add(expense);
@@ -283,11 +283,11 @@ public class StatisticsEstimateCost extends SummaryStatistics {
      * @param costType
      * @param subType
      */
-    private void initValues(EstimateCostType costType, int subType) {
+    private void initValues(TypeEstimateCost costType, int subType) {
 	for (EstimateCost expense : costType == null ? this.estimates
-		: (costType == EstimateCostType.DIRECT ? this.estimatesDirect
+		: (costType == TypeEstimateCost.DIRECT ? this.estimatesDirect
 			: this.estimatesIndirect)) {
-	    if (subType == EstimateCostType.SUB_TYPE_PLANNED) {
+	    if (subType == TypeEstimateCost.SUB_TYPE_PLANNED) {
 		addValue(expense.getCost());
 	    } else {
 		addValue(expense.getActualCost());
@@ -328,24 +328,24 @@ public class StatisticsEstimateCost extends SummaryStatistics {
     }
 
     public ImmutableList<EstimateCost> getSortedActualIndirect(SortOrder order, Integer limit) {
-	return sortList(this.estimatesIndirect, EstimateCostType.SUB_TYPE_ACTUAL, order, limit);
+	return sortList(this.estimatesIndirect, TypeEstimateCost.SUB_TYPE_ACTUAL, order, limit);
     }
 
     public ImmutableList<EstimateCost> getSortedPlannedIndirect(SortOrder order, Integer limit) {
-	return sortList(this.estimatesIndirect, EstimateCostType.SUB_TYPE_PLANNED, order, limit);
+	return sortList(this.estimatesIndirect, TypeEstimateCost.SUB_TYPE_PLANNED, order, limit);
     }
 
     public ImmutableList<EstimateCost> getSortedActualDirect(SortOrder order, Integer limit) {
-	return sortList(this.estimatesDirect, EstimateCostType.SUB_TYPE_ACTUAL, order, limit);
+	return sortList(this.estimatesDirect, TypeEstimateCost.SUB_TYPE_ACTUAL, order, limit);
     }
 
     public ImmutableList<EstimateCost> getSortedPlannedDirect(SortOrder order, Integer limit) {
-	return sortList(this.estimatesDirect, EstimateCostType.SUB_TYPE_PLANNED, order, limit);
+	return sortList(this.estimatesDirect, TypeEstimateCost.SUB_TYPE_PLANNED, order, limit);
     }
 
     private ImmutableList<EstimateCost> sortList(List<EstimateCost> estCosts, int subType,
 	    SortOrder order, Integer limit) {
-	Collections.sort(estCosts, new ComparatorEstimateCost(subType, order));
+	Collections.sort(estCosts, new OrderingEstimateCost(subType, order));
 	return limit == null ? FluentIterable.from(estCosts).toList()
 		: FluentIterable.from(estCosts).limit(limit).toList();
     }

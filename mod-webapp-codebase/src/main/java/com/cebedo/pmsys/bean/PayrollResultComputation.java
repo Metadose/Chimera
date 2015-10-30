@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -18,7 +18,7 @@ public class PayrollResultComputation implements Serializable {
     private Date startDate, endDate;
     private Map<Staff, Double> staffToWageMap = new HashMap<Staff, Double>();
     private double overallTotalOfStaff = 0;
-    private Map<Staff, Map<AttendanceStatus, PairCountValue>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, PairCountValue>>();
+    private Map<Staff, Map<StatusAttendance, PairCountValue>> staffPayrollBreakdownMap = new HashMap<Staff, Map<StatusAttendance, PairCountValue>>();
     private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
     public void setStartDate(Date startDate) {
@@ -38,7 +38,7 @@ public class PayrollResultComputation implements Serializable {
     }
 
     public void setStaffPayrollBreakdownMap(
-	    Map<Staff, Map<AttendanceStatus, PairCountValue>> staffPayrollBreakdownMap) {
+	    Map<Staff, Map<StatusAttendance, PairCountValue>> staffPayrollBreakdownMap) {
 	this.staffPayrollBreakdownMap = staffPayrollBreakdownMap;
     }
 
@@ -66,7 +66,7 @@ public class PayrollResultComputation implements Serializable {
 	return NumberFormatUtils.getCurrencyFormatter().format(overallTotalOfStaff);
     }
 
-    public Map<Staff, Map<AttendanceStatus, PairCountValue>> getStaffPayrollBreakdownMap() {
+    public Map<Staff, Map<StatusAttendance, PairCountValue>> getStaffPayrollBreakdownMap() {
 	return staffPayrollBreakdownMap;
     }
 

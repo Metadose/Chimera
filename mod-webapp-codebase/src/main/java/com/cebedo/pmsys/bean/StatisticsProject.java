@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import com.cebedo.pmsys.domain.AbstractExpense;
+import com.cebedo.pmsys.base.AbstractExpense;
+import com.cebedo.pmsys.base.IExpense;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.Expense;
-import com.cebedo.pmsys.domain.IExpense;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.FluentIterable;
@@ -226,7 +226,7 @@ public class StatisticsProject extends SummaryStatistics {
      */
     private ImmutableList<IExpense> sortByCostInterface(List<IExpense> objList, Integer maxCount,
 	    SortOrder order) {
-	Collections.sort(objList, new ComparatorExpenseI(order));
+	Collections.sort(objList, new OrderingIExpense(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}
@@ -243,7 +243,7 @@ public class StatisticsProject extends SummaryStatistics {
      */
     private ImmutableList<? extends Object> sortByCostAbstract(List<? extends AbstractExpense> objList,
 	    Integer maxCount, SortOrder order) {
-	Collections.sort(objList, new ComparatorExpenseA(order));
+	Collections.sort(objList, new OrderingAbstractExpense(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}

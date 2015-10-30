@@ -7,8 +7,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.bean.EstimateComputationBean;
-import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.bean.EstimateComputation;
+import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.model.Company;
@@ -35,7 +36,7 @@ public class EstimationOutput implements IDomainObject {
     /**
      * Output.
      */
-    private List<EstimateComputationBean> estimateComputationBeans;
+    private List<EstimateComputation> estimateComputationBeans;
     private String estimatesAsJson;
     private TableEstimationAllowance estimationAllowance;
     private Date lastComputed;
@@ -76,7 +77,7 @@ public class EstimationOutput implements IDomainObject {
 	;
     }
 
-    public EstimationOutput(EstimateComputationInputBean estimateInput) {
+    public EstimationOutput(EstimateComputationInput estimateInput) {
 	Project proj = estimateInput.getProject();
 	setCompany(proj.getCompany());
 	setProject(proj);
@@ -115,11 +116,11 @@ public class EstimationOutput implements IDomainObject {
 	this.estimationAllowance = estimationAllowance;
     }
 
-    public List<EstimateComputationBean> getEstimates() {
+    public List<EstimateComputation> getEstimates() {
 	return estimateComputationBeans;
     }
 
-    public void setEstimates(List<EstimateComputationBean> estimateComputationBeans) {
+    public void setEstimates(List<EstimateComputation> estimateComputationBeans) {
 	this.estimateComputationBeans = estimateComputationBeans;
     }
 
@@ -185,8 +186,8 @@ public class EstimationOutput implements IDomainObject {
 	this.remarks = StringUtils.trim(remarks);
     }
 
-    public void setResults(EstimateComputationInputBean estimateInput,
-	    List<EstimateComputationBean> estimates2, String rowListJson) {
+    public void setResults(EstimateComputationInput estimateInput,
+	    List<EstimateComputation> estimates2, String rowListJson) {
 	setName(estimateInput.getName());
 	setRemarks(estimateInput.getRemarks());
 	setEstimates(estimates2);

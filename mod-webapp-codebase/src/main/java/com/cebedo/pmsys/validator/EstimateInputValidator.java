@@ -5,7 +5,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.helper.ValidationHelper;
 
 @Component
@@ -15,7 +15,7 @@ public class EstimateInputValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-	return EstimateComputationInputBean.class.isAssignableFrom(clazz);
+	return EstimateComputationInput.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class EstimateInputValidator implements Validator {
 	    this.validationHelper.rejectMissingRequiredFields(errors);
 	    return;
 	}
-	EstimateComputationInputBean targetObj = (EstimateComputationInputBean) target;
+	EstimateComputationInput targetObj = (EstimateComputationInput) target;
 	MultipartFile file = targetObj.getEstimationFile();
 	String name = targetObj.getName();
 	String remarks = targetObj.getRemarks();

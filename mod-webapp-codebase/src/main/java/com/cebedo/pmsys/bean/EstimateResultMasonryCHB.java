@@ -17,7 +17,7 @@ public class EstimateResultMasonryCHB implements Serializable {
 	;
     }
 
-    public EstimateResultMasonryCHB(EstimateComputationBean estimateComputationBean, double totalCHB2) {
+    public EstimateResultMasonryCHB(EstimateComputation estimateComputationBean, double totalCHB2) {
 	setTotalCHB(totalCHB2);
 	setCostCHB(this.totalCHB * estimateComputationBean.getCostPerUnitCHB());
     }

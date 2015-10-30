@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.AbstractExpense;
+import com.cebedo.pmsys.base.IDomainObject;
+import com.cebedo.pmsys.base.IExpense;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;

@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.GeneratorHSSFWorkbook;
 import com.cebedo.pmsys.bean.StatisticsEstimateCost;
 import com.cebedo.pmsys.bean.StatisticsProgramOfWorks;
 import com.cebedo.pmsys.bean.StatisticsProject;
@@ -39,12 +38,14 @@ import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.CalendarEventType;
-import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.TypeCalendarEvent;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
+import com.cebedo.pmsys.factory.HSSFWorkbookFactory;
 import com.cebedo.pmsys.enums.SortOrder;
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -56,7 +57,7 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Task.TaskSubType;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.service.EstimateCostService;
@@ -66,7 +67,6 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.MultipartFileValidator;
 import com.cebedo.pmsys.validator.ProjectValidator;
@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private ProjectDAO projectDAO;
     private CompanyDAO companyDAO;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
     private StaffService staffService;
     private TaskService taskService;
     private EstimateCostService estimateCostService;
@@ -134,7 +134,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.staffService = staffService;
     }
 
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
@@ -159,7 +159,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -172,7 +172,7 @@ public class ProjectServiceImpl implements ProjectService {
 	List<EstimateCost> costs = this.estimateCostService.convertExcelToCostList(multipartFile,
 		project);
 	if (costs == null) {
-	    return AlertBoxGenerator.FAILED
+	    return AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
@@ -185,7 +185,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    String name = cost.getName();
 	    double estimatedCost = cost.getCost();
 	    double actualCost = cost.getActualCost();
-	    EstimateCostType costType = cost.getCostType();
+	    TypeEstimateCost costType = cost.getCostType();
 	    boolean include = true;
 
 	    // Check for existing.
@@ -193,7 +193,7 @@ public class ProjectServiceImpl implements ProjectService {
 		String projName = projCost.getName();
 		double projEstimatedCost = projCost.getCost();
 		double projActualCost = projCost.getActualCost();
-		EstimateCostType projCostType = projCost.getCostType();
+		TypeEstimateCost projCostType = projCost.getCostType();
 
 		// If we found a match from the project tasks,
 		// break. Don't include to list to commit.
@@ -216,7 +216,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    return invalid;
 	}
 
-	return AlertBoxGenerator.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_ESTIMATE_COST);
+	return AlertBoxFactory.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_ESTIMATE_COST);
     }
 
     /**
@@ -229,7 +229,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -241,7 +241,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Do service.
 	List<Task> tasks = this.taskService.convertExcelToTaskList(multipartFile, project);
 	if (tasks == null) {
-	    return AlertBoxGenerator.FAILED
+	    return AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
@@ -285,7 +285,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    return invalid;
 	}
 
-	return AlertBoxGenerator.SUCCESS.generateAssignEntries(Task.OBJECT_NAME);
+	return AlertBoxFactory.SUCCESS.generateAssignEntries(Task.OBJECT_NAME);
     }
 
     /**
@@ -313,7 +313,7 @@ public class ProjectServiceImpl implements ProjectService {
 		project.getName());
 
 	// Return success response.
-	return AlertBoxGenerator.SUCCESS.generateCreate(Project.OBJECT_NAME, project.getName());
+	return AlertBoxFactory.SUCCESS.generateCreate(Project.OBJECT_NAME, project.getName());
     }
 
     /**
@@ -326,7 +326,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -344,7 +344,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Invalid file.
 	if (staffList == null) {
-	    return AlertBoxGenerator.FAILED
+	    return AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
@@ -353,7 +353,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// There was a problem with the list of staff you provided. Please
 	// review the list and try again.
 	if (staffList == null) {
-	    return AlertBoxGenerator.FAILED
+	    return AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_STAFF_MASS_UPLOAD_GENERIC);
 	}
 
@@ -364,7 +364,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// If everything's ok.
 	assignAllStaffToProject(proj, staffList);
 
-	return AlertBoxGenerator.SUCCESS.generateCreateEntries(Staff.OBJECT_NAME);
+	return AlertBoxFactory.SUCCESS.generateCreateEntries(Staff.OBJECT_NAME);
     }
 
     /**
@@ -394,7 +394,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -417,7 +417,7 @@ public class ProjectServiceImpl implements ProjectService {
 		"", "", project, project.getName());
 
 	// Response for the user.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
+	return AlertBoxFactory.SUCCESS.generateUpdate(Project.OBJECT_NAME, project.getName());
     }
 
     @Override
@@ -469,7 +469,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// If authorized, do actual service.
@@ -492,7 +492,7 @@ public class ProjectServiceImpl implements ProjectService {
 		project.getName());
 
 	// Success response.
-	return AlertBoxGenerator.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
+	return AlertBoxFactory.SUCCESS.generateDelete(Project.OBJECT_NAME, project.getName());
     }
 
     @Override
@@ -579,27 +579,27 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Transactional
     @Override
-    public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj) {
+    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj) {
 
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return new HashMap<TaskStatus, Integer>();
+	    return new HashMap<StatusTask, Integer>();
 	}
 
 	// Log.
 	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_MAP, Project.OBJECT_NAME,
-		proj.getId(), TaskStatus.class.getName());
+		proj.getId(), StatusTask.class.getName());
 
 	// Get summary of tasks.
 	// For each task status, count how many.
-	Map<TaskStatus, Integer> taskStatusMap = new HashMap<TaskStatus, Integer>();
-	Map<TaskStatus, Integer> taskStatusMapSorted = new LinkedHashMap<TaskStatus, Integer>();
+	Map<StatusTask, Integer> taskStatusMap = new HashMap<StatusTask, Integer>();
+	Map<StatusTask, Integer> taskStatusMapSorted = new LinkedHashMap<StatusTask, Integer>();
 
 	// Get the tasks (children) of each parent.
 	for (Task task : proj.getAssignedTasks()) {
 	    int taskStatusInt = task.getStatus();
-	    TaskStatus taskStatus = TaskStatus.of(taskStatusInt);
+	    StatusTask taskStatus = StatusTask.of(taskStatusInt);
 	    Integer statCount = taskStatusMap.get(taskStatus) == null ? 1
 		    : taskStatusMap.get(taskStatus) + 1;
 	    taskStatusMap.put(taskStatus, statCount);
@@ -607,7 +607,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// If status count is null,
 	// Add it as zero.
-	for (TaskStatus status : TaskStatus.class.getEnumConstants()) {
+	for (StatusTask status : StatusTask.class.getEnumConstants()) {
 	    Integer count = taskStatusMap.get(status);
 	    taskStatusMapSorted.put(status, count == null ? 0 : count);
 	}
@@ -644,7 +644,7 @@ public class ProjectServiceImpl implements ProjectService {
 	    event.setId(Task.OBJECT_NAME + "-" + start + "-" + StringUtils.remove(name, " "));
 	    event.setTitle("(Task) " + name);
 	    event.setStart(start);
-	    event.setClassName(CalendarEventType.TASK.css());
+	    event.setClassName(TypeCalendarEvent.TASK.css());
 
 	    // Get the end date.
 	    String end = "";
@@ -679,7 +679,7 @@ public class ProjectServiceImpl implements ProjectService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(),
@@ -691,7 +691,7 @@ public class ProjectServiceImpl implements ProjectService {
 	this.projectDAO.update(project);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateMarkAs(Project.OBJECT_NAME, project.getName());
+	return AlertBoxFactory.SUCCESS.generateMarkAs(Project.OBJECT_NAME, project.getName());
     }
 
     @Override
@@ -880,7 +880,7 @@ public class ProjectServiceImpl implements ProjectService {
 	double actualProjCost = actualDirect + actualIndirect;
 
 	// Construct essentials.
-	GeneratorHSSFWorkbook xlsGen = new GeneratorHSSFWorkbook();
+	HSSFWorkbookFactory xlsGen = new HSSFWorkbookFactory();
 
 	// Basic details and physical target.
 	// Project estimate (Time).
@@ -914,7 +914,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param xlsGen
      * @param proj
      */
-    private void xlsAnalysisProgramOfWorks(GeneratorHSSFWorkbook xlsGen, Project proj) {
+    private void xlsAnalysisProgramOfWorks(HSSFWorkbookFactory xlsGen, Project proj) {
 	String sheetName = "Program of Works";
 
 	Set<Task> tasks = proj.getAssignedTasks();
@@ -946,7 +946,7 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Task Total & Percentage",
 		"How many tasks are set for each task status?");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Status", "Total", "Percentage (%)");
-	Map<TaskStatus, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
+	Map<StatusTask, Integer> taskStatusCountMap = getTaskStatusCountMap(proj);
 	xlsGen.addRowsTaskCount(sheetName, taskStatusCountMap, tasksPopulation);
 	xlsGen.addRowEmpty(sheetName);
 
@@ -989,7 +989,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualProjCost
      * @param projCost
      */
-    private void xlsAnalysisOverview(GeneratorHSSFWorkbook xlsGen, String sheetName, Project proj,
+    private void xlsAnalysisOverview(HSSFWorkbookFactory xlsGen, String sheetName, Project proj,
 	    double projCost, double actualProjCost) {
 
 	// Basic details.
@@ -1045,7 +1045,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param xlsGen
      * @param proj
      */
-    private void xlsAnalysisExpenses(GeneratorHSSFWorkbook xlsGen, Project proj) {
+    private void xlsAnalysisExpenses(HSSFWorkbookFactory xlsGen, Project proj) {
 
 	// Compute data.
 	List<ProjectPayroll> payrolls = this.projectPayrollService.listDesc(proj);
@@ -1114,7 +1114,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param sheetName
      * @param proj
      */
-    private void xlsAnalysisStaff(GeneratorHSSFWorkbook xlsGen, Project proj) {
+    private void xlsAnalysisStaff(HSSFWorkbookFactory xlsGen, Project proj) {
 
 	String sheetName = "Staff";
 
@@ -1141,17 +1141,17 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means",
 		"Average number of attendances per type of attendance");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Attendance Type", "Mean");
-	double meanAbsences = statisticsStaff.getMeanOf(AttendanceStatus.ABSENT);
-	double meanOvertime = statisticsStaff.getMeanOf(AttendanceStatus.OVERTIME);
-	double meanLate = statisticsStaff.getMeanOf(AttendanceStatus.LATE);
-	double meanHalfday = statisticsStaff.getMeanOf(AttendanceStatus.HALFDAY);
-	double meanLeave = statisticsStaff.getMeanOf(AttendanceStatus.LEAVE);
+	double meanAbsences = statisticsStaff.getMeanOf(StatusAttendance.ABSENT);
+	double meanOvertime = statisticsStaff.getMeanOf(StatusAttendance.OVERTIME);
+	double meanLate = statisticsStaff.getMeanOf(StatusAttendance.LATE);
+	double meanHalfday = statisticsStaff.getMeanOf(StatusAttendance.HALFDAY);
+	double meanLeave = statisticsStaff.getMeanOf(StatusAttendance.LEAVE);
 
-	xlsGen.addRow(sheetName, AttendanceStatus.ABSENT.label(), meanAbsences);
-	xlsGen.addRow(sheetName, AttendanceStatus.OVERTIME.label(), meanOvertime);
-	xlsGen.addRow(sheetName, AttendanceStatus.LATE.label(), meanLate);
-	xlsGen.addRow(sheetName, AttendanceStatus.HALFDAY.label(), meanHalfday);
-	xlsGen.addRow(sheetName, AttendanceStatus.LEAVE.label(), meanLeave);
+	xlsGen.addRow(sheetName, StatusAttendance.ABSENT.label(), meanAbsences);
+	xlsGen.addRow(sheetName, StatusAttendance.OVERTIME.label(), meanOvertime);
+	xlsGen.addRow(sheetName, StatusAttendance.LATE.label(), meanLate);
+	xlsGen.addRow(sheetName, StatusAttendance.HALFDAY.label(), meanHalfday);
+	xlsGen.addRow(sheetName, StatusAttendance.LEAVE.label(), meanLeave);
 
 	// Staff list with the most per attendance. Get top 5.
 	// Top 5 staff member per attendance status.
@@ -1177,7 +1177,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param sheetName
      * @param proj
      */
-    private void xlsAnalysisProgress(GeneratorHSSFWorkbook xlsGen, String sheetName, Project proj) {
+    private void xlsAnalysisProgress(HSSFWorkbookFactory xlsGen, String sheetName, Project proj) {
 
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Progress");
 
@@ -1244,7 +1244,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param actualIndirect
      * @param actualProjCost
      */
-    private void xlsAnalysisEstimateCost(GeneratorHSSFWorkbook xlsGen, Project proj,
+    private void xlsAnalysisEstimateCost(HSSFWorkbookFactory xlsGen, Project proj,
 	    double plannedDirect, double plannedIndirect, double plannedProjCost, double actualDirect,
 	    double actualIndirect, double actualProjCost) {
 
@@ -1310,14 +1310,14 @@ public class ProjectServiceImpl implements ProjectService {
 		"Estimate(s) with the MOST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxPlannedDirect(),
-		EstimateCostType.SUB_TYPE_PLANNED);
+		TypeEstimateCost.SUB_TYPE_PLANNED);
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxPlannedIndirect(),
-		EstimateCostType.SUB_TYPE_PLANNED);
+		TypeEstimateCost.SUB_TYPE_PLANNED);
 	if (proj.isCompleted()) {
 	    xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxActualDirect(),
-		    EstimateCostType.SUB_TYPE_ACTUAL);
+		    TypeEstimateCost.SUB_TYPE_ACTUAL);
 	    xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMaxActualIndirect(),
-		    EstimateCostType.SUB_TYPE_ACTUAL);
+		    TypeEstimateCost.SUB_TYPE_ACTUAL);
 	}
 
 	// Minimum costs.
@@ -1326,14 +1326,14 @@ public class ProjectServiceImpl implements ProjectService {
 		"Estimate(s) with the LEAST expensive cost");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Name", "Cost", "Type", "Cost Type");
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinPlannedDirect(),
-		EstimateCostType.SUB_TYPE_PLANNED);
+		TypeEstimateCost.SUB_TYPE_PLANNED);
 	xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinPlannedIndirect(),
-		EstimateCostType.SUB_TYPE_PLANNED);
+		TypeEstimateCost.SUB_TYPE_PLANNED);
 	if (proj.isCompleted()) {
 	    xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinActualDirect(),
-		    EstimateCostType.SUB_TYPE_ACTUAL);
+		    TypeEstimateCost.SUB_TYPE_ACTUAL);
 	    xlsGen.addRowsEstimateCosts(sheetName, statEstimates.getMinActualIndirect(),
-		    EstimateCostType.SUB_TYPE_ACTUAL);
+		    TypeEstimateCost.SUB_TYPE_ACTUAL);
 	}
 
 	Integer limit = 5;
@@ -1345,7 +1345,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    "Most over and underestimated costs");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
-		    EstimateCostType.SUB_TYPE_ABSOLUTE, SortOrder.DESCENDING, limit);
+		    TypeEstimateCost.SUB_TYPE_ABSOLUTE, SortOrder.DESCENDING, limit);
 	}
 
 	// Top entries.
@@ -1368,7 +1368,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    "Greatest differences (estimated minus actual) in descending order");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
-		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.DESCENDING, limit);
+		    TypeEstimateCost.SUB_TYPE_DIFFERENCE, SortOrder.DESCENDING, limit);
 
 	    // Bottom absolute differences (planned - actual) of direct.
 	    xlsGen.addRowEmpty(sheetName, 2);
@@ -1376,7 +1376,7 @@ public class ProjectServiceImpl implements ProjectService {
 		    "Least differences (estimated minus actual) in ascending order");
 	    xlsGen.addRowEmpty(sheetName);
 	    xlsGen.addStatisticsEstimatesComputed(sheetName, statEstimates,
-		    EstimateCostType.SUB_TYPE_DIFFERENCE, SortOrder.ASCENDING, limit);
+		    TypeEstimateCost.SUB_TYPE_DIFFERENCE, SortOrder.ASCENDING, limit);
 	}
     }
 

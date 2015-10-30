@@ -20,7 +20,7 @@ public class EstimateResultMRPostColumn implements Serializable {
 	;
     }
 
-    public EstimateResultMRPostColumn(EstimateComputationBean estimateComputationBean,
+    public EstimateResultMRPostColumn(EstimateComputation estimateComputationBean,
 	    double estBarsToBuy, double lengthToUse, double estTieWireKilos, double estTieWireRolls) {
 
 	setSteelBarLength(lengthToUse);

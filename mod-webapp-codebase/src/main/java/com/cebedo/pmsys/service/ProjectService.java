@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.enums.ProjectStatus;
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusProject;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Project;
 
@@ -39,14 +39,6 @@ public interface ProjectService {
     public String create(Project project, BindingResult result);
 
     /**
-     * Get a project given an ID.
-     * 
-     * @param projectID
-     * @return
-     */
-    public Project getByID(long projectID);
-
-    /**
      * Update a project.
      * 
      * @param project
@@ -64,18 +56,6 @@ public interface ProjectService {
      */
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY')")
     public String delete(long id);
-
-    public List<Project> list();
-
-    public List<Project> listWithAllCollections();
-
-    public Project getByIDWithAllCollections(long id);
-
-    public String getGanttJSON(Project proj);
-
-    public Map<TaskStatus, Integer> getTaskStatusCountMap(Project proj);
-
-    public String getCalendarJSON(Project proj);
 
     /**
      * Mass create and assign staff members.
@@ -129,6 +109,20 @@ public interface ProjectService {
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'LOGS_VIEW')")
     public Set<AuditLog> logs(long projectID);
 
+    public Project getByID(long projectID);
+
+    public List<Project> list();
+
+    public List<Project> listWithAllCollections();
+
+    public Project getByIDWithAllCollections(long id);
+
+    public String getGanttJSON(Project proj);
+
+    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj);
+
+    public String getCalendarJSON(Project proj);
+
     /**
      * Export an {@link HSSFWorkbook} Excel XLS file containing a
      * {@link Project} analysis from start to end {@link Date}.
@@ -143,9 +137,9 @@ public interface ProjectService {
     /**
      * Export an {@link HSSFWorkbook} Excel XLS file containing a balance sheet
      * <br>
-     * from start to end (if project is {@link ProjectStatus#COMPLETED}) or<br>
-     * from start to current {@link Date} (if {@link ProjectStatus#NEW} or
-     * {@link ProjectStatus#ONGOING}).
+     * from start to end (if project is {@link StatusProject#COMPLETED}) or<br>
+     * from start to current {@link Date} (if {@link StatusProject#NEW} or
+     * {@link StatusProject#ONGOING}).
      * 
      * @param projectID
      *            ID of the {@link Project}.

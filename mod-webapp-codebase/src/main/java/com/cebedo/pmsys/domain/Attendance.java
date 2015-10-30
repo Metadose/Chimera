@@ -2,8 +2,9 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Date;
 
+import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -17,7 +18,7 @@ public class Attendance implements IDomainObject {
     private Project project;
     private Staff staff;
     private Date date;
-    private AttendanceStatus status;
+    private StatusAttendance status;
 
     private double wage;
 
@@ -44,7 +45,7 @@ public class Attendance implements IDomainObject {
 	setStaff(stf);
     }
 
-    public Attendance(Company coID, Project project, Staff stf, AttendanceStatus stat, Date tstamp,
+    public Attendance(Company coID, Project project, Staff stf, StatusAttendance stat, Date tstamp,
 	    double w) {
 	setCompany(coID);
 	setProject(project);
@@ -86,11 +87,11 @@ public class Attendance implements IDomainObject {
 	this.date = d;
     }
 
-    public AttendanceStatus getStatus() {
+    public StatusAttendance getStatus() {
 	return status;
     }
 
-    public void setStatus(AttendanceStatus status) {
+    public void setStatus(StatusAttendance status) {
 	this.status = status;
     }
 

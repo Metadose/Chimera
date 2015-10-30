@@ -3,8 +3,8 @@ package com.cebedo.pmsys.bean;
 import java.io.Serializable;
 
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.listener.AuditMessageListener;
-import com.cebedo.pmsys.listener.LogMessageListener;
+import com.cebedo.pmsys.listener.AuditMessageListenerImpl;
+import com.cebedo.pmsys.listener.LogMessageListenerImpl;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -13,7 +13,7 @@ public class JMSMessage implements Serializable {
 
     private static final long serialVersionUID = 1678239421332274417L;
     public static final String DESTINATIONS = String.format("%s,%s",
-	    AuditMessageListener.MESSAGE_DESTINATION, LogMessageListener.MESSAGE_DESTINATION);
+	    AuditMessageListenerImpl.MESSAGE_DESTINATION, LogMessageListenerImpl.MESSAGE_DESTINATION);
 
     // Who?
     private AuthenticationToken auth;

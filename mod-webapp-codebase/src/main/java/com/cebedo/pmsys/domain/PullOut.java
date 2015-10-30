@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IDomainObject;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;

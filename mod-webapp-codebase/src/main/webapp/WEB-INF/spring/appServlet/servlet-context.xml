@@ -35,7 +35,7 @@
 		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		
 	<context:property-placeholder location="classpath:system.properties"/>
-	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.dao.AuditLogDAOImpl">
+	<beans:bean id="auditLogDAO" class="com.cebedo.pmsys.dao.impl.AuditLogDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     
@@ -73,11 +73,11 @@
         <beans:constructor-arg index="0" ref="jmsTemplate" />
     </beans:bean>
     
-	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.MessageListenerImpl"/>
-	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListener">
+	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.DefaultMessageListenerImpl"/>
+	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListenerImpl">
 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
 	</beans:bean>
-	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListener"/>
+	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListenerImpl"/>
     <jms:listener-container
 	      container-type="default"
 	      connection-factory="connectionFactory"
@@ -170,7 +170,7 @@
   		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
   		
 	<!-- Custom authentication manager. In order to authenticate, username and password must not be the same -->
-	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.manager.CustomAuthenticationManager" />
+	<beans:bean id="customAuthenticationManager" class="com.cebedo.pmsys.manager.AuthenticationManagerImpl" />
  	
  	<!-- We just actually need to set the default failure url here -->
  	<beans:bean id="customAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
@@ -252,7 +252,7 @@
     </beans:bean>
      
     <!-- Project -->
-    <beans:bean id="projectDAO" class="com.cebedo.pmsys.dao.ProjectDAOImpl">
+    <beans:bean id="projectDAO" class="com.cebedo.pmsys.dao.impl.ProjectDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="projectService" class="com.cebedo.pmsys.service.impl.ProjectServiceImpl">
@@ -268,7 +268,7 @@
     </beans:bean>
     
     <!-- Staff -->
-    <beans:bean id="staffDAO" class="com.cebedo.pmsys.dao.StaffDAOImpl">
+    <beans:bean id="staffDAO" class="com.cebedo.pmsys.dao.impl.StaffDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="staffService" class="com.cebedo.pmsys.service.impl.StaffServiceImpl">
@@ -277,7 +277,7 @@
     </beans:bean>
     
     <!-- Task -->
-    <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.TaskDAOImpl">
+    <beans:bean id="taskDAO" class="com.cebedo.pmsys.dao.impl.TaskDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="taskService" class="com.cebedo.pmsys.service.impl.TaskServiceImpl">
@@ -287,7 +287,7 @@
     </beans:bean>
     
     <!-- Field -->
-    <beans:bean id="fieldDAO" class="com.cebedo.pmsys.dao.FieldDAOImpl">
+    <beans:bean id="fieldDAO" class="com.cebedo.pmsys.dao.impl.FieldDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="fieldService" class="com.cebedo.pmsys.service.impl.FieldServiceImpl">
@@ -296,7 +296,7 @@
     </beans:bean>
     
 	<!-- System Configuration -->    
-    <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.dao.SystemConfigurationDAOImpl">
+    <beans:bean id="systemConfigurationDAO" class="com.cebedo.pmsys.dao.impl.SystemConfigurationDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="systemConfigurationService" class="com.cebedo.pmsys.service.impl.SystemConfigurationServiceImpl">
@@ -309,7 +309,7 @@
     </beans:bean>
     
     <!-- System User -->
-    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.dao.SystemUserDAOImpl">
+    <beans:bean id="systemUserDAO" class="com.cebedo.pmsys.dao.impl.SystemUserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="systemUserService" class="com.cebedo.pmsys.service.impl.SystemUserServiceImpl">
@@ -319,7 +319,7 @@
     </beans:bean>
     
     <!-- Company -->
-    <beans:bean id="companyDAO" class="com.cebedo.pmsys.dao.CompanyDAOImpl">
+    <beans:bean id="companyDAO" class="com.cebedo.pmsys.dao.impl.CompanyDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
     <beans:bean id="companyService" class="com.cebedo.pmsys.service.impl.CompanyServiceImpl">
@@ -336,19 +336,19 @@
  	<!-- *********************************************************** -->
     
     <!-- User Auxiliary -->
-    <beans:bean id="userAuxValueRepo" class="com.cebedo.pmsys.repository.UserAuxValueRepo"></beans:bean>
+    <beans:bean id="userAuxValueRepo" class="com.cebedo.pmsys.repository.impl.UserAuxValueRepoImpl"></beans:bean>
 
     <!-- Estimate Cost -->
     <beans:bean id="estimateCostService" class="com.cebedo.pmsys.service.impl.EstimateCostServiceImpl"></beans:bean>
-    <beans:bean id="estimateCostValueRepo" class="com.cebedo.pmsys.repository.EstimateCostValueRepo"></beans:bean>
+    <beans:bean id="estimateCostValueRepo" class="com.cebedo.pmsys.repository.impl.EstimateCostValueRepoImpl"></beans:bean>
     
     <!-- Expense -->
     <beans:bean id="expenseService" class="com.cebedo.pmsys.service.impl.ExpenseServiceImpl"></beans:bean>
-    <beans:bean id="expenseValueRepo" class="com.cebedo.pmsys.repository.ExpenseValueRepo"></beans:bean>
+    <beans:bean id="expenseValueRepo" class="com.cebedo.pmsys.repository.impl.ExpenseValueRepoImpl"></beans:bean>
 
     <!-- Equipment Expense -->
     <beans:bean id="equipmentExpenseService" class="com.cebedo.pmsys.service.impl.EquipmentExpenseServiceImpl"></beans:bean>
-    <beans:bean id="equipmentExpenseValueRepo" class="com.cebedo.pmsys.repository.EquipmentExpenseValueRepo"></beans:bean>
+    <beans:bean id="equipmentExpenseValueRepo" class="com.cebedo.pmsys.repository.impl.EquipmentExpenseValueRepoImpl"></beans:bean>
     
  	<!-- Material -->
     <beans:bean id="materialService" class="com.cebedo.pmsys.service.impl.MaterialServiceImpl">
@@ -357,7 +357,7 @@
         <beans:property name="projectAuxService" ref="projectAuxService"></beans:property>
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.MaterialValueRepo">
+    <beans:bean id="materialValueRepo" class="com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
@@ -370,7 +370,7 @@
     <beans:bean id="estimationOutputService" class="com.cebedo.pmsys.service.impl.EstimationOutputServiceImpl">
         <beans:property name="estimationOutputValueRepo" ref="estimationOutputValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="estimationOutputValueRepo" class="com.cebedo.pmsys.repository.EstimationOutputValueRepo">
+    <beans:bean id="estimationOutputValueRepo" class="com.cebedo.pmsys.repository.impl.EstimationOutputValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
@@ -378,7 +378,7 @@
     <beans:bean id="projectAuxService" class="com.cebedo.pmsys.service.impl.ProjectAuxServiceImpl">
         <beans:property name="projectAuxValueRepo" ref="projectAuxValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="projectAuxValueRepo" class="com.cebedo.pmsys.repository.ProjectAuxValueRepo">
+    <beans:bean id="projectAuxValueRepo" class="com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
@@ -389,7 +389,7 @@
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
         <beans:property name="pullOutValueRepo" ref="pullOutValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="deliveryValueRepo" class="com.cebedo.pmsys.repository.DeliveryValueRepo">
+    <beans:bean id="deliveryValueRepo" class="com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
@@ -399,12 +399,12 @@
         <beans:property name="staffDAO" ref="staffDAO"></beans:property>
         <beans:property name="materialValueRepo" ref="materialValueRepo"></beans:property>
     </beans:bean>
-    <beans:bean id="pullOutValueRepo" class="com.cebedo.pmsys.repository.PullOutValueRepo">
+    <beans:bean id="pullOutValueRepo" class="com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     
     <!-- Project Payroll -->
-    <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.ProjectPayrollValueRepo">
+    <beans:bean id="projectPayrollValueRepo" class="com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     <beans:bean id="projectPayrollService" class="com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl"> 
@@ -415,7 +415,7 @@
     </beans:bean>
     
     <!-- Attendance -->
-    <beans:bean id="attendanceValueRepo" class="com.cebedo.pmsys.repository.AttendanceValueRepo">
+    <beans:bean id="attendanceValueRepo" class="com.cebedo.pmsys.repository.impl.AttendanceValueRepoImpl">
         <beans:property name="redisTemplate" ref="redisTemplate" />
     </beans:bean>
     <beans:bean id="attendanceService" class="com.cebedo.pmsys.service.impl.AttendanceServiceImpl"> 
@@ -435,6 +435,6 @@
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.helper.ApplicationContextProvider"></beans:bean>
+	<beans:bean id="contextApplicationContextProvider" class="com.cebedo.pmsys.pojo.ContextAppProvider"></beans:bean>
     
 </beans:beans>

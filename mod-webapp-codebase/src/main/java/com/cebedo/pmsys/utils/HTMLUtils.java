@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.utils;
 
-import com.cebedo.pmsys.enums.CSSClass;
+import com.cebedo.pmsys.enums.HTMLCSSDetails;
 
 public class HTMLUtils {
 
@@ -17,7 +17,7 @@ public class HTMLUtils {
 	return html;
     }
 
-    public static String getSpanHTML(CSSClass css, String label) {
+    public static String getSpanHTML(HTMLCSSDetails css, String label) {
 	String html = "<span";
 	html += " class=\"label " + css.className() + "\"";
 	html += " style=\"color: " + css.color() + ";";
@@ -29,7 +29,7 @@ public class HTMLUtils {
 	return html;
     }
 
-    public static String getBadgeHTML(CSSClass css, String label) {
+    public static String getBadgeHTML(HTMLCSSDetails css, String label) {
 	String html = "<span";
 	html += " class=\"badge " + css.className() + "\"";
 	html += " style=\"color: " + css.color() + ";";

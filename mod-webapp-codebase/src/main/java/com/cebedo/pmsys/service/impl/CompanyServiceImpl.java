@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.FileHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -24,10 +25,9 @@ import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.pojo.FormMultipartFile;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.ImageUtils;
 import com.cebedo.pmsys.validator.CompanyValidator;
 import com.cebedo.pmsys.validator.ImageUploadValidator;
@@ -40,7 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
     private ValidationHelper validationHelper = new ValidationHelper();
 
     private CompanyDAO companyDAO;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
     private SystemConfigurationService systemConfigurationService;
 
     @Autowired
@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
@@ -75,7 +75,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -91,7 +91,7 @@ public class CompanyServiceImpl implements CompanyService {
 		company.getName());
 
 	// Do actual service and construct response.
-	return AlertBoxGenerator.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
+	return AlertBoxFactory.SUCCESS.generateCreate(Company.OBJECT_NAME, company.getName());
     }
 
     /**
@@ -144,7 +144,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// return an error.
 	if (!this.authHelper.hasAccess(company) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -160,7 +160,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// Do actual update to object.
 	// Construct alert box response.
 	this.companyDAO.update(company);
-	return AlertBoxGenerator.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
+	return AlertBoxFactory.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
     }
 
     /**
@@ -175,7 +175,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Proceed to post-service operations.
@@ -193,7 +193,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// Do actual service.
 	// Generate response.
 	this.companyDAO.delete(id);
-	return AlertBoxGenerator.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
+	return AlertBoxFactory.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
     }
 
     /**
@@ -235,7 +235,7 @@ public class CompanyServiceImpl implements CompanyService {
 	// return an error.
 	if (!this.authHelper.hasAccess(company) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Do validator here.
@@ -268,7 +268,7 @@ public class CompanyServiceImpl implements CompanyService {
 	    ImageIO.write(resizedImg, "png", new File(companyLogoPath));
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Null if no error. See references of this function.

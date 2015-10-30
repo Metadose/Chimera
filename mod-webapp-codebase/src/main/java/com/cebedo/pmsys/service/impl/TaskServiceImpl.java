@@ -19,7 +19,8 @@ import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusTask;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
@@ -31,7 +32,6 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.token.AuthenticationToken;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.validator.TaskValidator;
 
@@ -125,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
 	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
 	    long projectID = tasks.get(0).getProject().getId();
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// TODO Optimize. Maybe throw exception to fail?
@@ -244,7 +244,7 @@ public class TaskServiceImpl implements TaskService {
 		    }
 		}
 		if (task.getActualDateStart() != null && task.getActualDuration() > 0) {
-		    task.setStatus(TaskStatus.COMPLETED.id());
+		    task.setStatus(StatusTask.COMPLETED.id());
 		}
 		taskList.add(task);
 	    }
@@ -281,7 +281,7 @@ public class TaskServiceImpl implements TaskService {
 		Task.OBJECT_NAME, task.getId(), proj, task.getTitle());
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
+	return AlertBoxFactory.SUCCESS.generateCreate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -316,7 +316,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -334,7 +334,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.update(task);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
+	return AlertBoxFactory.SUCCESS.generateUpdate(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -348,7 +348,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -360,7 +360,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.delete(id);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDelete(Task.OBJECT_NAME, task.getTitle());
+	return AlertBoxFactory.SUCCESS.generateDelete(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -375,7 +375,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -390,7 +390,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.update(task);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
+	return AlertBoxFactory.SUCCESS.generateMarkAs(Task.OBJECT_NAME, task.getTitle());
     }
 
     /**
@@ -405,7 +405,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -420,7 +420,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.assignStaffTask(taskStaffAssign);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
+	return AlertBoxFactory.SUCCESS.generateAssign(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -457,7 +457,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = task.getProject();
@@ -468,7 +468,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.unassignStaffTask(taskID, staffID);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
+	return AlertBoxFactory.SUCCESS.generateUnassign(Staff.OBJECT_NAME, staff.getFullName());
     }
 
     /**
@@ -482,7 +482,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = task.getProject();
@@ -493,7 +493,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.unassignAllStaffTasks(id);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
+	return AlertBoxFactory.SUCCESS.generateUnassignAll(Staff.OBJECT_NAME);
     }
 
     /**
@@ -507,7 +507,7 @@ public class TaskServiceImpl implements TaskService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Log.
@@ -518,7 +518,7 @@ public class TaskServiceImpl implements TaskService {
 	this.taskDAO.deleteAllTasksByProject(projectID);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
+	return AlertBoxFactory.SUCCESS.generateDeleteAll(Task.OBJECT_NAME);
     }
 
 }

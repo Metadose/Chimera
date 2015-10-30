@@ -26,21 +26,21 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.StatusPayroll;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
-import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DataStructUtils;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -52,15 +52,15 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private ProjectPayrollValueRepo projectPayrollValueRepo;
+    private ProjectPayrollValueRepoImpl projectPayrollValueRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
     private ProjectAuxService projectAuxService;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
@@ -77,7 +77,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollComputerService = projectPayrollComputerService;
     }
 
-    public void setProjectPayrollValueRepo(ProjectPayrollValueRepo projectPayrollValueRepo) {
+    public void setProjectPayrollValueRepo(ProjectPayrollValueRepoImpl projectPayrollValueRepo) {
 	this.projectPayrollValueRepo = projectPayrollValueRepo;
     }
 
@@ -225,7 +225,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Setup the table.
 	// Staff list data.
-	Map<Staff, Map<AttendanceStatus, PairCountValue>> breakdownMap = computeResult
+	Map<Staff, Map<StatusAttendance, PairCountValue>> breakdownMap = computeResult
 		.getStaffPayrollBreakdownMap();
 	Map<Staff, Double> wageMap = computeResult.getStaffToWageMap();
 
@@ -236,20 +236,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    staffRow.createCell(1).setCellValue(wageMap.get(staff));
 	    staffRow.createCell(2).setCellValue(staff.getWage());
 
-	    Map<AttendanceStatus, PairCountValue> countValMap = breakdownMap.get(staff);
+	    Map<StatusAttendance, PairCountValue> countValMap = breakdownMap.get(staff);
 
-	    staffRow.createCell(3).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getCount());
-	    staffRow.createCell(4).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getValue());
-	    staffRow.createCell(5).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getCount());
-	    staffRow.createCell(6).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getValue());
-	    staffRow.createCell(7).setCellValue(countValMap.get(AttendanceStatus.LATE).getCount());
-	    staffRow.createCell(8).setCellValue(countValMap.get(AttendanceStatus.LATE).getValue());
-	    staffRow.createCell(9).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getCount());
-	    staffRow.createCell(10).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getValue());
-	    staffRow.createCell(11).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getCount());
-	    staffRow.createCell(12).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getValue());
-	    staffRow.createCell(13).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getCount());
-	    staffRow.createCell(14).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getValue());
+	    staffRow.createCell(3).setCellValue(countValMap.get(StatusAttendance.PRESENT).getCount());
+	    staffRow.createCell(4).setCellValue(countValMap.get(StatusAttendance.PRESENT).getValue());
+	    staffRow.createCell(5).setCellValue(countValMap.get(StatusAttendance.OVERTIME).getCount());
+	    staffRow.createCell(6).setCellValue(countValMap.get(StatusAttendance.OVERTIME).getValue());
+	    staffRow.createCell(7).setCellValue(countValMap.get(StatusAttendance.LATE).getCount());
+	    staffRow.createCell(8).setCellValue(countValMap.get(StatusAttendance.LATE).getValue());
+	    staffRow.createCell(9).setCellValue(countValMap.get(StatusAttendance.HALFDAY).getCount());
+	    staffRow.createCell(10).setCellValue(countValMap.get(StatusAttendance.HALFDAY).getValue());
+	    staffRow.createCell(11).setCellValue(countValMap.get(StatusAttendance.LEAVE).getCount());
+	    staffRow.createCell(12).setCellValue(countValMap.get(StatusAttendance.LEAVE).getValue());
+	    staffRow.createCell(13).setCellValue(countValMap.get(StatusAttendance.ABSENT).getCount());
+	    staffRow.createCell(14).setCellValue(countValMap.get(StatusAttendance.ABSENT).getValue());
 
 	    rowIndex++;
 	}
@@ -343,7 +343,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(payroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = payroll.getProject();
@@ -370,7 +370,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.delete(key);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_PAYROLL,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_PAYROLL,
 		payroll.getStartEndDisplay());
     }
 
@@ -411,7 +411,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -428,7 +428,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	projectPayroll.setStaffList(proj.getAssignedStaff());
 
 	// Generate actual object from form ID.
-	projectPayroll.setStatus(PayrollStatus.of(projectPayroll.getStatusID()));
+	projectPayroll.setStatus(StatusPayroll.of(projectPayroll.getStatusID()));
 
 	// Preserve project structure.
 	projectPayroll.setSaved(true);
@@ -439,10 +439,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	if (isUpdating) {
-	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
+	    response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		    datePart);
 	} else {
-	    response = AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_PAYROLL, datePart);
 	    projectPayroll.setUuid(UUID.randomUUID());
 	}
 
@@ -481,7 +481,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Do the computation.
@@ -512,7 +512,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -548,7 +548,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	String datePart = getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
+	String response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		datePart);
 	return response;
     }
@@ -560,7 +560,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Security check.
 	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = projectPayroll.getProject();
@@ -591,7 +591,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Commit the payroll object.
 	this.projectPayrollValueRepo.set(projectPayroll);
 
-	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
+	return AlertBoxFactory.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
     }
 
     @Transactional

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.enums.GanttElement;
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.HTMLGanttElement;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
@@ -66,8 +66,8 @@ public class JSONTimelineGantt {
 	}
 
 	// Set color based on task status.
-	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	StatusTask taskStatus = StatusTask.of(task.getStatus());
+	HTMLGanttElement ganttElem = HTMLGanttElement.of(taskStatus.css());
 	setColor(ganttElem.backgroundColor());
 	setTextColor(ganttElem.color());
     }
@@ -95,8 +95,8 @@ public class JSONTimelineGantt {
 	}
 
 	// Set color based on task status.
-	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	StatusTask taskStatus = StatusTask.of(task.getStatus());
+	HTMLGanttElement ganttElem = HTMLGanttElement.of(taskStatus.css());
 	setColor("rgba(0, 0, 0, 0.84)");
 	setTextColor(ganttElem.backgroundColor());
     }
@@ -134,8 +134,8 @@ public class JSONTimelineGantt {
 	}
 
 	// Set color based on task status.
-	TaskStatus taskStatus = TaskStatus.of(task.getStatus());
-	GanttElement ganttElem = GanttElement.of(taskStatus.css());
+	StatusTask taskStatus = StatusTask.of(task.getStatus());
+	HTMLGanttElement ganttElem = HTMLGanttElement.of(taskStatus.css());
 	setColor(ganttElem.backgroundColor());
 	setTextColor(ganttElem.color());
     }
