@@ -19,7 +19,7 @@ public class EstimateResultMasonryPlastering implements Serializable {
 	;
     }
 
-    public EstimateResultMasonryPlastering(EstimateComputationBean estimateComputationBean, double bags40kg, double bags50kg,
+    public EstimateResultMasonryPlastering(EstimateComputation estimateComputationBean, double bags40kg, double bags50kg,
 	    double sand2) {
 	setCement40kg(bags40kg);
 	setCement50kg(bags50kg);

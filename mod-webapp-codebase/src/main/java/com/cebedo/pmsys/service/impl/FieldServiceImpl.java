@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -15,7 +16,6 @@ import com.cebedo.pmsys.model.Field;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.service.FieldService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.FieldAssignmentValidator;
 
 // TODO Transfer all below functions to Project Service.
@@ -51,9 +51,9 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -73,7 +73,7 @@ public class FieldServiceImpl implements FieldService {
 	this.fieldDAO.assignFieldToProject(fieldAssignment);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateAssign(Field.OBJECT_NAME, fieldAssignment.getLabel());
+	return AlertBoxFactory.SUCCESS.generateAssign(Field.OBJECT_NAME, fieldAssignment.getLabel());
     }
 
     /**
@@ -86,9 +86,9 @@ public class FieldServiceImpl implements FieldService {
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, label, value);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN, Project.OBJECT_NAME, proj.getId(),
@@ -98,7 +98,7 @@ public class FieldServiceImpl implements FieldService {
 	this.fieldDAO.unassignFieldFromProject(fieldID, projectID, label, value);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassign(Field.OBJECT_NAME, fieldAssignment.getLabel());
+	return AlertBoxFactory.SUCCESS.generateUnassign(Field.OBJECT_NAME, fieldAssignment.getLabel());
     }
 
     /**
@@ -110,9 +110,9 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	this.messageHelper.auditableKey(AuditAction.ACTION_UNASSIGN_ALL, Project.OBJECT_NAME,
@@ -122,7 +122,7 @@ public class FieldServiceImpl implements FieldService {
 	this.fieldDAO.unassignAllFieldsFromProject(projectID);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUnassignAll(Field.OBJECT_NAME);
+	return AlertBoxFactory.SUCCESS.generateUnassignAll(Field.OBJECT_NAME);
     }
 
     /**
@@ -136,9 +136,9 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
@@ -159,7 +159,7 @@ public class FieldServiceImpl implements FieldService {
 		projectID, fieldID, oldLabel, oldValue, label, value);
 
 	// Return success.
-	return AlertBoxGenerator.SUCCESS.generateUpdate(FieldAssignment.OBJECT_LABEL, label);
+	return AlertBoxFactory.SUCCESS.generateUpdate(FieldAssignment.OBJECT_LABEL, label);
     }
 
     @Transactional

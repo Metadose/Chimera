@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.cebedo.pmsys.domain.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
 
-public interface IValueRepository<V extends IDomainObject> {
+public interface IValueRepository<V extends IObjectDomain> {
 
     void rename(V obj, String newKey);
 

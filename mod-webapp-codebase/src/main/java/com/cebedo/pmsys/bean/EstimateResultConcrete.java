@@ -21,7 +21,7 @@ public class EstimateResultConcrete implements Serializable {
 	;
     }
 
-    public EstimateResultConcrete(EstimateComputationBean estimateComputationBean, double estCement40kg,
+    public EstimateResultConcrete(EstimateComputation estimateComputationBean, double estCement40kg,
 	    double estCement50kg, double estSand, double estGravel) {
 	setCement40kg(estCement40kg);
 	setCement50kg(estCement50kg);

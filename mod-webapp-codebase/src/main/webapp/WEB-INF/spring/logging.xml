@@ -42,7 +42,7 @@
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
 		<!-- Performance logging -->
-		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.CustomPerformanceInterceptor" />
+		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.PerfMonInterceptorImpl" />
 	    <aop:config>
 	        <aop:pointcut id="allServiceMethods"
 	        	expression="execution(* com.cebedo.pmsys.service.impl.*.*(..))"/>
@@ -50,7 +50,7 @@
 	    </aop:config>
 		
 		<!-- Exception logging -->
-		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.resolver.LoggingExceptionResolver">
+		<beans:bean id="exceptionResolver" class="com.cebedo.pmsys.resolver.ExceptionResolverImpl">
 		    <beans:property name="exceptionMappings">
 		        <beans:props>
 		            <beans:prop key="java.lang.Exception">/fix</beans:prop>

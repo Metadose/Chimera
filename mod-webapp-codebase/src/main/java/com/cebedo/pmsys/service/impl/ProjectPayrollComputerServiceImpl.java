@@ -17,7 +17,7 @@ import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
@@ -29,6 +29,9 @@ import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.utils.DataStructUtils;
 import com.google.gson.Gson;
 
+/**
+ * TODO Don't make this a service. Just a computer/statistics class.
+ */
 @Service
 public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputerService {
 
@@ -63,15 +66,15 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 
     // "allStaffWageBreakdown" Attendance status with corresponding count map.
     // This is the breakdown of total for each staff.
-    private Map<Staff, Map<AttendanceStatus, PairCountValue>> staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, PairCountValue>>();
+    private Map<Staff, Map<StatusAttendance, PairCountValue>> staffPayrollBreakdownMap = new HashMap<Staff, Map<StatusAttendance, PairCountValue>>();
 
     // JSON tree grid.
     private List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
 
     // Results.
     private PayrollResultComputation payrollResult = new PayrollResultComputation();
-    private Map<AttendanceStatus, Integer> overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
-    private Map<AttendanceStatus, Double> overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
+    private Map<StatusAttendance, Integer> overallBreakdownCountMap = new HashMap<StatusAttendance, Integer>();
+    private Map<StatusAttendance, Double> overallBreakdownWageMap = new HashMap<StatusAttendance, Double>();
 
     /**
      * Clear old data.
@@ -84,12 +87,12 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	this.staffToWageMap = new HashMap<Staff, Double>();
 	this.overallTotalOfStaff = 0;
 
-	this.staffPayrollBreakdownMap = new HashMap<Staff, Map<AttendanceStatus, PairCountValue>>();
+	this.staffPayrollBreakdownMap = new HashMap<Staff, Map<StatusAttendance, PairCountValue>>();
 	this.treeGrid = new ArrayList<JSONPayrollResult>();
 
 	this.payrollResult = new PayrollResultComputation();
-	this.overallBreakdownCountMap = new HashMap<AttendanceStatus, Integer>();
-	this.overallBreakdownWageMap = new HashMap<AttendanceStatus, Double>();
+	this.overallBreakdownCountMap = new HashMap<StatusAttendance, Integer>();
+	this.overallBreakdownWageMap = new HashMap<StatusAttendance, Double>();
     }
 
     /**
@@ -98,7 +101,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param staff
      */
     private void putStaffBreakdown(Staff staff) {
-	Map<AttendanceStatus, PairCountValue> attendanceStatusCountMap = getStaffBreakdownMap(
+	Map<StatusAttendance, PairCountValue> attendanceStatusCountMap = getStaffBreakdownMap(
 		this.projectPayroll.getProject(), staff, this.startDate, this.endDate);
 	this.staffPayrollBreakdownMap.put(staff, attendanceStatusCountMap);
     }
@@ -147,12 +150,12 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param max
      * @return
      */
-    private Map<AttendanceStatus, PairCountValue> getStaffBreakdownMap(Project project, Staff manager,
+    private Map<StatusAttendance, PairCountValue> getStaffBreakdownMap(Project project, Staff manager,
 	    Date min, Date max) {
 	// Attendance count map.
 	Set<Attendance> attendanceList = this.attendanceService.rangeStaffAttendance(project, manager,
 		min, max);
-	Map<AttendanceStatus, PairCountValue> attendanceStatusCountMap = this.staffService
+	Map<StatusAttendance, PairCountValue> attendanceStatusCountMap = this.staffService
 		.getAttendanceStatusCountMap(attendanceList);
 	return attendanceStatusCountMap;
     }
@@ -181,8 +184,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param overtime
      * @return
      */
-    private int getBreakdownCount(Map<AttendanceStatus, PairCountValue> staffWageBreakdown,
-	    AttendanceStatus status) {
+    private int getBreakdownCount(Map<StatusAttendance, PairCountValue> staffWageBreakdown,
+	    StatusAttendance status) {
 
 	// Get the count, wage and format.
 	double count = staffWageBreakdown.get(status).getCount();
@@ -206,8 +209,8 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @param countAndWage
      * @return
      */
-    private double getBreakdownWage(Map<AttendanceStatus, PairCountValue> staffWageBreakdown,
-	    AttendanceStatus status) {
+    private double getBreakdownWage(Map<StatusAttendance, PairCountValue> staffWageBreakdown,
+	    StatusAttendance status) {
 
 	// Get the count, wage and format.
 	double wage = staffWageBreakdown.get(status).getValue();
@@ -232,35 +235,35 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
      * @return
      */
     private JSONPayrollResult setAttendanceBreakdown(
-	    Map<AttendanceStatus, PairCountValue> staffWageBreakdown, JSONPayrollResult rowBean) {
+	    Map<StatusAttendance, PairCountValue> staffWageBreakdown, JSONPayrollResult rowBean) {
 
 	// OVERTIME.
 	rowBean.setBreakdownOvertimeCount(
-		getBreakdownCount(staffWageBreakdown, AttendanceStatus.OVERTIME));
+		getBreakdownCount(staffWageBreakdown, StatusAttendance.OVERTIME));
 	rowBean.setBreakdownOvertimeWage(
-		getBreakdownWage(staffWageBreakdown, AttendanceStatus.OVERTIME));
+		getBreakdownWage(staffWageBreakdown, StatusAttendance.OVERTIME));
 
 	// ABSENT.
-	rowBean.setBreakdownAbsentCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.ABSENT));
-	rowBean.setBreakdownAbsentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.ABSENT));
+	rowBean.setBreakdownAbsentCount(getBreakdownCount(staffWageBreakdown, StatusAttendance.ABSENT));
+	rowBean.setBreakdownAbsentWage(getBreakdownWage(staffWageBreakdown, StatusAttendance.ABSENT));
 
 	// HALFDAY.
 	rowBean.setBreakdownHalfdayCount(
-		getBreakdownCount(staffWageBreakdown, AttendanceStatus.HALFDAY));
-	rowBean.setBreakdownHalfdayWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.HALFDAY));
+		getBreakdownCount(staffWageBreakdown, StatusAttendance.HALFDAY));
+	rowBean.setBreakdownHalfdayWage(getBreakdownWage(staffWageBreakdown, StatusAttendance.HALFDAY));
 
 	// LATE.
-	rowBean.setBreakdownLateCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.LATE));
-	rowBean.setBreakdownLateWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.LATE));
+	rowBean.setBreakdownLateCount(getBreakdownCount(staffWageBreakdown, StatusAttendance.LATE));
+	rowBean.setBreakdownLateWage(getBreakdownWage(staffWageBreakdown, StatusAttendance.LATE));
 
 	// LEAVE.
-	rowBean.setBreakdownLeaveCount(getBreakdownCount(staffWageBreakdown, AttendanceStatus.LEAVE));
-	rowBean.setBreakdownLeaveWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.LEAVE));
+	rowBean.setBreakdownLeaveCount(getBreakdownCount(staffWageBreakdown, StatusAttendance.LEAVE));
+	rowBean.setBreakdownLeaveWage(getBreakdownWage(staffWageBreakdown, StatusAttendance.LEAVE));
 
 	// PRESENT.
 	rowBean.setBreakdownPresentCount(
-		getBreakdownCount(staffWageBreakdown, AttendanceStatus.PRESENT));
-	rowBean.setBreakdownPresentWage(getBreakdownWage(staffWageBreakdown, AttendanceStatus.PRESENT));
+		getBreakdownCount(staffWageBreakdown, StatusAttendance.PRESENT));
+	rowBean.setBreakdownPresentWage(getBreakdownWage(staffWageBreakdown, StatusAttendance.PRESENT));
 
 	return rowBean;
     }
@@ -303,7 +306,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 		    staff.getWage());
 
 	    // Breakdown.
-	    Map<AttendanceStatus, PairCountValue> staffWageBreakdown = this.staffPayrollBreakdownMap
+	    Map<StatusAttendance, PairCountValue> staffWageBreakdown = this.staffPayrollBreakdownMap
 		    .get(staff);
 	    rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
 
@@ -317,7 +320,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     public void compute(Date min, Date max, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return;
 	}

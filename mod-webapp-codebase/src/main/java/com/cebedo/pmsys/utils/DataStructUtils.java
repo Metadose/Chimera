@@ -9,6 +9,10 @@ import java.util.Set;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.model.Staff;
 
+/**
+ * Use Google Guava instead.
+ */
+@Deprecated
 public class DataStructUtils {
 
     public static List<Long> convertArrayToList(long[] longNums) {

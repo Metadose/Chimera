@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
-import com.cebedo.pmsys.enums.Theme;
+import com.cebedo.pmsys.enums.HTMLTheme;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
@@ -75,7 +75,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 	setSuperAdmin(superAdministrator);
 	setCompanyAdmin(companyAdministrator);
 	setUser(user);
-	setTheme(com == null ? Theme.DEFAULT.getId() : com.getThemeID());
+	setTheme(com == null ? HTMLTheme.DEFAULT.getId() : com.getThemeID());
     }
 
     // ~ Methods

@@ -93,7 +93,7 @@
 				                                            <form:password class="form-control" path="retypePassword"/>
 				                                            <p class="help-block">Verify the password</p>
 				                                            
-				                                            <c:if test="${authUser.superAdmin == true}">
+				                                            <c:if test="${authUser.superAdmin}">
 				                                            <label>Super Admin</label><br/>
 				                                            <form:checkbox class="form-control" path="superAdmin" style="margin-left: -48%;"/>
 				                                            <p class="help-block">Is this user a super admin?</p>
@@ -152,8 +152,9 @@
                    							</div>
                    						</div>
                    						
+                   						<!-- If this user is a company admin, don't bother displaying the authorization section. -->
                    						<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
-                   						<c:if test="${systemuser.id > 0}">
+                   						<c:if test="${systemuser.id > 0 && !systemuser.companyAdmin && !systemuser.superAdmin}">
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-header">

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
@@ -50,19 +50,20 @@ import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
-import com.cebedo.pmsys.enums.AttendanceStatus;
-import com.cebedo.pmsys.enums.CSSClass;
-import com.cebedo.pmsys.enums.CalendarEventType;
-import com.cebedo.pmsys.enums.CommonLengthUnit;
-import com.cebedo.pmsys.enums.CommonMassUnit;
-import com.cebedo.pmsys.enums.CommonVolumeUnit;
-import com.cebedo.pmsys.enums.EstimateCostType;
-import com.cebedo.pmsys.enums.GanttElement;
-import com.cebedo.pmsys.enums.MaterialCategory;
-import com.cebedo.pmsys.enums.PayrollStatus;
-import com.cebedo.pmsys.enums.ProjectStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
+import com.cebedo.pmsys.enums.HTMLCSSDetails;
+import com.cebedo.pmsys.enums.TypeCalendarEvent;
+import com.cebedo.pmsys.enums.UnitLength;
+import com.cebedo.pmsys.enums.UnitMass;
+import com.cebedo.pmsys.enums.UnitVolume;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
+import com.cebedo.pmsys.enums.HTMLGanttElement;
+import com.cebedo.pmsys.enums.CategoryMaterial;
+import com.cebedo.pmsys.enums.StatusPayroll;
+import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
-import com.cebedo.pmsys.enums.TaskStatus;
+import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -96,7 +97,6 @@ import com.cebedo.pmsys.service.PullOutService;
 import com.cebedo.pmsys.service.StaffService;
 import com.cebedo.pmsys.service.TaskService;
 import com.cebedo.pmsys.service.impl.ProjectPayrollServiceImpl;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.google.gson.Gson;
 
@@ -243,10 +243,11 @@ public class ProjectController {
 
     private AuthHelper authHelper = new AuthHelper();
 
-    private ProjectService projectService;
-    private StaffService staffService;
-    private FieldService fieldService;
-    private DeliveryService deliveryService;
+    // TODO Remove unnecessary comments.
+    private ProjectService projectService; // Done
+    private StaffService staffService; // Done
+    private FieldService fieldService; // Done
+    private DeliveryService deliveryService; // Done
     private MaterialService materialService;
     private ProjectPayrollService projectPayrollService;
     private ProjectAuxService projectAuxService;
@@ -431,8 +432,7 @@ public class ProjectController {
      * @param staffAssignment
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/" + Staff.OBJECT_NAME + "/"
-	    + ConstantsSystem.MASS, method = RequestMethod.POST)
+    @RequestMapping(value = RegistryURL.MASS_ASSIGN_STAFF, method = RequestMethod.POST)
     public String assignMassStaff(HttpSession session, SessionStatus status,
 	    @ModelAttribute(ATTR_PROJECT) Project project, RedirectAttributes redirectAttrs) {
 
@@ -490,8 +490,7 @@ public class ProjectController {
      * @param model
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/"
-	    + ConstantsSystem.REQUEST_UPDATE, method = RequestMethod.POST)
+    @RequestMapping(value = RegistryURL.UPDATE_FIELD, method = RequestMethod.POST)
     public String updateField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment newFaBean, SessionStatus status,
 	    RedirectAttributes redirectAttrs, BindingResult result) {
@@ -522,8 +521,7 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/"
-	    + ConstantsSystem.REQUEST_DELETE, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.DELETE_FIELD, method = RequestMethod.GET)
     public String deleteProjectField(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -613,8 +611,7 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_UNASSIGN + "/" + Field.OBJECT_NAME + "/"
-	    + ConstantsSystem.ALL, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.UNASSIGN_ALL_FIELD, method = RequestMethod.GET)
     public String unassignAllFields(HttpSession session, SessionStatus status,
 	    RedirectAttributes redirectAttrs) {
 
@@ -642,8 +639,7 @@ public class ProjectController {
      * @param projectID
      * @return
      */
-    @RequestMapping(value = ConstantsSystem.REQUEST_ASSIGN + "/"
-	    + Field.OBJECT_NAME, method = RequestMethod.POST)
+    @RequestMapping(value = RegistryURL.ASSIGN_FIELD, method = RequestMethod.POST)
     public String assignField(HttpSession session,
 	    @ModelAttribute(ATTR_FIELD) FormFieldAssignment faBean, RedirectAttributes redirectAttrs,
 	    SessionStatus status, BindingResult result) {
@@ -931,7 +927,7 @@ public class ProjectController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_CREATE + "/"
 	    + ConstantsRedis.OBJECT_ESTIMATE }, method = RequestMethod.POST)
     public String createEstimate(
-	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimateComputationInputBean estimateInput,
+	    @ModelAttribute(ProjectController.ATTR_ESTIMATE_INPUT) EstimateComputationInput estimateInput,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
 	    BindingResult result) {
 
@@ -1006,8 +1002,7 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = { ConstantsSystem.REQUEST_DELETE + "/" + ConstantsRedis.OBJECT_DELIVERY
-	    + "/{" + ConstantsRedis.OBJECT_DELIVERY + "}-end" }, method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.DELETE_DELIVERY, method = RequestMethod.GET)
     public String deleteDelivery(@PathVariable(ConstantsRedis.OBJECT_DELIVERY) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
@@ -1514,11 +1509,11 @@ public class ProjectController {
 	Date max = rangeDates.getEndDate();
 
 	// If start date is > end date, error.
-	// AlertBoxGenerator here is ok, no service function was called.
+	// AlertBoxFactory here is ok, no service function was called.
 	if (min.after(max)) {
 	    redirectAttrs
 		    .addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
-			    AlertBoxGenerator.FAILED.generateHTML(String.format(
+			    AlertBoxFactory.FAILED.generateHTML(String.format(
 				    RegistryResponseMessage.ERROR_COMMON_X_DATE_BEFORE_Y_DATE,
 				    "start date", "end date")));
 	    return redirectEditPageStaff(staff.getId());
@@ -1660,12 +1655,12 @@ public class ProjectController {
 		this.attendanceService.getTotalWageFromAttendance(attendanceList));
 
 	// Get attendance status map based on enum.
-	model.addAttribute(ATTR_CALENDAR_STATUS_LIST, AttendanceStatus.getAllStatusInMap());
+	model.addAttribute(ATTR_CALENDAR_STATUS_LIST, StatusAttendance.getAllStatusInMap());
 
 	// Get start date of calendar.
 	// Add minimum and maximum of data loaded.
-	Map<TaskStatus, Integer> taskStatusMap = this.staffService.getTaskStatusCountMap(staff);
-	Map<AttendanceStatus, PairCountValue> attendanceStatMap = this.staffService
+	Map<StatusTask, Integer> taskStatusMap = this.staffService.getTaskStatusCountMap(staff);
+	Map<StatusAttendance, PairCountValue> attendanceStatMap = this.staffService
 		.getAttendanceStatusCountMap(attendanceList);
 	model.addAttribute(ATTR_CALENDAR_MAX_DATE_STR,
 		maxDateStr == null ? DateUtils.formatDate(max, "yyyy-MM-dd") : maxDateStr);
@@ -1690,11 +1685,11 @@ public class ProjectController {
 	// Construct Highcharts data series.
 	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
 	int taskCount = 0;
-	for (TaskStatus status : taskStatusMap.keySet()) {
+	for (StatusTask status : taskStatusMap.keySet()) {
 	    Integer count = taskStatusMap.get(status);
 	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(count.toString()), CSSClass.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()), HTMLCSSDetails.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,
@@ -1703,15 +1698,15 @@ public class ProjectController {
 	// Construct Highcharts data series.
 	dataSeries = new ArrayList<HighchartsDataPoint>();
 	int counter = 0;
-	for (AttendanceStatus status : attendanceStatMap.keySet()) {
-	    if (status == AttendanceStatus.DELETE) {
+	for (StatusAttendance status : attendanceStatMap.keySet()) {
+	    if (status == StatusAttendance.DELETE) {
 		continue;
 	    }
 
 	    double count = attendanceStatMap.get(status).getCount();
 	    counter += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), count,
-		    CSSClass.backgroundColorOf(status.css()));
+		    HTMLCSSDetails.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_ATTENDANCE,
@@ -1762,7 +1757,7 @@ public class ProjectController {
 	    HttpSession session) {
 
 	// Task status selector.
-	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());
+	model.addAttribute(ATTR_TASK_STATUS_LIST, StatusTask.class.getEnumConstants());
 
 	// If ID is zero,
 	// Open a page with empty values, ready to create.
@@ -1974,7 +1969,7 @@ public class ProjectController {
 	// Construct the bean for the form.
 	EstimateCost cost = this.estimateCostService.get(key);
 	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, cost);
-	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.values());
+	model.addAttribute(ATTR_ESTIMATE_COST_LIST, TypeEstimateCost.values());
 	return RegistryJSPPath.JSP_EDIT_COST;
     }
 
@@ -2038,10 +2033,10 @@ public class ProjectController {
 
 	// Add material category list.
 	// And Units list.
-	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, MaterialCategory.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_LENGTH, CommonLengthUnit.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_MASS, CommonMassUnit.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_VOLUME, CommonVolumeUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, CategoryMaterial.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitLength.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitMass.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitVolume.class.getEnumConstants());
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -2064,10 +2059,10 @@ public class ProjectController {
 
 	// You cannot pull-out materials if no staff
 	// is assigned to this project.
-	// AlertBoxGenerator here is ok, no service call.
+	// AlertBoxFactory here is ok, no service call.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	if (proj.getAssignedStaff().isEmpty()) {
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PULLOUT_NO_PROJECT_STAFF));
 	    return redirectEditPageProject(proj.getId());
 	}
@@ -2332,15 +2327,15 @@ public class ProjectController {
 		projectPayroll);
 
 	// If computation failed.
-	// AlertBoxGenerator here is ok, expecting a JSON.
+	// AlertBoxFactory here is ok, expecting a JSON.
 	String response = "";
 	if (payrollJSON.isEmpty()) {
-	    response = AlertBoxGenerator.ERROR;
+	    response = AlertBoxFactory.ERROR;
 	}
 	// If success, construct response.
 	else {
 	    String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
-	    response = AlertBoxGenerator.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
+	    response = AlertBoxFactory.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
 		    datePart);
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -2424,10 +2419,10 @@ public class ProjectController {
 
 	// Add material category list.
 	// And Units list.
-	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, MaterialCategory.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_LENGTH, CommonLengthUnit.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_MASS, CommonMassUnit.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_VOLUME, CommonVolumeUnit.class.getEnumConstants());
+	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, CategoryMaterial.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitLength.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitMass.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitVolume.class.getEnumConstants());
 
 	// If we're updating,
 	// return the object from redis.
@@ -2458,9 +2453,9 @@ public class ProjectController {
 	// List of all payroll status.
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 
-	// AlertBoxGenerator here is ok, blocking no prerequisites.
+	// AlertBoxFactory here is ok, blocking no prerequisites.
 	if (proj.getAssignedStaff().size() < 1) {
-	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+	    redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_PROJECT_PAYROLL_NO_STAFF));
 	    return redirectEditPageProject(proj.getId(), status);
 	}
@@ -2503,7 +2498,7 @@ public class ProjectController {
     private void setFormSelectors(Project proj, Model model) {
 
 	// Status.
-	PayrollStatus[] payrollStatusArr = PayrollStatus.class.getEnumConstants();
+	StatusPayroll[] payrollStatusArr = StatusPayroll.class.getEnumConstants();
 	model.addAttribute(ATTR_PAYROLL_SELECTOR_STATUS, payrollStatusArr);
     }
 
@@ -2821,7 +2816,7 @@ public class ProjectController {
 		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
 
 	// Selectors and forms.
-	model.addAttribute(ATTR_ESTIMATE_COST_LIST, EstimateCostType.class.getEnumConstants());
+	model.addAttribute(ATTR_ESTIMATE_COST_LIST, TypeEstimateCost.class.getEnumConstants());
 	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, new EstimateCost(proj));
 
 	// Prepare the estimate costs.
@@ -2829,10 +2824,10 @@ public class ProjectController {
 	List<EstimateCost> costsDirect = new ArrayList<EstimateCost>();
 	List<EstimateCost> costsIndirect = new ArrayList<EstimateCost>();
 	for (EstimateCost cost : allCosts) {
-	    EstimateCostType costType = cost.getCostType();
-	    if (costType == EstimateCostType.DIRECT) {
+	    TypeEstimateCost costType = cost.getCostType();
+	    if (costType == TypeEstimateCost.DIRECT) {
 		costsDirect.add(cost);
-	    } else if (costType == EstimateCostType.INDIRECT) {
+	    } else if (costType == TypeEstimateCost.INDIRECT) {
 		costsIndirect.add(cost);
 	    }
 	}
@@ -2876,14 +2871,14 @@ public class ProjectController {
     private void setAttributesModel(Model model, long id) {
 
 	// List of project status.
-	model.addAttribute(ATTR_PROJECT_STATUS_LIST, ProjectStatus.class.getEnumConstants());
+	model.addAttribute(ATTR_PROJECT_STATUS_LIST, StatusProject.class.getEnumConstants());
 
 	// Set common attributes.
 	// Model for forms.
 	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(id, 1));
 
 	// Estimation input.
-	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimateComputationInputBean());
+	model.addAttribute(ATTR_ESTIMATE_INPUT, new EstimateComputationInput());
 	model.addAttribute(ATTR_ESTIMATE_ALLOWANCE_LIST,
 		TableEstimationAllowance.class.getEnumConstants());
     }
@@ -2916,7 +2911,7 @@ public class ProjectController {
 		double yValue = result.getOverallTotalOfStaff();
 
 		HighchartsDataPoint point = new HighchartsDataPoint(name, result.getEndDate().getTime(),
-			yValue, CSSClass.backgroundColorOf(payroll.getStatus().css()));
+			yValue, HTMLCSSDetails.backgroundColorOf(payroll.getStatus().css()));
 		dataSeries.add(point);
 
 		// Cumulative.
@@ -2924,7 +2919,7 @@ public class ProjectController {
 		// HighchartsDataPoint pointCumulative = new
 		// HighchartsDataPoint(name,
 		// result.getEndDate().getTime(), accumulation,
-		// CSSClass.backgroundColorOf(payroll.getStatus().css()));
+		// HTMLCSSDetails.backgroundColorOf(payroll.getStatus().css()));
 		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name,
 			result.getEndDate().getTime(), accumulation, null);
 		dataSeriesCumulative.add(pointCumulative);
@@ -2993,7 +2988,7 @@ public class ProjectController {
     private void setAttributesProgramOfWorks(Project proj, Model model) {
 
 	// Task status selector.
-	model.addAttribute(ATTR_TASK_STATUS_LIST, TaskStatus.class.getEnumConstants());
+	model.addAttribute(ATTR_TASK_STATUS_LIST, StatusTask.class.getEnumConstants());
 
 	// Gant JSON to be used by the chart in timeline.
 	// Get calendar JSON.
@@ -3002,19 +2997,19 @@ public class ProjectController {
 
 	// Timeline taks status and count map.
 	// Summary map found in timeline tab.
-	Map<TaskStatus, Integer> taskStatusMap = this.projectService.getTaskStatusCountMap(proj);
+	Map<StatusTask, Integer> taskStatusMap = this.projectService.getTaskStatusCountMap(proj);
 	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP, taskStatusMap);
-	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, CalendarEventType.class.getEnumConstants());
-	model.addAttribute(ATTR_GANTT_TYPE_LIST, GanttElement.class.getEnumConstants());
+	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, TypeCalendarEvent.class.getEnumConstants());
+	model.addAttribute(ATTR_GANTT_TYPE_LIST, HTMLGanttElement.class.getEnumConstants());
 
 	// Construct Highcharts data series.
 	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
 	int taskCount = 0;
-	for (TaskStatus status : taskStatusMap.keySet()) {
+	for (StatusTask status : taskStatusMap.keySet()) {
 	    Integer count = taskStatusMap.get(status);
 	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(count.toString()), CSSClass.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()), HTMLCSSDetails.backgroundColorOf(status.css()));
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,

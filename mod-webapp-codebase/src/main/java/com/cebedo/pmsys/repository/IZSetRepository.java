@@ -2,9 +2,9 @@ package com.cebedo.pmsys.repository;
 
 import java.util.Set;
 
-import com.cebedo.pmsys.domain.IDomainObject;
+import com.cebedo.pmsys.base.IObjectDomain;
 
-public interface IZSetRepository<V extends IDomainObject> {
+public interface IZSetRepository<V extends IObjectDomain> {
 
 	void add(V obj);
 

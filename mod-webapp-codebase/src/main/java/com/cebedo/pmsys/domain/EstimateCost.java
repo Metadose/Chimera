@@ -4,15 +4,17 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectExpense;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.CSSClass;
-import com.cebedo.pmsys.enums.EstimateCostType;
+import com.cebedo.pmsys.enums.HTMLCSSDetails;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.HTMLUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class EstimateCost implements IDomainObject {
+public class EstimateCost implements IObjectExpense {
 
     private static final long serialVersionUID = 2824011225211953462L;
 
@@ -25,7 +27,7 @@ public class EstimateCost implements IDomainObject {
     private String name;
     private double cost;
     private double actualCost;
-    private EstimateCostType costType;
+    private TypeEstimateCost costType;
 
     public EstimateCost() {
 	;
@@ -86,11 +88,11 @@ public class EstimateCost implements IDomainObject {
 	this.cost = cost;
     }
 
-    public EstimateCostType getCostType() {
+    public TypeEstimateCost getCostType() {
 	return costType;
     }
 
-    public void setCostType(EstimateCostType costType) {
+    public void setCostType(TypeEstimateCost costType) {
 	this.costType = costType;
     }
 
@@ -115,9 +117,9 @@ public class EstimateCost implements IDomainObject {
 	String label = getDiffEstimatedActualAsString();
 	double diff = getDiffEstimatedActual();
 	if (diff < 0) {
-	    return HTMLUtils.getBadgeHTML(CSSClass.DANGER, label);
+	    return HTMLUtils.getBadgeHTML(HTMLCSSDetails.DANGER, label);
 	}
-	return HTMLUtils.getBadgeHTML(CSSClass.SUCCESS, label);
+	return HTMLUtils.getBadgeHTML(HTMLCSSDetails.SUCCESS, label);
     }
 
     public String getActualCostAsString() {
@@ -147,5 +149,10 @@ public class EstimateCost implements IDomainObject {
     public String toString() {
 	return String.format("[(%s) %s: planned = %s, actual = %s]", this.costType, this.name, this.cost,
 		this.actualCost);
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_ESTIMATE_COST;
     }
 }

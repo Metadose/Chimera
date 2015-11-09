@@ -22,12 +22,12 @@ import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.UserAux;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.SystemUserService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 
 @Controller
 @SessionAttributes(
@@ -103,11 +103,11 @@ public class SystemUserController {
 	if (systemUser.getId() == 0) {
 
 	    // If there is already an existing user with that user name.
-	    // AlertBoxGenerator here is ok, special case.
+	    // AlertBoxFactory here is ok, special case.
 	    try {
 		@SuppressWarnings("unused")
 		SystemUser user = this.systemUserService.searchDatabase(systemUser.getUsername());
-		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxGenerator.FAILED
+		redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.FAILED
 			.generateHTML(RegistryResponseMessage.ERROR_AUTH_USERNAME_NOT_AVAILABLE));
 		status.setComplete();
 		return editPage(systemUser.getId());

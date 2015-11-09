@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.cebedo.pmsys.enums.ProjectStatus;
+import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 
@@ -57,7 +57,7 @@ public class ProjectValidator implements Validator {
 	if (endTarget.before(start)) {
 	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "target completion date");
 	}
-	if (project.getStatus() == ProjectStatus.COMPLETED.id() && endActual.before(start)) {
+	if (project.getStatus() == StatusProject.COMPLETED.id() && endActual.before(start)) {
 	    this.validationHelper.rejectInvalidDateRange(errors, "start date", "actual completion date");
 	}
     }

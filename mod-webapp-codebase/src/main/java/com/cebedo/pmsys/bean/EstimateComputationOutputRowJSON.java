@@ -97,7 +97,7 @@ public class EstimateComputationOutputRowJSON implements Serializable {
 	;
     }
 
-    public EstimateComputationOutputRowJSON(EstimateComputationBean estimateComputationBean) {
+    public EstimateComputationOutputRowJSON(EstimateComputation estimateComputationBean) {
 
 	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();
 	EstimateResultConcrete concrete = estimateComputationBean.getResultConcreteEstimate();

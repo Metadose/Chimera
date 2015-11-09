@@ -2,39 +2,39 @@ package com.cebedo.pmsys.enums;
 
 public enum TableDimensionCHBFooting {
 
-    FOOTING_10_30("10cm x 30cm", 10, CommonLengthUnit.CENTIMETER, 30,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_30("10cm x 30cm", 10, UnitLength.CENTIMETER, 30,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_10_35("10cm x 35cm", 10, CommonLengthUnit.CENTIMETER, 35,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_35("10cm x 35cm", 10, UnitLength.CENTIMETER, 35,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_10_40("10cm x 40cm", 10, CommonLengthUnit.CENTIMETER, 40,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_40("10cm x 40cm", 10, UnitLength.CENTIMETER, 40,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_10_50("10cm x 50cm", 10, CommonLengthUnit.CENTIMETER, 50,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_10_50("10cm x 50cm", 10, UnitLength.CENTIMETER, 50,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_15_40("15cm x 40cm", 15, CommonLengthUnit.CENTIMETER, 40,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_40("15cm x 40cm", 15, UnitLength.CENTIMETER, 40,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_15_45("15cm x 45cm", 15, CommonLengthUnit.CENTIMETER, 45,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_45("15cm x 45cm", 15, UnitLength.CENTIMETER, 45,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_15_50("15cm x 50cm", 15, CommonLengthUnit.CENTIMETER, 50,
-	    CommonLengthUnit.CENTIMETER),
+    FOOTING_15_50("15cm x 50cm", 15, UnitLength.CENTIMETER, 50,
+	    UnitLength.CENTIMETER),
 
-    FOOTING_15_60("15cm x 60cm", 15, CommonLengthUnit.CENTIMETER, 60,
-	    CommonLengthUnit.CENTIMETER);
+    FOOTING_15_60("15cm x 60cm", 15, UnitLength.CENTIMETER, 60,
+	    UnitLength.CENTIMETER);
 
     private String label;
     private double thickness;
-    private CommonLengthUnit thickessUnit;
+    private UnitLength thickessUnit;
     private double width;
-    private CommonLengthUnit widthUnit;
+    private UnitLength widthUnit;
 
     TableDimensionCHBFooting(String label, double thickness,
-	    CommonLengthUnit thickessUnit, double width,
-	    CommonLengthUnit widthUnit) {
+	    UnitLength thickessUnit, double width,
+	    UnitLength widthUnit) {
 	this.label = label;
 	this.thickness = thickness;
 	this.thickessUnit = thickessUnit;
@@ -58,11 +58,11 @@ public enum TableDimensionCHBFooting {
 	this.thickness = thickness;
     }
 
-    public CommonLengthUnit getThickessUnit() {
+    public UnitLength getThickessUnit() {
 	return thickessUnit;
     }
 
-    public void setThickessUnit(CommonLengthUnit thickessUnit) {
+    public void setThickessUnit(UnitLength thickessUnit) {
 	this.thickessUnit = thickessUnit;
     }
 
@@ -74,11 +74,11 @@ public enum TableDimensionCHBFooting {
 	this.width = width;
     }
 
-    public CommonLengthUnit getWidthUnit() {
+    public UnitLength getWidthUnit() {
 	return widthUnit;
     }
 
-    public void setWidthUnit(CommonLengthUnit widthUnit) {
+    public void setWidthUnit(UnitLength widthUnit) {
 	this.widthUnit = widthUnit;
     }
 

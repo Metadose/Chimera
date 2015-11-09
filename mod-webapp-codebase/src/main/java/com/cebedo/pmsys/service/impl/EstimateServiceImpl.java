@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cebedo.pmsys.bean.EstimateComputationBean;
-import com.cebedo.pmsys.bean.EstimateComputationInputBean;
+import com.cebedo.pmsys.bean.EstimateComputation;
+import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.bean.EstimateComputationOutputRowJSON;
 import com.cebedo.pmsys.bean.EstimateComputationShape;
 import com.cebedo.pmsys.bean.EstimateResultConcrete;
@@ -40,8 +40,9 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.CommonLengthUnit;
-import com.cebedo.pmsys.enums.EstimateType;
+import com.cebedo.pmsys.enums.UnitLength;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
+import com.cebedo.pmsys.enums.TypeEstimate;
 import com.cebedo.pmsys.enums.TableDimensionCHB;
 import com.cebedo.pmsys.enums.TableDimensionCHBFooting;
 import com.cebedo.pmsys.enums.TableMRCHBHorizontal;
@@ -56,9 +57,8 @@ import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.EstimationOutputValueRepo;
+import com.cebedo.pmsys.repository.impl.EstimationOutputValueRepoImpl;
 import com.cebedo.pmsys.service.EstimateService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.EstimateUtils;
 import com.cebedo.pmsys.validator.EstimateInputValidator;
 import com.google.gson.Gson;
@@ -108,9 +108,9 @@ public class EstimateServiceImpl implements EstimateService {
     private ExcelHelper excelHelper = new ExcelHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private EstimationOutputValueRepo estimationOutputValueRepo;
+    private EstimationOutputValueRepoImpl estimationOutputValueRepo;
 
-    public void setEstimationOutputValueRepo(EstimationOutputValueRepo estimationOutputValueRepo) {
+    public void setEstimationOutputValueRepo(EstimationOutputValueRepoImpl estimationOutputValueRepo) {
 	this.estimationOutputValueRepo = estimationOutputValueRepo;
     }
 
@@ -124,7 +124,7 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimationOutput output = this.estimationOutputValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(output)) {
+	if (!this.authHelper.hasAccess(output)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
 	    return new HSSFWorkbook();
 	}
@@ -191,7 +191,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(8).setCellValue("Tie Wire (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMRPostColumn estimate = computedRow.getResultMRPostColumn();
 
 	    row = sheet.createRow(rowIndex);
@@ -238,7 +238,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(8).setCellValue("Tie Wire (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMRIndependentFooting estimate = computedRow.getResultMRIndependentFooting();
 
 	    row = sheet.createRow(rowIndex);
@@ -285,7 +285,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(8).setCellValue("Tie Wire (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMRCHB estimate = computedRow.getResultMRCHB();
 
 	    row = sheet.createRow(rowIndex);
@@ -333,7 +333,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(9).setCellValue("Gravel (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMasonryCHBFooting estimate = computedRow.getResultCHBFootingEstimate();
 
 	    row = sheet.createRow(rowIndex);
@@ -370,7 +370,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(8).setCellValue("Footing Height (m)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateComputationShape shape = computedRow.getShape();
 
 	    row = sheet.createRow(rowIndex);
@@ -423,7 +423,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(7).setCellValue("Sand (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMasonryPlastering estimate = computedRow.getResultPlasteringEstimate();
 
 	    row = sheet.createRow(rowIndex);
@@ -477,7 +477,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(9).setCellValue("Sand (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultMasonryCHB estimate = computedRow.getResultCHBEstimate();
 	    EstimateResultMasonryCHBLaying chbLaying = computedRow.getResultCHBLayingEstimate();
 	    row = sheet.createRow(rowIndex);
@@ -533,7 +533,7 @@ public class EstimateServiceImpl implements EstimateService {
 	row.createCell(9).setCellValue("Gravel (PHP)");
 	rowIndex++;
 
-	for (EstimateComputationBean computedRow : output.getEstimates()) {
+	for (EstimateComputation computedRow : output.getEstimates()) {
 	    EstimateResultConcrete concreteEstimate = computedRow.getResultConcreteEstimate();
 	    row = sheet.createRow(rowIndex);
 	    row.createCell(0).setCellValue(computedRow.getQuantity());
@@ -662,13 +662,13 @@ public class EstimateServiceImpl implements EstimateService {
 
     @Override
     @Transactional
-    public String estimate(EstimateComputationInputBean estimateInput, BindingResult result) {
+    public String estimate(EstimateComputationInput estimateInput, BindingResult result) {
 
 	// Security check.
 	Project proj = estimateInput.getProject();
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -682,18 +682,18 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Validation is in this function convertExcelToEstimates(...)
 	// Convert the excel file to objects.
-	List<EstimateComputationBean> estimateComputationBeans = convertExcelToEstimates(
+	List<EstimateComputation> estimateComputationBeans = convertExcelToEstimates(
 		estimateInput.getEstimationFile(), estimateInput.getProject());
 
 	// Conversion failed.
 	if (estimateComputationBeans == null) {
-	    return AlertBoxGenerator.FAILED
+	    return AlertBoxFactory.FAILED
 		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
 	}
 
 	// Process each object.
 	List<EstimateComputationOutputRowJSON> rowListForJSON = new ArrayList<EstimateComputationOutputRowJSON>();
-	for (EstimateComputationBean estimateComputationBean : estimateComputationBeans) {
+	for (EstimateComputation estimateComputationBean : estimateComputationBeans) {
 
 	    // Set allowance.
 	    estimateComputationBean.setEstimationAllowance(estimateInput.getEstimationAllowance());
@@ -729,7 +729,7 @@ public class EstimateServiceImpl implements EstimateService {
 	// Set success.
 	estimateInput.setKey(estimationOutput.getKey());
 
-	return AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
+	return AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_ESTIMATE,
 		estimateInput.getName());
     }
 
@@ -740,7 +740,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      */
     private void computeGrandTotals(EstimationOutput estimationOutput,
-	    EstimateComputationBean estimateComputationBean) {
+	    EstimateComputation estimateComputationBean) {
 
 	// Cost.
 	double costCHB = estimationOutput.getCostCHB() + estimateComputationBean.getCostCHB();
@@ -815,7 +815,7 @@ public class EstimateServiceImpl implements EstimateService {
      * 
      * @param estimateComputationBean
      */
-    private void computeRowCost(EstimateComputationBean estimateComputationBean) {
+    private void computeRowCost(EstimateComputation estimateComputationBean) {
 
 	EstimateResultConcrete concrete = estimateComputationBean.getResultConcreteEstimate();
 	EstimateResultMasonryCHB chb = estimateComputationBean.getResultCHBEstimate();
@@ -907,7 +907,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param multipartFile
      * @return
      */
-    private List<EstimateComputationBean> convertExcelToEstimates(MultipartFile multipartFile,
+    private List<EstimateComputation> convertExcelToEstimates(MultipartFile multipartFile,
 	    Project proj) {
 
 	// Service layer form validation.
@@ -927,7 +927,7 @@ public class EstimateServiceImpl implements EstimateService {
 	    Iterator<Row> rowIterator = sheet.iterator();
 
 	    // Construct estimate containers.
-	    List<EstimateComputationBean> estimateComputationBeans = new ArrayList<EstimateComputationBean>();
+	    List<EstimateComputation> estimateComputationBeans = new ArrayList<EstimateComputation>();
 
 	    double costCHB = 0;
 	    double costCement40kg = 0;
@@ -955,9 +955,9 @@ public class EstimateServiceImpl implements EstimateService {
 		Iterator<Cell> cellIterator = row.cellIterator();
 
 		// Every row, is an Estimate object.
-		EstimateComputationBean estimateComputationBean = new EstimateComputationBean(proj);
+		EstimateComputation estimateComputationBean = new EstimateComputation(proj);
 		EstimateComputationShape estimateComputationShape = new EstimateComputationShape();
-		List<EstimateType> estimateTypes = estimateComputationBean.getEstimateTypes();
+		List<TypeEstimate> estimateTypes = estimateComputationBean.getEstimateTypes();
 
 		// If this is not the first row,
 		// then the costs must have already been initialized.
@@ -1023,7 +1023,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_CONCRETE:
 			boolean concrete = getEstimateBooleanFromExcel(workbook, cell);
 			if (concrete) {
-			    estimateTypes.add(EstimateType.CONCRETE);
+			    estimateTypes.add(TypeEstimate.CONCRETE);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1031,7 +1031,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_CHB:
 			boolean chb = getEstimateBooleanFromExcel(workbook, cell);
 			if (chb) {
-			    estimateTypes.add(EstimateType.MASONRY_CHB);
+			    estimateTypes.add(TypeEstimate.MASONRY_CHB);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1039,7 +1039,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_CHB_LAYING:
 			boolean chbLaying = getEstimateBooleanFromExcel(workbook, cell);
 			if (chbLaying) {
-			    estimateTypes.add(EstimateType.MASONRY_BLOCK_LAYING);
+			    estimateTypes.add(TypeEstimate.MASONRY_BLOCK_LAYING);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1047,7 +1047,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_PLASTERING:
 			boolean plaster = getEstimateBooleanFromExcel(workbook, cell);
 			if (plaster) {
-			    estimateTypes.add(EstimateType.MASONRY_PLASTERING);
+			    estimateTypes.add(TypeEstimate.MASONRY_PLASTERING);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1064,7 +1064,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MASONRY_CHB_FOOTING:
 			boolean footing = getEstimateBooleanFromExcel(workbook, cell);
 			if (footing) {
-			    estimateTypes.add(EstimateType.MASONRY_CHB_FOOTING);
+			    estimateTypes.add(TypeEstimate.MASONRY_CHB_FOOTING);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1102,7 +1102,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MR_CHB:
 			boolean mrCHB = getEstimateBooleanFromExcel(workbook, cell);
 			if (mrCHB) {
-			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_CHB);
+			    estimateTypes.add(TypeEstimate.METAL_REINFORCEMENT_CHB);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1110,7 +1110,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MR_INDEPENDENT_FOOTING:
 			boolean mrIndependentFooting = getEstimateBooleanFromExcel(workbook, cell);
 			if (mrIndependentFooting) {
-			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_INDEPENDENT_FOOTING);
+			    estimateTypes.add(TypeEstimate.METAL_REINFORCEMENT_INDEPENDENT_FOOTING);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1150,7 +1150,7 @@ public class EstimateServiceImpl implements EstimateService {
 		    case EXCEL_ESTIMATE_MR_POST_COLUMN:
 			boolean mrPostCol = getEstimateBooleanFromExcel(workbook, cell);
 			if (mrPostCol) {
-			    estimateTypes.add(EstimateType.METAL_REINFORCEMENT_POST_COLUMN);
+			    estimateTypes.add(TypeEstimate.METAL_REINFORCEMENT_POST_COLUMN);
 			    estimateComputationBean.setEstimateTypes(estimateTypes);
 			}
 			continue;
@@ -1286,7 +1286,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimationOutput
      */
     private void computeRowQuantityAndPerTypeCost(EstimationOutput estimationOutput,
-	    EstimateComputationBean estimateComputationBean) {
+	    EstimateComputation estimateComputationBean) {
 
 	// Shape to compute.
 	EstimateComputationShape estimateComputationShape = estimateComputationBean.getShape();
@@ -1349,7 +1349,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      */
     public void estimateMRPostColumn(EstimationOutput estimationOutput,
-	    EstimateComputationBean estimateComputationBean) {
+	    EstimateComputation estimateComputationBean) {
 
 	EstimateComputationShape shape = estimateComputationBean.getShape();
 
@@ -1400,7 +1400,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Length of tie wire is safest length.
 	double tieWireLength = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
-		* CommonLengthUnit.CENTIMETER.getConversionToMeter();
+		* UnitLength.CENTIMETER.getConversionToMeter();
 
 	// Tie wire number of meters.
 	double metersOfTieWire = tieWireLength * totalIntersections;
@@ -1433,7 +1433,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      */
     public void estimateMRIndependentFooting(EstimationOutput estimationOutput,
-	    EstimateComputationBean estimateComputationBean) {
+	    EstimateComputation estimateComputationBean) {
 
 	EstimateComputationShape shape = estimateComputationBean.getShape();
 	double barLength = shape.getFootingBarLength();
@@ -1482,7 +1482,7 @@ public class EstimateServiceImpl implements EstimateService {
 	double intersectionsPerFooting = shape.getFootingBarIntersectionPerFooting();
 	double totalIntersections = intersectionsPerFooting * quantity;
 	double spacingByMeter = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
-		* CommonLengthUnit.CENTIMETER.getConversionToMeter();
+		* UnitLength.CENTIMETER.getConversionToMeter();
 	double metersOfWire = totalIntersections * spacingByMeter;
 
 	// Number of bars to buy at lengthToUse length.
@@ -1543,7 +1543,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      */
     public void estimateMRCHB(EstimationOutput estimationOutput,
-	    EstimateComputationBean estimateComputationBean) {
+	    EstimateComputation estimateComputationBean) {
 	EstimateComputationShape shape = estimateComputationBean.getShape();
 	TableMRCHBVertical mrVertical = estimateComputationBean.getMrCHBVertical();
 	TableMRCHBHorizontal mrHorizontal = estimateComputationBean.getMrCHBHorizontal();
@@ -1626,7 +1626,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      * @param proportions
      */
-    public void estimateMasonryCHBFooting(EstimateComputationBean estimateComputationBean) {
+    public void estimateMasonryCHBFooting(EstimateComputation estimateComputationBean) {
 
 	// Get the dimension key.
 	// And the footing mixes.
@@ -1719,7 +1719,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationShape
      * @param proportions
      */
-    public void estimateMasonryPlastering(EstimateComputationBean estimateComputationBean,
+    public void estimateMasonryPlastering(EstimateComputation estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	// Consider the height below ground.
@@ -1765,7 +1765,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationShape
      * @param chbList
      */
-    public void estimateCHBLaying(EstimateComputationBean estimateComputationBean,
+    public void estimateCHBLaying(EstimateComputation estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	// Prepare needed arguments.
@@ -1831,7 +1831,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param estimateComputationBean
      * @param estimateComputationShape
      */
-    public void estimateConcrete(EstimateComputationBean estimateComputationBean,
+    public void estimateConcrete(EstimateComputation estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	double volume = estimateComputationShape.getVolume();
@@ -1878,7 +1878,7 @@ public class EstimateServiceImpl implements EstimateService {
      * @param chb
      * @return
      */
-    public void estimateCHBTotal(EstimateComputationBean estimateComputationBean,
+    public void estimateCHBTotal(EstimateComputation estimateComputationBean,
 	    EstimateComputationShape estimateComputationShape) {
 
 	double area = estimateComputationShape.getArea();

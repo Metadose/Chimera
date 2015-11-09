@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,6 +16,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -24,7 +24,7 @@ import com.cebedo.pmsys.utils.DateUtils;
 
 @Entity
 @Table(name = AuditLog.TABLE_NAME)
-public class AuditLog implements Serializable {
+public class AuditLog implements IObjectModel {
 
     private static final long serialVersionUID = -3443728849263419668L;
     public static final String OBJECT_NAME = "auditlog";
@@ -273,6 +273,18 @@ public class AuditLog implements Serializable {
     @Override
     public int hashCode() {
 	return ((Long) getId()).hashCode();
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+	return String.format("[%s %s]", getDateExecutedAsString(), getId());
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

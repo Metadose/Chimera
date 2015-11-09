@@ -55,7 +55,7 @@
 		    p:connection-factory-ref="jedisConnFactoryCache"/>
 		    
 	    <beans:bean id="cacheManager"
-	        class="com.cebedo.pmsys.manager.CustomRedisCacheManager"
+	        class="com.cebedo.pmsys.manager.RedisCacheManagerImpl"
 	        c:template-ref="redisTemplateCache"/>
 	        
 </beans:beans>

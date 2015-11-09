@@ -20,7 +20,7 @@ public class EstimateResultMRIndependentFooting implements Serializable {
 	;
     }
 
-    public EstimateResultMRIndependentFooting(EstimateComputationBean estimateComputationBean,
+    public EstimateResultMRIndependentFooting(EstimateComputation estimateComputationBean,
 	    double estBarsToBuy, double lengthToUse, double estTieWireKilos, double estTieWireRolls) {
 
 	setSteelBarLength(lengthToUse);

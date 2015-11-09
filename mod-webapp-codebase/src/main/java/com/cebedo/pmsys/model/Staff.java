@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,11 +17,12 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 @Entity
 @Table(name = Staff.TABLE_NAME)
-public class Staff implements Serializable {
+public class Staff implements IObjectModel {
 
     private static final long serialVersionUID = 8510201653144668336L;
     public static final String OBJECT_NAME = "staff";
@@ -251,6 +251,24 @@ public class Staff implements Serializable {
     @Override
     public String toString() {
 	return getId() + ": " + getFullNameWithMiddleName();
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+	return getFullName();
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

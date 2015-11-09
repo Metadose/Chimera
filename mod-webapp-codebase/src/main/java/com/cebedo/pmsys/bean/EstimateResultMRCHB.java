@@ -20,7 +20,7 @@ public class EstimateResultMRCHB implements Serializable {
 	;
     }
 
-    public EstimateResultMRCHB(EstimateComputationBean estimateComputationBean, double steelBars,
+    public EstimateResultMRCHB(EstimateComputation estimateComputationBean, double steelBars,
 	    double tieWireKilos2, double tieWireRolls2, Double lengthToUse) {
 	setSteelBarLength(lengthToUse);
 	setSteelBarsQuantity(steelBars);

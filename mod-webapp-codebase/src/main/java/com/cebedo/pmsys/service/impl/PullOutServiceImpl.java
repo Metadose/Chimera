@@ -18,15 +18,15 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
-import com.cebedo.pmsys.repository.MaterialValueRepo;
-import com.cebedo.pmsys.repository.PullOutValueRepo;
+import com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
 import com.cebedo.pmsys.service.PullOutService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.validator.PullOutValidator;
 
 @Service
@@ -36,11 +36,11 @@ public class PullOutServiceImpl implements PullOutService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private PullOutValueRepo pullOutValueRepo;
+    private PullOutValueRepoImpl pullOutValueRepo;
     private StaffDAO staffDAO;
-    private MaterialValueRepo materialValueRepo;
+    private MaterialValueRepoImpl materialValueRepo;
 
-    public void setMaterialValueRepo(MaterialValueRepo materialValueRepo) {
+    public void setMaterialValueRepo(MaterialValueRepoImpl materialValueRepo) {
 	this.materialValueRepo = materialValueRepo;
     }
 
@@ -48,7 +48,7 @@ public class PullOutServiceImpl implements PullOutService {
 	this.staffDAO = staffDAO;
     }
 
-    public void setPullOutValueRepo(PullOutValueRepo pullOutValueRepo) {
+    public void setPullOutValueRepo(PullOutValueRepoImpl pullOutValueRepo) {
 	this.pullOutValueRepo = pullOutValueRepo;
     }
 
@@ -63,9 +63,9 @@ public class PullOutServiceImpl implements PullOutService {
     public String create(PullOut obj, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -106,7 +106,7 @@ public class PullOutServiceImpl implements PullOutService {
 		ConstantsRedis.OBJECT_PULL_OUT, obj.getKey(), proj, material.getName());
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePullout(obj.getQuantity(), material.getUnitSymbol(),
+	return AlertBoxFactory.SUCCESS.generatePullout(obj.getQuantity(), material.getUnitSymbol(),
 		material.getName());
     }
 
@@ -120,7 +120,7 @@ public class PullOutServiceImpl implements PullOutService {
 	PullOut obj = this.pullOutValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return new PullOut();
 	}
@@ -137,9 +137,9 @@ public class PullOutServiceImpl implements PullOutService {
 	PullOut obj = this.pullOutValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = obj.getProject();
@@ -150,7 +150,7 @@ public class PullOutServiceImpl implements PullOutService {
 	doDelete(key, obj);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generatePulloutDelete(obj.getMaterial().getName(),
+	return AlertBoxFactory.SUCCESS.generatePulloutDelete(obj.getMaterial().getName(),
 		obj.getDatetime(), obj.getStaff().getFullName());
     }
 
@@ -183,7 +183,7 @@ public class PullOutServiceImpl implements PullOutService {
     @Transactional
     public List<PullOut> listDesc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<PullOut>();
 	}

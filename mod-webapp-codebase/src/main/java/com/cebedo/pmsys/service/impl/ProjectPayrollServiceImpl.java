@@ -20,27 +20,29 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.AttendanceStatus;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
+import com.cebedo.pmsys.enums.StatusPayroll;
+import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
-import com.cebedo.pmsys.repository.ProjectPayrollValueRepo;
+import com.cebedo.pmsys.repository.impl.ExpenseRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl;
 import com.cebedo.pmsys.service.ProjectAuxService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
-import com.cebedo.pmsys.ui.AlertBoxGenerator;
 import com.cebedo.pmsys.utils.DataStructUtils;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -52,15 +54,22 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
-    private ProjectPayrollValueRepo projectPayrollValueRepo;
+    private ProjectPayrollValueRepoImpl projectPayrollValueRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
     private StaffDAO staffDAO;
     private ProjectAuxService projectAuxService;
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
+    private ExpenseRepoImpl expenseRepo;
+
+    @Autowired
+    @Qualifier(value = "expenseRepo")
+    public void setExpenseRepo(ExpenseRepoImpl expenseRepo) {
+	this.expenseRepo = expenseRepo;
+    }
 
     @Autowired
     @Qualifier(value = "projectAuxValueRepo")
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
@@ -77,7 +86,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollComputerService = projectPayrollComputerService;
     }
 
-    public void setProjectPayrollValueRepo(ProjectPayrollValueRepo projectPayrollValueRepo) {
+    public void setProjectPayrollValueRepo(ProjectPayrollValueRepoImpl projectPayrollValueRepo) {
 	this.projectPayrollValueRepo = projectPayrollValueRepo;
     }
 
@@ -86,7 +95,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public HSSFWorkbook exportXLSAll(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -117,7 +126,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	PayrollResultComputation computeResult = obj.getPayrollComputationResult();
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj) || computeResult == null || !obj.isSaved()) {
+	if (!this.authHelper.hasAccess(obj) || computeResult == null || !obj.isSaved()) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
@@ -225,7 +234,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Setup the table.
 	// Staff list data.
-	Map<Staff, Map<AttendanceStatus, PairCountValue>> breakdownMap = computeResult
+	Map<Staff, Map<StatusAttendance, PairCountValue>> breakdownMap = computeResult
 		.getStaffPayrollBreakdownMap();
 	Map<Staff, Double> wageMap = computeResult.getStaffToWageMap();
 
@@ -236,20 +245,20 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    staffRow.createCell(1).setCellValue(wageMap.get(staff));
 	    staffRow.createCell(2).setCellValue(staff.getWage());
 
-	    Map<AttendanceStatus, PairCountValue> countValMap = breakdownMap.get(staff);
+	    Map<StatusAttendance, PairCountValue> countValMap = breakdownMap.get(staff);
 
-	    staffRow.createCell(3).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getCount());
-	    staffRow.createCell(4).setCellValue(countValMap.get(AttendanceStatus.PRESENT).getValue());
-	    staffRow.createCell(5).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getCount());
-	    staffRow.createCell(6).setCellValue(countValMap.get(AttendanceStatus.OVERTIME).getValue());
-	    staffRow.createCell(7).setCellValue(countValMap.get(AttendanceStatus.LATE).getCount());
-	    staffRow.createCell(8).setCellValue(countValMap.get(AttendanceStatus.LATE).getValue());
-	    staffRow.createCell(9).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getCount());
-	    staffRow.createCell(10).setCellValue(countValMap.get(AttendanceStatus.HALFDAY).getValue());
-	    staffRow.createCell(11).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getCount());
-	    staffRow.createCell(12).setCellValue(countValMap.get(AttendanceStatus.LEAVE).getValue());
-	    staffRow.createCell(13).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getCount());
-	    staffRow.createCell(14).setCellValue(countValMap.get(AttendanceStatus.ABSENT).getValue());
+	    staffRow.createCell(3).setCellValue(countValMap.get(StatusAttendance.PRESENT).getCount());
+	    staffRow.createCell(4).setCellValue(countValMap.get(StatusAttendance.PRESENT).getValue());
+	    staffRow.createCell(5).setCellValue(countValMap.get(StatusAttendance.OVERTIME).getCount());
+	    staffRow.createCell(6).setCellValue(countValMap.get(StatusAttendance.OVERTIME).getValue());
+	    staffRow.createCell(7).setCellValue(countValMap.get(StatusAttendance.LATE).getCount());
+	    staffRow.createCell(8).setCellValue(countValMap.get(StatusAttendance.LATE).getValue());
+	    staffRow.createCell(9).setCellValue(countValMap.get(StatusAttendance.HALFDAY).getCount());
+	    staffRow.createCell(10).setCellValue(countValMap.get(StatusAttendance.HALFDAY).getValue());
+	    staffRow.createCell(11).setCellValue(countValMap.get(StatusAttendance.LEAVE).getCount());
+	    staffRow.createCell(12).setCellValue(countValMap.get(StatusAttendance.LEAVE).getValue());
+	    staffRow.createCell(13).setCellValue(countValMap.get(StatusAttendance.ABSENT).getCount());
+	    staffRow.createCell(14).setCellValue(countValMap.get(StatusAttendance.ABSENT).getValue());
 
 	    rowIndex++;
 	}
@@ -260,7 +269,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String compute(Project proj, Date startDate, Date endDate, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // This is meant to be empty, see references.
 	}
@@ -320,7 +329,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	ProjectPayroll obj = this.projectPayrollValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new ProjectPayroll();
 	}
@@ -341,9 +350,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	ProjectPayroll payroll = this.projectPayrollValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(payroll)) {
+	if (!this.authHelper.hasAccess(payroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = payroll.getProject();
@@ -370,7 +379,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	this.projectPayrollValueRepo.delete(key);
 
 	// Return.
-	return AlertBoxGenerator.SUCCESS.generateDelete(ConstantsRedis.OBJECT_PAYROLL,
+	return AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_PAYROLL,
 		payroll.getStartEndDisplay());
     }
 
@@ -386,7 +395,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	for (ProjectPayroll payroll : payrollList) {
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(payroll)) {
+	    if (!this.authHelper.hasAccess(payroll)) {
 		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 		return NumberFormatUtils.getCurrencyFormatter().format(0);
 	    }
@@ -409,9 +418,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String createPayroll(Project proj, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -428,7 +437,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	projectPayroll.setStaffList(proj.getAssignedStaff());
 
 	// Generate actual object from form ID.
-	projectPayroll.setStatus(PayrollStatus.of(projectPayroll.getStatusID()));
+	projectPayroll.setStatus(StatusPayroll.of(projectPayroll.getStatusID()));
 
 	// Preserve project structure.
 	projectPayroll.setSaved(true);
@@ -439,10 +448,10 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	if (isUpdating) {
-	    response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
+	    response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		    datePart);
 	} else {
-	    response = AlertBoxGenerator.SUCCESS.generateCreate(ConstantsRedis.OBJECT_PAYROLL, datePart);
+	    response = AlertBoxFactory.SUCCESS.generateCreate(ConstantsRedis.OBJECT_PAYROLL, datePart);
 	    projectPayroll.setUuid(UUID.randomUUID());
 	}
 
@@ -479,9 +488,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Do the computation.
@@ -510,9 +519,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll, String toClear) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 
 	// Service layer form validation.
@@ -548,7 +557,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	// Generate response.
 	String datePart = getResponseDatePart(projectPayroll);
-	String response = AlertBoxGenerator.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
+	String response = AlertBoxFactory.SUCCESS.generateUpdatePayroll(ConstantsRedis.OBJECT_PAYROLL,
 		datePart);
 	return response;
     }
@@ -558,9 +567,9 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String includeStaffToPayroll(ProjectPayroll projectPayroll,
 	    FormPayrollIncludeStaff includeStaffBean) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
-	    return AlertBoxGenerator.ERROR;
+	    return AlertBoxFactory.ERROR;
 	}
 	// Log.
 	Project proj = projectPayroll.getProject();
@@ -591,14 +600,14 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	// Commit the payroll object.
 	this.projectPayrollValueRepo.set(projectPayroll);
 
-	return AlertBoxGenerator.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
+	return AlertBoxFactory.SUCCESS.generateInclude(Staff.OBJECT_NAME, newStaff.getFullName());
     }
 
     @Transactional
     @Override
     public List<ProjectPayroll> listAsc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
@@ -638,7 +647,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
@@ -693,14 +702,78 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
     @Override
     @Transactional
-    public int getSize(List<ProjectPayroll> objs) {
+    public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
+
+	// Security check.
+	if (!this.authHelper.hasAccess(proj)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
+	    return new ArrayList<IObjectExpense>();
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PAYROLL);
+
+	// Get the needed ID's for the key.
+	// Construct the key.
+	long companyID = proj.getCompany() == null ? 0 : proj.getCompany().getId();
+	String pattern = ProjectPayroll.constructPattern(companyID, proj.getId());
+
+	// Get all keys based on pattern.
+	// Multi-get all objects based on keys.
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<IObjectExpense> projectPayrolls = this.expenseRepo.multiGet(keys);
+
+	// If we are getting a specific range.
+	boolean isRange = startDate != null && endDate != null;
+	if (isRange) {
+	    List<IObjectExpense> toInclude = new ArrayList<IObjectExpense>();
+	    for (IObjectExpense payroll : projectPayrolls) {
+		Date payrollEnd = ((ProjectPayroll) payroll).getEndDate();
+
+		// If the date is equal to the start or end,
+		// if date is between start and end.
+		// Add to payrolls to include.
+		if (payrollEnd.equals(startDate) || payrollEnd.equals(endDate)
+			|| (payrollEnd.after(startDate) && payrollEnd.before(endDate))) {
+		    toInclude.add(payroll);
+		}
+	    }
+	    projectPayrolls = toInclude;
+	}
+
+	// Sort the list in descending order.
+	Collections.sort(projectPayrolls, new Comparator<IObjectExpense>() {
+	    @Override
+	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
+		Date aStart = ((ProjectPayroll) aObj).getEndDate();
+		Date bStart = ((ProjectPayroll) aObj).getEndDate();
+
+		// To sort in ascending,
+		// remove Not's.
+		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+	    }
+	});
+
+	return projectPayrolls;
+    }
+
+    @Override
+    @Transactional
+    public int getSize(List<IObjectExpense> objs) {
 	int size = 0;
-	for (ProjectPayroll payroll : objs) {
-	    if (payroll.getPayrollComputationResult() != null) {
+	for (IObjectExpense payroll : objs) {
+	    if (((ProjectPayroll) payroll).getPayrollComputationResult() != null) {
 		size++;
 	    }
 	}
 	return size;
+    }
+
+    @Override
+    @Transactional
+    public List<IObjectExpense> listDescExpense(Project proj) {
+	return listDescExpense(proj, null, null);
     }
 
 }

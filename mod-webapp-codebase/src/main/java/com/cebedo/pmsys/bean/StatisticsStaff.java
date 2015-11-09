@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.cebedo.pmsys.domain.Attendance;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
@@ -27,7 +27,7 @@ public class StatisticsStaff extends SummaryStatistics {
 
     private Set<Staff> staffList = new HashSet<Staff>();
     private Set<Attendance> attendances = new HashSet<Attendance>();
-    private Map<AttendanceStatus, HashMap<Staff, Integer>> attendaceMap = new HashMap<AttendanceStatus, HashMap<Staff, Integer>>();
+    private Map<StatusAttendance, HashMap<Staff, Integer>> attendaceMap = new HashMap<StatusAttendance, HashMap<Staff, Integer>>();
 
     public StatisticsStaff() {
 	;
@@ -52,7 +52,7 @@ public class StatisticsStaff extends SummaryStatistics {
 	for (Attendance attendance : this.attendances) {
 
 	    // Open the map for this status.
-	    AttendanceStatus status = attendance.getStatus();
+	    StatusAttendance status = attendance.getStatus();
 	    HashMap<Staff, Integer> staffAttendance = this.attendaceMap.get(status);
 	    Staff staffMember = attendance.getStaff();
 
@@ -101,11 +101,11 @@ public class StatisticsStaff extends SummaryStatistics {
 	return sum;
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusDesc(AttendanceStatus status) {
+    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusDesc(StatusAttendance status) {
 	return getSortedAttendance(status, null, SortOrder.DESCENDING);
     }
 
-    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusAsc(AttendanceStatus status) {
+    public ImmutableList<Entry<Staff, Integer>> getAllAttendancesByStatusAsc(StatusAttendance status) {
 	return getSortedAttendance(status, null, SortOrder.ASCENDING);
     }
 
@@ -118,7 +118,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @param order
      * @return
      */
-    public ImmutableList<Entry<Staff, Integer>> getSortedAttendance(AttendanceStatus status,
+    public ImmutableList<Entry<Staff, Integer>> getSortedAttendance(StatusAttendance status,
 	    Integer maxCount, SortOrder order) {
 
 	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
@@ -130,7 +130,7 @@ public class StatisticsStaff extends SummaryStatistics {
 
 	// Sort.
 	ArrayList<Entry<Staff, Integer>> sortedEntries = Lists.newArrayList(storedMap.entrySet());
-	Collections.sort(sortedEntries, new ComparatorMapEntry(order));
+	Collections.sort(sortedEntries, new OrderingObjectNumberMap(order));
 
 	// If not null, limit the return to specific number.
 	// Else, return all sorted entries.
@@ -147,7 +147,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @param maxCount
      * @return
      */
-    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(AttendanceStatus status) {
+    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(StatusAttendance status) {
 	return getUnsortedAttendance(status, null);
     }
 
@@ -158,7 +158,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @param maxCount
      * @return
      */
-    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(AttendanceStatus status,
+    private ImmutableList<Entry<Staff, Integer>> getUnsortedAttendance(StatusAttendance status,
 	    Integer maxCount) {
 
 	HashMap<Staff, Integer> storedMap = this.attendaceMap.get(status);
@@ -186,7 +186,7 @@ public class StatisticsStaff extends SummaryStatistics {
      * @param status
      * @return
      */
-    public double getMeanOf(AttendanceStatus status) {
+    public double getMeanOf(StatusAttendance status) {
 	ImmutableList<Entry<Staff, Integer>> staffCount = getUnsortedAttendance(status);
 	for (Entry<Staff, Integer> pair : staffCount) {
 	    addValue(pair.getValue());

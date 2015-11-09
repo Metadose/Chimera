@@ -10,7 +10,7 @@ import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.repository.ProjectAuxValueRepo;
+import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.ProjectAuxService;
 
 @Service
@@ -18,9 +18,9 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
-    private ProjectAuxValueRepo projectAuxValueRepo;
+    private ProjectAuxValueRepoImpl projectAuxValueRepo;
 
-    public void setProjectAuxValueRepo(ProjectAuxValueRepo projectAuxValueRepo) {
+    public void setProjectAuxValueRepo(ProjectAuxValueRepoImpl projectAuxValueRepo) {
 	this.projectAuxValueRepo = projectAuxValueRepo;
     }
 
@@ -30,7 +30,7 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 	ProjectAux obj = this.projectAuxValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_AUX_PROJECT, obj.getKey());
 	    return new ProjectAux();
 	}

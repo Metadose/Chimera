@@ -24,7 +24,7 @@ public class EstimateResultMasonryCHBFooting implements Serializable {
 	;
     }
 
-    public EstimateResultMasonryCHBFooting(EstimateComputationBean estimateComputationBean,
+    public EstimateResultMasonryCHBFooting(EstimateComputation estimateComputationBean,
 	    double cement40kg, double gravel2, double sand2) {
 	setCement40kg(cement40kg);
 	setGravel(gravel2);

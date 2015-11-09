@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -25,15 +24,16 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import com.cebedo.pmsys.enums.CSSClass;
-import com.cebedo.pmsys.enums.ProjectStatus;
+import com.cebedo.pmsys.base.IObjectModel;
+import com.cebedo.pmsys.enums.HTMLCSSDetails;
+import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
-public class Project implements Serializable {
+public class Project implements IObjectModel {
 
     private static final long serialVersionUID = -7773714241039540737L;
     public static final String OBJECT_NAME = "project";
@@ -49,7 +49,7 @@ public class Project implements Serializable {
 
     private long id;
     private String name;
-    private int status = ProjectStatus.NEW.id();
+    private int status = StatusProject.NEW.id();
     private Set<FieldAssignment> assignedFields;
     private Set<Staff> assignedStaff;
     private String location;
@@ -118,18 +118,18 @@ public class Project implements Serializable {
     }
 
     @Transient
-    public ProjectStatus getStatusEnum() {
-	return ProjectStatus.of(getStatus());
+    public StatusProject getStatusEnum() {
+	return StatusProject.of(getStatus());
     }
 
     @Transient
-    public CSSClass getCSSofDelay() {
+    public HTMLCSSDetails getCSSofDelay() {
 	// Delay.
 	if (getCalDaysRemaining() < 0) {
-	    return CSSClass.DELAYED;
+	    return HTMLCSSDetails.DELAYED;
 	}
 	// On time.
-	return CSSClass.ON_TIME;
+	return HTMLCSSDetails.ON_TIME;
     }
 
     @OrderBy(Project.COLUMN_PRIMARY_KEY)
@@ -242,7 +242,7 @@ public class Project implements Serializable {
     @Transient
     public int getCalDaysRemaining() {
 	Date now = null;
-	if (getStatusEnum() == ProjectStatus.COMPLETED) {
+	if (getStatusEnum() == StatusProject.COMPLETED) {
 	    now = getActualCompletionDate();
 	} else {
 	    now = new Date(System.currentTimeMillis());
@@ -304,7 +304,19 @@ public class Project implements Serializable {
 
     @Transient
     public boolean isCompleted() {
-	return getStatusEnum() == ProjectStatus.COMPLETED;
+	return getStatusEnum() == StatusProject.COMPLETED;
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,9 +16,11 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
+
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
-public class SystemUser implements Serializable {
+public class SystemUser implements IObjectModel {
 
     private static final long serialVersionUID = -5847055437189444297L;
     public static final String TABLE_NAME = "system_users";
@@ -156,6 +157,24 @@ public class SystemUser implements Serializable {
 
     public String toString() {
 	return String.valueOf(this.id);
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+	return getUsername();
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

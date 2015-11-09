@@ -19,7 +19,8 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.Company;
 
 /**
- * Keep this class just for reference.
+ * Keep this class just for reference.<br>
+ * TODO Make an interface for this, then just implement.
  */
 @Controller
 @RequestMapping(ImageService.SERVICE_NAME)

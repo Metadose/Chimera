@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,14 +13,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cebedo.pmsys.enums.Theme;
+import com.cebedo.pmsys.base.IObjectModel;
+import com.cebedo.pmsys.enums.HTMLTheme;
 
 @Entity
 @Table(name = Company.TABLE_NAME)
-public class Company implements Serializable {
+public class Company implements IObjectModel {
 
     private static final long serialVersionUID = 8860496412110526096L;
     public static final String TABLE_NAME = "companies";
@@ -45,7 +46,7 @@ public class Company implements Serializable {
     private Set<AuditLog> auditLogs;
     private boolean betaTester;
 
-    // Theme.
+    // HTMLTheme.
     private String themeID;
 
     public Company() {
@@ -182,13 +183,31 @@ public class Company implements Serializable {
     @Column(name = "theme", nullable = false, length = 32)
     public String getThemeID() {
 	if (StringUtils.isBlank(themeID)) {
-	    return Theme.DEFAULT.getId();
+	    return HTMLTheme.DEFAULT.getId();
 	}
 	return themeID;
     }
 
     public void setThemeID(String themeID) {
 	this.themeID = themeID;
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public Company getCompany() {
+	return this;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

@@ -23,7 +23,7 @@ public class EstimateResultMasonryCHBLaying implements Serializable {
 	;
     }
 
-    public EstimateResultMasonryCHBLaying(EstimateComputationBean estimateComputationBean,
+    public EstimateResultMasonryCHBLaying(EstimateComputation estimateComputationBean,
 	    double bags40kg, double sandNeeded) {
 	setBags(bags40kg);
 	setSand(sandNeeded);

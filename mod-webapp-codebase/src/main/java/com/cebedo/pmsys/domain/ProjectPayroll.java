@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.PayrollStatus;
+import com.cebedo.pmsys.enums.StatusPayroll;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
@@ -15,7 +16,7 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.utils.DateUtils;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class ProjectPayroll extends AbstractExpense implements IDomainObject, IExpense {
+public class ProjectPayroll implements IObjectExpense {
 
     private static final long serialVersionUID = 5324023297418291423L;
     /**
@@ -29,7 +30,7 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
      * Specs.
      */
     private SystemUser creator;
-    private PayrollStatus status; // Give me all payrolls not yet approved.
+    private StatusPayroll status; // Give me all payrolls not yet approved.
     private Date startDate;
     private Date endDate;
 
@@ -63,6 +64,12 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
 		.format(this.payrollResultComputation.getOverallTotalOfStaff());
     }
 
+    /**
+     * Use getCost() instead.
+     * 
+     * @return
+     */
+    @Deprecated
     public double getTotal() {
 	return this.payrollResultComputation.getOverallTotalOfStaff();
     }
@@ -177,11 +184,11 @@ public class ProjectPayroll extends AbstractExpense implements IDomainObject, IE
 	this.project = projectID;
     }
 
-    public PayrollStatus getStatus() {
+    public StatusPayroll getStatus() {
 	return status;
     }
 
-    public void setStatus(PayrollStatus status2) {
+    public void setStatus(StatusPayroll status2) {
 	this.status = status2;
     }
 

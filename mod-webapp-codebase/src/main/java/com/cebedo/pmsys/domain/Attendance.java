@@ -2,14 +2,16 @@ package com.cebedo.pmsys.domain;
 
 import java.util.Date;
 
+import com.cebedo.pmsys.base.IObjectDomain;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
-import com.cebedo.pmsys.enums.AttendanceStatus;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.DateUtils;
 
-public class Attendance implements IDomainObject {
+public class Attendance implements IObjectDomain {
 
     private static final long serialVersionUID = -724701840751019923L;
 
@@ -17,7 +19,7 @@ public class Attendance implements IDomainObject {
     private Project project;
     private Staff staff;
     private Date date;
-    private AttendanceStatus status;
+    private StatusAttendance status;
 
     private double wage;
 
@@ -44,7 +46,7 @@ public class Attendance implements IDomainObject {
 	setStaff(stf);
     }
 
-    public Attendance(Company coID, Project project, Staff stf, AttendanceStatus stat, Date tstamp,
+    public Attendance(Company coID, Project project, Staff stf, StatusAttendance stat, Date tstamp,
 	    double w) {
 	setCompany(coID);
 	setProject(project);
@@ -86,11 +88,11 @@ public class Attendance implements IDomainObject {
 	this.date = d;
     }
 
-    public AttendanceStatus getStatus() {
+    public StatusAttendance getStatus() {
 	return status;
     }
 
-    public void setStatus(AttendanceStatus status) {
+    public void setStatus(StatusAttendance status) {
 	this.status = status;
     }
 
@@ -143,5 +145,19 @@ public class Attendance implements IDomainObject {
 
     public void setProject(Project project) {
 	this.project = project;
+    }
+
+    @Override
+    public String getName() {
+	return getFormattedDateString();
+    }
+
+    @Override
+    public String getObjectName() {
+	return ConstantsRedis.OBJECT_ATTENDANCE;
+    }
+
+    public String toString() {
+	return String.format("[%s %s %s]", getFormattedDateString(), getStatus(), getWage());
     }
 }
