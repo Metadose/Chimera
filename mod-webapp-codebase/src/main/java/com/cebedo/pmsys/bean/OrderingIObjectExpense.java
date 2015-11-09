@@ -4,15 +4,15 @@ import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.enums.SortOrder;
 import com.google.common.collect.Ordering;
 
-public class OrderingIExpense extends Ordering<IObjectExpense> {
+public class OrderingIObjectExpense extends Ordering<IObjectExpense> {
 
     private SortOrder order = SortOrder.ASCENDING;
 
-    public OrderingIExpense() {
+    public OrderingIObjectExpense() {
 	;
     }
 
-    public OrderingIExpense(SortOrder order2) {
+    public OrderingIObjectExpense(SortOrder order2) {
 	this.order = order2;
     }
 

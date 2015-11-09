@@ -42,7 +42,7 @@
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
 		<!-- Performance logging -->
-		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.PerformanceMonitoringInterceptorImpl" />
+		<beans:bean id="performanceMonitor" class="com.cebedo.pmsys.interceptor.PerfMonInterceptorImpl" />
 	    <aop:config>
 	        <aop:pointcut id="allServiceMethods"
 	        	expression="execution(* com.cebedo.pmsys.service.impl.*.*(..))"/>

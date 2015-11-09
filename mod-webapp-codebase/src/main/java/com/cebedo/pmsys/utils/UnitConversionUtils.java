@@ -2,7 +2,7 @@ package com.cebedo.pmsys.utils;
 
 import java.math.BigDecimal;
 
-import com.cebedo.pmsys.enums.UnitCommonLength;
+import com.cebedo.pmsys.enums.UnitLength;
 
 public class UnitConversionUtils {
 
@@ -13,10 +13,10 @@ public class UnitConversionUtils {
      * @param value
      * @return
      */
-    public static BigDecimal convertToMeter(UnitCommonLength lengthUnit, BigDecimal value) {
+    public static BigDecimal convertToMeter(UnitLength lengthUnit, BigDecimal value) {
 
 	// If it's already in meter, return.
-	if (lengthUnit == UnitCommonLength.METER) {
+	if (lengthUnit == UnitLength.METER) {
 	    return value;
 	}
 	double meterConvert = lengthUnit.getConversionToMeter();
@@ -25,7 +25,7 @@ public class UnitConversionUtils {
 	return value;
     }
 
-    public static double convertToMeter(UnitCommonLength lengthUnit, double value) {
+    public static double convertToMeter(UnitLength lengthUnit, double value) {
 	return convertToMeter(lengthUnit, new BigDecimal(value)).doubleValue();
     }
 }

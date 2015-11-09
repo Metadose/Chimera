@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum UnitCommonVolume {
+public enum UnitVolume {
 
     CUBIC_METER(1, "Cubic Meter", "cu. m.", 1),
 
@@ -21,7 +21,7 @@ public enum UnitCommonVolume {
     String symbol;
     double conversionToCuM;
 
-    UnitCommonVolume(int id, String n, String s, double convert) {
+    UnitVolume(int id, String n, String s, double convert) {
 	this.id = id;
 	this.label = n;
 	this.symbol = s;

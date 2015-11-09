@@ -217,7 +217,7 @@ public class StatisticsProject extends SummaryStatistics {
      */
     private ImmutableList<IObjectExpense> sortByCostInterface(List<IObjectExpense> objList, Integer maxCount,
 	    SortOrder order) {
-	Collections.sort(objList, new OrderingIExpense(order));
+	Collections.sort(objList, new OrderingIObjectExpense(order));
 	if (maxCount != null) {
 	    return FluentIterable.from(objList).limit(maxCount).toList();
 	}

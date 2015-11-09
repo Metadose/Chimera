@@ -53,9 +53,9 @@ import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.HTMLCSSDetails;
 import com.cebedo.pmsys.enums.TypeCalendarEvent;
-import com.cebedo.pmsys.enums.UnitCommonLength;
-import com.cebedo.pmsys.enums.UnitCommonMass;
-import com.cebedo.pmsys.enums.UnitCommonVolume;
+import com.cebedo.pmsys.enums.UnitLength;
+import com.cebedo.pmsys.enums.UnitMass;
+import com.cebedo.pmsys.enums.UnitVolume;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.enums.HTMLGanttElement;
@@ -2034,9 +2034,9 @@ public class ProjectController {
 	// Add material category list.
 	// And Units list.
 	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, CategoryMaterial.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitCommonLength.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitCommonMass.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitCommonVolume.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitLength.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitMass.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitVolume.class.getEnumConstants());
 
 	// Add the staff list to model.
 	model.addAttribute(ATTR_STAFF_LIST, staffList);
@@ -2420,9 +2420,9 @@ public class ProjectController {
 	// Add material category list.
 	// And Units list.
 	model.addAttribute(ATTR_MATERIAL_CATEGORY_LIST, CategoryMaterial.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitCommonLength.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitCommonMass.class.getEnumConstants());
-	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitCommonVolume.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_LENGTH, UnitLength.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_MASS, UnitMass.class.getEnumConstants());
+	model.addAttribute(ATTR_UNIT_LIST_VOLUME, UnitVolume.class.getEnumConstants());
 
 	// If we're updating,
 	// return the object from redis.

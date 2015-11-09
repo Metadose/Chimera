@@ -176,6 +176,10 @@ public class HSSFWorkbookFactory {
      */
     public void addStatisticsAttendanceEntries(String sheetName, StatisticsStaff statisticsStaff,
 	    int max, SortOrder order) {
+	addRowHeader(sheetName, IndexedColors.YELLOW, StatusAttendance.PRESENT.label(), "Count");
+	addRowsStaffAttendanceCount(sheetName, statisticsStaff, StatusAttendance.PRESENT, max, order);
+
+	addRowEmpty(sheetName);
 	addRowHeader(sheetName, IndexedColors.YELLOW, StatusAttendance.ABSENT.label(), "Count");
 	addRowsStaffAttendanceCount(sheetName, statisticsStaff, StatusAttendance.ABSENT, max, order);
 

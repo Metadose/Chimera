@@ -8,9 +8,9 @@ import com.cebedo.pmsys.base.IObjectDomain;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.enums.CategoryMaterial;
-import com.cebedo.pmsys.enums.UnitCommonLength;
-import com.cebedo.pmsys.enums.UnitCommonMass;
-import com.cebedo.pmsys.enums.UnitCommonVolume;
+import com.cebedo.pmsys.enums.UnitLength;
+import com.cebedo.pmsys.enums.UnitMass;
+import com.cebedo.pmsys.enums.UnitVolume;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
@@ -83,19 +83,19 @@ public class Material implements IObjectDomain {
 	String unitStr = getUnitOfMeasure();
 	// If Length.
 	try {
-	    UnitCommonLength unitOfMeasure = UnitCommonLength.valueOf(unitStr);
+	    UnitLength unitOfMeasure = UnitLength.valueOf(unitStr);
 	    return unitOfMeasure.getLabel();
 	} catch (IllegalArgumentException e) {
 
 	    // If Mass.
 	    try {
-		UnitCommonMass unitOfMeasure = UnitCommonMass.valueOf(unitStr);
+		UnitMass unitOfMeasure = UnitMass.valueOf(unitStr);
 		return unitOfMeasure.getLabel();
 	    } catch (IllegalArgumentException e2) {
 
 		// If Volume.
 		try {
-		    UnitCommonVolume unitOfMeasure = UnitCommonVolume.valueOf(unitStr);
+		    UnitVolume unitOfMeasure = UnitVolume.valueOf(unitStr);
 		    return unitOfMeasure.getLabel();
 		}
 		// Others.
@@ -110,18 +110,18 @@ public class Material implements IObjectDomain {
 	String unitStr = getUnitOfMeasure();
 	// If Length.
 	try {
-	    UnitCommonLength unitOfMeasure = UnitCommonLength.valueOf(unitStr);
+	    UnitLength unitOfMeasure = UnitLength.valueOf(unitStr);
 	    return unitOfMeasure.getSymbol();
 	} catch (IllegalArgumentException e) {
 
 	    // If Mass.
 	    try {
-		UnitCommonMass unitOfMeasure = UnitCommonMass.valueOf(unitStr);
+		UnitMass unitOfMeasure = UnitMass.valueOf(unitStr);
 		return unitOfMeasure.getSymbol();
 	    } catch (IllegalArgumentException e2) {
 		// If Volume.
 		try {
-		    UnitCommonVolume unitOfMeasure = UnitCommonVolume.valueOf(unitStr);
+		    UnitVolume unitOfMeasure = UnitVolume.valueOf(unitStr);
 		    return unitOfMeasure.getSymbol();
 		}
 		// Others.

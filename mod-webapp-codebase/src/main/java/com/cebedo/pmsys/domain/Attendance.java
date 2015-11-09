@@ -156,4 +156,8 @@ public class Attendance implements IObjectDomain {
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_ATTENDANCE;
     }
+
+    public String toString() {
+	return String.format("[%s %s %s]", getFormattedDateString(), getStatus(), getWage());
+    }
 }

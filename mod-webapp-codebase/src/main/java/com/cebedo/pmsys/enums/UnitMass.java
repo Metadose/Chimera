@@ -1,6 +1,6 @@
 package com.cebedo.pmsys.enums;
 
-public enum UnitCommonMass {
+public enum UnitMass {
 
     KILOGRAM(1, "Kilogram", "kg", 1),
 
@@ -21,7 +21,7 @@ public enum UnitCommonMass {
     String symbol;
     double conversionToKilogram;
 
-    UnitCommonMass(int id, String n, String s, double convert) {
+    UnitMass(int id, String n, String s, double convert) {
 	this.id = id;
 	this.label = n;
 	this.symbol = s;

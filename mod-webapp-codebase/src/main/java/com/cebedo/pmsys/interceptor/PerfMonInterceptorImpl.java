@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.aop.interceptor.AbstractMonitoringInterceptor;
 import org.springframework.util.StopWatch;
 
-public class PerformanceMonitoringInterceptorImpl extends AbstractMonitoringInterceptor {
+public class PerfMonInterceptorImpl extends AbstractMonitoringInterceptor {
 
     private static final long serialVersionUID = -2223777220091898111L;
     private static final int THRESHOLD_MIN = 0; // Log all.
@@ -17,7 +17,7 @@ public class PerformanceMonitoringInterceptorImpl extends AbstractMonitoringInte
     /**
      * Create a new PerformanceMonitorInterceptor with a static logger.
      */
-    public PerformanceMonitoringInterceptorImpl() {
+    public PerfMonInterceptorImpl() {
 	;
     }
 
@@ -29,7 +29,7 @@ public class PerformanceMonitoringInterceptorImpl extends AbstractMonitoringInte
      *            whether to use a dynamic logger or a static logger
      * @see #setUseDynamicLogger
      */
-    public PerformanceMonitoringInterceptorImpl(boolean useDynamicLogger) {
+    public PerfMonInterceptorImpl(boolean useDynamicLogger) {
 	setUseDynamicLogger(useDynamicLogger);
     }
 

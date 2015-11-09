@@ -40,7 +40,7 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.enums.UnitCommonLength;
+import com.cebedo.pmsys.enums.UnitLength;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.enums.TypeEstimate;
 import com.cebedo.pmsys.enums.TableDimensionCHB;
@@ -1400,7 +1400,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Length of tie wire is safest length.
 	double tieWireLength = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
-		* UnitCommonLength.CENTIMETER.getConversionToMeter();
+		* UnitLength.CENTIMETER.getConversionToMeter();
 
 	// Tie wire number of meters.
 	double metersOfTieWire = tieWireLength * totalIntersections;
@@ -1482,7 +1482,7 @@ public class EstimateServiceImpl implements EstimateService {
 	double intersectionsPerFooting = shape.getFootingBarIntersectionPerFooting();
 	double totalIntersections = intersectionsPerFooting * quantity;
 	double spacingByMeter = TableMRCHBTieWire.SAFEST.getVerticalSpacing()
-		* UnitCommonLength.CENTIMETER.getConversionToMeter();
+		* UnitLength.CENTIMETER.getConversionToMeter();
 	double metersOfWire = totalIntersections * spacingByMeter;
 
 	// Number of bars to buy at lengthToUse length.

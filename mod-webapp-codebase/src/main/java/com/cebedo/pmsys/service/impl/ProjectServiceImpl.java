@@ -1140,12 +1140,14 @@ public class ProjectServiceImpl implements ProjectService {
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN, "Means",
 		"Average number of attendances per type of attendance");
 	xlsGen.addRowHeader(sheetName, IndexedColors.YELLOW, "Attendance Type", "Mean");
+	double meanPresent = statisticsStaff.getMeanOf(StatusAttendance.PRESENT);
 	double meanAbsences = statisticsStaff.getMeanOf(StatusAttendance.ABSENT);
 	double meanOvertime = statisticsStaff.getMeanOf(StatusAttendance.OVERTIME);
 	double meanLate = statisticsStaff.getMeanOf(StatusAttendance.LATE);
 	double meanHalfday = statisticsStaff.getMeanOf(StatusAttendance.HALFDAY);
 	double meanLeave = statisticsStaff.getMeanOf(StatusAttendance.LEAVE);
 
+	xlsGen.addRow(sheetName, StatusAttendance.PRESENT.label(), meanPresent);
 	xlsGen.addRow(sheetName, StatusAttendance.ABSENT.label(), meanAbsences);
 	xlsGen.addRow(sheetName, StatusAttendance.OVERTIME.label(), meanOvertime);
 	xlsGen.addRow(sheetName, StatusAttendance.LATE.label(), meanLate);

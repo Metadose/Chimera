@@ -2,7 +2,7 @@ package com.cebedo.pmsys.enums;
 
 import com.cebedo.pmsys.base.IUnitOfMeasure;
 
-public enum UnitCommonLength implements IUnitOfMeasure {
+public enum UnitLength implements IUnitOfMeasure {
 
     METER(5, "Meter", "m", 1),
 
@@ -27,14 +27,14 @@ public enum UnitCommonLength implements IUnitOfMeasure {
     String symbol;
     double conversionToMeter;
 
-    UnitCommonLength(int id, String n, String s, double convert) {
+    UnitLength(int id, String n, String s, double convert) {
 	this.id = id;
 	this.label = n;
 	this.symbol = s;
 	this.conversionToMeter = convert;
     }
 
-    public static UnitCommonLength of(int id) {
+    public static UnitLength of(int id) {
 
 	if (id == MILLIMETER.getId()) {
 	    return MILLIMETER;
