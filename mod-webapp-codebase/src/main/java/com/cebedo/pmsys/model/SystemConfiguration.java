@@ -1,7 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,12 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
+
 @Entity
 @Table(name = SystemConfiguration.TABLE_NAME)
-public class SystemConfiguration implements Serializable {
+public class SystemConfiguration implements IObjectModel {
 
     private static final long serialVersionUID = -1551965044511625142L;
     public static final String OBJECT_NAME = "config";
@@ -68,6 +69,18 @@ public class SystemConfiguration implements Serializable {
 
     public void setCompany(Company company) {
 	this.company = company;
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

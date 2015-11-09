@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,13 +21,14 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 import com.cebedo.pmsys.utils.DateUtils;
 
 @Entity
 @Table(name = Task.TABLE_NAME)
-public class Task implements Serializable {
+public class Task implements IObjectModel {
 
     private static final long serialVersionUID = 2244337663166988762L;
     public static final String TABLE_NAME = "tasks";
@@ -236,6 +236,24 @@ public class Task implements Serializable {
     @Transient
     public boolean isCompleted() {
 	return getStatusEnum() == StatusTask.COMPLETED;
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+	return getTitle();
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

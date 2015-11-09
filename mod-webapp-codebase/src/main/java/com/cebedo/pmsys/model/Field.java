@@ -1,6 +1,5 @@
 package com.cebedo.pmsys.model;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,9 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 
 /**
@@ -21,7 +22,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
  */
 @Entity
 @Table(name = Field.TABLE_NAME)
-public class Field implements Serializable {
+public class Field implements IObjectModel {
 
     private static final long serialVersionUID = -3047038623597170285L;
     public static final String TABLE_NAME = "fields";
@@ -79,6 +80,24 @@ public class Field implements Serializable {
 
     public void setFieldAssignments(Set<FieldAssignment> fieldAssignments) {
 	this.fieldAssignments = fieldAssignments;
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public Company getCompany() {
+	return null;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

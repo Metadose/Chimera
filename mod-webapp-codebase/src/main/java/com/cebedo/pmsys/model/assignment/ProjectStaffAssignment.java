@@ -1,21 +1,22 @@
 package com.cebedo.pmsys.model.assignment;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.cebedo.pmsys.base.IObjectAssignment;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 
 @Entity
 @Table(name = ProjectStaffAssignment.TABLE_NAME)
-public class ProjectStaffAssignment implements Serializable {
+public class ProjectStaffAssignment implements IObjectAssignment {
 
     private static final long serialVersionUID = -7814680016856682810L;
 
+    public static final String OBJECT_NAME = "ProjectStaffAssignment";
     public static final String TABLE_NAME = "assignments_project_staff";
 
     private long projectID;
@@ -39,6 +40,24 @@ public class ProjectStaffAssignment implements Serializable {
 
     public void setStaffID(long stfID) {
 	this.staffID = stfID;
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+	return String.format("[Project: %s, Staff: %s]", getProjectID(), getStaffID());
+    }
+
+    @Transient
+    @Override
+    public String getObjectName() {
+	return OBJECT_NAME;
+    }
+
+    @Transient
+    @Override
+    public String getTableName() {
+	return TABLE_NAME;
     }
 
 }

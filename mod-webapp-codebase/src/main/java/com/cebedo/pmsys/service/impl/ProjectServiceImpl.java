@@ -1163,18 +1163,6 @@ public class ProjectServiceImpl implements ProjectService {
 		"Staff member(s) with the MOST number of attendances per type");
 	xlsGen.addStatisticsAttendanceEntries(sheetName, statisticsStaff, max, SortOrder.DESCENDING);
 
-	//
-	//
-	//
-	//
-	//
-	//
-	// FIXME DI MUDISPLAY ANG STAFF ATTENDANCES, REVIEW THE PROJECT
-	// ANALYSIS.
-	//
-	//
-	//
-
 	// Bottom 5 staff member per attendance status.
 	xlsGen.addRowEmpty(sheetName, 2);
 	xlsGen.addRow(sheetName, IndexedColors.SEA_GREEN,
