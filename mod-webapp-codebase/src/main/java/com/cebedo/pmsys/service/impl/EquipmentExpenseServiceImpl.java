@@ -87,7 +87,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -135,7 +135,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	EquipmentExpense obj = this.equipmentExpenseValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -158,7 +158,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     public EquipmentExpense get(String key) {
 	EquipmentExpense obj = this.equipmentExpenseValueRepo.get(key);
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
 	    return new EquipmentExpense();
 	}
@@ -172,7 +172,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Override
     public List<EquipmentExpense> listAsc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EquipmentExpense>();
 	}
@@ -219,7 +219,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Transactional
     @Override
     public String set(EquipmentExpense obj, BindingResult result) {
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -272,7 +272,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Override
     public List<EquipmentExpense> listDesc(Project proj, Date startDate, Date endDate) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EquipmentExpense>();
 	}
@@ -322,7 +322,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
     @Override
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<IObjectExpense>();
 	}

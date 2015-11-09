@@ -146,7 +146,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    staff.setCompany(company);
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(systemUser)) {
+	    if (!this.authHelper.hasAccess(systemUser)) {
 		this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, systemUser.getId());
 		return AlertBoxFactory.ERROR;
 	    }
@@ -187,7 +187,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	if (!override) {
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(obj)) {
+	    if (!this.authHelper.hasAccess(obj)) {
 		this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 		return new SystemUser();
 	    }
@@ -210,7 +210,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	SystemUser obj = this.systemUserDAO.getWithSecurityByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return new SystemUser();
 	}
@@ -232,7 +232,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	SystemUser obj = getByID(id, false);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return new SystemUser();
 	}
@@ -253,7 +253,7 @@ public class SystemUserServiceImpl implements SystemUserService {
     public String update(SystemUser user, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(user)) {
+	if (!this.authHelper.hasAccess(user)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -316,7 +316,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 	SystemUser obj = this.systemUserDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, obj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -376,7 +376,7 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Only company admins can give authority to others.
 	SystemUser user = userAux.getUser();
-	if (!this.authHelper.isCompanyAdmin() && !this.authHelper.isActionAuthorized(user)) {
+	if (!this.authHelper.isCompanyAdmin() && !this.authHelper.hasAccess(user)) {
 	    this.messageHelper.unauthorizedID(SystemUser.OBJECT_NAME, user.getId());
 	    return AlertBoxFactory.ERROR;
 	}

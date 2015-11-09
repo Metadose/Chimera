@@ -37,7 +37,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	EstimationOutput obj = this.estimationOutputValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return new EstimationOutput();
 	}
@@ -55,7 +55,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	EstimationOutput obj = this.estimationOutputValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -74,7 +74,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
     public List<EstimationOutput> listDesc(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimationOutput>();
 	}

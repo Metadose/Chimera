@@ -30,7 +30,7 @@ public class ProjectAuxServiceImpl implements ProjectAuxService {
 	ProjectAux obj = this.projectAuxValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_AUX_PROJECT, obj.getKey());
 	    return new ProjectAux();
 	}

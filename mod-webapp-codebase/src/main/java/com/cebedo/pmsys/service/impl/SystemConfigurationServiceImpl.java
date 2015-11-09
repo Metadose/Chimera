@@ -89,7 +89,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	SystemConfiguration conf = this.systemConfigurationDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(conf)) {
+	if (!this.authHelper.hasAccess(conf)) {
 	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 	    return new SystemConfiguration();
 	}
@@ -105,7 +105,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     public String update(SystemConfiguration systemConfiguration, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(systemConfiguration)) {
+	if (!this.authHelper.hasAccess(systemConfiguration)) {
 	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME,
 		    systemConfiguration.getId());
 	    return AlertBoxFactory.ERROR;
@@ -133,7 +133,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	SystemConfiguration conf = this.systemConfigurationDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(conf)) {
+	if (!this.authHelper.hasAccess(conf)) {
 	    this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -168,7 +168,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	if (!override) {
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(conf)) {
+	    if (!this.authHelper.hasAccess(conf)) {
 		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, conf.getId());
 		return "";
 	    }
@@ -187,7 +187,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
 	if (override) {
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(config)) {
+	    if (!this.authHelper.hasAccess(config)) {
 		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, config.getId());
 		return new SystemConfiguration();
 	    }

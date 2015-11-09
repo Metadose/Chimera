@@ -154,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String uploadExcelCosts(MultipartFile multipartFile, Project project, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -224,7 +224,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String uploadExcelTasks(MultipartFile multipartFile, Project project, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -321,7 +321,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String uploadExcelStaff(MultipartFile multipartFile, Project proj, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -389,7 +389,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String update(Project project, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -443,7 +443,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Check security.
 	// Log and return.
-	if (this.authHelper.isActionAuthorized(project)) {
+	if (this.authHelper.hasAccess(project)) {
 	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
@@ -464,7 +464,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project) && !this.authHelper.isCompanyAdmin()) {
+	if (!this.authHelper.hasAccess(project) && !this.authHelper.isCompanyAdmin()) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -515,7 +515,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 	// Log and return.
-	if (this.authHelper.isActionAuthorized(project)) {
+	if (this.authHelper.hasAccess(project)) {
 	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
@@ -533,7 +533,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String getGanttJSON(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Returning empty since expecting a JSON.
 	}
@@ -579,7 +579,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HashMap<StatusTask, Integer>();
 	}
@@ -617,7 +617,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String getCalendarJSON(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Empty, expecting JSON.
 	}
@@ -674,7 +674,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByID(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -698,7 +698,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project project = this.projectDAO.getByID(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return new HashSet<AuditLog>();
 	}
@@ -722,7 +722,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -861,7 +861,7 @@ public class ProjectServiceImpl implements ProjectService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}

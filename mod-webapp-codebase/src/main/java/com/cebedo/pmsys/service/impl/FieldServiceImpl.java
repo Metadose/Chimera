@@ -51,7 +51,7 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -86,7 +86,7 @@ public class FieldServiceImpl implements FieldService {
 	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, label, value);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -110,7 +110,7 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -136,7 +136,7 @@ public class FieldServiceImpl implements FieldService {
 	Project proj = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}

@@ -31,8 +31,8 @@ import com.cebedo.pmsys.dao.StaffDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
@@ -98,7 +98,7 @@ public class StaffServiceImpl implements StaffService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -159,8 +159,9 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_CONVERT_FILE, Company.OBJECT_NAME, company.getId(),
-		MultipartFile.class.getName(), multipartFile.getOriginalFilename());
+	this.messageHelper.nonAuditableIDWithAssocWithKey(AuditAction.ACTION_CONVERT_FILE,
+		Company.OBJECT_NAME, company.getId(), MultipartFile.class.getName(),
+		multipartFile.getOriginalFilename());
 
 	// TODO Make this return fail if Transaction was not done.
 	// Throw an exception.
@@ -291,7 +292,7 @@ public class StaffServiceImpl implements StaffService {
 	for (Staff staff : staffList) {
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(staff)) {
+	    if (!this.authHelper.hasAccess(staff)) {
 		this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 		return null;
 	    }
@@ -308,7 +309,7 @@ public class StaffServiceImpl implements StaffService {
 	    // If the staff already exists.
 	    // Use staff in DB instead of the one from Excel.
 	    Staff staffByName = this.staffDAO.getStaffByName(staff);
-	    if (staffByName != null && this.authHelper.isActionAuthorized(staffByName)) {
+	    if (staffByName != null && this.authHelper.hasAccess(staffByName)) {
 		refinedStaff.add(staffByName);
 		continue;
 	    }
@@ -362,7 +363,7 @@ public class StaffServiceImpl implements StaffService {
 	Staff stf = this.staffDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(stf)) {
+	if (!this.authHelper.hasAccess(stf)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, stf.getId());
 	    return new Staff();
 	}
@@ -380,7 +381,7 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     public String update(Staff staff, BindingResult result) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -410,7 +411,7 @@ public class StaffServiceImpl implements StaffService {
 	Staff stf = this.staffDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(stf)) {
+	if (!this.authHelper.hasAccess(stf)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, stf.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -490,7 +491,7 @@ public class StaffServiceImpl implements StaffService {
 	Staff stf = this.staffDAO.getWithAllCollectionsByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(stf)) {
+	if (!this.authHelper.hasAccess(stf)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, stf.getId());
 	    return new Staff();
 	}
@@ -528,7 +529,7 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     public List<Staff> listUnassignedInProject(Long companyID, Project project) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return new ArrayList<Staff>();
 	}
@@ -570,8 +571,9 @@ public class StaffServiceImpl implements StaffService {
 	    staff = staff == null ? attendance.getStaff() : staff;
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(attendance)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
+	    if (!this.authHelper.hasAccess(attendance)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE,
+			attendance.getKey());
 		return ""; // Empty, returning JSON.
 	    }
 
@@ -596,8 +598,8 @@ public class StaffServiceImpl implements StaffService {
 
 	// Log.
 	if (attendanceList.size() > 0) {
-	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_JSON, Staff.OBJECT_NAME,
-		    staff.getId(), JSONCalendarEvent.class.getName());
+	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_JSON,
+		    Staff.OBJECT_NAME, staff.getId(), JSONCalendarEvent.class.getName());
 	}
 
 	return new Gson().toJson(jSONCalendarEvents, ArrayList.class);
@@ -614,7 +616,7 @@ public class StaffServiceImpl implements StaffService {
     public String getGanttJSON(Staff staff) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return ""; // Returning empty, expecting JSON.
 	}
@@ -653,7 +655,7 @@ public class StaffServiceImpl implements StaffService {
     public Map<StatusTask, Integer> getTaskStatusCountMap(Staff staff) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return new HashMap<StatusTask, Integer>();
 	}
@@ -699,8 +701,8 @@ public class StaffServiceImpl implements StaffService {
 
 	// Log.
 	if (attendanceList.size() > 0) {
-	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_MAP, Staff.OBJECT_NAME,
-		    attendanceList.iterator().next().getStaff().getId(),
+	    this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_GET_MAP,
+		    Staff.OBJECT_NAME, attendanceList.iterator().next().getStaff().getId(),
 		    StatusAttendance.class.getName());
 	}
 
@@ -711,8 +713,9 @@ public class StaffServiceImpl implements StaffService {
 	for (Attendance attendance : attendanceList) {
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(attendance)) {
-		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
+	    if (!this.authHelper.hasAccess(attendance)) {
+		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE,
+			attendance.getKey());
 		return new HashMap<StatusAttendance, PairCountValue>();
 	    }
 
@@ -773,7 +776,7 @@ public class StaffServiceImpl implements StaffService {
     public String assignStaffMass(Project project) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -807,7 +810,7 @@ public class StaffServiceImpl implements StaffService {
     public String unassignStaffMember(Project project, long staffID) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -838,7 +841,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public String unassignAllStaffMembers(Project project) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -857,17 +860,17 @@ public class StaffServiceImpl implements StaffService {
 	    ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return new ArrayList<Staff>();
 	}
 	// Log.
-	this.messageHelper.nonAuditableListWithAssoc(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_PAYROLL,
-		projectPayroll.getKey(), Staff.OBJECT_NAME);
+	this.messageHelper.nonAuditableListWithAssoc(AuditAction.ACTION_LIST,
+		ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey(), Staff.OBJECT_NAME);
 
 	Project project = projectPayroll.getProject();
 
-	if (this.authHelper.isActionAuthorized(project)) {
+	if (this.authHelper.hasAccess(project)) {
 	    // Full list.
 	    List<Staff> companyStaffList = this.staffDAO.list(companyID);
 	    List<StaffWrapper> wrappedStaffList = StaffWrapper.wrap(companyStaffList);

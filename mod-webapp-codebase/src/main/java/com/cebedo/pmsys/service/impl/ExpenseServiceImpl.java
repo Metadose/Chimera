@@ -89,7 +89,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	Expense obj = this.expenseValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -125,7 +125,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     public Expense get(String key) {
 	Expense obj = this.expenseValueRepo.get(key);
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return new Expense();
 	}
@@ -139,7 +139,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<Expense> listAsc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Expense>();
 	}
@@ -177,7 +177,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -224,7 +224,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     @Override
     public String set(Expense obj, BindingResult result) {
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_EXPENSE, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -275,7 +275,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     public List<Expense> listDesc(Project proj, Date startDate, Date endDate) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Expense>();
 	}
@@ -326,7 +326,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<IObjectExpense>();
 	}

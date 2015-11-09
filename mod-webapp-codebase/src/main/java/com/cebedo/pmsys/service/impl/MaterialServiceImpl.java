@@ -80,7 +80,7 @@ public class MaterialServiceImpl implements MaterialService {
 	    obj.setCompany(this.authHelper.getAuth().getCompany());
 	}
 
-	else if (!this.authHelper.isActionAuthorized(obj)) {
+	else if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -143,7 +143,7 @@ public class MaterialServiceImpl implements MaterialService {
 	Material obj = this.materialValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
 	    return new Material();
 	}
@@ -158,7 +158,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Transactional
     public List<Material> listDesc(Delivery delivery) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(delivery)) {
+	if (!this.authHelper.hasAccess(delivery)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return new ArrayList<Material>();
 	}
@@ -194,7 +194,7 @@ public class MaterialServiceImpl implements MaterialService {
 	Material material = this.materialValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(material)) {
+	if (!this.authHelper.hasAccess(material)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -243,7 +243,7 @@ public class MaterialServiceImpl implements MaterialService {
     public List<Material> listDesc(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Material>();
 	}
@@ -273,7 +273,7 @@ public class MaterialServiceImpl implements MaterialService {
     public String update(Material material, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(material)) {
+	if (!this.authHelper.hasAccess(material)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_MATERIAL, material.getKey());
 	    return AlertBoxFactory.ERROR;
 	}

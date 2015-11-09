@@ -63,7 +63,7 @@ public class PullOutServiceImpl implements PullOutService {
     public String create(PullOut obj, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -120,7 +120,7 @@ public class PullOutServiceImpl implements PullOutService {
 	PullOut obj = this.pullOutValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return new PullOut();
 	}
@@ -137,7 +137,7 @@ public class PullOutServiceImpl implements PullOutService {
 	PullOut obj = this.pullOutValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -183,7 +183,7 @@ public class PullOutServiceImpl implements PullOutService {
     @Transactional
     public List<PullOut> listDesc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<PullOut>();
 	}

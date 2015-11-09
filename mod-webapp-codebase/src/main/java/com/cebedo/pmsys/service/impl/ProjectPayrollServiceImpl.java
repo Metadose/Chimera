@@ -95,7 +95,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public HSSFWorkbook exportXLSAll(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -126,7 +126,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	PayrollResultComputation computeResult = obj.getPayrollComputationResult();
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj) || computeResult == null || !obj.isSaved()) {
+	if (!this.authHelper.hasAccess(obj) || computeResult == null || !obj.isSaved()) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new HSSFWorkbook();
 	}
@@ -269,7 +269,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String compute(Project proj, Date startDate, Date endDate, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // This is meant to be empty, see references.
 	}
@@ -329,7 +329,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	ProjectPayroll obj = this.projectPayrollValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, obj.getKey());
 	    return new ProjectPayroll();
 	}
@@ -350,7 +350,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	ProjectPayroll payroll = this.projectPayrollValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(payroll)) {
+	if (!this.authHelper.hasAccess(payroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -395,7 +395,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	for (ProjectPayroll payroll : payrollList) {
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(payroll)) {
+	    if (!this.authHelper.hasAccess(payroll)) {
 		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, payroll.getKey());
 		return NumberFormatUtils.getCurrencyFormatter().format(0);
 	    }
@@ -418,7 +418,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String createPayroll(Project proj, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -488,7 +488,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -519,7 +519,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll, String toClear) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -567,7 +567,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public String includeStaffToPayroll(ProjectPayroll projectPayroll,
 	    FormPayrollIncludeStaff includeStaffBean) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -607,7 +607,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Override
     public List<ProjectPayroll> listAsc(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
@@ -647,7 +647,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public List<ProjectPayroll> listDesc(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}
@@ -705,7 +705,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<IObjectExpense>();
 	}

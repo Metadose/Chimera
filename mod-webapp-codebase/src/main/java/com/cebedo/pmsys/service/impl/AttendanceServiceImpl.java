@@ -56,7 +56,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public String set(Attendance attendance, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(attendance)) {
+	if (!this.authHelper.hasAccess(attendance)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -110,7 +110,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private void deleteAllInDate(Attendance attendance) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(attendance)) {
+	if (!this.authHelper.hasAccess(attendance)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attendance.getKey());
 	    return;
 	}
@@ -131,7 +131,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private double getWage(Staff staff, StatusAttendance status) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
@@ -173,7 +173,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	for (Attendance attd : attendances) {
 
 	    // Security check.
-	    if (!this.authHelper.isActionAuthorized(attd)) {
+	    if (!this.authHelper.hasAccess(attd)) {
 		this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ATTENDANCE, attd.getKey());
 		return 0.0;
 	    }
@@ -199,7 +199,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public double getTotalWageOfStaffInRange(Project project, Staff staff, Date min, Date max) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return 0.0;
 	}
@@ -226,7 +226,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	    boolean includeAll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return new HashSet<Attendance>();
 	}
@@ -273,7 +273,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	Staff staff = attendanceMass.getStaff();
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxFactory.ERROR;
 	}

@@ -107,7 +107,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -240,7 +240,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	    obj.setCompany(this.authHelper.getAuth().getCompany());
 	}
 
-	else if (!this.authHelper.isActionAuthorized(obj)) {
+	else if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -279,7 +279,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	Delivery obj = this.deliveryValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, obj.getKey());
 	    return new Delivery();
 	}
@@ -304,7 +304,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	Delivery delivery = this.deliveryValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(delivery)) {
+	if (!this.authHelper.hasAccess(delivery)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_DELIVERY, delivery.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -351,7 +351,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public List<Delivery> listAsc(Project proj) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Delivery>();
 	}
@@ -384,7 +384,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Delivery>();
 	}
@@ -440,7 +440,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<IObjectExpense>();
 	}

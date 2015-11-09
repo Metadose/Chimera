@@ -80,7 +80,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -190,7 +190,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     public String createMassCosts(List<EstimateCost> costs, BindingResult result) {
 
 	// Security check.
-	if (costs.size() > 0 && !this.authHelper.isActionAuthorized(costs.get(0))) {
+	if (costs.size() > 0 && !this.authHelper.hasAccess(costs.get(0))) {
 	    long projectID = costs.get(0).getProject().getId();
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
 	    return AlertBoxFactory.ERROR;
@@ -223,7 +223,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     public List<EstimateCost> convertExcelToCostList(MultipartFile multipartFile, Project project) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return null;
 	}
@@ -317,7 +317,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	EstimateCost obj = this.estimateCostValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -354,7 +354,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     public EstimateCost get(String key) {
 	EstimateCost obj = this.estimateCostValueRepo.get(key);
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return new EstimateCost();
 	}
@@ -368,7 +368,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Override
     public List<EstimateCost> list(Project proj) {
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimateCost>();
 	}
@@ -387,7 +387,7 @@ public class EstimateCostServiceImpl implements EstimateCostService {
     @Transactional
     @Override
     public String set(EstimateCost obj, BindingResult result) {
-	if (!this.authHelper.isActionAuthorized(obj)) {
+	if (!this.authHelper.hasAccess(obj)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	    return AlertBoxFactory.ERROR;
 	}

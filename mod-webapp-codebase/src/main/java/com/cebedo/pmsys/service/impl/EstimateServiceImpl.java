@@ -124,7 +124,7 @@ public class EstimateServiceImpl implements EstimateService {
 	EstimationOutput output = this.estimationOutputValueRepo.get(key);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(output)) {
+	if (!this.authHelper.hasAccess(output)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, output.getKey());
 	    return new HSSFWorkbook();
 	}
@@ -666,7 +666,7 @@ public class EstimateServiceImpl implements EstimateService {
 
 	// Security check.
 	Project proj = estimateInput.getProject();
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return AlertBoxFactory.ERROR;
 	}

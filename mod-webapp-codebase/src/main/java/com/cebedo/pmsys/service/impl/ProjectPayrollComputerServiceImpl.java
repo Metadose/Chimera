@@ -320,7 +320,7 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     public void compute(Date min, Date max, ProjectPayroll projectPayroll) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(projectPayroll)) {
+	if (!this.authHelper.hasAccess(projectPayroll)) {
 	    this.messageHelper.unauthorizedKey(ConstantsRedis.OBJECT_PAYROLL, projectPayroll.getKey());
 	    return;
 	}

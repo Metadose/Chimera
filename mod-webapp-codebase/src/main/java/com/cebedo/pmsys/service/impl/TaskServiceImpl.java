@@ -76,7 +76,7 @@ public class TaskServiceImpl implements TaskService {
 	Project proj = this.projectDAO.getByIDWithAllCollections(projID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(proj)) {
+	if (!this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
@@ -122,7 +122,7 @@ public class TaskServiceImpl implements TaskService {
     public String createMassTasks(Project project, List<Task> tasks, BindingResult result) {
 
 	// Security check.
-	if (tasks.size() > 0 && !this.authHelper.isActionAuthorized(tasks.get(0))) {
+	if (tasks.size() > 0 && !this.authHelper.hasAccess(tasks.get(0))) {
 	    long projectID = tasks.get(0).getProject().getId();
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, projectID);
 	    return AlertBoxFactory.ERROR;
@@ -155,7 +155,7 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return null;
 	}
@@ -293,7 +293,7 @@ public class TaskServiceImpl implements TaskService {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return new Task();
 	}
@@ -314,7 +314,7 @@ public class TaskServiceImpl implements TaskService {
     public String update(Task task, BindingResult result) {
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -346,7 +346,7 @@ public class TaskServiceImpl implements TaskService {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -373,7 +373,7 @@ public class TaskServiceImpl implements TaskService {
 	Task task = this.taskDAO.getByID(taskID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -403,7 +403,7 @@ public class TaskServiceImpl implements TaskService {
 	Staff staff = this.staffDAO.getByID(staffID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -432,7 +432,7 @@ public class TaskServiceImpl implements TaskService {
 	Task task = this.taskDAO.getByIDWithAllCollections(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return new Task();
 	}
@@ -455,7 +455,7 @@ public class TaskServiceImpl implements TaskService {
 	Staff staff = this.staffDAO.getByID(staffID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(staff)) {
+	if (!this.authHelper.hasAccess(staff)) {
 	    this.messageHelper.unauthorizedID(Staff.OBJECT_NAME, staff.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -480,7 +480,7 @@ public class TaskServiceImpl implements TaskService {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(task)) {
+	if (!this.authHelper.hasAccess(task)) {
 	    this.messageHelper.unauthorizedID(Task.OBJECT_NAME, task.getId());
 	    return AlertBoxFactory.ERROR;
 	}
@@ -505,7 +505,7 @@ public class TaskServiceImpl implements TaskService {
 	Project project = this.projectDAO.getByID(projectID);
 
 	// Security check.
-	if (!this.authHelper.isActionAuthorized(project)) {
+	if (!this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return AlertBoxFactory.ERROR;
 	}
