@@ -249,7 +249,6 @@ public class CompanyServiceImpl implements CompanyService {
 		company.getName());
 
 	// Construct file path to store the logo file.
-	// Sample: C:/vcc/sys/
 	String serverHome = this.systemConfigurationService.getServerHome();
 
 	// Get the file.

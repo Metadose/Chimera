@@ -73,7 +73,7 @@
 				                                            <p class="help-block">Enter the name of the configuration</p>
 
 				                                            <label>Value</label>
-				                                            <form:input class="form-control" path="value" placeholder="Sample: 1, C:/vcc/sys/" />
+				                                            <form:input class="form-control" path="value" placeholder="Sample: 1, /system/conf/" />
 				                                            <p class="help-block">Enter the value of the configuration</p>
 				                                        </div>
 				                                    </form:form>

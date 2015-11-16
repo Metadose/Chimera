@@ -12,7 +12,7 @@
 	<appender name="webappTailFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/webapp-tail.log" />
+	    <param name="file" value="/var/log/cmp/system/logs/webapp-tail.log" />
 	    <layout class="org.apache.log4j.PatternLayout"/>
 	</appender>
 	
@@ -20,7 +20,7 @@
 	<appender name="webappPerformanceFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/webapp-performance.log" />
+	    <param name="file" value="/var/log/cmp/system/logs/webapp-performance.log" />
 	    <layout class="org.apache.log4j.PatternLayout"/>
 	</appender>
 		
@@ -28,7 +28,7 @@
 	<appender name="webappHdivFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/webapp-hdiv.log" />
+	    <param name="file" value="/var/log/cmp/system/logs/webapp-hdiv.log" />
 	    <layout class="org.apache.log4j.PatternLayout"/>
 	</appender>
 	
@@ -36,7 +36,7 @@
 	<appender name="webappExceptionLogFile" class="org.apache.log4j.RollingFileAppender">
 	    <param name="maxFileSize" value="10MB" />
 	    <param name="maxBackupIndex" value="10" />
-	    <param name="file" value="C:/vcc/sys/system/logs/webapp-exception.log" />
+	    <param name="file" value="/var/log/cmp/system/logs/webapp-exception.log" />
 	    <layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %p %m%n" />
 	    </layout>
