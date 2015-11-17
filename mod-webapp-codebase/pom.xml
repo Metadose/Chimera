@@ -6,9 +6,9 @@
 	<artifactId>pmsys</artifactId>
 	<name>pmsys</name>
 	<packaging>war</packaging>
-	<version>0.1.0.Alpha</version>
+	<version>0.1.2.Alpha</version>
 	<properties>
-		<java-version>1.6</java-version>
+		<java-version>1.7</java-version>
 		<org.springframework>4.1.6.RELEASE</org.springframework>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
