@@ -1,7 +1,6 @@
 .externalToolBuilders
 # .settings
 RemoteSystemsTempFiles
-*.classpath
 *.DS_Store
 .idea
 *.class
