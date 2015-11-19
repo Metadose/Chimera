@@ -69,12 +69,16 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	// If not a super admin.
 	if (!user.isSuperAdmin()) {
 
+	    // TODO This feature will be enabled soon when we have a better
+	    // cloud machine.
 	    // If server is beta, company must also be beta.
-	    boolean isBeta = this.systemConfigurationService.getBetaServer();
-	    if (!(isBeta && company.isBetaTester())) {
-		this.messageHelper.loginFailed(ipAddress, user, AuditAction.LOGIN_COMPANY_NOT_BETA);
-		throw new BadCredentialsException(AuditAction.LOGIN_COMPANY_NOT_BETA.label());
-	    }
+	    // boolean isBeta = this.systemConfigurationService.getBetaServer();
+	    // if (!(isBeta && company.isBetaTester())) {
+	    // this.messageHelper.loginFailed(ipAddress, user,
+	    // AuditAction.LOGIN_COMPANY_NOT_BETA);
+	    // throw new
+	    // BadCredentialsException(AuditAction.LOGIN_COMPANY_NOT_BETA.label());
+	    // }
 
 	    // If the current date is already after the company's expiration.
 	    Date currentDatetime = new Date(System.currentTimeMillis());
