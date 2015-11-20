@@ -50,20 +50,19 @@ import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
+import com.cebedo.pmsys.enums.CategoryMaterial;
+import com.cebedo.pmsys.enums.HTMLGanttElement;
 import com.cebedo.pmsys.enums.StatusAttendance;
-import com.cebedo.pmsys.enums.HTMLCSSDetails;
+import com.cebedo.pmsys.enums.StatusPayroll;
+import com.cebedo.pmsys.enums.StatusProject;
+import com.cebedo.pmsys.enums.StatusTask;
+import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.enums.TypeCalendarEvent;
+import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.enums.UnitLength;
 import com.cebedo.pmsys.enums.UnitMass;
 import com.cebedo.pmsys.enums.UnitVolume;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
-import com.cebedo.pmsys.enums.TypeEstimateCost;
-import com.cebedo.pmsys.enums.HTMLGanttElement;
-import com.cebedo.pmsys.enums.CategoryMaterial;
-import com.cebedo.pmsys.enums.StatusPayroll;
-import com.cebedo.pmsys.enums.StatusProject;
-import com.cebedo.pmsys.enums.TableEstimationAllowance;
-import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
@@ -1689,7 +1688,7 @@ public class ProjectController {
 	    Integer count = taskStatusMap.get(status);
 	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(count.toString()), HTMLCSSDetails.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()));
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,
@@ -1705,8 +1704,7 @@ public class ProjectController {
 
 	    double count = attendanceStatMap.get(status).getCount();
 	    counter += count;
-	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), count,
-		    HTMLCSSDetails.backgroundColorOf(status.css()));
+	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(), count);
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_ATTENDANCE,
@@ -2335,8 +2333,7 @@ public class ProjectController {
 	// If success, construct response.
 	else {
 	    String datePart = ProjectPayrollServiceImpl.getResponseDatePart(projectPayroll);
-	    response = AlertBoxFactory.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL,
-		    datePart);
+	    response = AlertBoxFactory.SUCCESS.generateCompute(ConstantsRedis.OBJECT_PAYROLL, datePart);
 	}
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
@@ -2911,7 +2908,7 @@ public class ProjectController {
 		double yValue = result.getOverallTotalOfStaff();
 
 		HighchartsDataPoint point = new HighchartsDataPoint(name, result.getEndDate().getTime(),
-			yValue, HTMLCSSDetails.backgroundColorOf(payroll.getStatus().css()));
+			yValue);
 		dataSeries.add(point);
 
 		// Cumulative.
@@ -2921,7 +2918,7 @@ public class ProjectController {
 		// result.getEndDate().getTime(), accumulation,
 		// HTMLCSSDetails.backgroundColorOf(payroll.getStatus().css()));
 		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name,
-			result.getEndDate().getTime(), accumulation, null);
+			result.getEndDate().getTime(), accumulation);
 		dataSeriesCumulative.add(pointCumulative);
 	    }
 	}
@@ -3009,7 +3006,7 @@ public class ProjectController {
 	    Integer count = taskStatusMap.get(status);
 	    taskCount += count;
 	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(count.toString()), HTMLCSSDetails.backgroundColorOf(status.css()));
+		    NumberUtils.toDouble(count.toString()));
 	    dataSeries.add(point);
 	}
 	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,

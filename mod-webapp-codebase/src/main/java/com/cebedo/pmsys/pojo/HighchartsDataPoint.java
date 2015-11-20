@@ -13,36 +13,8 @@ public class HighchartsDataPoint {
 	return String.format("%s (%s, %s)", getName(), getX(), getY());
     }
 
-    /**
-     * Typically used in Pie/Donut charts.
-     * 
-     * @param n
-     * @param y
-     * @param color
-     */
-    public HighchartsDataPoint(String n, double y, String color) {
-	setName(n);
-	setY(y);
-	setColor(color);
-    }
-
     public HighchartsDataPoint() {
 	;
-    }
-
-    /**
-     * Typically used in charts with date and time as x-axis.
-     * 
-     * @param name2
-     * @param time
-     * @param yValue
-     * @param color
-     */
-    public HighchartsDataPoint(String name2, long time, double yValue, String color) {
-	setName(name2);
-	setX(time);
-	setY(yValue);
-	setColor(color);
     }
 
     public HighchartsDataPoint(String name2, long time, double yValue) {
