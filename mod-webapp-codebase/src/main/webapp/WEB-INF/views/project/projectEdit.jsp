@@ -313,7 +313,7 @@
                														<!-- More Information Output -->
 	       															<label><c:out value="${field.label}"/></label>
 	       															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')">
-	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-3edc-${field.label}-3edc-${field.value}"/>
+	               														<c:url var="urlEditProjectField" value="/project/field/edit/${field.field.id}-3edc-${field.label}-3edc-${field.value}-end"/>
 						                                            	(
 		                                								<a class="general-link" href="${urlEditProjectField}">
 						                                            	Edit

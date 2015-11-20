@@ -104,9 +104,10 @@ import com.google.gson.Gson;
 
 value = {
 	// Project.
-	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, "old" + ProjectController.ATTR_FIELD,
-	ProjectController.ATTR_MASS_UPLOAD_BEAN, ProjectController.ATTR_TASK,
-	ProjectController.ATTR_FROM_PROJECT, ProjectController.ATTR_PROJECT_PAYROLL,
+	Project.OBJECT_NAME, ProjectController.ATTR_FIELD, ProjectController.ATTR_OLD_FIELD_LABEL,
+	ProjectController.ATTR_OLD_FIELD_VALUE, ProjectController.ATTR_MASS_UPLOAD_BEAN,
+	ProjectController.ATTR_TASK, ProjectController.ATTR_FROM_PROJECT,
+	ProjectController.ATTR_PROJECT_PAYROLL,
 
 	// Redis.
 	ConstantsRedis.OBJECT_PAYROLL, ConstantsRedis.OBJECT_DELIVERY, ConstantsRedis.OBJECT_MATERIAL,
@@ -134,6 +135,8 @@ public class ProjectController {
     public static final String ATTR_MATERIAL = ConstantsRedis.OBJECT_MATERIAL;
     public static final String ATTR_PULL_OUT = ConstantsRedis.OBJECT_PULL_OUT;
     public static final String ATTR_FIELD = Field.OBJECT_NAME;
+    public static final String ATTR_OLD_FIELD_LABEL = "oldLabel" + Field.OBJECT_NAME;
+    public static final String ATTR_OLD_FIELD_VALUE = "oldValue" + Field.OBJECT_NAME;
     public static final String ATTR_STAFF = Staff.OBJECT_NAME;
     public static final String ATTR_TASK = Task.OBJECT_NAME;
     public static final String ATTR_ALL_STAFF = "allStaff";
@@ -495,19 +498,21 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs, BindingResult result) {
 
 	// Old values.
-	FormFieldAssignment faBean = (FormFieldAssignment) session.getAttribute("old" + ATTR_FIELD);
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	long projID = proj.getId();
+	String oldLabel = (String) session.getAttribute(ATTR_OLD_FIELD_LABEL);
+	String oldValue = (String) session.getAttribute(ATTR_OLD_FIELD_VALUE);
 
 	// Get response.
 	// Do service.
-	String response = this.fieldService.updateField(faBean.getProjectID(), faBean.getFieldID(),
-		faBean.getLabel(), faBean.getValue(), newFaBean.getLabel(), newFaBean.getValue(),
-		result);
+	String response = this.fieldService.updateField(projID, newFaBean.getFieldID(), oldLabel,
+		oldValue, newFaBean.getLabel(), newFaBean.getValue(), result);
 
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Clear session and redirect.
-	return redirectEditPageProject(faBean.getProjectID(), status);
+	return redirectEditPageProject(projID, status);
     }
 
     /**
@@ -547,23 +552,27 @@ public class ProjectController {
      * @param status
      * @return
      */
-    @RequestMapping(value = Field.OBJECT_NAME + "/" + ConstantsSystem.REQUEST_EDIT + "/{"
-	    + Field.OBJECT_NAME + "}", method = RequestMethod.GET)
+    @RequestMapping(value = RegistryURL.EDIT_FIELD, method = RequestMethod.GET)
     public String editField(HttpSession session,
 	    @PathVariable(Field.OBJECT_NAME) String fieldIdentifiers, Model model) {
 
 	// Get project id.
 	Project proj = (Project) session.getAttribute(ProjectController.ATTR_PROJECT);
 	long projectID = proj.getId();
-	long fieldID = Long.valueOf(fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[0]);
-	String label = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[1];
-	String value = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR)[2];
+
+	String[] fieldArr = fieldIdentifiers.split(Field.IDENTIFIER_SEPARATOR);
+	long fieldID = Long.valueOf(fieldArr[0]);
+	String label = fieldArr[1];
+	String value = fieldArr[2];
 
 	// Set to model attribute "field".
 	model.addAttribute(ATTR_PROJECT, proj);
-	model.addAttribute(ATTR_FIELD, new FormFieldAssignment(projectID, fieldID, label, value));
-	session.setAttribute("old" + ATTR_FIELD,
-		new FormFieldAssignment(projectID, fieldID, label, value));
+
+	// Set field attributes.
+	FormFieldAssignment fieldForm = new FormFieldAssignment(projectID, fieldID, label, value);
+	model.addAttribute(ATTR_FIELD, fieldForm);
+	session.setAttribute(ATTR_OLD_FIELD_LABEL, label);
+	session.setAttribute(ATTR_OLD_FIELD_VALUE, value);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT_FIELD;
     }
