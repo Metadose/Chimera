@@ -11,7 +11,7 @@ import org.springframework.util.StopWatch;
 public class PerfMonInterceptorImpl extends AbstractMonitoringInterceptor {
 
     private static final long serialVersionUID = -2223777220091898111L;
-    private static final int THRESHOLD_MIN = 0; // Log all.
+    private static final int THRESHOLD_MIN = 100; // 100 milliseconds.
     private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     /**

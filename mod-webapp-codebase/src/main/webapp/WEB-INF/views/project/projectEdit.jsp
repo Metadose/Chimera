@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+<%-- 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" /> --%>
 	
 	<style type="text/css">
 		ul {         
@@ -50,8 +50,7 @@
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
-	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
-	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
+<%-- 	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script> --%>
 
 	<!-- Modal -->
 	<div id="deleteModal" class="modal fade" role="dialog">
@@ -2394,11 +2393,18 @@
         </aside>
 	</div>
 	
-	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts.js" type="text/javascript"></script>
+
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/themes/grid-light.js" type="text/javascript"></script>
+
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/modules/no-data-to-display.js" type="text/javascript"></script>
+	
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
-	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts-3d.js" type="text/javascript"></script>
 	
 	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
@@ -2421,36 +2427,36 @@
    	
    	<c:if test="${project.id != 0}">
    	<script type="text/javascript">
-   	$(document).ready(function() {
-		var eventsJSON = ${calendarJSON};
-		$('#calendar').fullCalendar({
-			events: eventsJSON,
-			dayClick: function(date, jsEvent, view) {
-// 				$("#modalDate").val(date.format());
-// 				$("#modalWage").val(staffWage);
-// 				$("#myModal").modal('show');
-		    },
-		    eventClick: function(calEvent, jsEvent, view) {
-// 		    	$("#modalDate").val(calEvent.start.format());
-// 				$("#modalWage").val(staffWage);
-// 				$("#myModal").modal('show');
+//    	$(document).ready(function() {
+// 		var eventsJSON = ${calendarJSON};
+// 		$('#calendar').fullCalendar({
+// 			events: eventsJSON,
+// 			dayClick: function(date, jsEvent, view) {
+// // 				$("#modalDate").val(date.format());
+// // 				$("#modalWage").val(staffWage);
+// // 				$("#myModal").modal('show');
+// 		    },
+// 		    eventClick: function(calEvent, jsEvent, view) {
+// // 		    	$("#modalDate").val(calEvent.start.format());
+// // 				$("#modalWage").val(staffWage);
+// // 				$("#myModal").modal('show');
 				
-// 				var statusValue = calEvent.attendanceStatus;
-// 				$('#attendanceStatus').val(statusValue);
+// // 				var statusValue = calEvent.attendanceStatus;
+// // 				$('#attendanceStatus').val(statusValue);
 				
-// 				if(statusValue == 2 || this.value == -1) {
-// 					$('#modalWage').hide();
-// 					$('#modalWageLabel').hide();
-// 					$('#modalWageBreak').hide();
-// 				} else {
-// 					$('#modalWage').val(calEvent.attendanceWage);
-// 					$('#modalWage').show();
-// 					$('#modalWageLabel').show();
-// 					$('#modalWageBreak').show();
-// 				}
-		    }
-	    });
-	});
+// // 				if(statusValue == 2 || this.value == -1) {
+// // 					$('#modalWage').hide();
+// // 					$('#modalWageLabel').hide();
+// // 					$('#modalWageBreak').hide();
+// // 				} else {
+// // 					$('#modalWage').val(calEvent.attendanceWage);
+// // 					$('#modalWage').show();
+// // 					$('#modalWageLabel').show();
+// // 					$('#modalWageBreak').show();
+// // 				}
+// 		    }
+// 	    });
+// 	});
 
 	$(function () {
 	    $('#highcharts-inventory').highcharts({
