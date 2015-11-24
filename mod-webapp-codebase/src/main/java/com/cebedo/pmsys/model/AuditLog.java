@@ -105,7 +105,8 @@ public class AuditLog implements IObjectModel {
 	if (StringUtils.isBlank(objectIdentifier)) {
 	    return objName;
 	}
-	return String.format("%s (%s)", objName, objectIdentifier);
+	// return String.format("%s (%s)", objName, objectIdentifier);
+	return String.format("%s", objName);
     }
 
     @Transient
@@ -116,7 +117,8 @@ public class AuditLog implements IObjectModel {
 	if (StringUtils.isBlank(objectIdentifier)) {
 	    return objName;
 	}
-	return String.format("%s (%s)", objName, objectIdentifier);
+	// return String.format("%s (%s)", objName, objectIdentifier);
+	return String.format("%s", objName);
     }
 
     @Id
