@@ -57,4 +57,8 @@ public class FormFieldAssignment {
 	this.value = StringUtils.trim(value);
     }
 
+    public String toString() {
+	return String.format("[%s, %s, %s]", this.projectID, this.label, this.value);
+    }
+
 }

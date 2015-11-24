@@ -57,6 +57,10 @@ public class FieldServiceImpl implements FieldService {
 	}
 
 	// Service layer form validation.
+	String label = fieldAssignment.getLabel().replaceAll("\n", " ").replaceAll("\r", " ");
+	String value = fieldAssignment.getValue().replaceAll("\n", " ").replaceAll("\r", " ");
+	fieldAssignment.setLabel(label);
+	fieldAssignment.setValue(value);
 	this.fieldAssignmentValidator.validate(fieldAssignment, result);
 	if (result.hasErrors()) {
 	    return this.validationHelper.errorMessageHTML(result);
@@ -141,11 +145,17 @@ public class FieldServiceImpl implements FieldService {
 	    return AlertBoxFactory.ERROR;
 	}
 
-	FieldAssignment fieldAssignment = this.fieldDAO.getFieldByKeys(projectID, fieldID, oldLabel,
-		oldValue);
+	// Clean the inputs.
+	label = label.replaceAll("\n", " ").replaceAll("\r", " ");
+	value = value.replaceAll("\n", " ").replaceAll("\r", " ");
 
 	// Service layer form validation.
-	this.fieldAssignmentValidator.validate(fieldAssignment, result);
+	FieldAssignment newFA = new FieldAssignment();
+	newFA.setProject(proj);
+	newFA.setField(new Field(fieldID));
+	newFA.setLabel(label);
+	newFA.setValue(value);
+	this.fieldAssignmentValidator.validate(newFA, result);
 	if (result.hasErrors()) {
 	    return this.validationHelper.errorMessageHTML(result);
 	}
