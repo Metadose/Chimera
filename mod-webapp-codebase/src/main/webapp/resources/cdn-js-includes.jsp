@@ -3,7 +3,8 @@
 <%-- <script src="<c:url value="/resources/lib/jquery.min.js" />"></script> --%>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-<script src="<c:url value="/resources/lib/bootstrap.min.js" />"type="text/javascript"></script>
+<%-- <script src="<c:url value="/resources/lib/bootstrap.min.js" />"type="text/javascript"></script> --%>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 <%-- <script src="<c:url value="/resources/lib/jquery-ui.min.js" />"type="text/javascript"></script> --%>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>

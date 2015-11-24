@@ -19,7 +19,9 @@
    	</c:when>
    	</c:choose>
 
-   	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script>
+<%--    	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script> --%>
+   	<script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js" type="text/javascript"></script>
+   	
 	<script src="<c:url value="/resources/js/accounting-aux.js" />"type="text/javascript"></script>
 	
 	<!-- Ignite UI Required Combined CSS Files -->
@@ -323,7 +325,9 @@
 	</div>
 	
 	<!-- Ignite UI Required Combined JavaScript Files -->
-	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
+	
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>

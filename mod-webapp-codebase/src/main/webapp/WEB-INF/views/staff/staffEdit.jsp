@@ -23,7 +23,8 @@
     	</c:when>
     </c:choose>
 	
-	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" />
+<%-- 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.2/fullcalendar.css" rel="stylesheet" type="text/css" />
 	
 	<style>
 	  ul {         
@@ -41,8 +42,8 @@
 </head>
 <body class="skin-blue">
 	<c:import url="/resources/header.jsp" />
-	<script src="<c:url value="/resources/lib/moment.min.js" />"></script>
-	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script>
+<%-- 	<script src="<c:url value="/resources/lib/fullcalendar.min.js" />"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.0.2/fullcalendar.min.js"></script>
 	<div class="wrapper row-offcanvas row-offcanvas-left">
 		<!--  -->
 		<aside class="right-side">
@@ -557,11 +558,18 @@
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
     <script src="${contextPath}/resources/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
 
-    <script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
-    <script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script>
-	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts.js" type="text/javascript"></script>
+
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/themes/grid-light.js" type="text/javascript"></script>
+
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/modules/no-data-to-display.js" type="text/javascript"></script>
+	
 <%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
-	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
+<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts-3d.js" type="text/javascript"></script>
 	
    	<c:if test="${staff.id != 0 && fromProject}">
    	<script type="text/javascript">
