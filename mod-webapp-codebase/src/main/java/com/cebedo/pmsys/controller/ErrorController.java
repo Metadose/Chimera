@@ -21,7 +21,8 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/" })
     public String error(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
+	// redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+	// AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -33,7 +34,8 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/500" })
     public String error500(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
+	// redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+	// AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -45,7 +47,8 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/405" })
     public String error405(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
+	// redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+	// AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
@@ -57,7 +60,8 @@ public class ErrorController {
      */
     @RequestMapping(value = { "", "/404" })
     public String error404(RedirectAttributes redirectAttrs) {
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.ERROR);
+	// redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT,
+	// AlertBoxFactory.ERROR);
 	return RegistryURL.REDIRECT_DASHBOARD;
     }
 
