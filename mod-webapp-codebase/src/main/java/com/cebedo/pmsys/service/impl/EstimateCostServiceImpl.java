@@ -84,7 +84,8 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HSSFWorkbook();
 	}
-	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT, ConstantsRedis.OBJECT_ESTIMATE_COST, projID);
+	this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_EXPORT,
+		ConstantsRedis.OBJECT_ESTIMATE_COST, projID);
 	HSSFWorkbook wb = new HSSFWorkbook();
 	HSSFSheet sheet = wb.createSheet("Estimated Costs");
 	ProjectAux aux = this.projectAuxValueRepo.get(ProjectAux.constructKey(proj));
@@ -207,8 +208,8 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	// Log.
 	if (costs.size() > 0) {
 	    Project proj = costs.get(0).getProject();
-	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, proj.getId(),
-		    ConstantsRedis.OBJECT_ESTIMATE_COST, "Mass", proj, "Mass");
+	    this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME,
+		    proj.getId(), ConstantsRedis.OBJECT_ESTIMATE_COST, "Mass", proj, "Mass");
 	}
 
 	// If reaches this point, do actual service.
@@ -235,8 +236,8 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
-		MultipartFile.class.getName());
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE,
+		Project.OBJECT_NAME, project.getId(), MultipartFile.class.getName());
 
 	try {
 
@@ -359,23 +360,29 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	    return new EstimateCost();
 	}
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATE_COST,
-		obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET,
+		ConstantsRedis.OBJECT_ESTIMATE_COST, obj.getKey());
 	return obj;
+    }
+
+    @Override
+    @Transactional
+    public List<EstimateCost> list(Project proj) {
+	return list(proj, false);
     }
 
     @Transactional
     @Override
-    public List<EstimateCost> list(Project proj) {
+    public List<EstimateCost> list(Project proj, boolean override) {
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimateCost>();
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_ESTIMATE_COST);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_ESTIMATE_COST);
 
 	String pattern = EstimateCost.constructPattern(proj);
 	Set<String> keys = this.estimateCostValueRepo.keys(pattern);

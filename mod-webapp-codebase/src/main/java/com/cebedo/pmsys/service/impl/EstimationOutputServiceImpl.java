@@ -43,8 +43,8 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_ESTIMATION_OUTPUT,
-		obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET,
+		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT, obj.getKey());
 
 	return obj;
     }
@@ -72,16 +72,22 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
     @Override
     @Transactional
     public List<EstimationOutput> listDesc(Project proj) {
+	return listDesc(proj, false);
+    }
+
+    @Override
+    @Transactional
+    public List<EstimationOutput> listDesc(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<EstimationOutput>();
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_ESTIMATION_OUTPUT);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_ESTIMATION_OUTPUT);
 
 	String pattern = EstimationOutput.constructPattern(proj);
 	Set<String> keys = this.estimationOutputValueRepo.keys(pattern);

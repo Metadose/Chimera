@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,6 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.concurrency.CallableModeler;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
@@ -59,11 +64,13 @@ import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
 import com.cebedo.pmsys.enums.TypeCalendarEvent;
 import com.cebedo.pmsys.enums.TypeEstimateCost;
+import com.cebedo.pmsys.enums.TypeSystemModule;
 import com.cebedo.pmsys.enums.UnitLength;
 import com.cebedo.pmsys.enums.UnitMass;
 import com.cebedo.pmsys.enums.UnitVolume;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Field;
@@ -152,10 +159,7 @@ public class ProjectController {
     public static final String ATTR_MASS_UPLOAD_BEAN = "massUploadBean";
     public static final String ATTR_ESTIMATE = ConstantsRedis.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
-    public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
     public static final String ATTR_ESTIMATE_COST_LIST = "estimateCostList";
-    public static final String ATTR_ESTIMATE_DIRECT_COST_LIST = "directCostList";
-    public static final String ATTR_ESTIMATE_INDIRECT_COST_LIST = "indirectCostList";
     public static final String ATTR_ESTIMATE_OUTPUT_JSON = "estimateJSON";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
@@ -206,8 +210,6 @@ public class ProjectController {
 
     public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
     public static final String ATTR_DATA_SERIES_PIE_TASKS = "dataSeriesTasks";
-    public static final String ATTR_DATA_SERIES_PIE_COSTS_ACTUAL = "dataSeriesCostsActual";
-    public static final String ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
     public static final String ATTR_DATA_SERIES_PIE_DASHBOARD = "dataSeriesDashboardPie";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
@@ -244,6 +246,7 @@ public class ProjectController {
     private static final String FORM_BALANCE_SHEET_RANGE = "balanceSheetDateRange";
 
     private AuthHelper authHelper = new AuthHelper();
+    private BeanHelper beanHelper = new BeanHelper();
 
     // TODO Remove unnecessary comments.
     private ProjectService projectService; // Done
@@ -2575,7 +2578,7 @@ public class ProjectController {
 	List<HighchartsDataPoint> equipmentCumulative = new ArrayList<HighchartsDataPoint>();
 
 	// Set attributes.
-	setAttributesEstimate(proj, projectAux, model);
+	// setAttributesEstimate(proj, projectAux, model);
 	setAttributesStaff(proj, model);
 	setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
 	setAttributesInventory(proj, model, inventorySeries, inventoryCumulative);
@@ -2583,6 +2586,46 @@ public class ProjectController {
 	setAttributesEquipment(proj, model, equipmentSeries, equipmentCumulative);
 	setAttributesProgramOfWorks(proj, model);
 	setAttributesDownloads(model);
+
+	// Asynchronous calling.
+	CallableModeler estimate = (CallableModeler) this.beanHelper.getBean("callableModeler");
+	estimate.set(TypeSystemModule.ESTIMATE, proj, projectAux, model);
+	// CallableModeler staff = new CallableModeler();
+
+	FutureTask<Model> futureEstimate = new FutureTask<Model>(estimate);
+	// FutureTask<Model> futureStaff = new FutureTask<Model>(staff);
+
+	// TODO Change arg 2.
+	ExecutorService executor = Executors.newFixedThreadPool(2);
+	executor.execute(futureEstimate);
+	// executor.execute(futureStaff);
+
+	// Wait while not yet done.
+	while (true) {
+
+	    // If all tasks are done.
+	    // if (futureEstimate.isDone() && futureStaff.isDone()) {
+	    if (futureEstimate.isDone()) {
+
+		try {
+
+		    // Get the results.
+		    Model modelEstimate = futureEstimate.get();
+		    // Model modelStaff = futureStaff.get();
+
+		    // Merge with original model.
+		    model.mergeAttributes(modelEstimate.asMap());
+		    // model.mergeAttributes(modelStaff.asMap());
+
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		} catch (ExecutionException e) {
+		    e.printStackTrace();
+		}
+		executor.shutdown();
+		break;
+	    }
+	}
 
 	// Dashboard data series.
 	// Bar graph comparison of different data series (Bar graph).
@@ -2792,57 +2835,6 @@ public class ProjectController {
 		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
 	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
 		new Gson().toJson(dashboardSeries, ArrayList.class));
-    }
-
-    /**
-     * Set attributes used in Estimate.
-     * 
-     * @param proj
-     * @param projectAux
-     * @param model
-     */
-    private void setAttributesEstimate(Project proj, ProjectAux projectAux, Model model) {
-
-	// Estimated.
-	List<HighchartsDataPoint> pie = new ArrayList<HighchartsDataPoint>();
-	double direct = projectAux.getGrandTotalCostsDirect();
-	double indirect = projectAux.getGrandTotalCostsIndirect();
-	pie.add(new HighchartsDataPoint("Direct", direct));
-	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED,
-		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
-
-	// Actual.
-	pie = new ArrayList<HighchartsDataPoint>();
-	direct = projectAux.getGrandTotalActualCostsDirect();
-	indirect = projectAux.getGrandTotalActualCostsIndirect();
-	pie.add(new HighchartsDataPoint("Direct", direct));
-	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ACTUAL,
-		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
-
-	// Selectors and forms.
-	model.addAttribute(ATTR_ESTIMATE_COST_LIST, TypeEstimateCost.class.getEnumConstants());
-	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, new EstimateCost(proj));
-
-	// Prepare the estimate costs.
-	List<EstimateCost> allCosts = this.estimateCostService.list(proj);
-	List<EstimateCost> costsDirect = new ArrayList<EstimateCost>();
-	List<EstimateCost> costsIndirect = new ArrayList<EstimateCost>();
-	for (EstimateCost cost : allCosts) {
-	    TypeEstimateCost costType = cost.getCostType();
-	    if (costType == TypeEstimateCost.DIRECT) {
-		costsDirect.add(cost);
-	    } else if (costType == TypeEstimateCost.INDIRECT) {
-		costsIndirect.add(cost);
-	    }
-	}
-	model.addAttribute(ATTR_ESTIMATE_DIRECT_COST_LIST, costsDirect);
-	model.addAttribute(ATTR_ESTIMATE_INDIRECT_COST_LIST, costsIndirect);
-
-	// Estimation output list, calculator.
-	List<EstimationOutput> estimates = this.estimationOutputService.listDesc(proj);
-	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
     }
 
     /**
