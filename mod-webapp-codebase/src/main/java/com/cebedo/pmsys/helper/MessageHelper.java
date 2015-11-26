@@ -1,14 +1,11 @@
 package com.cebedo.pmsys.helper;
 
-import javax.jms.Queue;
-
-import org.apache.activemq.command.ActiveMQQueue;
-
 import com.cebedo.pmsys.bean.JMSMessage;
+import com.cebedo.pmsys.concurrency.AuditExecutor;
+import com.cebedo.pmsys.concurrency.LoggerThread;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.sender.MessageSender;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class MessageHelper {
@@ -89,14 +86,24 @@ public class MessageHelper {
      * @param msg
      */
     private void queueActiveMQ(JMSMessage msg) {
+
+	// Uncomment block if we are using activeMQ.
 	// Get the bean
-	MessageSender sender = (MessageSender) this.beanHelper.getBean(MessageSender.BEAN_NAME);
+	// MessageSender sender = (MessageSender)
+	// this.beanHelper.getBean(MessageSender.BEAN_NAME);
 
 	// Define the destinations.
-	Queue dest = new ActiveMQQueue(JMSMessage.DESTINATIONS);
+	// Queue dest = new ActiveMQQueue(JMSMessage.DESTINATIONS);
 
 	// Send the message.
-	sender.send(dest, msg);
+	// sender.send(dest, msg);
+
+	// Comment block if we are using activeMQ.
+	LoggerThread loggerThread = new LoggerThread(msg);
+	loggerThread.start();
+
+	AuditExecutor auditExecutor = (AuditExecutor) this.beanHelper.getBean("auditExecutor");
+	auditExecutor.execute(msg);
     }
 
     /**

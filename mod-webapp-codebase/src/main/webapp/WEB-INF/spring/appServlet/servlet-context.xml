@@ -47,47 +47,55 @@
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
 	<!-- Activemq connection factory -->
-    <beans:bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <beans:constructor-arg index="0" value="${amq.broker.url.tcp}"/>
-    </beans:bean>
+<!--     <beans:bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"> -->
+<!--         <beans:constructor-arg index="0" value="${amq.broker.url.tcp}"/> -->
+<!--     </beans:bean> -->
  
     <!-- ConnectionFactory Definition -->
-    <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"
-    	p:sessionCacheSize="10">
-        <beans:constructor-arg ref="amqConnectionFactory" />
-    </beans:bean>
+<!--     <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory" -->
+<!--     	p:sessionCacheSize="10"> -->
+<!--         <beans:constructor-arg ref="amqConnectionFactory" /> -->
+<!--     </beans:bean> -->
  
     <!--  Default Destination Queue Definition-->
-    <beans:bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <beans:constructor-arg index="0" value="system.uncategorized.message"/>
-    </beans:bean>
+<!--     <beans:bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue"> -->
+<!--         <beans:constructor-arg index="0" value="system.uncategorized.message"/> -->
+<!--     </beans:bean> -->
  
     <!-- JmsTemplate Definition -->
-    <beans:bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <beans:property name="connectionFactory" ref="connectionFactory" />
-        <beans:property name="defaultDestination" ref="defaultDestination" />
-    </beans:bean>
+<!--     <beans:bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"> -->
+<!--         <beans:property name="connectionFactory" ref="connectionFactory" /> -->
+<!--         <beans:property name="defaultDestination" ref="defaultDestination" /> -->
+<!--     </beans:bean> -->
  
     <!-- Message Sender/Listener Definition -->
-    <beans:bean id="messageSender" class="com.cebedo.pmsys.sender.MessageSender">
-        <beans:constructor-arg index="0" ref="jmsTemplate" />
-    </beans:bean>
+<!--     <beans:bean id="messageSender" class="com.cebedo.pmsys.sender.MessageSender"> -->
+<!--         <beans:constructor-arg index="0" ref="jmsTemplate" /> -->
+<!--     </beans:bean> -->
     
-	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.DefaultMessageListenerImpl"/>
-	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListenerImpl">
-		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property>
-	</beans:bean>
-	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListenerImpl"/>
-    <jms:listener-container
-	      container-type="default"
-	      connection-factory="connectionFactory"
-	      acknowledge="transacted">
-	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" />
-	    <jms:listener destination="system.audit" ref="auditMessageListener" method="onMessage" />
-	    <jms:listener destination="system.log.tail" ref="logMessageListener" method="onMessage" />
-	</jms:listener-container>
+<!-- 	<beans:bean id="messageListener" class="com.cebedo.pmsys.listener.DefaultMessageListenerImpl"/> -->
+<!-- 	<beans:bean id="auditMessageListener" class="com.cebedo.pmsys.listener.AuditMessageListenerImpl"> -->
+<!-- 		<beans:property name="auditLogDAO" ref="auditLogDAO"></beans:property> -->
+<!-- 	</beans:bean> -->
+<!-- 	<beans:bean id="logMessageListener" class="com.cebedo.pmsys.listener.LogMessageListenerImpl"/> -->
+<!--     <jms:listener-container -->
+<!-- 	      container-type="default" -->
+<!-- 	      connection-factory="connectionFactory" -->
+<!-- 	      acknowledge="transacted"> -->
+<!-- 	    <jms:listener destination="system.uncategorized.message" ref="messageListener" method="onMessage" /> -->
+<!-- 	    <jms:listener destination="system.audit" ref="auditMessageListener" method="onMessage" /> -->
+<!-- 	    <jms:listener destination="system.log.tail" ref="logMessageListener" method="onMessage" /> -->
+<!-- 	</jms:listener-container> -->
 	  
-    
+	<beans:bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+	    <beans:property name="corePoolSize" value="5" />
+	    <beans:property name="maxPoolSize" value="10" />
+	    <beans:property name="queueCapacity" value="25" />
+	</beans:bean>
+	
+	<beans:bean id="auditExecutor" class="com.cebedo.pmsys.concurrency.AuditExecutor">
+	    <beans:constructor-arg ref="taskExecutor" />
+	</beans:bean>
     
     
 	<!-- *********************************************************** -->
