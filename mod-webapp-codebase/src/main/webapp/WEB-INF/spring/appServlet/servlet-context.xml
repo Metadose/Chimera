@@ -96,6 +96,19 @@
 	<beans:bean id="auditExecutor" class="com.cebedo.pmsys.concurrency.AuditExecutor">
 	    <beans:constructor-arg ref="taskExecutor" />
 	</beans:bean>
+	
+	
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<!-- PERFORMANCE INTERCEPTOR *********************************** -->
+	<!-- *********************************************************** -->
+	<!-- *********************************************************** -->
+	<mvc:interceptors>
+	    <mvc:interceptor>
+	        <mvc:mapping path="/**" />
+	        <beans:bean class="com.cebedo.pmsys.interceptor.ExecuteTimeInterceptorImpl" />
+	    </mvc:interceptor>
+	</mvc:interceptors>
     
     
 	<!-- *********************************************************** -->
