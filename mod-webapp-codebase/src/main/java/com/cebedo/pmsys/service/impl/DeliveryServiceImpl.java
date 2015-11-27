@@ -349,9 +349,15 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Transactional
     @Override
     public List<Delivery> listAsc(Project proj) {
+	return listAsc(proj, false);
+    }
+
+    @Transactional
+    @Override
+    public List<Delivery> listAsc(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Delivery>();
 	}

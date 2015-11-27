@@ -8,4 +8,6 @@ public interface AuditLogService {
 
     public List<AuditLog> list();
 
+    public void create(AuditLog audit);
+
 }

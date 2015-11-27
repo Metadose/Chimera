@@ -606,8 +606,14 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     @Transactional
     @Override
     public List<ProjectPayroll> listAsc(Project proj) {
+	return listAsc(proj, false);
+    }
+
+    @Transactional
+    @Override
+    public List<ProjectPayroll> listAsc(Project proj, boolean override) {
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<ProjectPayroll>();
 	}

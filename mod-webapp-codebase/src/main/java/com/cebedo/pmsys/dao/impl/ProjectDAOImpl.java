@@ -11,9 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cebedo.pmsys.dao.ProjectDAO;
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.AuditLog;
-import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.Task;
 
 @Repository
@@ -72,33 +70,44 @@ public class ProjectDAOImpl implements ProjectDAO {
 	return projectList;
     }
 
+    private class HibernateInitializer extends Thread {
+
+	private Set<Task> assignedTasks;
+
+	public HibernateInitializer(Set<Task> aT) {
+	    this.assignedTasks = aT;
+	}
+
+	@Override
+	public void run() {
+	    Hibernate.initialize(assignedTasks);
+	    for (Task task : assignedTasks) {
+		Hibernate.initialize(task.getStaff());
+	    }
+	}
+    }
+
     @Override
     public Project getByIDWithAllCollections(long id) {
 
 	Session session = this.sessionFactory.getCurrentSession();
 	Project project = (Project) session.load(Project.class, new Long(id));
 
+	// Initialize all tasks.
+	// And all teams and staff of each task.
+	HibernateInitializer initer = new HibernateInitializer(project.getAssignedTasks());
+	initer.start();
+
 	// Init company.
 	// and company admins.
 	Hibernate.initialize(project.getCompany());
-	Company co = project.getCompany();
-	if (co != null) {
-	    for (Staff admin : co.getAdmins()) {
-		Hibernate.initialize(admin);
-	    }
-	}
-
 	Hibernate.initialize(project.getAssignedFields());
 	Hibernate.initialize(project.getAssignedStaff());
 
-	// Initialize all tasks.
-	// And all teams and staff of each task.
-	Set<Task> assignedTasks = project.getAssignedTasks();
-	Hibernate.initialize(assignedTasks);
-	for (Task task : assignedTasks) {
-	    Hibernate.initialize(task.getStaff());
+	// Wait for the initializer to finish.
+	while (initer.isAlive()) {
+	    ;
 	}
-
 	return project;
     }
 

@@ -522,14 +522,20 @@ public class StaffServiceImpl implements StaffService {
 	return this.staffDAO.list(companyID);
     }
 
+    @Transactional
+    @Override
+    public List<Staff> listUnassignedInProject(Long companyID, Project proj) {
+	return listUnassignedInProject(companyID, proj, false);
+    }
+
     /**
      * List unassigned staff given a project.
      */
     @Override
     @Transactional
-    public List<Staff> listUnassignedInProject(Long companyID, Project project) {
+    public List<Staff> listUnassignedInProject(Long companyID, Project project, boolean override) {
 	// Security check.
-	if (!this.authHelper.hasAccess(project)) {
+	if (!override && !this.authHelper.hasAccess(project)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
 	    return new ArrayList<Staff>();
 	}
@@ -884,4 +890,5 @@ public class StaffServiceImpl implements StaffService {
 	}
 	return new ArrayList<Staff>();
     }
+
 }

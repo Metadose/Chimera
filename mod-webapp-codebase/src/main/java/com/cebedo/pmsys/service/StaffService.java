@@ -115,4 +115,6 @@ public interface StaffService {
 
     public List<Staff> listExcept(Long coID, Set<Staff> staff);
 
+    public List<Staff> listUnassignedInProject(Long companyID, Project proj, boolean override);
+
 }

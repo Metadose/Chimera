@@ -149,7 +149,8 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_MATERIAL, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_MATERIAL,
+		obj.getKey());
 
 	return obj;
     }
@@ -164,8 +165,8 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableListWithAssoc(AuditAction.ACTION_LIST, ConstantsRedis.OBJECT_DELIVERY,
-		delivery.getKey(), ConstantsRedis.OBJECT_MATERIAL);
+	this.messageHelper.nonAuditableListWithAssoc(AuditAction.ACTION_LIST,
+		ConstantsRedis.OBJECT_DELIVERY, delivery.getKey(), ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(delivery);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
@@ -235,22 +236,27 @@ public class MaterialServiceImpl implements MaterialService {
 		material.getName());
     }
 
+    @Override
+    public List<Material> listDesc(Project proj) {
+	return listDesc(proj, false);
+    }
+
     /**
      * List all materials in project.
      */
     @Transactional
     @Override
-    public List<Material> listDesc(Project proj) {
+    public List<Material> listDesc(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Material>();
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_MATERIAL);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_MATERIAL);
 
 	String pattern = Material.constructPattern(proj);
 	Set<String> keys = this.materialValueRepo.keys(pattern);

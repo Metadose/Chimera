@@ -22,4 +22,6 @@ public interface MaterialService {
 
     public String update(Material material, BindingResult result);
 
+    public List<Material> listDesc(Project proj, boolean override);
+
 }

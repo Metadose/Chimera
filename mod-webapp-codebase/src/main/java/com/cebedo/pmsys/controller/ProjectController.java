@@ -3,14 +3,15 @@ package com.cebedo.pmsys.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -34,7 +35,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.bean.PairCountValue;
-import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.concurrency.GrapherCumulativeComparison;
+import com.cebedo.pmsys.concurrency.GrapherCumulativeTrend;
+import com.cebedo.pmsys.concurrency.GrapherProportionalComparison;
+import com.cebedo.pmsys.concurrency.GrapherSeriesComparison;
+import com.cebedo.pmsys.concurrency.RunnableModelerEquipment;
+import com.cebedo.pmsys.concurrency.RunnableModelerEstimate;
+import com.cebedo.pmsys.concurrency.RunnableModelerInventory;
+import com.cebedo.pmsys.concurrency.RunnableModelerOtherExpenses;
+import com.cebedo.pmsys.concurrency.RunnableModelerPOW;
+import com.cebedo.pmsys.concurrency.RunnableModelerPayroll;
+import com.cebedo.pmsys.concurrency.RunnableModelerStaff;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
@@ -51,13 +62,11 @@ import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.CategoryMaterial;
-import com.cebedo.pmsys.enums.HTMLGanttElement;
 import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.enums.StatusPayroll;
 import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.enums.TableEstimationAllowance;
-import com.cebedo.pmsys.enums.TypeCalendarEvent;
 import com.cebedo.pmsys.enums.TypeEstimateCost;
 import com.cebedo.pmsys.enums.UnitLength;
 import com.cebedo.pmsys.enums.UnitMass;
@@ -79,7 +88,6 @@ import com.cebedo.pmsys.pojo.FormMassUpload;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
-import com.cebedo.pmsys.pojo.HighchartsDataSeries;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
@@ -144,7 +152,6 @@ public class ProjectController {
     public static final String ATTR_MATERIAL_LIST = "materialList";
     public static final String ATTR_PROJECT_STATUS_LIST = "projectStatusList";
     public static final String ATTR_TASK_STATUS_LIST = "taskStatusList";
-    public static final String ATTR_PULL_OUT_LIST = "pullOutList";
     public static final String ATTR_CONCRETE_ESTIMATION_SUMMARIES = "concreteEstimationSummaries";
     public static final String ATTR_MASONRY_CHB_ESTIMATION_SUMMARIES = "masonryCHBEstimationSummaries";
     public static final String ATTR_SHAPE_LIST = "shapeList";
@@ -152,10 +159,7 @@ public class ProjectController {
     public static final String ATTR_MASS_UPLOAD_BEAN = "massUploadBean";
     public static final String ATTR_ESTIMATE = ConstantsRedis.OBJECT_ESTIMATE;
     public static final String ATTR_ESTIMATE_INPUT = "estimationInput";
-    public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
     public static final String ATTR_ESTIMATE_COST_LIST = "estimateCostList";
-    public static final String ATTR_ESTIMATE_DIRECT_COST_LIST = "directCostList";
-    public static final String ATTR_ESTIMATE_INDIRECT_COST_LIST = "indirectCostList";
     public static final String ATTR_ESTIMATE_OUTPUT_JSON = "estimateJSON";
     public static final String ATTR_ESTIMATE_ALLOWANCE_LIST = "allowanceList";
     public static final String ATTR_ESTIMATE_MASONRY_LIST = "masonryEstimateList";
@@ -168,10 +172,6 @@ public class ProjectController {
     public static final String ATTR_BLOCK_LAYING_MIXTURE_LIST = "blockLayingMixtureList";
     public static final String ATTR_CHB_FOOTING_DIMENSION_LIST = "chbFootingDimensionList";
 
-    public static final String ATTR_EXPENSE_LIST = "expenseList";
-    public static final String ATTR_EQUIPMENT_EXPENSE_LIST = "equipmentExpenseList";
-    public static final String ATTR_DELIVERY_LIST = "deliveryList";
-    public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_COMMON_UNITS_LIST = "commonUnitsList";
     public static final String ATTR_CHB_MR_HORIZONTAL_LIST = "chbHorizontalReinforcementList";
     public static final String ATTR_CHB_MR_VERTICAL_LIST = "chbVerticalReinforcementList";
@@ -180,41 +180,20 @@ public class ProjectController {
     public static final String ATTR_UNIT_LIST_VOLUME = "unitListVolume";
     public static final String ATTR_MATERIAL_CATEGORY_LIST = "materialCategoryList";
     public static final String ATTR_PAYROLL_LIST_TOTAL = "payrollListTotal";
-    public static final String ATTR_STAFF_POSITION = "staffPosition";
     public static final String ATTR_FILE = "file";
 
     public static final String ATTR_PAYROLL_SELECTOR_STATUS = "payrollStatusArr";
 
     public static final String ATTR_CALENDAR_EVENT_TYPES_MAP = "calendarEventTypesMap";
-    public static final String ATTR_CALENDAR_EVENT_TYPES_LIST = "calendarEventTypes";
     public static final String ATTR_CALENDAR_JSON = "calendarJSON";
-    public static final String ATTR_GANTT_JSON = "ganttJSON";
-    public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
-
-    public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
-    public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
-    public static final String ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE = "dataSeriesDashboardNotCumulative";
-    public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
-    public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
-    public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
-    public static final String ATTR_DATA_SERIES_OTHER_EXPENSES = "dataSeriesOtherExpenses";
-    public static final String ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE = "dataSeriesOtherExpensesCumulative";
-    public static final String ATTR_DATA_SERIES_EQUIPMENT = "dataSeriesEquipment";
-    public static final String ATTR_DATA_SERIES_EQUIPMENT_CUMULATIVE = "dataSeriesEquipmentCumulative";
-    public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
-    public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
 
     public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
     public static final String ATTR_DATA_SERIES_PIE_TASKS = "dataSeriesTasks";
-    public static final String ATTR_DATA_SERIES_PIE_COSTS_ACTUAL = "dataSeriesCostsActual";
-    public static final String ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
-    public static final String ATTR_DATA_SERIES_PIE_DASHBOARD = "dataSeriesDashboardPie";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
     public static final String ATTR_STAFF_LIST = "staffList";
     public static final String ATTR_LOGS = "logs";
-    public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
     public static final String ATTR_PAYROLL_MANUAL_STAFF_LIST = "manualStaffList";
     public static final String ATTR_PAYROLL_INCLUDE_STAFF = "payrollIncludeStaff";
 
@@ -246,10 +225,10 @@ public class ProjectController {
     private AuthHelper authHelper = new AuthHelper();
 
     // TODO Remove unnecessary comments.
-    private ProjectService projectService; // Done
-    private StaffService staffService; // Done
-    private FieldService fieldService; // Done
-    private DeliveryService deliveryService; // Done
+    private ProjectService projectService;
+    private StaffService staffService;
+    private FieldService fieldService;
+    private DeliveryService deliveryService;
     private MaterialService materialService;
     private ProjectPayrollService projectPayrollService;
     private ProjectAuxService projectAuxService;
@@ -2558,12 +2537,6 @@ public class ProjectController {
 	    return RegistryJSPPath.JSP_EDIT_PROJECT;
 	}
 
-	// Project main attributes.
-	Project proj = this.projectService.getByIDWithAllCollections(id);
-	ProjectAux projectAux = this.projectAuxService.get(proj);
-	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
-	model.addAttribute(ATTR_PROJECT, proj);
-
 	// Initialize containers.
 	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
@@ -2573,87 +2546,89 @@ public class ProjectController {
 	List<HighchartsDataPoint> otherExpensesCumulative = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> equipmentSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> equipmentCumulative = new ArrayList<HighchartsDataPoint>();
-
-	// Set attributes.
-	setAttributesEstimate(proj, projectAux, model);
-	setAttributesStaff(proj, model);
-	setAttributesPayroll(proj, model, payrollSeries, payrollCumulative);
-	setAttributesInventory(proj, model, inventorySeries, inventoryCumulative);
-	setAttributesOtherExpenses(proj, model, otherExpensesSeries, otherExpensesCumulative);
-	setAttributesEquipment(proj, model, equipmentSeries, equipmentCumulative);
-	setAttributesProgramOfWorks(proj, model);
 	setAttributesDownloads(model);
+
+	// Project main attributes.
+	Project proj = this.projectService.getByIDWithAllCollections(id);
+	ProjectAux projectAux = this.projectAuxService.get(proj);
+
+	// Asynchronous calling.
+	RunnableModelerEstimate runEstimate = RunnableModelerEstimate.getCtxInstance(proj, projectAux,
+		model);
+	RunnableModelerStaff runStaff = RunnableModelerStaff.getCtxInstance(proj, model);
+	RunnableModelerPayroll runPayroll = RunnableModelerPayroll.getCtxInstance(proj, model,
+		payrollSeries, payrollCumulative);
+	RunnableModelerInventory runInventory = RunnableModelerInventory.getCtxInstance(proj, model,
+		inventorySeries, inventoryCumulative);
+	RunnableModelerOtherExpenses runOtherExpenses = RunnableModelerOtherExpenses.getCtxInstance(proj,
+		model, otherExpensesSeries, otherExpensesCumulative);
+	RunnableModelerEquipment runModelerEquipment = RunnableModelerEquipment.getCtxInstance(proj,
+		model, equipmentSeries, equipmentCumulative);
+	RunnableModelerPOW runModelerPOW = RunnableModelerPOW.getCtxInstance(proj, model);
+
+	// Task executor thread pool.
+	ExecutorService executor = Executors.newFixedThreadPool(7);
+	executor.execute(runEstimate);
+	executor.execute(runStaff);
+	executor.execute(runPayroll);
+	executor.execute(runInventory);
+	executor.execute(runOtherExpenses);
+	executor.execute(runModelerEquipment);
+	executor.execute(runModelerPOW);
+
+	// Wait for threads to shutdown.
+	awaitTermination(executor);
 
 	// Dashboard data series.
 	// Bar graph comparison of different data series (Bar graph).
 	// Project cumulative, trend of project expenses (Line/Area graph).
 	// Pie of all expense type.
-	dashboardSeriesComparison(model, inventorySeries, payrollSeries, equipmentSeries,
-		otherExpensesSeries);
-	dashboardCumulativeComparison(model, inventoryCumulative, payrollCumulative,
-		otherExpensesCumulative, equipmentCumulative);
-	dashboardCumulativeTrend(model, inventorySeries, payrollSeries, equipmentSeries,
-		otherExpensesSeries);
-	dashboardProportionalComparison(model, projectAux);
+	GrapherSeriesComparison seriesComparison = new GrapherSeriesComparison(model, inventorySeries,
+		payrollSeries, equipmentSeries, otherExpensesSeries);
+	GrapherCumulativeComparison cumulativeComparison = new GrapherCumulativeComparison(model,
+		inventoryCumulative, payrollCumulative, otherExpensesCumulative, equipmentCumulative);
+	GrapherCumulativeTrend cumulativeTrend = new GrapherCumulativeTrend(model, inventorySeries,
+		payrollSeries, equipmentSeries, otherExpensesSeries);
+	GrapherProportionalComparison proportionalComparison = new GrapherProportionalComparison(model,
+		projectAux);
+
+	ExecutorService grapher = Executors.newFixedThreadPool(4);
+	grapher.execute(seriesComparison);
+	grapher.execute(cumulativeComparison);
+	grapher.execute(cumulativeTrend);
+	grapher.execute(proportionalComparison);
+
+	// Add main attributes.
+	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
+	model.addAttribute(ATTR_PROJECT, proj);
+
+	// Wait for threads to shutdown.
+	awaitTermination(grapher);
 
 	return RegistryJSPPath.JSP_EDIT_PROJECT;
     }
 
-    private void setAttributesDownloads(Model model) {
-	model.addAttribute(FORM_BALANCE_SHEET_RANGE, new FormDateRange());
-    }
-
-    private void dashboardSeriesComparison(Model model, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
-	    List<HighchartsDataPoint> equipmentSeries) {
-
-	// Construct comparison bar graph.
-	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Inventory", inventorySeries));
-	dashboardSeries.add(new HighchartsDataSeries("Payroll", payrollSeries));
-	dashboardSeries.add(new HighchartsDataSeries("Equipment", equipmentSeries));
-	dashboardSeries.add(new HighchartsDataSeries("Other Expenses", otherExpensesSeries));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE,
-		new Gson().toJson(dashboardSeries, ArrayList.class));
+    /**
+     * Wait termination of executor service.
+     * 
+     * @param executor
+     */
+    private void awaitTermination(ExecutorService executor) {
+	executor.shutdown();
+	try {
+	    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+	} catch (InterruptedException e) {
+	    ;
+	}
     }
 
     /**
-     * Set equipment attributes.
+     * Set attributes for the Download tab.
      * 
-     * @param proj
      * @param model
-     * @param equipmentSeries
-     * @param equipmentCumulative
      */
-    private void setAttributesEquipment(Project proj, Model model,
-	    List<HighchartsDataPoint> equipmentSeries, List<HighchartsDataPoint> equipmentCumulative) {
-	double total = 0;
-	List<EquipmentExpense> equipmentExpenses = this.equipmentExpenseService.listAsc(proj);
-	for (EquipmentExpense expense : equipmentExpenses) {
-
-	    // Y-axis.
-	    double yValue = expense.getCost();
-	    total += yValue;
-
-	    // Tool tip.
-	    Date datetime = expense.getDate();
-	    String name = String.format("(Equipment) %s<br/>%s",
-		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), expense.getName());
-
-	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
-	    equipmentSeries.add(point);
-
-	    // Cumulative.
-	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
-		    total);
-	    equipmentCumulative.add(pointCumulative);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_EQUIPMENT,
-		new Gson().toJson(equipmentSeries, ArrayList.class));
-	model.addAttribute(ATTR_DATA_SERIES_EQUIPMENT_CUMULATIVE,
-		new Gson().toJson(equipmentCumulative, ArrayList.class));
-	model.addAttribute(ATTR_EQUIPMENT_EXPENSE_LIST, equipmentExpenses);
-	model.addAttribute(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE, new EquipmentExpense(proj));
+    private void setAttributesDownloads(Model model) {
+	model.addAttribute(FORM_BALANCE_SHEET_RANGE, new FormDateRange());
     }
 
     /**
@@ -2673,46 +2648,6 @@ public class ProjectController {
     }
 
     /**
-     * Set attributes of Other Expenses tab.
-     * 
-     * @param proj
-     * @param model
-     * @param dataSeries
-     * @param otherExpensesCumulative
-     * @return
-     */
-    private void setAttributesOtherExpenses(Project proj, Model model,
-	    List<HighchartsDataPoint> dataSeries, List<HighchartsDataPoint> otherExpensesCumulative) {
-	double total = 0;
-	List<Expense> expenses = this.expenseService.listAsc(proj);
-	for (Expense expense : expenses) {
-
-	    // Y-axis.
-	    double yValue = expense.getCost();
-	    total += yValue;
-
-	    // Tool tip.
-	    Date datetime = expense.getDate();
-	    String name = String.format("(Other Expenses) %s<br/>%s",
-		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), expense.getName());
-
-	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
-	    dataSeries.add(point);
-
-	    // Cumulative.
-	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
-		    total);
-	    otherExpensesCumulative.add(pointCumulative);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_OTHER_EXPENSES,
-		new Gson().toJson(dataSeries, ArrayList.class));
-	model.addAttribute(ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE,
-		new Gson().toJson(otherExpensesCumulative, ArrayList.class));
-	model.addAttribute(ATTR_EXPENSE_LIST, expenses);
-	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, new Expense(proj));
-    }
-
-    /**
      * Clear the actual completion date.
      * 
      * @param session
@@ -2728,144 +2663,6 @@ public class ProjectController {
 	String response = this.projectService.clearActualCompletionDate(proj);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageProject(proj.getId(), status);
-    }
-
-    private void dashboardProportionalComparison(Model model, ProjectAux projectAux) {
-	// Proportional comparison.
-	double materialsAccumulated = projectAux.getGrandTotalDelivery();
-	double payrollAccumulated = projectAux.getGrandTotalPayroll();
-	double otherExpensesAccumulated = projectAux.getGrandTotalOtherExpenses();
-	double equipmentAccumulated = projectAux.getGrandTotalEquipmentExpenses();
-
-	boolean isEmpty = materialsAccumulated == 0 && payrollAccumulated == 0
-		&& otherExpensesAccumulated == 0 && equipmentAccumulated == 0;
-
-	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
-	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
-	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
-	projectPie.add(new HighchartsDataPoint("Equipment", equipmentAccumulated));
-	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_DASHBOARD,
-		isEmpty ? "[]" : new Gson().toJson(projectPie, ArrayList.class));
-    }
-
-    private void dashboardCumulativeTrend(Model model, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> equipmentSeries,
-	    List<HighchartsDataPoint> otherExpensesSeries) {
-	// Accumulation of expenses in this project.
-	List<HighchartsDataPoint> projectCumulative = new ArrayList<HighchartsDataPoint>();
-	projectCumulative.addAll(inventorySeries);
-	projectCumulative.addAll(payrollSeries);
-	projectCumulative.addAll(equipmentSeries);
-	projectCumulative.addAll(otherExpensesSeries);
-
-	// To sort in ascending,
-	Collections.sort(projectCumulative, new Comparator<HighchartsDataPoint>() {
-	    @Override
-	    public int compare(HighchartsDataPoint aObj, HighchartsDataPoint bObj) {
-		long aStart = aObj.getX();
-		long bStart = bObj.getX();
-		return aStart < bStart ? -1 : aStart > bStart ? 1 : 0;
-	    }
-	});
-
-	// Update the values to create progress of expenditures.
-	double cumulative = 0;
-	for (HighchartsDataPoint point : projectCumulative) {
-	    cumulative += point.getY();
-	    point.setY(cumulative);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_PROJECT,
-		new Gson().toJson(projectCumulative, ArrayList.class));
-    }
-
-    private void dashboardCumulativeComparison(Model model,
-	    List<HighchartsDataPoint> inventoryCumulative, List<HighchartsDataPoint> payrollCumulative,
-	    List<HighchartsDataPoint> otherExpensesCumulative,
-	    List<HighchartsDataPoint> equipmentCumulative) {
-	// Construct comparison bar graph.
-	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Equipment Cumulative", equipmentCumulative));
-	dashboardSeries
-		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
-		new Gson().toJson(dashboardSeries, ArrayList.class));
-    }
-
-    /**
-     * Set attributes used in Estimate.
-     * 
-     * @param proj
-     * @param projectAux
-     * @param model
-     */
-    private void setAttributesEstimate(Project proj, ProjectAux projectAux, Model model) {
-
-	// Estimated.
-	List<HighchartsDataPoint> pie = new ArrayList<HighchartsDataPoint>();
-	double direct = projectAux.getGrandTotalCostsDirect();
-	double indirect = projectAux.getGrandTotalCostsIndirect();
-	pie.add(new HighchartsDataPoint("Direct", direct));
-	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED,
-		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
-
-	// Actual.
-	pie = new ArrayList<HighchartsDataPoint>();
-	direct = projectAux.getGrandTotalActualCostsDirect();
-	indirect = projectAux.getGrandTotalActualCostsIndirect();
-	pie.add(new HighchartsDataPoint("Direct", direct));
-	pie.add(new HighchartsDataPoint("Indirect", indirect));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_COSTS_ACTUAL,
-		(direct == 0 && indirect == 0) ? "[]" : new Gson().toJson(pie, ArrayList.class));
-
-	// Selectors and forms.
-	model.addAttribute(ATTR_ESTIMATE_COST_LIST, TypeEstimateCost.class.getEnumConstants());
-	model.addAttribute(ConstantsRedis.OBJECT_ESTIMATE_COST, new EstimateCost(proj));
-
-	// Prepare the estimate costs.
-	List<EstimateCost> allCosts = this.estimateCostService.list(proj);
-	List<EstimateCost> costsDirect = new ArrayList<EstimateCost>();
-	List<EstimateCost> costsIndirect = new ArrayList<EstimateCost>();
-	for (EstimateCost cost : allCosts) {
-	    TypeEstimateCost costType = cost.getCostType();
-	    if (costType == TypeEstimateCost.DIRECT) {
-		costsDirect.add(cost);
-	    } else if (costType == TypeEstimateCost.INDIRECT) {
-		costsIndirect.add(cost);
-	    }
-	}
-	model.addAttribute(ATTR_ESTIMATE_DIRECT_COST_LIST, costsDirect);
-	model.addAttribute(ATTR_ESTIMATE_INDIRECT_COST_LIST, costsIndirect);
-
-	// Estimation output list, calculator.
-	List<EstimationOutput> estimates = this.estimationOutputService.listDesc(proj);
-	model.addAttribute(ATTR_ESTIMATE_OUTPUT_LIST, estimates);
-    }
-
-    /**
-     * Set attributes used by Staff and Manager tab.
-     * 
-     * @param proj
-     * @param model
-     */
-    private void setAttributesStaff(Project proj, Model model) {
-
-	// Get list of fields.
-	// Get list of staff members for manager assignments.
-	Long companyID = this.authHelper.getAuth().isSuperAdmin() ? null : proj.getCompany().getId();
-
-	// Used in the "assign staff constrols".
-	// Get the list of staff not yet assigned in this project.
-	// Company staff, minus managers, minus assigned.
-	List<Staff> availableStaffToAssign = this.staffService.listUnassignedInProject(companyID, proj);
-
-	// Get lists for selectors.
-	model.addAttribute(ATTR_STAFF_LIST_AVAILABLE, availableStaffToAssign);
-	model.addAttribute(ATTR_STAFF_POSITION, new FormStaffAssignment());
-	model.addAttribute(ATTR_MASS_UPLOAD_BEAN, new FormMassUpload(proj));
     }
 
     /**
@@ -2889,136 +2686,4 @@ public class ProjectController {
 		TableEstimationAllowance.class.getEnumConstants());
     }
 
-    /**
-     * Set payroll attributes.
-     * 
-     * @param proj
-     * @param model
-     * @param projectCumulative
-     * @param projectAccumulation
-     */
-    private void setAttributesPayroll(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
-	    List<HighchartsDataPoint> dataSeriesCumulative) {
-	// Get all payrolls.
-	// Add to model.
-	List<ProjectPayroll> payrollList = this.projectPayrollService.listAsc(proj);
-	model.addAttribute(ATTR_PAYROLL_LIST, payrollList);
-
-	// Graph data.
-	double accumulation = 0;
-	for (ProjectPayroll payroll : payrollList) {
-
-	    // If it doesn't have a payroll JSON,
-	    // then it has not been computed.
-	    String payrollJSON = payroll.getPayrollJSON();
-	    if (payrollJSON != null && !payrollJSON.isEmpty()) {
-		String name = "(Payroll) " + payroll.getStartEndDisplay();
-		PayrollResultComputation result = payroll.getPayrollComputationResult();
-		double yValue = result.getOverallTotalOfStaff();
-
-		HighchartsDataPoint point = new HighchartsDataPoint(name, result.getEndDate().getTime(),
-			yValue);
-		dataSeries.add(point);
-
-		// Cumulative.
-		accumulation += yValue;
-		// HighchartsDataPoint pointCumulative = new
-		// HighchartsDataPoint(name,
-		// result.getEndDate().getTime(), accumulation,
-		// HTMLCSSDetails.backgroundColorOf(payroll.getStatus().css()));
-		HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name,
-			result.getEndDate().getTime(), accumulation);
-		dataSeriesCumulative.add(pointCumulative);
-	    }
-	}
-	model.addAttribute(ATTR_DATA_SERIES_PAYROLL, new Gson().toJson(dataSeries, ArrayList.class));
-	model.addAttribute(ATTR_DATA_SERIES_PAYROLL_CUMULATIVE,
-		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
-    }
-
-    /**
-     * Set inventory attributes.
-     * 
-     * @param proj
-     * @param model
-     * @param projectAccumulation
-     * @param projectCumulative
-     */
-    private void setAttributesInventory(Project proj, Model model, List<HighchartsDataPoint> dataSeries,
-	    List<HighchartsDataPoint> dataSeriesCumulative) {
-	// Get all deliveries.
-	// Get all pull-outs.
-	// Get inventory.
-	// Then add to model.
-	List<Delivery> deliveryList = this.deliveryService.listAsc(proj);
-	model.addAttribute(ATTR_DELIVERY_LIST, deliveryList);
-
-	// Graph.
-	double accumulation = 0;
-	for (Delivery delivery : deliveryList) {
-	    double yValue = delivery.getGrandTotalOfMaterials();
-	    Date datetime = delivery.getDatetime();
-	    String name = String.format("(Inventory) %s<br/>%s",
-		    DateUtils.formatDate(datetime, DateUtils.PATTERN_DATE_TIME), delivery.getName());
-
-	    HighchartsDataPoint point = new HighchartsDataPoint(name, datetime.getTime(), yValue);
-	    dataSeries.add(point);
-
-	    // Cumulative.
-	    accumulation += yValue;
-	    HighchartsDataPoint pointCumulative = new HighchartsDataPoint(name, datetime.getTime(),
-		    accumulation);
-	    dataSeriesCumulative.add(pointCumulative);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_INVENTORY, new Gson().toJson(dataSeries, ArrayList.class));
-	model.addAttribute(ATTR_DATA_SERIES_INVENTORY_CUMULATIVE,
-		new Gson().toJson(dataSeriesCumulative, ArrayList.class));
-
-	// Get all materials.
-	// Add to model.
-	List<Material> materialList = this.materialService.listDesc(proj);
-	model.addAttribute(ATTR_MATERIAL_LIST, materialList);
-
-	// Get all pull-outs.
-	// Add to model.
-	List<PullOut> pullOutList = this.pullOutService.listDesc(proj);
-	model.addAttribute(ATTR_PULL_OUT_LIST, pullOutList);
-    }
-
-    /**
-     * Set attributes before forwarding back to JSP.
-     * 
-     * @param proj
-     * @param model
-     */
-    private void setAttributesProgramOfWorks(Project proj, Model model) {
-
-	// Task status selector.
-	model.addAttribute(ATTR_TASK_STATUS_LIST, StatusTask.class.getEnumConstants());
-
-	// Gant JSON to be used by the chart in timeline.
-	// Get calendar JSON.
-	model.addAttribute(ATTR_GANTT_JSON, this.projectService.getGanttJSON(proj));
-	model.addAttribute(ATTR_CALENDAR_JSON, this.projectService.getCalendarJSON(proj));
-
-	// Timeline taks status and count map.
-	// Summary map found in timeline tab.
-	Map<StatusTask, Integer> taskStatusMap = this.projectService.getTaskStatusCountMap(proj);
-	model.addAttribute(ATTR_TIMELINE_TASK_STATUS_MAP, taskStatusMap);
-	model.addAttribute(ATTR_CALENDAR_EVENT_TYPES_LIST, TypeCalendarEvent.class.getEnumConstants());
-	model.addAttribute(ATTR_GANTT_TYPE_LIST, HTMLGanttElement.class.getEnumConstants());
-
-	// Construct Highcharts data series.
-	List<HighchartsDataPoint> dataSeries = new ArrayList<HighchartsDataPoint>();
-	int taskCount = 0;
-	for (StatusTask status : taskStatusMap.keySet()) {
-	    Integer count = taskStatusMap.get(status);
-	    taskCount += count;
-	    HighchartsDataPoint point = new HighchartsDataPoint(status.label(),
-		    NumberUtils.toDouble(count.toString()));
-	    dataSeries.add(point);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_PIE_TASKS,
-		taskCount == 0 ? "[]" : new Gson().toJson(dataSeries, ArrayList.class));
-    }
 }

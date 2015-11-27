@@ -138,8 +138,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     @Override
     public List<Expense> listAsc(Project proj) {
+	return listAsc(proj, false);
+    }
+
+    @Transactional
+    @Override
+    public List<Expense> listAsc(Project proj, boolean override) {
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<Expense>();
 	}
@@ -368,4 +374,5 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	return expenses;
     }
+
 }

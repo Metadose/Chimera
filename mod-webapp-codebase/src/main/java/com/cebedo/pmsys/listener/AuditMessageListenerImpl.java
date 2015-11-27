@@ -20,7 +20,7 @@ import com.cebedo.pmsys.token.AuthenticationToken;
 public class AuditMessageListenerImpl implements MessageListener {
 
     public final static String MESSAGE_DESTINATION = "system.audit";
-    private static final AuditAction[] AUDITABLE = { AuditAction.ACTION_CREATE,
+    public static final AuditAction[] AUDITABLE = { AuditAction.ACTION_CREATE,
 	    AuditAction.ACTION_CREATE_MASS, AuditAction.ACTION_SET, AuditAction.ACTION_SET_MULTI,
 	    AuditAction.ACTION_SET_IF_ABSENT, AuditAction.ACTION_UPDATE, AuditAction.ACTION_MERGE,
 	    AuditAction.ACTION_DELETE, AuditAction.ACTION_DELETE_COLLECTION,

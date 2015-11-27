@@ -125,7 +125,8 @@ public class PullOutServiceImpl implements PullOutService {
 	    return new PullOut();
 	}
 	// Log.
-	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PULL_OUT, obj.getKey());
+	this.messageHelper.nonAuditableKeyNoAssoc(AuditAction.ACTION_GET, ConstantsRedis.OBJECT_PULL_OUT,
+		obj.getKey());
 
 	return obj;
     }
@@ -179,17 +180,23 @@ public class PullOutServiceImpl implements PullOutService {
 	this.pullOutValueRepo.delete(key);
     }
 
+    @Transactional
+    @Override
+    public List<PullOut> listDesc(Project proj) {
+	return listDesc(proj, false);
+    }
+
     @Override
     @Transactional
-    public List<PullOut> listDesc(Project proj) {
+    public List<PullOut> listDesc(Project proj, boolean override) {
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new ArrayList<PullOut>();
 	}
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME, proj.getId(),
-		ConstantsRedis.OBJECT_PULL_OUT);
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_LIST, Project.OBJECT_NAME,
+		proj.getId(), ConstantsRedis.OBJECT_PULL_OUT);
 
 	String pattern = PullOut.constructPattern(proj);
 	Set<String> keys = this.pullOutValueRepo.keys(pattern);

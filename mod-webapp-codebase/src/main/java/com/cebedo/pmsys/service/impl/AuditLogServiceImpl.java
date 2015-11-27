@@ -37,4 +37,11 @@ public class AuditLogServiceImpl implements AuditLogService {
 	}
 	return this.auditLogDAO.list(token.getCompany().getId());
     }
+
+    @Override
+    @Transactional
+    public void create(AuditLog audit) {
+	this.auditLogDAO.create(audit);
+    }
+
 }
