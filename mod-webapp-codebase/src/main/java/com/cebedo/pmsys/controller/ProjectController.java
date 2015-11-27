@@ -2559,18 +2559,18 @@ public class ProjectController {
 	setAttributesDownloads(model);
 
 	// Asynchronous calling.
-	RunnableModelerEstimate callableEstimate = RunnableModelerEstimate.getCtxInstance(proj,
-		projectAux, model);
-	RunnableModelerStaff callableStaff = RunnableModelerStaff.getCtxInstance(proj, model);
-	RunnableModelerPayroll callablePayroll = RunnableModelerPayroll.getCtxInstance(proj, model,
+	RunnableModelerEstimate runEstimate = RunnableModelerEstimate.getCtxInstance(proj, projectAux,
+		model);
+	RunnableModelerStaff runStaff = RunnableModelerStaff.getCtxInstance(proj, model);
+	RunnableModelerPayroll runPayroll = RunnableModelerPayroll.getCtxInstance(proj, model,
 		payrollSeries, payrollCumulative);
-	RunnableModelerInventory callableInventory = RunnableModelerInventory.getCtxInstance(proj, model,
+	RunnableModelerInventory runInventory = RunnableModelerInventory.getCtxInstance(proj, model,
 		inventorySeries, inventoryCumulative);
-	RunnableModelerOtherExpenses callableOtherExpenses = RunnableModelerOtherExpenses
-		.getCtxInstance(proj, model, otherExpensesSeries, otherExpensesCumulative);
-	RunnableModelerEquipment callableModelerEquipment = RunnableModelerEquipment.getCtxInstance(proj,
+	RunnableModelerOtherExpenses runOtherExpenses = RunnableModelerOtherExpenses.getCtxInstance(proj,
+		model, otherExpensesSeries, otherExpensesCumulative);
+	RunnableModelerEquipment runModelerEquipment = RunnableModelerEquipment.getCtxInstance(proj,
 		model, equipmentSeries, equipmentCumulative);
-	RunnableModelerPOW callableModelerPOW = RunnableModelerPOW.getCtxInstance(proj, model);
+	RunnableModelerPOW runModelerPOW = RunnableModelerPOW.getCtxInstance(proj, model);
 
 	// Future tasks.
 	// FutureTask<Model> futureEstimate = new
@@ -2589,13 +2589,13 @@ public class ProjectController {
 
 	// Task executor thread pool.
 	ExecutorService executor = Executors.newFixedThreadPool(7);
-	executor.execute(callableEstimate);
-	executor.execute(callableStaff);
-	executor.execute(callablePayroll);
-	executor.execute(callableInventory);
-	executor.execute(callableOtherExpenses);
-	executor.execute(callableModelerEquipment);
-	executor.execute(callableModelerPOW);
+	executor.execute(runEstimate);
+	executor.execute(runStaff);
+	executor.execute(runPayroll);
+	executor.execute(runInventory);
+	executor.execute(runOtherExpenses);
+	executor.execute(runModelerEquipment);
+	executor.execute(runModelerPOW);
 
 	// Dashboard data series.
 	// Bar graph comparison of different data series (Bar graph).

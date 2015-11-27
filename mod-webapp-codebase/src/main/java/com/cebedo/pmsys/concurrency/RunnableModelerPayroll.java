@@ -3,21 +3,25 @@ package com.cebedo.pmsys.concurrency;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.domain.ProjectPayroll;
-import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerPayroll implements Runnable {
+public class RunnableModelerPayroll
+	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
 
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
@@ -30,6 +34,9 @@ public class RunnableModelerPayroll implements Runnable {
     private Model model;
     private List<HighchartsDataPoint> dataSeries;
     private List<HighchartsDataPoint> dataSeriesCumulative;
+
+    private static ApplicationContext ctx;
+    private static RunnableModelerPayroll MODELER;
 
     private ProjectPayrollService projectPayrollService;
 
@@ -95,9 +102,12 @@ public class RunnableModelerPayroll implements Runnable {
      */
     public static RunnableModelerPayroll getCtxInstance(Project p, Model m, List<HighchartsDataPoint> dS,
 	    List<HighchartsDataPoint> dSC) {
-	BeanHelper beanHelper = new BeanHelper();
-	RunnableModelerPayroll modeler = (RunnableModelerPayroll) beanHelper
-		.getBean("runnableModelerPayroll");
+	RunnableModelerPayroll modeler = null;
+	try {
+	    modeler = (RunnableModelerPayroll) MODELER.clone();
+	} catch (CloneNotSupportedException e) {
+	    e.printStackTrace();
+	}
 	modeler.proj = p;
 	modeler.model = m;
 	modeler.dataSeries = dS;
@@ -108,6 +118,16 @@ public class RunnableModelerPayroll implements Runnable {
     @Override
     public void run() {
 	setAttributesPayroll();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	ctx = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+	MODELER = (RunnableModelerPayroll) ctx.getBean("runnableModelerPayroll");
     }
 
 }

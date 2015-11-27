@@ -2,13 +2,16 @@ package com.cebedo.pmsys.concurrency;
 
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 import com.cebedo.pmsys.controller.ProjectController;
-import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormMassUpload;
@@ -16,7 +19,8 @@ import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.service.StaffService;
 
 @Component
-public class RunnableModelerStaff implements Runnable {
+public class RunnableModelerStaff
+	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
 
     // Staff.
     public static final String ATTR_STAFF_LIST_AVAILABLE = "availableStaffToAssign";
@@ -27,6 +31,9 @@ public class RunnableModelerStaff implements Runnable {
 
     private Project proj;
     private Model model;
+
+    private static ApplicationContext ctx;
+    private static RunnableModelerStaff MODELER;
 
     private StaffService staffService;
 
@@ -70,8 +77,12 @@ public class RunnableModelerStaff implements Runnable {
      * @return
      */
     public static RunnableModelerStaff getCtxInstance(Project proj2, Model model2) {
-	BeanHelper beanHelper = new BeanHelper();
-	RunnableModelerStaff modeler = (RunnableModelerStaff) beanHelper.getBean("runnableModelerStaff");
+	RunnableModelerStaff modeler = null;
+	try {
+	    modeler = (RunnableModelerStaff) MODELER.clone();
+	} catch (CloneNotSupportedException e) {
+	    e.printStackTrace();
+	}
 	modeler.proj = proj2;
 	modeler.model = model2;
 	return modeler;
@@ -80,5 +91,15 @@ public class RunnableModelerStaff implements Runnable {
     @Override
     public void run() {
 	setAttributesStaff();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	ctx = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+	MODELER = (RunnableModelerStaff) ctx.getBean("runnableModelerStaff");
     }
 }

@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.EquipmentExpense;
-import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
@@ -19,7 +22,8 @@ import com.cebedo.pmsys.utils.DateUtils;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerEquipment implements Runnable {
+public class RunnableModelerEquipment
+	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
 
     public static final String ATTR_DATA_SERIES_EQUIPMENT = "dataSeriesEquipment";
     public static final String ATTR_DATA_SERIES_EQUIPMENT_CUMULATIVE = "dataSeriesEquipmentCumulative";
@@ -33,6 +37,9 @@ public class RunnableModelerEquipment implements Runnable {
     private Model model;
     private List<HighchartsDataPoint> equipmentSeries;
     private List<HighchartsDataPoint> equipmentCumulative;
+
+    private static ApplicationContext ctx;
+    private static RunnableModelerEquipment MODELER;
 
     private EquipmentExpenseService equipmentExpenseService;
 
@@ -89,9 +96,12 @@ public class RunnableModelerEquipment implements Runnable {
      */
     public static RunnableModelerEquipment getCtxInstance(Project p, Model m,
 	    List<HighchartsDataPoint> dS, List<HighchartsDataPoint> dSC) {
-	BeanHelper beanHelper = new BeanHelper();
-	RunnableModelerEquipment modeler = (RunnableModelerEquipment) beanHelper
-		.getBean("runnableModelerEquipment");
+	RunnableModelerEquipment modeler = null;
+	try {
+	    modeler = (RunnableModelerEquipment) MODELER.clone();
+	} catch (CloneNotSupportedException e) {
+	    e.printStackTrace();
+	}
 	modeler.proj = p;
 	modeler.model = m;
 	modeler.equipmentSeries = dS;
@@ -102,6 +112,16 @@ public class RunnableModelerEquipment implements Runnable {
     @Override
     public void run() {
 	setAttributesEquipment();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	ctx = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+	MODELER = (RunnableModelerEquipment) ctx.getBean("runnableModelerEquipment");
     }
 
 }

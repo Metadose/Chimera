@@ -3,8 +3,12 @@ package com.cebedo.pmsys.concurrency;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
@@ -14,7 +18,6 @@ import com.cebedo.pmsys.domain.EstimateCost;
 import com.cebedo.pmsys.domain.EstimationOutput;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.TypeEstimateCost;
-import com.cebedo.pmsys.helper.BeanHelper;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.service.EstimateCostService;
@@ -22,7 +25,8 @@ import com.cebedo.pmsys.service.EstimationOutputService;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerEstimate implements Runnable {
+public class RunnableModelerEstimate
+	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
 
     // Estimate.
     public static final String ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
@@ -35,6 +39,9 @@ public class RunnableModelerEstimate implements Runnable {
 	    ATTR_DATA_SERIES_PIE_COSTS_ACTUAL, ATTR_ESTIMATE_DIRECT_COST_LIST,
 	    ATTR_ESTIMATE_INDIRECT_COST_LIST, ATTR_ESTIMATE_OUTPUT_LIST,
 	    ProjectController.ATTR_ESTIMATE_COST_LIST, ConstantsRedis.OBJECT_ESTIMATE_COST };
+
+    private static ApplicationContext ctx;
+    private static RunnableModelerEstimate MODELER;
 
     private Project proj;
     private ProjectAux projectAux;
@@ -57,6 +64,16 @@ public class RunnableModelerEstimate implements Runnable {
 
     public RunnableModelerEstimate() {
 	;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	ctx = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+	MODELER = (RunnableModelerEstimate) ctx.getBean("runnableModelerEstimate");
     }
 
     @Override
@@ -124,12 +141,16 @@ public class RunnableModelerEstimate implements Runnable {
      * @return
      */
     public static RunnableModelerEstimate getCtxInstance(Project p, ProjectAux pA, Model m) {
-	BeanHelper beanHelper = new BeanHelper();
-	RunnableModelerEstimate modeler = (RunnableModelerEstimate) beanHelper
-		.getBean("runnableModelerEstimate");
+	RunnableModelerEstimate modeler = null;
+	try {
+	    modeler = (RunnableModelerEstimate) MODELER.clone();
+	} catch (CloneNotSupportedException e) {
+	    e.printStackTrace();
+	}
 	modeler.proj = p;
 	modeler.projectAux = pA;
 	modeler.model = m;
 	return modeler;
     }
+
 }
