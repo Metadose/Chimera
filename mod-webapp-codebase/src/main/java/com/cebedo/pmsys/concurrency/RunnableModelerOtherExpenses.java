@@ -5,14 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import com.cebedo.pmsys.base.IRunnableModeler;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Expense;
 import com.cebedo.pmsys.model.Project;
@@ -22,21 +21,17 @@ import com.cebedo.pmsys.utils.DateUtils;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerOtherExpenses
-	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
+public class RunnableModelerOtherExpenses implements IRunnableModeler {
 
     public static final String ATTR_DATA_SERIES_OTHER_EXPENSES = "dataSeriesOtherExpenses";
     public static final String ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE = "dataSeriesOtherExpensesCumulative";
     public static final String ATTR_EXPENSE_LIST = "expenseList";
 
-    public static final String[] ATTRS_LIST = { ATTR_DATA_SERIES_OTHER_EXPENSES,
-	    ATTR_DATA_SERIES_OTHER_EXPENSES_CUMULATIVE, ATTR_EXPENSE_LIST,
-	    ConstantsRedis.OBJECT_EXPENSE };
-
     private Project proj;
     private Model model;
     private List<HighchartsDataPoint> dataSeries;
     private List<HighchartsDataPoint> otherExpensesCumulative;
+    private boolean alive = false;
 
     private static ApplicationContext ctx;
     private static RunnableModelerOtherExpenses MODELER;
@@ -112,7 +107,9 @@ public class RunnableModelerOtherExpenses
 
     @Override
     public void run() {
+	alive = true;
 	setAttributesOtherExpenses();
+	alive = false;
     }
 
     @Override
@@ -123,6 +120,11 @@ public class RunnableModelerOtherExpenses
     @Override
     public void afterPropertiesSet() throws Exception {
 	MODELER = (RunnableModelerOtherExpenses) ctx.getBean("runnableModelerOtherExpenses");
+    }
+
+    @Override
+    public boolean isAlive() {
+	return alive;
     }
 
 }

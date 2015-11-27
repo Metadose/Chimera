@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import com.cebedo.pmsys.base.IRunnableModeler;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.model.Project;
@@ -20,20 +19,17 @@ import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerPayroll
-	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
+public class RunnableModelerPayroll implements IRunnableModeler {
 
     public static final String ATTR_PAYROLL_LIST = "payrollList";
     public static final String ATTR_DATA_SERIES_PAYROLL = "dataSeriesPayroll";
     public static final String ATTR_DATA_SERIES_PAYROLL_CUMULATIVE = "dataSeriesPayrollCumulative";
 
-    public static final String[] ATTRS_LIST = { ATTR_PAYROLL_LIST, ATTR_DATA_SERIES_PAYROLL,
-	    ATTR_DATA_SERIES_PAYROLL_CUMULATIVE };
-
     private Project proj;
     private Model model;
     private List<HighchartsDataPoint> dataSeries;
     private List<HighchartsDataPoint> dataSeriesCumulative;
+    private boolean alive = false;
 
     private static ApplicationContext ctx;
     private static RunnableModelerPayroll MODELER;
@@ -117,7 +113,9 @@ public class RunnableModelerPayroll
 
     @Override
     public void run() {
+	alive = true;
 	setAttributesPayroll();
+	alive = false;
     }
 
     @Override
@@ -128,6 +126,11 @@ public class RunnableModelerPayroll
     @Override
     public void afterPropertiesSet() throws Exception {
 	MODELER = (RunnableModelerPayroll) ctx.getBean("runnableModelerPayroll");
+    }
+
+    @Override
+    public boolean isAlive() {
+	return alive;
     }
 
 }

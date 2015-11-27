@@ -3,8 +3,6 @@ package com.cebedo.pmsys.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -37,6 +35,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cebedo.pmsys.bean.EstimateComputationInput;
 import com.cebedo.pmsys.bean.PairCountValue;
+import com.cebedo.pmsys.concurrency.GrapherCumulativeComparison;
+import com.cebedo.pmsys.concurrency.GrapherCumulativeTrend;
+import com.cebedo.pmsys.concurrency.GrapherProportionalComparison;
+import com.cebedo.pmsys.concurrency.GrapherSeriesComparison;
 import com.cebedo.pmsys.concurrency.RunnableModelerEquipment;
 import com.cebedo.pmsys.concurrency.RunnableModelerEstimate;
 import com.cebedo.pmsys.concurrency.RunnableModelerInventory;
@@ -86,7 +88,6 @@ import com.cebedo.pmsys.pojo.FormMassUpload;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
-import com.cebedo.pmsys.pojo.HighchartsDataSeries;
 import com.cebedo.pmsys.service.AttendanceService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
@@ -186,13 +187,8 @@ public class ProjectController {
     public static final String ATTR_CALENDAR_EVENT_TYPES_MAP = "calendarEventTypesMap";
     public static final String ATTR_CALENDAR_JSON = "calendarJSON";
 
-    public static final String ATTR_DATA_SERIES_DASHBOARD = "dataSeriesDashboard";
-    public static final String ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE = "dataSeriesDashboardNotCumulative";
-    public static final String ATTR_DATA_SERIES_PROJECT = "dataSeriesProject";
-
     public static final String ATTR_DATA_SERIES_PIE_ATTENDANCE = "dataSeriesAttendance";
     public static final String ATTR_DATA_SERIES_PIE_TASKS = "dataSeriesTasks";
-    public static final String ATTR_DATA_SERIES_PIE_DASHBOARD = "dataSeriesDashboardPie";
 
     public static final String ATTR_PAYROLL_JSON = "payrollJSON";
     public static final String ATTR_PAYROLL_CHECKBOX_STAFF = "staffList";
@@ -2541,12 +2537,6 @@ public class ProjectController {
 	    return RegistryJSPPath.JSP_EDIT_PROJECT;
 	}
 
-	// Project main attributes.
-	Project proj = this.projectService.getByIDWithAllCollections(id);
-	ProjectAux projectAux = this.projectAuxService.get(proj);
-	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
-	model.addAttribute(ATTR_PROJECT, proj);
-
 	// Initialize containers.
 	List<HighchartsDataPoint> payrollSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> payrollCumulative = new ArrayList<HighchartsDataPoint>();
@@ -2557,6 +2547,10 @@ public class ProjectController {
 	List<HighchartsDataPoint> equipmentSeries = new ArrayList<HighchartsDataPoint>();
 	List<HighchartsDataPoint> equipmentCumulative = new ArrayList<HighchartsDataPoint>();
 	setAttributesDownloads(model);
+
+	// Project main attributes.
+	Project proj = this.projectService.getByIDWithAllCollections(id);
+	ProjectAux projectAux = this.projectAuxService.get(proj);
 
 	// Asynchronous calling.
 	RunnableModelerEstimate runEstimate = RunnableModelerEstimate.getCtxInstance(proj, projectAux,
@@ -2572,21 +2566,6 @@ public class ProjectController {
 		model, equipmentSeries, equipmentCumulative);
 	RunnableModelerPOW runModelerPOW = RunnableModelerPOW.getCtxInstance(proj, model);
 
-	// Future tasks.
-	// FutureTask<Model> futureEstimate = new
-	// FutureTask<Model>(callableEstimate);
-	// FutureTask<Model> futureStaff = new FutureTask<Model>(callableStaff);
-	// FutureTask<Model> futurePayroll = new
-	// FutureTask<Model>(callablePayroll);
-	// FutureTask<Model> futureInventory = new
-	// FutureTask<Model>(callableInventory);
-	// FutureTask<Model> futureOtherExpenses = new
-	// FutureTask<Model>(callableOtherExpenses);
-	// FutureTask<Model> futureEquipment = new
-	// FutureTask<Model>(callableModelerEquipment);
-	// FutureTask<Model> futurePOW = new
-	// FutureTask<Model>(callableModelerPOW);
-
 	// Task executor thread pool.
 	ExecutorService executor = Executors.newFixedThreadPool(7);
 	executor.execute(runEstimate);
@@ -2597,40 +2576,50 @@ public class ProjectController {
 	executor.execute(runModelerEquipment);
 	executor.execute(runModelerPOW);
 
+	// Wait for threads to shutdown.
+	awaitTermination(executor);
+
 	// Dashboard data series.
 	// Bar graph comparison of different data series (Bar graph).
 	// Project cumulative, trend of project expenses (Line/Area graph).
 	// Pie of all expense type.
-	dashboardSeriesComparison(model, inventorySeries, payrollSeries, equipmentSeries,
-		otherExpensesSeries);
-	dashboardCumulativeComparison(model, inventoryCumulative, payrollCumulative,
-		otherExpensesCumulative, equipmentCumulative);
-	dashboardCumulativeTrend(model, inventorySeries, payrollSeries, equipmentSeries,
-		otherExpensesSeries);
-	dashboardProportionalComparison(model, projectAux);
+	GrapherSeriesComparison seriesComparison = new GrapherSeriesComparison(model, inventorySeries,
+		payrollSeries, equipmentSeries, otherExpensesSeries);
+	GrapherCumulativeComparison cumulativeComparison = new GrapherCumulativeComparison(model,
+		inventoryCumulative, payrollCumulative, otherExpensesCumulative, equipmentCumulative);
+	GrapherCumulativeTrend cumulativeTrend = new GrapherCumulativeTrend(model, inventorySeries,
+		payrollSeries, equipmentSeries, otherExpensesSeries);
+	GrapherProportionalComparison proportionalComparison = new GrapherProportionalComparison(model,
+		projectAux);
 
-	// Wait while not yet done.
-	// while (true) {
-	//
-	// // If all tasks are done.
-	// if (futureEstimate.isDone() && futureStaff.isDone() &&
-	// futurePayroll.isDone()
-	// && futureInventory.isDone() && futureOtherExpenses.isDone()
-	// && futureEquipment.isDone() && futurePOW.isDone()) {
-	// executor.shutdown();
-	// break;
-	// }
-	// }
+	ExecutorService grapher = Executors.newFixedThreadPool(4);
+	grapher.execute(seriesComparison);
+	grapher.execute(cumulativeComparison);
+	grapher.execute(cumulativeTrend);
+	grapher.execute(proportionalComparison);
+
+	// Add main attributes.
+	model.addAttribute(ATTR_PROJECT_AUX, projectAux);
+	model.addAttribute(ATTR_PROJECT, proj);
 
 	// Wait for threads to shutdown.
+	awaitTermination(grapher);
+
+	return RegistryJSPPath.JSP_EDIT_PROJECT;
+    }
+
+    /**
+     * Wait termination of executor service.
+     * 
+     * @param executor
+     */
+    private void awaitTermination(ExecutorService executor) {
 	executor.shutdown();
 	try {
 	    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 	} catch (InterruptedException e) {
 	    ;
 	}
-
-	return RegistryJSPPath.JSP_EDIT_PROJECT;
     }
 
     /**
@@ -2640,20 +2629,6 @@ public class ProjectController {
      */
     private void setAttributesDownloads(Model model) {
 	model.addAttribute(FORM_BALANCE_SHEET_RANGE, new FormDateRange());
-    }
-
-    private void dashboardSeriesComparison(Model model, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> otherExpensesSeries,
-	    List<HighchartsDataPoint> equipmentSeries) {
-
-	// Construct comparison bar graph.
-	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Inventory", inventorySeries));
-	dashboardSeries.add(new HighchartsDataSeries("Payroll", payrollSeries));
-	dashboardSeries.add(new HighchartsDataSeries("Equipment", equipmentSeries));
-	dashboardSeries.add(new HighchartsDataSeries("Other Expenses", otherExpensesSeries));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD_NOT_CUMULATIVE,
-		new Gson().toJson(dashboardSeries, ArrayList.class));
     }
 
     /**
@@ -2688,70 +2663,6 @@ public class ProjectController {
 	String response = this.projectService.clearActualCompletionDate(proj);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageProject(proj.getId(), status);
-    }
-
-    private void dashboardProportionalComparison(Model model, ProjectAux projectAux) {
-	// Proportional comparison.
-	double materialsAccumulated = projectAux.getGrandTotalDelivery();
-	double payrollAccumulated = projectAux.getGrandTotalPayroll();
-	double otherExpensesAccumulated = projectAux.getGrandTotalOtherExpenses();
-	double equipmentAccumulated = projectAux.getGrandTotalEquipmentExpenses();
-
-	boolean isEmpty = materialsAccumulated == 0 && payrollAccumulated == 0
-		&& otherExpensesAccumulated == 0 && equipmentAccumulated == 0;
-
-	List<HighchartsDataPoint> projectPie = new ArrayList<HighchartsDataPoint>();
-	projectPie.add(new HighchartsDataPoint("Inventory", materialsAccumulated));
-	projectPie.add(new HighchartsDataPoint("Payroll", payrollAccumulated));
-	projectPie.add(new HighchartsDataPoint("Equipment", equipmentAccumulated));
-	projectPie.add(new HighchartsDataPoint("Other Expenses", otherExpensesAccumulated));
-	model.addAttribute(ATTR_DATA_SERIES_PIE_DASHBOARD,
-		isEmpty ? "[]" : new Gson().toJson(projectPie, ArrayList.class));
-    }
-
-    private void dashboardCumulativeTrend(Model model, List<HighchartsDataPoint> inventorySeries,
-	    List<HighchartsDataPoint> payrollSeries, List<HighchartsDataPoint> equipmentSeries,
-	    List<HighchartsDataPoint> otherExpensesSeries) {
-	// Accumulation of expenses in this project.
-	List<HighchartsDataPoint> projectCumulative = new ArrayList<HighchartsDataPoint>();
-	projectCumulative.addAll(inventorySeries);
-	projectCumulative.addAll(payrollSeries);
-	projectCumulative.addAll(equipmentSeries);
-	projectCumulative.addAll(otherExpensesSeries);
-
-	// To sort in ascending,
-	Collections.sort(projectCumulative, new Comparator<HighchartsDataPoint>() {
-	    @Override
-	    public int compare(HighchartsDataPoint aObj, HighchartsDataPoint bObj) {
-		long aStart = aObj.getX();
-		long bStart = bObj.getX();
-		return aStart < bStart ? -1 : aStart > bStart ? 1 : 0;
-	    }
-	});
-
-	// Update the values to create progress of expenditures.
-	double cumulative = 0;
-	for (HighchartsDataPoint point : projectCumulative) {
-	    cumulative += point.getY();
-	    point.setY(cumulative);
-	}
-	model.addAttribute(ATTR_DATA_SERIES_PROJECT,
-		new Gson().toJson(projectCumulative, ArrayList.class));
-    }
-
-    private void dashboardCumulativeComparison(Model model,
-	    List<HighchartsDataPoint> inventoryCumulative, List<HighchartsDataPoint> payrollCumulative,
-	    List<HighchartsDataPoint> otherExpensesCumulative,
-	    List<HighchartsDataPoint> equipmentCumulative) {
-	// Construct comparison bar graph.
-	List<HighchartsDataSeries> dashboardSeries = new ArrayList<HighchartsDataSeries>();
-	dashboardSeries.add(new HighchartsDataSeries("Inventory Cumulative", inventoryCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Payroll Cumulative", payrollCumulative));
-	dashboardSeries.add(new HighchartsDataSeries("Equipment Cumulative", equipmentCumulative));
-	dashboardSeries
-		.add(new HighchartsDataSeries("Other Expenses Cumulative", otherExpensesCumulative));
-	model.addAttribute(ATTR_DATA_SERIES_DASHBOARD,
-		new Gson().toJson(dashboardSeries, ArrayList.class));
     }
 
     /**

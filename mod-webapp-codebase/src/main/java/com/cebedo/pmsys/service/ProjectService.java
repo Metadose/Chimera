@@ -169,4 +169,6 @@ public interface ProjectService {
 
     public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj, boolean override);
 
+    public Project getByIDWithAllCollections(long id, boolean override);
+
 }

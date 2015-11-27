@@ -6,14 +6,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import com.cebedo.pmsys.base.IRunnableModeler;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.enums.HTMLGanttElement;
 import com.cebedo.pmsys.enums.StatusTask;
@@ -24,21 +23,16 @@ import com.cebedo.pmsys.service.ProjectService;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerPOW
-	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
+public class RunnableModelerPOW implements IRunnableModeler {
 
     public static final String ATTR_GANTT_JSON = "ganttJSON";
     public static final String ATTR_TIMELINE_TASK_STATUS_MAP = "taskStatusMap";
     public static final String ATTR_CALENDAR_EVENT_TYPES_LIST = "calendarEventTypes";
     public static final String ATTR_GANTT_TYPE_LIST = "ganttElemTypeList";
 
-    public static final String[] ATTRS_LIST = { ProjectController.ATTR_TASK_STATUS_LIST, ATTR_GANTT_JSON,
-	    ProjectController.ATTR_CALENDAR_JSON, ATTR_TIMELINE_TASK_STATUS_MAP,
-	    ATTR_CALENDAR_EVENT_TYPES_LIST, ATTR_GANTT_TYPE_LIST,
-	    ProjectController.ATTR_DATA_SERIES_PIE_TASKS };
-
     private Project proj;
     private Model model;
+    private boolean alive = false;
 
     private static ApplicationContext ctx;
     private static RunnableModelerPOW MODELER;
@@ -110,7 +104,9 @@ public class RunnableModelerPOW
 
     @Override
     public void run() {
+	alive = true;
 	setAttributesProgramOfWorks();
+	alive = false;
     }
 
     @Override
@@ -121,6 +117,11 @@ public class RunnableModelerPOW
     @Override
     public void afterPropertiesSet() throws Exception {
 	MODELER = (RunnableModelerPOW) ctx.getBean("runnableModelerPOW");
+    }
+
+    @Override
+    public boolean isAlive() {
+	return alive;
     }
 
 }

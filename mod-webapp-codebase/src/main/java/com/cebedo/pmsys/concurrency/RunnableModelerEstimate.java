@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import com.cebedo.pmsys.base.IRunnableModeler;
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -25,8 +24,7 @@ import com.cebedo.pmsys.service.EstimationOutputService;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerEstimate
-	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
+public class RunnableModelerEstimate implements IRunnableModeler {
 
     // Estimate.
     public static final String ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED = "dataSeriesCostsEstimated";
@@ -35,17 +33,13 @@ public class RunnableModelerEstimate
     public static final String ATTR_ESTIMATE_INDIRECT_COST_LIST = "indirectCostList";
     public static final String ATTR_ESTIMATE_OUTPUT_LIST = "estimationOutputList";
 
-    public static final String[] ATTRS_LIST = { ATTR_DATA_SERIES_PIE_COSTS_ESTIMATED,
-	    ATTR_DATA_SERIES_PIE_COSTS_ACTUAL, ATTR_ESTIMATE_DIRECT_COST_LIST,
-	    ATTR_ESTIMATE_INDIRECT_COST_LIST, ATTR_ESTIMATE_OUTPUT_LIST,
-	    ProjectController.ATTR_ESTIMATE_COST_LIST, ConstantsRedis.OBJECT_ESTIMATE_COST };
-
     private static ApplicationContext ctx;
     private static RunnableModelerEstimate MODELER;
 
     private Project proj;
     private ProjectAux projectAux;
     private Model model;
+    private boolean alive = false;
 
     private EstimateCostService estimateCostService;
     private EstimationOutputService estimationOutputService;
@@ -78,7 +72,9 @@ public class RunnableModelerEstimate
 
     @Override
     public void run() {
+	alive = true;
 	setAttributesEstimate();
+	alive = false;
     }
 
     /**
@@ -151,6 +147,11 @@ public class RunnableModelerEstimate
 	modeler.projectAux = pA;
 	modeler.model = m;
 	return modeler;
+    }
+
+    @Override
+    public boolean isAlive() {
+	return alive;
     }
 
 }

@@ -5,14 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import com.cebedo.pmsys.base.IRunnableModeler;
 import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.Material;
@@ -26,22 +25,18 @@ import com.cebedo.pmsys.utils.DateUtils;
 import com.google.gson.Gson;
 
 @Component
-public class RunnableModelerInventory
-	implements Runnable, InitializingBean, ApplicationContextAware, Cloneable {
+public class RunnableModelerInventory implements IRunnableModeler {
 
     public static final String ATTR_DELIVERY_LIST = "deliveryList";
     public static final String ATTR_DATA_SERIES_INVENTORY = "dataSeriesInventory";
     public static final String ATTR_DATA_SERIES_INVENTORY_CUMULATIVE = "dataSeriesInventoryCumulative";
     public static final String ATTR_PULL_OUT_LIST = "pullOutList";
 
-    public static final String[] ATTRS_LIST = { ATTR_DELIVERY_LIST, ATTR_DATA_SERIES_INVENTORY,
-	    ATTR_DATA_SERIES_INVENTORY_CUMULATIVE, ProjectController.ATTR_MATERIAL_LIST,
-	    ATTR_PULL_OUT_LIST };
-
     private Project proj;
     private Model model;
     private List<HighchartsDataPoint> dataSeries;
     private List<HighchartsDataPoint> dataSeriesCumulative;
+    private boolean alive = false;
 
     private static ApplicationContext ctx;
     private static RunnableModelerInventory MODELER;
@@ -140,7 +135,9 @@ public class RunnableModelerInventory
 
     @Override
     public void run() {
+	alive = true;
 	setAttributesInventory();
+	alive = false;
     }
 
     @Override
@@ -151,6 +148,11 @@ public class RunnableModelerInventory
     @Override
     public void afterPropertiesSet() throws Exception {
 	MODELER = (RunnableModelerInventory) ctx.getBean("runnableModelerInventory");
+    }
+
+    @Override
+    public boolean isAlive() {
+	return alive;
     }
 
 }

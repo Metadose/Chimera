@@ -508,14 +508,20 @@ public class ProjectServiceImpl implements ProjectService {
 	return this.projectDAO.listWithAllCollections(company.getId());
     }
 
+    @Transactional
+    @Override
+    public Project getByIDWithAllCollections(long id) {
+	return getByIDWithAllCollections(id, false);
+    }
+
     @Override
     @Transactional
-    public Project getByIDWithAllCollections(long id) {
+    public Project getByIDWithAllCollections(long id, boolean override) {
 
 	Project project = this.projectDAO.getByIDWithAllCollections(id);
 
 	// Log and return.
-	if (this.authHelper.hasAccess(project)) {
+	if (override || this.authHelper.hasAccess(project)) {
 	    this.messageHelper.nonAuditableIDNoAssoc(AuditAction.ACTION_GET, Project.OBJECT_NAME, id);
 	    return project;
 	}
