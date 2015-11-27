@@ -29,4 +29,6 @@ public interface EquipmentExpenseService {
     public List<IObjectExpense> listDescExpense(Project proj);
 
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate);
+
+    public List<EquipmentExpense> listAsc(Project proj, boolean override);
 }

@@ -525,15 +525,21 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Project();
     }
 
+    @Transactional
+    @Override
+    public String getGanttJSON(Project proj) {
+	return getGanttJSON(proj, false);
+    }
+
     /**
      * Construct a JSON to be used by the Gantt dhtmlx.
      */
     @Override
     @Transactional
-    public String getGanttJSON(Project proj) {
+    public String getGanttJSON(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Returning empty since expecting a JSON.
 	}
@@ -568,6 +574,12 @@ public class ProjectServiceImpl implements ProjectService {
 	return new Gson().toJson(ganttBeanList, ArrayList.class);
     }
 
+    @Transactional
+    @Override
+    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj) {
+	return getTaskStatusCountMap(proj, false);
+    }
+
     /**
      * Get task status and count map.
      * 
@@ -576,10 +588,10 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Transactional
     @Override
-    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj) {
+    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return new HashMap<StatusTask, Integer>();
 	}
@@ -615,9 +627,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public String getCalendarJSON(Project proj) {
+	return getCalendarJSON(proj, false);
+    }
+
+    @Transactional
+    @Override
+    public String getCalendarJSON(Project proj, boolean override) {
 
 	// Security check.
-	if (!this.authHelper.hasAccess(proj)) {
+	if (!override && !this.authHelper.hasAccess(proj)) {
 	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, proj.getId());
 	    return ""; // Empty, expecting JSON.
 	}

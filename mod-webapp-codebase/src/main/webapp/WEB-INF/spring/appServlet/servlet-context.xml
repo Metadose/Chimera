@@ -103,7 +103,19 @@
 	<!-- CONCURRENCY *********************************************** -->
 	<!-- *********************************************************** -->
 	<!-- *********************************************************** -->
-	<beans:bean id="callableModeler" class="com.cebedo.pmsys.concurrency.CallableModeler">
+	<beans:bean id="runnableModelerEstimate" class="com.cebedo.pmsys.concurrency.RunnableModelerEstimate">
+    </beans:bean>
+	<beans:bean id="runnableModelerStaff" class="com.cebedo.pmsys.concurrency.RunnableModelerStaff">
+    </beans:bean>
+	<beans:bean id="runnableModelerPayroll" class="com.cebedo.pmsys.concurrency.RunnableModelerPayroll">
+    </beans:bean>
+	<beans:bean id="runnableModelerInventory" class="com.cebedo.pmsys.concurrency.RunnableModelerInventory">
+    </beans:bean>
+	<beans:bean id="runnableModelerOtherExpenses" class="com.cebedo.pmsys.concurrency.RunnableModelerOtherExpenses">
+    </beans:bean>
+	<beans:bean id="runnableModelerEquipment" class="com.cebedo.pmsys.concurrency.RunnableModelerEquipment">
+    </beans:bean>
+	<beans:bean id="runnableModelerPOW" class="com.cebedo.pmsys.concurrency.RunnableModelerPOW">
     </beans:bean>
 	
 	

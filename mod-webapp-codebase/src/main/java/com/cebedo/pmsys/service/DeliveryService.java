@@ -46,6 +46,8 @@ public interface DeliveryService {
 
     public List<Delivery> listAsc(Project proj);
 
+    public List<Delivery> listAsc(Project proj, boolean override);
+
     public List<Delivery> listDesc(Project proj, Date startDate, Date endDate);
 
     public Delivery get(String uuid);

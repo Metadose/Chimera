@@ -163,4 +163,10 @@ public interface ProjectService {
      */
     public HSSFWorkbook exportXLSBalanceSheet(long projectID, Date startDate, Date endDate);
 
+    public String getGanttJSON(Project proj, boolean override);
+
+    public String getCalendarJSON(Project proj, boolean override);
+
+    public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj, boolean override);
+
 }

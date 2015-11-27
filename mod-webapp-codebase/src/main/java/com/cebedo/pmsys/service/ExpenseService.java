@@ -30,4 +30,6 @@ public interface ExpenseService {
 
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate);
 
+    public List<Expense> listAsc(Project proj, boolean override);
+
 }
