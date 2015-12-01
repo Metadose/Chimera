@@ -2504,14 +2504,6 @@
 	        tooltip: {
 	            pointFormat: '<b>{point.y}</b>'
 	        },
-	        plotOptions: {
-	            spline: {
-	                marker: {
-	                    enabled: true,
-	                    radius: 8
-	                }
-	            }
-	        },
 	        series: [{
 	        	name: 'Inventory Expenses',
 	            data: ${dataSeriesInventory}
@@ -2558,7 +2550,6 @@
 	        },
 	        plotOptions: {
 	            area: {
-	                stacking: 'normal',
 	                lineColor: '#666666',
 	                lineWidth: 1,
 	                marker: {
@@ -2594,7 +2585,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -2635,7 +2626,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -2676,7 +2667,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -3179,7 +3170,6 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',

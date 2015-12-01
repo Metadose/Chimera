@@ -654,7 +654,6 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -695,7 +694,6 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
