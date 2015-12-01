@@ -133,7 +133,7 @@ public class PullOutServiceImpl implements PullOutService {
 
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 
 	PullOut obj = this.pullOutValueRepo.get(key);
 

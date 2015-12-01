@@ -968,16 +968,16 @@ public class ProjectController {
     public String deleteEstimate(@PathVariable(ConstantsRedis.OBJECT_ESTIMATION_OUTPUT) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.estimationOutputService.delete(key);
+	String response = this.estimationOutputService.delete(key, proj.getId());
 
 	// Attach to redirect.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
     }
 
@@ -993,16 +993,17 @@ public class ProjectController {
     public String deleteDelivery(@PathVariable(ConstantsRedis.OBJECT_DELIVERY) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+
 	// Do service
 	// and get response.
-	String response = this.deliveryService.delete(key);
+	String response = this.deliveryService.delete(key, proj.getId());
 
 	// Attach to redirect.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
     }
 
@@ -1412,16 +1413,16 @@ public class ProjectController {
     public String deleteProjectPayroll(@PathVariable(ConstantsRedis.OBJECT_PAYROLL) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.projectPayrollService.delete(key);
+	String response = this.projectPayrollService.delete(key, proj.getId());
 
 	// Attach to redirect.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
     }
 
@@ -1438,16 +1439,16 @@ public class ProjectController {
     public String deletePullOut(@PathVariable(ConstantsRedis.OBJECT_PULL_OUT) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.pullOutService.delete(key);
+	String response = this.pullOutService.delete(key, proj.getId());
 
 	// Attach to redirect.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
     }
 
@@ -1905,11 +1906,10 @@ public class ProjectController {
 	    @RequestParam(value = "editPage", required = false) boolean editPage,
 	    RedirectAttributes redirectAttrs, HttpSession session) {
 
-	// Do service, get response.
-	String response = this.taskService.mark(taskID, status);
-	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
-
 	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	// Do service, get response.
+	String response = this.taskService.mark(taskID, status, proj.getId());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	if (editPage) {
 	    return redirectEditPageTask(taskID);
@@ -1930,13 +1930,13 @@ public class ProjectController {
     public String deleteTask(@PathVariable(Task.OBJECT_NAME) long taskID, HttpSession session,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
 
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service and get response.
-	String response = this.taskService.delete(taskID);
+	String response = this.taskService.delete(taskID, proj.getId());
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Complete the transaction.
 	// Redirect.
-	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(proj.getId(), status);
     }
 
@@ -2106,16 +2106,16 @@ public class ProjectController {
     public String deleteExpense(@PathVariable(ConstantsRedis.OBJECT_EXPENSE) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.expenseService.delete(key);
+	String response = this.expenseService.delete(key, project.getId());
 
 	// Attach to redirect attributes.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return to the project.
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(project.getId(), status);
     }
 
@@ -2132,16 +2132,16 @@ public class ProjectController {
 	    @PathVariable(ConstantsRedis.OBJECT_EQUIPMENT_EXPENSE) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.equipmentExpenseService.delete(key);
+	String response = this.equipmentExpenseService.delete(key, project.getId());
 
 	// Attach to redirect attributes.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return to the project.
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(project.getId(), status);
     }
 
@@ -2157,16 +2157,16 @@ public class ProjectController {
     public String deleteEstimateCost(@PathVariable(ConstantsRedis.OBJECT_ESTIMATE_COST) String key,
 	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session) {
 
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.estimateCostService.delete(key);
+	String response = this.estimateCostService.delete(key, project.getId());
 
 	// Attach to redirect attributes.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return to the project.
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(project.getId(), status);
     }
 
@@ -2183,16 +2183,16 @@ public class ProjectController {
     public String deleteMaterial(@PathVariable(ConstantsRedis.OBJECT_MATERIAL) String key,
 	    RedirectAttributes redirecAttrs, SessionStatus status, HttpSession session) {
 
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	// Do service
 	// and get response.
-	String response = this.materialService.delete(key);
+	String response = this.materialService.delete(key, project.getId());
 
 	// Attach to redirect attributes.
 	redirecAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	// Set completed.
 	// Return to the project.
-	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	return redirectEditPageProject(project.getId(), status);
     }
 

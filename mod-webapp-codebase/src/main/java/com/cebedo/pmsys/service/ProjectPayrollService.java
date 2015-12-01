@@ -6,8 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cache.annotation.CacheEvict;
 
 import com.cebedo.pmsys.base.IObjectExpense;
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
@@ -22,10 +24,12 @@ public interface ProjectPayrollService {
 
     public HSSFWorkbook exportXLS(String payrollKey);
 
-    public String delete(String key);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String delete(String key, long projectId);
 
     public ProjectPayroll get(String key);
 
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#proj.id")
     public String compute(Project proj, Date startDate, Date endDate, ProjectPayroll projectPayroll);
 
     /**
@@ -36,6 +40,7 @@ public interface ProjectPayrollService {
      * @param projectPayroll
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#proj.id")
     public String createPayroll(Project proj, ProjectPayroll projectPayroll);
 
     /**
@@ -46,6 +51,7 @@ public interface ProjectPayrollService {
      * @param toClear
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectPayroll.project.id")
     public String updatePayroll(HttpSession session, ProjectPayroll projectPayroll, String toClear);
 
     public String getPayrollGrandTotalAsString(List<ProjectPayroll> payrollList);

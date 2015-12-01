@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.AuditLog;
@@ -25,6 +28,7 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_CREATE')")
     public String uploadExcelCosts(MultipartFile multipartFile, Project project, BindingResult result);
 
@@ -45,6 +49,7 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
     public String update(Project project, BindingResult result);
 
@@ -54,6 +59,7 @@ public interface ProjectService {
      * @param id
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY')")
     public String delete(long id);
 
@@ -65,6 +71,7 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#proj.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')")
     public String uploadExcelStaff(MultipartFile multipartFile, Project proj, BindingResult result);
 
@@ -76,6 +83,7 @@ public interface ProjectService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_CREATE')")
     public String uploadExcelTasks(MultipartFile multipartFile, Project project, BindingResult result);
 
@@ -85,8 +93,9 @@ public interface ProjectService {
      * @param proj
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
-    public String clearActualCompletionDate(Project proj);
+    public String clearActualCompletionDate(Project project);
 
     /**
      * Update the status of the project.
@@ -97,8 +106,9 @@ public interface ProjectService {
      *            ID of the project status.
      * @return Response message to the user.
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projID")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'CONTRACT_UPDATE')")
-    public String mark(long projectID, int projectStatusID);
+    public String mark(long projID, int projectStatusID);
 
     /**
      * Get the list of audit logs in a specific project.
@@ -115,7 +125,11 @@ public interface ProjectService {
 
     public List<Project> listWithAllCollections();
 
+    @Cacheable(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#id")
     public Project getByIDWithAllCollections(long id);
+
+    @Cacheable(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#id")
+    public Project getByIDWithAllCollections(long id, boolean override);
 
     public String getGanttJSON(Project proj);
 
@@ -168,7 +182,5 @@ public interface ProjectService {
     public String getCalendarJSON(Project proj, boolean override);
 
     public Map<StatusTask, Integer> getTaskStatusCountMap(Project proj, boolean override);
-
-    public Project getByIDWithAllCollections(long id, boolean override);
 
 }

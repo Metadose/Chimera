@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.base.IObjectExpense;
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.model.Project;
 
@@ -14,13 +16,15 @@ public interface EquipmentExpenseService {
 
     public HSSFWorkbook exportXLS(long projID);
 
-    public String delete(String key);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String delete(String key, long projectId);
 
     public EquipmentExpense get(String uuid);
 
     public List<EquipmentExpense> listDesc(Project proj);
 
-    public String set(EquipmentExpense cost, BindingResult result);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#obj.project.id")
+    public String set(EquipmentExpense obj, BindingResult result);
 
     public List<EquipmentExpense> listAsc(Project proj);
 

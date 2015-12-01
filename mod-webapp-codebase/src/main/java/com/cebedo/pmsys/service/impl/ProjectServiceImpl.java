@@ -208,7 +208,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	// Create mass.
 	// Returns null if ok.
-	String invalid = this.estimateCostService.createMassCosts(includeCosts, result);
+	String invalid = this.estimateCostService.createMassCosts(includeCosts, result, project.getId());
 	if (invalid != null) {
 	    return invalid;
 	}

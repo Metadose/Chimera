@@ -129,9 +129,12 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	return wb;
     }
 
+    /**
+     * Argument projectId is used in cache eviction. See implemented interface.
+     */
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 	EquipmentExpense obj = this.equipmentExpenseValueRepo.get(key);
 
 	// Security check.

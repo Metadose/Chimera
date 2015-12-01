@@ -83,9 +83,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Autowired
     ExpenseValidator expenseValidator;
 
+    /**
+     * projectId for cache evict.
+     */
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 	Expense obj = this.expenseValueRepo.get(key);
 
 	// Security check.

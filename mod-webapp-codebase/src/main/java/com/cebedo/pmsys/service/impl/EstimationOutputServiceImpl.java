@@ -49,9 +49,12 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 	return obj;
     }
 
+    /**
+     * projectId for cache evict.
+     */
     @Override
     @Transactional
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 	EstimationOutput obj = this.estimationOutputValueRepo.get(key);
 
 	// Security check.

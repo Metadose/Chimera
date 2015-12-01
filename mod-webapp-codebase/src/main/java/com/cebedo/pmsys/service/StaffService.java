@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.PairCountValue;
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.domain.Attendance;
 import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.enums.StatusAttendance;
@@ -63,6 +65,7 @@ public interface StaffService {
      * @param project
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')")
     public String assignStaffMass(Project project);
 
@@ -73,6 +76,7 @@ public interface StaffService {
      * @param staffID
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')")
     public String unassignStaffMember(Project project, long staffID);
 
@@ -82,6 +86,7 @@ public interface StaffService {
      * @param project
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')")
     public String unassignAllStaffMembers(Project project);
 
