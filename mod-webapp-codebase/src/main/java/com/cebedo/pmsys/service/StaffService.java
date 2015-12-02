@@ -38,7 +38,7 @@ public interface StaffService {
      * @param staff
      * @return
      */
-    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')")
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE') or (#staff.user.id == authentication.user.id)")
     public String update(Staff staff, BindingResult result);
 
     /**

@@ -3,6 +3,7 @@ package com.cebedo.pmsys.service;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 
@@ -22,6 +23,7 @@ public interface SystemUserService {
      * @param result
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String create(SystemUser user, BindingResult result);
 
     /**
@@ -31,6 +33,7 @@ public interface SystemUserService {
      * @param result
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String update(SystemUser user, BindingResult result);
 
     /**
@@ -40,6 +43,7 @@ public interface SystemUserService {
      * @param systemOverride
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String update(SystemUser user, boolean systemOverride);
 
     /**
@@ -48,6 +52,7 @@ public interface SystemUserService {
      * @param id
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String delete(long id);
 
     public SystemUser getByID(long id);
@@ -58,6 +63,7 @@ public interface SystemUserService {
 
     public SystemUser searchDatabase(String name);
 
+    @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String updateAuthority(UserAux userAux);
 
     public Collection<GrantedAuthority> getAuthorities(SystemUser user);
