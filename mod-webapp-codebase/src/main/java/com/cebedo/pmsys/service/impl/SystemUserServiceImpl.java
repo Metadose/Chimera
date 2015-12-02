@@ -343,22 +343,27 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (!this.authHelper.isCompanyAdmin()) {
 	    return new ArrayList<SystemUser>();
 	}
-
 	AuthenticationToken token = this.authHelper.getAuth();
-
-	// Log.
 	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, SystemUser.OBJECT_NAME);
 
-	if (token.isSuperAdmin()) {
+	List<SystemUser> returnList = new ArrayList<SystemUser>();
 
-	    // Return list.
-	    return this.systemUserDAO.list(null);
+	// If super admin.
+	if (token.isSuperAdmin()) {
+	    returnList = this.systemUserDAO.list(null);
+	}
+	// Standard user.
+	else {
+	    Company co = token.getCompany();
+	    returnList = this.systemUserDAO.list(co.getId());
 	}
 
-	Company co = token.getCompany();
-
-	// Return list.
-	return this.systemUserDAO.list(co.getId());
+	// Initialize the auxiliary.
+	for (SystemUser user : returnList) {
+	    UserAux aux = this.userAuxValueRepo.get(UserAux.constructKey(user));
+	    user.setUserAux(aux);
+	}
+	return returnList;
     }
 
     /**
