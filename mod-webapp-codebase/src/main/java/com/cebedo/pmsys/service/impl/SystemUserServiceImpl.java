@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -279,6 +280,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 
 	// Do service.
 	this.systemUserDAO.update(user);
+
+	// If this user is being by updated by himself,
+	// update the authentication.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	if (auth.getUser().getId() == user.getId()) {
+	    auth.setUser(user);
+	    SecurityContextHolder.getContext().setAuthentication(auth);
+	}
 
 	// Return success.
 	return AlertBoxFactory.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());

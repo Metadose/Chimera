@@ -54,12 +54,6 @@
 	        <section class="content">
                 <div class="row">
                     <div class="col-md-12">
-                    	<c:if test="${authUser.companyAdmin}">
-		                    <div class="callout callout-info">
-								<h4>Notice</h4>
-								<p>You will be <b>logged out</b> after updating <b>Company settings</b> to implement new changes.</p>
-							</div>
-                    	</c:if>
                     	${uiParamAlert}
                         <!-- Custom Tabs -->
                         <div class="nav-tabs-custom">

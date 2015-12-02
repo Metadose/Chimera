@@ -79,7 +79,7 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
+	return settingsPage(status);
     }
 
     /**
@@ -104,7 +104,7 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
+	return settingsPage(status);
     }
 
     /**
@@ -117,6 +117,17 @@ public class CompanyController {
     private String editPage(long id, SessionStatus status) {
 	status.setComplete();
 	return String.format(RegistryURL.REDIRECT_EDIT_COMPANY, id);
+    }
+
+    /**
+     * Redirect back to the settings page.
+     * 
+     * @param status
+     * @return
+     */
+    private String settingsPage(SessionStatus status) {
+	status.setComplete();
+	return RegistryURL.REDIRECT_SETTINGS;
     }
 
     /**

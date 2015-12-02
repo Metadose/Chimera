@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -28,6 +29,7 @@ import com.cebedo.pmsys.pojo.FormMultipartFile;
 import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
+import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.utils.ImageUtils;
 import com.cebedo.pmsys.validator.CompanyValidator;
 import com.cebedo.pmsys.validator.ImageUploadValidator;
@@ -160,7 +162,23 @@ public class CompanyServiceImpl implements CompanyService {
 	// Do actual update to object.
 	// Construct alert box response.
 	this.companyDAO.update(company);
+	updateSecurityContext(company);
+
 	return AlertBoxFactory.SUCCESS.generateUpdate(Company.OBJECT_NAME, company.getName());
+    }
+
+    /**
+     * Update the stored authentication.
+     * 
+     * @param company
+     */
+    private void updateSecurityContext(Company company) {
+	if (!this.authHelper.isSuperAdmin()) {
+	    AuthenticationToken auth = this.authHelper.getAuth();
+	    auth.setCompany(company);
+	    auth.setTheme(company.getThemeID());
+	    SecurityContextHolder.getContext().setAuthentication(auth);
+	}
     }
 
     /**
