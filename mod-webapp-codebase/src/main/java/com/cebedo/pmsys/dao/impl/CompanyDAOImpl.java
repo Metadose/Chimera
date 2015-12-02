@@ -1,12 +1,15 @@
 package com.cebedo.pmsys.dao.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.LazyCollection;
 import org.springframework.stereotype.Repository;
 
 import com.cebedo.pmsys.dao.CompanyDAO;
@@ -30,6 +33,42 @@ public class CompanyDAOImpl implements CompanyDAO {
     public void create(Company company) {
 	Session session = this.sessionFactory.getCurrentSession();
 	session.persist(company);
+    }
+
+    /**
+     * Load all lazy collections.<br>
+     * Reference:
+     * http://stackoverflow.com/questions/24327353/initialize-all-lazy-loaded-
+     * collections-in-hibernate
+     * 
+     * @param tClass
+     * @param entity
+     */
+    private <T> void forceLoadLazyCollections(Class<T> tClass, T entity) {
+	if (entity == null) {
+	    return;
+	}
+	for (Field field : tClass.getDeclaredFields()) {
+	    LazyCollection annotation = field.getAnnotation(LazyCollection.class);
+	    if (annotation != null) {
+		try {
+		    field.setAccessible(true);
+		    Hibernate.initialize(field.get(entity));
+		} catch (IllegalAccessException e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
+    }
+
+    @Override
+    public Company getByIDWithLazyCollections(long id) {
+	Session session = this.sessionFactory.getCurrentSession();
+	Criteria criteria = this.daoHelper.criteriaGetObjByID(session, Company.class,
+		Company.PROPERTY_ID, id);
+	Company company = (Company) criteria.uniqueResult();
+	forceLoadLazyCollections(Company.class, company);
+	return company;
     }
 
     @Override
@@ -93,4 +132,5 @@ public class CompanyDAOImpl implements CompanyDAO {
 		.getSelectQueryFilterCompany(session, AuditLog.class.getName(), companyID).list();
 	return (List<AuditLog>) logs;
     }
+
 }

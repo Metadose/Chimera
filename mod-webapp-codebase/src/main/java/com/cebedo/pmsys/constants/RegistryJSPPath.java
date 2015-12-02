@@ -54,6 +54,8 @@ public class RegistryJSPPath {
 
     public static final String JSP_EDIT_COMPANY = Company.OBJECT_NAME + "/companyEdit";
 
+    public static final String JSP_CLONE_COMPANY = Company.OBJECT_NAME + "/companyClone";
+
     public static final String JSP_EDIT_TASK = Project.OBJECT_NAME + "/taskEdit";
 
 }

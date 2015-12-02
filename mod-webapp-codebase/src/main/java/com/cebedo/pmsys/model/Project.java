@@ -319,4 +319,12 @@ public class Project implements IObjectModel {
 	return TABLE_NAME;
     }
 
+    public Project clone() {
+	try {
+	    return (Project) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
 }

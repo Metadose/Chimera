@@ -176,6 +176,20 @@ public class CompanyController {
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
 
+    @RequestMapping(value = { RegistryURL.CLONE_COMPANY })
+    public String cloneCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id, Model model) {
+	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
+	return RegistryJSPPath.JSP_CLONE_COMPANY;
+    }
+
+    @RequestMapping(value = { RegistryURL.DO_CLONE })
+    public String doClone(@ModelAttribute(ATTR_COMPANY) Company company,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	String response = this.companyService.clone(company.getId(), company.getName());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return listPage(status);
+    }
+
     @RequestMapping(value = RegistryURL.SETTINGS)
     public String settings(Model model) {
 	model.addAttribute(ATTR_COMPANY_LOGO, new FormMultipartFile());

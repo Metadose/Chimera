@@ -188,4 +188,11 @@ public class SystemUser implements IObjectModel {
 	this.userAux = userAux;
     }
 
+    public SystemUser clone() {
+	try {
+	    return (SystemUser) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

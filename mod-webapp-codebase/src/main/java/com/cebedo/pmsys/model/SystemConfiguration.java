@@ -83,4 +83,11 @@ public class SystemConfiguration implements IObjectModel {
 	return TABLE_NAME;
     }
 
+    public SystemConfiguration clone() {
+	try {
+	    return (SystemConfiguration) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

@@ -271,4 +271,12 @@ public class Staff implements IObjectModel {
 	return TABLE_NAME;
     }
 
+    public Staff clone() {
+	try {
+	    return (Staff) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
 }

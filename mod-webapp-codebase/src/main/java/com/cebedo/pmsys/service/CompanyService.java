@@ -10,6 +10,8 @@ import com.cebedo.pmsys.pojo.FormMultipartFile;
 
 public interface CompanyService {
 
+    public String clone(long companyId, String cloneName);
+
     public String create(Company company, BindingResult result);
 
     public Company getByID(long id);

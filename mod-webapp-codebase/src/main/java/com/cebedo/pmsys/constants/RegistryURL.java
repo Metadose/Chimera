@@ -94,6 +94,10 @@ public class RegistryURL {
 
     public static final String EDIT_TASK = "/edit/task/{task}";
 
+    public static final String CLONE_COMPANY = "clone/{company_id}";
+
+    public static final String DO_CLONE = "do-clone/";
+
     public static final String EDIT_ATTENDANCE_RANGE = "/edit/attendance/range";
 
     public static final String VIEW_ESTIMATION_RESULTS = "/view/estimation/{estimationoutput}-end";

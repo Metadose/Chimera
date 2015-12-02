@@ -36,9 +36,7 @@ public class Company implements IObjectModel {
     private String description;
     private Date dateStarted;
     private Date dateExpiration;
-    // FIXME What the hell? "admins" but getting all employees?
-    @Deprecated
-    private Set<Staff> admins;
+    private Set<Staff> staff;
     private Set<SystemUser> employees;
     private Set<Project> projects;
     private Set<SystemConfiguration> configs;
@@ -106,14 +104,13 @@ public class Company implements IObjectModel {
 	this.dateExpiration = dateExpiration;
     }
 
-    @Deprecated
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    public Set<Staff> getAdmins() {
-	return admins;
+    public Set<Staff> getStaff() {
+	return staff;
     }
 
-    public void setAdmins(Set<Staff> admins) {
-	this.admins = admins;
+    public void setStaff(Set<Staff> stf) {
+	this.staff = stf;
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
@@ -208,6 +205,14 @@ public class Company implements IObjectModel {
     @Override
     public String getTableName() {
 	return TABLE_NAME;
+    }
+
+    public Company clone() {
+	try {
+	    return (Company) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }
