@@ -39,7 +39,22 @@ ul li {
 } 
 </style>
 <div id="cover"></div>
+
+<c:if test="${!authUser.superAdmin}">
 <script type="text/javascript">
+$(document).ready(function() {
+	$('a').click(function (e){  
+		if (e.ctrlKey) {
+			location.href = $(e.currentTarget).attr('href');
+			return false;
+		}
+	});
+});
+</script>
+</c:if>
+
+<script type="text/javascript">
+
 $(window).on('load', function() {
    $("#cover").hide();
 });
