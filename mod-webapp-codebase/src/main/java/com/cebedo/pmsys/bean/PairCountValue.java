@@ -34,4 +34,8 @@ public class PairCountValue implements Serializable {
 	this.value = value;
     }
 
+    public String toString() {
+	return String.format("[C: %s, V: %s]", count, value);
+    }
+
 }

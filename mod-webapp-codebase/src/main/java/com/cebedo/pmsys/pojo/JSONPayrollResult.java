@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-public class JSONPayrollResult implements Serializable {
+public class JSONPayrollResult implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 3657789273539338468L;
     private UUID uuid;
@@ -187,6 +187,14 @@ public class JSONPayrollResult implements Serializable {
 
     public void setUuid(UUID uuid) {
 	this.uuid = uuid;
+    }
+
+    public JSONPayrollResult clone() {
+	try {
+	    return (JSONPayrollResult) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }

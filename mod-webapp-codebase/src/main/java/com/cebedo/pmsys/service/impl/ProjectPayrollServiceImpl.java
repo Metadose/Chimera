@@ -782,20 +782,4 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	return listDescExpense(proj, null, null);
     }
 
-    @Transactional
-    @Override
-    public ProjectPayroll compute(ProjectPayroll projectPayroll) {
-
-	String payrollJSON = getPayrollJSON(projectPayroll.getProject(), projectPayroll.getStartDate(),
-		projectPayroll.getEndDate(), projectPayroll);
-
-	// Get the resulting state of the computation.
-	// And save it.
-	PayrollResultComputation payrollResultComputation = this.projectPayrollComputerService
-		.getPayrollResult();
-	projectPayroll.setPayrollComputationResult(payrollResultComputation);
-	projectPayroll.setPayrollJSON(payrollJSON);
-	return projectPayroll;
-    }
-
 }

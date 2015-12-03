@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.bean.PairCountValue;
+import com.cebedo.pmsys.bean.PayrollResultComputation;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -38,6 +40,7 @@ import com.cebedo.pmsys.domain.ProjectPayroll;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.enums.AuditAction;
+import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.FileHelper;
@@ -52,6 +55,7 @@ import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.pojo.FormMultipartFile;
+import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.repository.impl.AttendanceValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.EquipmentExpenseValueRepoImpl;
@@ -63,6 +67,7 @@ import com.cebedo.pmsys.repository.impl.ProjectPayrollValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.UserAuxValueRepoImpl;
 import com.cebedo.pmsys.service.CompanyService;
+import com.cebedo.pmsys.service.ProjectPayrollComputerService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.token.AuthenticationToken;
@@ -97,6 +102,14 @@ public class CompanyServiceImpl implements CompanyService {
     private DeliveryValueRepoImpl deliveryValueRepo;
     private MaterialValueRepoImpl materialValueRepo;
     private PullOutValueRepoImpl pullOutValueRepo;
+    private ProjectPayrollComputerService projectPayrollComputerService;
+
+    @Autowired
+    @Qualifier(value = "projectPayrollComputerService")
+    public void setProjectPayrollComputerService(
+	    ProjectPayrollComputerService projectPayrollComputerService) {
+	this.projectPayrollComputerService = projectPayrollComputerService;
+    }
 
     @Autowired
     @Qualifier(value = "materialValueRepo")
@@ -802,7 +815,56 @@ public class CompanyServiceImpl implements CompanyService {
 	    clonePayroll.setStaffList(cloneStaffList);
 	    clonePayroll.setStaffIDs(cloneStaffIds);
 	    clonePayroll.setProject(cloneProj);
-	    clonePayroll = this.projectPayrollService.compute(clonePayroll);
+
+	    // Results.
+	    PayrollResultComputation originalResult = originalPayroll.getPayrollComputationResult();
+
+	    // Staff to wage map.
+	    Map<Staff, Double> cloneStaffToWage = new HashMap<Staff, Double>();
+	    Map<Staff, Double> originalStaffToWage = originalResult.getStaffToWageMap();
+
+	    for (Staff originalStaff : originalStaffToWage.keySet()) {
+
+		Staff newStaff = oldIdToNewStaff.get(originalStaff.getId());
+		Double value = originalStaffToWage.get(originalStaff);
+		cloneStaffToWage.put(newStaff, value);
+	    }
+
+	    // Staff payroll breakdown.
+	    Map<Staff, Map<StatusAttendance, PairCountValue>> cloneStaffPayrollBreakdown = new HashMap<Staff, Map<StatusAttendance, PairCountValue>>();
+	    Map<Staff, Map<StatusAttendance, PairCountValue>> originalStaffPayrollBreakdown = originalResult
+		    .getStaffPayrollBreakdownMap();
+
+	    for (Staff originalStaff : originalStaffPayrollBreakdown.keySet()) {
+
+		Staff newStaff = oldIdToNewStaff.get(originalStaff.getId());
+		Map<StatusAttendance, PairCountValue> value = originalStaffPayrollBreakdown
+			.get(originalStaff);
+		cloneStaffPayrollBreakdown.put(newStaff, value);
+	    }
+
+	    // Tree grid.
+	    List<JSONPayrollResult> cloneRows = new ArrayList<JSONPayrollResult>();
+	    List<JSONPayrollResult> originalRows = originalResult.getTreeGrid();
+
+	    for (JSONPayrollResult originalRow : originalRows) {
+
+		JSONPayrollResult cloneRow = originalRow.clone();
+		cloneRow.setUuid(UUID.randomUUID());
+		cloneRows.add(cloneRow);
+	    }
+
+	    // Clone result.
+	    PayrollResultComputation cloneResult = originalResult.clone();
+	    cloneResult.setStaffPayrollBreakdownMap(cloneStaffPayrollBreakdown);
+	    cloneResult.setStaffToWageMap(cloneStaffToWage);
+	    cloneResult.setTreeGrid(cloneRows);
+
+	    // Set the results.
+	    String jsonResult = this.projectPayrollComputerService.getPayrollJSONResult(cloneStaffToWage,
+		    cloneStaffPayrollBreakdown);
+	    clonePayroll.setPayrollComputationResult(cloneResult);
+	    clonePayroll.setPayrollJSON(jsonResult);
 	    this.projectPayrollValueRepo.set(clonePayroll);
 	}
     }

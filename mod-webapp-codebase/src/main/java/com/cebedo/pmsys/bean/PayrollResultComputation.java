@@ -12,7 +12,7 @@ import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
-public class PayrollResultComputation implements Serializable {
+public class PayrollResultComputation implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 6109887323126902978L;
     private Date startDate, endDate;
@@ -72,6 +72,14 @@ public class PayrollResultComputation implements Serializable {
 
     public List<JSONPayrollResult> getTreeGrid() {
 	return treeGrid;
+    }
+
+    public PayrollResultComputation clone() {
+	try {
+	    return (PayrollResultComputation) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }
