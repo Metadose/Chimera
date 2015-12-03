@@ -93,7 +93,7 @@
 	<hdiv:config
 		debugMode="false"
 		errorPage="/fix"
-		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map,eot,svg,ttf"
+		excludedExtensions="css,png,gif,jpeg,jpg,js,woff,woff2,map,eot,svg,ttf,ico"
 		randomName="true"
 		strategy="cipher"
 		confidentiality="false">

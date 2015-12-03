@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 
 import com.cebedo.pmsys.base.IObjectModel;
+import com.cebedo.pmsys.domain.UserAux;
 
 @Entity
 @Table(name = SystemUser.TABLE_NAME)
@@ -43,6 +44,7 @@ public class SystemUser implements IObjectModel {
     private boolean companyAdmin;
     private Set<AuditLog> auditLogs;
     private int loginAttempts;
+    private UserAux userAux;
 
     public SystemUser() {
 	;
@@ -177,4 +179,20 @@ public class SystemUser implements IObjectModel {
 	return TABLE_NAME;
     }
 
+    @Transient
+    public UserAux getUserAux() {
+	return userAux;
+    }
+
+    public void setUserAux(UserAux userAux) {
+	this.userAux = userAux;
+    }
+
+    public SystemUser clone() {
+	try {
+	    return (SystemUser) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

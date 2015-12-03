@@ -45,4 +45,11 @@ public class EquipmentExpense extends Expense implements IObjectExpense {
 	return ConstantsRedis.DISPLAY_EQUIPMENT_EXPENSE;
     }
 
+    public EquipmentExpense clone() {
+	try {
+	    return (EquipmentExpense) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

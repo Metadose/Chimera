@@ -1,21 +1,11 @@
 package com.cebedo.pmsys.listener;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.transaction.Transactional;
 
-import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.commons.lang.ArrayUtils;
-
-import com.cebedo.pmsys.bean.JMSMessage;
 import com.cebedo.pmsys.dao.AuditLogDAO;
 import com.cebedo.pmsys.enums.AuditAction;
-import com.cebedo.pmsys.model.AuditLog;
-import com.cebedo.pmsys.model.Company;
-import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.token.AuthenticationToken;
 
 public class AuditMessageListenerImpl implements MessageListener {
 
@@ -38,66 +28,69 @@ public class AuditMessageListenerImpl implements MessageListener {
     @Transactional
     public void onMessage(Message message) {
 
-	if (message instanceof ActiveMQObjectMessage) {
-	    JMSMessage sysMessage;
-	    try {
-
-		// Get the contents.
-		// Get the user details.
-		// Get action details.
-		sysMessage = (JMSMessage) ((ActiveMQObjectMessage) message).getObject();
-		AuditAction action = sysMessage.getAuditAction();
-
-		// If the action is auditable.
-		if (ArrayUtils.contains(AUDITABLE, action)) {
-		    AuthenticationToken auth = sysMessage.getAuth();
-
-		    // Company.
-		    Company company = auth == null ? null : auth.getCompany();
-		    company = auth == null ? null : company;
-
-		    // User.
-		    SystemUser user = auth == null ? null : auth.getUser();
-
-		    // IP Address.
-		    String ipAddr = (auth == null || auth.getIpAddress().isEmpty())
-			    ? sysMessage.getIpAddress() : auth.getIpAddress();
-
-		    // Action.
-		    int actionID = action.id();
-
-		    // Object details.
-		    String objName = sysMessage.getObjectName();
-		    long objID = sysMessage.getObjectID();
-		    String objKey = sysMessage.getObjectKey();
-		    String associatedObjName = sysMessage.getAssocObjectName();
-		    Long associatedObjID = sysMessage.getAssocObjectID() == -1 ? null
-			    : sysMessage.getAssocObjectID();
-		    String associatedObjKey = sysMessage.getAssocObjectKey();
-
-		    // Project reference.
-		    long projectID = sysMessage.getProjectID();
-		    String entryName = sysMessage.getEntryName();
-
-		    // Do the audit.
-		    AuditLog audit = new AuditLog(actionID, user, ipAddr, company, objName, objID);
-		    audit.setObjectKey(objKey);
-		    audit.setAssocObjName(associatedObjName);
-		    audit.setAssocObjID(associatedObjID);
-		    audit.setEntryName(entryName);
-		    audit.setAssocObjKey(associatedObjKey);
-		    if (projectID != 0) {
-			audit.setProject(new Project(projectID));
-		    }
-		    this.auditLogDAO.create(audit);
-		}
-	    } catch (JMSException e) {
-		e.printStackTrace();
-	    }
-	}
-
-	else {
-	    throw new IllegalArgumentException("MessageThread must be of type SystemMessage");
-	}
+	// if (message instanceof ActiveMQObjectMessage) {
+	// JMSMessage sysMessage;
+	// try {
+	//
+	// // Get the contents.
+	// // Get the user details.
+	// // Get action details.
+	// sysMessage = (JMSMessage) ((ActiveMQObjectMessage)
+	// message).getObject();
+	// AuditAction action = sysMessage.getAuditAction();
+	//
+	// // If the action is auditable.
+	// if (ArrayUtils.contains(AUDITABLE, action)) {
+	// AuthenticationToken auth = sysMessage.getAuth();
+	//
+	// // Company.
+	// Company company = auth == null ? null : auth.getCompany();
+	// company = auth == null ? null : company;
+	//
+	// // User.
+	// SystemUser user = auth == null ? null : auth.getUser();
+	//
+	// // IP Address.
+	// String ipAddr = (auth == null || auth.getIpAddress().isEmpty())
+	// ? sysMessage.getIpAddress() : auth.getIpAddress();
+	//
+	// // Action.
+	// int actionID = action.id();
+	//
+	// // Object details.
+	// String objName = sysMessage.getObjectName();
+	// long objID = sysMessage.getObjectID();
+	// String objKey = sysMessage.getObjectKey();
+	// String associatedObjName = sysMessage.getAssocObjectName();
+	// Long associatedObjID = sysMessage.getAssocObjectID() == -1 ? null
+	// : sysMessage.getAssocObjectID();
+	// String associatedObjKey = sysMessage.getAssocObjectKey();
+	//
+	// // Project reference.
+	// long projectID = sysMessage.getProjectID();
+	// String entryName = sysMessage.getEntryName();
+	//
+	// // Do the audit.
+	// AuditLog audit = new AuditLog(actionID, user, ipAddr, company,
+	// objName, objID);
+	// audit.setObjectKey(objKey);
+	// audit.setAssocObjName(associatedObjName);
+	// audit.setAssocObjID(associatedObjID);
+	// audit.setEntryName(entryName);
+	// audit.setAssocObjKey(associatedObjKey);
+	// if (projectID != 0) {
+	// audit.setProject(new Project(projectID));
+	// }
+	// this.auditLogDAO.create(audit);
+	// }
+	// } catch (JMSException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// else {
+	// throw new IllegalArgumentException("MessageThread must be of type
+	// SystemMessage");
+	// }
     }
 }

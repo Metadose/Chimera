@@ -15,8 +15,6 @@
 		<hibernate.version>4.3.8.Final</hibernate.version>
 		<hdiv-version>2.1.10</hdiv-version>
 		<jackson.version>1.9.13</jackson.version>
-		<active-mq>5.7.0</active-mq>
-		<active-mq-pool>5.11.1</active-mq-pool>
 		<gson>2.3.1</gson>
 		<java-mail-api>1.5.2</java-mail-api>
 		<java-mail>1.4.7</java-mail>
@@ -27,8 +25,12 @@
 		<apache-math>3.5</apache-math>		
 		<joda-time>2.8.2</joda-time>
 		<google-guava>18.0</google-guava>
+
+<!-- 		<active-mq>5.7.0</active-mq> -->
+<!-- 		<active-mq-pool>5.11.1</active-mq-pool> -->
 	</properties>
 	<dependencies>
+	
 		<!-- Google Guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -87,23 +89,23 @@
 		</dependency>
 		
 		<!-- ActiveMQ -->
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-core</artifactId>
-			<version>${active-mq}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.activemq</groupId> -->
+<!-- 			<artifactId>activemq-core</artifactId> -->
+<!-- 			<version>${active-mq}</version> -->
+<!-- 		</dependency> -->
 		
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-pool</artifactId>
-			<version>${active-mq-pool}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.activemq</groupId> -->
+<!-- 			<artifactId>activemq-pool</artifactId> -->
+<!-- 			<version>${active-mq-pool}</version> -->
+<!-- 		</dependency> -->
 		
-		<dependency>
-			<groupId>org.apache.xbean</groupId>
-			<artifactId>xbean-spring</artifactId>
-			<version>4.2</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.xbean</groupId> -->
+<!-- 			<artifactId>xbean-spring</artifactId> -->
+<!-- 			<version>4.2</version> -->
+<!-- 		</dependency> -->
 		
 		<!-- Apache POI -->
 		<dependency>

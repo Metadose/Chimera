@@ -341,11 +341,11 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
     }
 
     /**
-     * Delete a payroll entry.
+     * Delete a payroll entry. projectId cache.
      */
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 
 	ProjectPayroll payroll = this.projectPayrollValueRepo.get(key);
 

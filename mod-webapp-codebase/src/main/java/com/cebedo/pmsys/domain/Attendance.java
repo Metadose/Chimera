@@ -160,4 +160,12 @@ public class Attendance implements IObjectDomain {
     public String toString() {
 	return String.format("[%s %s %s]", getFormattedDateString(), getStatus(), getWage());
     }
+
+    public Attendance clone() {
+	try {
+	    return (Attendance) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

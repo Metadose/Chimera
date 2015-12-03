@@ -79,7 +79,7 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
+	return settingsPage(status);
     }
 
     /**
@@ -104,7 +104,7 @@ public class CompanyController {
 	if (authHelper.isSuperAdmin()) {
 	    return editPage(company.getId(), status);
 	}
-	return RegistryURL.REDIRECT_LOGOUT_COMPANY_UPDATE;
+	return settingsPage(status);
     }
 
     /**
@@ -117,6 +117,17 @@ public class CompanyController {
     private String editPage(long id, SessionStatus status) {
 	status.setComplete();
 	return String.format(RegistryURL.REDIRECT_EDIT_COMPANY, id);
+    }
+
+    /**
+     * Redirect back to the settings page.
+     * 
+     * @param status
+     * @return
+     */
+    private String settingsPage(SessionStatus status) {
+	status.setComplete();
+	return RegistryURL.REDIRECT_SETTINGS;
     }
 
     /**
@@ -163,6 +174,20 @@ public class CompanyController {
 	model.addAttribute(ATTR_COMPANY_LOGO, new FormMultipartFile());
 	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
+    }
+
+    @RequestMapping(value = { RegistryURL.CLONE_COMPANY })
+    public String cloneCompany(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id, Model model) {
+	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
+	return RegistryJSPPath.JSP_CLONE_COMPANY;
+    }
+
+    @RequestMapping(value = { RegistryURL.DO_CLONE })
+    public String doClone(@ModelAttribute(ATTR_COMPANY) Company company,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	String response = this.companyService.clone(company.getId(), company.getName());
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return listPage(status);
     }
 
     @RequestMapping(value = RegistryURL.SETTINGS)

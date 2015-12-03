@@ -25,6 +25,8 @@
 <!-- header logo: style can be found in header.less -->
 <c:import url="/resources/cdn-js-includes.jsp" />
 <c:import url="/resources/cdn-css-includes.jsp" />
+<%-- <c:import url="/resources/js-includes.jsp" /> --%>
+<%-- <c:import url="/resources/css-includes.jsp" /> --%>
 
 <style type="text/css">
 #cover {position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #FFFFFF; z-index:10;}
@@ -37,7 +39,22 @@ ul li {
 } 
 </style>
 <div id="cover"></div>
+
+<c:if test="${!authUser.superAdmin}">
 <script type="text/javascript">
+$(document).ready(function() {
+	$('a').click(function (e){  
+		if (e.ctrlKey) {
+			location.href = $(e.currentTarget).attr('href');
+			return false;
+		}
+	});
+});
+</script>
+</c:if>
+
+<script type="text/javascript">
+
 $(window).on('load', function() {
    $("#cover").hide();
 });

@@ -11,6 +11,8 @@ public interface CompanyDAO {
 
     public Company getByID(long id);
 
+    public Company getByIDWithLazyCollections(long id);
+
     public void update(Company company);
 
     public void delete(long id);

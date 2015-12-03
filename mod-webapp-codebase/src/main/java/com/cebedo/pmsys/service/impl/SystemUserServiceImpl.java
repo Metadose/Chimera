@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -280,6 +281,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Do service.
 	this.systemUserDAO.update(user);
 
+	// If this user is being by updated by himself,
+	// update the authentication.
+	AuthenticationToken auth = this.authHelper.getAuth();
+	if (auth.getUser().getId() == user.getId()) {
+	    auth.setUser(user);
+	    SecurityContextHolder.getContext().setAuthentication(auth);
+	}
+
 	// Return success.
 	return AlertBoxFactory.SUCCESS.generateUpdate(SystemUser.OBJECT_NAME, user.getUsername());
     }
@@ -343,22 +352,27 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (!this.authHelper.isCompanyAdmin()) {
 	    return new ArrayList<SystemUser>();
 	}
-
 	AuthenticationToken token = this.authHelper.getAuth();
-
-	// Log.
 	this.messageHelper.nonAuditableListNoAssoc(AuditAction.ACTION_LIST, SystemUser.OBJECT_NAME);
 
-	if (token.isSuperAdmin()) {
+	List<SystemUser> returnList = new ArrayList<SystemUser>();
 
-	    // Return list.
-	    return this.systemUserDAO.list(null);
+	// If super admin.
+	if (token.isSuperAdmin()) {
+	    returnList = this.systemUserDAO.list(null);
+	}
+	// Standard user.
+	else {
+	    Company co = token.getCompany();
+	    returnList = this.systemUserDAO.list(co.getId());
 	}
 
-	Company co = token.getCompany();
-
-	// Return list.
-	return this.systemUserDAO.list(co.getId());
+	// Initialize the auxiliary.
+	for (SystemUser user : returnList) {
+	    UserAux aux = this.userAuxValueRepo.get(UserAux.constructKey(user));
+	    user.setUserAux(aux);
+	}
+	return returnList;
     }
 
     /**

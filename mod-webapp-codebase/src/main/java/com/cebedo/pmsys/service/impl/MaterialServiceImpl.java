@@ -185,11 +185,11 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     /**
-     * Delete a material.
+     * Delete a material. Argument projectId for cache evict.
      */
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 
 	// Get the material.
 	Material material = this.materialValueRepo.get(key);

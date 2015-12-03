@@ -186,9 +186,12 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	return wb;
     }
 
+    /**
+     * Argument projectId is used for cache eviction.
+     */
     @Override
     @Transactional
-    public String createMassCosts(List<EstimateCost> costs, BindingResult result) {
+    public String createMassCosts(List<EstimateCost> costs, BindingResult result, long projectId) {
 
 	// Security check.
 	if (costs.size() > 0 && !this.authHelper.hasAccess(costs.get(0))) {
@@ -312,9 +315,12 @@ public class EstimateCostServiceImpl implements EstimateCostService {
 	return null;
     }
 
+    /**
+     * Argument projectId for cache evict.
+     */
     @Transactional
     @Override
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 	EstimateCost obj = this.estimateCostValueRepo.get(key);
 
 	// Security check.

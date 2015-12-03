@@ -12,15 +12,22 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 
 <%-- <link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="<c:url value="/resources/css/cdn-fonts.css" />"rel="stylesheet" type="text/css" />
+<%-- <link href="<c:url value="/resources/css/cdn-fonts.css" />"rel="stylesheet" type="text/css" /> --%>
+<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/cdn-fonts.css" rel="stylesheet" type="text/css" />
 
-<link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" />
+<%-- <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" /> --%>
+<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
 
 <!-- Themes -->
-<link href="<c:url value="/resources/css/themes/${authTheme}-dist.css" />"rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/themes/${authTheme}-buttons.css" />"rel="stylesheet" type="text/css" />
+<%-- <link href="<c:url value="/resources/css/themes/${authTheme}-dist.css" />"rel="stylesheet" type="text/css" /> --%>
+<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/${authTheme}-dist.css" rel="stylesheet" type="text/css" />
 
-<link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" />
+<%-- <link href="<c:url value="/resources/css/themes/${authTheme}-buttons.css" />"rel="stylesheet" type="text/css" /> --%>
+<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/${authTheme}-buttons.css" rel="stylesheet" type="text/css" />
+
+<%-- <link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" /> --%>
+<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/cebedo-commons.css" rel="stylesheet" type="text/css" />
+
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>

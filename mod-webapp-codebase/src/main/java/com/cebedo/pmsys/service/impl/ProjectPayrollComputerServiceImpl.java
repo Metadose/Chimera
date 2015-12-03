@@ -269,6 +269,63 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
     }
 
     /**
+     * TODO Improve this class.
+     * 
+     * @param staffToWageMap
+     * @param staffPayrollBreakdownMap
+     * @return
+     */
+    @Transactional
+    @Override
+    public String getPayrollJSONResult(Map<Staff, Double> staffToWageMap,
+	    Map<Staff, Map<StatusAttendance, PairCountValue>> staffPayrollBreakdownMap) {
+
+	List<JSONPayrollResult> treeGrid = new ArrayList<JSONPayrollResult>();
+
+	// Sort by formal name.
+	Set<Staff> staffSet = staffToWageMap.keySet();
+	List<Staff> staffList = DataStructUtils.convertSetToList(staffSet);
+	Collections.sort(staffList, new Comparator<Staff>() {
+	    @Override
+	    public int compare(Staff aObj, Staff bObj) {
+		String aName = aObj.getFormalName();
+		String bName = bObj.getFormalName();
+
+		int a = aName.compareToIgnoreCase(bName);
+		return a < 0 ? -1 : a > 0 ? 1 : 0;
+	    }
+	});
+
+	// Loop through all staff.
+	for (Staff staff : staffList) {
+
+	    if (staff == null) {
+		continue;
+	    }
+
+	    // Get details.
+	    Double rowValue = staffToWageMap.get(staff);
+	    if (rowValue == null) {
+		rowValue = (double) 0;
+	    }
+
+	    // Add to bean.
+	    JSONPayrollResult rowBean = new JSONPayrollResult(staff.getFormalName(), rowValue,
+		    staff.getWage());
+
+	    // Breakdown.
+	    Map<StatusAttendance, PairCountValue> staffWageBreakdown = staffPayrollBreakdownMap
+		    .get(staff);
+	    rowBean = setAttendanceBreakdown(staffWageBreakdown, rowBean);
+
+	    // Add to tree grid list.
+	    treeGrid.add(rowBean);
+	}
+
+	return new Gson().toJson(treeGrid, ArrayList.class);
+    }
+
+    /**
      * Get partial tree grid for managers.
      * 
      * @param managerPayrollMap

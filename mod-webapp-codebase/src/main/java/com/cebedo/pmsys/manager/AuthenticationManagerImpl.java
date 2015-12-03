@@ -17,7 +17,6 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
-import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -34,16 +33,10 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
     private static final int MAX_LOGIN_ATTEMPT = 10;
 
     private SystemUserService systemUserService;
-    private SystemConfigurationService systemConfigurationService;
 
     @Autowired
     public void setSystemUserService(SystemUserService systemUserService) {
 	this.systemUserService = systemUserService;
-    }
-
-    @Autowired
-    public void setSystemConfigurationService(SystemConfigurationService systemConfigurationService) {
-	this.systemConfigurationService = systemConfigurationService;
     }
 
     public Authentication authenticate(Authentication auth) throws AuthenticationException {

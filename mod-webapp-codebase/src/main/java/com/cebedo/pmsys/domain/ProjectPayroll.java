@@ -267,4 +267,12 @@ public class ProjectPayroll implements IObjectExpense {
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_PAYROLL;
     }
+
+    public ProjectPayroll clone() {
+	try {
+	    return (ProjectPayroll) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

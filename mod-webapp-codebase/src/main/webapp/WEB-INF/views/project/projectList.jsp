@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<sec:authentication var="authUser" property="user"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -44,6 +45,9 @@
 	                                        <thead>
 	                                            <tr>
 	                                            	<th>&nbsp;</th>
+	                                            	<c:if test="${authUser.superAdmin}">
+	                                            	<th>Company</th>
+	                                            	</c:if>
 	                                            	<th>Status</th>
 	                                                <th>Project</th>
 	                                                <th>Location</th>
@@ -68,6 +72,9 @@
 	                                								</sec:authorize>
 																</center>
 															</td>
+															<c:if test="${authUser.superAdmin}">
+			                                                <td>(${project.company.id}) ${project.company.name}</td>
+			                                            	</c:if>
 															<td>
 					                                            <c:set value="${project.getStatusEnum().css()}" var="css"></c:set>
 																<span class="label ${css}">${project.getStatusEnum()}</span>
@@ -82,6 +89,9 @@
 	                                        <tfoot>
 	                                            <tr>
 	                                            	<th>&nbsp;</th>
+	                                            	<c:if test="${authUser.superAdmin}">
+	                                            	<th>Company</th>
+	                                            	</c:if>
 	                                                <th>Status</th>
 	                                                <th>Project</th>
 	                                                <th>Location</th>

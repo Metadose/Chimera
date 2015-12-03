@@ -142,4 +142,11 @@ public class UserAux implements IObjectDomain {
 	return ConstantsRedis.OBJECT_AUX_USER;
     }
 
+    public UserAux clone() {
+	try {
+	    return (UserAux) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

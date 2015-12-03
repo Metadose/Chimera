@@ -297,9 +297,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 	return listDesc(proj, null, null);
     }
 
+    /**
+     * projectId is used for caching. See interface.
+     */
     @Override
     @Transactional
-    public String delete(String key) {
+    public String delete(String key, long projectId) {
 
 	Delivery delivery = this.deliveryValueRepo.get(key);
 

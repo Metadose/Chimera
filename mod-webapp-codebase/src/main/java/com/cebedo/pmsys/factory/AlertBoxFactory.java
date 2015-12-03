@@ -58,6 +58,15 @@ public class AlertBoxFactory {
 	    + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * Clone.
+     */
+    private static String TEMPLATE_SUCCESS_CLONE = "Successfully <b>cloned</b> the "
+	    + DELIMITER_OBJECT_TYPE + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    private static String TEMPLATE_FAILED_CLONE = "Failed to <b>clone</b> the " + DELIMITER_OBJECT_TYPE
+	    + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
+
+    /**
      * Authorize.
      */
     private static String TEMPLATE_SUCCESS_AUTHORIZE = "Successfully updated <b>authorizations</b>.";
@@ -470,6 +479,20 @@ public class AlertBoxFactory {
 		    .replace(DELIMITER_OBJECT_NAME, objName);
 	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_CREATE.replace(DELIMITER_OBJECT_TYPE, object)
+		    .replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateClone(String object, String objName) {
+	object = object.toLowerCase();
+	String result = "";
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
+	    result = TEMPLATE_FAILED_CLONE.replace(DELIMITER_OBJECT_TYPE, object)
+		    .replace(DELIMITER_OBJECT_NAME, objName);
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
+	    result = TEMPLATE_SUCCESS_CLONE.replace(DELIMITER_OBJECT_TYPE, object)
 		    .replace(DELIMITER_OBJECT_NAME, objName);
 	}
 	this.message = result;

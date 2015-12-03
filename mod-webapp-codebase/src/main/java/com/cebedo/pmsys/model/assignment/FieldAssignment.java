@@ -91,4 +91,12 @@ public class FieldAssignment implements IObjectAssignment {
     public String getTableName() {
 	return TABLE_NAME;
     }
+
+    public FieldAssignment clone() {
+	try {
+	    return (FieldAssignment) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

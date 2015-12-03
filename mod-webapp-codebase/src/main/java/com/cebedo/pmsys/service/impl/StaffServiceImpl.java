@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,7 @@ import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemUser;
 import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
@@ -397,6 +399,15 @@ public class StaffServiceImpl implements StaffService {
 
 	// Do service.
 	this.staffDAO.update(staff);
+
+	// If this staff is being by updated by himself,
+	// update the authentication.
+	SystemUser staffUser = staff.getUser();
+	AuthenticationToken auth = this.authHelper.getAuth();
+	if (staffUser != null && auth.getUser().getId() == staffUser.getId()) {
+	    auth.setStaff(staff);
+	    SecurityContextHolder.getContext().setAuthentication(auth);
+	}
 
 	// Return success.
 	return AlertBoxFactory.SUCCESS.generateUpdate(Staff.OBJECT_NAME, staff.getFullName());

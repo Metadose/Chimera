@@ -256,4 +256,12 @@ public class Task implements IObjectModel {
 	return TABLE_NAME;
     }
 
+    public Task clone() {
+	try {
+	    return (Task) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
 }

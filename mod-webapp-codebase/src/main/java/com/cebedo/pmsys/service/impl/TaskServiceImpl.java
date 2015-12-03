@@ -138,14 +138,14 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME, "Mass", project, "Mass");
+	this.messageHelper.auditableKey(AuditAction.ACTION_CREATE_MASS, Project.OBJECT_NAME,
+		project.getId(), Task.OBJECT_NAME, "Mass", project, "Mass");
 
 	// If reaches this point, do actual service.
 	for (Task task : tasks) {
 	    this.taskDAO.create(task);
-	    this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Project.OBJECT_NAME, project.getId(),
-		    Task.OBJECT_NAME, task.getId(), project, task.getTitle());
+	    this.messageHelper.auditableID(AuditAction.ACTION_CREATE, Project.OBJECT_NAME,
+		    project.getId(), Task.OBJECT_NAME, task.getId(), project, task.getTitle());
 	}
 	return null;
     }
@@ -167,8 +167,8 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE, Project.OBJECT_NAME, project.getId(),
-		MultipartFile.class.getName());
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE,
+		Project.OBJECT_NAME, project.getId(), MultipartFile.class.getName());
 
 	try {
 
@@ -342,7 +342,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String delete(long id) {
+    public String delete(long id, long projectId) {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.
@@ -368,7 +368,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String mark(long taskID, int status) {
+    public String mark(long taskID, int status, long projectId) {
 	// Get the task.
 	Task task = this.taskDAO.getByID(taskID);
 
@@ -398,7 +398,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String assignStaffTask(long taskID, long staffID) {
+    public String assignStaffTask(long taskID, long staffID, long projectId) {
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
@@ -450,7 +450,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String unassignStaffTask(long taskID, long staffID) {
+    public String unassignStaffTask(long taskID, long staffID, long projectId) {
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
@@ -476,7 +476,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String unassignAllStaffUnderTask(long id) {
+    public String unassignAllStaffUnderTask(long id, long projectId) {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.
@@ -511,8 +511,8 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	// Log.
-	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME, project.getId(),
-		Task.OBJECT_NAME, "All", project, "All");
+	this.messageHelper.auditableKey(AuditAction.ACTION_DELETE_ALL, Project.OBJECT_NAME,
+		project.getId(), Task.OBJECT_NAME, "All", project, "All");
 
 	// Do service.
 	this.taskDAO.deleteAllTasksByProject(projectID);

@@ -3,9 +3,11 @@ package com.cebedo.pmsys.service;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Task;
 
@@ -20,6 +22,7 @@ public interface TaskService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#task.project.id")
     public String create(Task task, BindingResult result);
 
     public Task getByID(long id);
@@ -30,6 +33,7 @@ public interface TaskService {
      * @param task
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#task.project.id")
     public String update(Task task, BindingResult result);
 
     /**
@@ -38,7 +42,8 @@ public interface TaskService {
      * @param id
      * @return
      */
-    public String delete(long id);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String delete(long id, long projectId);
 
     /**
      * Set the task to the status specified.
@@ -47,7 +52,8 @@ public interface TaskService {
      * @param status
      * @return
      */
-    public String mark(long taskID, int status);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String mark(long taskID, int status, long projectId);
 
     /**
      * Assign a staff under task.
@@ -56,7 +62,8 @@ public interface TaskService {
      * @param staffID
      * @return
      */
-    public String assignStaffTask(long taskID, long staffID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String assignStaffTask(long taskID, long staffID, long projectId);
 
     /**
      * 
@@ -68,25 +75,14 @@ public interface TaskService {
     public Task getByIDWithAllCollections(long id);
 
     /**
-     * 
-     * @param taskID
-     * @return
-     */
-
-    /**
-     * 
-     * @param taskID
-     * @return
-     */
-
-    /**
      * Unassign a staff from a task.
      * 
      * @param taskID
      * @param staffID
      * @return
      */
-    public String unassignStaffTask(long taskID, long staffID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String unassignStaffTask(long taskID, long staffID, long projectId);
 
     /**
      * Unassign all staff from a task.
@@ -94,7 +90,8 @@ public interface TaskService {
      * @param taskID
      * @return
      */
-    public String unassignAllStaffUnderTask(long taskID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String unassignAllStaffUnderTask(long taskID, long projectId);
 
     /**
      * Delete all tasks given a project.
@@ -102,8 +99,10 @@ public interface TaskService {
      * @param projectID
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
     public String deleteAllTasksByProject(long projectID);
 
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
     public String createMassTasks(Project project, List<Task> tasks, BindingResult result);
 
     public List<Task> convertExcelToTaskList(MultipartFile multipartFile, Project project);

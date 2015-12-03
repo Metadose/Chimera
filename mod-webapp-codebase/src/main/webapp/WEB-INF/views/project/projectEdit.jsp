@@ -21,8 +21,12 @@
 	
 <%-- 	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> --%>
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
+	
+<%-- 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/gantt-custom.css" rel="stylesheet" type="text/css" />
+	
+<%-- 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" rel="stylesheet" type="text/css" />
 <%-- 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" /> --%>
 	
 	<style type="text/css">
@@ -2408,9 +2412,14 @@
 	
 	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
-   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
-    <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
-	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+<%--    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" type="text/javascript"></script>
+
+<%--     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script> --%>
+	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
+    
+<%-- 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script> --%>
+	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/js/gantt-custom.js" type="text/javascript"></script>
 	
 	<script type="text/javascript">
 	    $(document).ready(function() {
@@ -2495,14 +2504,6 @@
 	        tooltip: {
 	            pointFormat: '<b>{point.y}</b>'
 	        },
-	        plotOptions: {
-	            spline: {
-	                marker: {
-	                    enabled: true,
-	                    radius: 8
-	                }
-	            }
-	        },
 	        series: [{
 	        	name: 'Inventory Expenses',
 	            data: ${dataSeriesInventory}
@@ -2549,7 +2550,6 @@
 	        },
 	        plotOptions: {
 	            area: {
-	                stacking: 'normal',
 	                lineColor: '#666666',
 	                lineWidth: 1,
 	                marker: {
@@ -2585,7 +2585,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -2626,7 +2626,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -2667,7 +2667,7 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
+	                
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',
@@ -3170,7 +3170,6 @@
 	        },
 	        plotOptions: {
 	            pie: {
-	                innerSize: 100,
 	                depth: 45,
 	                allowPointSelect: true,
 	                cursor: 'pointer',

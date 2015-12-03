@@ -40,6 +40,7 @@
                                                 <th>Username</th>
                                                 <th>Staff</th>
                                                 <th>Company</th>
+                                                <th>Authorization</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -72,6 +73,27 @@
                                                             </a>
                                                         </td>
 		                                                <td>${systemUser.company.name}</td>
+		                                                <td>
+		                                                <c:if test="${systemUser.companyAdmin}">
+		                                                	<b>Company Administrator</b>
+		                                                </c:if>
+		                                                <c:if test="${systemUser.superAdmin}">
+		                                                	<b>System Administrator</b>
+		                                                </c:if>
+		                                                
+		                                                <c:forEach items="${systemUser.userAux.authorization}" var="authEntry">
+															<c:set value="${authEntry.key}" var="authModule"/>
+															<c:set value="${authEntry.value}" var="authActions"/>
+																<b>${authModule.getLabel()}</b>
+																(
+																<c:forEach items="${authActions}" var="authAction" varStatus="loop">
+																${authAction.getLabel()}${!loop.last ? ', ' : ''}
+																</c:forEach>
+																)
+															<br/>
+														</c:forEach>
+		                                                
+		                                                </td>
 		                                            </tr>
 	                                            </c:forEach>
                                             </c:if>
@@ -82,6 +104,7 @@
                                                 <th>Name</th>
                                                 <th>Staff</th>
                                                 <th>Company</th>
+                                                <th>Authorization</th>
                                             </tr>
                                         </tfoot>
                                     </table>
