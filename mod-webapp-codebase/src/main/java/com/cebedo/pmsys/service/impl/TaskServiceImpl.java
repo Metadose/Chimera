@@ -398,7 +398,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String assignStaffTask(long taskID, long staffID) {
+    public String assignStaffTask(long taskID, long staffID, long projectId) {
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
@@ -450,7 +450,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String unassignStaffTask(long taskID, long staffID) {
+    public String unassignStaffTask(long taskID, long staffID, long projectId) {
 	Task task = this.taskDAO.getByID(taskID);
 	Staff staff = this.staffDAO.getByID(staffID);
 
@@ -476,7 +476,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public String unassignAllStaffUnderTask(long id) {
+    public String unassignAllStaffUnderTask(long id, long projectId) {
 	Task task = this.taskDAO.getByID(id);
 
 	// Security check.

@@ -62,7 +62,8 @@ public interface TaskService {
      * @param staffID
      * @return
      */
-    public String assignStaffTask(long taskID, long staffID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String assignStaffTask(long taskID, long staffID, long projectId);
 
     /**
      * 
@@ -80,7 +81,8 @@ public interface TaskService {
      * @param staffID
      * @return
      */
-    public String unassignStaffTask(long taskID, long staffID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String unassignStaffTask(long taskID, long staffID, long projectId);
 
     /**
      * Unassign all staff from a task.
@@ -88,7 +90,8 @@ public interface TaskService {
      * @param taskID
      * @return
      */
-    public String unassignAllStaffUnderTask(long taskID);
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#projectId")
+    public String unassignAllStaffUnderTask(long taskID, long projectId);
 
     /**
      * Delete all tasks given a project.

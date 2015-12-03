@@ -358,4 +358,12 @@ public class Material implements IObjectDomain {
 	return ConstantsRedis.OBJECT_MATERIAL;
     }
 
+    public Material clone() {
+	try {
+	    return (Material) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
 }

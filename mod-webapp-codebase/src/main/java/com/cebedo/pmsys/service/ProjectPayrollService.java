@@ -16,6 +16,8 @@ import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
 
+    public ProjectPayroll compute(ProjectPayroll projectPayroll);
+
     public List<IObjectExpense> listDescExpense(Project proj);
 
     public List<IObjectExpense> listDescExpense(Project proj, Date startDate, Date endDate);

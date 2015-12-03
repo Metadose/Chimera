@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,7 +10,6 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryRedisKeys;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
-import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.utils.NumberFormatUtils;
 
 public class Delivery implements IObjectExpense {
@@ -35,10 +33,6 @@ public class Delivery implements IObjectExpense {
      * More details.
      */
     private double grandTotalOfMaterials;
-    private Set<Material> materials;
-
-    @Deprecated
-    private Set<Staff> staff;
 
     public Delivery() {
 	;
@@ -104,14 +98,6 @@ public class Delivery implements IObjectExpense {
 	this.description = StringUtils.trim(description);
     }
 
-    public Set<Material> getMaterials() {
-	return materials;
-    }
-
-    public void setMaterials(Set<Material> materials) {
-	this.materials = materials;
-    }
-
     public String getGrandTotalOfMaterialsAsString() {
 	return NumberFormatUtils.getCurrencyFormatter().format(grandTotalOfMaterials);
     }
@@ -122,16 +108,6 @@ public class Delivery implements IObjectExpense {
 
     public void setGrandTotalOfMaterials(double grandTotalOfMaterials) {
 	this.grandTotalOfMaterials = grandTotalOfMaterials;
-    }
-
-    @Deprecated
-    public Set<Staff> getStaff() {
-	return staff;
-    }
-
-    @Deprecated
-    public void setStaff(Set<Staff> staff) {
-	this.staff = staff;
     }
 
     /**
@@ -167,6 +143,14 @@ public class Delivery implements IObjectExpense {
 
     public String toString() {
 	return String.format("[%s = %s]", getName(), getCost());
+    }
+
+    public Delivery clone() {
+	try {
+	    return (Delivery) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }

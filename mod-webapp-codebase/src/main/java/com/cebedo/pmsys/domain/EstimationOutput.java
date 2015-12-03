@@ -69,11 +69,6 @@ public class EstimationOutput implements IObjectDomain {
     private double costGrandTotal50kgKilo = 0;
     private double costGrandTotal50kgRoll = 0;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
     public EstimationOutput() {
 	;
     }
@@ -131,14 +126,6 @@ public class EstimationOutput implements IObjectDomain {
 
     public void setLastComputed(Date lastComputed) {
 	this.lastComputed = lastComputed;
-    }
-
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override
@@ -383,6 +370,14 @@ public class EstimationOutput implements IObjectDomain {
     @Override
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_ESTIMATION_OUTPUT;
+    }
+
+    public EstimationOutput clone() {
+	try {
+	    return (EstimationOutput) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }

@@ -139,4 +139,12 @@ public class Expense implements IObjectExpense {
 	return String.format("[%s = %s]", getName(), getCost());
     }
 
+    public Expense clone() {
+	try {
+	    return (Expense) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
 }

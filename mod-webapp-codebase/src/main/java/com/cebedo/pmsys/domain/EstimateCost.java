@@ -155,4 +155,12 @@ public class EstimateCost implements IObjectExpense {
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_ESTIMATE_COST;
     }
+
+    public EstimateCost clone() {
+	try {
+	    return (EstimateCost) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
+    }
 }

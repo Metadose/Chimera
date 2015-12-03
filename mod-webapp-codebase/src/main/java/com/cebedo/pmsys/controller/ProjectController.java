@@ -1775,9 +1775,10 @@ public class ProjectController {
 
 	// Get the object from the session.
 	Task task = (Task) session.getAttribute(ATTR_TASK);
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 
 	// Do service and get response.
-	String response = this.taskService.unassignStaffTask(task.getId(), staffID);
+	String response = this.taskService.unassignStaffTask(task.getId(), staffID, project.getId());
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return redirectEditPageTask(task.getId());
@@ -1797,9 +1798,11 @@ public class ProjectController {
 	    RedirectAttributes redirectAttrs) {
 
 	Task task = (Task) session.getAttribute(ATTR_TASK);
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 
 	// Do service.
-	String response = this.taskService.assignStaffTask(task.getId(), staffAssignment.getStaffID());
+	String response = this.taskService.assignStaffTask(task.getId(), staffAssignment.getStaffID(),
+		project.getId());
 
 	// Set response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
@@ -1819,10 +1822,11 @@ public class ProjectController {
 
 	// Get object from session.
 	Task task = (Task) session.getAttribute(ATTR_TASK);
+	Project project = (Project) session.getAttribute(ATTR_PROJECT);
 	long taskID = task.getId();
 
 	// Do service and get response.
-	String response = this.taskService.unassignAllStaffUnderTask(taskID);
+	String response = this.taskService.unassignAllStaffUnderTask(taskID, project.getId());
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageTask(taskID);
     }

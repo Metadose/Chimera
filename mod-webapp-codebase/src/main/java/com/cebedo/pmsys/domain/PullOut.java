@@ -1,7 +1,6 @@
 package com.cebedo.pmsys.domain;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,11 +39,6 @@ public class PullOut implements IObjectDomain {
      */
     private long staffID;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
     public PullOut() {
 	;
     }
@@ -54,14 +48,6 @@ public class PullOut implements IObjectDomain {
 	setProject(m.getProject());
 	setDelivery(m.getDelivery());
 	setMaterial(m);
-    }
-
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     @Override
@@ -190,6 +176,14 @@ public class PullOut implements IObjectDomain {
     @Override
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_PULL_OUT;
+    }
+
+    public PullOut clone() {
+	try {
+	    return (PullOut) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }

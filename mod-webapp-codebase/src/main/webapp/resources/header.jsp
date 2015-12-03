@@ -23,10 +23,10 @@
 	</c:when>
 </c:choose>
 <!-- header logo: style can be found in header.less -->
-<%-- <c:import url="/resources/cdn-js-includes.jsp" /> --%>
-<%-- <c:import url="/resources/cdn-css-includes.jsp" /> --%>
-<c:import url="/resources/js-includes.jsp" />
-<c:import url="/resources/css-includes.jsp" />
+<c:import url="/resources/cdn-js-includes.jsp" />
+<c:import url="/resources/cdn-css-includes.jsp" />
+<%-- <c:import url="/resources/js-includes.jsp" /> --%>
+<%-- <c:import url="/resources/css-includes.jsp" /> --%>
 
 <style type="text/css">
 #cover {position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #FFFFFF; z-index:10;}

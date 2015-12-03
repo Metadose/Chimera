@@ -1,7 +1,5 @@
 package com.cebedo.pmsys.domain;
 
-import java.util.Map;
-
 import javax.persistence.Transient;
 
 import com.cebedo.pmsys.base.IObjectDomain;
@@ -34,11 +32,6 @@ public class ProjectAux implements IObjectDomain {
     private double grandTotalActualCostsDirect;
     private double grandTotalActualCostsIndirect;
 
-    /**
-     * Extension map.
-     */
-    private Map<String, Object> extMap;
-
     public ProjectAux() {
 	;
     }
@@ -47,14 +40,6 @@ public class ProjectAux implements IObjectDomain {
 	Company co = project2.getCompany();
 	setCompany(co);
 	setProject(project2);
-    }
-
-    public Map<String, Object> getExtMap() {
-	return extMap;
-    }
-
-    public void setExtMap(Map<String, Object> extMap) {
-	this.extMap = extMap;
     }
 
     /**
@@ -335,6 +320,14 @@ public class ProjectAux implements IObjectDomain {
     @Override
     public String getObjectName() {
 	return ConstantsRedis.OBJECT_AUX_PROJECT;
+    }
+
+    public ProjectAux clone() {
+	try {
+	    return (ProjectAux) super.clone();
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
 }
