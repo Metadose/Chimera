@@ -300,7 +300,10 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	for (Staff staff : staffList) {
 
 	    // Get details.
-	    double rowValue = staffToWageMap.get(staff);
+	    Double rowValue = staffToWageMap.get(staff);
+	    if (rowValue == null) {
+		rowValue = (double) 0;
+	    }
 
 	    // Add to bean.
 	    JSONPayrollResult rowBean = new JSONPayrollResult(staff.getFormalName(), rowValue,
