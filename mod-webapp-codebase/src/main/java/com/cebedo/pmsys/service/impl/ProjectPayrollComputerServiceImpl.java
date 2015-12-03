@@ -299,6 +299,10 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	// Loop through all staff.
 	for (Staff staff : staffList) {
 
+	    if (staff == null) {
+		continue;
+	    }
+
 	    // Get details.
 	    Double rowValue = staffToWageMap.get(staff);
 	    if (rowValue == null) {
