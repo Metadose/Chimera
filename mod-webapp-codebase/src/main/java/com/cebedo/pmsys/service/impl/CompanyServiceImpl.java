@@ -518,7 +518,10 @@ public class CompanyServiceImpl implements CompanyService {
     private long[] getClonedEquivalent(long[] originalStaffIds, Map<Long, Staff> oldIdToNewStaff) {
 	Set<Long> clonedStaffSet = new HashSet<Long>();
 	for (long originalId : originalStaffIds) {
-	    clonedStaffSet.add(oldIdToNewStaff.get(originalId).getId());
+	    Staff stf = oldIdToNewStaff.get(originalId);
+	    if (stf != null) {
+		clonedStaffSet.add(stf.getId());
+	    }
 	}
 	return Longs.toArray(clonedStaffSet);
     }
