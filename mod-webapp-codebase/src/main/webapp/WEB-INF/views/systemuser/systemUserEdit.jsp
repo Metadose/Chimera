@@ -95,11 +95,11 @@
 				                                            
 				                                            <c:if test="${authUser.superAdmin}">
 				                                            <label>Super Admin</label><br/>
-				                                            <form:checkbox class="form-control" path="superAdmin" style="margin-left: -48%;"/>
+				                                            <form:checkbox class="form-control" path="superAdmin"/>
 				                                            <p class="help-block">Is this user a super admin?</p>
 
 				                                            <label>Company Admin</label><br/>
-				                                            <form:checkbox class="form-control" path="companyAdmin" style="margin-left: -48%;"/>
+				                                            <form:checkbox class="form-control" path="companyAdmin"/>
 				                                            <p class="help-block">Is this user a company admin?</p>
 
 				                                            <label>Company</label>

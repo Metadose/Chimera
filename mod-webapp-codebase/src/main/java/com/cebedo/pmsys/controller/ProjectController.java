@@ -1533,7 +1533,6 @@ public class ProjectController {
     }
 
     /**
-     * TODO Clean up.<br>
      * Add an attendance in mass.
      * 
      * @return
@@ -1550,6 +1549,37 @@ public class ProjectController {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
 	return redirectEditPageStaffCalMaxDate(model, session, startDate);
+    }
+
+    /**
+     * Mass attendance to a list of staff members.
+     * 
+     * @param attendanceMass
+     * @param session
+     * @param status
+     * @param redirectAttrs
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.MASS_ADD_ATTENDACE_ALL }, method = RequestMethod.POST)
+    public String addMassAttendanceAll(
+	    @ModelAttribute(ATTR_ATTENDANCE_MASS) FormMassAttendance attendanceMass, HttpSession session,
+	    SessionStatus status, RedirectAttributes redirectAttrs, BindingResult result) {
+
+	Project proj = getProject(session);
+	String response = this.attendanceService.multiSet(proj, attendanceMass, result);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return redirectEditPageProject(proj.getId(), status);
+    }
+
+    /**
+     * Get project from session.
+     * 
+     * @param session
+     * @return
+     */
+    private Project getProject(HttpSession session) {
+	return (Project) session.getAttribute(ATTR_PROJECT);
     }
 
     /**
@@ -1978,6 +2008,23 @@ public class ProjectController {
 	Expense expense = this.expenseService.get(key);
 	model.addAttribute(ConstantsRedis.OBJECT_EXPENSE, expense);
 	return RegistryJSPPath.JSP_EDIT_EXPENSE;
+    }
+
+    /**
+     * Open a page to mass attendance a list of staff members.
+     * 
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.ADD_ATTENDACE_ALL }, method = RequestMethod.GET)
+    public String addAttendanceAll(Model model, HttpSession session) {
+	Project proj = (Project) session.getAttribute(ATTR_PROJECT);
+	model.addAttribute(ATTR_PROJECT, proj);
+	model.addAttribute(ATTR_ATTENDANCE_MASS, new FormMassAttendance(proj));
+	model.addAttribute(ATTR_CALENDAR_STATUS_LIST, StatusAttendance.getAllStatusInMap());
+	model.addAttribute(ATTR_STAFF_LIST, proj.getAssignedStaff());
+	return RegistryJSPPath.JSP_EDIT_ATTENDNACE;
     }
 
     /**

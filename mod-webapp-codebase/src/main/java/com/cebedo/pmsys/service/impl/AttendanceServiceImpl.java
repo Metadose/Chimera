@@ -16,9 +16,9 @@ import org.springframework.validation.BindingResult;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.StatusAttendance;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
-import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
@@ -266,6 +266,42 @@ public class AttendanceServiceImpl implements AttendanceService {
 	return this.rangeStaffAttendance(project, staff, min.getTime(), max.getTime(), false);
     }
 
+    @Transactional
+    @Override
+    public String multiSet(Project proj, FormMassAttendance attendanceMass, BindingResult result) {
+
+	long[] excludeList = attendanceMass.getExcludeList();
+
+	for (Staff staff : proj.getAssignedStaff()) {
+
+	    long staffId = staff.getId();
+
+	    // If staff ID exists in the exclude list, skip it.
+	    boolean skip = false;
+	    for (long excludeId : excludeList) {
+		if (staffId == excludeId) {
+		    skip = true;
+		    break;
+		}
+	    }
+	    if (skip) {
+		continue;
+	    }
+
+	    // Add staff to attendance then do operation.
+	    // TODO Add proper error messages if failed.
+	    attendanceMass.setStaff(staff);
+	    multiSet(attendanceMass, result);
+	}
+
+	Date startDate = attendanceMass.getStartDate();
+	Date endDate = attendanceMass.getEndDate();
+	String startDateStr = DateUtils.formatDate(startDate);
+	String endDateStr = DateUtils.formatDate(endDate);
+	return AlertBoxFactory.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
+		String.format("from %s to %s", startDateStr, endDateStr));
+    }
+
     @Override
     @Transactional
     public String multiSet(FormMassAttendance attendanceMass, BindingResult result) {
@@ -291,10 +327,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	// Get the wage.
 	StatusAttendance status = StatusAttendance.of(attendanceMass.getStatusID());
+	double wage = 0;
 	if (status == StatusAttendance.ABSENT) {
 	    attendanceMass.setWage(0);
+	} else {
+	    wage = attendanceMass.getWage() == 0 ? staff.getWage() : attendanceMass.getWage();
 	}
-	double wage = attendanceMass.getWage();
 
 	// Get the dates.
 	boolean includeSaturdays = attendanceMass.isIncludeSaturdays();
@@ -337,11 +375,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	if (status != StatusAttendance.DELETE) {
 	    this.attendanceValueRepo.multiSet(keyAttendanceMap);
 	    response = AlertBoxFactory.SUCCESS.generateSet(ConstantsRedis.OBJECT_ATTENDANCE,
-		    String.format("on %s to %s", startDateStr, endDateStr));
+		    String.format("from %s to %s", startDateStr, endDateStr));
 	} else {
 	    response = AlertBoxFactory.SUCCESS.generateDelete(ConstantsRedis.OBJECT_ATTENDANCE,
-		    String.format("on %s to %s", startDateStr, endDateStr));
+		    String.format("from %s to %s", startDateStr, endDateStr));
 	}
 	return response;
     }
+
 }

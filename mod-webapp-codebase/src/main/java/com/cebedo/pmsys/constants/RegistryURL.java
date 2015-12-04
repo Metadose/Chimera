@@ -2,6 +2,10 @@ package com.cebedo.pmsys.constants;
 
 public class RegistryURL {
 
+    public static final String ADD_ATTENDACE_ALL = "/add/attendance/all";
+
+    public static final String MASS_ADD_ATTENDACE_ALL = "/mass/add/attendance/all";
+
     public static final String ADD_ATTENDACE = "/add/attendance";
 
     public static final String MASS_ADD_ATTENDACE = "/mass/add/attendance";

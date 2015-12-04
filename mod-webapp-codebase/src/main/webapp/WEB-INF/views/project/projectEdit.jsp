@@ -2209,7 +2209,13 @@
 <!-- 			              								</div> -->
 						                                <div class="box-body">
 											                <c:if test="${!empty project.assignedStaff}">
-
+																
+																<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
+						                                  		<a href="<c:url value="/project/add/attendance/all"/>">
+					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Create Attendance</button>
+					                                        	</a>
+					                                        	</sec:authorize>
+					                                        	
 						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
 					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 					                                        	</a>
@@ -2337,7 +2343,7 @@
 							                                    id="assignStaffForm"
 							                                    action="${contextPath}/project/assign/staff/mass">
 				                                    		<div class="form-group">
-				                                    		<table class="table table-bordered table-striped">
+				                                    		<table class="table table-bordered table-striped is-data-table">
 				                                    			<thead>
 				                                    			<tr>
 				                                    			

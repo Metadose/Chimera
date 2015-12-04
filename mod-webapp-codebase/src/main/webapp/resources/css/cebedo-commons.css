@@ -20,7 +20,7 @@ body > .header .logo {
 }
 
 input[type=checkbox] {
-	height: 20px;
+    width: 20px !important;
 }
 
 /* Data Tables */

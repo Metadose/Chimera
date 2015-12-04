@@ -209,7 +209,7 @@
 															</c:if>
 															</sec:authorize>
 
-			                                            	<table class="table table-bordered table-striped">
+			                                            	<table class="table table-bordered table-striped is-data-table">
 															<thead>
 					                                    		<tr>
 						                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
@@ -398,6 +398,7 @@
 			$('.date-picker').datepicker({
 			    format: 'yyyy/mm/dd'
 			});
+			$(".is-data-table").dataTable();
 		});
 	</script>
 </body>

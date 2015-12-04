@@ -40,7 +40,8 @@ ul li {
 </style>
 <div id="cover"></div>
 
-<c:if test="${!authUser.superAdmin}">
+<!-- Disable CTRL+Click -->
+<%-- <c:if test="${!authUser.superAdmin}">
 <script type="text/javascript">
 $(document).ready(function() {
 	$('a').click(function (e){  
@@ -51,7 +52,7 @@ $(document).ready(function() {
 	});
 });
 </script>
-</c:if>
+</c:if> --%>
 
 <script type="text/javascript">
 
