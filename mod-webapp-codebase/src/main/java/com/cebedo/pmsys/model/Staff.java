@@ -214,6 +214,16 @@ public class Staff implements IObjectModel {
     }
 
     @Transient
+    public String getUsername() {
+
+	SystemUser user = getUser();
+	if (user == null) {
+	    return "No User Account";
+	}
+	return user.getUsername();
+    }
+
+    @Transient
     public String getFullNameWithMiddleName() {
 	if (isNameSet()) {
 	    String name = getPrefix() + " " + getFirstName() + " " + getMiddleName() + " "

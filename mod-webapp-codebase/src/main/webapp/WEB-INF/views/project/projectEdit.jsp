@@ -2276,7 +2276,7 @@
 														                            </sec:authorize>
 																				</center>
 																			</td>
-						                                                	<td>${assignedStaffMember.getFullName()}</td>
+						                                                	<td>${assignedStaffMember.getFullName()} (${assignedStaffMember.getUsername()})</td>
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
 						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
