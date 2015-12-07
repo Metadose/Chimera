@@ -283,6 +283,13 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Do service.
+	// If user input is not null, process the input.
+	Long companyID = user.getCompanyID();
+	if (companyID != null && companyID == 0) {
+	    user.setCompany(null);
+	} else if (companyID != null && companyID != 0) {
+	    user.setCompany(new Company(companyID));
+	}
 	this.systemUserDAO.update(user);
 
 	// If this user is being by updated by himself,
