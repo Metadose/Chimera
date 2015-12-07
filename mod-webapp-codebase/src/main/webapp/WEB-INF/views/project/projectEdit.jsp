@@ -2349,7 +2349,7 @@
 							                                    id="assignStaffForm"
 							                                    action="${contextPath}/project/assign/staff/mass">
 				                                    		<div class="form-group">
-				                                    		<table class="table table-bordered table-striped is-data-table">
+				                                    		<table id="staff-assign-table" class="table table-bordered table-striped">
 				                                    			<thead>
 				                                    			<tr>
 				                                    			
@@ -3204,6 +3204,7 @@
    	</script>
 	</c:if>
 	
+	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	    
 	    // TODO Not sure if we still need the below code.
@@ -3262,6 +3263,9 @@
 			$("#managers-table").dataTable();
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();
+			var staffAssignTable = $("#staff-assign-table").dataTable();
+			staffAssignTable.fnLengthChange(-1);
+
 			$(".is-data-table").dataTable();
 	    });	    
 		
