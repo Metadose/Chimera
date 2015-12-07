@@ -57,8 +57,8 @@ public class SystemUserDAOImpl implements SystemUserDAO {
     @Override
     public List<SystemUser> list(Long companyID) {
 	Session session = this.sessionFactory.getCurrentSession();
-	List<SystemUser> systemUserList = this.daoHelper.getSelectQueryFilterCompany(session,
-		SystemUser.class.getName(), companyID).list();
+	List<SystemUser> systemUserList = this.daoHelper
+		.getSelectQueryFilterCompany(session, SystemUser.class.getName(), companyID).list();
 	return systemUserList;
     }
 

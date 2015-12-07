@@ -85,6 +85,10 @@
 				                                            	</c:when>
 				                                            </c:choose>
 
+				                                            <label>Change Password</label>
+				                                            <form:checkbox class="form-control" path="changePassword" />
+				                                            <p class="help-block">Check if we are changing the password</p>
+
 				                                            <label>Password</label>
 				                                            <form:password class="form-control" path="password"/>
 				                                            <p class="help-block">Type the password</p>
@@ -103,7 +107,15 @@
 				                                            <p class="help-block">Is this user a company admin?</p>
 
 				                                            <label>Company</label>
-				                                            <form:select path="companyID" class="form-control" items="${companyList}" itemValue="id" itemLabel="name"/>
+				                                            <form:select 
+				                                            	class="form-control" 
+				                                            	path="companyID"> 
+				                                            	
+							           							<form:option value="0" label=""/> 
+								           						<c:forEach items="${companyList}" var="company"> 
+								           							<form:option value="${company.id}" label="${company.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
 				                                            <p class="help-block">Select the company of this user</p>
 				                                            </c:if>
 				                                        </div>

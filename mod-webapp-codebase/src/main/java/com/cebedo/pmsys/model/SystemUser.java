@@ -45,6 +45,7 @@ public class SystemUser implements IObjectModel {
     private Set<AuditLog> auditLogs;
     private int loginAttempts;
     private UserAux userAux;
+    private boolean changePassword;
 
     public SystemUser() {
 	;
@@ -194,5 +195,14 @@ public class SystemUser implements IObjectModel {
 	} catch (Exception e) {
 	    return null;
 	}
+    }
+
+    @Transient
+    public boolean isChangePassword() {
+	return changePassword;
+    }
+
+    public void setChangePassword(boolean changePassword) {
+	this.changePassword = changePassword;
     }
 }

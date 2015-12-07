@@ -32,13 +32,15 @@ import com.cebedo.pmsys.service.SystemUserService;
 @Controller
 @SessionAttributes(
 
-value = { SystemUserController.ATTR_SYSTEM_USER, SystemUserController.ATTR_USER_AUX }
+value = { SystemUserController.ATTR_SYSTEM_USER, SystemUserController.ATTR_USER_AUX,
+	SystemUserController.ATTR_USER_PASSWORD }
 
 )
 @RequestMapping(SystemUser.OBJECT_NAME)
 public class SystemUserController {
 
     public static final String ATTR_LIST = "systemUserList";
+    public static final String ATTR_USER_PASSWORD = "userPassword";
     public static final String ATTR_SYSTEM_USER = SystemUser.OBJECT_NAME;
     public static final String ATTR_COMPANY_LIST = Company.OBJECT_NAME + "List";
 
@@ -97,7 +99,7 @@ public class SystemUserController {
 
     @RequestMapping(value = ConstantsSystem.REQUEST_CREATE, method = RequestMethod.POST)
     public String create(@ModelAttribute(ATTR_SYSTEM_USER) SystemUser systemUser, SessionStatus status,
-	    RedirectAttributes redirectAttrs, BindingResult result) {
+	    RedirectAttributes redirectAttrs, BindingResult result, HttpSession session) {
 
 	// If request is to create new user.
 	if (systemUser.getId() == 0) {
@@ -124,6 +126,10 @@ public class SystemUserController {
 
 	// If request is to update user.
 	// Redirect back to the edit page.
+	if (!systemUser.isChangePassword()) {
+	    String oldPassword = (String) session.getAttribute(ATTR_USER_PASSWORD);
+	    systemUser.setPassword(oldPassword);
+	}
 	String response = this.systemUserService.update(systemUser, result);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
@@ -200,6 +206,7 @@ public class SystemUserController {
 	model.addAttribute(ATTR_MODULE_LIST, AuthorizedModule.values());
 	model.addAttribute(ATTR_ACTION_LIST, AuthorizedAction.values());
 	model.addAttribute(ATTR_SYSTEM_USER, resultUser);
+	model.addAttribute(ATTR_USER_PASSWORD, resultUser.getPassword());
 	return RegistryJSPPath.JSP_EDIT_SYSTEM_USER;
     }
 }

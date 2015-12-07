@@ -265,8 +265,12 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    return this.validationHelper.errorMessageHTML(result);
 	}
 
-	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
-	user.setPassword(encPassword);
+	// If we are changing the password.
+	boolean changePassword = user.isChangePassword();
+	if (changePassword) {
+	    String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
+	    user.setPassword(encPassword);
+	}
 
 	// Log and notify.
 	Staff staff = user.getStaff();
