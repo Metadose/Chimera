@@ -76,7 +76,7 @@
                                                             </a>
                                                         </td>
                                                         <sec:authorize access="hasRole('ADMIN_SUPER')">
-		                                                <td>${systemUser.company.name}</td>
+		                                                <td>(${systemUser.company == null ? "No Company" : systemUser.company.id}) ${systemUser.company.name}</td>
 		                                                </sec:authorize>
 		                                                <td>
 		                                                <c:if test="${systemUser.companyAdmin}">

@@ -12,7 +12,7 @@ import com.cebedo.pmsys.pojo.FormMultipartFile;
 public interface CompanyService {
 
     @PreAuthorize("hasRole('ADMIN_SUPER')")
-    public String clone(long companyId, String cloneName);
+    public String clone(Company company);
 
     @PreAuthorize("hasRole('ADMIN_SUPER')")
     public String create(Company company, BindingResult result);

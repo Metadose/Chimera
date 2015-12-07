@@ -84,10 +84,12 @@
 				                                            	<p class="help-block">Username of this account</p>
 				                                            	</c:when>
 				                                            </c:choose>
-
+				                                            
+				                                            <c:if test="${systemuser.id > 0}">
 				                                            <label>Change Password</label>
 				                                            <form:checkbox class="form-control" path="changePassword" />
 				                                            <p class="help-block">Check if we are changing the password</p>
+				                                            </c:if>
 
 				                                            <label>Password</label>
 				                                            <form:password class="form-control" path="password"/>
@@ -149,13 +151,6 @@
 					                                	<c:url value="/staff/edit/${systemuser.staff.id}" var="urlViewStaff"/>
 					                                	<a href="${urlViewStaff}">
 					                                		<button class="btn btn-cebedo-view btn-flat btn-sm">View Staff</button>
-					                                	</a>
-				                                		</c:when>
-
-				                                		<c:when test="${systemuser.id > 0 && empty systemuser.staff}">
-					                                	<c:url value="/staff/edit/0/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
-					                                	<a href="${urlViewStaff}">
-					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 				                                		</c:when>
 				                                	</c:choose>

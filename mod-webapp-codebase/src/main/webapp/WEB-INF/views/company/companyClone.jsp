@@ -65,6 +65,10 @@
 				                                            	placeholder="Sample: ABC Construction, XYZ Builders, City Contractors" 
 				                                            	path="name"/>
 				                                            <p class="help-block">Enter the name of the clone</p>
+				                                            
+				                                            <label>Randomize Staff Names</label>
+				                                            <form:checkbox class="form-control" path="randomizeNames"/>
+				                                            <p class="help-block">Check if you want to randomize staff names</p>
 				                                        </div>
 				                                        
 				                                    </form:form>
