@@ -109,7 +109,7 @@
 							                                                </td>
 																			</sec:authorize>
 																			<sec:authorize access="hasRole('ADMIN_SUPER')">
-							                                                <td>(${staff.company.id}) ${staff.company.name}</td>
+							                                                <td>(${staff.company == null ? "No Company" : staff.company.id}) ${staff.company.name}</td>
 							                                                </sec:authorize>
 							                                                <td>${staff.companyPosition}</td>
 							                                                <td style="text-align: right;">${staff.getWageAsString()}</td>

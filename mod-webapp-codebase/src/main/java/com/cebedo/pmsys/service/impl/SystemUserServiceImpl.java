@@ -141,8 +141,13 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Set the user company.
 	// If it's already carrying a company ID,
 	// use it.
-	if (systemUser.getCompanyID() != null && systemUser.getCompany() == null) {
-	    Company company = new Company(systemUser.getCompanyID());
+	Long userCompanyID = systemUser.getCompanyID();
+
+	// If the value was set,
+	// and the value is not blank,
+	// and the user still does not have a company.
+	if (userCompanyID != null && userCompanyID != 0 && systemUser.getCompany() == null) {
+	    Company company = new Company(userCompanyID);
 	    systemUser.setCompany(company);
 	    staff.setCompany(company);
 
