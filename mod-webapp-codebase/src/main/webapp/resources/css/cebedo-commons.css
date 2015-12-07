@@ -43,6 +43,9 @@ input[type=checkbox] {
 .cebedo-text-align-right {
 	text-align: right;
 }
+.cebedo-text-align-left {
+	text-align: left;
+}
 .cebedo-no-wrap {
   white-space: nowrap;
 }

@@ -754,7 +754,7 @@
 																				</center>
 																			</td>
 																			</sec:authorize>
-						                                                	<td class="cebedo-text-align-right">${directCost.name}</td>
+						                                                	<td>${directCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getActualCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getDiffEstimatedActualAsHTML()}</td>
@@ -811,7 +811,7 @@
 																				</center>
 																			</td>
 																			</sec:authorize>
-						                                                	<td class="cebedo-text-align-right">${indirectCost.name}</td>
+						                                                	<td>${indirectCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getActualCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getDiffEstimatedActualAsHTML()}</td>
