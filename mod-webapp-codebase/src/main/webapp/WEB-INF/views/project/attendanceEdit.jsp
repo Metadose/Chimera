@@ -96,6 +96,7 @@
 							                            
 							                            <br/>
 							                            <label>Do <u>NOT</u> Include</label>
+							                            <p class="help-block">Include all project staff members EXCEPT below</p>
 							                            <table class="table table-bordered table-striped is-data-table">
 			                                    			<thead>
 			                                    			<tr>
