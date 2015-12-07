@@ -3264,7 +3264,9 @@
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();
 			var staffAssignTable = $("#staff-assign-table").dataTable();
-			staffAssignTable.fnLengthChange(-1);
+			if(staffAssignTable.size() > 0){
+				staffAssignTable.fnLengthChange(-1);
+			}
 
 			$(".is-data-table").dataTable();
 	    });	    

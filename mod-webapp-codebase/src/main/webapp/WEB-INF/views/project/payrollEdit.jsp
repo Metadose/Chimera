@@ -401,7 +401,9 @@
 			});
 		});
 		var staffTable = $("#staffTable").dataTable();
-		staffTable.fnLengthChange(-1);
+		if(staffTable.size() > 0){
+			staffTable.fnLengthChange(-1);
+		}
 	</script>
 </body>
 </html>
