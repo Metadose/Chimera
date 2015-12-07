@@ -331,6 +331,12 @@
    															</div>
    															</c:if>
    															
+   															<c:if test="${empty projectFields}">
+   															<div class="form-group" id="fieldsDivViewer">
+               													<i>No Additional Information.</i>
+   															</div>
+   															</c:if>
+   															
 															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_CREATE')">
    															<c:if test="${!empty projectFields}">
    															<h4>Add More Information</h4>
