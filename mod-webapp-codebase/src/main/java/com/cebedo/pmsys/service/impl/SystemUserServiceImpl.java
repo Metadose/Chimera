@@ -256,7 +256,7 @@ public class SystemUserServiceImpl implements SystemUserService {
      */
     @Override
     @Transactional
-    public String update(SystemUser user, BindingResult result) {
+    public String update(SystemUser user, BindingResult result, String oldPassword) {
 
 	// Security check.
 	if (!this.authHelper.hasAccess(user)) {
@@ -275,6 +275,8 @@ public class SystemUserServiceImpl implements SystemUserService {
 	if (changePassword) {
 	    String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
 	    user.setPassword(encPassword);
+	} else {
+	    user.setPassword(oldPassword);
 	}
 
 	// Log and notify.

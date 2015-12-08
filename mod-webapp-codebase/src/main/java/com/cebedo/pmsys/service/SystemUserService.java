@@ -34,7 +34,7 @@ public interface SystemUserService {
      * @return
      */
     @PreAuthorize("hasRole('ADMIN_COMPANY')")
-    public String update(SystemUser user, BindingResult result);
+    public String update(SystemUser user, BindingResult result, String oldPassword);
 
     /**
      * Update a user.

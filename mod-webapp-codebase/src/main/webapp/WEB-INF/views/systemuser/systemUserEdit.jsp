@@ -74,15 +74,18 @@
 				                                            
 				                                            <label>Username</label>
 				                                            <c:choose>
-						                                    	<c:when test="${systemuser.id == 0}">
+				                                            
+						                                    	<c:when test="${systemuser.id == 0 || (systemuser.id > 0 && authUser.superAdmin)}">
 						                                        <form:input type="text" placeholder="Sample: user_john, jane_account" class="form-control" path="username"/>
 				                                            	<p class="help-block">Enter the username of this account</p>
 						                                    	</c:when>
-				                                            	<c:when test="${systemuser.id > 0}">
+						                                    	
+				                                            	<c:when test="${systemuser.id > 0 && !authUser.superAdmin}">
 				                                            	<br/>
 				                                            	${systemuser.username}
 				                                            	<p class="help-block">Username of this account</p>
 				                                            	</c:when>
+				                                            	
 				                                            </c:choose>
 				                                            
 				                                            <c:if test="${systemuser.id > 0}">

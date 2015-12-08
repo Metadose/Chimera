@@ -124,13 +124,8 @@ public class SystemUserController {
 	    }
 	}
 
-	// If request is to update user.
-	// Redirect back to the edit page.
-	if (!systemUser.isChangePassword()) {
-	    String oldPassword = (String) session.getAttribute(ATTR_USER_PASSWORD);
-	    systemUser.setPassword(oldPassword);
-	}
-	String response = this.systemUserService.update(systemUser, result);
+	String oldPassword = (String) session.getAttribute(ATTR_USER_PASSWORD);
+	String response = this.systemUserService.update(systemUser, result, oldPassword);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	status.setComplete();
 	return editPage(systemUser.getId());
