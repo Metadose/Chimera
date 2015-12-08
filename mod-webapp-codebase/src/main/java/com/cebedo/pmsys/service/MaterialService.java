@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.domain.Delivery;
@@ -29,4 +30,5 @@ public interface MaterialService {
 
     public List<Material> listDesc(Project proj, boolean override);
 
+    public List<Material> convertExcelToMaterials(MultipartFile multipartFile, Project project);
 }

@@ -837,6 +837,35 @@ public class ProjectController {
     }
 
     /**
+     * Mass create materials.
+     * 
+     * @param massUpload
+     * @param redirectAttrs
+     * @param status
+     * @param session
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = { RegistryURL.MASS_UPLOAD_MATERIALS }, method = RequestMethod.POST)
+    public String uploadExcelMaterials(@ModelAttribute(ATTR_MASS_UPLOAD_BEAN) FormMassUpload massUpload,
+	    RedirectAttributes redirectAttrs, SessionStatus status, HttpSession session,
+	    BindingResult result) {
+
+	Project proj = massUpload.getProject();
+	Delivery delivery = (Delivery) session.getAttribute(ConstantsRedis.OBJECT_DELIVERY);
+
+	// Do service and get response.
+	String response = this.projectService.uploadExcelMaterials(massUpload.getFile(), proj, delivery,
+		result);
+
+	// Add to redirect attrs.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	// Complete the transaction.
+	return redirectEditPageProject(proj.getId(), status);
+    }
+
+    /**
      * Create many staff members by uploading an Excel file.
      */
     @RequestMapping(value = { RegistryURL.MASS_UPLOAD_AND_ASSIGN_STAFF }, method = RequestMethod.POST)

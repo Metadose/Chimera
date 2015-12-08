@@ -13,12 +13,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.RegistryCache;
+import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.enums.StatusProject;
 import com.cebedo.pmsys.enums.StatusTask;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Project;
 
 public interface ProjectService {
+
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, key = "#project.id")
+    @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'INVENTORY_CREATE')")
+    public String uploadExcelMaterials(MultipartFile multipartFile, Project project, Delivery delivery,
+	    BindingResult result);
 
     /**
      * Mass create estimate costs.

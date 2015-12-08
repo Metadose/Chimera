@@ -12,6 +12,8 @@ public class RegistryURL {
 
     public static final String MASS_UPLOAD_COST = "/mass/upload/cost";
 
+    public static final String MASS_UPLOAD_MATERIALS = "/mass/upload/materials";
+
     public static final String MASS_UPLOAD_AND_ASSIGN_STAFF = "/mass/upload-and-assign/staff";
 
     public static final String MASS_UPLOAD_AND_ASSIGN_TASK = "/mass/upload-and-assign/task";

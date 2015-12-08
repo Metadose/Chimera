@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.domain.Delivery;
@@ -22,6 +28,7 @@ import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
+import com.cebedo.pmsys.helper.ExcelHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
 import com.cebedo.pmsys.model.Project;
@@ -36,9 +43,16 @@ import com.cebedo.pmsys.validator.MaterialValidator;
 @Service
 public class MaterialServiceImpl implements MaterialService {
 
+    private static final int EXCEL_COLUMN_NAME = 1;
+    private static final int EXCEL_COLUMN_QUANTITY = 2;
+    private static final int EXCEL_COLUMN_UNIT = 3;
+    private static final int EXCEL_COLUMN_COST_PER_UNIT = 4;
+    private static final int EXCEL_COLUMN_REMARKS = 5;
+
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
+    private ExcelHelper excelHelper = new ExcelHelper();
 
     private MaterialValueRepoImpl materialValueRepo;
     private DeliveryValueRepoImpl deliveryValueRepo;
@@ -70,6 +84,105 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     MaterialValidator materialValidator;
+
+    @Override
+    @Transactional
+    public List<Material> convertExcelToMaterials(MultipartFile multipartFile, Project project) {
+
+	// Security check.
+	if (!this.authHelper.hasAccess(project)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
+	    return null;
+	}
+
+	// Service layer form validation.
+	boolean valid = this.validationHelper.fileIsNotNullOrEmpty(multipartFile);
+	if (!valid) {
+	    return null;
+	}
+
+	// Log.
+	this.messageHelper.nonAuditableIDWithAssocNoKey(AuditAction.ACTION_CONVERT_FILE,
+		Project.OBJECT_NAME, project.getId(), MultipartFile.class.getName());
+
+	try {
+
+	    // Create Workbook instance holding reference to .xls file
+	    // Get first/desired sheet from the workbook.
+	    HSSFWorkbook workbook = new HSSFWorkbook(multipartFile.getInputStream());
+	    HSSFSheet sheet = workbook.getSheetAt(0);
+
+	    // Iterate through each rows one by one.
+	    Iterator<Row> rowIterator = sheet.iterator();
+
+	    // Construct estimate containers.
+	    List<Material> materials = new ArrayList<Material>();
+	    while (rowIterator.hasNext()) {
+
+		Row row = rowIterator.next();
+		int rowCountDisplay = row.getRowNum() + 1;
+
+		// Skip first line.
+		if (rowCountDisplay <= 1) {
+		    continue;
+		}
+
+		// For each row, iterate through all the columns
+		Iterator<Cell> cellIterator = row.cellIterator();
+
+		// Every row, is a Staff object.
+		Material material = new Material();
+
+		while (cellIterator.hasNext()) {
+
+		    // Cell in this row and column.
+		    Cell cell = cellIterator.next();
+		    int colCountDisplay = cell.getColumnIndex() + 1;
+
+		    switch (colCountDisplay) {
+
+		    case EXCEL_COLUMN_NAME:
+			String name = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
+			material.setName(name);
+			continue;
+
+		    case EXCEL_COLUMN_QUANTITY:
+			Double quantity = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			material.setQuantity(quantity);
+			continue;
+
+		    case EXCEL_COLUMN_UNIT:
+			String unit = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
+			material.setUnitOfMeasure(unit);
+			continue;
+
+		    case EXCEL_COLUMN_COST_PER_UNIT:
+			Double costPerUnit = (Double) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? 0 : this.excelHelper.getValueAsExpected(workbook, cell));
+			material.setCostPerUnitMaterial(costPerUnit);
+			continue;
+
+		    case EXCEL_COLUMN_REMARKS:
+			String remarks = (String) (this.excelHelper.getValueAsExpected(workbook,
+				cell) == null ? ""
+					: this.excelHelper.getValueAsExpected(workbook, cell));
+			material.setRemarks(remarks);
+			continue;
+		    }
+		}
+		materials.add(material);
+	    }
+	    return materials;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return null;
+    }
 
     @Override
     @Transactional
