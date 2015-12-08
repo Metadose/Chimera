@@ -27,30 +27,10 @@ public class SystemUserValidator implements Validator {
 	SystemUser systemUser = (SystemUser) target;
 
 	String username = systemUser.getUsername();
-	String password = systemUser.getPassword();
-	String passwordRe = systemUser.getRetypePassword();
 
 	// Required fields.
 	if (this.validationHelper.stringIsBlank(username)) {
 	    this.validationHelper.rejectInvalidProperty(errors, "username");
-	}
-
-	if (this.validationHelper.stringIsBlank(password)) {
-	    this.validationHelper.rejectInvalidProperty(errors, "password");
-	}
-
-	if (this.validationHelper.stringIsBlank(passwordRe)) {
-	    this.validationHelper.rejectInvalidProperty(errors, "re-type password");
-	}
-
-	// If the username and password are the same.
-	if (username.equals(password)) {
-	    this.validationHelper.rejectEqualStrings(errors, "username", "password");
-	}
-
-	// If the password and re-type password are not the same.
-	if (!password.equals(passwordRe)) {
-	    this.validationHelper.rejectNotEqualStrings(errors, "password", "re-type password");
 	}
 
 	// Check if the user name is valid.
@@ -58,9 +38,33 @@ public class SystemUserValidator implements Validator {
 	    this.validationHelper.rejectUsername(errors);
 	}
 
-	// Check if the password is valid.
-	if (!this.validationHelper.stringPasswordIsValid(password)) {
-	    this.validationHelper.rejectPassword(errors);
+	// If we are changing passwords.
+	boolean changePassword = systemUser.isChangePassword();
+	if (changePassword) {
+
+	    String password = systemUser.getPassword();
+	    String passwordRe = systemUser.getRetypePassword();
+	    if (this.validationHelper.stringIsBlank(password)) {
+		this.validationHelper.rejectInvalidProperty(errors, "password");
+	    }
+	    if (this.validationHelper.stringIsBlank(passwordRe)) {
+		this.validationHelper.rejectInvalidProperty(errors, "re-type password");
+	    }
+
+	    // If the username and password are the same.
+	    if (username.equals(password)) {
+		this.validationHelper.rejectEqualStrings(errors, "username", "password");
+	    }
+
+	    // If the password and re-type password are not the same.
+	    if (!password.equals(passwordRe)) {
+		this.validationHelper.rejectNotEqualStrings(errors, "password", "re-type password");
+	    }
+
+	    // Check if the password is valid.
+	    if (!this.validationHelper.stringPasswordIsValid(password)) {
+		this.validationHelper.rejectPassword(errors);
+	    }
 	}
     }
 }

@@ -141,8 +141,13 @@ public class SystemUserServiceImpl implements SystemUserService {
 	// Set the user company.
 	// If it's already carrying a company ID,
 	// use it.
-	if (systemUser.getCompanyID() != null && systemUser.getCompany() == null) {
-	    Company company = new Company(systemUser.getCompanyID());
+	Long userCompanyID = systemUser.getCompanyID();
+
+	// If the value was set,
+	// and the value is not blank,
+	// and the user still does not have a company.
+	if (userCompanyID != null && userCompanyID != 0 && systemUser.getCompany() == null) {
+	    Company company = new Company(userCompanyID);
 	    systemUser.setCompany(company);
 	    staff.setCompany(company);
 
@@ -251,7 +256,7 @@ public class SystemUserServiceImpl implements SystemUserService {
      */
     @Override
     @Transactional
-    public String update(SystemUser user, BindingResult result) {
+    public String update(SystemUser user, BindingResult result, String oldPassword) {
 
 	// Security check.
 	if (!this.authHelper.hasAccess(user)) {
@@ -265,8 +270,14 @@ public class SystemUserServiceImpl implements SystemUserService {
 	    return this.validationHelper.errorMessageHTML(result);
 	}
 
-	String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
-	user.setPassword(encPassword);
+	// If we are changing the password.
+	boolean changePassword = user.isChangePassword();
+	if (changePassword) {
+	    String encPassword = this.authHelper.encodePassword(user.getPassword(), user);
+	    user.setPassword(encPassword);
+	} else {
+	    user.setPassword(oldPassword);
+	}
 
 	// Log and notify.
 	Staff staff = user.getStaff();
@@ -279,7 +290,18 @@ public class SystemUserServiceImpl implements SystemUserService {
 	}
 
 	// Do service.
+	// If user input is not null, process the input.
+	Long companyID = user.getCompanyID();
+	if (companyID != null && companyID == 0) {
+	    user.setCompany(null);
+	    staff.setCompany(null);
+	} else if (companyID != null && companyID != 0) {
+	    Company co = new Company(companyID);
+	    user.setCompany(co);
+	    staff.setCompany(co);
+	}
 	this.systemUserDAO.update(user);
+	this.staffDAO.update(staff);
 
 	// If this user is being by updated by himself,
 	// update the authentication.

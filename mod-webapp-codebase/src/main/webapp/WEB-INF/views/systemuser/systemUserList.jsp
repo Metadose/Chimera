@@ -1,3 +1,4 @@
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -39,7 +40,9 @@
                                             	<th>&nbsp;</th>
                                                 <th>Username</th>
                                                 <th>Staff</th>
+                                                <sec:authorize access="hasRole('ADMIN_SUPER')">
                                                 <th>Company</th>
+                                                </sec:authorize>
                                                 <th>Authorization</th>
                                             </tr>
                                         </thead>
@@ -72,7 +75,9 @@
                                                             ${systemUser.staff.getFullName()}
                                                             </a>
                                                         </td>
-		                                                <td>${systemUser.company.name}</td>
+                                                        <sec:authorize access="hasRole('ADMIN_SUPER')">
+		                                                <td>(${systemUser.company == null ? "No Company" : systemUser.company.id}) ${systemUser.company.name}</td>
+		                                                </sec:authorize>
 		                                                <td>
 		                                                <c:if test="${systemUser.companyAdmin}">
 		                                                	<b>Company Administrator</b>
@@ -103,7 +108,9 @@
                                             	<th>&nbsp;</th>
                                                 <th>Name</th>
                                                 <th>Staff</th>
+                                                <sec:authorize access="hasRole('ADMIN_SUPER')">
                                                 <th>Company</th>
+                                                </sec:authorize>
                                                 <th>Authorization</th>
                                             </tr>
                                         </tfoot>

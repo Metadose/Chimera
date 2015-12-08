@@ -15,9 +15,14 @@ public class FormMassAttendance {
     private double wage;
     private boolean includeSaturdays;
     private boolean includeSundays;
+    private long[] excludeList;
 
     public FormMassAttendance() {
 	;
+    }
+
+    public FormMassAttendance(Project project) {
+	setProject(project);
     }
 
     public FormMassAttendance(Project project, Staff stf) {
@@ -88,6 +93,14 @@ public class FormMassAttendance {
 
     public void setIncludeSundays(boolean includeSundays) {
 	this.includeSundays = includeSundays;
+    }
+
+    public long[] getExcludeList() {
+	return excludeList;
+    }
+
+    public void setExcludeList(long[] excludeList) {
+	this.excludeList = excludeList;
     }
 
 }

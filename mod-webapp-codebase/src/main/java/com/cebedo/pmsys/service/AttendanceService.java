@@ -45,6 +45,8 @@ public interface AttendanceService {
 
     public String multiSet(FormMassAttendance attendanceMass, BindingResult result);
 
+    public String multiSet(Project proj, FormMassAttendance attendanceMass, BindingResult result);
+
     public Set<Attendance> rangeStaffAttendance(Project project, Staff staff);
 
 }

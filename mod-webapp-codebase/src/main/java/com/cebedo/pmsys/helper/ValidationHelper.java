@@ -117,14 +117,14 @@ public class ValidationHelper {
     }
 
     public boolean stringLengthIsLessThanMax(String property, int max) {
-	if (property.length() > max) {
+	if (property != null && property.length() > max) {
 	    return false;
 	}
 	return true;
     }
 
     public boolean stringLengthIsGreaterThanMax(String property, int max) {
-	if (property.length() > max) {
+	if (property != null && property.length() > max) {
 	    return true;
 	}
 	return false;

@@ -43,6 +43,7 @@ public class Company implements IObjectModel {
     private Set<Task> tasks;
     private Set<AuditLog> auditLogs;
     private boolean betaTester;
+    private boolean randomizeNames;
 
     // HTMLTheme.
     private String themeID;
@@ -213,6 +214,15 @@ public class Company implements IObjectModel {
 	} catch (Exception e) {
 	    return null;
 	}
+    }
+
+    @Transient
+    public boolean isRandomizeNames() {
+	return randomizeNames;
+    }
+
+    public void setRandomizeNames(boolean randomizeNames) {
+	this.randomizeNames = randomizeNames;
     }
 
 }

@@ -29,6 +29,7 @@ public interface StaffService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_CREATE')")
     public String create(Staff staff, BindingResult result);
 
@@ -38,6 +39,7 @@ public interface StaffService {
      * @param staff
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE') or (#staff.user.id == authentication.user.id)")
     public String update(Staff staff, BindingResult result);
 
@@ -47,6 +49,7 @@ public interface StaffService {
      * @param id
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasAnyRole('ADMIN_COMPANY', 'STAFF_DELETE')")
     public String delete(long id);
 

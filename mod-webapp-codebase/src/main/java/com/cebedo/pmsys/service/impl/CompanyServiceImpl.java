@@ -2,16 +2,20 @@ package com.cebedo.pmsys.service.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -68,7 +72,6 @@ import com.cebedo.pmsys.repository.impl.PullOutValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.UserAuxValueRepoImpl;
 import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.ProjectPayrollComputerService;
-import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 import com.cebedo.pmsys.utils.ImageUtils;
@@ -95,7 +98,6 @@ public class CompanyServiceImpl implements CompanyService {
     private AttendanceValueRepoImpl attendanceValueRepo;
     private UserAuxValueRepoImpl userAuxValueRepo;
     private ProjectPayrollValueRepoImpl projectPayrollValueRepo;
-    private ProjectPayrollService projectPayrollService;
     private EstimateCostValueRepoImpl estimateCostValueRepo;
     private ExpenseValueRepoImpl expenseValueRepo;
     private EquipmentExpenseValueRepoImpl equipmentExpenseValueRepo;
@@ -145,12 +147,6 @@ public class CompanyServiceImpl implements CompanyService {
     @Qualifier(value = "estimateCostValueRepo")
     public void setEstimateCostValueRepo(EstimateCostValueRepoImpl estimateCostValueRepo) {
 	this.estimateCostValueRepo = estimateCostValueRepo;
-    }
-
-    @Autowired
-    @Qualifier(value = "projectPayrollService")
-    public void setProjectPayrollService(ProjectPayrollService projectPayrollService) {
-	this.projectPayrollService = projectPayrollService;
     }
 
     @Autowired
@@ -456,8 +452,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Transactional
     @Override
-    public String clone(long companyId, String cloneName) {
+    public String clone(Company companyTarget) {
+	long companyId = companyTarget.getId();
+	String cloneName = companyTarget.getName();
+
 	Company company = this.companyDAO.getByIDWithLazyCollections(companyId);
+	company.setRandomizeNames(companyTarget.isRandomizeNames());
+
 	if (!this.authHelper.isSuperAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
 	    return AlertBoxFactory.ERROR;
@@ -821,6 +822,9 @@ public class CompanyServiceImpl implements CompanyService {
 
 	    // Results.
 	    PayrollResultComputation originalResult = originalPayroll.getPayrollComputationResult();
+	    if (originalResult == null) {
+		continue;
+	    }
 
 	    // Staff to wage map.
 	    Map<Staff, Double> cloneStaffToWage = new HashMap<Staff, Double>();
@@ -941,6 +945,27 @@ public class CompanyServiceImpl implements CompanyService {
     private void cloneUsersAndStaff(Company company, Company cloneCompany,
 	    Map<Long, Staff> oldIdToNewStaff, Map<Long, SystemUser> oldIdToNewUser) {
 
+	// If we are randomizing the names, load the names.
+	ClassLoader loader = this.getClass().getClassLoader();
+	InputStream maleNames = loader.getResourceAsStream("hispanic-first-male.names");
+	InputStream lastNames = loader.getResourceAsStream("hispanic-last.names");
+	String[] malesArr = {};
+	String[] lastsArr = {};
+
+	boolean randomizeNames = company.isRandomizeNames();
+	if (randomizeNames) {
+	    try {
+		String males = IOUtils.toString(maleNames);
+		String lasts = IOUtils.toString(lastNames);
+		malesArr = males.split("\n");
+		lastsArr = lasts.split("\n");
+		maleNames.close();
+		lastNames.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+
 	// Get a copy of all the collections.
 	Set<SystemUser> users = company.getEmployees(); // Clone user and staff.
 
@@ -959,6 +984,24 @@ public class CompanyServiceImpl implements CompanyService {
 	    cloneStaff.setCompany(cloneCompany);
 	    cloneStaff.setTasks(null);
 	    cloneStaff.setUser(null);
+
+	    // If we are randomizing the name.
+	    if (randomizeNames) {
+		Random random = new Random();
+		int maleIndex = random.nextInt(malesArr.length - 1);
+		String randomMale = malesArr[maleIndex];
+		cloneStaff.setFirstName(randomMale);
+
+		int middleNameIndex = random.nextInt(lastsArr.length - 1);
+		String randomMiddleName = lastsArr[middleNameIndex];
+		cloneStaff.setMiddleName(randomMiddleName);
+
+		int lastNameIndex = random.nextInt(lastsArr.length - 1);
+		String randomLastName = lastsArr[lastNameIndex];
+		cloneStaff.setLastName(randomLastName);
+	    }
+
+	    // Create the new staff.
 	    this.staffDAO.create(cloneStaff);
 	    oldIdToNewStaff.put(oldId, cloneStaff);
 	}

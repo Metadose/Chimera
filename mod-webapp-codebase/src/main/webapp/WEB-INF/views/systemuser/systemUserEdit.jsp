@@ -74,16 +74,25 @@
 				                                            
 				                                            <label>Username</label>
 				                                            <c:choose>
-						                                    	<c:when test="${systemuser.id == 0}">
+				                                            
+						                                    	<c:when test="${systemuser.id == 0 || (systemuser.id > 0 && authUser.superAdmin)}">
 						                                        <form:input type="text" placeholder="Sample: user_john, jane_account" class="form-control" path="username"/>
 				                                            	<p class="help-block">Enter the username of this account</p>
 						                                    	</c:when>
-				                                            	<c:when test="${systemuser.id > 0}">
+						                                    	
+				                                            	<c:when test="${systemuser.id > 0 && !authUser.superAdmin}">
 				                                            	<br/>
 				                                            	${systemuser.username}
 				                                            	<p class="help-block">Username of this account</p>
 				                                            	</c:when>
+				                                            	
 				                                            </c:choose>
+				                                            
+				                                            <c:if test="${systemuser.id > 0}">
+				                                            <label>Change Password</label>
+				                                            <form:checkbox class="form-control" path="changePassword" />
+				                                            <p class="help-block">Check if we are changing the password</p>
+				                                            </c:if>
 
 				                                            <label>Password</label>
 				                                            <form:password class="form-control" path="password"/>
@@ -95,15 +104,23 @@
 				                                            
 				                                            <c:if test="${authUser.superAdmin}">
 				                                            <label>Super Admin</label><br/>
-				                                            <form:checkbox class="form-control" path="superAdmin" style="margin-left: -48%;"/>
+				                                            <form:checkbox class="form-control" path="superAdmin"/>
 				                                            <p class="help-block">Is this user a super admin?</p>
 
 				                                            <label>Company Admin</label><br/>
-				                                            <form:checkbox class="form-control" path="companyAdmin" style="margin-left: -48%;"/>
+				                                            <form:checkbox class="form-control" path="companyAdmin"/>
 				                                            <p class="help-block">Is this user a company admin?</p>
 
 				                                            <label>Company</label>
-				                                            <form:select path="companyID" class="form-control" items="${companyList}" itemValue="id" itemLabel="name"/>
+				                                            <form:select 
+				                                            	class="form-control" 
+				                                            	path="companyID"> 
+				                                            	
+							           							<form:option value="0" label=""/> 
+								           						<c:forEach items="${companyList}" var="company"> 
+								           							<form:option value="${company.id}" label="${company.name}"/> 
+								           						</c:forEach>
+								                 			</form:select>
 				                                            <p class="help-block">Select the company of this user</p>
 				                                            </c:if>
 				                                        </div>
@@ -137,13 +154,6 @@
 					                                	<c:url value="/staff/edit/${systemuser.staff.id}" var="urlViewStaff"/>
 					                                	<a href="${urlViewStaff}">
 					                                		<button class="btn btn-cebedo-view btn-flat btn-sm">View Staff</button>
-					                                	</a>
-				                                		</c:when>
-
-				                                		<c:when test="${systemuser.id > 0 && empty systemuser.staff}">
-					                                	<c:url value="/staff/edit/0/from/systemuser/${systemuser.id}" var="urlViewStaff"/>
-					                                	<a href="${urlViewStaff}">
-					                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Staff</button>
 					                                	</a>
 				                                		</c:when>
 				                                	</c:choose>

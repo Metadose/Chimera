@@ -209,7 +209,7 @@
 															</c:if>
 															</sec:authorize>
 
-			                                            	<table class="table table-bordered table-striped">
+			                                            	<table id="staffTable" class="table table-bordered table-striped">
 															<thead>
 					                                    		<tr>
 						                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
@@ -331,6 +331,7 @@
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
+	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	
 	<c:if test="${!empty payrollJSON}">
 	<script>
@@ -399,6 +400,10 @@
 			    format: 'yyyy/mm/dd'
 			});
 		});
+		var staffTable = $("#staffTable").dataTable();
+		if(staffTable.size() > 0){
+			staffTable.fnLengthChange(-1);
+		}
 	</script>
 </body>
 </html>

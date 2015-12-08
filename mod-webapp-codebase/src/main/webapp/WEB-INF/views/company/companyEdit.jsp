@@ -114,7 +114,7 @@
 					                                            <p class="help-block">Choose the company expiration date</p>
 	
 					                                            <label>Beta Tester</label><br/>
-					                                            <form:checkbox class="form-control" path="betaTester" style="margin-left: -48%;"/>
+					                                            <form:checkbox class="form-control" path="betaTester"/>
 					                                            <p class="help-block">Is this company a beta tester?</p>
 															</c:if>
 															

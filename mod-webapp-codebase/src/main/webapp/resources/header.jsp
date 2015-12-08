@@ -40,11 +40,16 @@ ul li {
 </style>
 <div id="cover"></div>
 
+<!-- Disable CTRL+Click -->
 <c:if test="${!authUser.superAdmin}">
 <script type="text/javascript">
 $(document).ready(function() {
+	$('a').on("contextmenu", function(e){
+		location.href = $(e.currentTarget).attr('href');
+		return false;
+	}); 
 	$('a').click(function (e){  
-		if (e.ctrlKey) {
+		if (e.ctrlKey || e.which == 2) {
 			location.href = $(e.currentTarget).attr('href');
 			return false;
 		}

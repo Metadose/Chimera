@@ -185,7 +185,7 @@ public class CompanyController {
     @RequestMapping(value = { RegistryURL.DO_CLONE })
     public String doClone(@ModelAttribute(ATTR_COMPANY) Company company,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
-	String response = this.companyService.clone(company.getId(), company.getName());
+	String response = this.companyService.clone(company);
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return listPage(status);
     }

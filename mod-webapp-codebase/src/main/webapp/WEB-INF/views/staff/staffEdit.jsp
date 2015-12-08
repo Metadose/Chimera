@@ -136,6 +136,7 @@
 				                                            <form:input type="text" class="form-control" path="suffix" placeholder="Sample: Jr., Sr., II, III"/>
 				                                            <p class="help-block">Add the name suffix</p>
 				                                            
+				                                            <sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
 				                                            <label>Company Position</label>
 				                                            <form:input type="text" class="form-control" path="companyPosition" placeholder="Sample: Skilled, Unskilled, Laborer, Mason"/>
 				                                            <p class="help-block">Indicate the company position</p>
@@ -143,6 +144,7 @@
 				                                            <label>Salary (Daily)</label>
 				                                            <form:input type="text" class="form-control" path="wage" placeholder="Sample: 350, 225, 250, 500"/>
 				                                            <p class="help-block">Enter the staff's daily wage</p>
+				                                            </sec:authorize>
 				                                            
 				                                            <label>E-Mail</label>
 				                                            <form:input type="text" class="form-control" path="email" placeholder="Sample: cruz@gmail.com, rosa@yahoo.com"/>
@@ -380,11 +382,11 @@
 								                 			</div>
 
 								                            <label>Include Saturdays</label>
-								                            <form:checkbox class="form-control" path="includeSaturdays" style="margin-left: -48%;"/>
+								                            <form:checkbox class="form-control" path="includeSaturdays"/>
 								                            <p class="help-block">Check to include Saturdays</p>
 
 								                            <label>Include Sundays</label>
-								                            <form:checkbox class="form-control" path="includeSundays" style="margin-left: -48%;"/>
+								                            <form:checkbox class="form-control" path="includeSundays"/>
 								                            <p class="help-block">Check to include Sundays</p>
 								                        </div>
 								                        <button class="btn btn-cebedo-update btn-flat btn-sm" id="detailsButton">Update</button>

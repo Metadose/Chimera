@@ -185,7 +185,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     public SystemConfiguration getByName(String name, boolean override) {
 	SystemConfiguration config = this.systemConfigurationDAO.getByName(name);
 
-	if (override) {
+	if (!override) {
 	    // Security check.
 	    if (!this.authHelper.hasAccess(config)) {
 		this.messageHelper.unauthorizedID(SystemConfiguration.OBJECT_NAME, config.getId());
@@ -215,8 +215,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 	    }
 	}
 	this.systemConfigurationDAO.merge(config);
-	return AlertBoxFactory.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME,
-		config.getName());
+	return AlertBoxFactory.SUCCESS.generateUpdate(SystemConfiguration.OBJECT_NAME, config.getName());
     }
 
     @Override

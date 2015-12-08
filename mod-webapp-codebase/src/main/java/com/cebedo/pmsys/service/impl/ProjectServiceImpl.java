@@ -33,7 +33,9 @@ import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
+import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EstimateCost;
+import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.ProjectAux;
 import com.cebedo.pmsys.enums.AuditAction;
 import com.cebedo.pmsys.enums.SortOrder;
@@ -54,11 +56,13 @@ import com.cebedo.pmsys.model.Task;
 import com.cebedo.pmsys.model.Task.TaskSubType;
 import com.cebedo.pmsys.pojo.JSONCalendarEvent;
 import com.cebedo.pmsys.pojo.JSONTimelineGantt;
+import com.cebedo.pmsys.repository.impl.MaterialValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.ProjectAuxValueRepoImpl;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.service.EstimateCostService;
 import com.cebedo.pmsys.service.ExpenseService;
+import com.cebedo.pmsys.service.MaterialService;
 import com.cebedo.pmsys.service.ProjectPayrollService;
 import com.cebedo.pmsys.service.ProjectService;
 import com.cebedo.pmsys.service.StaffService;
@@ -82,12 +86,26 @@ public class ProjectServiceImpl implements ProjectService {
     private StaffService staffService;
     private TaskService taskService;
     private EstimateCostService estimateCostService;
+    private MaterialValueRepoImpl materialValueRepo;
+    private MaterialService materialService;
 
     // For the balance sheet.
     private ProjectPayrollService projectPayrollService;
     private DeliveryService deliveryService;
     private EquipmentExpenseService equipmentExpenseService;
     private ExpenseService expenseService;
+
+    @Autowired
+    @Qualifier(value = "materialService")
+    public void setMaterialService(MaterialService materialService) {
+	this.materialService = materialService;
+    }
+
+    @Autowired
+    @Qualifier(value = "materialValueRepo")
+    public void setMaterialValueRepo(MaterialValueRepoImpl materialValueRepo) {
+	this.materialValueRepo = materialValueRepo;
+    }
 
     @Autowired
     @Qualifier(value = "expenseService")
@@ -214,6 +232,84 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	return AlertBoxFactory.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_ESTIMATE_COST);
+    }
+
+    @Override
+    @Transactional
+    public String uploadExcelMaterials(MultipartFile multipartFile, Project project, Delivery delivery,
+	    BindingResult result) {
+
+	// Security check.
+	if (!this.authHelper.hasAccess(project)) {
+	    this.messageHelper.unauthorizedID(Project.OBJECT_NAME, project.getId());
+	    return AlertBoxFactory.ERROR;
+	}
+
+	// Service layer form validation.
+	this.multipartFileValidator.validate(multipartFile, result);
+	if (result.hasErrors()) {
+	    return this.validationHelper.errorMessageHTML(result);
+	}
+
+	// Do service.
+	List<Material> materials = this.materialService.convertExcelToMaterials(multipartFile, project);
+	if (materials == null) {
+	    return AlertBoxFactory.FAILED
+		    .generateHTML(RegistryResponseMessage.ERROR_COMMON_FILE_CORRUPT_INVALID);
+	}
+
+	List<Material> includeMaterials = new ArrayList<Material>();
+
+	// List of existing materials in this delivery.
+	String pattern = Material.constructPattern(delivery);
+	Set<String> keys = this.materialValueRepo.keys(pattern);
+	List<Material> deliveryMaterials = this.materialValueRepo.multiGet(keys);
+
+	// Check if this task is already committed.
+	for (Material material : materials) {
+
+	    String name = material.getName();
+	    double quantity = material.getQuantity();
+	    String unit = material.getUnitOfMeasure();
+	    double costPerUnit = material.getCostPerUnitMaterial();
+	    String remarks = material.getRemarks();
+
+	    // Check for existing.
+	    boolean include = true;
+	    for (Material existingMaterial : deliveryMaterials) {
+
+		String existingName = existingMaterial.getName();
+		double existingQuantity = existingMaterial.getQuantity();
+		double existingCostPerUnit = existingMaterial.getCostPerUnitMaterial();
+		String existingRemarks = existingMaterial.getRemarks();
+		String existingUnit = existingMaterial.getUnitOfMeasure();
+
+		// If we found a match, break. Don't include to list to commit.
+		if (name.equalsIgnoreCase(existingName) && quantity == existingQuantity
+			&& costPerUnit == existingCostPerUnit
+			&& remarks.equalsIgnoreCase(existingRemarks)
+			&& unit.equalsIgnoreCase(existingUnit)) {
+
+		    include = false;
+		    break;
+		}
+	    }
+
+	    // If we are including this object,
+	    // set necessary attributes.
+	    if (include) {
+		material.setCompany(project.getCompany());
+		material.setProject(project);
+		material.setDelivery(delivery);
+		includeMaterials.add(material);
+	    }
+	}
+
+	// Create mass.
+	for (Material material : includeMaterials) {
+	    this.materialService.create(material, result);
+	}
+	return AlertBoxFactory.SUCCESS.generateCreateEntries(ConstantsRedis.OBJECT_MATERIAL);
     }
 
     /**

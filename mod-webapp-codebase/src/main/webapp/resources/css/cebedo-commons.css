@@ -20,7 +20,7 @@ body > .header .logo {
 }
 
 input[type=checkbox] {
-	height: 20px;
+    width: 20px !important;
 }
 
 /* Data Tables */
@@ -42,6 +42,9 @@ input[type=checkbox] {
 /* Misc */
 .cebedo-text-align-right {
 	text-align: right;
+}
+.cebedo-text-align-left {
+	text-align: left;
 }
 .cebedo-no-wrap {
   white-space: nowrap;

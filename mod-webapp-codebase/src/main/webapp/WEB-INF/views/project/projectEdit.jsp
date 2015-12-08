@@ -331,6 +331,12 @@
    															</div>
    															</c:if>
    															
+   															<c:if test="${empty projectFields}">
+   															<div class="form-group" id="fieldsDivViewer">
+               													<i>No Additional Information.</i>
+   															</div>
+   															</c:if>
+   															
 															<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'CONTRACT_CREATE')">
    															<c:if test="${!empty projectFields}">
    															<h4>Add More Information</h4>
@@ -748,7 +754,7 @@
 																				</center>
 																			</td>
 																			</sec:authorize>
-						                                                	<td class="cebedo-text-align-right">${directCost.name}</td>
+						                                                	<td>${directCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getActualCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getDiffEstimatedActualAsHTML()}</td>
@@ -805,7 +811,7 @@
 																				</center>
 																			</td>
 																			</sec:authorize>
-						                                                	<td class="cebedo-text-align-right">${indirectCost.name}</td>
+						                                                	<td>${indirectCost.name}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getActualCostAsString()}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getDiffEstimatedActualAsHTML()}</td>
@@ -2209,7 +2215,13 @@
 <!-- 			              								</div> -->
 						                                <div class="box-body">
 											                <c:if test="${!empty project.assignedStaff}">
-
+																
+																<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_UPDATE')">
+						                                  		<a href="<c:url value="/project/add/attendance/all"/>">
+					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Create Attendance</button>
+					                                        	</a>
+					                                        	</sec:authorize>
+					                                        	
 						                                  		<a href="<c:url value="/project/export-xls/staff-members"/>">
 					                                        		<button class="btn btn-cebedo-export btn-flat btn-sm">Export All</button>
 					                                        	</a>
@@ -2270,7 +2282,7 @@
 														                            </sec:authorize>
 																				</center>
 																			</td>
-						                                                	<td>${assignedStaffMember.getFullName()}</td>
+						                                                	<td>${assignedStaffMember.getFullName()} (${assignedStaffMember.getUsername()})</td>
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
 						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
@@ -2337,7 +2349,7 @@
 							                                    id="assignStaffForm"
 							                                    action="${contextPath}/project/assign/staff/mass">
 				                                    		<div class="form-group">
-				                                    		<table class="table table-bordered table-striped">
+				                                    		<table id="staff-assign-table" class="table table-bordered table-striped">
 				                                    			<thead>
 				                                    			<tr>
 				                                    			
@@ -3192,6 +3204,7 @@
    	</script>
 	</c:if>
 	
+	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	    
 	    // TODO Not sure if we still need the below code.
@@ -3250,6 +3263,11 @@
 			$("#managers-table").dataTable();
 			$("#assigned-staff-table").dataTable();
 			$("#tasks-table").dataTable();
+			var staffAssignTable = $("#staff-assign-table").dataTable();
+			if(staffAssignTable.size() > 0){
+				staffAssignTable.fnLengthChange(-1);
+			}
+
 			$(".is-data-table").dataTable();
 	    });	    
 		

@@ -73,6 +73,7 @@
                    						<div class="col-md-6">
                    							<div class="box box-body box-default">
                    								<div class="box-body">
+												
                    									<form:form modelAttribute="delivery"
 														id="detailsForm"
 														method="post"
@@ -133,6 +134,7 @@
                    									<h3 class="box-title">Add Materials</h3>
                    								</div>
                    								<div class="box-body">
+                   								
                    									<form:form modelAttribute="material"
 														id="materialForm"
 														method="post"
@@ -190,6 +192,20 @@
 				                                        </div>
 				                                    </form:form>
                                             		<button onclick="submitForm('materialForm')" class="btn btn-cebedo-create btn-flat btn-sm" id="detailsButton">Add</button>
+                                            		
+                                            		<br/>
+                                            		<br/>
+                   									<form:form modelAttribute="massUploadBean"
+														action="${contextPath}/project/mass/upload/materials"
+														method="post"
+														enctype="multipart/form-data">
+													
+														<div class="form-group">
+														<label>Excel File</label>
+														<form:input type="file" class="form-control" path="file"/><br/>
+														<button class="btn btn-cebedo-create btn-flat btn-sm">Upload</button>
+														</div>
+													</form:form>
                    								</div>
                    							</div>
                    						</div>

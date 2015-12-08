@@ -4,6 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Component;
 
 import com.cebedo.pmsys.bean.JMSMessage;
@@ -34,7 +35,19 @@ public class AuditExecutor {
 
     public void execute(JMSMessage msg) {
 	AuditorRunnableImpl auditor = new AuditorRunnableImpl(msg);
-	this.taskExecutor.execute(auditor);
+	boolean success = false;
+	while (!success) {
+	    try {
+		this.taskExecutor.execute(auditor);
+		success = true;
+	    } catch (TaskRejectedException e) {
+		try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+		    e1.printStackTrace();
+		}
+	    }
+	}
     }
 
     /**
