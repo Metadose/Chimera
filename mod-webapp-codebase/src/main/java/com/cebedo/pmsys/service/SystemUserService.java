@@ -3,10 +3,12 @@ package com.cebedo.pmsys.service;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.constants.RegistryCache;
 import com.cebedo.pmsys.domain.UserAux;
 import com.cebedo.pmsys.model.SystemUser;
 
@@ -23,6 +25,7 @@ public interface SystemUserService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String create(SystemUser user, BindingResult result);
 
@@ -33,6 +36,7 @@ public interface SystemUserService {
      * @param result
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String update(SystemUser user, BindingResult result, String oldPassword);
 
@@ -52,6 +56,7 @@ public interface SystemUserService {
      * @param id
      * @return
      */
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String delete(long id);
 
@@ -63,6 +68,7 @@ public interface SystemUserService {
 
     public SystemUser searchDatabase(String name);
 
+    @CacheEvict(value = RegistryCache.PROJECT_GET_WITH_COLLECTIONS, allEntries = true)
     @PreAuthorize("hasRole('ADMIN_COMPANY')")
     public String updateAuthority(UserAux userAux);
 
