@@ -1,13 +1,3 @@
-function checkAllDatatable(myDataTable, checkboxClass) {
-	$(myDataTable.fnGetNodes()).find('.'+checkboxClass).prop('checked', true);
-	return false;
-}
-
-function uncheckAllDatatable(myDataTable, checkboxClass) {
-	$(myDataTable.fnGetNodes()).find('.'+checkboxClass).prop('checked', false);
-	return false;
-}
-
 function checkAll(checkboxClass) {
 	$('.'+checkboxClass).each(function() { //loop through each checkbox
          this.checked = true;  //select all checkboxes with class "checkbox1"

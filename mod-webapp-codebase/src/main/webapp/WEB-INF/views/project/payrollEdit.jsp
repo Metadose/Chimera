@@ -203,8 +203,8 @@
 				                                        
 				                                        	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PAYROLL_UPDATE')">
 															<c:if test="${!empty staffList}">
-															<a href="#" onclick="checkAllDatatable(staffTable, 'staff-checkboxes')" class="general-link">Check All</a>&nbsp;
-															<a href="#" onclick="uncheckAllDatatable(staffTable, 'staff-checkboxes')" class="general-link">Uncheck All</a>
+															<a href="#" onclick="checkAll('staff-checkboxes')" class="general-link">Check All</a>&nbsp;
+															<a href="#" onclick="uncheckAll('staff-checkboxes')" class="general-link">Uncheck All</a>
 															<p class="help-block">Check or uncheck staff members</p>
 															</c:if>
 															</sec:authorize>
