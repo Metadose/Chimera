@@ -52,6 +52,7 @@ import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryResponseMessage;
 import com.cebedo.pmsys.constants.RegistryURL;
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.domain.CompanyAux;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -89,6 +90,7 @@ import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 import com.cebedo.pmsys.pojo.FormStaffAssignment;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
 import com.cebedo.pmsys.service.AttendanceService;
+import com.cebedo.pmsys.service.CompanyService;
 import com.cebedo.pmsys.service.DeliveryService;
 import com.cebedo.pmsys.service.EquipmentExpenseService;
 import com.cebedo.pmsys.service.EstimateCostService;
@@ -240,6 +242,13 @@ public class ProjectController {
     private EstimateCostService estimateCostService;
     private ExpenseService expenseService;
     private EquipmentExpenseService equipmentExpenseService;
+    private CompanyService companyService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "companyService")
+    public void setCompanyService(CompanyService ps) {
+	this.companyService = ps;
+    }
 
     @Autowired
     @Qualifier(value = "equipmentExpenseService")
@@ -340,7 +349,46 @@ public class ProjectController {
     @RequestMapping(value = { ConstantsSystem.REQUEST_ROOT,
 	    ConstantsSystem.REQUEST_LIST }, method = RequestMethod.GET)
     public String listProjects(Model model, HttpSession session) {
-	model.addAttribute(ATTR_LIST, this.projectService.list());
+
+	// Get company auxiliary.
+	Company com = this.authHelper.getAuth().getCompany();
+	List<Project> projects = this.projectService.list();
+
+	int limit = 0;
+	int currentSize = projects.size();
+	boolean canCreateProject = false;
+	boolean reachedLimit = false;
+
+	// If super admin.
+	boolean superAdmin = this.authHelper.isSuperAdmin();
+	if (superAdmin) {
+	    canCreateProject = true;
+	} else {
+
+	    // If not super admin,
+	    // get the auxiliary,
+	    // get the limit and check if >=.
+	    // If >=, can't create new projects.
+	    if (com != null) {
+
+		CompanyAux aux = this.companyService.getAux(com);
+		limit = aux.getLimitProjects();
+		currentSize = projects.size();
+		if (currentSize < limit) {
+		    canCreateProject = true;
+		} else {
+		    reachedLimit = true;
+		}
+	    }
+	}
+
+	// Attach attributes.
+	String createProjectDisplay = reachedLimit ? String
+		.format("Used %s projects out of %s (You have reached the Limit)", currentSize, limit)
+		: String.format("Used %s projects out of %s", currentSize, limit);
+	model.addAttribute("canCreateProject", canCreateProject);
+	model.addAttribute("createProjectDisplay", superAdmin ? "" : createProjectDisplay);
+	model.addAttribute(ATTR_LIST, projects);
 	session.removeAttribute(ProjectController.ATTR_FROM_PROJECT);
 	return RegistryJSPPath.JSP_LIST_PROJECT;
     }

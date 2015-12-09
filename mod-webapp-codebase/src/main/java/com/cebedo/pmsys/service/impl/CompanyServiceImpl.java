@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -245,6 +246,11 @@ public class CompanyServiceImpl implements CompanyService {
     public String setAux(CompanyAux aux) {
 	this.companyAuxValueRepo.set(aux);
 	Company com = this.companyDAO.getByID(aux.getCompany().getId());
+
+	// Log.
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_AUX_COMPANY,
+		com.getId(), com.getName());
+
 	return AlertBoxFactory.SUCCESS.generateUpdate(Company.OBJECT_NAME, com.getName());
     }
 

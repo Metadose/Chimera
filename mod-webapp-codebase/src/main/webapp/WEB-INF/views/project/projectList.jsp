@@ -33,13 +33,16 @@
 							<div class="box">
 									<div class="box-body">
 									
-										<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
-										<c:url var="urlCreateProject" value="/project/edit/0"/>
-	                                	<a href="${urlCreateProject}">
-	                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>
-	                                	</a>
-	                                	<br/><br/>
-	                                	</sec:authorize>
+										<c:if test="${canCreateProject}">
+											<sec:authorize access="hasAnyRole('ADMIN_COMPANY')">
+											<c:url var="urlCreateProject" value="/project/edit/0"/>
+		                                	<a href="${urlCreateProject}">
+		                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>
+		                                	</a>
+		                                	<br/><br/>
+		                                	</sec:authorize>
+										</c:if>
+	                                	<b>${createProjectDisplay}</b>
 	                                	
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
