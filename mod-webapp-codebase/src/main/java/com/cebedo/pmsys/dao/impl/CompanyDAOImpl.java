@@ -17,6 +17,14 @@ import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DAOHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
+import com.cebedo.pmsys.model.Staff;
+import com.cebedo.pmsys.model.SystemConfiguration;
+import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.model.Task;
+import com.cebedo.pmsys.model.assignment.FieldAssignment;
+import com.cebedo.pmsys.model.assignment.ProjectStaffAssignment;
+import com.cebedo.pmsys.model.assignment.TaskStaffAssignment;
 
 @Repository
 public class CompanyDAOImpl implements CompanyDAO {
@@ -77,6 +85,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	Criteria criteria = this.daoHelper.criteriaGetObjByID(session, Company.class,
 		Company.PROPERTY_ID, id);
 	Company company = (Company) criteria.uniqueResult();
+	Hibernate.initialize(company.getProjects());
 	return company;
     }
 
@@ -87,12 +96,100 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Company company) {
 	Session session = this.sessionFactory.getCurrentSession();
-	Company company = getByID(id);
 	if (company != null) {
-	    session.delete(company);
+
+	    // Delete all staff assignments.
+	    for (Project proj : company.getProjects()) {
+
+		// Delete project assignments.
+		deleteProjectAssignments(session, proj, ProjectStaffAssignment.TABLE_NAME);
+		deleteProjectAssignments(session, proj, FieldAssignment.TABLE_NAME);
+
+		// Delete tasks.
+		for (Task task : proj.getAssignedTasks()) {
+		    deleteTaskAssignments(session, task);
+		}
+	    }
+
+	    // Delete all staff.
+	    for (Staff staff : company.getStaff()) {
+		deleteStaffAssignments(session, staff, ProjectStaffAssignment.TABLE_NAME);
+		deleteStaffAssignments(session, staff, TaskStaffAssignment.TABLE_NAME);
+	    }
+
+	    // Unreferenced objects.
+	    executeDelete(session, AuditLog.TABLE_NAME, company.getId());
+	    executeDelete(session, SystemConfiguration.TABLE_NAME, company.getId());
+
+	    // Referenced objects.
+	    executeDelete(session, Task.TABLE_NAME, company.getId());
+	    executeDelete(session, SystemUser.TABLE_NAME, company.getId());
+	    executeDelete(session, Project.TABLE_NAME, company.getId());
+	    executeDelete(session, Staff.TABLE_NAME, company.getId());
+	    executeDelete(session, Company.TABLE_NAME, company.getId());
 	}
+    }
+
+    /**
+     * Delete staff assignments.
+     * 
+     * @param session
+     * @param staff
+     * @param tableName
+     */
+    private void deleteStaffAssignments(Session session, Staff staff, String tableName) {
+	String queryStr = String.format("DELETE FROM %s WHERE %s=:%s", tableName,
+		Staff.COLUMN_PRIMARY_KEY, Staff.COLUMN_PRIMARY_KEY);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.setParameter(Staff.COLUMN_PRIMARY_KEY, staff.getId());
+	query.executeUpdate();
+    }
+
+    /**
+     * Delete assignment of tasks.
+     * 
+     * @param session
+     * @param task
+     */
+    private void deleteTaskAssignments(Session session, Task task) {
+	String queryStr = String.format("DELETE FROM %s WHERE %s=:%s", TaskStaffAssignment.TABLE_NAME,
+		Task.COLUMN_PRIMARY_KEY, Task.COLUMN_PRIMARY_KEY);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.setParameter(Task.COLUMN_PRIMARY_KEY, task.getId());
+	query.executeUpdate();
+    }
+
+    /**
+     * Execute a delete query.
+     * 
+     * @param session
+     * @param tableName
+     * @param primaryKey
+     * @param companyId
+     */
+    private void executeDelete(Session session, String tableName, long companyId) {
+	String queryStr = String.format("DELETE FROM %s WHERE %s=:%s", tableName,
+		Company.COLUMN_PRIMARY_KEY, Company.COLUMN_PRIMARY_KEY);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.setParameter(Company.COLUMN_PRIMARY_KEY, companyId);
+	query.executeUpdate();
+    }
+
+    /**
+     * Delete project assignments.
+     * 
+     * @param session
+     * @param proj
+     * @param tableName
+     */
+    private void deleteProjectAssignments(Session session, Project proj, String tableName) {
+	String queryStr = String.format("DELETE FROM %s WHERE %s=:%s", tableName,
+		Project.COLUMN_PRIMARY_KEY, Project.COLUMN_PRIMARY_KEY);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.setParameter(Project.COLUMN_PRIMARY_KEY, proj.getId());
+	query.executeUpdate();
     }
 
     @SuppressWarnings("unchecked")

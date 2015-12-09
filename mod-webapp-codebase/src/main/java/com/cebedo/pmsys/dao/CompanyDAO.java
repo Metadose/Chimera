@@ -7,6 +7,8 @@ import com.cebedo.pmsys.model.Company;
 
 public interface CompanyDAO {
 
+    public void delete(Company company);
+
     public void create(Company company);
 
     public Company getByID(long id);
@@ -14,8 +16,6 @@ public interface CompanyDAO {
     public Company getByIDWithLazyCollections(long id);
 
     public void update(Company company);
-
-    public void delete(long id);
 
     public List<Company> list(Long companyID);
 

@@ -5,6 +5,8 @@ public class RegistryRedisKeys {
     /**
      * Auxiliaries.
      */
+    public static final String KEY_AUX_COMPANY = "company:%s";
+
     public static final String KEY_AUX_PROJECT = "company.fk:%s:project:%s";
 
     public static final String KEY_AUX_USER = "company.fk:%s:user:%s";

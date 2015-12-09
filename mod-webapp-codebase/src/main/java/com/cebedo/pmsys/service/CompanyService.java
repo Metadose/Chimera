@@ -5,11 +5,17 @@ import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 
+import com.cebedo.pmsys.domain.CompanyAux;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.pojo.FormMultipartFile;
 
 public interface CompanyService {
+
+    @PreAuthorize("hasRole('ADMIN_SUPER')")
+    public String setAux(CompanyAux aux);
+
+    public CompanyAux getAux(Company company);
 
     @PreAuthorize("hasRole('ADMIN_SUPER')")
     public String clone(Company company);
