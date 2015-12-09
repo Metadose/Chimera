@@ -22,8 +22,8 @@
 <%-- 	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> --%>
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	
-	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
-<!-- 	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/gantt-custom.css" rel="stylesheet" type="text/css" /> -->
+<%-- 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/gantt-custom.css" rel="stylesheet" type="text/css" />
 	
 <%-- 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" /> --%>
 	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" rel="stylesheet" type="text/css" />
