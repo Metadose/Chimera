@@ -9,13 +9,21 @@
 	<meta charset="UTF-8">
 	<title>Company Name | Log In</title>
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-	<link href="${contextPath}/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<link href="${contextPath}/resources/lib/font-awesome-4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" />
+<%-- 	<link href="${contextPath}/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	
+<%-- 	<link href="${contextPath}/resources/lib/font-awesome-4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/font-awesome-4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+
+<%-- 	<link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/cdn-fonts.css" rel="stylesheet" type="text/css" />
 
 	<!-- Theme style -->
-	<link href="<c:url value="/resources/css/themes/orange-dist.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/css/themes/orange-buttons.css" />"rel="stylesheet" type="text/css" />
+<%-- 	<link href="<c:url value="/resources/css/themes/orange-dist.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/orange-dist.css" rel="stylesheet" type="text/css" />
+	
+<%-- 	<link href="<c:url value="/resources/css/themes/orange-buttons.css" />"rel="stylesheet" type="text/css" /> --%>
+	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/orange-buttons.css" rel="stylesheet" type="text/css" />
 	
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -64,7 +72,7 @@
 
 <!--             </div> -->
         </div>
-        <script src="${contextPath}/resources/lib/jquery.min.js"/>
-		<script src="${contextPath}/resources/lib/bootstrap.min.js" type="text/javascript"/>
+<%--         <script src="${contextPath}/resources/lib/jquery.min.js"/>  --%>
+<%-- 		<script src="${contextPath}/resources/lib/bootstrap.min.js" type="text/javascript"/> --%>
     </body>
 </html>
