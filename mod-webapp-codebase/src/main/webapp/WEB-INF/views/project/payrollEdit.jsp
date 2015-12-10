@@ -331,7 +331,7 @@
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
 	<script src="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.js" />"type="text/javascript"></script>
-	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	
 	<c:if test="${!empty payrollJSON}">
 	<script>

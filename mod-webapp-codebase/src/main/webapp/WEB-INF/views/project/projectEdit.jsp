@@ -3204,7 +3204,7 @@
    	</script>
 	</c:if>
 	
-	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	    
 	    // TODO Not sure if we still need the below code.
