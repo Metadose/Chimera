@@ -41,7 +41,7 @@ public class RegistryResponseMessage {
 
     public static final String ERROR_COMMON_ACCESS_DENIED = "You do not have <b>authorization</b> to do this action. Please <b>report</b> this issue. Thank you.";
 
-    public static final String ERROR_COMMON_MISSING_REQUIRED = "Please <b>do not</b> provide <b>blank values</b> to required fields, enter <b>zero</b> instead. Thank you.";
+    public static final String ERROR_COMMON_MISSING_REQUIRED = "Please <b>remove commas</b> when entering numbers, and <b>do not leave values as blank</b>, enter zero instead. Thank you.";
 
     public static final String ERROR_COMMON_FILE_CORRUPT_INVALID = "Your file may be <b>corrupted, invalid</b> or may contain <b>negative numbers</b>.";
 
