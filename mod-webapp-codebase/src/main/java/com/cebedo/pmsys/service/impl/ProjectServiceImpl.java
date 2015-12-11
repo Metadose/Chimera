@@ -503,7 +503,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Project.COLUMN_PRIMARY_KEY, project.getId());
 	project.setCompany(company);
 
-	this.projectDAO.update(project);
+	this.projectDAO.merge(project);
 
 	// Log.
 	this.messageHelper.auditableKey(AuditAction.ACTION_UPDATE, Project.OBJECT_NAME, project.getId(),
