@@ -511,6 +511,27 @@ public class ProjectController {
     }
 
     /**
+     * Compute all payrolls.
+     * 
+     * @param session
+     * @param redirectAttrs
+     * @param status
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.COMPUTE_PAYROLL_ALL, method = RequestMethod.GET)
+    public String computePayrollAll(HttpSession session, RedirectAttributes redirectAttrs,
+	    SessionStatus status) {
+
+	Project project = getProject(session);
+	String response = this.projectPayrollService.computeAll(project);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return redirectEditPageProject(project.getId(), status);
+    }
+
+    /**
      * Update existing project fields.
      * 
      * @param session

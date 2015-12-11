@@ -1805,6 +1805,13 @@
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
 		                                  		</a>
 		                                  		</sec:authorize>
+
+												<sec:authorize access="hasRole('ADMIN_SUPER')">
+										  	  	<c:url var="urlCreateTeam" value="/project/compute/payroll/all"/>
+		                                  		<a href="${urlCreateTeam}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Compute All</button>
+		                                  		</a>
+		                                  		</sec:authorize>
 		                                  		
 		                                  		<c:if test="${!empty payrollList}">
 		                                  		<a href="<c:url value="/project/export-xls/payroll/all"/>">

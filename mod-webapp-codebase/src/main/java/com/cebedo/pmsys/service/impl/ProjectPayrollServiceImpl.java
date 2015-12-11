@@ -34,6 +34,7 @@ import com.cebedo.pmsys.factory.AlertBoxFactory;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.helper.ValidationHelper;
+import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
@@ -262,6 +263,30 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 	    rowIndex++;
 	}
+    }
+
+    @Override
+    @Transactional
+    public String computeAll(Project proj) {
+
+	// This function is only available for super admins.
+	if (!this.authHelper.isSuperAdmin()) {
+	    this.messageHelper.unauthorized(ConstantsRedis.OBJECT_PAYROLL);
+	    return AlertBoxFactory.ERROR;
+	}
+
+	// Get all payroll objects.
+	Company com = proj.getCompany();
+	String pattern = ProjectPayroll.constructPattern(com == null ? 0 : com.getId(), proj.getId());
+	Set<String> keys = this.projectPayrollValueRepo.keys(pattern);
+	List<ProjectPayroll> payrolls = this.projectPayrollValueRepo.multiGet(keys);
+
+	// Re-compute all payroll objects.
+	for (ProjectPayroll payroll : payrolls) {
+	    compute(proj, payroll.getStartDate(), payroll.getEndDate(), payroll);
+	}
+
+	return AlertBoxFactory.SUCCESS.generateGenericAll("computed", ConstantsRedis.OBJECT_PAYROLL);
     }
 
     @Override
