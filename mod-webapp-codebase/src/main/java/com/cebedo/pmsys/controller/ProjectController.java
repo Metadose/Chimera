@@ -385,7 +385,7 @@ public class ProjectController {
 	// Attach attributes.
 	String createProjectDisplay = reachedLimit ? String
 		.format("Used %s projects out of %s (You have reached the Limit)", currentSize, limit)
-		: String.format("Used %s projects out of %s", currentSize, limit);
+		: String.format("Used %s project(s) out of %s", currentSize, limit);
 	model.addAttribute("canCreateProject", canCreateProject);
 	model.addAttribute("createProjectDisplay", superAdmin ? "" : createProjectDisplay);
 	model.addAttribute(ATTR_LIST, projects);

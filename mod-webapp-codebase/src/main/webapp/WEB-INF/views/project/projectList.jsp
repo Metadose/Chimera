@@ -43,6 +43,7 @@
 		                                	</sec:authorize>
 										</c:if>
 	                                	<b>${createProjectDisplay}</b>
+	                                	<br/>
 	                                	
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
