@@ -39,11 +39,10 @@
 		                                	<a href="${urlCreateProject}">
 		                                		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Project</button>
 		                                	</a>
-		                                	<br/><br/>
+		                                	<br/>
 		                                	</sec:authorize>
 										</c:if>
-	                                	<b>${createProjectDisplay}</b>
-	                                	<br/>
+	                                	<p class="help-block"><span class="label btn-primary">${createProjectDisplay}</span></p>
 	                                	
 	                                    <table id="example-1" class="table table-bordered table-striped">
 	                                        <thead>
