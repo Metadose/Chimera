@@ -139,6 +139,10 @@
                                 		<li><a href="#tab_project_estimate" data-toggle="tab">Estimate</a></li>
                                 		</sec:authorize>
                                 		
+                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
+		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
+										</sec:authorize>
+
                                 		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'STAFF_VIEW')">
                                 		<li><a href="#tab_staff" data-toggle="tab">Staff</a></li>
                                 		</sec:authorize>
@@ -157,10 +161,6 @@
 
                                 		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_VIEW')">
 										<li><a href="#tab_other_expenses" data-toggle="tab">Other Expenses</a></li>
-										</sec:authorize>
-
-                                		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
-		                                <li><a href="#tab_timeline" data-toggle="tab">Program of Works</a></li>
 										</sec:authorize>
 
                                 		<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'DOWNLOADS_VIEW')">
@@ -3204,7 +3204,7 @@
    	</script>
 	</c:if>
 	
-	<script src="http://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	    
 	    // TODO Not sure if we still need the below code.

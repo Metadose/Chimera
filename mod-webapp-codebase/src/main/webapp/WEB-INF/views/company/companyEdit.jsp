@@ -153,6 +153,52 @@
                    								</div>
                    							</div>
                    						</div>
+                   						<c:if test="${authUser.superAdmin}">
+                   						<div class="col-md-6">
+                   							<div class="box box-body box-default">
+                   								<div class="box-body">
+                   									
+                   									<form:form 
+                   										modelAttribute="auxcompany" 
+                   										id="auxForm" 
+                   										role="form" 
+                   										method="post" 
+                   										action="${contextPath}/company/auxcompany/update">
+                   										
+				                                        <div class="form-group">
+
+				                                            <label>Pricing Category</label>
+				                                            <form:select path="categoryPricing" class="form-control">
+				                                            	<c:forEach items="${pricingList}" var="pricing">
+				                                            		<form:option value="${pricing.getId()}" label="${pricing.getLabel()}">
+				                                            		</form:option>
+				                                            	</c:forEach>
+				                                            </form:select>
+				                                            <p class="help-block">Select the pricing category</p>
+
+				                                            <label>Max Projects (Current: ${currentProjects} Projects)</label>
+				                                            <form:input type="text" 
+				                                            	class="form-control" 
+				                                            	placeholder="Sample: 1, 2, 3, 4, ..." 
+				                                            	path="limitProjects"/>
+				                                            <p class="help-block">Maximum number of projects</p>
+
+				                                            <label>Remarks</label>
+				                                            <form:textarea 
+				                                            	class="form-control" 
+				                                            	path="remarks"/>
+				                                            <p class="help-block">Set additional information</p>
+															
+				                                        </div>
+				                                    </form:form>
+				                                    
+                                            		<button class="btn btn-cebedo-update btn-flat btn-sm" 
+                                            			id="detailsButton" 
+                                            			onclick="submitForm('auxForm')">Update</button>
+                   								</div>
+                   							</div>
+                   						</div>
+                   						</c:if>
               						</div>
                                 </div><!-- /.tab-pane -->
                             </div><!-- /.tab-content -->

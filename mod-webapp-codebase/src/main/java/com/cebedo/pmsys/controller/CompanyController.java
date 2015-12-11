@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.constants.ConstantsSystem;
 import com.cebedo.pmsys.constants.RegistryJSPPath;
 import com.cebedo.pmsys.constants.RegistryURL;
+import com.cebedo.pmsys.domain.CompanyAux;
+import com.cebedo.pmsys.enums.CategoryPricing;
 import com.cebedo.pmsys.enums.HTMLTheme;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
@@ -30,7 +33,7 @@ import com.cebedo.pmsys.service.CompanyService;
 @Controller
 @SessionAttributes(
 
-value = { CompanyController.ATTR_COMPANY }
+value = { CompanyController.ATTR_COMPANY, CompanyController.ATTR_COMPANY_AUX }
 
 )
 @RequestMapping(Company.OBJECT_NAME)
@@ -41,7 +44,9 @@ public class CompanyController {
     public static final String ATTR_COMPANY_LOGO = "companyLogo";
     public static final String ATTR_THEMES = "themes";
     public static final String ATTR_COMPANY = Company.OBJECT_NAME;
+    public static final String ATTR_COMPANY_AUX = ConstantsRedis.OBJECT_AUX_COMPANY;
 
+    private AuthHelper authHelper = new AuthHelper();
     private CompanyService companyService;
 
     @Autowired(required = true)
@@ -80,6 +85,22 @@ public class CompanyController {
 	    return editPage(company.getId(), status);
 	}
 	return settingsPage(status);
+    }
+
+    /**
+     * Update the company auxiliary.
+     * 
+     * @param aux
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.UPDATE_COMPANY_AUX, method = RequestMethod.POST)
+    public String updateCompanyAux(@ModelAttribute(ATTR_COMPANY_AUX) CompanyAux aux,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+	String response = this.companyService.setAux(aux);
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return editPage(aux.getCompany().getId(), status);
     }
 
     /**
@@ -140,7 +161,10 @@ public class CompanyController {
 	    + "}" }, method = RequestMethod.GET)
     public String delete(@PathVariable(Company.COLUMN_PRIMARY_KEY) int id,
 	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Delete a company.
 	String response = this.companyService.delete(id);
+
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return listPage(status);
     }
@@ -171,8 +195,19 @@ public class CompanyController {
 	    model.addAttribute(ATTR_COMPANY, new Company());
 	    return RegistryJSPPath.JSP_EDIT_COMPANY;
 	}
+	Company company = this.companyService.getByID(id);
 	model.addAttribute(ATTR_COMPANY_LOGO, new FormMultipartFile());
-	model.addAttribute(ATTR_COMPANY, this.companyService.getByID(id));
+	model.addAttribute(ATTR_COMPANY, company);
+
+	// If the user is a super admin,
+	// display also the auxiliary.
+	if (this.authHelper.isSuperAdmin()) {
+	    model.addAttribute(ATTR_COMPANY_AUX, this.companyService.getAux(company));
+	    model.addAttribute("currentProjects",
+		    company.getProjects() == null ? 0 : company.getProjects().size());
+	    model.addAttribute("pricingList", CategoryPricing.values());
+	}
+
 	return RegistryJSPPath.JSP_EDIT_COMPANY;
     }
 

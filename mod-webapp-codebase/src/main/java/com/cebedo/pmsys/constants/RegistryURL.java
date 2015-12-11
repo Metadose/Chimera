@@ -146,6 +146,8 @@ public class RegistryURL {
 
     public static final String UPDATE_FIELD = "field/update";
 
+    public static final String UPDATE_COMPANY_AUX = "auxcompany/update";
+
     public static final String DELETE_DELIVERY = "delete/delivery/{delivery}-end";
 
     public static final String EDIT_FIELD = "field/edit/{field}-end";

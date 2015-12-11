@@ -20,6 +20,7 @@ public class ConstantsRedis {
     // Auxiliaries.
     public static final String OBJECT_AUX_PROJECT = "auxproject";
     public static final String OBJECT_AUX_USER = "auxuser";
+    public static final String OBJECT_AUX_COMPANY = "auxcompany";
 
     // For display.
     public static final String DISPLAY_EQUIPMENT_EXPENSE = "Equipment Expense";

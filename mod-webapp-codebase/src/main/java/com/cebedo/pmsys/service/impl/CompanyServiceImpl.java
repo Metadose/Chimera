@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cebedo.pmsys.bean.PairCountValue;
 import com.cebedo.pmsys.bean.PayrollResultComputation;
+import com.cebedo.pmsys.constants.ConstantsRedis;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.dao.FieldDAO;
 import com.cebedo.pmsys.dao.ProjectDAO;
@@ -34,6 +35,7 @@ import com.cebedo.pmsys.dao.SystemConfigurationDAO;
 import com.cebedo.pmsys.dao.SystemUserDAO;
 import com.cebedo.pmsys.dao.TaskDAO;
 import com.cebedo.pmsys.domain.Attendance;
+import com.cebedo.pmsys.domain.CompanyAux;
 import com.cebedo.pmsys.domain.Delivery;
 import com.cebedo.pmsys.domain.EquipmentExpense;
 import com.cebedo.pmsys.domain.EstimateCost;
@@ -61,6 +63,7 @@ import com.cebedo.pmsys.model.assignment.FieldAssignment;
 import com.cebedo.pmsys.pojo.FormMultipartFile;
 import com.cebedo.pmsys.pojo.JSONPayrollResult;
 import com.cebedo.pmsys.repository.impl.AttendanceValueRepoImpl;
+import com.cebedo.pmsys.repository.impl.CompanyAuxValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.DeliveryValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.EquipmentExpenseValueRepoImpl;
 import com.cebedo.pmsys.repository.impl.EstimateCostValueRepoImpl;
@@ -105,6 +108,13 @@ public class CompanyServiceImpl implements CompanyService {
     private MaterialValueRepoImpl materialValueRepo;
     private PullOutValueRepoImpl pullOutValueRepo;
     private ProjectPayrollComputerService projectPayrollComputerService;
+    private CompanyAuxValueRepoImpl companyAuxValueRepo;
+
+    @Autowired
+    @Qualifier(value = "companyAuxValueRepo")
+    public void setCompanyAuxValueRepo(CompanyAuxValueRepoImpl companyAuxValueRepo) {
+	this.companyAuxValueRepo = companyAuxValueRepo;
+    }
 
     @Autowired
     @Qualifier(value = "projectPayrollComputerService")
@@ -224,6 +234,46 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     ImageUploadValidator imageUploadValidator;
+
+    /**
+     * Update the company auxiliary.
+     * 
+     * @param aux
+     * @return
+     */
+    @Override
+    @Transactional
+    public String setAux(CompanyAux aux) {
+	this.companyAuxValueRepo.set(aux);
+	Company com = this.companyDAO.getByID(aux.getCompany().getId());
+
+	// Log.
+	this.messageHelper.auditableID(AuditAction.ACTION_UPDATE, ConstantsRedis.OBJECT_AUX_COMPANY,
+		com.getId(), com.getName());
+
+	return AlertBoxFactory.SUCCESS.generateUpdate(Company.OBJECT_NAME, com.getName());
+    }
+
+    /**
+     * Get the auxiliary object of the company.
+     * 
+     * @param company
+     * @return
+     */
+    @Override
+    @Transactional
+    public CompanyAux getAux(Company company) {
+	String key = CompanyAux.constructKey(company);
+	CompanyAux aux = this.companyAuxValueRepo.get(key);
+
+	// If the auxiliary was not set,
+	// create a new object, and set it to the repository.
+	if (aux == null) {
+	    aux = new CompanyAux(company);
+	    this.companyAuxValueRepo.set(aux);
+	}
+	return aux;
+    }
 
     /**
      * Create a new company.
@@ -346,7 +396,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional
     public String delete(long id) {
 
-	Company company = this.companyDAO.getByID(id);
+	Company company = this.companyDAO.getByIDWithLazyCollections(id);
 
 	// Security check.
 	if (!this.authHelper.isSuperAdmin()) {
@@ -368,7 +418,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	// Do actual service.
 	// Generate response.
-	this.companyDAO.delete(id);
+	this.companyDAO.delete(company);
 	return AlertBoxFactory.SUCCESS.generateDelete(Company.OBJECT_NAME, company.getName());
     }
 
@@ -480,6 +530,13 @@ public class CompanyServiceImpl implements CompanyService {
 	clone.setTasks(null);
 	this.companyDAO.create(clone);
 
+	// Clone also the auxiliary.
+	String auxKey = CompanyAux.constructKey(company);
+	CompanyAux originalAux = this.companyAuxValueRepo.get(auxKey);
+	CompanyAux cloneAux = originalAux.clone();
+	cloneAux.setCompany(clone);
+	this.companyAuxValueRepo.set(cloneAux);
+
 	// Clone the users and the staff members of a company.
 	Map<Long, Staff> oldIdToNewStaff = new HashMap<Long, Staff>();
 	Map<Long, SystemUser> oldIdToNewUser = new HashMap<Long, SystemUser>();
@@ -504,7 +561,11 @@ public class CompanyServiceImpl implements CompanyService {
     private Set<Staff> getClonedEquivalent(Set<Staff> originalStaff, Map<Long, Staff> oldIdToNewStaff) {
 	Set<Staff> clonedStaffSet = new HashSet<Staff>();
 	for (Staff originalStf : originalStaff) {
-	    clonedStaffSet.add(oldIdToNewStaff.get(originalStf.getId()));
+	    Staff newStaff = oldIdToNewStaff.get(originalStf.getId());
+	    if (newStaff == null) {
+		continue;
+	    }
+	    clonedStaffSet.add(newStaff);
 	}
 	return clonedStaffSet;
     }
