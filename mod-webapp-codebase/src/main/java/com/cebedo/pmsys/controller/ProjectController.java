@@ -1841,16 +1841,32 @@ public class ProjectController {
 	// If null,
 	// get current month.
 	if (min == null) {
-	    Calendar cal = Calendar.getInstance();
-	    int year = cal.get(Calendar.YEAR);
-	    int month = cal.get(Calendar.MONTH); // Zero-based.
-	    min = new GregorianCalendar(year, month, 1).getTime();
 
-	    // Based on minimum, get max days in current month.
-	    // Given max days, create max object.
-	    cal.setTime(min);
-	    int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-	    max = new GregorianCalendar(year, month, maxDays).getTime();
+	    Project proj = getProject(session);
+
+	    // If project is not set,
+	    // set min to the current month,
+	    // and max to end of current month.
+	    if (proj == null) {
+
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH); // Zero-based.
+		min = new GregorianCalendar(year, month, 1).getTime();
+
+		// Based on minimum, get max days in current month.
+		// Given max days, create max object.
+		cal.setTime(min);
+		int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		max = new GregorianCalendar(year, month, maxDays).getTime();
+	    }
+	    // Else, set min to start of project,
+	    // and max to end of project.
+	    else {
+		min = proj.getDateStart();
+		max = proj.getActualCompletionDate() == null ? proj.getTargetCompletionDate()
+			: proj.getActualCompletionDate();
+	    }
 	}
 
 	Map<String, Date> datePair = new HashMap<String, Date>();
