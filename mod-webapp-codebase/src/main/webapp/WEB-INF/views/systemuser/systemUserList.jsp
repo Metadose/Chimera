@@ -106,7 +106,7 @@
                                         <tfoot>
                                             <tr>
                                             	<th>&nbsp;</th>
-                                                <th>Name</th>
+                                                <th>Username</th>
                                                 <th>Staff</th>
                                                 <sec:authorize access="hasRole('ADMIN_SUPER')">
                                                 <th>Company</th>
@@ -125,7 +125,9 @@
 	
 	<script>
 		$(document).ready(function() {
-			$("#example-1").dataTable();
+			$("#example-1").DataTable({
+		        "order": [[ 1, "asc" ]]
+		    });
 	    });
 	</script>
 </body>
