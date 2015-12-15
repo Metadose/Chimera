@@ -374,6 +374,7 @@ public class MaterialServiceImpl implements MaterialService {
 	String pattern = Material.constructPattern(proj);
 	Set<String> keys = this.materialValueRepo.keys(pattern);
 	List<Material> materials = this.materialValueRepo.multiGet(keys);
+
 	Collections.sort(materials, new Comparator<Material>() {
 	    @Override
 	    public int compare(Material aObj, Material bObj) {
@@ -381,9 +382,10 @@ public class MaterialServiceImpl implements MaterialService {
 		Date bStart = bObj.getDelivery().getDatetime();
 
 		// To sort in descending.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * (aStart.compareTo(bStart));
 	    }
 	});
+
 	return materials;
     }
 
