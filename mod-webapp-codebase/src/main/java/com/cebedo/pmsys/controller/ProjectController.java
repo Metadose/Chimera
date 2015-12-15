@@ -2741,6 +2741,11 @@ public class ProjectController {
 	executor.execute(runModelerEquipment);
 	executor.execute(runModelerPOW);
 
+	// Materials are set synchronously because sometimes
+	// they are not set inside the thread.
+	List<Material> materialList = this.materialService.listDesc(proj, true);
+	model.addAttribute(ProjectController.ATTR_MATERIAL_LIST, materialList);
+
 	// Wait for threads to shutdown.
 	awaitTermination(executor);
 
