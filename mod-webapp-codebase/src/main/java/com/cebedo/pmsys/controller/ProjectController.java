@@ -2530,6 +2530,13 @@ public class ProjectController {
 
 	// Get the object.
 	PullOut pullOut = this.pullOutService.get(key);
+
+	// Return with updated material and delivery objects.
+	Material updatedMaterial = this.materialService.get(pullOut.getMaterial().getKey());
+	Delivery updatedDelivery = this.deliveryService.get(pullOut.getDelivery().getKey());
+	pullOut.setMaterial(updatedMaterial);
+	pullOut.setDelivery(updatedDelivery);
+
 	model.addAttribute(ATTR_PULL_OUT, pullOut);
 
 	// Get the list of staff in this project.

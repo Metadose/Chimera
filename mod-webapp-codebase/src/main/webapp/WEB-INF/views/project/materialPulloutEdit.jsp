@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
@@ -88,6 +89,8 @@
 									                	<a class="general-link" href="${urlLink}">
 									                	${pullout.delivery.name}
 									                	</a>
+									                	<fmt:formatDate pattern="yyyy/MM/dd hh:mm a" value="${pullout.delivery.datetime}" var="deliveryDateTime"/>
+									                	(${deliveryDateTime})
 									                	</td>
 									                </tr>
 									                <tr>
@@ -102,6 +105,10 @@
 									                		${pullout.material.name}
 						                                    </a>
 									                	</td>
+									                </tr>
+									                <tr>
+									                	<td><label>Available</label></td>
+									                	<td>${pullout.material.available}</td>
 									                </tr>
 									                <tr>
 									                	<td><label>Units</label></td>

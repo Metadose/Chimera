@@ -114,8 +114,8 @@ public class EstimateCost implements IObjectExpense {
     }
 
     public String getDiffEstimatedActualAsHTML() {
-	String label = getDiffEstimatedActualAsString();
 	double diff = getDiffEstimatedActual();
+	String label = String.valueOf(diff);
 	if (diff < 0) {
 	    return HTMLUtils.getBadgeHTML(HTMLCSSDetails.DANGER, label);
 	}
