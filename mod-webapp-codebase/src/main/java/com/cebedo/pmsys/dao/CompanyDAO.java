@@ -2,10 +2,13 @@ package com.cebedo.pmsys.dao;
 
 import java.util.List;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
 
 public interface CompanyDAO {
+
+    public void executeDelete(IObjectModel model, long companyId);
 
     public void delete(Company company);
 

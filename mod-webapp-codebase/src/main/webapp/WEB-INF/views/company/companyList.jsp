@@ -58,6 +58,24 @@
 																<a href="${urlCloneCompany}">
 																	<button class="btn btn-cebedo-view btn-flat btn-sm">Clone</button>
 																</a>
+																
+                                                                <div class="btn-group">
+                                                                
+	                                                                <button type="button" 
+	                                                                	class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" 
+	                                                                	data-toggle="dropdown">Clear Logs</button>
+	                                                                	
+	                                                                <ul class="dropdown-menu">
+	                                                                    <li>
+	                                                                        <c:url value="/company/clear-logs/${company.id}" var="urlClearLogsCompany"/>
+	                                                                        <a href="${urlClearLogsCompany}" class="cebedo-dropdown-hover">
+	                                                                            Confirm Clear
+	                                                                        </a>
+	                                                                    </li>
+	                                                                </ul>
+	                                                                
+                                                                </div>
+                                                                
                                                                 <div class="btn-group">
                                                                 <button type="button" class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" data-toggle="dropdown">Delete</button>
                                                                 <ul class="dropdown-menu">

@@ -27,6 +27,7 @@ import com.cebedo.pmsys.enums.HTMLTheme;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.model.AuditLog;
 import com.cebedo.pmsys.model.Company;
+import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.FormMultipartFile;
 import com.cebedo.pmsys.service.CompanyService;
 
@@ -166,6 +167,29 @@ public class CompanyController {
 	String response = this.companyService.delete(id);
 
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+	return listPage(status);
+    }
+
+    /**
+     * Clear all logs.
+     * 
+     * @param id
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.CLEAR_LOGS, method = RequestMethod.GET)
+    public String clearLogs(@PathVariable(Project.COLUMN_PRIMARY_KEY) int id,
+	    RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service.
+	// Get response.
+	String response = this.companyService.clearLogs(id);
+
+	// Attach response.
+	// Alert result.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
 	return listPage(status);
     }
 

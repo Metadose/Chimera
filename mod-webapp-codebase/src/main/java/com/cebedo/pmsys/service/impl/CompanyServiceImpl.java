@@ -389,6 +389,15 @@ public class CompanyServiceImpl implements CompanyService {
 	}
     }
 
+    @Override
+    @Transactional
+    public String clearLogs(int id) {
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE_ALL, Company.OBJECT_NAME, id,
+		AuditLog.OBJECT_NAME);
+	this.companyDAO.executeDelete(new AuditLog(), id);
+	return AlertBoxFactory.SUCCESS.generateDeleteAll("log");
+    }
+
     /**
      * Deletes a company.
      */
@@ -1121,4 +1130,5 @@ public class CompanyServiceImpl implements CompanyService {
 	cloneAux.setUser(cloneUser);
 	this.userAuxValueRepo.set(cloneAux);
     }
+
 }

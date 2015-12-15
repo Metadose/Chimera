@@ -21,6 +21,9 @@ public interface CompanyService {
     public String clone(Company company);
 
     @PreAuthorize("hasRole('ADMIN_SUPER')")
+    public String clearLogs(int id);
+
+    @PreAuthorize("hasRole('ADMIN_SUPER')")
     public String create(Company company, BindingResult result);
 
     public Company getByID(long id);

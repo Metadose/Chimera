@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.annotations.LazyCollection;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DAOHelper;
@@ -159,6 +160,17 @@ public class CompanyDAOImpl implements CompanyDAO {
 	SQLQuery query = session.createSQLQuery(queryStr);
 	query.setParameter(Task.COLUMN_PRIMARY_KEY, task.getId());
 	query.executeUpdate();
+    }
+
+    /**
+     * Execute a delete query.
+     * 
+     * @param model
+     * @param companyId
+     */
+    public void executeDelete(IObjectModel model, long companyId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	executeDelete(session, model.getTableName(), companyId);
     }
 
     /**
