@@ -85,8 +85,6 @@ import com.google.common.primitives.Longs;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private static final String CLONE_PASSWORD = "demo_1234";
-
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
@@ -508,8 +506,10 @@ public class CompanyServiceImpl implements CompanyService {
 	long companyId = companyTarget.getId();
 	String cloneName = companyTarget.getName();
 
+	// Set cloning configuration.
 	Company company = this.companyDAO.getByIDWithLazyCollections(companyId);
 	company.setRandomizeNames(companyTarget.isRandomizeNames());
+	company.setClonePassword(companyTarget.getClonePassword());
 
 	if (!this.authHelper.isSuperAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
@@ -1084,14 +1084,15 @@ public class CompanyServiceImpl implements CompanyService {
 		cloneUser.setStaff(stf);
 
 		// Update the user name.
-		String newUserName = String.format("%_%", stf.getFirstName(), stf.getLastName())
+		String newUserName = String.format("%s_%s", stf.getFirstName(), stf.getLastName())
 			.toLowerCase();
 		cloneUser.setUsername(newUserName);
-
-		// Update the password.
-		String encPassword = this.authHelper.encodePassword(CLONE_PASSWORD, cloneUser);
-		cloneUser.setPassword(encPassword);
 	    }
+
+	    // Update the password.
+	    String encPassword = this.authHelper.encodePassword(company.getClonePassword(), cloneUser);
+	    cloneUser.setPassword(encPassword);
+
 	    cloneUser.setAuditLogs(null);
 	    cloneUser.setCompany(cloneCompany);
 	    cloneUser.setId(0);
