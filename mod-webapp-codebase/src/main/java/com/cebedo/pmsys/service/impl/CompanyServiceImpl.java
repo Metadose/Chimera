@@ -85,6 +85,8 @@ import com.google.common.primitives.Longs;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
+    private static final String CLONE_PASSWORD = "demo_1234";
+
     private AuthHelper authHelper = new AuthHelper();
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
@@ -1071,17 +1073,28 @@ public class CompanyServiceImpl implements CompanyService {
 	for (SystemUser originalUser : users) {
 	    SystemUser cloneUser = originalUser.clone();
 
-	    // Set the staff.
+	    // If the staff was set in the original object,
+	    // set it here too.
 	    Staff userStaff = originalUser.getStaff();
 	    if (userStaff != null) {
+
+		// Set the staff.
 		long oldId = userStaff.getId();
 		Staff stf = oldIdToNewStaff.get(oldId);
 		cloneUser.setStaff(stf);
+
+		// Update the user name.
+		String newUserName = String.format("%_%", stf.getFirstName(), stf.getLastName())
+			.toLowerCase();
+		cloneUser.setUsername(newUserName);
+
+		// Update the password.
+		String encPassword = this.authHelper.encodePassword(CLONE_PASSWORD, cloneUser);
+		cloneUser.setPassword(encPassword);
 	    }
 	    cloneUser.setAuditLogs(null);
 	    cloneUser.setCompany(cloneCompany);
 	    cloneUser.setId(0);
-	    cloneUser.setUsername(String.format("%s_%s", cloneCompany.getId(), cloneUser.getUsername()));
 	    this.systemUserDAO.create(cloneUser);
 
 	    // Add to map.
