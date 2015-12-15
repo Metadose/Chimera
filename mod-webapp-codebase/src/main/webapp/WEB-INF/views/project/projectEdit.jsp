@@ -2255,7 +2255,7 @@
 						                                            	<th>&nbsp;</th>
 						                                                <th>Full Name</th>
 						                                                <th>Company Position</th>
-						                                                <th>Salary (Daily)</th>
+						                                                <th>Salary (&#8369; Daily)</th>
 						                                                <th>E-Mail</th>
 						                                                <th>Contact Number</th>
 						                                            </tr>
@@ -2289,7 +2289,7 @@
 																			</td>
 						                                                	<td>${assignedStaffMember.getFullName()} (${assignedStaffMember.getUsername()})</td>
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
-						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
+						                                                	<td style="text-align: right;">${assignedStaffMember.wage}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
 						                                                	<td>${assignedStaffMember.getContactNumberAsString()}</td>
 							                                            </tr>
@@ -2364,7 +2364,7 @@
 				                                    			
 				                                                <th>Full Name</th>
 				                                                <th>Company Position</th>
-				                                                <th>Salary (Daily)</th>
+				                                                <th>Salary (&#8369; Daily)</th>
 				                                                <th>E-Mail</th>
 				                                                <th>Contact Number</th>
 				                                    			</tr>
@@ -2382,7 +2382,7 @@
 						                                    			
 						                                    			<td>${staff.getFullName()}</td>
 						                                    			<td>${staff.companyPosition}</td>
-					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
+					                                                	<td class="cebedo-text-align-right">${staff.wage}</td>
 					                                                	<td>${staff.email}</td>
 					                                                	<td>${staff.getContactNumberAsString()}</td>
 						                                    			</tr>
